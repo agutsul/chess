@@ -110,8 +110,6 @@ public interface PawnPiece<COLOR extends Color>
                         .filter(action -> Action.Type.PROMOTE.equals(action.getType()))
                         .map(action -> (PiecePromoteAction<?,?>) action)
                         .map(PiecePromoteAction::getSource)
-                        .filter(action -> Action.Type.MOVE.equals(action.getType())
-                                || Action.Type.CAPTURE.equals(action.getType()))
                         .map(Action::getPosition)
                         .collect(toSet());
 
