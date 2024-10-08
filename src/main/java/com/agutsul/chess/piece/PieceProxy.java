@@ -48,16 +48,6 @@ class PieceProxy implements Piece<Color> {
     }
 
     @Override
-    public Collection<Action<?>> getActions() {
-        return origin.getActions();
-    }
-
-    @Override
-    public Collection<Impact<?>> getImpacts() {
-        return origin.getImpacts();
-    }
-
-    @Override
     public final List<Position> getPositions() {
         return origin.getPositions();
     }
@@ -65,5 +55,15 @@ class PieceProxy implements Piece<Color> {
     @Override
     public final PieceState<Piece<Color>> getState() {
         return origin.getState();
+    }
+
+    @Override
+    public Collection<Action<?>> getActions() {
+        return origin.getActions();
+    }
+
+    @Override
+    public Collection<Impact<?>> getImpacts() {
+        return origin.getImpacts();
     }
 }

@@ -44,6 +44,8 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     @Override
     @SuppressWarnings("unchecked")
     public void dispose() {
+        super.dispose();
+
         this.state = (AbstractPieceState<AbstractPiece<Color>>) DISPOSED_STATE;
     }
 

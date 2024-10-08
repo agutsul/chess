@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Color;
@@ -53,7 +54,7 @@ final class BoardImpl implements Board {
         this.state = new DefaultBoardState(this, Colors.WHITE);
 
         this.pieces = new HashSet<>();
-        this.observers = new ArrayList<>();
+        this.observers = new CopyOnWriteArrayList<>();
     }
 
     @Override

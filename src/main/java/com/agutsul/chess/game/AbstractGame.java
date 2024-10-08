@@ -160,6 +160,7 @@ public abstract class AbstractGame
         }
 
         private void process(ActionPerformedEvent event) {
+            board.notifyObservers(event);
             // log action in history to display it later on UI or fully restore game state
             journal.add(event.getActionMemento());
         }

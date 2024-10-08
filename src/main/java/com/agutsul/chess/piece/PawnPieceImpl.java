@@ -37,6 +37,7 @@ final class PawnPieceImpl<COLOR extends Color>
     @Override
     @SuppressWarnings({ "unchecked" })
     public final void dispose() {
+        super.dispose();
         this.state = (AbstractPieceState<AbstractPiece<Color>>) DISPOSED_STATE;
     }
 
