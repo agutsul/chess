@@ -1,5 +1,6 @@
 package com.agutsul.chess.console;
 
+import static java.lang.System.lineSeparator;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.apache.commons.lang3.StringUtils.split;
 
@@ -47,7 +48,9 @@ class ConsoleRequestPlayerActionObserver
     }
 
     private String readConsoleCommand(Player player) {
-        System.out.println(String.format("%s: '%s' move:\n", player.getColor(), player));
+        System.out.println(String.format("%s: '%s' move:%s",
+                player.getColor(), player, lineSeparator()));
+
         return readConsoleInput();
     }
 }
