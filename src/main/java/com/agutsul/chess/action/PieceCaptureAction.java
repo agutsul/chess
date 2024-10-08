@@ -47,9 +47,7 @@ public class PieceCaptureAction<C1 extends Color,
 
     @Override
     public String getCode() {
-        return String.format("%sx%s", String.valueOf(getSource()),
-                                      createTargetLabel(getTarget())
-                );
+        return String.format("%sx%s", getSource(), createTargetLabel(getTarget()));
     }
 
     protected String createTargetLabel(Piece<?> targetPiece) {

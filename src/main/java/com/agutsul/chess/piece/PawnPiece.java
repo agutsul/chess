@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
@@ -104,6 +105,15 @@ public interface PawnPiece<COLOR extends Color>
                 throw new IllegalActionException(
                         String.format("%s invalid promotion to %s", this, position)
                     );
+            }
+
+            // check if promoted position is not occupied by any enemy piece
+            var piece = board.getPiece(position);
+            if (piece.isPresent()
+                    && !Objects.equals(piece.get().getColor(), getColor())) {
+
+                // remove captured piece from the board
+                ((Disposable) piece.get()).dispose();
             }
 
             // create promoted piece
