@@ -47,6 +47,6 @@ public final class WhitePieceFactory extends AbstractPieceFactory<Color> {
     @Override
     public PawnPiece<Color> createPawn(Position position) {
         var pawn = super.createPawn(position, PAWN_UNICODE);
-        return new PawnPieceProxy(board, pawn, this);
+        return new PawnPieceProxy(board, pawn, promotion.line(), this);
     }
 }

@@ -14,9 +14,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -36,8 +36,13 @@ public class PawnProxyTest {
     private PawnPiece<Color> pawn;
     @Mock
     private PieceFactory pieceFactory;
-    @InjectMocks
+
     private PawnPieceProxy proxy;
+
+    @BeforeEach
+    public void setUp() {
+        this.proxy = new PawnPieceProxy(board, pawn, 7, pieceFactory);
+    }
 
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })

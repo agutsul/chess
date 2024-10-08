@@ -66,11 +66,13 @@ public interface PawnPiece<COLOR extends Color>
         }
 
         private final Board board;
+        private final int promotionLine;
         private final PieceFactory pieceFactory;
 
-        PawnPieceProxy(Board board, PawnPiece<Color> pawnPiece, PieceFactory pieceFactory) {
+        PawnPieceProxy(Board board, PawnPiece<Color> pawnPiece, int promotionLine, PieceFactory pieceFactory) {
             super(pawnPiece);
             this.board = board;
+            this.promotionLine = promotionLine;
             this.pieceFactory = pieceFactory;
         }
 
@@ -91,29 +93,33 @@ public interface PawnPiece<COLOR extends Color>
                 return;
             }
 
-            // validate promotion action ( check if promoted position is legal )
-            var possiblePromotions = board.getActions(this.origin).stream()
-                    .filter(action -> Action.Type.PROMOTE.equals(action.getType()))
-                    .map(action -> (PiecePromoteAction<?,?>) action)
-                    .map(PiecePromoteAction::getSource)
-                    .filter(action -> Action.Type.MOVE.equals(action.getType())
-                            || Action.Type.CAPTURE.equals(action.getType()))
-                    .map(Action::getPosition)
-                    .collect(toSet());
+            // after execution of MOVE or CAPTURE
+            // piece should already be placed at target position
+            var promotionPosition = this.origin.getPosition();
+            if (Objects.equals(promotionPosition, position)) {
 
-            if (!possiblePromotions.contains(position)) {
-                throw new IllegalActionException(
-                        String.format("%s invalid promotion to %s", this, position)
-                    );
-            }
+                // just double check if it is promotion line
+                if (promotionPosition.y() != promotionLine) {
+                    throw new IllegalActionException(
+                            String.format("%s invalid promotion to %s", this, position)
+                        );
+                }
+            } else {
+                // validate promotion action ( check if promoted position is legal )
+                var possiblePromotions = board.getActions(this.origin).stream()
+                        .filter(action -> Action.Type.PROMOTE.equals(action.getType()))
+                        .map(action -> (PiecePromoteAction<?,?>) action)
+                        .map(PiecePromoteAction::getSource)
+                        .filter(action -> Action.Type.MOVE.equals(action.getType())
+                                || Action.Type.CAPTURE.equals(action.getType()))
+                        .map(Action::getPosition)
+                        .collect(toSet());
 
-            // check if promoted position is not occupied by any enemy piece
-            var piece = board.getPiece(position);
-            if (piece.isPresent()
-                    && !Objects.equals(piece.get().getColor(), getColor())) {
-
-                // remove captured piece from the board
-                ((Disposable) piece.get()).dispose();
+                if (!possiblePromotions.contains(position)) {
+                    throw new IllegalActionException(
+                            String.format("%s invalid promotion to %s", this, position)
+                        );
+                }
             }
 
             // create promoted piece

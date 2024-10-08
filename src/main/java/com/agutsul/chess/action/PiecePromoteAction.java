@@ -56,6 +56,7 @@ public class PiecePromoteAction<C1 extends Color,
     private void process(PromotionPieceTypeEvent event) {
         // source action can be either MOVE or CAPTURE
         var originAction = getSource();
+        originAction.execute();
 
         // transform pawn into selected piece type
         PAWN pawn = originAction.getSource();
