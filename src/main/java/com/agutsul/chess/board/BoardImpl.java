@@ -34,8 +34,7 @@ import com.agutsul.chess.piece.WhitePieceFactory;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.position.PositionFactory;
 
-final class BoardImpl
-        implements Board {
+final class BoardImpl implements Board {
 
     private static final PositionFactory POSITION_FACTORY = PositionFactory.INSTANCE;
 

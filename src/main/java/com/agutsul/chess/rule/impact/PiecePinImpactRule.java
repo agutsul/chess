@@ -69,7 +69,6 @@ public class PiecePinImpactRule<COLOR1 extends Color,
     }
 
     @Override
-
     protected Collection<PiecePinImpact<COLOR1, COLOR2, PIECE, KING, ATTACKER>>
             createImpacts(PIECE piece, Collection<Line> lines) {
 
