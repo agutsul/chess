@@ -19,7 +19,7 @@ import com.agutsul.chess.piece.state.AbstractPieceState;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
-public abstract class AbstractPiece<COLOR extends Color>
+abstract class AbstractPiece<COLOR extends Color>
         implements Piece<COLOR>, Movable, Capturable, Disposable {
 
     private static final DisposedPieceState<AbstractPiece<Color>> DISPOSED_STATE = new DisposedPieceState<>();

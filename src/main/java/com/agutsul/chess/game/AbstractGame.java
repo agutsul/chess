@@ -1,9 +1,9 @@
 package com.agutsul.chess.game;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.agutsul.chess.action.event.ActionPerformedEvent;
 import com.agutsul.chess.board.Board;
@@ -54,7 +54,7 @@ public abstract class AbstractGame
 
         this.journal = new JournalImpl<>();
 
-        this.observers = new ArrayList<>();
+        this.observers = new CopyOnWriteArrayList<>();
         this.observers.add(new PlayerEventOberver(this));
         this.observers.add(new ActionEventObserver());
 
@@ -150,7 +150,7 @@ public abstract class AbstractGame
         return currentPlayer.equals(whitePlayer) ? blackPlayer : whitePlayer;
     }
 
-    private class ActionEventObserver implements Observer {
+    private final class ActionEventObserver implements Observer {
 
         @Override
         public void observe(Event event) {
@@ -160,6 +160,7 @@ public abstract class AbstractGame
         }
 
         private void process(ActionPerformedEvent event) {
+            // redirect event to clear cached piece actions/impacts
             board.notifyObservers(event);
             // log action in history to display it later on UI or fully restore game state
             journal.add(event.getActionMemento());
