@@ -5,7 +5,8 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 
-public final class BishopPieceActionRule extends AbstractPieceRule<Action<?>> {
+public final class BishopPieceActionRule
+        extends AbstractPieceRule<Action<?>> {
 
     public BishopPieceActionRule(Board board) {
         this(board, new BishopPieceAlgo<>(board));

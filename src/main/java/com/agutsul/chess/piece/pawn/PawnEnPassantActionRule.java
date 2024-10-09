@@ -10,26 +10,29 @@ import com.agutsul.chess.piece.algo.EnPassantPieceAlgo;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.action.AbstractEnPassantActionRule;
 
-class PawnEnPassantActionRule<C1 extends Color,
-                              C2 extends Color,
-                              P1 extends PawnPiece<C1>,
-                              P2 extends PawnPiece<C2>>
-        extends AbstractEnPassantActionRule<C1, C2, P1, P2, PieceEnPassantAction<C1,C2,P1,P2>> {
+class PawnEnPassantActionRule<COLOR1 extends Color,
+                              COLOR2 extends Color,
+                              PAWN1 extends PawnPiece<COLOR1>,
+                              PAWN2 extends PawnPiece<COLOR2>>
+        extends AbstractEnPassantActionRule<COLOR1, COLOR2, PAWN1, PAWN2,
+                                            PieceEnPassantAction<COLOR1,COLOR2,PAWN1,PAWN2>> {
 
-    private final EnPassantPieceAlgo<C1, P1, Position> algo;
+    private final EnPassantPieceAlgo<COLOR1, PAWN1, Position> algo;
 
-    PawnEnPassantActionRule(Board board, EnPassantPieceAlgo<C1, P1, Position> algo) {
+    PawnEnPassantActionRule(Board board, EnPassantPieceAlgo<COLOR1, PAWN1, Position> algo) {
         super(board);
         this.algo = algo;
     }
 
     @Override
-    protected Collection<Position> calculatePositions(P1 piece) {
+    protected Collection<Position> calculatePositions(PAWN1 piece) {
         return algo.calculate(piece);
     }
 
     @Override
-    protected PieceEnPassantAction<C1, C2, P1, P2> createAction(P1 pawn1, P2 pawn2, Position position) {
-        return new PieceEnPassantAction<C1, C2, P1, P2>(pawn1, pawn2, position);
+    protected PieceEnPassantAction<COLOR1, COLOR2, PAWN1, PAWN2>
+            createAction(PAWN1 pawn1, PAWN2 pawn2, Position position) {
+
+        return new PieceEnPassantAction<COLOR1, COLOR2, PAWN1, PAWN2>(pawn1, pawn2, position);
     }
 }

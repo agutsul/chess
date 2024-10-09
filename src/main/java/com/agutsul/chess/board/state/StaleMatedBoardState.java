@@ -10,7 +10,8 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.piece.Piece;
 
-public final class StaleMatedBoardState extends AbstractBoardState {
+public final class StaleMatedBoardState
+        extends AbstractBoardState {
 
     public StaleMatedBoardState(Board board, Color checkMatedColor) {
         super(BoardState.Type.STALE_MATED, board, checkMatedColor);

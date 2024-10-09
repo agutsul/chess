@@ -9,7 +9,8 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 
-public final class RookPieceActionRule extends AbstractPieceRule<Action<?>> {
+public final class RookPieceActionRule
+        extends AbstractPieceRule<Action<?>> {
 
     public RookPieceActionRule(Board board) {
         this(board, new RookPieceAlgo<>(board));

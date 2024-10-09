@@ -6,7 +6,8 @@ import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.impact.PiecePinImpactRule;
 
-public final class PawnPieceImpactRule extends AbstractPieceRule<Impact<?>> {
+public final class PawnPieceImpactRule
+        extends AbstractPieceRule<Impact<?>> {
 
     public PawnPieceImpactRule(Board board, int step) {
         this(board, new PawnCaptureAlgo<>(board, step));

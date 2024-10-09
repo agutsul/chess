@@ -1,6 +1,7 @@
 package com.agutsul.chess.player.state;
 
-abstract class AbstractPlayerState implements PlayerState {
+abstract class AbstractPlayerState
+        implements PlayerState {
 
     private final Type type;
 

@@ -10,21 +10,21 @@ import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Line;
 import com.agutsul.chess.rule.action.AbstractCaptureLineActionRule;
 
-class BishopCaptureActionRule<C1 extends Color,
-                              C2 extends Color,
-                              BISHOP extends BishopPiece<C1>,
-                              PIECE extends Piece<C2> & Capturable>
-        extends AbstractCaptureLineActionRule<C1, C2, BISHOP, PIECE,
-                                              PieceCaptureAction<C1, C2, BISHOP, PIECE>> {
+class BishopCaptureActionRule<COLOR1 extends Color,
+                              COLOR2 extends Color,
+                              BISHOP extends BishopPiece<COLOR1>,
+                              PIECE extends Piece<COLOR2> & Capturable>
+        extends AbstractCaptureLineActionRule<COLOR1, COLOR2, BISHOP, PIECE,
+                                              PieceCaptureAction<COLOR1, COLOR2, BISHOP, PIECE>> {
 
-    BishopCaptureActionRule(Board board, CapturePieceAlgo<C1, BISHOP, Line> algo) {
+    BishopCaptureActionRule(Board board, CapturePieceAlgo<COLOR1, BISHOP, Line> algo) {
         super(board, algo);
     }
 
     @Override
-    protected PieceCaptureAction<C1, C2, BISHOP, PIECE>
+    protected PieceCaptureAction<COLOR1, COLOR2, BISHOP, PIECE>
             createAction(BISHOP bishop, PIECE piece, Line line) {
 
-        return new PieceCaptureAction<C1, C2, BISHOP, PIECE>(bishop, piece, line);
+        return new PieceCaptureAction<COLOR1, COLOR2, BISHOP, PIECE>(bishop, piece, line);
     }
 }

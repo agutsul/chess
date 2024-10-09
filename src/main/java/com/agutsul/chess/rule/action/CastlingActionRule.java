@@ -9,10 +9,10 @@ import com.agutsul.chess.piece.Movable;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.Rule;
 
-public interface CastlingActionRule<C extends Color,
-                                    P1 extends Piece<C> & Castlingable & Movable,
-                                    P2 extends Piece<C> & Castlingable & Movable,
-                                    A extends PieceCastlingAction<C, P1, P2>>
-    extends Rule<P1, Collection<A>> {
+public interface CastlingActionRule<COLOR extends Color,
+                                    PIECE1 extends Piece<COLOR> & Castlingable & Movable,
+                                    PIECE2 extends Piece<COLOR> & Castlingable & Movable,
+                                    ACTION extends PieceCastlingAction<COLOR, PIECE1, PIECE2>>
+    extends Rule<PIECE1, Collection<ACTION>> {
 
 }

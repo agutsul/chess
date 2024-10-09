@@ -8,10 +8,10 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 
-public class PieceCaptureAction<C1 extends Color,
-                                C2 extends Color,
-                                PIECE1 extends Piece<C1> & Capturable,
-                                PIECE2 extends Piece<C2> & Capturable>
+public class PieceCaptureAction<COLOR1 extends Color,
+                                COLOR2 extends Color,
+                                PIECE1 extends Piece<COLOR1> & Capturable,
+                                PIECE2 extends Piece<COLOR2> & Capturable>
         extends AbstractTargetAction<PIECE1, PIECE2> {
 
     protected static final Line EMPTY_LINE = new Line(emptyList());

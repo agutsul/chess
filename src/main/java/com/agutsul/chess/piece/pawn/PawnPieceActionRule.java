@@ -5,7 +5,8 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 
-public final class PawnPieceActionRule extends AbstractPieceRule<Action<?>> {
+public final class PawnPieceActionRule
+        extends AbstractPieceRule<Action<?>> {
 
     public PawnPieceActionRule(Board board, int step, int initialLine, int promotionLine) {
         this(board, promotionLine,

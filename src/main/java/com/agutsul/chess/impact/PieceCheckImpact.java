@@ -6,10 +6,10 @@ import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
-public class PieceCheckImpact<C1 extends Color,
-                              C2 extends Color,
-                              PIECE extends Piece<C1> & Capturable,
-                              KING extends KingPiece<C2>>
+public class PieceCheckImpact<COLOR1 extends Color,
+                              COLOR2 extends Color,
+                              PIECE extends Piece<COLOR1> & Capturable,
+                              KING extends KingPiece<COLOR2>>
         extends AbstractTargetImpact<PIECE, KING> {
 
     public PieceCheckImpact(PIECE attacker, KING king) {

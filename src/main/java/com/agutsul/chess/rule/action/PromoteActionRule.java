@@ -7,9 +7,9 @@ import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.rule.Rule;
 
-public interface PromoteActionRule<C extends Color,
-                                   P extends PawnPiece<C>,
-                                   A extends PiecePromoteAction<C, P>>
-    extends Rule<P, Collection<A>> {
+public interface PromoteActionRule<COLOR extends Color,
+                                   PAWN extends PawnPiece<COLOR>,
+                                   ACTION extends PiecePromoteAction<COLOR, PAWN>>
+    extends Rule<PAWN, Collection<ACTION>> {
 
 }

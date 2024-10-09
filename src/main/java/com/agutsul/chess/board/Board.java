@@ -12,7 +12,8 @@ import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
-public interface Board extends Observable {
+public interface Board
+        extends Observable {
 
     void setState(BoardState state);
     BoardState getState();

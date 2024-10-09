@@ -17,34 +17,34 @@ import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.AbstractRule;
 import com.agutsul.chess.rule.Rule;
 
-public abstract class AbstractPromoteActionRule<C1 extends Color,
-                                                C2 extends Color,
-                                                P1 extends PawnPiece<C1>,
-                                                P2 extends Piece<C2> & Capturable,
-                                                A extends PiecePromoteAction<C1, P1>,
-                                                SA extends AbstractTargetAction<P1, ?>>
-        extends AbstractRule<P1, A>
-        implements PromoteActionRule<C1, P1, A> {
+public abstract class AbstractPromoteActionRule<COLOR1 extends Color,
+                                                COLOR2 extends Color,
+                                                PAWN extends PawnPiece<COLOR1>,
+                                                PIECE extends Piece<COLOR2> & Capturable,
+                                                ACTION extends PiecePromoteAction<COLOR1, PAWN>,
+                                                SOURCE_ACTION extends AbstractTargetAction<PAWN, ?>>
+        extends AbstractRule<PAWN, ACTION>
+        implements PromoteActionRule<COLOR1, PAWN, ACTION> {
 
-    private final PromotePieceAlgo<C1, P1, Position> algo;
-    private final Rule<P1, Collection<SA>> rule;
+    private final PromotePieceAlgo<COLOR1, PAWN, Position> algo;
+    private final Rule<PAWN, Collection<SOURCE_ACTION>> rule;
 
     protected AbstractPromoteActionRule(Board board,
-                                        PromotePieceAlgo<C1, P1, Position> algo,
-                                        Rule<P1, Collection<SA>> rule) {
+                                        PromotePieceAlgo<COLOR1, PAWN, Position> algo,
+                                        Rule<PAWN, Collection<SOURCE_ACTION>> rule) {
         super(board);
         this.algo = algo;
         this.rule = rule;
     }
 
     @Override
-    public final Collection<A> evaluate(P1 piece) {
+    public final Collection<ACTION> evaluate(PAWN piece) {
         var nextPositions = algo.calculate(piece);
         if (nextPositions.isEmpty()) {
             return emptyList();
         }
 
-        var actions = new ArrayList<A>();
+        var actions = new ArrayList<ACTION>();
         for (var action : rule.evaluate(piece)) {
             if (!nextPositions.contains(action.getPosition())) {
                 continue;
@@ -56,5 +56,5 @@ public abstract class AbstractPromoteActionRule<C1 extends Color,
         return actions;
     }
 
-    protected abstract A createAction(SA sourceAction);
+    protected abstract ACTION createAction(SOURCE_ACTION sourceAction);
 }

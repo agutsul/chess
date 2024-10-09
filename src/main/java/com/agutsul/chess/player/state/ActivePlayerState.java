@@ -4,7 +4,8 @@ import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 
-public class ActivePlayerState extends AbstractPlayerState {
+public class ActivePlayerState
+        extends AbstractPlayerState {
 
     private final Observable observable;
 

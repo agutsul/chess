@@ -13,7 +13,8 @@ import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
-public class BoardProxy implements Board {
+public class BoardProxy
+        implements Board {
 
     private final Board origin;
 

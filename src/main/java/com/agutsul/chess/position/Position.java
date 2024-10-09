@@ -1,6 +1,7 @@
 package com.agutsul.chess.position;
 
-public interface Position extends Calculated {
+public interface Position
+        extends Calculated {
 
     String[] LABELS = { "a", "b", "c", "d", "e", "f", "g", "h" };
 

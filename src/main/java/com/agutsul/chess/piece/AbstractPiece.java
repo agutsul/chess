@@ -22,28 +22,30 @@ import com.agutsul.chess.position.Position;
 abstract class AbstractPiece<COLOR extends Color>
         implements Piece<COLOR>, Movable, Capturable, Disposable {
 
-    private static final DisposedPieceState<AbstractPiece<Color>> DISPOSED_STATE = new DisposedPieceState<>();
+    private static final DisposedPieceState<AbstractPiece<Color>> DISPOSED_STATE =
+            new DisposedPieceState<>();
 
     private final List<Position> positions = new ArrayList<>();
+
     private final Collection<Action<?>> actions = new CopyOnWriteArrayList<>();
     private final Collection<Impact<?>> impacts = new CopyOnWriteArrayList<>();
 
     private final Type type;
     private final COLOR color;
     private final String unicode;
-
     private final ActionEventObserver observer;
 
     protected final Board board;
+
     protected AbstractPieceState<AbstractPiece<Color>> state;
 
     @SuppressWarnings("unchecked")
     AbstractPiece(Board board, Type type, COLOR color, String unicode, Position position,
             AbstractPieceState<? extends AbstractPiece<Color>> state) {
 
-        this.board = board;
         this.observer = new ActionEventObserver();
 
+        this.board = board;
         this.board.addObserver(this.observer);
 
         this.type = type;
@@ -56,7 +58,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
     @Override
     @SuppressWarnings("unchecked")
-    public PieceState<Piece<Color>> getState() {
+    public final PieceState<Piece<Color>> getState() {
         return (PieceState<Piece<Color>>) ((PieceState<?>) state);
     }
 
@@ -139,6 +141,7 @@ abstract class AbstractPiece<COLOR extends Color>
     @Override
     public void dispose() {
         clearCalculatedData();
+
         this.board.removeObserver(this.observer);
         this.state = DISPOSED_STATE;
     }

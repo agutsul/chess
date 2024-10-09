@@ -10,7 +10,7 @@ public abstract class AbstractPieceState<PIECE extends Piece<Color> & Movable & 
                    MovablePieceState<PIECE>,
                    CapturablePieceState<PIECE> {
 
-    protected final Type type;
+    private final Type type;
 
     public AbstractPieceState(Type type) {
         this.type = type;

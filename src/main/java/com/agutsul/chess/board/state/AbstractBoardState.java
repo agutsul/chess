@@ -7,7 +7,8 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.piece.Piece;
 
-abstract class AbstractBoardState implements BoardState {
+abstract class AbstractBoardState
+        implements BoardState {
 
     protected final Type type;
     protected final Board board;

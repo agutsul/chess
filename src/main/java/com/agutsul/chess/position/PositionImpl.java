@@ -1,6 +1,7 @@
 package com.agutsul.chess.position;
 
-final class PositionImpl implements Position {
+final class PositionImpl
+        implements Position {
 
     private final int x;
     private final int y;

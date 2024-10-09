@@ -11,20 +11,24 @@ import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 import com.agutsul.chess.position.Position;
 
-public class PiecePromoteAction<C1 extends Color,
-                                PAWN extends PawnPiece<C1>>
+public class PiecePromoteAction<COLOR1 extends Color,
+                                PAWN extends PawnPiece<COLOR1>>
         extends AbstractSourceAction<AbstractTargetAction<PAWN, ?>>
         implements Observer {
 
     private final Observable observable;
 
-    public PiecePromoteAction(Observable observable, PieceMoveAction<C1,PAWN> source) {
+    public PiecePromoteAction(Observable observable,
+                              PieceMoveAction<COLOR1,PAWN> source) {
+
         super(Type.PROMOTE, source);
         this.observable = observable;
     }
 
-    public <C2 extends Color, PIECE extends Piece<C2> & Capturable>
-            PiecePromoteAction(Observable observable, PieceCaptureAction<C1,C2,PAWN,PIECE> source) {
+    public <COLOR2 extends Color, PIECE extends Piece<COLOR2> & Capturable>
+            PiecePromoteAction(Observable observable,
+                               PieceCaptureAction<COLOR1,COLOR2,PAWN,PIECE> source) {
+
         super(Type.PROMOTE, source);
         this.observable = observable;
     }

@@ -14,28 +14,29 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.AbstractRule;
 
-public abstract class AbstractEnPassantActionRule<C1 extends Color,
-                                                  C2 extends Color,
-                                                  P1 extends PawnPiece<C1>,
-                                                  P2 extends PawnPiece<C2>,
-                                                  A extends PieceEnPassantAction<C1, C2, P1, P2>>
-        extends AbstractRule<P1, A>
-        implements EnPassantActionRule<C1, C2, P1, P2, A> {
+public abstract class AbstractEnPassantActionRule<COLOR1 extends Color,
+                                                  COLOR2 extends Color,
+                                                  PAWN1 extends PawnPiece<COLOR1>,
+                                                  PAWN2 extends PawnPiece<COLOR2>,
+                                                  ACTION extends PieceEnPassantAction<COLOR1, COLOR2, PAWN1, PAWN2>>
+        extends AbstractRule<PAWN1, ACTION>
+        implements EnPassantActionRule<COLOR1, COLOR2, PAWN1, PAWN2, ACTION> {
 
     protected AbstractEnPassantActionRule(Board board) {
         super(board);
     }
 
     @Override
-    public Collection<A> evaluate(P1 pawn) {
+    public Collection<ACTION> evaluate(PAWN1 pawn) {
         var nextPositions = calculatePositions(pawn);
         if (nextPositions.isEmpty()) {
             return emptyList();
         }
 
-        var actions = new ArrayList<A>();
+        var actions = new ArrayList<ACTION>();
         for (var attackedPosition : nextPositions) {
-            var enemyPiecePosition = board.getPosition(attackedPosition.x(), pawn.getPosition().y());
+            var enemyPiecePosition = board.getPosition(attackedPosition.x(),
+                                                       pawn.getPosition().y());
             if (enemyPiecePosition.isEmpty()) {
                 continue;
             }
@@ -52,7 +53,7 @@ public abstract class AbstractEnPassantActionRule<C1 extends Color,
             }
 
             @SuppressWarnings("unchecked")
-            var enemyPawn = (P2) enemyPiece;
+            PAWN2 enemyPawn = (PAWN2) enemyPiece;
 
             var visitedPositions = enemyPawn.getPositions();
             if (visitedPositions.size() < 2) {
@@ -72,7 +73,7 @@ public abstract class AbstractEnPassantActionRule<C1 extends Color,
         return actions;
     }
 
-    protected abstract Collection<Position> calculatePositions(P1 piece);
+    protected abstract Collection<Position> calculatePositions(PAWN1 piece);
 
-    protected abstract A createAction(P1 piece1, P2 piece2, Position position);
+    protected abstract ACTION createAction(PAWN1 piece1, PAWN2 piece2, Position position);
 }

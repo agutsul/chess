@@ -10,19 +10,21 @@ import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.rule.action.AbstractCapturePositionActionRule;
 
-class PawnCaptureActionRule<C1 extends Color,
-                            C2 extends Color,
-                            PAWN extends PawnPiece<C1>,
-                            PIECE extends Piece<C2> & Capturable>
-        extends AbstractCapturePositionActionRule<C1, C2, PAWN, PIECE,
-                                                  PieceCaptureAction<C1, C2, PAWN, PIECE>> {
+class PawnCaptureActionRule<COLOR1 extends Color,
+                            COLOR2 extends Color,
+                            PAWN extends PawnPiece<COLOR1>,
+                            PIECE extends Piece<COLOR2> & Capturable>
+        extends AbstractCapturePositionActionRule<COLOR1, COLOR2, PAWN, PIECE,
+                                                  PieceCaptureAction<COLOR1, COLOR2, PAWN, PIECE>> {
 
-    PawnCaptureActionRule(Board board, CapturePieceAlgo<C1, PAWN, Calculated> algo) {
+    PawnCaptureActionRule(Board board, CapturePieceAlgo<COLOR1, PAWN, Calculated> algo) {
         super(board, algo);
     }
 
     @Override
-    protected PieceCaptureAction<C1, C2, PAWN, PIECE>createAction(PAWN pawn, PIECE piece) {
-        return new PieceCaptureAction<C1, C2, PAWN, PIECE>(pawn, piece);
+    protected PieceCaptureAction<COLOR1, COLOR2, PAWN, PIECE>
+            createAction(PAWN pawn, PIECE piece) {
+
+        return new PieceCaptureAction<COLOR1, COLOR2, PAWN, PIECE>(pawn, piece);
     }
 }

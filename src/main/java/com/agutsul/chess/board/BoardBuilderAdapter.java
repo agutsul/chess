@@ -2,7 +2,8 @@ package com.agutsul.chess.board;
 
 import org.apache.commons.lang3.builder.Builder;
 
-public interface BoardBuilderAdapter extends Builder<Board> {
+public interface BoardBuilderAdapter
+        extends Builder<Board> {
 
     BoardBuilderAdapter withWhiteKing(String position);
     BoardBuilderAdapter withWhiteQueen(String position);

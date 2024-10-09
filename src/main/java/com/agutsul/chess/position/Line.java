@@ -5,9 +5,13 @@ import static java.util.stream.Collectors.joining;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Line extends ArrayList<Position> implements Calculated {
+public class Line
+        extends ArrayList<Position>
+        implements Calculated {
 
     private static final long serialVersionUID = 1L;
+
+    private static final String COMMA_SEPARATOR = ",";
 
     public Line(Line line1, Line line2) {
         this(getPositions(line1, line2));
@@ -21,7 +25,7 @@ public class Line extends ArrayList<Position> implements Calculated {
     public String toString() {
         return this.stream()
                 .map(String::valueOf)
-                .collect(joining(","));
+                .collect(joining(COMMA_SEPARATOR));
     }
 
     private static List<Position> getPositions(Line line1, Line line2) {

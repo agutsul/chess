@@ -7,7 +7,8 @@ import java.util.stream.Stream;
 
 import com.agutsul.chess.piece.Piece;
 
-public class CompositePieceRule<K> implements Rule<Piece<?>, Collection<K>> {
+public class CompositePieceRule<K>
+        implements Rule<Piece<?>, Collection<K>> {
 
     private final List<Rule<Piece<?>, ?>> rules;
 

@@ -5,7 +5,8 @@ import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.game.AbstractGame;
 import com.agutsul.chess.player.Player;
 
-public final class ConsoleGame extends AbstractGame {
+public final class ConsoleGame
+        extends AbstractGame {
 
     public ConsoleGame(Player whitePlayer, Player blackPlayer) {
         this(whitePlayer, blackPlayer, new StandardBoard());

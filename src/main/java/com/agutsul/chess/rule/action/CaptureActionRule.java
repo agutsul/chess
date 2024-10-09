@@ -8,11 +8,11 @@ import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.Rule;
 
-public interface CaptureActionRule<C1 extends Color,
-                                   C2 extends Color,
-                                   P1 extends Piece<C1> & Capturable,
-                                   P2 extends Piece<C2> & Capturable,
-                                   A extends PieceCaptureAction<C1,C2,P1,P2>>
-    extends Rule<P1, Collection<A>> {
+public interface CaptureActionRule<COLOR1 extends Color,
+                                   COLOR2 extends Color,
+                                   PIECE1 extends Piece<COLOR1> & Capturable,
+                                   PIECE2 extends Piece<COLOR2> & Capturable,
+                                   ACTION extends PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>>
+    extends Rule<PIECE1, Collection<ACTION>> {
 
 }

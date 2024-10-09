@@ -1,6 +1,7 @@
 package com.agutsul.chess.exception;
 
-public class IllegalActionException extends RuntimeException {
+public class IllegalActionException
+        extends RuntimeException {
 
     private static final long serialVersionUID = -6184335425876235377L;
 

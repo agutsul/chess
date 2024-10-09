@@ -1,6 +1,7 @@
 package com.agutsul.chess.command;
 
-abstract class AbstractCommand implements Command {
+abstract class AbstractCommand
+        implements Command {
 
     @Override
     public final void execute() {

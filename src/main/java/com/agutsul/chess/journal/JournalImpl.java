@@ -3,7 +3,8 @@ package com.agutsul.chess.journal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JournalImpl<MEMENTO extends Memento> implements Journal<MEMENTO> {
+public class JournalImpl<MEMENTO extends Memento>
+        implements Journal<MEMENTO> {
 
     private final List<MEMENTO> list = new ArrayList<>();
 

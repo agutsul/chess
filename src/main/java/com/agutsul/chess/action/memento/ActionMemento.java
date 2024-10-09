@@ -3,7 +3,8 @@ package com.agutsul.chess.action.memento;
 import com.agutsul.chess.journal.Memento;
 import com.agutsul.chess.position.Position;
 
-public final class ActionMemento implements Memento {
+public final class ActionMemento
+        implements Memento {
 
     private final String source;
     private final String target;

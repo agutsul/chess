@@ -11,7 +11,8 @@ import com.agutsul.chess.piece.PieceFactory;
 /*
  * Should be used mainly in unit test to simplify creating board with specified pieces only
  */
-public final class BoardBuilder implements BoardBuilderAdapter {
+public final class BoardBuilder
+        implements BoardBuilderAdapter {
 
     private final BoardContext whitePieceContext = new BoardContext();
     private final BoardContext blackPieceContext = new BoardContext();

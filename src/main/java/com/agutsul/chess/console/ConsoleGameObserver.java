@@ -16,7 +16,8 @@ import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.player.Player;
 
-class ConsoleGameObserver implements Observer {
+class ConsoleGameObserver
+        implements Observer {
 
     private final Game game;
 

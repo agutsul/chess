@@ -15,7 +15,8 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 
-public final class CheckedBoardState extends AbstractBoardState {
+public final class CheckedBoardState
+        extends AbstractBoardState {
 
     public CheckedBoardState(Board board, Color checkedColor) {
         super(BoardState.Type.CHECKED, board, checkedColor);

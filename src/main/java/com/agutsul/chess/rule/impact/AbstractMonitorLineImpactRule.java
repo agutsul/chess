@@ -21,7 +21,8 @@ public abstract class AbstractMonitorLineImpactRule<COLOR extends Color,
 
     private final CapturePieceAlgo<COLOR, PIECE, Line> algo;
 
-    protected AbstractMonitorLineImpactRule(Board board, CapturePieceAlgo<COLOR, PIECE, Line> algo) {
+    protected AbstractMonitorLineImpactRule(Board board,
+                                            CapturePieceAlgo<COLOR, PIECE, Line> algo) {
         super(board);
         this.algo = algo;
     }

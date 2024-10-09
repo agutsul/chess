@@ -6,7 +6,8 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.PawnPiece.PawnPieceProxy;
 import com.agutsul.chess.position.Position;
 
-public final class WhitePieceFactory extends AbstractPieceFactory<Color> {
+public final class WhitePieceFactory
+        extends AbstractPieceFactory<Color> {
 
     private static final String KING_UNICODE    = "\u2654";
     private static final String QUEEN_UNICODE   = "\u2655";

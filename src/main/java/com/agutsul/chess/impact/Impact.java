@@ -2,7 +2,8 @@ package com.agutsul.chess.impact;
 
 import com.agutsul.chess.position.Positionable;
 
-public interface Impact<SOURCE> extends Positionable {
+public interface Impact<SOURCE>
+        extends Positionable {
 
     enum Type {
         PROTECT,

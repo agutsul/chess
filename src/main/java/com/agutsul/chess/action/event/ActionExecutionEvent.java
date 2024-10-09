@@ -3,7 +3,8 @@ package com.agutsul.chess.action.event;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.event.Event;
 
-public class ActionExecutionEvent implements Event {
+public class ActionExecutionEvent
+        implements Event {
 
     private final Action<?> action;
 

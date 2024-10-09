@@ -13,7 +13,8 @@ import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
-public class PerformActionCommand extends AbstractCommand {
+public class PerformActionCommand
+        extends AbstractCommand {
 
     private static final ActionMementoFactory MEMENTO_FACTORY = ActionMementoFactory.INSTANCE;
 

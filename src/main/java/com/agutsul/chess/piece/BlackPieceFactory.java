@@ -50,5 +50,4 @@ public final class BlackPieceFactory
         var pawn = super.createPawn(position, PAWN_UNICODE);
         return new PawnPieceProxy(board, pawn, promotion.line(), this);
     }
-
 }

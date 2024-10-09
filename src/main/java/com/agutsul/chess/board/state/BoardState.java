@@ -9,7 +9,8 @@ import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.state.State;
 
-public interface BoardState extends State<Board> {
+public interface BoardState
+        extends State<Board> {
 
     enum Type {
         DEFAULT,

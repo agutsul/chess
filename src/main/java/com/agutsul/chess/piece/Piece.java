@@ -10,7 +10,8 @@ import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.position.Positionable;
 
-public interface Piece<COLOR extends Color> extends Positionable {
+public interface Piece<COLOR extends Color>
+        extends Positionable {
 
     enum Type {
         PAWN(""),

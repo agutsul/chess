@@ -1,7 +1,7 @@
 package com.agutsul.chess.action;
 
 public abstract class AbstractTargetAction<SOURCE,TARGET>
-    extends AbstractSourceAction<SOURCE> {
+        extends AbstractSourceAction<SOURCE> {
 
     private final TARGET target;
 

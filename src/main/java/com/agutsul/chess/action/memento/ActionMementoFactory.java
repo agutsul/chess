@@ -14,7 +14,8 @@ import com.agutsul.chess.action.PiecePromoteAction;
 public enum ActionMementoFactory {
     INSTANCE;
 
-    private final Map<Action.Type, Function<Action<?>, ActionMemento>> MODES = new EnumMap<>(Action.Type.class);
+    private final Map<Action.Type, Function<Action<?>, ActionMemento>> MODES =
+                new EnumMap<>(Action.Type.class);
 
     private ActionMementoFactory() {
         MODES.put(Action.Type.MOVE,       action -> create((PieceMoveAction<?,?>)          action));

@@ -3,7 +3,8 @@ package com.agutsul.chess.player;
 import com.agutsul.chess.Color;
 import com.agutsul.chess.player.state.PlayerState;
 
-public abstract class AbstractPlayer implements Player {
+public abstract class AbstractPlayer
+        implements Player {
 
     private final String name;
     private final Color color;

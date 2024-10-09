@@ -10,19 +10,20 @@ import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.rule.action.AbstractCapturePositionActionRule;
 
-class KnightCaptureActionRule<C1 extends Color,
-                              C2 extends Color,
-                              KNIGHT extends KnightPiece<C1>,
-                              PIECE extends Piece<C2> & Capturable>
-        extends AbstractCapturePositionActionRule<C1, C2, KNIGHT, PIECE,
-                                                  PieceCaptureAction<C1, C2, KNIGHT, PIECE>> {
+class KnightCaptureActionRule<COLOR1 extends Color,
+                              COLOR2 extends Color,
+                              KNIGHT extends KnightPiece<COLOR1>,
+                              PIECE extends Piece<COLOR2> & Capturable>
+        extends AbstractCapturePositionActionRule<COLOR1, COLOR2, KNIGHT, PIECE,
+                                                  PieceCaptureAction<COLOR1, COLOR2, KNIGHT, PIECE>> {
 
-    KnightCaptureActionRule(Board board, CapturePieceAlgo<C1, KNIGHT, Calculated> algo) {
+    KnightCaptureActionRule(Board board, CapturePieceAlgo<COLOR1, KNIGHT, Calculated> algo) {
         super(board, algo);
     }
 
     @Override
-    protected PieceCaptureAction<C1, C2, KNIGHT, PIECE> createAction(KNIGHT knight, PIECE piece) {
-        return new PieceCaptureAction<C1, C2, KNIGHT, PIECE>(knight, piece);
+    protected PieceCaptureAction<COLOR1, COLOR2, KNIGHT, PIECE> createAction(KNIGHT knight,
+                                                                             PIECE piece) {
+        return new PieceCaptureAction<COLOR1, COLOR2, KNIGHT, PIECE>(knight, piece);
     }
 }

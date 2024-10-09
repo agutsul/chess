@@ -6,7 +6,8 @@ import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.player.event.PlayerActionEvent;
 
-public class PlayerEventOberver implements Observer {
+public class PlayerEventOberver
+        implements Observer {
 
     private final Observable observable;
 

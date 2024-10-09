@@ -3,7 +3,8 @@ package com.agutsul.chess.player.event;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.event.Event;
 
-public class PlayerActionEvent implements Event {
+public class PlayerActionEvent
+        implements Event {
 
     private final Board board;
     private final String source;

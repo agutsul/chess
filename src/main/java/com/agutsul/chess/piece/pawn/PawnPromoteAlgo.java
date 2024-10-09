@@ -23,8 +23,7 @@ final class PawnPromoteAlgo<COLOR extends Color,
     private final Collection<Algo<PAWN, Collection<Position>>> algos;
     private final int promotionLine;
 
-    PawnPromoteAlgo(Board board,
-                    int promotionLine,
+    PawnPromoteAlgo(Board board, int promotionLine,
                     MovePieceAlgo<COLOR, PAWN, Position> moveAlgo,
                     CapturePieceAlgo<COLOR, PAWN, Position> captureAlgo) {
 

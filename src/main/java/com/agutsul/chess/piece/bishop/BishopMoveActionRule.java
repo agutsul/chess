@@ -9,7 +9,8 @@ import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.action.AbstractMoveLineActionRule;
 
-class BishopMoveActionRule<COLOR extends Color, BISHOP extends BishopPiece<COLOR>>
+class BishopMoveActionRule<COLOR extends Color,
+                           BISHOP extends BishopPiece<COLOR>>
         extends AbstractMoveLineActionRule<COLOR, BISHOP, PieceMoveAction<COLOR, BISHOP>> {
 
     BishopMoveActionRule(Board board, MovePieceAlgo<COLOR, BISHOP, Line> algo) {
