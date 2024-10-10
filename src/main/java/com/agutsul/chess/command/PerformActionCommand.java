@@ -63,8 +63,9 @@ public class PerformActionCommand
 
         if (targetAction.isEmpty()) {
             throw new IllegalActionException(
-                    String.format("Invalid action for piece at '%s' and position '%s'",
-                            this.sourcePiece,
+                    String.format("Invalid action for %s at '%s' and position '%s'",
+                            this.sourcePiece.getType().name().toLowerCase(),
+                            this.sourcePiece.getPosition(),
                             this.targetPosition
                     )
             );
