@@ -12,6 +12,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.CommandException;
 import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.exception.IllegalBoardException;
 import com.agutsul.chess.exception.IllegalPositionException;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
@@ -38,7 +39,7 @@ public class PerformActionCommand
     public void setSource(String source) {
         var piece = board.getPiece(source);
         if (piece.isEmpty()) {
-            throw new IllegalPositionException(
+            throw new IllegalBoardException(
                     String.format("Missed piece on position: %s", source));
         }
 
