@@ -3,6 +3,9 @@ package com.agutsul.chess.board;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.piece.Piece;
@@ -31,13 +34,13 @@ public final class BoardBuilder
 
     @Override
     public BoardBuilderAdapter withWhiteKing(String position) {
-        whitePieceContext.setKingPosition(position);
+        whitePieceContext.setKingPositions(List.of(position));
         return this;
     }
 
     @Override
     public BoardBuilderAdapter withWhiteQueen(String position) {
-        whitePieceContext.setQueenPosition(position);
+        whitePieceContext.setQueenPositions(List.of(position));
         return this;
     }
 
@@ -90,13 +93,13 @@ public final class BoardBuilder
 
     @Override
     public BoardBuilderAdapter withBlackKing(String position) {
-        blackPieceContext.setKingPosition(position);
+        blackPieceContext.setKingPositions(List.of(position));
         return this;
     }
 
     @Override
     public BoardBuilderAdapter withBlackQueen(String position) {
-        blackPieceContext.setQueenPosition(position);
+        blackPieceContext.setQueenPositions(List.of(position));
         return this;
     }
 
@@ -160,65 +163,60 @@ public final class BoardBuilder
         return this;
     }
 
-    private Collection<Piece<Color>> createPieces(PieceFactory pieceFactory,
-                                                  BoardContext context) {
+    private static Collection<Piece<Color>> createPieces(PieceFactory pieceFactory,
+                                                         BoardContext context) {
+        var pieceFactoryPairs = List.of(
+                pair(context.getKingPositions(),   position -> pieceFactory.createKing(position)),
+                pair(context.getQueenPositions(),  position -> pieceFactory.createQueen(position)),
+                pair(context.getKnightPositions(), position -> pieceFactory.createKnight(position)),
+                pair(context.getBishopPositions(), position -> pieceFactory.createBishop(position)),
+                pair(context.getRookPositions(),   position -> pieceFactory.createRook(position)),
+                pair(context.getPawnPositions(),   position -> pieceFactory.createPawn(position))
+            );
+
         var pieces = new ArrayList<Piece<Color>>();
-
-        if (context.getKingPosition() != null) {
-            pieces.add(pieceFactory.createKing(context.getKingPosition()));
-        }
-
-        if (context.getQueenPosition() != null) {
-            pieces.add(pieceFactory.createQueen(context.getQueenPosition()));
-        }
-
-        if (context.getKnightPositions() != null) {
-            pieces.addAll(context.getKnightPositions().stream()
-                    .map(position -> pieceFactory.createKnight(position))
-                    .toList());
-        }
-
-        if (context.getBishopPositions() != null) {
-            pieces.addAll(context.getBishopPositions().stream()
-                    .map(position -> pieceFactory.createBishop(position))
-                    .toList());
-        }
-
-        if (context.getRookPositions() != null) {
-            pieces.addAll(context.getRookPositions().stream()
-                    .map(position -> pieceFactory.createRook(position))
-                    .toList());
-        }
-
-        if (context.getPawnPositions() != null) {
-            pieces.addAll(context.getPawnPositions().stream()
-                    .map(position -> pieceFactory.createPawn(position))
-                    .toList());
+        for (var pair : pieceFactoryPairs) {
+            if (pair.getKey() != null) {
+                pieces.addAll(createPieces(pair.getKey(), pair.getValue()));
+            }
         }
 
         return pieces;
     }
 
+    private static Pair<List<String>, Function<String, Piece<Color>>> pair(List<String> positions,
+                                                                           Function<String, Piece<Color>> function) {
+        return Pair.of(positions, function);
+    }
+
+    private static List<Piece<Color>> createPieces(List<String> positions,
+                                                   Function<String, Piece<Color>> function) {
+
+        return positions.stream()
+                .map(position -> function.apply(position))
+                .toList();
+    }
+
     private static class BoardContext {
 
-        private String kingPosition;
-        private String queenPosition;
+        private List<String> kingPositions;
+        private List<String> queenPositions;
         private List<String> bishopPositions;
         private List<String> knightPositions;
         private List<String> rookPositions;
         private List<String> pawnPositions;
 
-        public String getKingPosition() {
-            return kingPosition;
+        public List<String> getKingPositions() {
+            return kingPositions;
         }
-        public void setKingPosition(String kingPosition) {
-            this.kingPosition = kingPosition;
+        public void setKingPositions(List<String> kingPositions) {
+            this.kingPositions = kingPositions;
         }
-        public String getQueenPosition() {
-            return queenPosition;
+        public List<String> getQueenPositions() {
+            return queenPositions;
         }
-        public void setQueenPosition(String queenPosition) {
-            this.queenPosition = queenPosition;
+        public void setQueenPositions(List<String> queenPositions) {
+            this.queenPositions = queenPositions;
         }
         public List<String> getBishopPositions() {
             return bishopPositions;
