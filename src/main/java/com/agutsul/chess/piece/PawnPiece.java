@@ -112,7 +112,7 @@ public interface PawnPiece<COLOR extends Color>
                 // just double check if it is promotion line
                 if (promotionPosition.y() != promotionLine) {
                     throw new IllegalActionException(
-                            String.format("%s invalid promotion to %s", this, position)
+                            formatInvalidPromotionMessage(position, pieceType)
                     );
                 }
             } else {
@@ -126,7 +126,7 @@ public interface PawnPiece<COLOR extends Color>
 
                 if (!possiblePromotions.contains(position)) {
                     throw new IllegalActionException(
-                            String.format("%s invalid promotion to %s", this, position)
+                            formatInvalidPromotionMessage(position, pieceType)
                     );
                 }
             }
@@ -172,6 +172,14 @@ public interface PawnPiece<COLOR extends Color>
         @Override
         public String toString() {
             return origin.toString();
+        }
+
+        private String formatInvalidPromotionMessage(Position position, Type pieceType) {
+            return String.format("%s invalid promotion to %s at '%s'",
+                    this.getType().name(),
+                    pieceType.name(),
+                    position
+            );
         }
 
         private Piece<Color> createPiece(Position position, Type pieceType) {
