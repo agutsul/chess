@@ -50,7 +50,7 @@ class ConsoleRequestPromotionPieceTypeObserver
         var pieceType = PROMOTION_TYPES.get(selectedType);
         if (pieceType == null) {
             throw new IllegalActionException(
-                    String.format("Unknown promotion type piece: '%s'", selectedType)
+                    String.format("Unknown promotion piece type: '%s'", selectedType)
             );
         }
 
@@ -64,7 +64,7 @@ class ConsoleRequestPromotionPieceTypeObserver
 
         var input = trimToEmpty(readConsoleInput());
         if (isEmpty(input)) {
-            throw new IllegalArgumentException("Unable to process an empty line");
+            throw new IllegalActionException("Unable to process an empty line");
         }
 
         return upperCase(input.substring(0, 1));

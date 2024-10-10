@@ -82,7 +82,7 @@ public class PerformActionCommand
         try {
             this.action.execute();
         } catch (Exception e) {
-            throw new CommandException(e);
+            throw new CommandException(e.getMessage());
         }
 
         this.observable.notifyObservers(new ActionPerformedEvent(this.memento));

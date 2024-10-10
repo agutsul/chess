@@ -22,7 +22,7 @@ abstract class AbstractCommand
             }
         } catch (CommandException e) {
             LOGGER.error("Command exception", e);
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         } catch (Exception e) {
             throw e;
         }
