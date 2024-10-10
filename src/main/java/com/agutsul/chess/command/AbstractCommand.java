@@ -24,8 +24,6 @@ abstract class AbstractCommand
         } catch (CommandException e) {
             LOGGER.error("Command exception", e);
             throw new IllegalActionException(e.getMessage());
-        } catch (Exception e) {
-            throw e;
         }
     }
 
