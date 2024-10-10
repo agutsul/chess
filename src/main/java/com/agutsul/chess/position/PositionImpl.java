@@ -1,5 +1,7 @@
 package com.agutsul.chess.position;
 
+import com.agutsul.chess.exception.IllegalPositionException;
+
 final class PositionImpl
         implements Position {
 
@@ -8,11 +10,11 @@ final class PositionImpl
 
     PositionImpl(int x, int y) {
         if (x < MIN || x >= MAX) {
-            throw new IllegalArgumentException("Invalid position x: " + x);
+            throw new IllegalPositionException("Invalid position x: " + x);
         }
 
         if (y < MIN || y >= MAX) {
-            throw new IllegalArgumentException("Invalid position y: " + y);
+            throw new IllegalPositionException("Invalid position y: " + y);
         }
 
         this.x = x;

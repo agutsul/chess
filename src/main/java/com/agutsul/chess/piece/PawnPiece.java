@@ -3,12 +3,15 @@ package com.agutsul.chess.piece;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
+
+import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
@@ -34,7 +37,9 @@ public interface PawnPiece<COLOR extends Color>
                        RookPiece<Color>,
                        QueenPiece<Color> {
 
-        enum Factory {
+        private static final Logger LOGGER = getLogger(PawnPieceProxy.class);
+
+        private enum Factory {
             KNIGHT_MODE(Type.KNIGHT, (pieceFactory, position) -> pieceFactory.createKnight(position)),
             BISHOP_MODE(Type.BISHOP, (pieceFactory, position) -> pieceFactory.createBishop(position)),
             ROOK_MODE(Type.ROOK,     (pieceFactory, position) -> pieceFactory.createRook(position)),
@@ -69,8 +74,13 @@ public interface PawnPiece<COLOR extends Color>
         private final int promotionLine;
         private final PieceFactory pieceFactory;
 
-        PawnPieceProxy(Board board, PawnPiece<Color> pawnPiece, int promotionLine, PieceFactory pieceFactory) {
+        PawnPieceProxy(Board board,
+                       PawnPiece<Color> pawnPiece,
+                       int promotionLine,
+                       PieceFactory pieceFactory) {
+
             super(pawnPiece);
+
             this.board = board;
             this.promotionLine = promotionLine;
             this.pieceFactory = pieceFactory;
@@ -88,6 +98,7 @@ public interface PawnPiece<COLOR extends Color>
 
         @Override
         public void promote(Position position, Type pieceType) {
+            LOGGER.info("Promote '{}' to '{}'", this, pieceType);
             // skip any promotion for disposed pawn
             if (!isActive()) {
                 return;
@@ -102,7 +113,7 @@ public interface PawnPiece<COLOR extends Color>
                 if (promotionPosition.y() != promotionLine) {
                     throw new IllegalActionException(
                             String.format("%s invalid promotion to %s", this, position)
-                        );
+                    );
                 }
             } else {
                 // validate promotion action ( check if promoted position is legal )
@@ -116,7 +127,7 @@ public interface PawnPiece<COLOR extends Color>
                 if (!possiblePromotions.contains(position)) {
                     throw new IllegalActionException(
                             String.format("%s invalid promotion to %s", this, position)
-                        );
+                    );
                 }
             }
 
@@ -166,7 +177,7 @@ public interface PawnPiece<COLOR extends Color>
         private Piece<Color> createPiece(Position position, Type pieceType) {
             var factory = Factory.of(pieceType);
             if (factory == null) {
-                throw new IllegalArgumentException(
+                throw new IllegalActionException(
                         String.format("Unsupported promotion type: %s", pieceType.name())
                     );
             }

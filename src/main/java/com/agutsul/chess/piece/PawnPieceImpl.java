@@ -1,7 +1,11 @@
 package com.agutsul.chess.piece;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import java.util.Collection;
 import java.util.Objects;
+
+import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
@@ -19,6 +23,8 @@ import com.agutsul.chess.rule.Rule;
 final class PawnPieceImpl<COLOR extends Color>
         extends AbstractPiece<COLOR>
         implements PawnPiece<COLOR> {
+
+    private static final Logger LOGGER = getLogger(PawnPieceImpl.class);
 
     private static final PawnDisposedPieceState<?> DISPOSED_STATE =
             new PawnDisposedPieceState<>();
@@ -43,6 +49,8 @@ final class PawnPieceImpl<COLOR extends Color>
 
     @Override
     public final void promote(Position targetPosition, Type pieceType) {
+        LOGGER.info("Promote origin pawn '{}' to '{}'", this, pieceType);
+
         if (!isActive()) {
             return;
         }
@@ -61,6 +69,8 @@ final class PawnPieceImpl<COLOR extends Color>
             extends ActivePieceState<PIECE>
             implements EnPassantablePieceState<PIECE> {
 
+        private static final Logger LOGGER = getLogger(PawnActivePieceState.class);
+
         PawnActivePieceState(Board board,
                              Rule<Piece<Color>, Collection<Action<?>>> actionRule,
                              Rule<Piece<Color>, Collection<Impact<?>>> impactRule) {
@@ -70,6 +80,8 @@ final class PawnPieceImpl<COLOR extends Color>
         @Override
         @SuppressWarnings("unchecked")
         public void enPassant(PIECE piece, PawnPiece<Color> targetPiece, Position targetPosition) {
+            LOGGER.info("En-passante '{}' by '{}'", targetPiece, this);
+
             var isValid = board.getActions(piece).stream()
                     .filter(action -> Action.Type.EN_PASSANT.equals(action.getType()))
                     .map(action -> (PieceEnPassantAction<?,?,?,?>) action)
@@ -93,8 +105,11 @@ final class PawnPieceImpl<COLOR extends Color>
             extends DisposedPieceState<PIECE>
             implements EnPassantablePieceState<PIECE> {
 
+        private static final Logger LOGGER = getLogger(PawnDisposedPieceState.class);
+
         @Override
         public void enPassant(PIECE piece, PawnPiece<Color> targetPiece, Position targetPosition) {
+            LOGGER.info("En-passante '{}' by '{}'", targetPiece, this);
             // do nothing
         }
     }

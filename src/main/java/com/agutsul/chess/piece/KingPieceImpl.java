@@ -1,5 +1,9 @@
 package com.agutsul.chess.piece;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
+import org.slf4j.Logger;
+
 import com.agutsul.chess.Color;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.king.KingPieceActionRule;
@@ -11,6 +15,8 @@ import com.agutsul.chess.rule.checkmate.CompositeCheckMateEvaluator;
 final class KingPieceImpl<COLOR extends Color>
         extends AbstractCastlingPiece<COLOR>
         implements KingPiece<COLOR> {
+
+    private static final Logger LOGGER = getLogger(KingPieceImpl.class);
 
     private final CheckMateEvaluator<COLOR, KingPiece<COLOR>> checkMateEvaluator;
 
@@ -27,11 +33,13 @@ final class KingPieceImpl<COLOR extends Color>
     @Override
     @SuppressWarnings("unchecked")
     public boolean isChecked() {
+        LOGGER.info("Verify check for '{}'", this);
         return board.isAttacked((Piece<Color>) this);
     }
 
     @Override
     public boolean isCheckMated() {
+        LOGGER.info("Verify checkmate for '{}'", this);
         if (!isChecked()) {
             return false;
         }

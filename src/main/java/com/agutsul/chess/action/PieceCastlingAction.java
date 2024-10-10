@@ -1,6 +1,10 @@
 package com.agutsul.chess.action;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import java.util.stream.Stream;
+
+import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.action.PieceCastlingAction.CastlingMoveAction;
@@ -14,6 +18,8 @@ public class PieceCastlingAction<COLOR extends Color,
                                  PIECE2 extends Piece<COLOR> & Castlingable & Movable>
         extends AbstractTargetAction<CastlingMoveAction<COLOR, PIECE1>,
                                      CastlingMoveAction<COLOR, PIECE2>> {
+
+    private static final Logger LOGGER = getLogger(PieceCastlingAction.class);
 
     private final String code;
 
@@ -37,7 +43,12 @@ public class PieceCastlingAction<COLOR extends Color,
 
     @Override
     public void execute() {
-        kingCastlingAction().execute();
+        var castlingAction = kingCastlingAction();
+
+        LOGGER.info("Executing castling '{}' by '{}'",
+                castlingAction.getTarget(), castlingAction.getSource());
+
+        castlingAction.execute();
     }
 
     @Override

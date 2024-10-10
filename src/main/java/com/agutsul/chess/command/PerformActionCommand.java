@@ -10,6 +10,9 @@ import com.agutsul.chess.action.memento.ActionMemento;
 import com.agutsul.chess.action.memento.ActionMementoFactory;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.event.Observable;
+import com.agutsul.chess.exception.CommandException;
+import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.exception.IllegalPositionException;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
@@ -35,7 +38,7 @@ public class PerformActionCommand
     public void setSource(String source) {
         var piece = board.getPiece(source);
         if (piece.isEmpty()) {
-            throw new IllegalStateException(
+            throw new IllegalPositionException(
                     String.format("Missed piece on position: %s", source));
         }
 
@@ -45,7 +48,7 @@ public class PerformActionCommand
     public void setTarget(String target) {
         var position = board.getPosition(target);
         if (position.isEmpty()) {
-            throw new IllegalStateException(
+            throw new IllegalPositionException(
                     String.format("Missed position: %s", target));
         }
 
@@ -59,8 +62,12 @@ public class PerformActionCommand
                 .findFirst();
 
         if (targetAction.isEmpty()) {
-            throw new IllegalStateException(
-                    String.format("Invalid action for position: %s", this.targetPosition));
+            throw new IllegalActionException(
+                    String.format("Invalid action for piece at '%s' and position '%s'",
+                            this.sourcePiece,
+                            this.targetPosition
+                    )
+            );
         }
 
         this.action = targetAction.get();
@@ -68,13 +75,15 @@ public class PerformActionCommand
     }
 
     @Override
-    protected void executeInternal() {
+    protected void executeInternal() throws CommandException {
         this.observable.notifyObservers(new ActionExecutionEvent(this.action));
-        this.action.execute();
-    }
 
-    @Override
-    protected void postExecute() {
-        observable.notifyObservers(new ActionPerformedEvent(this.memento));
+        try {
+            this.action.execute();
+        } catch (Exception e) {
+            throw new CommandException(e);
+        }
+
+        this.observable.notifyObservers(new ActionPerformedEvent(this.memento));
     }
 }

@@ -1,5 +1,9 @@
 package com.agutsul.chess.action;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
+import org.slf4j.Logger;
+
 import com.agutsul.chess.Color;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
@@ -15,6 +19,8 @@ public class PiecePromoteAction<COLOR1 extends Color,
                                 PAWN extends PawnPiece<COLOR1>>
         extends AbstractSourceAction<AbstractTargetAction<PAWN, ?>>
         implements Observer {
+
+    private static final Logger LOGGER = getLogger(PiecePromoteAction.class);
 
     private final Observable observable;
 
@@ -45,6 +51,7 @@ public class PiecePromoteAction<COLOR1 extends Color,
 
     @Override
     public void execute() {
+        LOGGER.info("Executing promote by '{}'", getSource().getSource());
         // prompt player about piece type to create during promotion
         observable.notifyObservers(new RequestPromotionPieceTypeEvent(this));
     }
@@ -58,6 +65,11 @@ public class PiecePromoteAction<COLOR1 extends Color,
 
     // actual piece promotion entry point
     private void process(PromotionPieceTypeEvent event) {
+        LOGGER.info("Executing promote by '{}' to '{}'",
+                getSource().getSource(),
+                event.getPieceType()
+        );
+
         // source action can be either MOVE or CAPTURE
         var originAction = getSource();
         originAction.execute();

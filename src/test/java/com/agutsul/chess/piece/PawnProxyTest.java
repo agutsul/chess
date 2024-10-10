@@ -24,6 +24,7 @@ import com.agutsul.chess.Color;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.PawnPiece.PawnPieceProxy;
 import com.agutsul.chess.position.Position;
 
@@ -148,7 +149,7 @@ public class PawnProxyTest {
                     new PieceMoveAction<Color,PawnPiece<Color>>(null, position))));
 
         var thrown = assertThrows(
-                IllegalArgumentException.class,
+                IllegalActionException.class,
                 () -> proxy.promote(position, Piece.Type.KING)
             );
         assertEquals(thrown.getMessage(), "Unsupported promotion type: " + Piece.Type.KING.name());

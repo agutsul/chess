@@ -15,6 +15,7 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.player.Player;
+import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 
 class ConsoleGameObserver
         implements Observer {
@@ -35,6 +36,8 @@ class ConsoleGameObserver
             process((ActionPerformedEvent) event);
         } else if (event instanceof ActionExecutionEvent) {
             process((ActionExecutionEvent) event);
+        } else if (event instanceof PlayerActionExceptionEvent) {
+            process((PlayerActionExceptionEvent) event);
         }
     }
 
@@ -56,6 +59,10 @@ class ConsoleGameObserver
         displayAction(event.getAction());
     }
 
+    private void process(PlayerActionExceptionEvent event) {
+        displayErrorMessage(event.getMessage());
+    }
+
     private void displayAction(Action<?> action) {
         System.out.println(String.format("Performed action: %s", action));
     }
@@ -75,5 +82,9 @@ class ConsoleGameObserver
     private String formatWinnerMessage(Player player) {
         return String.format("%s wins! Congratulations, '%s' !!!",
                 player.getColor(), player);
+    }
+
+    private void displayErrorMessage(String message) {
+        System.err.println(message);
     }
 }

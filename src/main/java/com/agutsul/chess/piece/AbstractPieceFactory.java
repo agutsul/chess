@@ -1,5 +1,9 @@
 package com.agutsul.chess.piece;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
+import org.slf4j.Logger;
+
 import com.agutsul.chess.Color;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.position.Position;
@@ -7,6 +11,8 @@ import com.agutsul.chess.position.PositionFactory;
 
 abstract class AbstractPieceFactory<COLOR extends Color>
         implements PieceFactory {
+
+    private static final Logger LOGGER = getLogger(AbstractPieceFactory.class);
 
     private static final PositionFactory POSITION_FACTORY = PositionFactory.INSTANCE;
 
@@ -120,26 +126,32 @@ abstract class AbstractPieceFactory<COLOR extends Color>
     }
 
     KingPiece<COLOR> createKing(Position position, String unicode) {
+        LOGGER.info("Create '{}' king at '{}'", color, position);
         return new KingPieceImpl<>(board, color, unicode, position);
     }
 
     QueenPiece<COLOR> createQueen(Position position, String unicode) {
+        LOGGER.info("Create '{}' queen at '{}'", color, position);
         return new QueenPieceImpl<>(board, color, unicode, position);
     }
 
     RookPiece<COLOR> createRook(Position position, String unicode) {
+        LOGGER.info("Create '{}' rook at '{}'", color, position);
         return new RookPieceImpl<>(board, color, unicode, position);
     }
 
     BishopPiece<COLOR> createBishop(Position position, String unicode) {
+        LOGGER.info("Create '{}' bishop at '{}'", color, position);
         return new BishopPieceImpl<>(board, color, unicode, position);
     }
 
     KnightPiece<COLOR> createKnight(Position position, String unicode) {
+        LOGGER.info("Create '{}' knight at '{}'", color, position);
         return new KnightPieceImpl<>(board, color, unicode, position);
     }
 
     PawnPiece<COLOR> createPawn(Position position, String unicode) {
+        LOGGER.info("Create '{}' pawn at '{}'", color, position);
         return new PawnPieceImpl<>(board, color, unicode, position,
                 direction.code(), promotion.line(), bigMove.line());
     }

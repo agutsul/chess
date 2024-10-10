@@ -3,7 +3,9 @@ package com.agutsul.chess.action;
 import com.agutsul.chess.Executable;
 import com.agutsul.chess.position.Positionable;
 
-public interface Action<SOURCE> extends Executable, Positionable {
+public interface Action<SOURCE>
+        extends Executable, Positionable {
+
     enum Type {
         CAPTURE,
         MOVE,
@@ -16,6 +18,4 @@ public interface Action<SOURCE> extends Executable, Positionable {
     Type getType();
     String getCode();
 
-    // TODO: will be required when implementing undo/redo functionality
-    //void rollback();
 }

@@ -1,8 +1,12 @@
 package com.agutsul.chess.rule.checkmate;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+
+import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
@@ -16,6 +20,8 @@ final class AttackerCaptureEvaluator<COLOR extends Color,
                                      KING extends KingPiece<COLOR>>
         implements CheckMateEvaluator<COLOR, KING> {
 
+    private static final Logger LOGGER = getLogger(AttackerCaptureEvaluator.class);
+
     private final Board board;
 
     AttackerCaptureEvaluator(Board board) {
@@ -25,6 +31,8 @@ final class AttackerCaptureEvaluator<COLOR extends Color,
     @Override
     @SuppressWarnings("unchecked")
     public Boolean evaluate(KING king) {
+        LOGGER.info("Evaluate attacker capture by king '{}'", king);
+
         var attackers = board.getAttackers((Piece<Color>) king);
         for (var attacker : attackers) {
             // find any action to capture piece making check

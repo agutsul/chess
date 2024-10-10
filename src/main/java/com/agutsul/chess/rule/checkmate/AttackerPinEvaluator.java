@@ -1,9 +1,12 @@
 package com.agutsul.chess.rule.checkmate;
 
 import static java.util.stream.Collectors.toSet;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
 import java.util.Objects;
+
+import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
@@ -19,6 +22,8 @@ final class AttackerPinEvaluator<COLOR extends Color,
                                  KING extends KingPiece<COLOR>>
         implements CheckMateEvaluator<COLOR, KING> {
 
+    private static final Logger LOGGER = getLogger(AttackerPinEvaluator.class);
+
     private final Board board;
 
     AttackerPinEvaluator(Board board) {
@@ -27,6 +32,7 @@ final class AttackerPinEvaluator<COLOR extends Color,
 
     @Override
     public Boolean evaluate(KING king) {
+        LOGGER.info("Evaluate attacker block for king '{}'", king);
         // get all piece moves of the same color as king except the king itself
         var pieceMovePositions = board.getPieces(king.getColor()).stream()
                 .filter(piece -> !Piece.Type.KING.equals(piece.getType()))

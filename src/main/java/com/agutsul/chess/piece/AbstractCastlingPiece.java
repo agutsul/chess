@@ -1,10 +1,13 @@
 package com.agutsul.chess.piece;
 
 import static java.util.stream.Collectors.toSet;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
+
+import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
@@ -22,6 +25,8 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         extends AbstractPiece<COLOR>
         implements Castlingable {
 
+    private static final Logger LOGGER = getLogger(AbstractCastlingPiece.class);
+
     private static final DisposedCastlingablePieceState<?> DISPOSED_STATE =
             new DisposedCastlingablePieceState<>();
 
@@ -38,6 +43,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public final void castling(Position position) {
+        LOGGER.info("'{}' caslting to '{}'", this, position);
         ((CastlingablePieceState) state).castling(this, position);
     }
 
@@ -53,6 +59,8 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
             extends ActivePieceState<PIECE>
             implements CastlingablePieceState<PIECE> {
 
+        private static final Logger LOGGER = getLogger(ActiveCastlingablePieceState.class);
+
         ActiveCastlingablePieceState(Board board,
                                      Rule<Piece<Color>, Collection<Action<?>>> actionRule,
                                      Rule<Piece<Color>, Collection<Impact<?>>> impactRule) {
@@ -61,6 +69,8 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
         @Override
         public void castling(PIECE piece, Position position) {
+            LOGGER.info("Castling '{}' to '{}'", piece, position);
+
             var castlingAction = board.getActions(piece).stream()
                     .filter(action -> Action.Type.CASTLING.equals(action.getType()))
                     .map(action -> (PieceCastlingAction<?,?,?>) action)
@@ -88,6 +98,8 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         }
 
         private void doCastling(CastlingMoveAction<?,?> action) {
+            LOGGER.info("Castling '{}' to '{}'", action.getSource(), action.getPosition());
+
             var piece = (AbstractPiece<?>) action.getSource();
             piece.doMove(action.getPosition());
         }
@@ -97,8 +109,11 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
             extends DisposedPieceState<PIECE>
             implements CastlingablePieceState<PIECE> {
 
+        private static final Logger LOGGER = getLogger(DisposedCastlingablePieceState.class);
+
         @Override
         public void castling(PIECE piece, Position position) {
+            LOGGER.info("Castling '{}' to '{}'", piece, position);
             // do nothing
         }
     }

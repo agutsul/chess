@@ -3,6 +3,7 @@ package com.agutsul.chess.board;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toSet;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +14,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.Colors;
@@ -36,6 +40,8 @@ import com.agutsul.chess.position.PositionFactory;
 
 final class BoardImpl implements Board {
 
+    private static final Logger LOGGER = getLogger(BoardImpl.class);
+
     private static final PositionFactory POSITION_FACTORY = PositionFactory.INSTANCE;
 
     private final List<Observer> observers;
@@ -53,8 +59,8 @@ final class BoardImpl implements Board {
         // first move always for white side, so initial state with white color
         this.state = new DefaultBoardState(this, Colors.WHITE);
 
-        this.pieces = new HashSet<>();
         this.observers = new CopyOnWriteArrayList<>();
+        this.pieces = new HashSet<>();
     }
 
     @Override
@@ -64,7 +70,7 @@ final class BoardImpl implements Board {
 
     @Override
     public BoardState getState() {
-        return state;
+        return this.state;
     }
 
     @Override
@@ -79,7 +85,7 @@ final class BoardImpl implements Board {
 
     @Override
     public void notifyObservers(Event event) {
-        for (var observer : observers) {
+        for (var observer : this.observers) {
             observer.observe(event);
         }
     }
@@ -91,7 +97,9 @@ final class BoardImpl implements Board {
 
     @Override
     public Collection<Action<?>> getActions(Piece<Color> piece) {
-        var actions = state.getActions(piece);
+        LOGGER.info("Getting actions for '{}'", piece);
+
+        var actions = this.state.getActions(piece);
         if (!isPinned(piece)) {
             return actions;
         }
@@ -132,37 +140,54 @@ final class BoardImpl implements Board {
 
     @Override
     public Collection<Impact<?>> getImpacts(Piece<Color> piece) {
-        return state.getImpacts(piece);
+        LOGGER.info("Getting impacts for '{}'", piece);
+        return this.state.getImpacts(piece);
     }
 
     @Override
     public Collection<Piece<Color>> getPieces() {
-        return pieces.stream()
+        LOGGER.info("Getting all pieces");
+
+        var pieces = this.pieces.stream()
                 .filter(Piece::isActive)
                 .toList();
+
+        return pieces;
     }
 
     @Override
     public Collection<Piece<Color>> getPieces(Color color) {
-        return pieces.stream()
+        LOGGER.info("Getting pieces with '{}' color", color);
+
+        var pieces = this.pieces.stream()
                 .filter(piece -> Objects.equals(color, piece.getColor()))
                 .filter(Piece::isActive)
                 .toList();
+
+        return pieces;
     }
 
     @Override
     public Collection<Piece<Color>> getPieces(Piece.Type pieceType) {
-        return pieces.stream()
+        LOGGER.info("Getting pieces with type '{}'", pieceType);
+
+        var pieces = this.pieces.stream()
                 .filter(piece -> Objects.equals(pieceType, piece.getType()))
                 .filter(Piece::isActive)
                 .toList();
+
+        return pieces;
     }
 
     @Override
     public Collection<Piece<Color>> getPieces(Color color, Piece.Type pieceType) {
-        return getPieces(color).stream()
+        LOGGER.info("Getting pieces with type '{}' and '{}' color", pieceType, color);
+
+        var pieces = getPieces(color).stream()
                 .filter(piece -> Objects.equals(pieceType, piece.getType()))
                 .toList();
+
+        return pieces;
     }
 
     @Override
@@ -171,24 +196,35 @@ final class BoardImpl implements Board {
         allPositions.add(position);
         allPositions.addAll(asList(positions));
 
-        return allPositions.stream()
+        LOGGER.info("Getting pieces with type of '{}' color and locations '[{}]'",
+                                                    color, StringUtils.join(allPositions, ","));
+
+        var pieces = allPositions.stream()
                 .map(piecePosition -> getPiece(piecePosition))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .filter(piece -> Objects.equals(color, piece.getColor()))
                 .toList();
+
+        return pieces;
     }
 
     @Override
     public Optional<Piece<Color>> getPiece(Position position) {
-        return pieces.stream()
+        LOGGER.info("Getting piece at '{}'", position);
+
+        var foundPiece = this.pieces.stream()
                 .filter(piece -> Objects.equals(piece.getPosition(), position))
                 .filter(Piece::isActive)
                 .findFirst();
+
+        return foundPiece;
     }
 
     @Override
     public Optional<Piece<Color>> getPiece(String position) {
+        LOGGER.info("Getting piece at '{}'", position);
+
         var optionalPosition = getPosition(position);
         if (optionalPosition.isEmpty()) {
             return Optional.empty();
@@ -199,6 +235,8 @@ final class BoardImpl implements Board {
 
     @Override
     public Optional<KingPiece<Color>> getKing(Color color) {
+        LOGGER.info("Getting king of '{}'", color);
+
         var pieces = getPieces(color, Piece.Type.KING);
         if (pieces.isEmpty()) {
             return Optional.empty();
@@ -210,16 +248,20 @@ final class BoardImpl implements Board {
 
     @Override
     public Optional<Position> getPosition(String code) {
+        LOGGER.debug("Getting position by code '{}'", code);
         return Optional.ofNullable(POSITION_FACTORY.createPosition(code));
     }
 
     @Override
     public Optional<Position> getPosition(int x, int y) {
+        LOGGER.debug("Getting position by coordinates '({},{})'", x, y);
         return Optional.ofNullable(POSITION_FACTORY.createPosition(x, y));
     }
 
     @Override
     public boolean isAttacked(Position position, Color attackerColor) {
+        LOGGER.info("Checking is position '{}' attacked by '{}'", position, attackerColor);
+
         var attackerPieces = getPieces(attackerColor);
 
         // check if position is reachable by any attacker move
@@ -249,8 +291,9 @@ final class BoardImpl implements Board {
 
     @Override
     public boolean isAttacked(Piece<Color> piece) {
-        var attackerPieces = getPieces(piece.getColor().invert());
+        LOGGER.info("Checking is piece '{}' attacked", piece);
 
+        var attackerPieces = getPieces(piece.getColor().invert());
         var isAttacked = attackerPieces.stream()
                 .map(attacker -> getActions(attacker))
                 .flatMap(Collection::stream)
@@ -280,9 +323,10 @@ final class BoardImpl implements Board {
     @Override
     @SuppressWarnings("unchecked")
     public Collection<Piece<Color>> getAttackers(Piece<Color> piece) {
-        var attackerPieces = getPieces(piece.getColor().invert());
+        LOGGER.info("Get piece '{}' attackers", piece);
 
-        return attackerPieces.stream()
+        var attackerPieces = getPieces(piece.getColor().invert());
+        Collection<Piece<Color>> attackActions = attackerPieces.stream()
                 .map(attacker -> getActions(attacker))
                 .flatMap(Collection::stream)
                 .map(action -> {
@@ -307,10 +351,14 @@ final class BoardImpl implements Board {
                 .filter(action -> Objects.equals(action.getTarget(), piece))
                 .map(PieceCaptureAction::getSource)
                 .collect(toSet());
+
+        return attackActions;
     }
 
     @Override
     public boolean isProtected(Piece<Color> piece) {
+        LOGGER.info("Checking if piece '{}' is protected by the other piece", piece);
+
         var isProtected = getPieces(piece.getColor()).stream()
                 .filter(protector -> !Objects.equals(protector, piece))
                 .map(Piece::getImpacts)
@@ -325,6 +373,8 @@ final class BoardImpl implements Board {
 
     @Override
     public boolean isPinned(Piece<Color> piece) {
+        LOGGER.info("Checking if piece '{}' is pinned", piece);
+
         var isPinned = getImpacts(piece).stream()
                 .filter(impact -> Impact.Type.PIN.equals(impact.getType()))
                 .map(Impact::getPosition)
@@ -335,6 +385,9 @@ final class BoardImpl implements Board {
 
     @Override
     public boolean isMonitored(Position position, Color attackerColor) {
+        LOGGER.info("Checking if position '{}' is monitored by the other piece of '{}'",
+                position, attackerColor);
+
         var isMonitored = getPieces(attackerColor).stream()
                 .map(Piece::getImpacts)
                 .flatMap(Collection::stream)
@@ -347,6 +400,8 @@ final class BoardImpl implements Board {
 
     @Override
     public boolean isChecked(Color color) {
+        LOGGER.info("Checking if '{}' is checked", color);
+
         var optional = getKing(color);
         if (optional.isEmpty()) {
             return false;
@@ -358,6 +413,8 @@ final class BoardImpl implements Board {
 
     @Override
     public boolean isCheckMated(Color color) {
+        LOGGER.info("Checking if '{}' is checkmated", color);
+
         var optional = getKing(color);
         if (optional.isEmpty()) {
             return false;
@@ -369,11 +426,14 @@ final class BoardImpl implements Board {
 
     @Override
     public boolean isEmpty(Position position) {
+        LOGGER.info("Checking if position '{}' is empty", position);
         return getPiece(position).isEmpty();
     }
 
     @Override
     public boolean isStaleMated(Color color) {
+        LOGGER.info("Checking if '{}' is stalemated", color);
+
         var actions = new ArrayList<Action<?>>();
         for (var piece : getPieces(color)) {
             actions.addAll(getActions(piece));
@@ -417,7 +477,9 @@ final class BoardImpl implements Board {
                 .toList();
     }
 
-    private static Collection<Piece<Color>> createPieces(PieceFactory pieceFactory, int pawnY, int pieceY) {
+    private static Collection<Piece<Color>> createPieces(PieceFactory pieceFactory,
+                                                         int pawnY,
+                                                         int pieceY) {
         var pieces = new ArrayList<Piece<Color>>(16);
 
         // create pawns

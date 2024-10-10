@@ -1,12 +1,15 @@
 package com.agutsul.chess.piece;
 
 import static java.util.Collections.unmodifiableList;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
@@ -21,6 +24,8 @@ import com.agutsul.chess.position.Position;
 
 abstract class AbstractPiece<COLOR extends Color>
         implements Piece<COLOR>, Movable, Capturable, Disposable {
+
+    private static final Logger LOGGER = getLogger(AbstractPiece.class);
 
     private static final DisposedPieceState<AbstractPiece<Color>> DISPOSED_STATE =
             new DisposedPieceState<>();
@@ -65,6 +70,8 @@ abstract class AbstractPiece<COLOR extends Color>
     @Override
     @SuppressWarnings("unchecked")
     public final Collection<Action<?>> getActions() {
+        LOGGER.info("Get '{}' actions", this);
+
         if (this.actions.isEmpty()) {
             this.actions.addAll(this.state.calculateActions((AbstractPiece<Color>) this));
         }
@@ -75,6 +82,8 @@ abstract class AbstractPiece<COLOR extends Color>
     @Override
     @SuppressWarnings("unchecked")
     public final Collection<Impact<?>> getImpacts() {
+        LOGGER.info("Get '{}' impacts", this);
+
         if (this.impacts.isEmpty()) {
             this.impacts.addAll(this.state.calculateImpacts((AbstractPiece<Color>) this));
         }
@@ -85,12 +94,14 @@ abstract class AbstractPiece<COLOR extends Color>
     @Override
     @SuppressWarnings("unchecked")
     public final void move(Position position) {
+        LOGGER.info("'{}' moves to '{}'", this, position);
         this.state.move((AbstractPiece<Color>) this, position);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public final void capture(Piece<?> piece) {
+        LOGGER.info("'{}' captures '{}'", this, piece);
         this.state.capture((AbstractPiece<Color>) this, piece);
     }
 
@@ -140,6 +151,8 @@ abstract class AbstractPiece<COLOR extends Color>
 
     @Override
     public void dispose() {
+        LOGGER.info("Disposing '{}'", this);
+
         clearCalculatedData();
 
         this.board.removeObserver(this.observer);
@@ -196,6 +209,7 @@ abstract class AbstractPiece<COLOR extends Color>
     }
 
     final void clearCalculatedData() {
+        LOGGER.info("Clear '{}' cached actions/imports", this);
         this.actions.clear();
         this.impacts.clear();
     }

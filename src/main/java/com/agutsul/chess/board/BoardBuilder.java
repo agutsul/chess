@@ -1,11 +1,14 @@
 package com.agutsul.chess.board;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.piece.Piece;
@@ -17,11 +20,14 @@ import com.agutsul.chess.piece.PieceFactory;
 public final class BoardBuilder
         implements BoardBuilderAdapter {
 
+    private static final Logger LOGGER = getLogger(BoardBuilder.class);
+
     private final BoardContext whitePieceContext = new BoardContext();
     private final BoardContext blackPieceContext = new BoardContext();
 
     @Override
     public Board build() {
+        LOGGER.info("Building board started ...");
         var board = new BoardImpl();
 
         var pieces = new ArrayList<Piece<Color>>();
@@ -29,6 +35,8 @@ public final class BoardBuilder
         pieces.addAll(createPieces(board.getBlackPieceFactory(), blackPieceContext));
 
         board.setPieces(pieces);
+
+        LOGGER.info("Building board finished");
         return board;
     }
 

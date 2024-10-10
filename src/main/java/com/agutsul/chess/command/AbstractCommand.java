@@ -1,21 +1,31 @@
 package com.agutsul.chess.command;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
+import org.slf4j.Logger;
+
+import com.agutsul.chess.exception.CommandException;
+
 abstract class AbstractCommand
         implements Command {
 
+    private static final Logger LOGGER = getLogger(AbstractCommand.class);
+
     @Override
     public final void execute() {
-//        try {
+        try {
             preExecute();
             try {
                 executeInternal();
             } finally {
                 postExecute();
             }
-//        } catch (Exception e) {
-//            // TODO handle exception properly with proper logging
-//            System.err.println(e);
-//        }
+        } catch (CommandException e) {
+            LOGGER.error("Command exception", e);
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
     // template methods
@@ -26,5 +36,5 @@ abstract class AbstractCommand
     protected void postExecute() {}
 
     // actual command execution
-    protected abstract void executeInternal();
+    protected abstract void executeInternal() throws CommandException;
 }

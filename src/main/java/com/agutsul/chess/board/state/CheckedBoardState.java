@@ -1,10 +1,13 @@
 package com.agutsul.chess.board.state;
 
 import static java.util.stream.Collectors.toList;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+
+import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
@@ -18,12 +21,16 @@ import com.agutsul.chess.piece.Piece;
 public final class CheckedBoardState
         extends AbstractBoardState {
 
+    private static final Logger LOGGER = getLogger(CheckedBoardState.class);
+
     public CheckedBoardState(Board board, Color checkedColor) {
         super(BoardState.Type.CHECKED, board, checkedColor);
     }
 
     @Override
     public Collection<Action<?>> getActions(Piece<Color> piece) {
+        LOGGER.info("Getting actions for piece '{}'", piece);
+
         var allPieceActions = piece.getActions();
         if (!Objects.equals(piece.getColor(), color)) {
             return allPieceActions;

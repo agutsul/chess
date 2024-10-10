@@ -1,9 +1,13 @@
 package com.agutsul.chess.game;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.slf4j.Logger;
 
 import com.agutsul.chess.action.event.ActionPerformedEvent;
 import com.agutsul.chess.board.Board;
@@ -29,6 +33,8 @@ import com.agutsul.chess.player.state.PlayerState;
 public abstract class AbstractGame
         implements Game, Iterator<Player>, Observable {
 
+    private static final Logger LOGGER = getLogger(AbstractGame.class);
+
     private final PlayerState activeState;
     private final PlayerState lockedState;
 
@@ -52,15 +58,14 @@ public abstract class AbstractGame
         this.blackPlayer = blackPlayer;
         this.blackPlayer.setState(lockedState);
 
+        this.currentPlayer = whitePlayer;
+        this.board = board;
+
         this.journal = new JournalImpl<>();
 
         this.observers = new CopyOnWriteArrayList<>();
         this.observers.add(new PlayerEventOberver(this));
         this.observers.add(new ActionEventObserver());
-
-        this.board = board;
-
-        this.currentPlayer = whitePlayer;
     }
 
     @Override
@@ -82,6 +87,7 @@ public abstract class AbstractGame
 
     @Override
     public boolean hasNext() {
+        LOGGER.info("Checking board state ...");
         var nextPlayer = getOpponent(currentPlayer);
 
         var isChecked = board.isChecked(nextPlayer.getColor());
@@ -91,6 +97,8 @@ public abstract class AbstractGame
                     ? new CheckMatedBoardState(board, nextPlayer.getColor())
                     : new CheckedBoardState(board, nextPlayer.getColor())
             );
+
+            LOGGER.info("Board state: {}", board.getState());
             return !isCheckMated;
         }
 
@@ -100,6 +108,7 @@ public abstract class AbstractGame
                 : new DefaultBoardState(board, nextPlayer.getColor())
         );
 
+        LOGGER.info("Board state: {}", board.getState());
         return !isStaleMated;
     }
 
@@ -110,6 +119,7 @@ public abstract class AbstractGame
         currentPlayer.setState(lockedState);
         nextPlayer.setState(activeState);
 
+        LOGGER.info("Next player '{}' - {}", nextPlayer.getName(), nextPlayer.getColor());
         return nextPlayer;
     }
 
@@ -118,6 +128,7 @@ public abstract class AbstractGame
         notifyObservers(new GameStartedEvent(this));
 
         try {
+            LOGGER.info("Game started ...");
             while (true) {
                 currentPlayer.play();
 
@@ -127,6 +138,9 @@ public abstract class AbstractGame
 
                 currentPlayer = next();
             }
+            LOGGER.info("Game over");
+        } catch (Throwable t) {
+            LOGGER.error("Game exception", t);
         } finally {
             notifyObservers(new GameOverEvent(this));
         }
@@ -135,8 +149,9 @@ public abstract class AbstractGame
     @Override
     public Optional<Player> getWinner() {
         if (BoardState.Type.CHECK_MATED.equals(board.getState().getType())) {
-            var player = currentPlayer.equals(whitePlayer) ? whitePlayer : blackPlayer;
-            return Optional.of(player);
+            var winner = currentPlayer.equals(whitePlayer) ? whitePlayer : blackPlayer;
+            LOGGER.info("{} wins. Player '{}'", winner.getColor(), winner.getName());
+            return Optional.of(winner);
         }
 
         return Optional.empty();

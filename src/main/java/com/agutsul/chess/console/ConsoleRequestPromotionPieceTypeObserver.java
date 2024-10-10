@@ -6,12 +6,16 @@ import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.trimToEmpty;
 import static org.apache.commons.lang3.StringUtils.upperCase;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.EnumSet;
 import java.util.Map;
 
+import org.slf4j.Logger;
+
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
+import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
@@ -19,6 +23,8 @@ import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 class ConsoleRequestPromotionPieceTypeObserver
         extends AbstractConsoleInputReader
         implements Observer {
+
+    private static final Logger LOGGER = getLogger(ConsoleRequestPromotionPieceTypeObserver.class);
 
     private static final Map<String, Piece.Type> PROMOTION_TYPES =
             EnumSet.of(
@@ -39,9 +45,11 @@ class ConsoleRequestPromotionPieceTypeObserver
     private void process(RequestPromotionPieceTypeEvent event) {
         var selectedType = readPieceType();
 
+        LOGGER.info("Processing selected pawn promotion type '{}'", selectedType);
+
         var pieceType = PROMOTION_TYPES.get(selectedType);
         if (pieceType == null) {
-            throw new IllegalStateException(
+            throw new IllegalActionException(
                     String.format("Unknown promotion type piece: '%s'", selectedType)
             );
         }
@@ -62,7 +70,7 @@ class ConsoleRequestPromotionPieceTypeObserver
         return upperCase(input.substring(0, 1));
     }
 
-    private void promptPieceType() {
+    private static void promptPieceType() {
         var builder = new StringBuilder();
         builder.append("Choose promotion piece type:").append(lineSeparator());
 
