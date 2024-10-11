@@ -41,7 +41,8 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
 
                 for (int i = kingPosition.x() + 1; i < rookPosition.x(); i++) {
                     var optionalPosition = board.getPosition(i, rookPosition.y());
-                    if (optionalPosition.isEmpty() || !board.isEmpty(optionalPosition.get())) {
+                    if (optionalPosition.isEmpty()
+                            || !board.isEmpty(optionalPosition.get())) {
                         return false;
                     }
                 }

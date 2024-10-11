@@ -64,24 +64,8 @@ public final class CheckedBoardState
     private Collection<PieceCaptureAction<?,?,?,?>> getCheckActions(Collection<Piece<Color>> attackers,
                                                                     KingPiece<Color> king) {
         return attackers.stream()
-                .map(attacker -> board.getActions(attacker))
+                .map(attacker -> board.getCaptureActions(attacker))
                 .flatMap(Collection::stream)
-                .map(action -> {
-                    if (Action.Type.CAPTURE.equals(action.getType())
-                            || Action.Type.EN_PASSANT.equals(action.getType())) {
-                        return (PieceCaptureAction<?,?,?,?>) action;
-                    }
-
-                    if (Action.Type.PROMOTE.equals(action.getType())) {
-                        var sourceAction = ((PiecePromoteAction<?,?>) action).getSource();
-                        if (Action.Type.CAPTURE.equals(sourceAction.getType())) {
-                            return (PieceCaptureAction<?,?,?,?>) sourceAction;
-                        }
-                    }
-
-                    return null;
-                })
-                .filter(Objects::nonNull)
                 .filter(action -> Objects.equals(king, action.getTarget()))
                 .filter(action -> !action.getAttackLine().isEmpty())
                 .collect(toList());
@@ -143,7 +127,7 @@ public final class CheckedBoardState
     }
 
     private Collection<Action<?>> moveKingActions(Collection<PieceCaptureAction<?,?,?,?>> attackerActions,
-                                                    Collection<Action<?>> pieceActions) {
+                                                  Collection<Action<?>> pieceActions) {
         var actions = new ArrayList<Action<?>>();
         for (var checkedAction : attackerActions) {
             var attackLine = checkedAction.getAttackLine();

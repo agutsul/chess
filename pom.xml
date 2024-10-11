@@ -112,6 +112,15 @@
                 <artifactId>maven-site-plugin</artifactId>
                 <version>${maven.site.plugin.version}</version>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${maven.pmd.plugin.version}</version>
+                <configuration>
+                    <printFailingErrors>true</printFailingErrors>
+                    <inputEncoding>${project.reporting.outputEncoding}</inputEncoding>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     

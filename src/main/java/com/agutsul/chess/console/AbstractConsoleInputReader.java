@@ -13,11 +13,9 @@ abstract class AbstractConsoleInputReader {
         var scanner = new Scanner(System.in, StandardCharsets.UTF_8);
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if (line.isBlank()) {
-                break;
+            if (!line.isBlank()) {
+                return line;
             }
-
-            return line;
         }
 
         return null;

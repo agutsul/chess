@@ -9,9 +9,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
-import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
-import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
@@ -68,28 +66,9 @@ final class AttackerCaptureEvaluator<COLOR extends Color,
     private Collection<PieceCaptureAction<?,?,?,?>> getAttackActions(Piece<Color> piece) {
         var actions = new ArrayList<PieceCaptureAction<?,?,?,?>>();
         for (var attacker : board.getAttackers(piece)) {
-            for (var action : board.getActions(attacker)) {
-                var actionType = action.getType();
-
-                if (Action.Type.CAPTURE.equals(actionType)
-                        || Action.Type.EN_PASSANT.equals(actionType)) {
-
-                    var captureAction = (PieceCaptureAction<?,?,?,?>) action;
-                    if (Objects.equals(captureAction.getTarget(), piece)) {
-                        actions.add(captureAction);
-                    }
-                }
-
-                if (Action.Type.PROMOTE.equals(actionType)) {
-                    var sourceAction = ((PiecePromoteAction<?,?>) action).getSource();
-
-                    if (Action.Type.CAPTURE.equals(sourceAction.getType())) {
-
-                        var captureAction = (PieceCaptureAction<?,?,?,?>) sourceAction;
-                        if (Objects.equals(captureAction.getTarget(), piece)) {
-                            actions.add(captureAction);
-                        }
-                    }
+            for (var captureAction : board.getCaptureActions(attacker)) {
+                if (Objects.equals(captureAction.getTarget(), piece)) {
+                    actions.add(captureAction);
                 }
             }
         }

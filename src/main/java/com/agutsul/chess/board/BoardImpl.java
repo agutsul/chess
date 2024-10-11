@@ -2,6 +2,7 @@ package com.agutsul.chess.board;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -96,6 +97,18 @@ final class BoardImpl implements Board {
     }
 
     @Override
+    public Collection<PieceMoveAction<?, ?>> getMoveActions(Piece<Color> piece) {
+        LOGGER.info("Getting move actions for '{}'", piece);
+        return filterMoveActions(getActions(piece));
+    }
+
+    @Override
+    public Collection<PieceCaptureAction<?,?,?,?>> getCaptureActions(Piece<Color> piece) {
+        LOGGER.info("Getting capture actions for '{}'", piece);
+        return filterCaptureActions(getActions(piece));
+    }
+
+    @Override
     public Collection<Action<?>> getActions(Piece<Color> piece) {
         LOGGER.info("Getting actions for '{}'", piece);
 
@@ -112,26 +125,7 @@ final class BoardImpl implements Board {
         var king = optionalKing.get();
 
         // filter out check actions only
-        Collection<Action<?>> checkActions = actions.stream()
-                .map(action -> {
-                    if (Action.Type.CAPTURE.equals(action.getType())
-                            || Action.Type.EN_PASSANT.equals(action.getType())) {
-
-                        return (PieceCaptureAction<?,?,?,?>) action;
-                    }
-
-                    if (Action.Type.PROMOTE.equals(action.getType())) {
-                        var sourceAction = ((PiecePromoteAction<?,?>) action).getSource();
-
-                        if (Action.Type.CAPTURE.equals(sourceAction.getType())) {
-                            return (PieceCaptureAction<?,?,?,?>) sourceAction;
-                        }
-                    }
-
-                    return null;
-                })
-                .filter(Objects::nonNull)
-                .map(action -> (PieceCaptureAction<?,?,?,?>) action)
+        Collection<Action<?>> checkActions = filterCaptureActions(actions).stream()
                 .filter(action -> Objects.equals(action.getTarget(), king))
                 .collect(toSet());
 
@@ -266,23 +260,8 @@ final class BoardImpl implements Board {
 
         // check if position is reachable by any attacker move
         var isAttacked = attackerPieces.stream()
-                .map(attacker -> getActions(attacker))
+                .map(attacker -> getMoveActions(attacker))
                 .flatMap(Collection::stream)
-                .map(action -> {
-                    if (Action.Type.MOVE.equals(action.getType())) {
-                        return (PieceMoveAction<?,?>) action;
-                    }
-
-                    if (Action.Type.PROMOTE.equals(action.getType())) {
-                        var sourceAction = ((PiecePromoteAction<?,?>) action).getSource();
-                        if (Action.Type.MOVE.equals(sourceAction.getType())) {
-                            return (PieceMoveAction<?,?>) sourceAction;
-                        }
-                    }
-
-                    return null;
-                })
-                .filter(Objects::nonNull)
                 .map(PieceMoveAction::getPosition)
                 .anyMatch(targetPosition -> Objects.equals(targetPosition, position));
 
@@ -295,26 +274,8 @@ final class BoardImpl implements Board {
 
         var attackerPieces = getPieces(piece.getColor().invert());
         var isAttacked = attackerPieces.stream()
-                .map(attacker -> getActions(attacker))
+                .map(attacker -> getCaptureActions(attacker))
                 .flatMap(Collection::stream)
-                .map(action -> {
-                    if (Action.Type.CAPTURE.equals(action.getType())
-                            || Action.Type.EN_PASSANT.equals(action.getType())) {
-
-                        return (PieceCaptureAction<?,?,?,?>) action;
-                    }
-
-                    if (Action.Type.PROMOTE.equals(action.getType())) {
-                        var sourceAction = ((PiecePromoteAction<?,?>) action).getSource();
-                        if (Action.Type.CAPTURE.equals(sourceAction.getType())) {
-                            return (PieceCaptureAction<?,?,?,?>) sourceAction;
-                        }
-                    }
-
-                    return null;
-                })
-                .filter(Objects::nonNull)
-                .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                 .anyMatch(action -> Objects.equals(action.getTarget(), piece));
 
         return isAttacked;
@@ -327,26 +288,8 @@ final class BoardImpl implements Board {
 
         var attackerPieces = getPieces(piece.getColor().invert());
         Collection<Piece<Color>> attackActions = attackerPieces.stream()
-                .map(attacker -> getActions(attacker))
+                .map(attacker -> getCaptureActions(attacker))
                 .flatMap(Collection::stream)
-                .map(action -> {
-                    if (Action.Type.CAPTURE.equals(action.getType())
-                            || Action.Type.EN_PASSANT.equals(action.getType())) {
-
-                        return (PieceCaptureAction<?,?,?,?>) action;
-                    }
-
-                    if (Action.Type.PROMOTE.equals(action.getType())) {
-                        var sourceAction = ((PiecePromoteAction<?,?>) action).getSource();
-
-                        if (Action.Type.CAPTURE.equals(sourceAction.getType())) {
-                            return (PieceCaptureAction<?,?,?,?>) sourceAction;
-                        }
-                    }
-
-                    return null;
-                })
-                .filter(Objects::nonNull)
                 .map(action -> (PieceCaptureAction<Color,Color,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), piece))
                 .map(PieceCaptureAction::getSource)
@@ -498,5 +441,56 @@ final class BoardImpl implements Board {
         pieces.add(pieceFactory.createRook(POSITION_FACTORY.createPosition(Position.MAX - 1, pieceY)));
 
         return unmodifiableList(pieces);
+    }
+
+    // utility methods
+
+    private static Collection<PieceMoveAction<?,?>> filterMoveActions(Collection<Action<?>> actions) {
+        Collection<PieceMoveAction<?,?>> moveActions = actions.stream()
+                .map(action -> {
+                    if (Action.Type.MOVE.equals(action.getType())) {
+                        return (PieceMoveAction<?,?>) action;
+                    }
+
+                    if (Action.Type.PROMOTE.equals(action.getType())) {
+                        var sourceAction = ((PiecePromoteAction<?, ?>) action).getSource();
+                        if (Action.Type.MOVE.equals(sourceAction.getType())) {
+                            return (PieceMoveAction<?,?>) sourceAction;
+                        }
+                    }
+
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .map(action -> (PieceMoveAction<?,?>) action)
+                .collect(toList());
+
+        return moveActions;
+    }
+
+    private static Collection<PieceCaptureAction<?,?,?,?>> filterCaptureActions(Collection<Action<?>> actions) {
+        Collection<PieceCaptureAction<?,?,?,?>> captureActions = actions.stream()
+                .map(action -> {
+                    if (Action.Type.CAPTURE.equals(action.getType())
+                            || Action.Type.EN_PASSANT.equals(action.getType())) {
+
+                        return (PieceCaptureAction<?,?,?,?>) action;
+                    }
+
+                    if (Action.Type.PROMOTE.equals(action.getType())) {
+                        var sourceAction = ((PiecePromoteAction<?,?>) action).getSource();
+
+                        if (Action.Type.CAPTURE.equals(sourceAction.getType())) {
+                            return (PieceCaptureAction<?,?,?,?>) sourceAction;
+                        }
+                    }
+
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .map(action -> (PieceCaptureAction<?,?,?,?>) action)
+                .collect(toList());
+
+        return captureActions;
     }
 }
