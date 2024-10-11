@@ -354,7 +354,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
                 () -> whitePawn.promote(position, Piece.Type.QUEEN)
         );
 
-        assertEquals(thrown.getMessage(), "e6 invalid promotion to e8");
+        assertEquals(thrown.getMessage(), "PAWN invalid promotion to QUEEN at 'e8'");
         assertEquals(whitePawn.getType(), Piece.Type.PAWN);
     }
 
