@@ -17,7 +17,7 @@ public enum ActionMementoFactory {
     private final Map<Action.Type, Function<Action<?>, ActionMemento>> MODES =
                 new EnumMap<>(Action.Type.class);
 
-    private ActionMementoFactory() {
+    ActionMementoFactory() {
         MODES.put(Action.Type.MOVE,       action -> create((PieceMoveAction<?,?>)          action));
         MODES.put(Action.Type.CAPTURE,    action -> create((PieceCaptureAction<?,?,?,?>)   action));
         MODES.put(Action.Type.PROMOTE,    action -> create((PiecePromoteAction<?,?>)       action));

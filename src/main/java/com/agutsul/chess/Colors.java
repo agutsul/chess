@@ -4,20 +4,20 @@ public enum Colors implements Color {
     WHITE("#FFFFFF") {
         @Override
         public Color invert() {
-            return Colors.BLACK;
+            return BLACK;
         }
     },
     BLACK("#000000") {
         @Override
         public Color invert() {
-            return Colors.WHITE;
+            return WHITE;
         }
     };
 
     // RGB code
     private String code;
 
-    private Colors(String code) {
+    Colors(String code) {
         this.code = code;
     }
 

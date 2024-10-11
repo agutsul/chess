@@ -102,10 +102,10 @@ public class PiecePinImpactRule<COLOR1 extends Color,
                 continue;
             }
 
-            if (LINE_ATTACK_PIECE_TYPES.contains(piece.getType())) {
-                if (piece.getColor() != pinnedPiece.getColor()) {
-                    attacker = (ATTACKER) piece;
-                }
+            if (LINE_ATTACK_PIECE_TYPES.contains(piece.getType())
+                    && piece.getColor() != pinnedPiece.getColor()) {
+
+                attacker = (ATTACKER) piece;
             }
         }
 

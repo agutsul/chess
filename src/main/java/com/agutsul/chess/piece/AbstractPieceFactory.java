@@ -22,7 +22,7 @@ abstract class AbstractPieceFactory<COLOR extends Color>
 
         private int code;
 
-        private Directions(int code) {
+        Directions(int code) {
             this.code = code;
         }
 
@@ -43,7 +43,7 @@ abstract class AbstractPieceFactory<COLOR extends Color>
 
         private int line;
 
-        private Promotions(int line) {
+        Promotions(int line) {
             this.line = line;
         }
 
@@ -64,7 +64,7 @@ abstract class AbstractPieceFactory<COLOR extends Color>
 
         private int line;
 
-        private BigMoves(int line) {
+        BigMoves(int line) {
             this.line = line;
         }
 

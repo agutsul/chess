@@ -42,13 +42,13 @@ final class PawnPieceImpl<COLOR extends Color>
 
     @Override
     @SuppressWarnings({ "unchecked" })
-    public final void dispose() {
+    public void dispose() {
         super.dispose();
         this.state = (AbstractPieceState<AbstractPiece<Color>>) DISPOSED_STATE;
     }
 
     @Override
-    public final void promote(Position targetPosition, Type pieceType) {
+    public void promote(Position targetPosition, Type pieceType) {
         LOGGER.info("Promote origin pawn '{}' to '{}'", this, pieceType);
 
         if (!isActive()) {
@@ -61,7 +61,7 @@ final class PawnPieceImpl<COLOR extends Color>
 
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public final void enPassant(PawnPiece<?> targetPiece, Position targetPosition) {
+    public void enPassant(PawnPiece<?> targetPiece, Position targetPosition) {
         ((EnPassantablePieceState) state).enPassant(this, targetPiece, targetPosition);
     }
 

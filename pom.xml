@@ -30,6 +30,7 @@
         <maven.surefire-report.plugin.version>3.5.0</maven.surefire-report.plugin.version>
         <maven.site.plugin.version>3.20.0</maven.site.plugin.version>
         <maven.spotbugs.plugin.version>4.8.6.4</maven.spotbugs.plugin.version>
+        <maven.pmd.plugin.version>3.25.0</maven.pmd.plugin.version>
         
     </properties>
 
@@ -127,6 +128,14 @@
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
                 <version>${maven.spotbugs.plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${maven.pmd.plugin.version}</version>
+                <configuration>
+                    <inputEncoding>${project.reporting.outputEncoding}</inputEncoding>
+                </configuration>
             </plugin>
         </plugins>
     </reporting>

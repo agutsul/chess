@@ -8,7 +8,7 @@ public enum PositionFactory {
 
     private Map<String, Position> positions = new HashMap<>();
 
-    private PositionFactory() {
+    PositionFactory() {
         for (int x = Position.MIN; x < Position.MAX; x++) {
             for (int y = Position.MIN; y < Position.MAX; y++) {
                 var position = new PositionImpl(x, y);

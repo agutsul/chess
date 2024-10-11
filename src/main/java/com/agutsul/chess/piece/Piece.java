@@ -23,7 +23,7 @@ public interface Piece<COLOR extends Color>
 
         private String code;
 
-        private Type(String code) {
+        Type(String code) {
             this.code = code;
         }
 

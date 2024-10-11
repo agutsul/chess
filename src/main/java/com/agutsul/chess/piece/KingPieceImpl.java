@@ -48,7 +48,7 @@ final class KingPieceImpl<COLOR extends Color>
     }
 
     @Override
-    public final void dispose() {
+    public void dispose() {
         throw new UnsupportedOperationException("Unable to dispose KING piece");
     }
 }

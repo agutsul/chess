@@ -47,11 +47,11 @@ final class AttackerCaptureEvaluator<COLOR extends Color,
                 // then king should not be attacked in result of capturing.
                 // it can happen when piece making check is protected
                 // by some other piece of the same color
-                if (Piece.Type.KING.equals(sourcePiece.getType())) {
-                    if (board.isProtected(attacker)) {
-                        isCapturable = false;
-                        break;
-                    }
+                if (Piece.Type.KING.equals(sourcePiece.getType())
+                        && board.isProtected(attacker)) {
+
+                    isCapturable = false;
+                    break;
                 }
             }
 

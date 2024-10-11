@@ -111,7 +111,7 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
             }
         };
 
-        private static final Map<Integer, Castling> MAP = Stream.of(Castling.values())
+        private static final Map<Integer, Castling> MAP = Stream.of(values())
                 .collect(toMap(entry -> Integer.valueOf(entry.getRookSource()), identity()));
 
         private int rookSource;
@@ -119,7 +119,7 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
         private int kingTarget;
         private String code;
 
-        private Castling(int rookSource, int rookTarget, int kingTarget, String code) {
+        Castling(int rookSource, int rookTarget, int kingTarget, String code) {
             this.rookSource = rookSource;
             this.rookTarget = rookTarget;
             this.kingTarget = kingTarget;

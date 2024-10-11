@@ -29,7 +29,7 @@ public interface PawnPiece<COLOR extends Color>
      * Requires extending all interfaces of promoted pieces
      * to properly proxy those newly created pieces
      */
-    static final class PawnPieceProxy
+    final class PawnPieceProxy
             extends PieceProxy
             implements PawnPiece<Color>,
                        KnightPiece<Color>,
@@ -46,13 +46,12 @@ public interface PawnPiece<COLOR extends Color>
             QUEEN_MODE(Type.QUEEN,   (pieceFactory, position) -> pieceFactory.createQueen(position));
 
             private static final Map<Type, Factory> MODES =
-                    Stream.of(Factory.values()).collect(toMap(Factory::type, identity()));
+                    Stream.of(values()).collect(toMap(Factory::type, identity()));
 
             private Type type;
             private BiFunction<PieceFactory, Position, Piece<Color>> function;
 
-            private Factory(Type type,
-                            BiFunction<PieceFactory, Position, Piece<Color>> function) {
+            Factory(Type type, BiFunction<PieceFactory, Position, Piece<Color>> function) {
                 this.type = type;
                 this.function = function;
             }

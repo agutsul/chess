@@ -64,7 +64,7 @@ abstract class AbstractPiece<COLOR extends Color>
     @Override
     @SuppressWarnings("unchecked")
     public final PieceState<Piece<Color>> getState() {
-        return (PieceState<Piece<Color>>) ((PieceState<?>) this.state);
+        return (PieceState<Piece<Color>>) (PieceState<?>) this.state;
     }
 
     @Override

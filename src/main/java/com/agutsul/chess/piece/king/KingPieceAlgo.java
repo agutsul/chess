@@ -32,7 +32,7 @@ final class KingPieceAlgo<COLOR extends Color,
 
         private int x, y;
 
-        private Move(int x, int y) {
+        Move(int x, int y) {
             this.x = x;
             this.y = y;
         }
