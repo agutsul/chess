@@ -15,6 +15,8 @@ import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 import com.agutsul.chess.position.Position;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class PiecePromoteAction<COLOR1 extends Color,
                                 PAWN extends PawnPiece<COLOR1>>
         extends AbstractSourceAction<AbstractTargetAction<PAWN, ?>>
@@ -22,6 +24,7 @@ public class PiecePromoteAction<COLOR1 extends Color,
 
     private static final Logger LOGGER = getLogger(PiecePromoteAction.class);
 
+    @SuppressFBWarnings("EI_EXPOSE_REP2")
     private final Observable observable;
 
     public PiecePromoteAction(Observable observable,

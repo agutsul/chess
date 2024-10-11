@@ -8,11 +8,14 @@ import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class ActivePlayerState
         extends AbstractPlayerState {
 
     private static final Logger LOGGER = getLogger(ActivePlayerState.class);
 
+    @SuppressFBWarnings("EI_EXPOSE_REP2")
     private final Observable observable;
 
     public ActivePlayerState(Observable observable) {

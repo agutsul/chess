@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE project>
 <project xmlns="https://maven.apache.org/POM/4.0.0"
     xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -17,6 +19,7 @@
         <commons-lang3.version>3.17.0</commons-lang3.version>
         <log4j.version>2.24.1</log4j.version>
         
+        <spotbugs.version>4.8.6</spotbugs.version>
         <junit-jupiter.version>5.11.0</junit-jupiter.version>
         <mockito-core.version>5.13.0</mockito-core.version>
         <mockito-junit-jupiter.version>5.13.0</mockito-junit-jupiter.version>
@@ -26,6 +29,7 @@
         <maven.surefire.plugin.version>3.5.0</maven.surefire.plugin.version>
         <maven.surefire-report.plugin.version>3.5.0</maven.surefire-report.plugin.version>
         <maven.site.plugin.version>3.20.0</maven.site.plugin.version>
+        <maven.spotbugs.plugin.version>4.8.6.4</maven.spotbugs.plugin.version>
         
     </properties>
 
@@ -52,6 +56,11 @@
             <version>${log4j.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
+            <version>${spotbugs.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -113,6 +122,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
                 <version>${maven.surefire-report.plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>${maven.spotbugs.plugin.version}</version>
             </plugin>
         </plugins>
     </reporting>

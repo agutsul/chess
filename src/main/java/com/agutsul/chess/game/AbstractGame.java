@@ -30,6 +30,8 @@ import com.agutsul.chess.player.state.ActivePlayerState;
 import com.agutsul.chess.player.state.LockedPlayerState;
 import com.agutsul.chess.player.state.PlayerState;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public abstract class AbstractGame
         implements Game, Iterator<Player>, Observable {
 
@@ -157,6 +159,7 @@ public abstract class AbstractGame
         return Optional.empty();
     }
 
+    @SuppressFBWarnings("EI_EXPOSE_REP")
     public Board getBoard() {
         return board;
     }

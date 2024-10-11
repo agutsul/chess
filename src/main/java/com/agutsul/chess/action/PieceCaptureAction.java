@@ -48,7 +48,7 @@ public class PieceCaptureAction<COLOR1 extends Color,
     }
 
     public Line getAttackLine() {
-        return attackLine;
+        return new Line(attackLine);
     }
 
     @Override

@@ -16,11 +16,14 @@ import com.agutsul.chess.player.event.PlayerActionEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class PlayerEventOberver
         implements Observer {
 
     private static final Logger LOGGER = getLogger(PlayerEventOberver.class);
 
+    @SuppressFBWarnings("EI_EXPOSE_REP2")
     private final Observable observable;
 
     public PlayerEventOberver(Observable observable) {

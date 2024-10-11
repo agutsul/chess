@@ -13,9 +13,12 @@ import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class BoardProxy
         implements Board {
 
+    @SuppressFBWarnings("EI_EXPOSE_REP2")
     private final Board origin;
 
     public BoardProxy(Board board) {
