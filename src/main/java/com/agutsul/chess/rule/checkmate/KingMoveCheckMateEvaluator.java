@@ -10,15 +10,15 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 
-final class KingMoveEvaluator<COLOR extends Color,
-                              KING extends KingPiece<COLOR>>
+final class KingMoveCheckMateEvaluator<COLOR extends Color,
+                                       KING extends KingPiece<COLOR>>
         implements CheckMateEvaluator<COLOR, KING> {
 
-    private static final Logger LOGGER = getLogger(KingMoveEvaluator.class);
+    private static final Logger LOGGER = getLogger(KingMoveCheckMateEvaluator.class);
 
     private final Board board;
 
-    KingMoveEvaluator(Board board) {
+    KingMoveCheckMateEvaluator(Board board) {
         this.board = board;
     }
 

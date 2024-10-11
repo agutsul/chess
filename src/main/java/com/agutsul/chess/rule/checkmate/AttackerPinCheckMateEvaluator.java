@@ -16,15 +16,15 @@ import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Line;
 
-final class AttackerPinEvaluator<COLOR extends Color,
-                                 KING extends KingPiece<COLOR>>
+final class AttackerPinCheckMateEvaluator<COLOR extends Color,
+                                          KING extends KingPiece<COLOR>>
         implements CheckMateEvaluator<COLOR, KING> {
 
-    private static final Logger LOGGER = getLogger(AttackerPinEvaluator.class);
+    private static final Logger LOGGER = getLogger(AttackerPinCheckMateEvaluator.class);
 
     private final Board board;
 
-    AttackerPinEvaluator(Board board) {
+    AttackerPinCheckMateEvaluator(Board board) {
         this.board = board;
     }
 

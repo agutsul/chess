@@ -14,15 +14,15 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 
-final class AttackerCaptureEvaluator<COLOR extends Color,
-                                     KING extends KingPiece<COLOR>>
+final class AttackerCaptureCheckMateEvaluator<COLOR extends Color,
+                                              KING extends KingPiece<COLOR>>
         implements CheckMateEvaluator<COLOR, KING> {
 
-    private static final Logger LOGGER = getLogger(AttackerCaptureEvaluator.class);
+    private static final Logger LOGGER = getLogger(AttackerCaptureCheckMateEvaluator.class);
 
     private final Board board;
 
-    AttackerCaptureEvaluator(Board board) {
+    AttackerCaptureCheckMateEvaluator(Board board) {
         this.board = board;
     }
 

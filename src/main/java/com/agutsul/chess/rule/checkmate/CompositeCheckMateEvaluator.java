@@ -25,9 +25,9 @@ public final class CompositeCheckMateEvaluator<COLOR extends Color,
 
     public CompositeCheckMateEvaluator(Board board) {
         this.evaluators = List.of(
-                new KingMoveEvaluator<>(board),
-                new AttackerCaptureEvaluator<>(board),
-                new AttackerPinEvaluator<>(board)
+                new KingMoveCheckMateEvaluator<>(board),
+                new AttackerCaptureCheckMateEvaluator<>(board),
+                new AttackerPinCheckMateEvaluator<>(board)
             );
     }
 
