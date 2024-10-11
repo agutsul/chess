@@ -126,32 +126,32 @@ abstract class AbstractPieceFactory<COLOR extends Color>
     }
 
     KingPiece<COLOR> createKing(Position position, String unicode) {
-        LOGGER.info("Create '{}' king at '{}'", color, position);
+        LOGGER.debug("Create '{}' king at '{}'", color, position);
         return new KingPieceImpl<>(board, color, unicode, position);
     }
 
     QueenPiece<COLOR> createQueen(Position position, String unicode) {
-        LOGGER.info("Create '{}' queen at '{}'", color, position);
+        LOGGER.debug("Create '{}' queen at '{}'", color, position);
         return new QueenPieceImpl<>(board, color, unicode, position);
     }
 
     RookPiece<COLOR> createRook(Position position, String unicode) {
-        LOGGER.info("Create '{}' rook at '{}'", color, position);
+        LOGGER.debug("Create '{}' rook at '{}'", color, position);
         return new RookPieceImpl<>(board, color, unicode, position);
     }
 
     BishopPiece<COLOR> createBishop(Position position, String unicode) {
-        LOGGER.info("Create '{}' bishop at '{}'", color, position);
+        LOGGER.debug("Create '{}' bishop at '{}'", color, position);
         return new BishopPieceImpl<>(board, color, unicode, position);
     }
 
     KnightPiece<COLOR> createKnight(Position position, String unicode) {
-        LOGGER.info("Create '{}' knight at '{}'", color, position);
+        LOGGER.debug("Create '{}' knight at '{}'", color, position);
         return new KnightPieceImpl<>(board, color, unicode, position);
     }
 
     PawnPiece<COLOR> createPawn(Position position, String unicode) {
-        LOGGER.info("Create '{}' pawn at '{}'", color, position);
+        LOGGER.debug("Create '{}' pawn at '{}'", color, position);
         return new PawnPieceImpl<>(board, color, unicode, position,
                 direction.code(), promotion.line(), bigMove.line());
     }

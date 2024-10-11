@@ -67,7 +67,9 @@ final class AttackerCaptureEvaluator<COLOR extends Color,
         var actions = new ArrayList<PieceCaptureAction<?,?,?,?>>();
         for (var attacker : board.getAttackers(piece)) {
             for (var captureAction : board.getCaptureActions(attacker)) {
-                if (Objects.equals(captureAction.getTarget(), piece)) {
+                @SuppressWarnings("unchecked")
+                var targetPiece = (Piece<Color>) captureAction.getTarget();
+                if (Objects.equals(targetPiece, piece)) {
                     actions.add(captureAction);
                 }
             }

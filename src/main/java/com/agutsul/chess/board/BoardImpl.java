@@ -97,7 +97,7 @@ final class BoardImpl implements Board {
     }
 
     @Override
-    public Collection<PieceMoveAction<?, ?>> getMoveActions(Piece<Color> piece) {
+    public Collection<PieceMoveAction<?,?>> getMoveActions(Piece<Color> piece) {
         LOGGER.info("Getting move actions for '{}'", piece);
         return filterMoveActions(getActions(piece));
     }
@@ -420,6 +420,8 @@ final class BoardImpl implements Board {
                 .toList();
     }
 
+    // utility methods
+
     private static Collection<Piece<Color>> createPieces(PieceFactory pieceFactory,
                                                          int pawnY,
                                                          int pieceY) {
@@ -442,8 +444,6 @@ final class BoardImpl implements Board {
 
         return unmodifiableList(pieces);
     }
-
-    // utility methods
 
     private static Collection<PieceMoveAction<?,?>> filterMoveActions(Collection<Action<?>> actions) {
         Collection<PieceMoveAction<?,?>> moveActions = actions.stream()

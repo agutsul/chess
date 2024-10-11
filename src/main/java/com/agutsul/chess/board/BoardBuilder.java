@@ -27,7 +27,7 @@ public final class BoardBuilder
 
     @Override
     public Board build() {
-        LOGGER.info("Building board started ...");
+        LOGGER.debug("Building board started ...");
         var board = new BoardImpl();
 
         var pieces = new ArrayList<Piece<Color>>();
@@ -36,7 +36,7 @@ public final class BoardBuilder
 
         board.setPieces(pieces);
 
-        LOGGER.info("Building board finished");
+        LOGGER.debug("Building board finished");
         return board;
     }
 
@@ -184,8 +184,9 @@ public final class BoardBuilder
 
         var pieces = new ArrayList<Piece<Color>>();
         for (var pair : pieceFactoryPairs) {
-            if (pair.getKey() != null) {
-                pieces.addAll(createPieces(pair.getKey(), pair.getValue()));
+            var positions = pair.getKey();
+            if (positions != null && !positions.isEmpty()) {
+                pieces.addAll(createPieces(positions, pair.getValue()));
             }
         }
 
