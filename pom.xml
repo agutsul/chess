@@ -31,6 +31,7 @@
         <maven.site.plugin.version>3.20.0</maven.site.plugin.version>
         <maven.spotbugs.plugin.version>4.8.6.4</maven.spotbugs.plugin.version>
         <maven.pmd.plugin.version>3.25.0</maven.pmd.plugin.version>
+        <maven.jacoco.plugin.version>0.8.12</maven.jacoco.plugin.version>
         
     </properties>
 
@@ -121,6 +122,26 @@
                     <inputEncoding>${project.reporting.outputEncoding}</inputEncoding>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${maven.jacoco.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <!-- attached to Maven test phase -->
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     
@@ -145,6 +166,11 @@
                 <configuration>
                     <inputEncoding>${project.reporting.outputEncoding}</inputEncoding>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${maven.jacoco.plugin.version}</version>
             </plugin>
         </plugins>
     </reporting>
