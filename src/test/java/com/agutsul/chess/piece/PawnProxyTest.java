@@ -15,7 +15,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -30,7 +29,6 @@ import com.agutsul.chess.piece.PawnPiece.PawnPieceProxy;
 import com.agutsul.chess.position.Position;
 
 @ExtendWith(MockitoExtension.class)
-@Disabled
 public class PawnProxyTest {
 
     @Mock
@@ -52,7 +50,7 @@ public class PawnProxyTest {
     void testPromoteToBishop() {
         var position = mock(Position.class);
 
-        when(board.getActions(eq(pawn)))
+        when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
             .then(inv -> List.of(new PiecePromoteAction(
                     board,
                     new PieceMoveAction<Color,PawnPiece<Color>>(null, position))
@@ -75,7 +73,7 @@ public class PawnProxyTest {
     void testPromoteToKnight() {
         var position = mock(Position.class);
 
-        when(board.getActions(eq(pawn)))
+        when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
             .then(inv -> List.of(new PiecePromoteAction(
                     board,
                     new PieceMoveAction<Color,PawnPiece<Color>>(null, position))
@@ -98,7 +96,7 @@ public class PawnProxyTest {
     void testPromoteToQueen() {
         var position = mock(Position.class);
 
-        when(board.getActions(eq(pawn)))
+        when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
             .then(inv -> List.of(new PiecePromoteAction(
                     board,
                     new PieceMoveAction<Color,PawnPiece<Color>>(null, position))
@@ -121,7 +119,7 @@ public class PawnProxyTest {
     void testPromoteToRook() {
         var position = mock(Position.class);
 
-        when(board.getActions(eq(pawn)))
+        when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
             .then(inv -> List.of(new PiecePromoteAction(
                     board,
                     new PieceMoveAction<Color,PawnPiece<Color>>(null, position))));
@@ -145,7 +143,7 @@ public class PawnProxyTest {
 
         doReturn(true).when(pawn).isActive();
 
-        when(board.getActions(eq(pawn)))
+        when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
             .then(inv -> List.of(new PiecePromoteAction(
                     board,
                     new PieceMoveAction<Color,PawnPiece<Color>>(null, position))));
