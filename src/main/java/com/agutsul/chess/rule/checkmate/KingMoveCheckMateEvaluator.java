@@ -28,9 +28,9 @@ final class KingMoveCheckMateEvaluator<COLOR extends Color,
         LOGGER.info("Evaluate king '{}' escape ability", king);
 
         var attackerColor = king.getColor().invert();
-        var actions = board.getActions((Piece<Color>) king, PieceMoveAction.class);
+        var moveActions = board.getActions((Piece<Color>) king, PieceMoveAction.class);
 
-        for (var action : actions) {
+        for (var action : moveActions) {
             var targetPosition = action.getPosition();
             if (!board.isAttacked(targetPosition, attackerColor)
                     && !board.isMonitored(targetPosition, attackerColor)) {

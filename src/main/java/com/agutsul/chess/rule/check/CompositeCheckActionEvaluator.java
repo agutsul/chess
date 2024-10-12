@@ -18,8 +18,8 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 
-public class CompositeCheckActionEvaluator<COLOR extends Color,
-                                           KING extends KingPiece<COLOR>>
+public final class CompositeCheckActionEvaluator<COLOR extends Color,
+                                                 KING extends KingPiece<COLOR>>
         implements CheckActionEvalutor<COLOR, KING> {
 
     private static final Logger LOGGER = getLogger(CompositeCheckActionEvaluator.class);
@@ -27,8 +27,8 @@ public class CompositeCheckActionEvaluator<COLOR extends Color,
     private final List<CheckActionEvalutor<COLOR, KING>> evaluators;
 
     public CompositeCheckActionEvaluator(Board board,
-            Piece.Type pieceType, Collection<Action<?>> actions) {
-
+                                         Piece.Type pieceType,
+                                         Collection<Action<?>> actions) {
         this.evaluators = List.of(
                 new AttackerCaptureCheckActionEvaluator<>(board, actions),
                 Piece.Type.KING.equals(pieceType)

@@ -11,8 +11,8 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 
-class AttackerCaptureCheckActionEvaluator<COLOR extends Color,
-                                          KING extends KingPiece<COLOR>>
+final class AttackerCaptureCheckActionEvaluator<COLOR extends Color,
+                                                KING extends KingPiece<COLOR>>
         implements CheckActionEvalutor<COLOR, KING> {
 
     private final Board board;

@@ -7,7 +7,7 @@ import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PiecePromoteAction;
 
-public class CaptureActionFunction
+public final class CaptureActionFunction
         implements Function<Action<?>, Optional<PieceCaptureAction<?,?,?,?>>> {
 
     @Override

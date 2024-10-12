@@ -7,7 +7,7 @@ import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.PiecePromoteAction;
 
-public class MoveActionFunction
+public final class MoveActionFunction
         implements Function<Action<?>, Optional<PieceMoveAction<?,?>>> {
 
     @Override

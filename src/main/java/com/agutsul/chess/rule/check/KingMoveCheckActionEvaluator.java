@@ -1,6 +1,6 @@
 package com.agutsul.chess.rule.check;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -14,8 +14,8 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 
-class KingMoveCheckActionEvaluator<COLOR extends Color,
-                                   KING extends KingPiece<COLOR>>
+final class KingMoveCheckActionEvaluator<COLOR extends Color,
+                                         KING extends KingPiece<COLOR>>
         implements CheckActionEvalutor<COLOR, KING> {
 
     private final Board board;
@@ -36,7 +36,7 @@ class KingMoveCheckActionEvaluator<COLOR extends Color,
                 .flatMap(Collection::stream)
                 .filter(action -> Objects.equals(king, action.getTarget()))
                 .filter(action -> !action.getAttackLine().isEmpty())
-                .collect(toList());
+                .collect(toSet());
 
         var pieceMoveActions = board.filterActions(pieceActions, PieceMoveAction.class);
         var attackerColor = king.getColor().invert();

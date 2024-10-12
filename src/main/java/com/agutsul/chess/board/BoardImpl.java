@@ -114,7 +114,7 @@ final class BoardImpl implements Board {
     public <ACTION extends Action<?>> Collection<ACTION> filterActions(Collection<Action<?>> actions,
                                                                        Class<ACTION> actionClass) {
         var mapperFunction = ACTION_MAPPERS.get(actionClass);
-        if (mapperFunction == null) {
+        if (mapperFunction == null || actions == null) {
             return emptyList();
         }
 
@@ -472,7 +472,7 @@ final class BoardImpl implements Board {
     }
 
     private static Map<Class<?>, Function<?,?>> createActionMappers() {
-        var mappers = new HashMap<Class<?>, Function<?,?>>();
+        var mappers = new HashMap<Class<?>, Function<?,?>>(5);
 
         mappers.put(PieceCaptureAction.class,   new CaptureActionFunction());
         mappers.put(PieceMoveAction.class,      new MoveActionFunction());
