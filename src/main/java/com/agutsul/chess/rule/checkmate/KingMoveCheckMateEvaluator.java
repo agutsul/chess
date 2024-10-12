@@ -5,7 +5,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
-import com.agutsul.chess.action.Action;
+import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
@@ -28,15 +28,13 @@ final class KingMoveCheckMateEvaluator<COLOR extends Color,
         LOGGER.info("Evaluate king '{}' escape ability", king);
 
         var attackerColor = king.getColor().invert();
-        var actions = board.getActions((Piece<Color>) king);
+        var actions = board.getActions((Piece<Color>) king, PieceMoveAction.class);
 
         for (var action : actions) {
-            if (Action.Type.MOVE.equals(action.getType())) {
-                var targetPosition = action.getPosition();
-                if (!board.isAttacked(targetPosition, attackerColor)
-                        && !board.isMonitored(targetPosition, attackerColor)) {
-                    return true;
-                }
+            var targetPosition = action.getPosition();
+            if (!board.isAttacked(targetPosition, attackerColor)
+                    && !board.isMonitored(targetPosition, attackerColor)) {
+                return true;
             }
         }
 

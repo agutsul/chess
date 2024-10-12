@@ -116,8 +116,8 @@ public interface PawnPiece<COLOR extends Color>
                 }
             } else {
                 // validate promotion action ( check if promoted position is legal )
-                var possiblePromotions = board.getActions(this.origin).stream()
-                        .filter(action -> Action.Type.PROMOTE.equals(action.getType()))
+                var promoteActions = board.getActions(this.origin, PiecePromoteAction.class);
+                var possiblePromotions = promoteActions.stream()
                         .map(action -> (PiecePromoteAction<?,?>) action)
                         .map(PiecePromoteAction::getSource)
                         .map(Action::getPosition)

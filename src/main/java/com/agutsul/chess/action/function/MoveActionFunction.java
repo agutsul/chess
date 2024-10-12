@@ -8,7 +8,7 @@ import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.PiecePromoteAction;
 
 public class MoveActionFunction
-        implements Function<Action<?>, Optional<PieceMoveAction<?,?>>>{
+        implements Function<Action<?>, Optional<PieceMoveAction<?,?>>> {
 
     @Override
     public Optional<PieceMoveAction<?,?>> apply(Action<?> action) {

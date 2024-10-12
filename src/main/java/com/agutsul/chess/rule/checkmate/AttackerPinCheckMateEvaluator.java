@@ -34,7 +34,7 @@ final class AttackerPinCheckMateEvaluator<COLOR extends Color,
         // get all piece moves of the same color as king except the king itself
         var pieceMovePositions = board.getPieces(king.getColor()).stream()
                 .filter(piece -> !Piece.Type.KING.equals(piece.getType()))
-                .map(piece -> board.getMoveActions(piece))
+                .map(piece -> board.getActions(piece, PieceMoveAction.class))
                 .flatMap(Collection::stream)
                 .map(PieceMoveAction::getPosition)
                 .collect(toSet());
@@ -46,7 +46,7 @@ final class AttackerPinCheckMateEvaluator<COLOR extends Color,
         @SuppressWarnings("unchecked")
         var attackers = board.getAttackers((Piece<Color>) king);
         var isPinnable = attackers.stream()
-                .map(piece -> board.getCaptureActions(piece))
+                .map(piece -> board.getActions(piece, PieceCaptureAction.class))
                 .flatMap(Collection::stream)
                 .filter(action -> Objects.equals(action.getTarget(), king))
                 .map(PieceCaptureAction::getAttackLine)

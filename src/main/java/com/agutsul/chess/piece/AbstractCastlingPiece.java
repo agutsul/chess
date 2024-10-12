@@ -71,11 +71,10 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         public void castling(PIECE piece, Position position) {
             LOGGER.info("Castling '{}' to '{}'", piece, position);
 
-            var castlingAction = board.getActions(piece).stream()
-                    .filter(action -> Action.Type.CASTLING.equals(action.getType()))
-                    .map(action -> (PieceCastlingAction<?,?,?>) action)
-                    .findFirst()
-                    .get();
+            PieceCastlingAction<?,?,?> castlingAction =
+                    board.getActions(piece, PieceCastlingAction.class).stream()
+                        .findFirst()
+                        .get();
 
             var possiblePositions = Stream.of(castlingAction)
                     .map(action -> {

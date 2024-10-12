@@ -5,8 +5,6 @@ import java.util.Optional;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.PieceCaptureAction;
-import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.impact.Impact;
@@ -20,8 +18,8 @@ public interface Board
     void setState(BoardState state);
     BoardState getState();
 
-    Collection<PieceMoveAction<?,?>> getMoveActions(Piece<Color> piece);
-    Collection<PieceCaptureAction<?,?,?,?>> getCaptureActions(Piece<Color> piece);
+    <ACTION extends Action<?>> Collection<ACTION> filterActions(Collection<Action<?>> actions, Class<ACTION> actionClass);
+    <ACTION extends Action<?>> Collection<ACTION> getActions(Piece<Color> piece, Class<ACTION> actionClass);
 
     Collection<Action<?>> getActions(Piece<Color> piece);
     Collection<Impact<?>> getImpacts(Piece<Color> piece);

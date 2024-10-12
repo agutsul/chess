@@ -1,19 +1,23 @@
 package com.agutsul.chess.board;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
-import static java.util.stream.Collectors.toList;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,9 +27,15 @@ import com.agutsul.chess.Color;
 import com.agutsul.chess.Colors;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
+import com.agutsul.chess.action.PieceCastlingAction;
+import com.agutsul.chess.action.PieceEnPassantAction;
 import com.agutsul.chess.action.PieceMoveAction;
+import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.action.function.CaptureActionFunction;
+import com.agutsul.chess.action.function.CastlingActionFunction;
+import com.agutsul.chess.action.function.EnPassantActionFunction;
 import com.agutsul.chess.action.function.MoveActionFunction;
+import com.agutsul.chess.action.function.PromoteActionFunction;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.DefaultBoardState;
 import com.agutsul.chess.event.Event;
@@ -46,8 +56,7 @@ final class BoardImpl implements Board {
 
     private static final PositionFactory POSITION_FACTORY = PositionFactory.INSTANCE;
 
-    private static final MoveActionFunction MOVE_ACTION_FUNCTION = new MoveActionFunction();
-    private static final CaptureActionFunction CAPTURE_ACTION_FUNCTION = new CaptureActionFunction();
+    private static final Map<Class<?>, Function<?,?>> ACTION_MAPPERS = createActionMappers();
 
     private final List<Observer> observers;
 
@@ -101,15 +110,28 @@ final class BoardImpl implements Board {
     }
 
     @Override
-    public Collection<PieceMoveAction<?,?>> getMoveActions(Piece<Color> piece) {
-        LOGGER.info("Getting move actions for '{}'", piece);
-        return filterMoveActions(getActions(piece));
+    @SuppressWarnings("unchecked")
+    public <ACTION extends Action<?>> Collection<ACTION> filterActions(Collection<Action<?>> actions,
+                                                                       Class<ACTION> actionClass) {
+        var mapperFunction = ACTION_MAPPERS.get(actionClass);
+        if (mapperFunction == null) {
+            return emptyList();
+        }
+
+        var filteredActions = actions.stream()
+                .map((Function<Action<?>, Optional<ACTION>>) mapperFunction)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toList();
+
+        return filteredActions;
     }
 
     @Override
-    public Collection<PieceCaptureAction<?,?,?,?>> getCaptureActions(Piece<Color> piece) {
-        LOGGER.info("Getting capture actions for '{}'", piece);
-        return filterCaptureActions(getActions(piece));
+    public <ACTION extends Action<?>> Collection<ACTION> getActions(Piece<Color> piece,
+                                                                    Class<ACTION> actionClass) {
+        var actions = getActions(piece);
+        return filterActions(actions, actionClass);
     }
 
     @Override
@@ -129,7 +151,7 @@ final class BoardImpl implements Board {
         var king = optionalKing.get();
 
         // filter out check actions only
-        Collection<Action<?>> checkActions = filterCaptureActions(actions).stream()
+        Collection<Action<?>> checkActions = filterActions(actions, PieceCaptureAction.class).stream()
                 .filter(action -> Objects.equals(action.getTarget(), king))
                 .collect(toSet());
 
@@ -264,7 +286,7 @@ final class BoardImpl implements Board {
 
         // check if position is reachable by any attacker move
         var isAttacked = attackerPieces.stream()
-                .map(attacker -> getMoveActions(attacker))
+                .map(attacker -> getActions(attacker, PieceMoveAction.class))
                 .flatMap(Collection::stream)
                 .map(PieceMoveAction::getPosition)
                 .anyMatch(targetPosition -> Objects.equals(targetPosition, position));
@@ -278,7 +300,7 @@ final class BoardImpl implements Board {
 
         var attackerPieces = getPieces(piece.getColor().invert());
         var isAttacked = attackerPieces.stream()
-                .map(attacker -> getCaptureActions(attacker))
+                .map(attacker -> getActions(attacker, PieceCaptureAction.class))
                 .flatMap(Collection::stream)
                 .anyMatch(action -> Objects.equals(action.getTarget(), piece));
 
@@ -292,7 +314,7 @@ final class BoardImpl implements Board {
 
         var attackerPieces = getPieces(piece.getColor().invert());
         Collection<Piece<Color>> attackActions = attackerPieces.stream()
-                .map(attacker -> getCaptureActions(attacker))
+                .map(attacker -> getActions(attacker, PieceCaptureAction.class))
                 .flatMap(Collection::stream)
                 .map(action -> (PieceCaptureAction<Color,Color,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), piece))
@@ -449,23 +471,15 @@ final class BoardImpl implements Board {
         return unmodifiableList(pieces);
     }
 
-    private static Collection<PieceMoveAction<?,?>> filterMoveActions(Collection<Action<?>> actions) {
-        Collection<PieceMoveAction<?,?>> moveActions = actions.stream()
-                .map(MOVE_ACTION_FUNCTION)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(toList());
+    private static Map<Class<?>, Function<?,?>> createActionMappers() {
+        var mappers = new HashMap<Class<?>, Function<?,?>>();
 
-        return moveActions;
-    }
+        mappers.put(PieceCaptureAction.class,   new CaptureActionFunction());
+        mappers.put(PieceMoveAction.class,      new MoveActionFunction());
+        mappers.put(PieceEnPassantAction.class, new EnPassantActionFunction());
+        mappers.put(PieceCastlingAction.class,  new CastlingActionFunction());
+        mappers.put(PiecePromoteAction.class,   new PromoteActionFunction());
 
-    private static Collection<PieceCaptureAction<?,?,?,?>> filterCaptureActions(Collection<Action<?>> actions) {
-        Collection<PieceCaptureAction<?,?,?,?>> captureActions = actions.stream()
-                .map(CAPTURE_ACTION_FUNCTION)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(toList());
-
-        return captureActions;
+        return unmodifiableMap(mappers);
     }
 }

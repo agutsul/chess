@@ -5,8 +5,6 @@ import java.util.Optional;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.PieceCaptureAction;
-import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
@@ -108,13 +106,15 @@ public class BoardProxy
     }
 
     @Override
-    public Collection<PieceMoveAction<?, ?>> getMoveActions(Piece<Color> piece) {
-        return origin.getMoveActions(piece);
+    public <ACTION extends Action<?>> Collection<ACTION> filterActions(Collection<Action<?>> actions,
+                                                                       Class<ACTION> actionClass) {
+        return origin.filterActions(actions, actionClass);
     }
 
     @Override
-    public Collection<PieceCaptureAction<?, ?, ?, ?>> getCaptureActions(Piece<Color> piece) {
-        return origin.getCaptureActions(piece);
+    public <ACTION extends Action<?>> Collection<ACTION> getActions(Piece<Color> piece,
+                                                                    Class<ACTION> actionClass) {
+        return origin.getActions(piece, actionClass);
     }
 
     @Override

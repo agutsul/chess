@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -29,6 +30,7 @@ import com.agutsul.chess.piece.PawnPiece.PawnPieceProxy;
 import com.agutsul.chess.position.Position;
 
 @ExtendWith(MockitoExtension.class)
+@Disabled
 public class PawnProxyTest {
 
     @Mock

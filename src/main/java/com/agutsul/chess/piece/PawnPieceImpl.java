@@ -82,8 +82,7 @@ final class PawnPieceImpl<COLOR extends Color>
         public void enPassant(PIECE piece, PawnPiece<Color> targetPiece, Position targetPosition) {
             LOGGER.info("En-passante '{}' by '{}'", targetPiece, this);
 
-            var isValid = board.getActions(piece).stream()
-                    .filter(action -> Action.Type.EN_PASSANT.equals(action.getType()))
+            var isValid = board.getActions(piece, PieceEnPassantAction.class).stream()
                     .map(action -> (PieceEnPassantAction<?,?,?,?>) action)
                     .anyMatch(action -> Objects.equals(action.getTarget(), targetPiece)
                                 && Objects.equals(action.getPosition(), targetPosition));

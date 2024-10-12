@@ -56,13 +56,13 @@ class ActivePieceState<PIECE extends Piece<Color> & Movable & Capturable>
     public void move(PIECE piece, Position position) {
         LOGGER.info("Move '{}' to '{}'", piece, position);
 
-        var possibleMoves = board.getMoveActions(piece).stream()
+        var possibleMoves = board.getActions(piece, PieceMoveAction.class).stream()
                 .map(PieceMoveAction::getTarget)
                 .collect(toSet());
 
         if (!possibleMoves.contains(position)) {
             throw new IllegalActionException(
-                    String.format("%s invalid move to %s", piece, position)
+                String.format("%s invalid move to %s", piece, position)
             );
         }
 
@@ -74,13 +74,13 @@ class ActivePieceState<PIECE extends Piece<Color> & Movable & Capturable>
     public void capture(PIECE piece, Piece<?> targetPiece) {
         LOGGER.info("Capture '{}' by '{}'", targetPiece, piece);
 
-        var possibleCaptures = board.getCaptureActions(piece).stream()
+        var possibleCaptures = board.getActions(piece, PieceCaptureAction.class).stream()
                 .map(PieceCaptureAction::getTarget)
                 .collect(toSet());
 
         if (!possibleCaptures.contains(targetPiece)) {
             throw new IllegalActionException(
-                    String.format("%s invalid capture of %s", piece, targetPiece)
+                String.format("%s invalid capture of %s", piece, targetPiece)
             );
         }
 
