@@ -151,7 +151,9 @@ final class BoardImpl implements Board {
         var king = optionalKing.get();
 
         // filter out check actions only
-        Collection<Action<?>> checkActions = filterActions(actions, PieceCaptureAction.class).stream()
+        var captureActions = filterActions(actions, PieceCaptureAction.class);
+        Collection<Action<?>> checkActions = captureActions.stream()
+                .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), king))
                 .collect(toSet());
 
