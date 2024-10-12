@@ -24,7 +24,8 @@ import com.agutsul.chess.Colors;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PieceMoveAction;
-import com.agutsul.chess.action.PiecePromoteAction;
+import com.agutsul.chess.action.function.CaptureActionFunction;
+import com.agutsul.chess.action.function.MoveActionFunction;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.DefaultBoardState;
 import com.agutsul.chess.event.Event;
@@ -44,6 +45,9 @@ final class BoardImpl implements Board {
     private static final Logger LOGGER = getLogger(BoardImpl.class);
 
     private static final PositionFactory POSITION_FACTORY = PositionFactory.INSTANCE;
+
+    private static final MoveActionFunction MOVE_ACTION_FUNCTION = new MoveActionFunction();
+    private static final CaptureActionFunction CAPTURE_ACTION_FUNCTION = new CaptureActionFunction();
 
     private final List<Observer> observers;
 
@@ -447,22 +451,9 @@ final class BoardImpl implements Board {
 
     private static Collection<PieceMoveAction<?,?>> filterMoveActions(Collection<Action<?>> actions) {
         Collection<PieceMoveAction<?,?>> moveActions = actions.stream()
-                .map(action -> {
-                    if (Action.Type.MOVE.equals(action.getType())) {
-                        return (PieceMoveAction<?,?>) action;
-                    }
-
-                    if (Action.Type.PROMOTE.equals(action.getType())) {
-                        var sourceAction = ((PiecePromoteAction<?, ?>) action).getSource();
-                        if (Action.Type.MOVE.equals(sourceAction.getType())) {
-                            return (PieceMoveAction<?,?>) sourceAction;
-                        }
-                    }
-
-                    return null;
-                })
-                .filter(Objects::nonNull)
-                .map(action -> (PieceMoveAction<?,?>) action)
+                .map(MOVE_ACTION_FUNCTION)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(toList());
 
         return moveActions;
@@ -470,25 +461,9 @@ final class BoardImpl implements Board {
 
     private static Collection<PieceCaptureAction<?,?,?,?>> filterCaptureActions(Collection<Action<?>> actions) {
         Collection<PieceCaptureAction<?,?,?,?>> captureActions = actions.stream()
-                .map(action -> {
-                    if (Action.Type.CAPTURE.equals(action.getType())
-                            || Action.Type.EN_PASSANT.equals(action.getType())) {
-
-                        return (PieceCaptureAction<?,?,?,?>) action;
-                    }
-
-                    if (Action.Type.PROMOTE.equals(action.getType())) {
-                        var sourceAction = ((PiecePromoteAction<?,?>) action).getSource();
-
-                        if (Action.Type.CAPTURE.equals(sourceAction.getType())) {
-                            return (PieceCaptureAction<?,?,?,?>) sourceAction;
-                        }
-                    }
-
-                    return null;
-                })
-                .filter(Objects::nonNull)
-                .map(action -> (PieceCaptureAction<?,?,?,?>) action)
+                .map(CAPTURE_ACTION_FUNCTION)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .collect(toList());
 
         return captureActions;
