@@ -6,7 +6,7 @@ import java.util.function.Function;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceEnPassantAction;
 
-public final class EnPassantActionFunction
+final class EnPassantActionFunction
         implements Function<Action<?>, Optional<PieceEnPassantAction<?,?,?,?>>>{
 
     @Override

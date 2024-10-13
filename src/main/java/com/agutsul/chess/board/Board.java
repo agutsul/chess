@@ -18,7 +18,6 @@ public interface Board
     void setState(BoardState state);
     BoardState getState();
 
-    <ACTION extends Action<?>> Collection<ACTION> filterActions(Collection<Action<?>> actions, Class<ACTION> actionClass);
     <ACTION extends Action<?>> Collection<ACTION> getActions(Piece<Color> piece, Class<ACTION> actionClass);
 
     Collection<Action<?>> getActions(Piece<Color> piece);

@@ -6,7 +6,7 @@ import java.util.function.Function;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PiecePromoteAction;
 
-public final class PromoteActionFunction
+final class PromoteActionFunction
         implements Function<Action<?>, Optional<PiecePromoteAction<?,?>>> {
 
     @Override

@@ -10,6 +10,7 @@ import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PieceMoveAction;
+import com.agutsul.chess.action.function.ActionFilter;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
@@ -38,7 +39,9 @@ final class KingMoveCheckActionEvaluator<COLOR extends Color,
                 .filter(action -> !action.getAttackLine().isEmpty())
                 .collect(toSet());
 
-        var pieceMoveActions = board.filterActions(pieceActions, PieceMoveAction.class);
+        var actionFilter = new ActionFilter<>(PieceMoveAction.class);
+        var pieceMoveActions = actionFilter.apply(this.pieceActions);
+
         var attackerColor = king.getColor().invert();
 
         var actions = new HashSet<Action<?>>();

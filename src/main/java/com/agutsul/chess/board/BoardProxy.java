@@ -106,12 +106,6 @@ public class BoardProxy
     }
 
     @Override
-    public <ACTION extends Action<?>> Collection<ACTION> filterActions(Collection<Action<?>> actions,
-                                                                       Class<ACTION> actionClass) {
-        return origin.filterActions(actions, actionClass);
-    }
-
-    @Override
     public <ACTION extends Action<?>> Collection<ACTION> getActions(Piece<Color> piece,
                                                                     Class<ACTION> actionClass) {
         return origin.getActions(piece, actionClass);

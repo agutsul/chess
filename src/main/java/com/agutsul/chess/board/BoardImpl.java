@@ -1,23 +1,18 @@
 package com.agutsul.chess.board;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
@@ -27,15 +22,8 @@ import com.agutsul.chess.Color;
 import com.agutsul.chess.Colors;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
-import com.agutsul.chess.action.PieceCastlingAction;
-import com.agutsul.chess.action.PieceEnPassantAction;
 import com.agutsul.chess.action.PieceMoveAction;
-import com.agutsul.chess.action.PiecePromoteAction;
-import com.agutsul.chess.action.function.CaptureActionFunction;
-import com.agutsul.chess.action.function.CastlingActionFunction;
-import com.agutsul.chess.action.function.EnPassantActionFunction;
-import com.agutsul.chess.action.function.MoveActionFunction;
-import com.agutsul.chess.action.function.PromoteActionFunction;
+import com.agutsul.chess.action.function.ActionFilter;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.DefaultBoardState;
 import com.agutsul.chess.event.Event;
@@ -55,8 +43,6 @@ final class BoardImpl implements Board {
     private static final Logger LOGGER = getLogger(BoardImpl.class);
 
     private static final PositionFactory POSITION_FACTORY = PositionFactory.INSTANCE;
-
-    private static final Map<Class<?>, Function<?,?>> ACTION_MAPPERS = createActionMappers();
 
     private final List<Observer> observers;
 
@@ -110,28 +96,14 @@ final class BoardImpl implements Board {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <ACTION extends Action<?>> Collection<ACTION> filterActions(Collection<Action<?>> actions,
-                                                                       Class<ACTION> actionClass) {
-        var mapperFunction = ACTION_MAPPERS.get(actionClass);
-        if (mapperFunction == null || actions == null) {
-            return emptyList();
-        }
-
-        var filteredActions = actions.stream()
-                .map((Function<Action<?>, Optional<ACTION>>) mapperFunction)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toList();
-
-        return filteredActions;
-    }
-
-    @Override
     public <ACTION extends Action<?>> Collection<ACTION> getActions(Piece<Color> piece,
                                                                     Class<ACTION> actionClass) {
-        var actions = getActions(piece);
-        return filterActions(actions, actionClass);
+        LOGGER.info("Getting actions for '{}' and type '{}'", piece, actionClass.getSimpleName());
+
+        var actionFilter = new ActionFilter<>(actionClass);
+        var filteredActions = actionFilter.apply(getActions(piece));
+
+        return filteredActions;
     }
 
     @Override
@@ -151,7 +123,9 @@ final class BoardImpl implements Board {
         var king = optionalKing.get();
 
         // filter out check actions only
-        var captureActions = filterActions(actions, PieceCaptureAction.class);
+        var actionFilter = new ActionFilter<>(PieceCaptureAction.class);
+        var captureActions = actionFilter.apply(actions);
+
         Collection<Action<?>> checkActions = captureActions.stream()
                 .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), king))
@@ -471,17 +445,5 @@ final class BoardImpl implements Board {
         pieces.add(pieceFactory.createRook(POSITION_FACTORY.createPosition(Position.MAX - 1, pieceY)));
 
         return unmodifiableList(pieces);
-    }
-
-    private static Map<Class<?>, Function<?,?>> createActionMappers() {
-        var mappers = new HashMap<Class<?>, Function<?,?>>(5);
-
-        mappers.put(PieceCaptureAction.class,   new CaptureActionFunction());
-        mappers.put(PieceMoveAction.class,      new MoveActionFunction());
-        mappers.put(PieceEnPassantAction.class, new EnPassantActionFunction());
-        mappers.put(PieceCastlingAction.class,  new CastlingActionFunction());
-        mappers.put(PiecePromoteAction.class,   new PromoteActionFunction());
-
-        return unmodifiableMap(mappers);
     }
 }

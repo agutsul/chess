@@ -6,7 +6,7 @@ import java.util.function.Function;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCastlingAction;
 
-public final class CastlingActionFunction
+final class CastlingActionFunction
         implements Function<Action<?>, Optional<PieceCastlingAction<?,?,?>>> {
 
     @Override

@@ -7,6 +7,7 @@ import java.util.Objects;
 import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
+import com.agutsul.chess.action.function.ActionFilter;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
@@ -28,7 +29,9 @@ final class AttackerCaptureCheckActionEvaluator<COLOR extends Color,
     @Override
     @SuppressWarnings("unchecked")
     public Collection<Action<?>> evaluate(KING king) {
-        var pieceCaptureActions = board.filterActions(pieceActions, PieceCaptureAction.class);
+        var actionFilter = new ActionFilter<>(PieceCaptureAction.class);
+        var pieceCaptureActions = actionFilter.apply(this.pieceActions);
+
         var attackers = board.getAttackers((Piece<Color>) king);
 
         var actions = new HashSet<Action<?>>();
