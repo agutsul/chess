@@ -37,12 +37,14 @@ public final class ActionFilter<ACTION extends Action<?>>
             return emptyList();
         }
 
-        Function<Action<?>,?> function = ActionFunctionMapper.get((Class<Action<?>>) this.actionClass);
+        var function = ActionFunctionMapper.get((Class<Action<?>>) this.actionClass);
         if (function == null) {
-            LOGGER.warn("Unknown action filtration for action class: '{}'", this.actionClass.getName());
+            LOGGER.warn("Unknown filtration for action class: '{}'",
+                    this.actionClass.getName()
+                );
+
             return emptyList();
         }
-
 
         var filteredActions = actions.stream()
                 .map((Function<Action<?>, Optional<ACTION>>) function)
