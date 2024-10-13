@@ -2,12 +2,15 @@ package com.agutsul.chess.action.function;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toMap;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
+import org.slf4j.Logger;
 
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
@@ -19,22 +22,30 @@ import com.agutsul.chess.action.PiecePromoteAction;
 public final class ActionFilter<ACTION extends Action<?>>
         implements Function<Collection<Action<?>>, Collection<ACTION>> {
 
-    private Function<Action<?>,?> function;
+    private static final Logger LOGGER = getLogger(ActionFilter.class);
 
-    @SuppressWarnings("unchecked")
+    private final Class<ACTION> actionClass;
+
     public ActionFilter(Class<ACTION> actionClass) {
-        this.function = ActionFunctionMapper.get((Class<Action<?>>) actionClass);
+        this.actionClass = actionClass;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Collection<ACTION> apply(Collection<Action<?>> actions) {
-        if (this.function == null || actions == null || actions.isEmpty()) {
+        if (actions == null || actions.isEmpty()) {
             return emptyList();
         }
 
-        @SuppressWarnings("unchecked")
+        Function<Action<?>,?> function = ActionFunctionMapper.get((Class<Action<?>>) this.actionClass);
+        if (function == null) {
+            LOGGER.warn("Unknown action filtration for action class: '{}'", this.actionClass.getName());
+            return emptyList();
+        }
+
+
         var filteredActions = actions.stream()
-                .map((Function<Action<?>, Optional<ACTION>>) this.function)
+                .map((Function<Action<?>, Optional<ACTION>>) function)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();
@@ -42,7 +53,7 @@ public final class ActionFilter<ACTION extends Action<?>>
         return filteredActions;
     }
 
-    enum ActionFunctionMapper {
+    private enum ActionFunctionMapper {
         MOVE(PieceMoveAction.class,            new MoveActionFunction()),
         CAPTURE(PieceCaptureAction.class,      new CaptureActionFunction()),
         EN_PASSANT(PieceEnPassantAction.class, new EnPassantActionFunction()),
