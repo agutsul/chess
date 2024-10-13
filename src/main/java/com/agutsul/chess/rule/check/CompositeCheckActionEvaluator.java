@@ -20,11 +20,11 @@ import com.agutsul.chess.piece.Piece;
 
 public final class CompositeCheckActionEvaluator<COLOR extends Color,
                                                  KING extends KingPiece<COLOR>>
-        implements CheckActionEvalutor<COLOR, KING> {
+        implements CheckActionEvaluator<COLOR, KING> {
 
     private static final Logger LOGGER = getLogger(CompositeCheckActionEvaluator.class);
 
-    private final List<CheckActionEvalutor<COLOR, KING>> evaluators;
+    private final List<CheckActionEvaluator<COLOR, KING>> evaluators;
 
     public CompositeCheckActionEvaluator(Board board,
                                          Piece.Type pieceType,
