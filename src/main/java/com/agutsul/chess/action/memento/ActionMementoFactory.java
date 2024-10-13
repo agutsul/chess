@@ -41,7 +41,7 @@ public enum ActionMementoFactory {
     }
 
     private ActionMemento create(PieceCastlingAction<?, ?, ?> action) {
-        var subAction = action.kingCastlingAction();
+        var subAction = action.getKingCastlingAction();
         return new ActionMemento(subAction.getSource().getPosition(), action.getPosition());
     }
 

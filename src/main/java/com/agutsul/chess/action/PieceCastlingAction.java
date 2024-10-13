@@ -43,7 +43,7 @@ public class PieceCastlingAction<COLOR extends Color,
 
     @Override
     public void execute() {
-        var castlingAction = kingCastlingAction();
+        var castlingAction = getKingCastlingAction();
 
         LOGGER.info("Executing castling '{}' by '{}'",
                 castlingAction.getTarget(), castlingAction.getSource());
@@ -54,13 +54,13 @@ public class PieceCastlingAction<COLOR extends Color,
     @Override
     // returns king's target position
     public Position getPosition() {
-        return kingCastlingAction().getPosition();
+        return getKingCastlingAction().getPosition();
     }
 
     // returns king related part of castling action
     // potentially king can be in both source and target sub-actions
     // king related part allows to identify what kind of castling it is
-    public CastlingMoveAction<?,?> kingCastlingAction() {
+    public CastlingMoveAction<?,?> getKingCastlingAction() {
         return Stream.of(getSource(), getTarget())
                 .filter(action -> Piece.Type.KING.equals(action.getSource().getType()))
                 .findFirst()

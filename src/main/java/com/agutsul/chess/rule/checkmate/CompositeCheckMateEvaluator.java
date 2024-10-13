@@ -35,10 +35,10 @@ public final class CompositeCheckMateEvaluator<COLOR extends Color,
     public Boolean evaluate(KING king) {
         var results = new ArrayList<Boolean>();
 
-        var executor = newFixedThreadPool(evaluators.size());
+        var executor = newFixedThreadPool(this.evaluators.size());
         try {
-            var tasks = evaluators.stream()
-                    .map(evaluator -> new CheckMateEvaluatorTask<COLOR, KING>(king, evaluator))
+            var tasks = this.evaluators.stream()
+                    .map(evaluator -> new CheckMateEvaluatorTask<>(king, evaluator))
                     .toList();
 
             try {
@@ -61,7 +61,7 @@ public final class CompositeCheckMateEvaluator<COLOR extends Color,
             }
         }
 
-        var isCheckMated = !results.isEmpty() && !results.contains(true);
+        var isCheckMated = results.size() == this.evaluators.size() && !results.contains(true);
         LOGGER.info("Checkmate evaluation is done: checkMated='{}'", isCheckMated);
 
         return isCheckMated;

@@ -1,5 +1,7 @@
 package com.agutsul.chess.rule.check;
 
+import static java.util.Collections.emptyList;
+import static java.util.concurrent.Executors.newFixedThreadPool;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
@@ -7,7 +9,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -39,11 +40,9 @@ public final class CompositeCheckActionEvaluator<COLOR extends Color,
 
     @Override
     public Collection<Action<?>> evaluate(KING king) {
-        var results = new ArrayList<Action<?>>();
-
-        var executor = Executors.newFixedThreadPool(evaluators.size());
+        var executor = newFixedThreadPool(this.evaluators.size());
         try {
-            var tasks = evaluators.stream()
+            var tasks = this.evaluators.stream()
                     .map(evaluator -> new Callable<Collection<Action<?>>>() {
                         @Override
                         public Collection<Action<?>> call() throws Exception {
@@ -53,9 +52,12 @@ public final class CompositeCheckActionEvaluator<COLOR extends Color,
                     .toList();
 
             try {
+                var results = new ArrayList<Action<?>>();
                 for (var future : executor.invokeAll(tasks)) {
                     results.addAll(future.get());
                 }
+
+                return results;
             } catch (InterruptedException e) {
                 LOGGER.error("Check action evaluation interrupted", e);
             } catch (ExecutionException e) {
@@ -72,6 +74,6 @@ public final class CompositeCheckActionEvaluator<COLOR extends Color,
             }
         }
 
-        return results;
+        return emptyList();
     }
 }
