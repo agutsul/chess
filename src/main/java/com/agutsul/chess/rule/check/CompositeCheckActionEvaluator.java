@@ -28,11 +28,11 @@ public final class CompositeCheckActionEvaluator<COLOR extends Color,
     private final List<CheckActionEvaluator<COLOR, KING>> evaluators;
 
     public CompositeCheckActionEvaluator(Board board,
-                                         Piece.Type pieceType,
+                                         Piece<COLOR> piece,
                                          Collection<Action<?>> actions) {
         this.evaluators = List.of(
                 new AttackerCaptureCheckActionEvaluator<>(board, actions),
-                Piece.Type.KING.equals(pieceType)
+                Piece.Type.KING.equals(piece.getType())
                     ? new KingMoveCheckActionEvaluator<>(board, actions)
                     : new AttackerPinCheckActionEvaluator<>(board, actions)
         );

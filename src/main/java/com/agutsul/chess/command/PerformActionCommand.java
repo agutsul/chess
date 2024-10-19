@@ -32,7 +32,7 @@ public class PerformActionCommand
     private Position targetPosition;
 
     private Action<?> action;
-    private ActionMemento memento;
+    private ActionMemento<?,?> memento;
 
     public PerformActionCommand(Board board, Observable observable) {
         this.board = board;
@@ -60,7 +60,7 @@ public class PerformActionCommand
     }
 
     @Override
-    protected void preExecute() {
+    protected void preExecute() throws CommandException {
         var targetAction = board.getActions(sourcePiece).stream()
                 .filter(action -> Objects.equals(action.getPosition(), this.targetPosition))
                 .findFirst();

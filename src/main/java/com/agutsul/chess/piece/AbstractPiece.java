@@ -13,17 +13,18 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
+import com.agutsul.chess.action.event.ActionCancelledEvent;
 import com.agutsul.chess.action.event.ActionPerformedEvent;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
+import com.agutsul.chess.exception.IllegalPositionException;
 import com.agutsul.chess.impact.Impact;
-import com.agutsul.chess.piece.state.AbstractPieceState;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
 abstract class AbstractPiece<COLOR extends Color>
-        implements Piece<COLOR>, Movable, Capturable, Disposable {
+        implements Piece<COLOR>, Movable, Capturable, Disposable, Restorable {
 
     private static final Logger LOGGER = getLogger(AbstractPiece.class);
 
@@ -38,11 +39,13 @@ abstract class AbstractPiece<COLOR extends Color>
     private final Type type;
     private final COLOR color;
     private final String unicode;
-    private final ActionEventObserver observer;
 
     protected final Board board;
 
-    protected AbstractPieceState<AbstractPiece<Color>> state;
+    protected final AbstractPieceState<AbstractPiece<Color>> activeState;
+    protected AbstractPieceState<AbstractPiece<Color>> currentState;
+
+    private ActionEventObserver observer;
 
     @SuppressWarnings("unchecked")
     AbstractPiece(Board board, Type type, COLOR color, String unicode, Position position,
@@ -56,7 +59,9 @@ abstract class AbstractPiece<COLOR extends Color>
         this.type = type;
         this.color = color;
         this.unicode = unicode;
-        this.state = (AbstractPieceState<AbstractPiece<Color>>) state;
+
+        this.activeState = (AbstractPieceState<AbstractPiece<Color>>) state;
+        this.currentState = this.activeState;
 
         setPosition(position);
     }
@@ -64,7 +69,7 @@ abstract class AbstractPiece<COLOR extends Color>
     @Override
     @SuppressWarnings("unchecked")
     public final PieceState<Piece<Color>> getState() {
-        return (PieceState<Piece<Color>>) (PieceState<?>) this.state;
+        return (PieceState<Piece<Color>>) (PieceState<?>) this.currentState;
     }
 
     @Override
@@ -73,7 +78,7 @@ abstract class AbstractPiece<COLOR extends Color>
         LOGGER.info("Get '{}' actions", this);
 
         if (this.actions.isEmpty()) {
-            this.actions.addAll(this.state.calculateActions((AbstractPiece<Color>) this));
+            this.actions.addAll(this.currentState.calculateActions((AbstractPiece<Color>) this));
         }
 
         return this.actions;
@@ -85,7 +90,7 @@ abstract class AbstractPiece<COLOR extends Color>
         LOGGER.info("Get '{}' impacts", this);
 
         if (this.impacts.isEmpty()) {
-            this.impacts.addAll(this.state.calculateImpacts((AbstractPiece<Color>) this));
+            this.impacts.addAll(this.currentState.calculateImpacts((AbstractPiece<Color>) this));
         }
 
         return this.impacts;
@@ -95,14 +100,28 @@ abstract class AbstractPiece<COLOR extends Color>
     @SuppressWarnings("unchecked")
     public final void move(Position position) {
         LOGGER.info("'{}' moves to '{}'", this, position);
-        this.state.move((AbstractPiece<Color>) this, position);
+        this.currentState.move((AbstractPiece<Color>) this, position);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public final void unmove(Position position) {
+        LOGGER.info("'{}' unmove to '{}'", this, position);
+        this.currentState.unmove((AbstractPiece<Color>) this, position);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public final void capture(Piece<?> piece) {
         LOGGER.info("'{}' captures '{}'", this, piece);
-        this.state.capture((AbstractPiece<Color>) this, piece);
+        this.currentState.capture((AbstractPiece<Color>) this, piece);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public final void uncapture(Piece<?> piece) {
+        LOGGER.info("'{}' uncaptures '{}'", this, piece);
+        this.currentState.uncapture((AbstractPiece<Color>) this, piece);
     }
 
     @Override
@@ -146,7 +165,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
     @Override
     public final boolean isActive() {
-        return PieceState.Type.ACTIVE.equals(this.state.getType());
+        return PieceState.Type.ACTIVE.equals(this.currentState.getType());
     }
 
     @Override
@@ -156,7 +175,19 @@ abstract class AbstractPiece<COLOR extends Color>
         clearCalculatedData();
 
         this.board.removeObserver(this.observer);
-        this.state = DISPOSED_STATE;
+        this.currentState = DISPOSED_STATE;
+    }
+
+    @Override
+    public void restore() {
+        LOGGER.info("Restoring '{}'", this);
+
+        clearCalculatedData();
+
+        this.observer = new ActionEventObserver();
+        this.board.addObserver(this.observer);
+
+        this.currentState = this.activeState;
     }
 
     @Override
@@ -203,9 +234,27 @@ abstract class AbstractPiece<COLOR extends Color>
         setPosition(position);
     }
 
+    final void cancelMove(Position position) {
+        if (!this.positions.contains(position)) {
+            var message = String.format("Unable to cancel unvisited position '%s'", position);
+            throw new IllegalPositionException(message);
+        }
+
+        var lastPosition = this.positions.removeLast();
+        LOGGER.info("Cancelled move to '{}'", lastPosition);
+
+        // no need to set previous position as it is already the last item in positions array
+    }
+
     final void doCapture(Piece<?> piece) {
-        setPosition(piece.getPosition());
         ((Disposable) piece).dispose();
+        doMove(piece.getPosition());
+    }
+
+    final void cancelCapture(Piece<?> piece) {
+        cancelMove(getPosition());
+        // no need to set previous position as it is already the last item in positions array
+        ((Restorable) piece).restore();
     }
 
     final void clearCalculatedData() {
@@ -218,7 +267,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
         @Override
         public void observe(Event event) {
-            if (event instanceof ActionPerformedEvent) {
+            if (event instanceof ActionPerformedEvent || event instanceof ActionCancelledEvent) {
                 // clear cached calculated actions and impacts
                 // to force its recalculation for the new board state
                 clearCalculatedData();

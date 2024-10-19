@@ -26,19 +26,17 @@ public final class CheckedBoardState
     public Collection<Action<?>> getActions(Piece<Color> piece) {
         LOGGER.info("Getting actions for piece '{}'", piece);
 
-        var allPieceActions = piece.getActions();
+        var actions = piece.getActions();
         if (!Objects.equals(piece.getColor(), color)) {
-            return allPieceActions;
+            return actions;
         }
 
         var optionalKing = board.getKing(color);
         if (optionalKing.isEmpty()) {
-            return allPieceActions;
+            return actions;
         }
 
-        var evaluator = new CompositeCheckActionEvaluator<>(board,
-                                                            piece.getType(),
-                                                            allPieceActions);
+        var evaluator = new CompositeCheckActionEvaluator<>(board, piece, actions);
         return evaluator.evaluate(optionalKing.get());
     }
 }

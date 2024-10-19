@@ -10,4 +10,5 @@ public interface MovablePieceState<PIECE extends Piece<Color> & Movable>
         extends State<PIECE> {
 
     void move(PIECE piece, Position position);
+    void unmove(PIECE piece, Position position);
 }

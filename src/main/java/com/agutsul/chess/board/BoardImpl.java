@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.Colors;
+import com.agutsul.chess.action.AbstractCaptureAction;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PieceMoveAction;
@@ -127,7 +128,7 @@ final class BoardImpl implements Board {
         var captureActions = actionFilter.apply(actions);
 
         Collection<Action<?>> checkActions = captureActions.stream()
-                .map(action -> (PieceCaptureAction<?,?,?,?>) action)
+                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), king))
                 .collect(toSet());
 
@@ -230,6 +231,23 @@ final class BoardImpl implements Board {
     }
 
     @Override
+    public Optional<Piece<Color>> getCapturedPiece(String position) {
+        LOGGER.info("Getting captured piece at '{}'", position);
+
+        var optionalPosition = getPosition(position);
+        if (optionalPosition.isEmpty()) {
+            return Optional.empty();
+        }
+
+        var foundPiece = this.pieces.stream()
+                .filter(piece -> Objects.equals(piece.getPosition(), optionalPosition.get()))
+                .filter(piece -> !piece.isActive())
+                .findFirst();
+
+        return foundPiece;
+    }
+
+    @Override
     public Optional<KingPiece<Color>> getKing(Color color) {
         LOGGER.info("Getting king of '{}'", color);
 
@@ -292,9 +310,9 @@ final class BoardImpl implements Board {
         Collection<Piece<Color>> attackActions = attackerPieces.stream()
                 .map(attacker -> getActions(attacker, PieceCaptureAction.class))
                 .flatMap(Collection::stream)
-                .map(action -> (PieceCaptureAction<Color,Color,?,?>) action)
+                .map(action -> (AbstractCaptureAction<Color,Color,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), piece))
-                .map(PieceCaptureAction::getSource)
+                .map(AbstractCaptureAction::getSource)
                 .collect(toSet());
 
         return attackActions;

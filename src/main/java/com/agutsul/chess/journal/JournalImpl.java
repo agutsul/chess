@@ -21,6 +21,12 @@ public class JournalImpl<MEMENTO extends Memento>
     }
 
     @Override
+    public void remove(int index) {
+        LOGGER.info("Journal remove memento by index '{}'", index);
+        this.list.remove(index);
+    }
+
+    @Override
     public MEMENTO get(int index) {
         LOGGER.info("Journal get memento '{}'", index);
         return this.list.get(index);

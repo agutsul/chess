@@ -71,7 +71,7 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
         protected PiecePromoteAction<COLOR1, PAWN> createAction(
                                      PieceCaptureAction<COLOR1, COLOR2, PAWN, PIECE> sourceAction) {
 
-            return new PiecePromoteAction<COLOR1, PAWN>(board, sourceAction);
+            return new PiecePromoteAction<COLOR1, PAWN>(sourceAction, board);
         }
     }
 
@@ -97,7 +97,7 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
         protected PiecePromoteAction<COLOR1, PAWN> createAction(
                                   PieceMoveAction<COLOR1, PAWN> sourceAction) {
 
-            return new PiecePromoteAction<COLOR1, PAWN>(board, sourceAction);
+            return new PiecePromoteAction<COLOR1, PAWN>(sourceAction, board);
         }
     }
 }

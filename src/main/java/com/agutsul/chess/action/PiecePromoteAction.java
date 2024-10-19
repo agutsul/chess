@@ -11,15 +11,15 @@ import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.Promotable;
 import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
-import com.agutsul.chess.position.Position;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class PiecePromoteAction<COLOR1 extends Color,
-                                PAWN extends PawnPiece<COLOR1>>
-        extends AbstractSourceAction<AbstractTargetAction<PAWN, ?>>
+                                PIECE1 extends PawnPiece<COLOR1>>
+        extends AbstractPromoteAction<COLOR1,PIECE1>
         implements Observer {
 
     private static final Logger LOGGER = getLogger(PiecePromoteAction.class);
@@ -27,29 +27,17 @@ public class PiecePromoteAction<COLOR1 extends Color,
     @SuppressFBWarnings("EI_EXPOSE_REP2")
     private final Observable observable;
 
-    public PiecePromoteAction(Observable observable,
-                              PieceMoveAction<COLOR1,PAWN> source) {
-
-        super(Type.PROMOTE, source);
+    public PiecePromoteAction(PieceMoveAction<COLOR1,PIECE1> action,
+                              Observable observable) {
+        super(action);
         this.observable = observable;
     }
 
-    public <COLOR2 extends Color, PIECE extends Piece<COLOR2> & Capturable>
-            PiecePromoteAction(Observable observable,
-                               PieceCaptureAction<COLOR1,COLOR2,PAWN,PIECE> source) {
-
-        super(Type.PROMOTE, source);
+    public <COLOR2 extends Color, PIECE2 extends Piece<COLOR2> & Capturable>
+            PiecePromoteAction(PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2> action,
+                               Observable observable) {
+        super(action);
         this.observable = observable;
-    }
-
-    @Override
-    public String getCode() {
-        return String.format("%s?", getSource());
-    }
-
-    @Override
-    public Position getPosition() {
-        return getSource().getPosition();
     }
 
     @Override
@@ -69,8 +57,8 @@ public class PiecePromoteAction<COLOR1 extends Color,
     // actual piece promotion entry point
     private void process(PromotionPieceTypeEvent event) {
         LOGGER.info("Executing promote by '{}' to '{}'",
-                getSource().getSource(),
-                event.getPieceType()
+            getSource().getSource(),
+            event.getPieceType()
         );
 
         // source action can be either MOVE or CAPTURE
@@ -78,7 +66,7 @@ public class PiecePromoteAction<COLOR1 extends Color,
         originAction.execute();
 
         // transform pawn into selected piece type
-        PAWN pawn = originAction.getSource();
-        pawn.promote(getPosition(), event.getPieceType());
+        var pawn = originAction.getSource();
+        ((Promotable) pawn).promote(getPosition(), event.getPieceType());
     }
 }

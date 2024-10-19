@@ -9,4 +9,5 @@ public interface CapturablePieceState<PIECE extends Piece<Color> & Capturable>
         extends State<PIECE> {
 
     void capture(PIECE piece, Piece<?> targetPiece);
+    void uncapture(PIECE piece, Piece<?> targetPiece);
 }

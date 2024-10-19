@@ -26,8 +26,7 @@ final class KingPieceImpl<COLOR extends Color>
                 new KingPieceImpactRule(board)
         );
 
-        this.checkMateEvaluator =
-                new CompositeCheckMateEvaluator<COLOR, KingPiece<COLOR>>(board);
+        this.checkMateEvaluator = new CompositeCheckMateEvaluator<>(board);
     }
 
     @Override
@@ -50,5 +49,10 @@ final class KingPieceImpl<COLOR extends Color>
     @Override
     public void dispose() {
         throw new UnsupportedOperationException("Unable to dispose KING piece");
+    }
+
+    @Override
+    public void restore() {
+        throw new UnsupportedOperationException("Unable to restore KING piece");
     }
 }

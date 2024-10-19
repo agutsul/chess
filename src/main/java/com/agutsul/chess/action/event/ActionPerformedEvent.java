@@ -6,13 +6,13 @@ import com.agutsul.chess.event.Event;
 public class ActionPerformedEvent
         implements Event {
 
-    private final ActionMemento actionMemento;
+    private final ActionMemento<?,?> actionMemento;
 
-    public ActionPerformedEvent(ActionMemento actionMemento) {
+    public ActionPerformedEvent(ActionMemento<?,?> actionMemento) {
         this.actionMemento = actionMemento;
     }
 
-    public ActionMemento getActionMemento() {
+    public ActionMemento<?,?> getActionMemento() {
         return actionMemento;
     }
 }

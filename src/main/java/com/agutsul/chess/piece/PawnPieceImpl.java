@@ -15,7 +15,6 @@ import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.piece.pawn.PawnPieceActionRule;
 import com.agutsul.chess.piece.pawn.PawnPieceImpactRule;
-import com.agutsul.chess.piece.state.AbstractPieceState;
 import com.agutsul.chess.piece.state.EnPassantablePieceState;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.Rule;
@@ -44,7 +43,7 @@ final class PawnPieceImpl<COLOR extends Color>
     @SuppressWarnings({ "unchecked" })
     public void dispose() {
         super.dispose();
-        this.state = (AbstractPieceState<AbstractPiece<Color>>) DISPOSED_STATE;
+        this.currentState = (AbstractPieceState<AbstractPiece<Color>>) DISPOSED_STATE;
     }
 
     @Override
@@ -59,28 +58,63 @@ final class PawnPieceImpl<COLOR extends Color>
         dispose();
     }
 
+//    @Override
+//    public void unpromote(Position targetPosition, Type pieceType) {
+//        LOGGER.info("Undo promote origin pawn '{}' to '{}'", this, pieceType);
+//
+//        // restore origin pawn on board
+//        restore();
+//    }
+
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void enPassant(PawnPiece<?> targetPiece, Position targetPosition) {
-        ((EnPassantablePieceState) state).enPassant(this, targetPiece, targetPosition);
+    public void enpassant(PawnPiece<?> targetPiece, Position targetPosition) {
+        ((EnPassantablePieceState) this.currentState).enpassant(this, targetPiece, targetPosition);
     }
 
-    static final class PawnActivePieceState<PIECE extends PawnPiece<Color>>
-            extends ActivePieceState<PIECE>
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void unenpassant(PawnPiece<?> targetPiece) {
+        ((EnPassantablePieceState) this.currentState).unenpassant(this, targetPiece);
+    }
+
+    static abstract class AbstractEnPassantablePieceState<PIECE extends PawnPiece<Color>>
+            extends AbstractPieceStateProxy<PIECE>
             implements EnPassantablePieceState<PIECE> {
 
-        private static final Logger LOGGER = getLogger(PawnActivePieceState.class);
+        private static final Logger LOGGER = getLogger(AbstractEnPassantablePieceState.class);
 
-        PawnActivePieceState(Board board,
-                             Rule<Piece<Color>, Collection<Action<?>>> actionRule,
-                             Rule<Piece<Color>, Collection<Impact<?>>> impactRule) {
-            super(board, actionRule, impactRule);
+        AbstractEnPassantablePieceState(AbstractPieceState<PIECE> originState) {
+            super(originState);
         }
 
         @Override
         @SuppressWarnings("unchecked")
-        public void enPassant(PIECE piece, PawnPiece<Color> targetPiece, Position targetPosition) {
-            LOGGER.info("En-passante '{}' by '{}'", targetPiece, this);
+        public void unenpassant(PIECE piece, PawnPiece<Color> targetPiece) {
+            LOGGER.info("Undo en-passante '{}' by '{}'", targetPiece, piece);
+            ((AbstractPiece<Color>) piece).cancelCapture(targetPiece);
+        }
+    }
+
+    static final class PawnActivePieceState<PIECE extends PawnPiece<Color>>
+            extends AbstractEnPassantablePieceState<PIECE> {
+
+        private static final Logger LOGGER = getLogger(PawnActivePieceState.class);
+
+        private final Board board;
+
+        PawnActivePieceState(Board board,
+                             Rule<Piece<Color>, Collection<Action<?>>> actionRule,
+                             Rule<Piece<Color>, Collection<Impact<?>>> impactRule) {
+
+            super(new ActivePieceState<>(board, actionRule, impactRule));
+            this.board = board;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public void enpassant(PIECE piece, PawnPiece<Color> targetPiece, Position targetPosition) {
+            LOGGER.info("En-passante '{}' by '{}'", targetPiece, piece);
 
             var isValid = board.getActions(piece, PieceEnPassantAction.class).stream()
                     .map(action -> (PieceEnPassantAction<?,?,?,?>) action)
@@ -89,8 +123,8 @@ final class PawnPieceImpl<COLOR extends Color>
 
             if (!isValid) {
                 throw new IllegalActionException(
-                        String.format("%s invalid en passant of %s", piece, targetPosition)
-                    );
+                    String.format("%s invalid en passant of %s", piece, targetPosition)
+                );
             }
 
             // remove target pawn from board
@@ -100,14 +134,17 @@ final class PawnPieceImpl<COLOR extends Color>
         }
     }
 
-    static final class PawnDisposedPieceState<PIECE extends AbstractPiece<Color> & PawnPiece<Color>>
-            extends DisposedPieceState<PIECE>
-            implements EnPassantablePieceState<PIECE> {
+    static final class PawnDisposedPieceState<PIECE extends PawnPiece<Color>>
+            extends AbstractEnPassantablePieceState<PIECE> {
 
         private static final Logger LOGGER = getLogger(PawnDisposedPieceState.class);
 
+        PawnDisposedPieceState() {
+            super(new DisposedPieceState<>());
+        }
+
         @Override
-        public void enPassant(PIECE piece, PawnPiece<Color> targetPiece, Position targetPosition) {
+        public void enpassant(PIECE piece, PawnPiece<Color> targetPiece, Position targetPosition) {
             LOGGER.info("En-passante '{}' by '{}'", targetPiece, this);
             // do nothing
         }

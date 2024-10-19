@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.Colors;
+import com.agutsul.chess.piece.Disposable;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.position.PositionFactory;
@@ -159,6 +160,19 @@ public class BoardImplTest {
         var file = new File(getClass().getClassLoader().getResource(fileName).toURI());
         var standardBoard = Files.readString(file.toPath());
         assertEquals(standardBoard, board.toString());
+    }
+
+    @Test
+    void testGetCapturedPiece() {
+        var board = new BoardBuilder()
+                .withWhitePawn("a2")
+                .build();
+
+        var pawn = board.getPiece("a2").get();
+        ((Disposable) pawn).dispose();
+
+        var pawn2 = board.getCapturedPiece("a2").get();
+        assertEquals(pawn, pawn2);
     }
 
     private void testInitialBoardPieceSetup(Color color, Piece.Type pieceType, String... position) {

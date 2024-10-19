@@ -9,6 +9,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
+import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
@@ -48,6 +49,7 @@ final class AttackerPinCheckMateEvaluator<COLOR extends Color,
         var isPinnable = attackers.stream()
                 .map(piece -> board.getActions(piece, PieceCaptureAction.class))
                 .flatMap(Collection::stream)
+                .filter(action -> Action.Type.CAPTURE.equals(action.getType()))
                 .filter(action -> Objects.equals(action.getTarget(), king))
                 .map(PieceCaptureAction::getAttackLine)
                 .flatMap(Line::stream)

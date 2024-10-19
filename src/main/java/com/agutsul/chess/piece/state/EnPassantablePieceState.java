@@ -5,8 +5,9 @@ import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.state.State;
 
-public interface EnPassantablePieceState<PIECE extends PawnPiece<?>>
+public interface EnPassantablePieceState<PIECE extends PawnPiece<Color>>
         extends State<PIECE> {
 
-    void enPassant(PIECE piece, PawnPiece<Color> targetPiece, Position targetPosition);
+    void enpassant(PIECE piece, PawnPiece<Color> targetPiece, Position targetPosition);
+    void unenpassant(PIECE piece, PawnPiece<Color> targetPiece);
 }

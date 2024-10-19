@@ -2,13 +2,14 @@ package com.agutsul.chess.game;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.action.event.ActionCancelledEvent;
 import com.agutsul.chess.action.event.ActionPerformedEvent;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
@@ -33,7 +34,7 @@ import com.agutsul.chess.player.state.PlayerState;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public abstract class AbstractGame
-        implements Game, Iterator<Player>, Observable {
+        implements Game, ListIterator<Player>, Observable {
 
     private static final Logger LOGGER = getLogger(AbstractGame.class);
 
@@ -92,37 +93,32 @@ public abstract class AbstractGame
         LOGGER.info("Checking board state ...");
         var nextPlayer = getOpponent(currentPlayer);
 
-        var isChecked = board.isChecked(nextPlayer.getColor());
-        if (isChecked) {
-            var isCheckMated = board.isCheckMated(nextPlayer.getColor());
-            board.setState(isCheckMated
-                    ? new CheckMatedBoardState(board, nextPlayer.getColor())
-                    : new CheckedBoardState(board, nextPlayer.getColor())
-            );
+        var nextBoardState = evaluateBoardState(nextPlayer);
+        board.setState(nextBoardState);
 
-            LOGGER.info("Board state: {}", board.getState());
-            return !isCheckMated;
+        LOGGER.info("Board state: {}", nextBoardState);
+
+        if (nextBoardState instanceof StaleMatedBoardState
+                || nextBoardState instanceof CheckMatedBoardState) {
+            return false;
         }
 
-        var isStaleMated = board.isStaleMated(nextPlayer.getColor());
-        board.setState(isStaleMated
-                ? new StaleMatedBoardState(board, nextPlayer.getColor())
-                : new DefaultBoardState(board, nextPlayer.getColor())
-        );
+        return true;
+    }
 
-        LOGGER.info("Board state: {}", board.getState());
-        return !isStaleMated;
+    @Override
+    public boolean hasPrevious() {
+        return journal.size() != 0;
     }
 
     @Override
     public Player next() {
-        var nextPlayer = getOpponent(currentPlayer);
+        return switchPlayers();
+    }
 
-        currentPlayer.setState(lockedState);
-        nextPlayer.setState(activeState);
-
-        LOGGER.info("Next player '{}' - {}", nextPlayer.getName(), nextPlayer.getColor());
-        return nextPlayer;
+    @Override
+    public Player previous() {
+        return switchPlayers();
     }
 
     @Override
@@ -159,21 +155,81 @@ public abstract class AbstractGame
         return Optional.empty();
     }
 
+    @Override
+    public final int nextIndex() {
+        return 0;
+    }
+
+    @Override
+    public final int previousIndex() {
+        return 0;
+    }
+
+    @Override
+    public final void remove() {}
+
+    @Override
+    public final void set(Player player) {}
+
+    @Override
+    public final void add(Player player) {}
+
     @SuppressFBWarnings("EI_EXPOSE_REP")
     public Board getBoard() {
         return board;
+    }
+
+    @SuppressFBWarnings("EI_EXPOSE_REP")
+    public Journal<Memento> getJournal() {
+        return journal;
+    }
+
+    private BoardState evaluateBoardState(Player player) {
+        if (board.isChecked(player.getColor())) {
+
+            if (board.isCheckMated(player.getColor())) {
+                return new CheckMatedBoardState(board, player.getColor());
+            }
+
+            return new CheckedBoardState(board, player.getColor());
+        }
+
+        if (board.isStaleMated(player.getColor())) {
+            return new StaleMatedBoardState(board, player.getColor());
+        }
+
+        return new DefaultBoardState(board, player.getColor());
+    }
+
+    private Player switchPlayers() {
+        var player = getOpponent(currentPlayer);
+
+        currentPlayer.setState(lockedState);
+        player.setState(activeState);
+
+        LOGGER.info("Switched player '{}({})' => '{}({})'",
+                currentPlayer.getName(),
+                currentPlayer.getColor(),
+                player.getName(),
+                player.getColor()
+        );
+
+        return player;
     }
 
     private Player getOpponent(Player currentPlayer) {
         return currentPlayer.equals(whitePlayer) ? blackPlayer : whitePlayer;
     }
 
-    private final class ActionEventObserver implements Observer {
+    private final class ActionEventObserver
+            implements Observer {
 
         @Override
         public void observe(Event event) {
             if (event instanceof ActionPerformedEvent) {
                 process((ActionPerformedEvent) event);
+            } else if (event instanceof ActionCancelledEvent) {
+                process((ActionCancelledEvent) event);
             }
         }
 
@@ -182,6 +238,17 @@ public abstract class AbstractGame
             board.notifyObservers(event);
             // log action in history to display it later on UI or fully restore game state
             journal.add(event.getActionMemento());
+        }
+
+        private void process(ActionCancelledEvent event) {
+            // redirect event to clear cached piece actions/impacts
+            board.notifyObservers(event);
+            // remove last item from journal
+            journal.remove(journal.size() - 1);
+            // switch players
+            currentPlayer = previous();
+            // recalculate board state
+            board.setState(evaluateBoardState(currentPlayer));
         }
     }
 }

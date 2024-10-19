@@ -30,9 +30,9 @@ abstract class AbstractCommand
     // template methods
 
     // useful for validation before command execution
-    protected void preExecute() {}
+    protected void preExecute() throws CommandException {}
     // useful for event notification after execution
-    protected void postExecute() {}
+    protected void postExecute() throws CommandException {}
 
     // actual command execution
     protected abstract void executeInternal() throws CommandException;

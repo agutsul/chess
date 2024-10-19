@@ -5,6 +5,8 @@ import static java.lang.System.lineSeparator;
 import java.util.Optional;
 
 import com.agutsul.chess.action.Action;
+import com.agutsul.chess.action.event.ActionCancelledEvent;
+import com.agutsul.chess.action.event.ActionCancellingEvent;
 import com.agutsul.chess.action.event.ActionExecutionEvent;
 import com.agutsul.chess.action.event.ActionPerformedEvent;
 import com.agutsul.chess.board.Board;
@@ -16,9 +18,9 @@ import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
+import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 
-class ConsoleGameObserver
-        implements Observer {
+final class ConsoleGameObserver implements Observer {
 
     private final Game game;
 
@@ -32,12 +34,18 @@ class ConsoleGameObserver
             process((GameStartedEvent) event);
         } else if (event instanceof GameOverEvent) {
             process((GameOverEvent) event);
-        } else  if (event instanceof ActionPerformedEvent) {
+        } else if (event instanceof ActionPerformedEvent) {
             process((ActionPerformedEvent) event);
         } else if (event instanceof ActionExecutionEvent) {
             process((ActionExecutionEvent) event);
         } else if (event instanceof PlayerActionExceptionEvent) {
             process((PlayerActionExceptionEvent) event);
+        } else if (event instanceof PlayerCancelActionExceptionEvent) {
+            process((PlayerCancelActionExceptionEvent) event);
+        } else if (event instanceof ActionCancelledEvent) {
+            process((ActionCancelledEvent) event);
+        } else if (event instanceof ActionCancellingEvent) {
+            process((ActionCancellingEvent) event);
         }
     }
 
@@ -59,12 +67,24 @@ class ConsoleGameObserver
         displayAction(event.getAction());
     }
 
+    private void process(ActionCancelledEvent event) {
+        displayBoard(((AbstractGame) game).getBoard());
+    }
+
+    private void process(ActionCancellingEvent event) {
+        displayAction(event.getAction());
+    }
+
     private void process(PlayerActionExceptionEvent event) {
         displayErrorMessage(event.getMessage());
     }
 
+    private void process(PlayerCancelActionExceptionEvent event) {
+        displayErrorMessage(event.getMessage());
+    }
+
     private void displayAction(Action<?> action) {
-        System.out.println(String.format("Performed action: %s", action));
+        System.out.println(String.format("Action: %s", action));
     }
 
     private void displayBoard(Board board) {

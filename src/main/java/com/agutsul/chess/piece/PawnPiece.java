@@ -22,7 +22,7 @@ import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.position.Position;
 
 public interface PawnPiece<COLOR extends Color>
-        extends Piece<COLOR>, Movable, Capturable, Promotable, EnPassantable, Disposable {
+        extends Piece<COLOR>, Movable, Capturable, Promotable, EnPassantable, Disposable, Restorable {
 
     /**
      * Mainly used to implement promotion properly.
@@ -38,6 +38,171 @@ public interface PawnPiece<COLOR extends Color>
                        QueenPiece<Color> {
 
         private static final Logger LOGGER = getLogger(PawnPieceProxy.class);
+
+        private final Board board;
+        private final int promotionLine;
+        private final PieceFactory pieceFactory;
+        private final PawnPiece<Color> pawnPiece;
+
+        PawnPieceProxy(Board board,
+                       PawnPiece<Color> pawnPiece,
+                       int promotionLine,
+                       PieceFactory pieceFactory) {
+
+            super(pawnPiece);
+
+            this.board = board;
+            this.pawnPiece = pawnPiece;
+            this.promotionLine = promotionLine;
+            this.pieceFactory = pieceFactory;
+        }
+
+        @Override
+        public Collection<Action<?>> getActions() {
+            return getState().calculateActions(this);
+        }
+
+        @Override
+        public Collection<Impact<?>> getImpacts() {
+            return getState().calculateImpacts(this);
+        }
+
+        @Override
+        public void promote(Position position, Type pieceType) {
+            LOGGER.info("Promote '{}' to '{}'", this, pieceType);
+            // skip any promotion for disposed pawn
+            if (!isActive()) {
+                return;
+            }
+
+            validatePromotion(position, pieceType);
+
+            // create promoted piece
+            var promotedPiece = createPiece(position, pieceType);
+
+            // force call to origin pawn to remove it from the board
+            ((Promotable) this.origin).promote(position, pieceType);
+
+            // replace pawn with promoted piece
+            this.origin = promotedPiece;
+        }
+
+        @Override
+        public void demote() {
+            LOGGER.info("Demote '{}' to '{}'", this, Piece.Type.PAWN);
+            // dispose promoted piece
+            dispose();
+            // restore pawn piece
+            this.pawnPiece.restore();
+            // replace promoted piece with origin pawn
+            this.origin = this.pawnPiece;
+        }
+
+        @Override
+        public void restore() {
+            ((Restorable) this.origin).restore();
+        }
+
+        @Override
+        public void dispose() {
+            ((Disposable) this.origin).dispose();
+        }
+
+        @Override
+        public void move(Position position) {
+            ((Movable) this.origin).move(position);
+        }
+
+        @Override
+        public void unmove(Position position) {
+            ((Movable) this.origin).unmove(position);
+        }
+
+        @Override
+        public void capture(Piece<?> targetPiece) {
+            ((Capturable) this.origin).capture(targetPiece);
+        }
+
+        @Override
+        public void uncapture(Piece<?> targetPiece) {
+            ((Capturable) this.origin).uncapture(targetPiece);
+        }
+
+        @Override
+        public void enpassant(PawnPiece<?> targetPiece, Position targetPosition) {
+            ((EnPassantable) this.origin).enpassant(targetPiece, targetPosition);
+        }
+
+        @Override
+        public void unenpassant(PawnPiece<?> targetPiece) {
+            ((EnPassantable) this.origin).unenpassant(targetPiece);
+        }
+
+        /*
+         * Castling is impossible for the promoted piece but proxy should follow interface
+         */
+        @Override
+        public void castling(Position position) {
+            ((Castlingable) this.origin).castling(position);
+        }
+
+        @Override
+        public void uncastling(Position position) {
+            ((Castlingable) this.origin).uncastling(position);
+        }
+
+        @Override
+        public String toString() {
+            return this.origin.toString();
+        }
+
+        private void validatePromotion(Position position, Type pieceType) {
+            // after execution of MOVE or CAPTURE
+            // piece should already be placed at target position
+            var promotionPosition = this.origin.getPosition();
+            if (Objects.equals(promotionPosition, position)) {
+
+                // just double check if it is promotion line
+                if (promotionPosition.y() != promotionLine) {
+                    throw new IllegalActionException(
+                        formatInvalidPromotionMessage(position, pieceType)
+                    );
+                }
+            } else {
+                // validate promotion action ( check if promoted position is legal )
+                var promoteActions = board.getActions(this.origin, PiecePromoteAction.class);
+                var possiblePromotions = promoteActions.stream()
+                        .map(action -> (PiecePromoteAction<?,?>) action)
+                        .map(PiecePromoteAction::getSource)
+                        .map(Action::getPosition)
+                        .collect(toSet());
+
+                if (!possiblePromotions.contains(position)) {
+                    throw new IllegalActionException(
+                        formatInvalidPromotionMessage(position, pieceType)
+                    );
+                }
+            }
+        }
+
+        private String formatInvalidPromotionMessage(Position position, Type pieceType) {
+            return String.format("%s invalid promotion to %s at '%s'",
+                    this.getType().name(),
+                    pieceType.name(),
+                    position
+            );
+        }
+
+        private Piece<Color> createPiece(Position position, Type pieceType) {
+            var factory = Factory.of(pieceType);
+            if (factory == null) {
+                throw new IllegalActionException(
+                    String.format("Unsupported promotion type: %s", pieceType.name())
+                );
+            }
+
+            return factory.createPiece(pieceFactory, position);
+        }
 
         private enum Factory {
             KNIGHT_MODE(Type.KNIGHT, (pieceFactory, position) -> pieceFactory.createKnight(position)),
@@ -67,129 +232,6 @@ public interface PawnPiece<COLOR extends Color>
             private Type type() {
                 return type;
             }
-        }
-
-        private final Board board;
-        private final int promotionLine;
-        private final PieceFactory pieceFactory;
-
-        PawnPieceProxy(Board board,
-                       PawnPiece<Color> pawnPiece,
-                       int promotionLine,
-                       PieceFactory pieceFactory) {
-
-            super(pawnPiece);
-
-            this.board = board;
-            this.promotionLine = promotionLine;
-            this.pieceFactory = pieceFactory;
-        }
-
-        @Override
-        public Collection<Action<?>> getActions() {
-            return getState().calculateActions(this);
-        }
-
-        @Override
-        public Collection<Impact<?>> getImpacts() {
-            return getState().calculateImpacts(this);
-        }
-
-        @Override
-        public void promote(Position position, Type pieceType) {
-            LOGGER.info("Promote '{}' to '{}'", this, pieceType);
-            // skip any promotion for disposed pawn
-            if (!isActive()) {
-                return;
-            }
-
-            // after execution of MOVE or CAPTURE
-            // piece should already be placed at target position
-            var promotionPosition = this.origin.getPosition();
-            if (Objects.equals(promotionPosition, position)) {
-
-                // just double check if it is promotion line
-                if (promotionPosition.y() != promotionLine) {
-                    throw new IllegalActionException(
-                            formatInvalidPromotionMessage(position, pieceType)
-                    );
-                }
-            } else {
-                // validate promotion action ( check if promoted position is legal )
-                var promoteActions = board.getActions(this.origin, PiecePromoteAction.class);
-                var possiblePromotions = promoteActions.stream()
-                        .map(action -> (PiecePromoteAction<?,?>) action)
-                        .map(PiecePromoteAction::getSource)
-                        .map(Action::getPosition)
-                        .collect(toSet());
-
-                if (!possiblePromotions.contains(position)) {
-                    throw new IllegalActionException(
-                            formatInvalidPromotionMessage(position, pieceType)
-                    );
-                }
-            }
-
-            // create promoted piece
-            var promotedPiece = createPiece(position, pieceType);
-
-            // force call to origin pawn to remove it from the board
-            ((Promotable) this.origin).promote(position, pieceType);
-
-            // replace pawn with promoted piece
-            this.origin = promotedPiece;
-        }
-
-        @Override
-        public void dispose() {
-            ((Disposable) this.origin).dispose();
-        }
-
-        @Override
-        public void move(Position position) {
-            ((Movable) this.origin).move(position);
-        }
-
-        @Override
-        public void capture(Piece<?> targetPiece) {
-            ((Capturable) this.origin).capture(targetPiece);
-        }
-
-        @Override
-        public void enPassant(PawnPiece<?> targetPiece, Position targetPosition) {
-            ((EnPassantable) this.origin).enPassant(targetPiece, targetPosition);
-        }
-
-        /*
-         * Castling is impossible for the promoted piece but proxy should follow interface
-         */
-        @Override
-        public void castling(Position position) {
-            ((Castlingable) this.origin).castling(position);
-        }
-
-        @Override
-        public String toString() {
-            return origin.toString();
-        }
-
-        private String formatInvalidPromotionMessage(Position position, Type pieceType) {
-            return String.format("%s invalid promotion to %s at '%s'",
-                    this.getType().name(),
-                    pieceType.name(),
-                    position
-            );
-        }
-
-        private Piece<Color> createPiece(Position position, Type pieceType) {
-            var factory = Factory.of(pieceType);
-            if (factory == null) {
-                throw new IllegalActionException(
-                        String.format("Unsupported promotion type: %s", pieceType.name())
-                    );
-            }
-
-            return factory.createPiece(pieceFactory, position);
         }
     }
 }

@@ -21,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.Colors;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
@@ -29,7 +30,7 @@ import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.exception.IllegalPositionException;
-import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.position.Position;
 
 @ExtendWith(MockitoExtension.class)
@@ -102,7 +103,9 @@ public class PerformActionCommandTest {
         var board = mock(Board.class);
 
         var sourcePosition = mock(Position.class);
-        var piece = mock(Piece.class);
+        var piece = mock(PawnPiece.class);
+        when(piece.getColor())
+            .thenReturn(Colors.WHITE);
         when(piece.getPosition())
             .thenReturn(sourcePosition);
 
@@ -137,7 +140,8 @@ public class PerformActionCommandTest {
 
         var thrown = assertThrows(
                 IllegalActionException.class,
-                () -> command.execute());
+                () -> command.execute()
+        );
 
         assertEquals(errorMessage, thrown.getMessage());
         verify(observable, times(1)).notifyObservers(any());

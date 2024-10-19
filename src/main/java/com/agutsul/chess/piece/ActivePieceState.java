@@ -8,13 +8,13 @@ import java.util.Collection;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
+import com.agutsul.chess.action.AbstractCaptureAction;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.impact.Impact;
-import com.agutsul.chess.piece.state.AbstractPieceState;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.Rule;
 
@@ -75,7 +75,7 @@ class ActivePieceState<PIECE extends Piece<Color> & Movable & Capturable>
         LOGGER.info("Capture '{}' by '{}'", targetPiece, piece);
 
         var possibleCaptures = board.getActions(piece, PieceCaptureAction.class).stream()
-                .map(PieceCaptureAction::getTarget)
+                .map(AbstractCaptureAction::getTarget)
                 .collect(toSet());
 
         if (!possibleCaptures.contains(targetPiece)) {

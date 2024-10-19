@@ -12,14 +12,14 @@ public class PieceEnPassantAction<COLOR1 extends Color,
                                   COLOR2 extends Color,
                                   PAWN1 extends PawnPiece<COLOR1>,
                                   PAWN2 extends PawnPiece<COLOR2>>
-        extends PieceCaptureAction<COLOR1, COLOR2, PAWN1, PAWN2> {
+        extends AbstractEnPassantAction<COLOR1,COLOR2,PAWN1,PAWN2> {
 
     private static final Logger LOGGER = getLogger(PieceEnPassantAction.class);
 
     private final Position position;
 
-    public PieceEnPassantAction(PAWN1 pawnPiece1, PAWN2 pawnPiece2, Position position) {
-        super(Type.EN_PASSANT, pawnPiece1, pawnPiece2, EMPTY_LINE);
+    public PieceEnPassantAction(PAWN1 predator, PAWN2 victim, Position position) {
+        super(predator, victim);
         this.position = position;
     }
 
@@ -31,11 +31,6 @@ public class PieceEnPassantAction<COLOR1 extends Color,
     @Override
     public void execute() {
         LOGGER.info("Executing en-passante '{}' by '{}'", getTarget(), getSource());
-        getSource().enPassant(getTarget(), getPosition());
-    }
-
-    @Override
-    protected String createTargetLabel(Position position) {
-        return String.format("%s e.p.", getPosition());
+        getSource().enpassant(getTarget(), getPosition());
     }
 }

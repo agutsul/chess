@@ -265,7 +265,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertEquals(blackPawn.getPosition(), position);
 
         var targetPosition = board.getPosition("d6").get();
-        whitePawn.enPassant(blackPawn, targetPosition);
+        whitePawn.enpassant(blackPawn, targetPosition);
 
         assertEquals(whitePawn.getPosition(), targetPosition);
         assertFalse(blackPawn.isActive());
@@ -289,7 +289,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         var targetPosition = board.getPosition("c6").get();
         var thrown = assertThrows(
                 IllegalActionException.class,
-                () -> whitePawn.enPassant(blackPawn, targetPosition)
+                () -> whitePawn.enpassant(blackPawn, targetPosition)
         );
 
         assertEquals(thrown.getMessage(), "e5 invalid en passant of c6");

@@ -9,13 +9,14 @@ import com.agutsul.chess.Color;
 import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Line;
-import com.agutsul.chess.position.Position;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class PieceCaptureAction<COLOR1 extends Color,
                                 COLOR2 extends Color,
                                 PIECE1 extends Piece<COLOR1> & Capturable,
                                 PIECE2 extends Piece<COLOR2> & Capturable>
-        extends AbstractTargetAction<PIECE1, PIECE2> {
+        extends AbstractCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2> {
 
     private static final Logger LOGGER = getLogger(PieceCaptureAction.class);
 
@@ -23,44 +24,27 @@ public class PieceCaptureAction<COLOR1 extends Color,
 
     private final Line attackLine;
 
-    public PieceCaptureAction(PIECE1 piece1, PIECE2 piece2) {
-        this(Action.Type.CAPTURE, piece1, piece2, EMPTY_LINE);
+    public PieceCaptureAction(PIECE1 predator, PIECE2 victim) {
+        this(Action.Type.CAPTURE, predator, victim, EMPTY_LINE);
     }
 
-    public PieceCaptureAction(PIECE1 piece1, PIECE2 piece2, Line attackLine) {
-        this(Action.Type.CAPTURE, piece1, piece2, attackLine);
+    public PieceCaptureAction(PIECE1 predator, PIECE2 victim, Line attackLine) {
+        this(Action.Type.CAPTURE, predator, victim, attackLine);
     }
 
-    PieceCaptureAction(Type type, PIECE1 piece1, PIECE2 piece2, Line attackLine) {
-        super(type, piece1, piece2);
+    PieceCaptureAction(Type type, PIECE1 predator, PIECE2 victim, Line attackLine) {
+        super(type, predator, victim);
         this.attackLine = attackLine;
+    }
+
+    @SuppressFBWarnings("EI_EXPOSE_REP")
+    public Line getAttackLine() {
+        return this.attackLine;
     }
 
     @Override
     public void execute() {
         LOGGER.info("Executing capturing '{}' by '{}'", getTarget(), getSource());
         getSource().capture(getTarget());
-    }
-
-    @Override
-    public Position getPosition() {
-        return getTarget().getPosition();
-    }
-
-    public Line getAttackLine() {
-        return new Line(attackLine);
-    }
-
-    @Override
-    public String getCode() {
-        return String.format("%sx%s", getSource(), createTargetLabel(getTarget()));
-    }
-
-    protected String createTargetLabel(Piece<?> targetPiece) {
-        return createTargetLabel(targetPiece.getPosition());
-    }
-
-    protected String createTargetLabel(Position position) {
-        return String.valueOf(position);
     }
 }

@@ -20,7 +20,7 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 
-class ConsoleRequestPromotionPieceTypeObserver
+final class ConsoleRequestPromotionPieceTypeObserver
         extends AbstractConsoleInputReader
         implements Observer {
 

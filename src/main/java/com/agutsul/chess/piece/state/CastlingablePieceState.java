@@ -10,4 +10,5 @@ public interface CastlingablePieceState<PIECE extends Piece<Color> & Castlingabl
         extends State<PIECE> {
 
     void castling(PIECE piece, Position position);
+    void uncastling(PIECE piece, Position position);
 }

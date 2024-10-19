@@ -23,7 +23,7 @@ public class PieceCaptureActionTest {
         var blackPawn = board.getPiece("b4").get();
         var whitePawn = board.getPiece("a3").get();
 
-        var actions = whitePawn.getActions();
+        var actions = board.getActions(whitePawn);
         assertEquals(2, actions.size());
 
         var captureAction = actions.stream()
@@ -54,7 +54,7 @@ public class PieceCaptureActionTest {
         var blackPawn = board.getPiece("b4").get();
         var whitePawn = board.getPiece("a3").get();
 
-        var actions = blackPawn.getActions();
+        var actions = board.getActions(blackPawn);
         assertEquals(2, actions.size());
 
         var captureAction = actions.stream()

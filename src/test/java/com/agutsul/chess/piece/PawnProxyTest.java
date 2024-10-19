@@ -52,8 +52,8 @@ public class PawnProxyTest {
 
         when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
             .then(inv -> List.of(new PiecePromoteAction(
-                    board,
-                    new PieceMoveAction<Color,PawnPiece<Color>>(null, position))
+                    new PieceMoveAction<Color,PawnPiece<Color>>(null, position),
+                    board)
             ));
 
         doReturn(true).when(pawn).isActive();
@@ -75,8 +75,8 @@ public class PawnProxyTest {
 
         when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
             .then(inv -> List.of(new PiecePromoteAction(
-                    board,
-                    new PieceMoveAction<Color,PawnPiece<Color>>(null, position))
+                    new PieceMoveAction<Color,PawnPiece<Color>>(null, position),
+                    board)
             ));
 
         doReturn(true).when(pawn).isActive();
@@ -98,8 +98,8 @@ public class PawnProxyTest {
 
         when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
             .then(inv -> List.of(new PiecePromoteAction(
-                    board,
-                    new PieceMoveAction<Color,PawnPiece<Color>>(null, position))
+                    new PieceMoveAction<Color,PawnPiece<Color>>(null, position),
+                    board)
             ));
 
         doReturn(true).when(pawn).isActive();
@@ -121,8 +121,9 @@ public class PawnProxyTest {
 
         when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
             .then(inv -> List.of(new PiecePromoteAction(
-                    board,
-                    new PieceMoveAction<Color,PawnPiece<Color>>(null, position))));
+                    new PieceMoveAction<Color,PawnPiece<Color>>(null, position),
+                    board)
+            ));
 
         doReturn(true).when(pawn).isActive();
         doNothing().when(pawn).promote(any(), any());
@@ -145,8 +146,9 @@ public class PawnProxyTest {
 
         when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
             .then(inv -> List.of(new PiecePromoteAction(
-                    board,
-                    new PieceMoveAction<Color,PawnPiece<Color>>(null, position))));
+                    new PieceMoveAction<Color,PawnPiece<Color>>(null, position),
+                    board)
+            ));
 
         var thrown = assertThrows(
                 IllegalActionException.class,

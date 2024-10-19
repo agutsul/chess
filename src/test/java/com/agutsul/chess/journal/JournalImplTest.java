@@ -33,6 +33,20 @@ public class JournalImplTest {
     }
 
     @Test
+    void testRemoveMemento() {
+        var memento = createMemento();
+
+        var journal = new JournalImpl<Memento>();
+        journal.add(memento);
+
+        assertEquals(1, journal.size());
+
+        journal.remove(journal.size() - 1);
+
+        assertTrue(journal.size() == 0);
+    }
+
+    @Test
     void testGetMemento() {
         var memento = createMemento();
 
@@ -72,7 +86,7 @@ public class JournalImplTest {
         assertFalse(moveAction.isEmpty());
 
         var memento = MEMENTO_FACTORY.create(moveAction.get());
-        assertEquals("a2 a3", memento.toString());
+        assertEquals("MOVE(a2 a3)", memento.toString());
 
         return memento;
     }

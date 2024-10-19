@@ -9,6 +9,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
+import com.agutsul.chess.action.AbstractCaptureAction;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
@@ -63,8 +64,8 @@ final class AttackerCaptureCheckMateEvaluator<COLOR extends Color,
         return true;
     }
 
-    private Collection<PieceCaptureAction<?,?,?,?>> getAttackActions(Piece<Color> piece) {
-        var actions = new ArrayList<PieceCaptureAction<?,?,?,?>>();
+    private Collection<AbstractCaptureAction<?,?,?,?>> getAttackActions(Piece<Color> piece) {
+        var actions = new ArrayList<AbstractCaptureAction<?,?,?,?>>();
         for (var attacker : board.getAttackers(piece)) {
             var captureActions = board.getActions(attacker, PieceCaptureAction.class);
             for (var captureAction : captureActions) {

@@ -9,11 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.BoardBuilder;
-import com.agutsul.chess.event.Event;
-import com.agutsul.chess.event.Observer;
-import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
-import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
+import com.agutsul.chess.mock.PieceTypeRequestObserverMock;
 
 @ExtendWith(MockitoExtension.class)
 public class PiecePromoteActionTest {
@@ -24,7 +20,7 @@ public class PiecePromoteActionTest {
                 .withWhitePawn("a7")
                 .build();
 
-        board.addObserver(new PieceTypeRequestObserver());
+        board.addObserver(new PieceTypeRequestObserverMock());
 
         var pawn = board.getPiece("a7").get();
         var pawnSourcePosition = pawn.getPosition();
@@ -56,7 +52,7 @@ public class PiecePromoteActionTest {
                 .withWhiteRook("b1")
                 .build();
 
-        board.addObserver(new PieceTypeRequestObserver());
+        board.addObserver(new PieceTypeRequestObserverMock());
 
         var pawn = board.getPiece("a2").get();
         var pawnSourcePosition = pawn.getPosition();
@@ -87,20 +83,5 @@ public class PiecePromoteActionTest {
         assertEquals(targetPosition, pawn.getPosition());
         assertTrue(board.isEmpty(pawnSourcePosition));
         assertFalse(rook.isActive());
-    }
-
-    // mock interaction with user during piece type selection
-    private static class PieceTypeRequestObserver implements Observer {
-
-        @Override
-        public void observe(Event event) {
-            if (event instanceof RequestPromotionPieceTypeEvent) {
-                process((RequestPromotionPieceTypeEvent) event);
-            }
-        }
-
-        private void process(RequestPromotionPieceTypeEvent event) {
-            event.getAction().observe(new PromotionPieceTypeEvent(Piece.Type.QUEEN));
-        }
     }
 }
