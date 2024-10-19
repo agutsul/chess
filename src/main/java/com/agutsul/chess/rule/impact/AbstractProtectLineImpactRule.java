@@ -3,6 +3,7 @@ package com.agutsul.chess.rule.impact;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.board.Board;
@@ -42,11 +43,11 @@ public abstract class AbstractProtectLineImpactRule<COLOR extends Color,
                 }
 
                 var otherPiece = optionalPiece.get();
-                if (piece.getColor() == otherPiece.getColor()) {
-                    protectPositions.add(position);
+                if (!Objects.equals(piece.getColor(), otherPiece.getColor())) {
+                    break;
                 }
 
-                break;
+                protectPositions.add(position);
             }
 
             if (!protectPositions.isEmpty()) {
