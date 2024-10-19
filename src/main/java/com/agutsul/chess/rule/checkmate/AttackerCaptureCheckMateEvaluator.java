@@ -4,6 +4,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import com.agutsul.chess.Color;
 import com.agutsul.chess.action.AbstractCaptureAction;
 import com.agutsul.chess.action.PieceCaptureAction;
+import com.agutsul.chess.action.PieceEnPassantAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
@@ -65,18 +67,23 @@ final class AttackerCaptureCheckMateEvaluator<COLOR extends Color,
     }
 
     private Collection<AbstractCaptureAction<?,?,?,?>> getAttackActions(Piece<Color> piece) {
-        var actions = new ArrayList<AbstractCaptureAction<?,?,?,?>>();
+        var attackActions = new ArrayList<AbstractCaptureAction<?,?,?,?>>();
         for (var attacker : board.getAttackers(piece)) {
-            var captureActions = board.getActions(attacker, PieceCaptureAction.class);
-            for (var captureAction : captureActions) {
+
+            var actions = new HashSet<>();
+            actions.addAll(board.getActions(attacker, PieceCaptureAction.class));
+            actions.addAll(board.getActions(attacker, PieceEnPassantAction.class));
+
+            for (var action : actions) {
+                var captureAction = (AbstractCaptureAction<?,?,?,?>) action;
                 @SuppressWarnings("unchecked")
                 var targetPiece = (Piece<Color>) captureAction.getTarget();
                 if (Objects.equals(targetPiece, piece)) {
-                    actions.add(captureAction);
+                    attackActions.add(captureAction);
                 }
             }
         }
 
-        return actions;
+        return attackActions;
     }
 }

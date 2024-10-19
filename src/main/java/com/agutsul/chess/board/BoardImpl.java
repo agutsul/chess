@@ -23,6 +23,7 @@ import com.agutsul.chess.Colors;
 import com.agutsul.chess.action.AbstractCaptureAction;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
+import com.agutsul.chess.action.PieceEnPassantAction;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.function.ActionFilter;
 import com.agutsul.chess.board.state.BoardState;
@@ -123,14 +124,13 @@ final class BoardImpl implements Board {
 
         var king = optionalKing.get();
 
-        // filter out check actions only
-        var actionFilter = new ActionFilter<>(PieceCaptureAction.class);
-        var captureActions = actionFilter.apply(actions);
+        Collection<Action<?>> checkActions = new HashSet<>();
 
-        Collection<Action<?>> checkActions = captureActions.stream()
-                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                .filter(action -> Objects.equals(action.getTarget(), king))
-                .collect(toSet());
+        var captureFilter = new ActionFilter<>(PieceCaptureAction.class);
+        checkActions.addAll(filterActions(actions, captureFilter, king));
+
+        var enPassantFilter = new ActionFilter<>(PieceEnPassantAction.class);
+        checkActions.addAll(filterActions(actions, enPassantFilter, king));
 
         return checkActions;
     }
@@ -293,9 +293,15 @@ final class BoardImpl implements Board {
         LOGGER.info("Checking is piece '{}' attacked", piece);
 
         var attackerPieces = getPieces(piece.getColor().invert());
-        var isAttacked = attackerPieces.stream()
-                .map(attacker -> getActions(attacker, PieceCaptureAction.class))
-                .flatMap(Collection::stream)
+
+        var actions = new HashSet<>();
+        for (var attacker : attackerPieces) {
+            actions.addAll(getActions(attacker, PieceCaptureAction.class));
+            actions.addAll(getActions(attacker, PieceEnPassantAction.class));
+        }
+
+        var isAttacked = actions.stream()
+                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .anyMatch(action -> Objects.equals(action.getTarget(), piece));
 
         return isAttacked;
@@ -307,9 +313,14 @@ final class BoardImpl implements Board {
         LOGGER.info("Get piece '{}' attackers", piece);
 
         var attackerPieces = getPieces(piece.getColor().invert());
-        Collection<Piece<Color>> attackActions = attackerPieces.stream()
-                .map(attacker -> getActions(attacker, PieceCaptureAction.class))
-                .flatMap(Collection::stream)
+
+        var actions = new HashSet<>();
+        for (var attacker : attackerPieces) {
+            actions.addAll(getActions(attacker, PieceCaptureAction.class));
+            actions.addAll(getActions(attacker, PieceEnPassantAction.class));
+        }
+
+        Collection<Piece<Color>> attackActions = actions.stream()
                 .map(action -> (AbstractCaptureAction<Color,Color,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), piece))
                 .map(AbstractCaptureAction::getSource)
@@ -463,5 +474,15 @@ final class BoardImpl implements Board {
         pieces.add(pieceFactory.createRook(POSITION_FACTORY.createPosition(Position.MAX - 1, pieceY)));
 
         return unmodifiableList(pieces);
+    }
+
+    private static Collection<Action<?>> filterActions(Collection<Action<?>> actions,
+                                                       ActionFilter<?> filter,
+                                                       KingPiece<Color> king) {
+        var filterActions = filter.apply(actions);
+        return filterActions.stream()
+                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
+                .filter(action -> Objects.equals(action.getTarget(), king))
+                .collect(toSet());
     }
 }

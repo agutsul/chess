@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import org.slf4j.Logger;
 
@@ -11,6 +12,7 @@ import com.agutsul.chess.Color;
 import com.agutsul.chess.action.AbstractCaptureAction;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
+import com.agutsul.chess.action.PieceEnPassantAction;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.exception.IllegalActionException;
@@ -74,7 +76,12 @@ class ActivePieceState<PIECE extends Piece<Color> & Movable & Capturable>
     public void capture(PIECE piece, Piece<?> targetPiece) {
         LOGGER.info("Capture '{}' by '{}'", targetPiece, piece);
 
-        var possibleCaptures = board.getActions(piece, PieceCaptureAction.class).stream()
+        var possibleActions = new HashSet<>();
+        possibleActions.addAll(board.getActions(piece, PieceCaptureAction.class));
+        possibleActions.addAll(board.getActions(piece, PieceEnPassantAction.class));
+
+        var possibleCaptures = possibleActions.stream()
+                .map(action -> (AbstractCaptureAction<Color,Color,?,?>) action)
                 .map(AbstractCaptureAction::getTarget)
                 .collect(toSet());
 

@@ -36,7 +36,6 @@ abstract class AbstractMoveCheckActionEvaluator<COLOR extends Color,
         Collection<PieceCaptureAction<?,?,?,?>> checkActions = attackers.stream()
                 .map(attacker -> board.getActions(attacker, PieceCaptureAction.class))
                 .flatMap(Collection::stream)
-                .filter(action -> Action.Type.CAPTURE.equals(action.getType()))
                 .filter(action -> Objects.equals(king, action.getTarget()))
                 .filter(action -> !action.getAttackLine().isEmpty())
                 .map(action -> (PieceCaptureAction<?,?,?,?>) action)
