@@ -58,14 +58,6 @@ final class PawnPieceImpl<COLOR extends Color>
         dispose();
     }
 
-//    @Override
-//    public void unpromote(Position targetPosition, Type pieceType) {
-//        LOGGER.info("Undo promote origin pawn '{}' to '{}'", this, pieceType);
-//
-//        // restore origin pawn on board
-//        restore();
-//    }
-
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void enpassant(PawnPiece<?> targetPiece, Position targetPosition) {
