@@ -6,9 +6,9 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
 public abstract class AbstractCaptureAction<COLOR1 extends Color,
-                                     COLOR2 extends Color,
-                                     PIECE1 extends Piece<COLOR1> & Capturable,
-                                     PIECE2 extends Piece<COLOR2> & Capturable>
+                                            COLOR2 extends Color,
+                                            PIECE1 extends Piece<COLOR1> & Capturable,
+                                            PIECE2 extends Piece<COLOR2> & Capturable>
         extends AbstractTargetAction<PIECE1, PIECE2> {
 
     AbstractCaptureAction(Type type, PIECE1 piece1, PIECE2 piece2) {
