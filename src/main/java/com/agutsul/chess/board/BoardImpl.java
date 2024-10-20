@@ -127,10 +127,10 @@ final class BoardImpl implements Board {
         Collection<Action<?>> checkActions = new HashSet<>();
 
         var captureFilter = new ActionFilter<>(PieceCaptureAction.class);
-        checkActions.addAll(filterActions(actions, captureFilter, king));
+        checkActions.addAll(filterCheckActions(actions, captureFilter, king));
 
         var enPassantFilter = new ActionFilter<>(PieceEnPassantAction.class);
-        checkActions.addAll(filterActions(actions, enPassantFilter, king));
+        checkActions.addAll(filterCheckActions(actions, enPassantFilter, king));
 
         return checkActions;
     }
@@ -476,9 +476,9 @@ final class BoardImpl implements Board {
         return unmodifiableList(pieces);
     }
 
-    private static Collection<Action<?>> filterActions(Collection<Action<?>> actions,
-                                                       ActionFilter<?> filter,
-                                                       KingPiece<Color> king) {
+    private static Collection<Action<?>> filterCheckActions(Collection<Action<?>> actions,
+                                                            ActionFilter<?> filter,
+                                                            KingPiece<Color> king) {
         var filterActions = filter.apply(actions);
         return filterActions.stream()
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
