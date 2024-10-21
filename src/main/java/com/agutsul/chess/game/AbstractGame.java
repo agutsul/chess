@@ -2,7 +2,6 @@ package com.agutsul.chess.game;
 
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.STALE_MATED;
-import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.List;
@@ -10,7 +9,6 @@ import java.util.ListIterator;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -44,7 +42,7 @@ public abstract class AbstractGame
     private static final Logger LOGGER = getLogger(AbstractGame.class);
 
     private static final Set<BoardState.Type> TERMINAL_BOARD_STATES =
-            Stream.of(CHECK_MATED, STALE_MATED).collect(toSet());
+            Set.of(CHECK_MATED, STALE_MATED);
 
     private final PlayerState activeState;
     private final PlayerState lockedState;
@@ -148,7 +146,8 @@ public abstract class AbstractGame
 
     @Override
     public Optional<Player> getWinner() {
-        if (CHECK_MATED.equals(board.getState().getType())) {
+        var boardState = board.getState();
+        if (CHECK_MATED.equals(boardState.getType())) {
             var winner = currentPlayer.equals(whitePlayer) ? whitePlayer : blackPlayer;
             LOGGER.info("{} wins. Player '{}'", winner.getColor(), winner.getName());
             return Optional.of(winner);
