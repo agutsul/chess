@@ -1,13 +1,16 @@
 package com.agutsul.chess.board;
 
+import static java.util.Collections.emptyList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveTask;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
@@ -30,11 +33,29 @@ public final class BoardBuilder
         LOGGER.debug("Building board started ...");
         var board = new BoardImpl();
 
-        var pieces = new ArrayList<Piece<Color>>();
-        pieces.addAll(createPieces(board.getWhitePieceFactory(), whitePieceContext));
-        pieces.addAll(createPieces(board.getBlackPieceFactory(), blackPieceContext));
+        var executor = ForkJoinPool.commonPool();
+        try {
+            var tasks = List.of(
+                new PieceBuilderTask(board.getWhitePieceFactory(), whitePieceContext),
+                new PieceBuilderTask(board.getBlackPieceFactory(), blackPieceContext)
+            );
 
-        board.setPieces(pieces);
+            var pieces = new ArrayList<Piece<Color>>();
+            for (var task : tasks) {
+                pieces.addAll(executor.invoke(task));
+            }
+
+            board.setPieces(pieces);
+        } finally {
+            try {
+                executor.shutdown();
+                if (!executor.awaitTermination(1, TimeUnit.MICROSECONDS)) {
+                    executor.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                executor.shutdownNow();
+            }
+        }
 
         LOGGER.debug("Building board finished");
         return board;
@@ -171,39 +192,100 @@ public final class BoardBuilder
         return this;
     }
 
-    private static Collection<Piece<Color>> createPieces(PieceFactory pieceFactory,
-                                                         BoardContext context) {
-        var pieceFactoryPairs = List.of(
-                pair(context.getKingPositions(),   position -> pieceFactory.createKing(position)),
-                pair(context.getQueenPositions(),  position -> pieceFactory.createQueen(position)),
-                pair(context.getKnightPositions(), position -> pieceFactory.createKnight(position)),
-                pair(context.getBishopPositions(), position -> pieceFactory.createBishop(position)),
-                pair(context.getRookPositions(),   position -> pieceFactory.createRook(position)),
-                pair(context.getPawnPositions(),   position -> pieceFactory.createPawn(position))
-            );
+    private static class PieceBuilderTask
+            extends RecursiveTask<List<Piece<Color>>> {
 
-        var pieces = new ArrayList<Piece<Color>>();
-        for (var pair : pieceFactoryPairs) {
-            var positions = pair.getKey();
-            if (positions != null && !positions.isEmpty()) {
-                pieces.addAll(createPieces(positions, pair.getValue()));
-            }
+        private static final long serialVersionUID = 1L;
+
+        private final PieceFactory pieceFactory;
+        private final BoardContext context;
+
+        public PieceBuilderTask(PieceFactory pieceFactory, BoardContext context) {
+            this.pieceFactory = pieceFactory;
+            this.context = context;
         }
 
-        return pieces;
+        @Override
+        protected List<Piece<Color>> compute() {
+            var optionalTasks = List.of(
+                    createTask(context.getKingPositions(),   position -> pieceFactory.createKing(position)),
+                    createTask(context.getQueenPositions(),  position -> pieceFactory.createQueen(position)),
+                    createTask(context.getKnightPositions(), position -> pieceFactory.createKnight(position)),
+                    createTask(context.getBishopPositions(), position -> pieceFactory.createBishop(position)),
+                    createTask(context.getRookPositions(),   position -> pieceFactory.createRook(position)),
+                    createTask(context.getPawnPositions(),   position -> pieceFactory.createPawn(position))
+            );
+
+            var tasks = optionalTasks.stream()
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .toList();
+
+            if (tasks.isEmpty()) {
+                // no splitting
+                return emptyList();
+            }
+
+            // split work to create actual pieces
+            for (var task : tasks) {
+                task.fork();
+            }
+
+            var pieces = new ArrayList<Piece<Color>>();
+            for (var task : tasks) {
+                pieces.addAll(task.join());
+            }
+
+            return pieces;
+        }
+
+        private Optional<PieceBuilderSubTask> createTask(List<String> positions,
+                                                         Function<String, Piece<Color>> function) {
+            if (positions == null || positions.isEmpty()) {
+                return Optional.empty();
+            }
+
+            return Optional.of(new PieceBuilderSubTask(positions, function));
+        }
     }
 
-    private static Pair<List<String>, Function<String, Piece<Color>>> pair(List<String> positions,
-                                                                           Function<String, Piece<Color>> function) {
-        return Pair.of(positions, function);
-    }
+    private static class PieceBuilderSubTask
+            extends RecursiveTask<List<Piece<Color>>> {
 
-    private static List<Piece<Color>> createPieces(List<String> positions,
-                                                   Function<String, Piece<Color>> function) {
+        private static final long serialVersionUID = 1L;
 
-        return positions.stream()
-                .map(position -> function.apply(position))
-                .toList();
+        private final List<String> positions;
+        private final Function<String, Piece<Color>> function;
+
+        public PieceBuilderSubTask(List<String> positions,
+                                   Function<String, Piece<Color>> function) {
+            this.positions = positions;
+            this.function = function;
+        }
+
+        @Override
+        protected List<Piece<Color>> compute() {
+            // no more splits
+            if (positions.size() == 1) {
+                return List.of(function.apply(positions.get(0)));
+            }
+
+            // split to subtasks
+            var tasks = positions.stream()
+                    .map(position -> new PieceBuilderSubTask(List.of(position), function))
+                    .toList();
+
+            for (var task : tasks) {
+                task.fork();
+            }
+
+            var pieces = new ArrayList<Piece<Color>>();
+            for (var task : tasks) {
+                pieces.addAll(task.join());
+            }
+
+            return pieces;
+        }
     }
 
     private static class BoardContext {
