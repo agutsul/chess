@@ -16,10 +16,10 @@
         <!-- versions -->
         <project.java.version>21</project.java.version>
         <argLine></argLine>
-        
+
         <commons-lang3.version>3.17.0</commons-lang3.version>
         <log4j.version>2.24.1</log4j.version>
-        
+
         <spotbugs.version>4.8.6</spotbugs.version>
         <junit-jupiter.version>5.11.0</junit-jupiter.version>
         <mockito-core.version>5.13.0</mockito-core.version>
@@ -134,7 +134,7 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${maven.jacoco.plugin.version}</version>
                 <configuration>
-                     <append>true</append>
+                    <append>true</append>
                 </configuration>
                 <executions>
                     <execution>
@@ -156,7 +156,9 @@
                         </goals>
                         <configuration>
                             <dataFile>${project.build.directory}/jacoco.exec</dataFile>
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate</outputDirectory>
+                            <outputDirectory>
+                                ${project.reporting.outputDirectory}/jacoco-aggregate
+                            </outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
@@ -170,7 +172,7 @@
                             <dataFileIncludes>
                                 <dataFileInclude>${project.build.directory}/jacoco.exec</dataFileInclude>
                             </dataFileIncludes>
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate</outputDirectory>
+                        <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate</outputDirectory>
                         </configuration>
 -->
                     </execution>
@@ -178,7 +180,7 @@
             </plugin>
         </plugins>
     </build>
-    
+
     <!-- `mvn clean test site` to generate the junit html report-->
     <!-- `mvn surefire-report:report` generate HTML report -->
     <reporting>
@@ -193,7 +195,9 @@
                 <artifactId>spotbugs-maven-plugin</artifactId>
                 <version>${maven.spotbugs.plugin.version}</version>
                 <configuration>
-                    <excludeFilterFile>${project.resources[0].directory}/spotbugs-exclude.xml</excludeFilterFile>
+                    <excludeFilterFile>
+                        ${project.resources[0].directory}/spotbugs-exclude.xml
+                    </excludeFilterFile>
                     <!--includeFilterFile>spotbugs-include.xml</includeFilterFile-->
                 </configuration>
             </plugin>
@@ -202,7 +206,15 @@
                 <artifactId>maven-pmd-plugin</artifactId>
                 <version>${maven.pmd.plugin.version}</version>
                 <configuration>
+                    <targetJdk>${project.java.version}</targetJdk>
                     <inputEncoding>${project.reporting.outputEncoding}</inputEncoding>
+                    <excludes>
+                        <exclude>com/agutsul/chess/piece/*PieceFactory.java</exclude>
+                        <exclude>com/agutsul/chess/rule/action/AbstractCastlingActionRule.java</exclude>
+                    </excludes>
+                    <rulesets>
+                        <ruleset>${project.basedir}/src/conf/pmd/ruleset.xml</ruleset>
+                    </rulesets>
                 </configuration>
             </plugin>
             <plugin>

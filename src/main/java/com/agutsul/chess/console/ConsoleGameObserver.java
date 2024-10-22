@@ -59,7 +59,7 @@ final class ConsoleGameObserver implements Observer {
         displayWinner(event.getGame().getWinner());
     }
 
-    private void process(ActionPerformedEvent event) {
+    private void process(ActionPerformedEvent ignoredEvent) {
         displayBoard(((AbstractGame) game).getBoard());
     }
 
@@ -67,7 +67,7 @@ final class ConsoleGameObserver implements Observer {
         displayAction(event.getAction());
     }
 
-    private void process(ActionCancelledEvent event) {
+    private void process(ActionCancelledEvent ignoredEvent) {
         displayBoard(((AbstractGame) game).getBoard());
     }
 
