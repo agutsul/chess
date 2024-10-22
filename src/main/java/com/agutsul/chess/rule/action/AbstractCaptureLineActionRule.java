@@ -1,7 +1,11 @@
 package com.agutsul.chess.rule.action;
 
+import static java.util.Collections.emptyList;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.action.PieceCaptureAction;
@@ -34,22 +38,7 @@ public abstract class AbstractCaptureLineActionRule<COLOR1 extends Color,
 
         var captureLines = new ArrayList<Calculated>();
         for (var line : lines) {
-            var capturePositions = new ArrayList<Position>();
-            for (var position : line) {
-                var optionalPiece = board.getPiece(position);
-                if (optionalPiece.isEmpty()) {
-                    capturePositions.add(position);
-                    continue;
-                }
-
-                var otherPiece = optionalPiece.get();
-                if (piece.getColor() != otherPiece.getColor()) {
-                    capturePositions.add(position);
-                }
-
-                break;
-            }
-
+            var capturePositions = filterCapturePositions(line, piece.getColor());
             if (!capturePositions.isEmpty()) {
                 captureLines.add(new Line(capturePositions));
             }
@@ -78,4 +67,25 @@ public abstract class AbstractCaptureLineActionRule<COLOR1 extends Color,
     }
 
     protected abstract ACTION createAction(PIECE1 piece1, PIECE2 piece2, Line line);
+
+    private List<Position> filterCapturePositions(Line line, Color pieceColor) {
+        var capturePositions = new ArrayList<Position>();
+        for (var position : line) {
+            var optionalPiece = board.getPiece(position);
+            if (optionalPiece.isEmpty()) {
+                capturePositions.add(position);
+                continue;
+            }
+
+            var otherPiece = optionalPiece.get();
+            if (Objects.equals(pieceColor, otherPiece.getColor())) {
+                break;
+            } else {
+                capturePositions.add(position);
+                return capturePositions;
+            }
+        }
+
+        return emptyList();
+    }
 }
