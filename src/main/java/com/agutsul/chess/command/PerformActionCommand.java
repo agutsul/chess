@@ -16,16 +16,12 @@ import com.agutsul.chess.exception.IllegalPositionException;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 public class PerformActionCommand
         extends AbstractCommand {
 
     private static final ActionMementoFactory MEMENTO_FACTORY = ActionMementoFactory.INSTANCE;
 
-    @SuppressFBWarnings("EI_EXPOSE_REP2")
     private final Board board;
-    @SuppressFBWarnings("EI_EXPOSE_REP2")
     private final Observable observable;
 
     private Piece<Color> sourcePiece;

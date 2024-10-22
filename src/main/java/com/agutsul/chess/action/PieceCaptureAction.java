@@ -10,8 +10,6 @@ import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Line;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 public class PieceCaptureAction<COLOR1 extends Color,
                                 COLOR2 extends Color,
                                 PIECE1 extends Piece<COLOR1> & Capturable,
@@ -37,7 +35,6 @@ public class PieceCaptureAction<COLOR1 extends Color,
         this.attackLine = attackLine;
     }
 
-    @SuppressFBWarnings("EI_EXPOSE_REP")
     public Line getAttackLine() {
         return this.attackLine;
     }

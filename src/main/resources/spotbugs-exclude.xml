@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+
+  <Match>
+    <Bug code="EI,EI2" />
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.agutsul.chess.board.BoardBuilder$PieceBuilderTask" />
+      <Class name="com.agutsul.chess.board.BoardBuilder$PieceBuilderSubTask" />
+    </Or>
+    <Bug code="Se" />
+  </Match>
+
+  <Match>
+    <Class name="com.agutsul.chess.position.Position" />
+    <Bug code="MS" />
+  </Match>
+
+  <!-- All bugs in test classes, except for JUnit-specific bugs -->
+  <Match>
+  <Class name="~.*\.*Test" />
+  <Not>
+    <Bug code="IJU" />
+  </Not>
+  </Match>
+</FindBugsFilter>

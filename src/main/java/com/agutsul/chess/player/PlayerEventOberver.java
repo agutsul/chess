@@ -21,14 +21,11 @@ import com.agutsul.chess.player.event.PlayerCancelActionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 public final class PlayerEventOberver
         implements Observer {
 
     private static final Logger LOGGER = getLogger(PlayerEventOberver.class);
 
-    @SuppressFBWarnings("EI_EXPOSE_REP2")
     private final Game game;
 
     public PlayerEventOberver(Game game) {
