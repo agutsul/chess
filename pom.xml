@@ -196,7 +196,7 @@
                 <version>${maven.spotbugs.plugin.version}</version>
                 <configuration>
                     <excludeFilterFile>
-                        ${project.resources[0].directory}/spotbugs-exclude.xml
+                        ${project.basedir}/src/conf/spotbugs/exclude.xml
                     </excludeFilterFile>
                     <!--includeFilterFile>spotbugs-include.xml</includeFilterFile-->
                 </configuration>
