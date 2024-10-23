@@ -47,7 +47,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void uncastling(Position position) {
+    public final void uncastling(Position position) {
         LOGGER.info("'{}' undo caslting to '{}'", this, position);
         ((CastlingablePieceState) this.currentState).uncastling(this, position);
     }
