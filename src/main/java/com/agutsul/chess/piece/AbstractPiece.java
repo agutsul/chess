@@ -39,6 +39,7 @@ abstract class AbstractPiece<COLOR extends Color>
     private final Type type;
     private final COLOR color;
     private final String unicode;
+    private final int value;
 
     protected final Board board;
 
@@ -49,7 +50,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
     @SuppressWarnings("unchecked")
     AbstractPiece(Board board, Type type, COLOR color, String unicode, Position position,
-            AbstractPieceState<? extends AbstractPiece<Color>> state) {
+            int direction, AbstractPieceState<? extends AbstractPiece<Color>> state) {
 
         this.observer = new ActionEventObserver();
 
@@ -59,6 +60,7 @@ abstract class AbstractPiece<COLOR extends Color>
         this.type = type;
         this.color = color;
         this.unicode = unicode;
+        this.value = type.value() * direction;
 
         this.activeState = (AbstractPieceState<AbstractPiece<Color>>) state;
         this.currentState = this.activeState;
@@ -137,6 +139,11 @@ abstract class AbstractPiece<COLOR extends Color>
     @Override
     public final String getUnicode() {
         return this.unicode;
+    }
+
+    @Override
+    public final int getValue() {
+        return this.value;
     }
 
     @Override

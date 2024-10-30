@@ -10,88 +10,73 @@ import com.agutsul.chess.action.event.ActionCancellingEvent;
 import com.agutsul.chess.action.event.ActionExecutionEvent;
 import com.agutsul.chess.action.event.ActionPerformedEvent;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.event.Event;
-import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.game.AbstractGame;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
+import com.agutsul.chess.game.observer.AbstractGameObserver;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 
-final class ConsoleGameObserver implements Observer {
+final class ConsoleGameOutputObserver
+        extends AbstractGameObserver {
 
-    private final Game game;
-
-    public ConsoleGameObserver(Game game) {
-        this.game = game;
+    public ConsoleGameOutputObserver(Game game) {
+        super(game);
     }
 
     @Override
-    public void observe(Event event) {
-        if (event instanceof GameStartedEvent) {
-            process((GameStartedEvent) event);
-        } else if (event instanceof GameOverEvent) {
-            process((GameOverEvent) event);
-        } else if (event instanceof ActionPerformedEvent) {
-            process((ActionPerformedEvent) event);
-        } else if (event instanceof ActionExecutionEvent) {
-            process((ActionExecutionEvent) event);
-        } else if (event instanceof PlayerActionExceptionEvent) {
-            process((PlayerActionExceptionEvent) event);
-        } else if (event instanceof PlayerCancelActionExceptionEvent) {
-            process((PlayerCancelActionExceptionEvent) event);
-        } else if (event instanceof ActionCancelledEvent) {
-            process((ActionCancelledEvent) event);
-        } else if (event instanceof ActionCancellingEvent) {
-            process((ActionCancellingEvent) event);
-        }
-    }
-
-    private void process(GameStartedEvent event) {
+    protected void process(GameStartedEvent event) {
         System.out.println("Please, enter an action in the following format: '<source_position> <target_position>'.");
         System.out.println("For example: 'e2 e4'");
         displayBoard(((AbstractGame) event.getGame()).getBoard());
     }
 
-    private void process(GameOverEvent event) {
+    @Override
+    protected void process(GameOverEvent event) {
         displayWinner(event.getGame().getWinner());
     }
 
-    private void process(ActionPerformedEvent ignoredEvent) {
+    @Override
+    protected void process(ActionPerformedEvent ignoredEvent) {
         displayBoard(((AbstractGame) game).getBoard());
     }
 
-    private void process(ActionExecutionEvent event) {
+    @Override
+    protected void process(ActionExecutionEvent event) {
         displayAction(event.getAction());
     }
 
-    private void process(ActionCancelledEvent ignoredEvent) {
+    @Override
+    protected void process(ActionCancelledEvent ignoredEvent) {
         displayBoard(((AbstractGame) game).getBoard());
     }
 
-    private void process(ActionCancellingEvent event) {
+    @Override
+    protected void process(ActionCancellingEvent event) {
         displayAction(event.getAction());
     }
 
-    private void process(PlayerActionExceptionEvent event) {
+    @Override
+    protected void process(PlayerActionExceptionEvent event) {
         displayErrorMessage(event.getMessage());
     }
 
-    private void process(PlayerCancelActionExceptionEvent event) {
+    @Override
+    protected void process(PlayerCancelActionExceptionEvent event) {
         displayErrorMessage(event.getMessage());
     }
 
-    private void displayAction(Action<?> action) {
+    private static void displayAction(Action<?> action) {
         System.out.println(String.format("Action: %s", action));
     }
 
-    private void displayBoard(Board board) {
+    private static void displayBoard(Board board) {
         System.out.println(String.format("%s%s", lineSeparator(), board));
     }
 
-    private void displayWinner(Optional<Player> winner) {
+    private static void displayWinner(Optional<Player> winner) {
         String message = winner.isPresent()
                 ? formatWinnerMessage(winner.get())
                 : "Draw.";
@@ -99,12 +84,12 @@ final class ConsoleGameObserver implements Observer {
         System.out.println(String.format("Game over. %s", message));
     }
 
-    private String formatWinnerMessage(Player player) {
+    private static String formatWinnerMessage(Player player) {
         return String.format("%s wins! Congratulations, '%s' !!!",
                 player.getColor(), player);
     }
 
-    private void displayErrorMessage(String message) {
+    private static void displayErrorMessage(String message) {
         System.err.println(message);
     }
 }

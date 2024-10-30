@@ -33,6 +33,11 @@ class PieceProxy implements Piece<Color> {
     }
 
     @Override
+    public final int getValue() {
+        return origin.getValue();
+    }
+
+    @Override
     public final Position getPosition() {
         return origin.getPosition();
     }

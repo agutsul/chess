@@ -31,10 +31,10 @@ final class PawnPieceImpl<COLOR extends Color>
     PawnPieceImpl(Board board, COLOR color, String unicode, Position position,
             int direction, int promotionLine, int initialLine) {
 
-        super(board, Piece.Type.PAWN, color, unicode, position,
+        super(board, Piece.Type.PAWN, color, unicode, position, direction,
                 new PawnActivePieceState<>(board,
-                    new PawnPieceActionRule(board, direction, initialLine, promotionLine),
-                    new PawnPieceImpactRule(board, direction)
+                        new PawnPieceActionRule(board, direction, initialLine, promotionLine),
+                        new PawnPieceImpactRule(board, direction)
                 )
         );
     }

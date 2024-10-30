@@ -22,6 +22,12 @@ public class BoardProxy
         this.origin = board;
     }
 
+
+    @Override
+    public int calculateValue(Color color) {
+        return origin.calculateValue(color);
+    }
+
     @Override
     public Collection<Piece<Color>> getPieces() {
         return origin.getPieces();

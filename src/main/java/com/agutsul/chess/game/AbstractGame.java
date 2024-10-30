@@ -29,7 +29,7 @@ import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.journal.Memento;
 import com.agutsul.chess.player.Player;
-import com.agutsul.chess.player.PlayerEventOberver;
+import com.agutsul.chess.player.observer.PlayerOutputOberver;
 import com.agutsul.chess.player.state.ActivePlayerState;
 import com.agutsul.chess.player.state.LockedPlayerState;
 import com.agutsul.chess.player.state.PlayerState;
@@ -71,7 +71,7 @@ public abstract class AbstractGame
         this.journal = new JournalImpl<>();
 
         this.observers = new CopyOnWriteArrayList<>();
-        this.observers.add(new PlayerEventOberver(this));
+        this.observers.add(new PlayerOutputOberver(this));
         this.observers.add(new ActionEventObserver());
     }
 

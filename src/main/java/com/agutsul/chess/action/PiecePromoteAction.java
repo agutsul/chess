@@ -39,9 +39,11 @@ public class PiecePromoteAction<COLOR1 extends Color,
 
     @Override
     public void execute() {
-        LOGGER.info("Executing promote by '{}'", getSource().getSource());
+        var piece = getSource().getSource();
+
+        LOGGER.info("Executing promote by '{}'", piece);
         // prompt player about piece type to create during promotion
-        observable.notifyObservers(new RequestPromotionPieceTypeEvent(this));
+        observable.notifyObservers(new RequestPromotionPieceTypeEvent(piece.getColor(), this));
     }
 
     @Override

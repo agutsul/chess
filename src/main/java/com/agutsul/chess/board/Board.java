@@ -18,6 +18,8 @@ public interface Board
     void setState(BoardState state);
     BoardState getState();
 
+    int calculateValue(Color color);
+
     <ACTION extends Action<?>> Collection<ACTION> getActions(Piece<Color> piece, Class<ACTION> actionClass);
 
     Collection<Action<?>> getActions(Piece<Color> piece);

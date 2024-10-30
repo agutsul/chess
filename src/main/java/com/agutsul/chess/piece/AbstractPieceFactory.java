@@ -127,32 +127,32 @@ abstract class AbstractPieceFactory<COLOR extends Color>
 
     KingPiece<COLOR> createKing(Position position, String unicode) {
         LOGGER.debug("Create '{}' king at '{}'", color, position);
-        return new KingPieceImpl<>(board, color, unicode, position);
+        return new KingPieceImpl<>(board, color, unicode, position, direction.code());
     }
 
     QueenPiece<COLOR> createQueen(Position position, String unicode) {
         LOGGER.debug("Create '{}' queen at '{}'", color, position);
-        return new QueenPieceImpl<>(board, color, unicode, position);
+        return new QueenPieceImpl<>(board, color, unicode, position, direction.code());
     }
 
     RookPiece<COLOR> createRook(Position position, String unicode) {
         LOGGER.debug("Create '{}' rook at '{}'", color, position);
-        return new RookPieceImpl<>(board, color, unicode, position);
+        return new RookPieceImpl<>(board, color, unicode, position, direction.code());
     }
 
     BishopPiece<COLOR> createBishop(Position position, String unicode) {
         LOGGER.debug("Create '{}' bishop at '{}'", color, position);
-        return new BishopPieceImpl<>(board, color, unicode, position);
+        return new BishopPieceImpl<>(board, color, unicode, position, direction.code());
     }
 
     KnightPiece<COLOR> createKnight(Position position, String unicode) {
         LOGGER.debug("Create '{}' knight at '{}'", color, position);
-        return new KnightPieceImpl<>(board, color, unicode, position);
+        return new KnightPieceImpl<>(board, color, unicode, position, direction.code());
     }
 
     PawnPiece<COLOR> createPawn(Position position, String unicode) {
         LOGGER.debug("Create '{}' pawn at '{}'", color, position);
-        return new PawnPieceImpl<>(board, color, unicode, position,
-                direction.code(), promotion.line(), bigMove.line());
+        return new PawnPieceImpl<>(board, color, unicode, position, direction.code(),
+                promotion.line(), bigMove.line());
     }
 }

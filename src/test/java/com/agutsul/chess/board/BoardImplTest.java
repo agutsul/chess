@@ -175,6 +175,14 @@ public class BoardImplTest {
         assertEquals(pawn, pawn2);
     }
 
+    @Test
+    void testCalculateValue() {
+        var board = new StandardBoard();
+
+        assertEquals(439,  board.calculateValue(Colors.WHITE));
+        assertEquals(-439, board.calculateValue(Colors.BLACK));
+    }
+
     private void testInitialBoardPieceSetup(Color color, Piece.Type pieceType, String... position) {
         var pieces = board.getPieces(color, pieceType);
         assertFalse(pieces.isEmpty());

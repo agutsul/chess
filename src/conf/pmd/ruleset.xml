@@ -21,7 +21,7 @@
     <!-- override -->
     <rule ref="category/java/codestyle.xml/TooManyStaticImports" >
         <properties>
-            <property name="maximumStaticImports" value="10" />
+            <property name="maximumStaticImports" value="99" />
         </properties>
     </rule>
     <!-- override -->

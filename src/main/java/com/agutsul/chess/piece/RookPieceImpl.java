@@ -10,8 +10,8 @@ final class RookPieceImpl<COLOR extends Color>
         extends AbstractCastlingPiece<COLOR>
         implements RookPiece<COLOR> {
 
-    RookPieceImpl(Board board, COLOR color, String unicode, Position position) {
-        super(board, Piece.Type.ROOK, color, unicode, position,
+    RookPieceImpl(Board board, COLOR color, String unicode, Position position, int direction) {
+        super(board, Piece.Type.ROOK, color, unicode, position, direction,
                 new RookPieceActionRule(board),
                 new RookPieceImpactRule(board)
         );

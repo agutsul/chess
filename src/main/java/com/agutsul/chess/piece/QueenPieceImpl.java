@@ -10,8 +10,8 @@ final class QueenPieceImpl<COLOR extends Color>
         extends AbstractPiece<COLOR>
         implements QueenPiece<COLOR> {
 
-    QueenPieceImpl(Board board, COLOR color, String unicode, Position position) {
-        super(board, Piece.Type.QUEEN, color, unicode, position,
+    QueenPieceImpl(Board board, COLOR color, String unicode, Position position, int direction) {
+        super(board, Piece.Type.QUEEN, color, unicode, position, direction,
                 new ActivePieceState<>(board,
                                        new QueenPieceActionRule(board),
                                        new QueenPieceImpactRule(board)

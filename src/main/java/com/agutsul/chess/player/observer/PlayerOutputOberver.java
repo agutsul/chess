@@ -1,4 +1,4 @@
-package com.agutsul.chess.player;
+package com.agutsul.chess.player.observer;
 
 import static org.apache.commons.lang3.ThreadUtils.sleepQuietly;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -15,20 +15,21 @@ import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.game.AbstractGame;
 import com.agutsul.chess.game.Game;
+import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 
-public final class PlayerEventOberver
+public final class PlayerOutputOberver
         implements Observer {
 
-    private static final Logger LOGGER = getLogger(PlayerEventOberver.class);
+    private static final Logger LOGGER = getLogger(PlayerOutputOberver.class);
 
     private final Game game;
 
-    public PlayerEventOberver(Game game) {
+    public PlayerOutputOberver(Game game) {
         this.game = game;
     }
 

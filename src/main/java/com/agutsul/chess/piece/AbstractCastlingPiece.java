@@ -28,12 +28,12 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     private static final DisposedCastlingablePieceState<?> DISPOSED_STATE =
             new DisposedCastlingablePieceState<>();
 
-    AbstractCastlingPiece(Board board, Type type,
-            COLOR color, String unicode, Position position,
+    AbstractCastlingPiece(Board board, Type type, COLOR color,
+            String unicode, Position position, int direction,
             Rule<Piece<Color>, Collection<Action<?>>> actionRule,
             Rule<Piece<Color>, Collection<Impact<?>>> impactRule) {
 
-        super(board, type, color, unicode, position,
+        super(board, type, color, unicode, position, direction,
                 new ActiveCastlingablePieceState<>(board, actionRule, impactRule)
         );
     }

@@ -14,28 +14,39 @@ public interface Piece<COLOR extends Color>
         extends Positionable {
 
     enum Type {
-        PAWN(""),
-        KNIGHT("N"),
-        BISHOP("B"),
-        ROOK("R"),
-        QUEEN("Q"),
-        KING("K");
+        PAWN("",    1),
+        KNIGHT("N", 3),
+        BISHOP("B", 3),
+        ROOK("R",   5),
+        QUEEN("Q",  9),
+        KING("K", 400);
 
         private String code;
+        private int value;
 
-        Type(String code) {
+        Type(String code, int value) {
             this.code = code;
+            this.value = value;
+        }
+
+        public String code() {
+            return code;
+        }
+
+        public int value() {
+            return value;
         }
 
         @Override
         public String toString() {
-            return code;
+            return code();
         }
     }
 
     Type getType();
     COLOR getColor();
     String getUnicode();
+    int getValue();
 
     PieceState<Piece<Color>> getState();
 
