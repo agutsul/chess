@@ -1,5 +1,7 @@
 package com.agutsul.chess.command;
 
+import static org.apache.commons.lang3.StringUtils.lowerCase;
+
 import java.util.Objects;
 
 import com.agutsul.chess.Color;
@@ -19,7 +21,8 @@ import com.agutsul.chess.position.Position;
 public class PerformActionCommand
         extends AbstractCommand {
 
-    private static final ActionMementoFactory MEMENTO_FACTORY = ActionMementoFactory.INSTANCE;
+    static final String MISSED_PIECE_MESSAGE = "Missed piece on position";
+    static final String MISSED_POSITION_MESSAGE = "Missed position";
 
     private final Board board;
     private final Observable observable;
@@ -39,7 +42,8 @@ public class PerformActionCommand
         var piece = board.getPiece(source);
         if (piece.isEmpty()) {
             throw new IllegalPositionException(
-                    String.format("Missed piece on position: %s", source));
+                    String.format("%s: %s", MISSED_PIECE_MESSAGE, source)
+            );
         }
 
         this.sourcePiece = piece.get();
@@ -49,7 +53,8 @@ public class PerformActionCommand
         var position = board.getPosition(target);
         if (position.isEmpty()) {
             throw new IllegalPositionException(
-                    String.format("Missed position: %s", target));
+                    String.format("%s: %s", MISSED_POSITION_MESSAGE, target)
+            );
         }
 
         this.targetPosition = position.get();
@@ -64,7 +69,7 @@ public class PerformActionCommand
         if (targetAction.isEmpty()) {
             throw new IllegalActionException(
                     String.format("Invalid action for %s at '%s' and position '%s'",
-                            this.sourcePiece.getType().name().toLowerCase(),
+                            lowerCase(this.sourcePiece.getType().name()),
                             this.sourcePiece.getPosition(),
                             this.targetPosition
                     )
@@ -72,7 +77,7 @@ public class PerformActionCommand
         }
 
         this.action = targetAction.get();
-        this.memento = MEMENTO_FACTORY.create(this.action);
+        this.memento = createMemento(this.action);
     }
 
     @Override
@@ -86,5 +91,9 @@ public class PerformActionCommand
         }
 
         this.observable.notifyObservers(new ActionPerformedEvent(this.memento));
+    }
+
+    private static ActionMemento<?,?> createMemento(Action<?> action) {
+        return ActionMementoFactory.INSTANCE.create(action);
     }
 }

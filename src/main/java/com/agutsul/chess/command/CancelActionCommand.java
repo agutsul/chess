@@ -17,9 +17,12 @@ import com.agutsul.chess.game.Game;
 public class CancelActionCommand
         extends AbstractCommand {
 
-    private final Game game;
+    static final String UNEXPECTED_ACTION_MESSAGE = "Unexpected player action";
+    static final String NOTHING_TO_CANCEL_MESSAGE = "No action to cancel";
 
-    private Color color;
+    private final Game game;
+    private final Color color;
+
     private Action<?> action;
 
     public CancelActionCommand(Game game, Color color) {
@@ -31,14 +34,14 @@ public class CancelActionCommand
     protected void preExecute() throws CommandException {
         var aGame = (AbstractGame) this.game;
         if (!aGame.hasPrevious()) {
-            throw new CommandException("No action to cancel");
+            throw new CommandException(NOTHING_TO_CANCEL_MESSAGE);
         }
 
         var journal = aGame.getJournal();
         // get last executed action from journal
         var actionMemento = (ActionMemento<?,?>) journal.get(journal.size() - 1);
         if (!Objects.equals(this.color, actionMemento.getColor())) {
-            throw new CommandException("Unexpected player action");
+            throw new CommandException(UNEXPECTED_ACTION_MESSAGE);
         }
 
         this.action = createAction(aGame.getBoard(), actionMemento);
@@ -57,7 +60,7 @@ public class CancelActionCommand
         ((Observable) this.game).notifyObservers(new ActionCancelledEvent());
     }
 
-    private Action<?> createAction(Board board, ActionMemento<?,?> memento) {
+    private static Action<?> createAction(Board board, ActionMemento<?,?> memento) {
         return CancelActionMementoFactory.INSTANCE.create(board, memento);
     }
 }
