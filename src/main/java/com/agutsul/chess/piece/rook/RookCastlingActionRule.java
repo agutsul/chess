@@ -29,10 +29,10 @@ class RookCastlingActionRule<COLOR extends Color,
     public Collection<PieceCastlingAction<COLOR, ROOK, KING>> evaluate(ROOK rook) {
         var actions = new ArrayList<PieceCastlingAction<COLOR, ROOK, KING>>();
         for (var king : board.getPieces(rook.getColor(), Piece.Type.KING)) {
-            var castlingActions = super.evaluateCastling(
-                    (KingPiece<Color>) king,
-                    (RookPiece<Color>) rook
-                );
+            var castlingActions = super.evaluate(
+                    (KingPiece<COLOR>) king,
+                    (RookPiece<COLOR>) rook
+            );
 
             if (castlingActions.isEmpty()) {
                 continue;

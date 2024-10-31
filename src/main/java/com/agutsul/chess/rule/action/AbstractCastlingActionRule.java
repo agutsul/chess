@@ -33,8 +33,9 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
         // rook is located at "h1" or "h8"
         KING_SIDE(7, 5, 6, "0-0") {
             @Override
-            boolean isAllEmptyBetween(Board board,
-                                      KingPiece<Color> king, RookPiece<Color> rook) {
+            <COLOR extends Color> boolean isAllEmptyBetween(Board board,
+                                                            KingPiece<COLOR> king,
+                                                            RookPiece<COLOR> rook) {
 
                 var rookPosition = rook.getPosition();
                 var kingPosition = king.getPosition();
@@ -51,8 +52,9 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
             }
 
             @Override
-            boolean isAnyAttackedBetween(Board board,
-                                         KingPiece<Color> king, RookPiece<Color> rook) {
+            <COLOR extends Color> boolean isAnyAttackedBetween(Board board,
+                                                               KingPiece<COLOR> king,
+                                                               RookPiece<COLOR> rook) {
 
                 var rookPosition = rook.getPosition();
                 var kingPosition = king.getPosition();
@@ -73,8 +75,9 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
         // rook is located at "a1" or "a8"
         QUEEN_SIDE(0, 3, 2, "0-0-0") {
             @Override
-            boolean isAllEmptyBetween(Board board,
-                                      KingPiece<Color> king, RookPiece<Color> rook) {
+            <COLOR extends Color> boolean isAllEmptyBetween(Board board,
+                                                            KingPiece<COLOR> king,
+                                                            RookPiece<COLOR> rook) {
 
                 var rookPosition = rook.getPosition();
                 var kingPosition = king.getPosition();
@@ -92,8 +95,9 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
             }
 
             @Override
-            boolean isAnyAttackedBetween(Board board,
-                                         KingPiece<Color> king, RookPiece<Color> rook) {
+            <COLOR extends Color> boolean isAnyAttackedBetween(Board board,
+                                                               KingPiece<COLOR> king,
+                                                               RookPiece<COLOR> rook) {
 
                 var rookPosition = rook.getPosition();
                 var kingPosition = king.getPosition();
@@ -152,19 +156,21 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
             return kingTarget;
         }
 
-        abstract boolean isAllEmptyBetween(Board board,
-                                           KingPiece<Color> king, RookPiece<Color> rook);
+        abstract <COLOR extends Color> boolean isAllEmptyBetween(Board board,
+                                                                 KingPiece<COLOR> king,
+                                                                 RookPiece<COLOR> rook);
 
-        abstract boolean isAnyAttackedBetween(Board board,
-                                              KingPiece<Color> king, RookPiece<Color> rook);
+        abstract <COLOR extends Color> boolean isAnyAttackedBetween(Board board,
+                                                                    KingPiece<COLOR> king,
+                                                                    RookPiece<COLOR> rook);
     }
 
     protected AbstractCastlingActionRule(Board board) {
         super(board);
     }
 
-    protected Collection<PieceCastlingAction<COLOR, KING, ROOK>>
-            evaluateCastling(KingPiece<Color> king, RookPiece<Color> rook) {
+    protected Collection<PieceCastlingAction<COLOR, KING, ROOK>> evaluate(KingPiece<COLOR> king,
+                                                                          RookPiece<COLOR> rook) {
 
         // Neither the king nor the rook has previously moved.
         if (king.isMoved() || rook.isMoved()) {
@@ -172,9 +178,12 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
         }
 
         var castling = Castling.of(rook.getPosition());
+        if (castling == null) {
+            return emptyList();
+        }
 
-        // There are no pieces between the king and the rook
-        if (castling == null || !castling.isAllEmptyBetween(board, king, rook)) {
+        // There are no pieces between the king and the rook.
+        if (!castling.isAllEmptyBetween(board, king, rook)) {
             return emptyList();
         }
 
@@ -191,18 +200,19 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
         return List.of(createAction(castling, king, rook));
     }
 
-    @SuppressWarnings("unchecked")
     private PieceCastlingAction<COLOR, KING, ROOK> createAction(Castling castling,
-                                                                KingPiece<Color> king,
-                                                                RookPiece<Color> rook) {
+                                                                KingPiece<COLOR> king,
+                                                                RookPiece<COLOR> rook) {
 
         var kPosition = board.getPosition(castling.getKingTarget(), king.getPosition().y());
         var rPosition = board.getPosition(castling.getRookTarget(), rook.getPosition().y());
 
-        return new PieceCastlingAction<COLOR, KING, ROOK>(
-                castling.code(),
-                new CastlingMoveAction<COLOR, KING>((KING) king, kPosition.get()),
-                new CastlingMoveAction<COLOR, ROOK>((ROOK) rook, rPosition.get())
-            );
+        @SuppressWarnings("unchecked")
+        var action = new PieceCastlingAction<>(castling.code(),
+                new CastlingMoveAction<>((KING) king, kPosition.get()),
+                new CastlingMoveAction<>((ROOK) rook, rPosition.get())
+        );
+
+        return action;
     }
 }
