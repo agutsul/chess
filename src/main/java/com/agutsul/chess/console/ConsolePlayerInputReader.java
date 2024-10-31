@@ -14,10 +14,13 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
 
-final class ConsolePlayerInputObserver
+final class ConsolePlayerInputReader
         extends AbstractPlayerInputObserver {
 
-    public ConsolePlayerInputObserver(Player player, Game game) {
+    static final String PROMOTION_PIECE_TYPE_MESSAGE = "Choose promotion piece type:";
+    static final String EMPTY_LINE_MESSAGE = "Unable to process an empty line";
+
+    ConsolePlayerInputReader(Player player, Game game) {
         super(player, game);
     }
 
@@ -35,7 +38,7 @@ final class ConsolePlayerInputObserver
 
         var input = trimToEmpty(readConsoleInput());
         if (isEmpty(input)) {
-            throw new IllegalActionException("Unable to process an empty line");
+            throw new IllegalActionException(EMPTY_LINE_MESSAGE);
         }
 
         return upperCase(input.substring(0, 1));
@@ -43,7 +46,7 @@ final class ConsolePlayerInputObserver
 
     private static void promptPieceType() {
         var builder = new StringBuilder();
-        builder.append("Choose promotion piece type:").append(lineSeparator());
+        builder.append(PROMOTION_PIECE_TYPE_MESSAGE).append(lineSeparator());
 
         for (var pieceType : PROMOTION_TYPES.values()) {
             builder.append("'").append(pieceType).append("' - ");

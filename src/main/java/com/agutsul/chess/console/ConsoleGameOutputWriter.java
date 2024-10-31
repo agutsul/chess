@@ -19,17 +19,25 @@ import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 
-final class ConsoleGameOutputObserver
+final class ConsoleGameOutputWriter
         extends AbstractGameObserver {
 
-    public ConsoleGameOutputObserver(Game game) {
+    static final String ENTER_ACTION_MESSAGE = "Please, enter an action in the following format: '<source_position> <target_position>'.";
+    static final String ENTER_ACTION_EXAMPLE_MESSAGE = "For example: 'e2 e4'";
+
+    static final String DRAW_MESSAGE = "Draw";
+    static final String ACTION_MESSAGE = "Action";
+    static final String GAME_OVER_MESSAGE = "Game over";
+
+    ConsoleGameOutputWriter(Game game) {
         super(game);
     }
 
     @Override
     protected void process(GameStartedEvent event) {
-        System.out.println("Please, enter an action in the following format: '<source_position> <target_position>'.");
-        System.out.println("For example: 'e2 e4'");
+        System.out.println(ENTER_ACTION_MESSAGE);
+        System.out.println(ENTER_ACTION_EXAMPLE_MESSAGE);
+
         displayBoard(((AbstractGame) event.getGame()).getBoard());
     }
 
@@ -40,7 +48,7 @@ final class ConsoleGameOutputObserver
 
     @Override
     protected void process(ActionPerformedEvent ignoredEvent) {
-        displayBoard(((AbstractGame) game).getBoard());
+        displayBoard(((AbstractGame) this.game).getBoard());
     }
 
     @Override
@@ -50,7 +58,7 @@ final class ConsoleGameOutputObserver
 
     @Override
     protected void process(ActionCancelledEvent ignoredEvent) {
-        displayBoard(((AbstractGame) game).getBoard());
+        displayBoard(((AbstractGame) this.game).getBoard());
     }
 
     @Override
@@ -69,7 +77,7 @@ final class ConsoleGameOutputObserver
     }
 
     private static void displayAction(Action<?> action) {
-        System.out.println(String.format("Action: %s", action));
+        System.out.println(String.format("%s: %s", ACTION_MESSAGE, action));
     }
 
     private static void displayBoard(Board board) {
@@ -79,9 +87,9 @@ final class ConsoleGameOutputObserver
     private static void displayWinner(Optional<Player> winner) {
         String message = winner.isPresent()
                 ? formatWinnerMessage(winner.get())
-                : "Draw.";
+                : DRAW_MESSAGE;
 
-        System.out.println(String.format("Game over. %s", message));
+        System.out.println(String.format("%s. %s", GAME_OVER_MESSAGE, message));
     }
 
     private static String formatWinnerMessage(Player player) {
