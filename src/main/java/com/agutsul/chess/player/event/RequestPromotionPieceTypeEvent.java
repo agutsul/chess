@@ -8,8 +8,7 @@ public class RequestPromotionPieceTypeEvent
 
     private final PiecePromoteAction<?,?> action;
 
-    public RequestPromotionPieceTypeEvent(Color color,
-                                          PiecePromoteAction<?,?> action) {
+    public RequestPromotionPieceTypeEvent(Color color, PiecePromoteAction<?,?> action) {
         super(color);
         this.action = action;
     }

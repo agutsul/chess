@@ -45,7 +45,7 @@ public abstract class AbstractPlayerInputObserver
     protected final Player player;
     protected final Game game;
 
-    public AbstractPlayerInputObserver(Player player, Game game) {
+    protected AbstractPlayerInputObserver(Player player, Game game) {
         this.player = player;
         this.game = game;
     }
@@ -57,7 +57,7 @@ public abstract class AbstractPlayerInputObserver
         }
 
         var requestEvent = (AbstractRequestEvent) event;
-        if (!Objects.equals(requestEvent.getColor(), player.getColor())) {
+        if (!Objects.equals(requestEvent.getColor(), this.player.getColor())) {
             return;
         }
 
@@ -68,7 +68,7 @@ public abstract class AbstractPlayerInputObserver
         }
     }
 
-    protected abstract String getActionCommand(Player player);
+    protected abstract String getActionCommand();
 
     protected abstract String getPieceType();
 
@@ -86,19 +86,18 @@ public abstract class AbstractPlayerInputObserver
 
         var action = event.getAction();
         // callback to origin action to continue processing
-        action.observe(new PromotionPieceTypeEvent(pieceType));
+        action.observe(new PromotionPieceTypeEvent(this.player, pieceType));
     }
 
     protected void process(RequestPlayerActionEvent event) {
-        var player = event.getPlayer();
-        var command = getActionCommand(player);
+        var command = getActionCommand();
 
-        LOGGER.info("Processing player '{}' command '{}'", player.getName(), command);
+        LOGGER.info("Processing player '{}' command '{}'", this.player.getName(), command);
 
         if (UNDO_COMMAND.equalsIgnoreCase(command)) {
-            processUndoCommand(player);
+            processUndoCommand(this.player);
         } else if (contains(command, SPACE)) {
-            processActionCommand(player, command);
+            processActionCommand(this.player, command);
         } else {
             throw new IllegalActionException(
                     String.format("Unable to process: '%s'", command)

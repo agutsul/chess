@@ -25,9 +25,9 @@ final class ConsolePlayerInputReader
     }
 
     @Override
-    protected String getActionCommand(Player player) {
+    protected String getActionCommand() {
         System.out.println(String.format("%s: '%s' move:%s",
-                player.getColor(), player, lineSeparator()));
+                this.player.getColor(), this.player, lineSeparator()));
 
         return lowerCase(readConsoleInput());
     }

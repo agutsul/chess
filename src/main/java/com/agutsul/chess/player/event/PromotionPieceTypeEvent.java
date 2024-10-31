@@ -1,14 +1,15 @@
 package com.agutsul.chess.player.event;
 
-import com.agutsul.chess.event.Event;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.player.Player;
 
 public class PromotionPieceTypeEvent
-        implements Event {
+        extends AbstractResponseEvent {
 
     private final Piece.Type pieceType;
 
-    public PromotionPieceTypeEvent(Piece.Type pieceType) {
+    public PromotionPieceTypeEvent(Player player, Piece.Type pieceType) {
+        super(player);
         this.pieceType = pieceType;
     }
 
