@@ -9,7 +9,6 @@ import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.apache.commons.lang3.StringUtils.contains;
 import static org.apache.commons.lang3.StringUtils.split;
-import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Map;
 import java.util.Objects;
@@ -34,18 +33,20 @@ import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 public abstract class AbstractPlayerInputObserver
         implements Observer {
 
-    private static final Logger LOGGER = getLogger(AbstractPlayerInputObserver.class);
-
-    private static final String UNDO_COMMAND = "undo";
-
     protected static final Map<String, Piece.Type> PROMOTION_TYPES =
             Stream.of(KNIGHT, BISHOP, ROOK, QUEEN)
                     .collect(toMap(Piece.Type::code, identity()));
 
+    private static final String UNDO_COMMAND = "undo";
+
+
     protected final Player player;
     protected final Game game;
 
-    protected AbstractPlayerInputObserver(Player player, Game game) {
+    private final Logger logger;
+
+    protected AbstractPlayerInputObserver(Logger logger, Player player, Game game) {
+        this.logger = logger;
         this.player = player;
         this.game = game;
     }
@@ -70,12 +71,12 @@ public abstract class AbstractPlayerInputObserver
 
     protected abstract String getActionCommand();
 
-    protected abstract String getPieceType();
+    protected abstract String getPromotionPieceType();
 
     protected void process(RequestPromotionPieceTypeEvent event) {
-        var selectedType = getPieceType();
+        var selectedType = getPromotionPieceType();
 
-        LOGGER.info("Processing selected pawn promotion type '{}'", selectedType);
+        logger.info("Processing selected pawn promotion type '{}'", selectedType);
 
         var pieceType = PROMOTION_TYPES.get(selectedType);
         if (pieceType == null) {
@@ -92,7 +93,7 @@ public abstract class AbstractPlayerInputObserver
     protected void process(RequestPlayerActionEvent event) {
         var command = getActionCommand();
 
-        LOGGER.info("Processing player '{}' command '{}'", this.player.getName(), command);
+        logger.info("Processing player '{}' command '{}'", this.player.getName(), command);
 
         if (UNDO_COMMAND.equalsIgnoreCase(command)) {
             processUndoCommand(this.player);

@@ -5,9 +5,12 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.apache.commons.lang3.StringUtils.trimToEmpty;
 import static org.apache.commons.lang3.StringUtils.upperCase;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
+
+import org.slf4j.Logger;
 
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.Game;
@@ -20,8 +23,10 @@ final class ConsolePlayerInputReader
     static final String PROMOTION_PIECE_TYPE_MESSAGE = "Choose promotion piece type:";
     static final String EMPTY_LINE_MESSAGE = "Unable to process an empty line";
 
+    private static final Logger LOGGER = getLogger(ConsolePlayerInputReader.class);
+
     ConsolePlayerInputReader(Player player, Game game) {
-        super(player, game);
+        super(LOGGER, player, game);
     }
 
     @Override
@@ -33,7 +38,7 @@ final class ConsolePlayerInputReader
     }
 
     @Override
-    protected String getPieceType() {
+    protected String getPromotionPieceType() {
         promptPieceType();
 
         var input = trimToEmpty(readConsoleInput());
