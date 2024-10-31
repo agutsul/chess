@@ -1,7 +1,5 @@
 package com.agutsul.chess.command;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 import org.slf4j.Logger;
 
 import com.agutsul.chess.exception.CommandException;
@@ -10,7 +8,11 @@ import com.agutsul.chess.exception.IllegalActionException;
 abstract class AbstractCommand
         implements Command {
 
-    private static final Logger LOGGER = getLogger(AbstractCommand.class);
+    private final Logger logger;
+
+    protected AbstractCommand(Logger logger) {
+        this.logger = logger;
+    }
 
     @Override
     public final void execute() {
@@ -22,7 +24,7 @@ abstract class AbstractCommand
                 postExecute();
             }
         } catch (CommandException e) {
-            LOGGER.error("Command exception", e);
+            logger.error("Command exception", e);
             throw new IllegalActionException(e.getMessage());
         }
     }

@@ -1,8 +1,11 @@
 package com.agutsul.chess.command;
 
 import static org.apache.commons.lang3.StringUtils.lowerCase;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Objects;
+
+import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
@@ -24,6 +27,8 @@ public class PerformActionCommand
     static final String MISSED_PIECE_MESSAGE = "Missed piece on position";
     static final String MISSED_POSITION_MESSAGE = "Missed position";
 
+    private static final Logger LOGGER = getLogger(PerformActionCommand.class);
+
     private final Board board;
     private final Observable observable;
 
@@ -34,6 +39,7 @@ public class PerformActionCommand
     private ActionMemento<?,?> memento;
 
     public PerformActionCommand(Board board, Observable observable) {
+        super(LOGGER);
         this.board = board;
         this.observable = observable;
     }

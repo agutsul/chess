@@ -1,6 +1,10 @@
 package com.agutsul.chess.command;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import java.util.Objects;
+
+import org.slf4j.Logger;
 
 import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
@@ -20,12 +24,15 @@ public class CancelActionCommand
     static final String UNEXPECTED_ACTION_MESSAGE = "Unexpected player action";
     static final String NOTHING_TO_CANCEL_MESSAGE = "No action to cancel";
 
+    private static final Logger LOGGER = getLogger(CancelActionCommand.class);
+
     private final Game game;
     private final Color color;
 
     private Action<?> action;
 
     public CancelActionCommand(Game game, Color color) {
+        super(LOGGER);
         this.game = game;
         this.color = color;
     }
