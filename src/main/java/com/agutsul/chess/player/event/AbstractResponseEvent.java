@@ -8,7 +8,7 @@ public abstract class AbstractResponseEvent
 
     private final Player player;
 
-    protected AbstractResponseEvent(Player player) {
+    AbstractResponseEvent(Player player) {
         this.player = player;
     }
 

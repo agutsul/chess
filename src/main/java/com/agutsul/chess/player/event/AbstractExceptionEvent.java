@@ -7,7 +7,7 @@ public abstract class AbstractExceptionEvent
 
     private final String message;
 
-    protected AbstractExceptionEvent(String message) {
+    AbstractExceptionEvent(String message) {
         this.message = message;
     }
 
