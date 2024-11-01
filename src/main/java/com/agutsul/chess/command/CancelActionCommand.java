@@ -21,10 +21,10 @@ import com.agutsul.chess.game.Game;
 public class CancelActionCommand
         extends AbstractCommand {
 
-    static final String UNEXPECTED_ACTION_MESSAGE = "Unexpected player action";
-    static final String NOTHING_TO_CANCEL_MESSAGE = "No action to cancel";
-
     private static final Logger LOGGER = getLogger(CancelActionCommand.class);
+
+    private static final String UNEXPECTED_ACTION_MESSAGE = "Unexpected player action";
+    private static final String NOTHING_TO_CANCEL_MESSAGE = "No action to cancel";
 
     private final Game game;
     private final Color color;

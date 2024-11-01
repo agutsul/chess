@@ -24,10 +24,10 @@ import com.agutsul.chess.position.Position;
 public class PerformActionCommand
         extends AbstractCommand {
 
-    static final String MISSED_PIECE_MESSAGE = "Missed piece on position";
-    static final String MISSED_POSITION_MESSAGE = "Missed position";
-
     private static final Logger LOGGER = getLogger(PerformActionCommand.class);
+
+    private static final String MISSED_PIECE_MESSAGE = "Missed piece on position";
+    private static final String MISSED_POSITION_MESSAGE = "Missed position";
 
     private final Board board;
     private final Observable observable;
@@ -68,7 +68,7 @@ public class PerformActionCommand
 
     @Override
     protected void preExecute() throws CommandException {
-        var targetAction = board.getActions(sourcePiece).stream()
+        var targetAction = board.getActions(this.sourcePiece).stream()
                 .filter(action -> Objects.equals(action.getPosition(), this.targetPosition))
                 .findFirst();
 
