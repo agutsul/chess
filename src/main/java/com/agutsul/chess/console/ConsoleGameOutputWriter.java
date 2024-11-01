@@ -22,12 +22,12 @@ import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 final class ConsoleGameOutputWriter
         extends AbstractGameObserver {
 
-    static final String ENTER_ACTION_MESSAGE = "Please, enter an action in the following format: '<source_position> <target_position>'.";
-    static final String ENTER_ACTION_EXAMPLE_MESSAGE = "For example: 'e2 e4'";
+    private static final String ENTER_ACTION_MESSAGE = "Please, enter an action in the following format: '<source_position> <target_position>'.";
+    private static final String ENTER_ACTION_EXAMPLE_MESSAGE = "For example: 'e2 e4'";
 
-    static final String DRAW_MESSAGE = "Draw";
-    static final String ACTION_MESSAGE = "Action";
-    static final String GAME_OVER_MESSAGE = "Game over";
+    private static final String DRAW_MESSAGE = "Draw";
+    private static final String ACTION_MESSAGE = "Action";
+    private static final String GAME_OVER_MESSAGE = "Game over";
 
     ConsoleGameOutputWriter(Game game) {
         super(game);
@@ -94,7 +94,9 @@ final class ConsoleGameOutputWriter
 
     private static String formatWinnerMessage(Player player) {
         return String.format("%s wins! Congratulations, '%s' !!!",
-                player.getColor(), player);
+                player.getColor(),
+                player
+        );
     }
 
     private static void displayErrorMessage(String message) {
