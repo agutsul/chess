@@ -6,6 +6,7 @@ import static com.agutsul.chess.piece.Piece.Type.QUEEN;
 import static com.agutsul.chess.piece.Piece.Type.ROOK;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.lang3.ArrayUtils.getLength;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.apache.commons.lang3.StringUtils.contains;
 import static org.apache.commons.lang3.StringUtils.split;
@@ -33,12 +34,15 @@ import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 public abstract class AbstractPlayerInputObserver
         implements Observer {
 
+    private static final String UNDO_COMMAND = "undo";
+
+    private static final String UNKNOWN_PROMOTION_PIECE_TYPE_MESSAGE = "Unknown promotion piece type";
+    private static final String UNABLE_TO_PROCESS_MESSAGE = "Unable to process";
+    private static final String INVALID_ACTION_FORMAT_MESSAGE= "Invalid action format";
+
     protected static final Map<String, Piece.Type> PROMOTION_TYPES =
             Stream.of(KNIGHT, BISHOP, ROOK, QUEEN)
                     .collect(toMap(Piece.Type::code, identity()));
-
-    private static final String UNDO_COMMAND = "undo";
-
 
     protected final Player player;
     protected final Game game;
@@ -76,12 +80,12 @@ public abstract class AbstractPlayerInputObserver
     protected void process(RequestPromotionPieceTypeEvent event) {
         var selectedType = getPromotionPieceType();
 
-        logger.info("Processing selected pawn promotion type '{}'", selectedType);
+        logger.debug("Processing selected pawn promotion type '{}'", selectedType);
 
         var pieceType = PROMOTION_TYPES.get(selectedType);
         if (pieceType == null) {
             throw new IllegalActionException(
-                    String.format("Unknown promotion piece type: '%s'", selectedType)
+                    String.format("%s: '%s'", UNKNOWN_PROMOTION_PIECE_TYPE_MESSAGE, selectedType)
             );
         }
 
@@ -93,7 +97,10 @@ public abstract class AbstractPlayerInputObserver
     protected void process(RequestPlayerActionEvent event) {
         var command = getActionCommand();
 
-        logger.info("Processing player '{}' command '{}'", this.player.getName(), command);
+        logger.debug("Processing player '{}' command '{}'",
+                this.player.getName(),
+                command
+        );
 
         if (UNDO_COMMAND.equalsIgnoreCase(command)) {
             processUndoCommand(this.player);
@@ -101,7 +108,7 @@ public abstract class AbstractPlayerInputObserver
             processActionCommand(this.player, command);
         } else {
             throw new IllegalActionException(
-                    String.format("Unable to process: '%s'", command)
+                    String.format("%s: '%s'", UNABLE_TO_PROCESS_MESSAGE, command)
             );
         }
     }
@@ -112,9 +119,9 @@ public abstract class AbstractPlayerInputObserver
 
     private void processActionCommand(Player player, String command) {
         var positions = split(command, SPACE);
-        if (positions == null || positions.length != 2) {
+        if (getLength(positions) != 2) {
             throw new IllegalActionException(
-                    String.format("Invalid action format: %s", command)
+                    String.format("%s: '%s'", INVALID_ACTION_FORMAT_MESSAGE, command)
             );
         }
 
