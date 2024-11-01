@@ -20,10 +20,13 @@ import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
 final class ConsolePlayerInputReader
         extends AbstractPlayerInputObserver {
 
-    static final String PROMOTION_PIECE_TYPE_MESSAGE = "Choose promotion piece type:";
-    static final String EMPTY_LINE_MESSAGE = "Unable to process an empty line";
-
     private static final Logger LOGGER = getLogger(ConsolePlayerInputReader.class);
+
+    private static final String PROMOTION_PIECE_TYPE_MESSAGE = "Choose promotion piece type:";
+    private static final String EMPTY_LINE_MESSAGE = "Unable to process an empty line";
+
+    private static final String PROMPT_PROMOTION_PIECE_TYPE_MESSAGE =
+            createPromptPromotionPieceTypeMessage();
 
     ConsolePlayerInputReader(Player player, Game game) {
         super(LOGGER, player, game);
@@ -31,34 +34,47 @@ final class ConsolePlayerInputReader
 
     @Override
     protected String getActionCommand() {
-        System.out.println(String.format("%s: '%s' move:%s",
-                this.player.getColor(), this.player, lineSeparator()));
+        var message = String.format("%s: '%s' move:%s",
+                this.player.getColor(),
+                this.player,
+                lineSeparator()
+        );
 
-        return lowerCase(readConsoleInput());
+        LOGGER.info(message);
+        System.out.println(message);
+
+        var actionCommand = lowerCase(readConsoleInput());
+        LOGGER.info("{}: '{}' performs move: '{}'",
+                this.player.getColor(),
+                this.player,
+                actionCommand
+        );
+
+        return actionCommand;
     }
 
     @Override
     protected String getPromotionPieceType() {
-        promptPieceType();
+        LOGGER.info("{}: '{}' request promotion piece type",
+                this.player.getColor(),
+                this.player
+        );
+
+        System.out.println(PROMPT_PROMOTION_PIECE_TYPE_MESSAGE);
 
         var input = trimToEmpty(readConsoleInput());
         if (isEmpty(input)) {
             throw new IllegalActionException(EMPTY_LINE_MESSAGE);
         }
 
-        return upperCase(input.substring(0, 1));
-    }
+        var pieceTypeCode = upperCase(input.substring(0, 1));
+        LOGGER.info("{}: '{}' selects promotion piece type: '{}'",
+                this.player.getColor(),
+                this.player,
+                pieceTypeCode
+        );
 
-    private static void promptPieceType() {
-        var builder = new StringBuilder();
-        builder.append(PROMOTION_PIECE_TYPE_MESSAGE).append(lineSeparator());
-
-        for (var pieceType : PROMOTION_TYPES.values()) {
-            builder.append("'").append(pieceType).append("' - ");
-            builder.append(pieceType.name()).append(lineSeparator());
-        }
-
-        System.out.println(builder.toString());
+        return pieceTypeCode;
     }
 
     private static String readConsoleInput() {
@@ -74,5 +90,17 @@ final class ConsolePlayerInputReader
         }
 
         return null;
+    }
+
+    private static String createPromptPromotionPieceTypeMessage() {
+        var builder = new StringBuilder();
+        builder.append(PROMOTION_PIECE_TYPE_MESSAGE).append(lineSeparator());
+
+        for (var pieceType : PROMOTION_TYPES.values()) {
+            builder.append("'").append(pieceType).append("' - ");
+            builder.append(pieceType.name()).append(lineSeparator());
+        }
+
+        return builder.toString();
     }
 }
