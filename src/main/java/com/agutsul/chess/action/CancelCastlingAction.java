@@ -38,7 +38,7 @@ public class CancelCastlingAction<COLOR extends Color,
 
     public static final class UncastlingMoveAction<COLOR extends Color,
                                                    PIECE extends Piece<COLOR> & Castlingable & Movable>
-            extends PieceMoveAction<COLOR,PIECE> {
+            extends CancelMoveAction<COLOR,PIECE> {
 
         public UncastlingMoveAction(PIECE piece, Position position) {
             super(piece, position);

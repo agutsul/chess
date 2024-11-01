@@ -11,8 +11,8 @@ import com.agutsul.chess.position.Position;
 public abstract class AbstractCastlingAction<COLOR extends Color,
                                              PIECE1 extends Piece<COLOR> & Castlingable & Movable,
                                              PIECE2 extends Piece<COLOR> & Castlingable & Movable,
-                                             ACTION1 extends PieceMoveAction<COLOR,PIECE1>,
-                                             ACTION2 extends PieceMoveAction<COLOR,PIECE2>>
+                                             ACTION1 extends AbstractMoveAction<COLOR,PIECE1>,
+                                             ACTION2 extends AbstractMoveAction<COLOR,PIECE2>>
         extends AbstractTargetAction<ACTION1,ACTION2> {
 
     private final String code;
@@ -36,7 +36,7 @@ public abstract class AbstractCastlingAction<COLOR extends Color,
     // returns king related part of castling action
     // potentially king can be in both source and target sub-actions
     // king related part allows to identify what kind of castling it is
-    PieceMoveAction<?,?> getKingCastlingAction() {
+    AbstractMoveAction<?,?> getKingCastlingAction() {
         return Stream.of(getSource(), getTarget())
                 .filter(action -> Piece.Type.KING.equals(action.getSource().getType()))
                 .findFirst()
