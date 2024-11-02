@@ -99,19 +99,23 @@ final class BoardImpl implements Board {
 
     @Override
     public int calculateValue(Color color) {
-        LOGGER.info("Calculate '{}' value", color);
+        LOGGER.info("'{}' value...", color);
 
-        int value = 0;
-        for (var piece : getPieces(color)) {
-            value += piece.getValue();
-        }
+        var value = getPieces(color).stream()
+                .mapToInt(Piece::getValue)
+                .sum();
+
+        LOGGER.info("'{}' value: '{}'", color, value);
         return value;
     }
 
     @Override
     public <ACTION extends Action<?>> Collection<ACTION> getActions(Piece<Color> piece,
                                                                     Class<ACTION> actionClass) {
-        LOGGER.info("Getting actions for '{}' and type '{}'", piece, actionClass.getSimpleName());
+        LOGGER.info("Getting actions for '{}' and type '{}'",
+                piece,
+                actionClass.getSimpleName()
+        );
 
         var actionFilter = new ActionFilter<>(actionClass);
         var filteredActions = actionFilter.apply(getActions(piece));

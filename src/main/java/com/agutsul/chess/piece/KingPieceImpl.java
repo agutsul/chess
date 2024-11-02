@@ -18,7 +18,7 @@ final class KingPieceImpl<COLOR extends Color>
 
     private static final Logger LOGGER = getLogger(KingPieceImpl.class);
 
-    private final CheckMateEvaluator<COLOR, KingPiece<COLOR>> checkMateEvaluator;
+    private final CheckMateEvaluator<COLOR, KingPiece<COLOR>> evaluator;
 
     KingPieceImpl(Board board, COLOR color, String unicode, Position position, int direction) {
         super(board, Piece.Type.KING, color, unicode, position, direction,
@@ -26,7 +26,7 @@ final class KingPieceImpl<COLOR extends Color>
                 new KingPieceImpactRule(board)
         );
 
-        this.checkMateEvaluator = new CompositeCheckMateEvaluator<>(board);
+        this.evaluator = new CompositeCheckMateEvaluator<>(board);
     }
 
     @Override
@@ -43,7 +43,7 @@ final class KingPieceImpl<COLOR extends Color>
             return false;
         }
 
-        return checkMateEvaluator.evaluate(this);
+        return evaluator.evaluate(this);
     }
 
     @Override

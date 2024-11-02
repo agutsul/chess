@@ -40,7 +40,7 @@ public abstract class AbstractGame
     private final Logger logger;
 
     private final Board board;
-    private final BoardStateEvaluator boardStateEvaluator;
+    private final BoardStateEvaluator evaluator;
 
     private final Journal<Memento> journal;
 
@@ -58,7 +58,7 @@ public abstract class AbstractGame
         this.logger = logger;
 
         this.board = board;
-        this.boardStateEvaluator = new BoardStateEvaluatorImpl(board);
+        this.evaluator = new BoardStateEvaluatorImpl(board);
 
         this.journal = new JournalImpl<>();
 
@@ -162,7 +162,7 @@ public abstract class AbstractGame
     }
 
     private BoardState evaluateBoardState(Player player) {
-        return boardStateEvaluator.evaluate(player.getColor());
+        return evaluator.evaluate(player.getColor());
     }
 
     private Player switchPlayers() {
