@@ -21,9 +21,9 @@ public final class ConsoleGame
     ConsoleGame(Player whitePlayer, Player blackPlayer, Board board) {
         super(LOGGER, whitePlayer, blackPlayer, board);
 
-        board.addObserver(new ConsolePlayerInputReader(whitePlayer, this));
-        board.addObserver(new ConsolePlayerInputReader(blackPlayer, this));
+        board.addObserver(new ConsolePlayerInputObserver(whitePlayer, this));
+        board.addObserver(new ConsolePlayerInputObserver(blackPlayer, this));
 
-        addObserver(new ConsoleGameOutputWriter(this));
+        addObserver(new ConsoleGameOutputObserver(this));
     }
 }

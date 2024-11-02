@@ -19,7 +19,7 @@ import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 
-final class ConsoleGameOutputWriter
+final class ConsoleGameOutputObserver
         extends AbstractGameObserver {
 
     private static final String ENTER_ACTION_MESSAGE = "Please, enter an action in the following format: '<source_position> <target_position>'.";
@@ -29,7 +29,7 @@ final class ConsoleGameOutputWriter
     private static final String ACTION_MESSAGE = "Action";
     private static final String GAME_OVER_MESSAGE = "Game over";
 
-    ConsoleGameOutputWriter(Game game) {
+    ConsoleGameOutputObserver(Game game) {
         super(game);
     }
 

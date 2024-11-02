@@ -17,10 +17,10 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
 
-final class ConsolePlayerInputReader
+final class ConsolePlayerInputObserver
         extends AbstractPlayerInputObserver {
 
-    private static final Logger LOGGER = getLogger(ConsolePlayerInputReader.class);
+    private static final Logger LOGGER = getLogger(ConsolePlayerInputObserver.class);
 
     private static final String PROMOTION_PIECE_TYPE_MESSAGE = "Choose promotion piece type:";
     private static final String EMPTY_LINE_MESSAGE = "Unable to process an empty line";
@@ -28,7 +28,7 @@ final class ConsolePlayerInputReader
     private static final String PROMPT_PROMOTION_PIECE_TYPE_MESSAGE =
             createPromptPromotionPieceTypeMessage();
 
-    ConsolePlayerInputReader(Player player, Game game) {
+    ConsolePlayerInputObserver(Player player, Game game) {
         super(LOGGER, player, game);
     }
 
