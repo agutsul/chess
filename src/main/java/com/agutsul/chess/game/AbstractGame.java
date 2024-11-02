@@ -4,7 +4,6 @@ import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.STALE_MATED;
 
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -24,6 +23,7 @@ import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
+import com.agutsul.chess.iterator.Iterator;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.journal.Memento;
@@ -34,7 +34,7 @@ import com.agutsul.chess.player.state.LockedPlayerState;
 import com.agutsul.chess.player.state.PlayerState;
 
 public abstract class AbstractGame
-        implements Game, ListIterator<Player>, Observable {
+        implements Game, Iterator<Player>, Observable {
 
     private static final Set<BoardState.Type> TERMINAL_BOARD_STATES =
             Set.of(CHECK_MATED, STALE_MATED);
@@ -154,25 +154,6 @@ public abstract class AbstractGame
 
         return Optional.empty();
     }
-
-    @Override
-    public final int nextIndex() {
-        return 0;
-    }
-
-    @Override
-    public final int previousIndex() {
-        return 0;
-    }
-
-    @Override
-    public final void remove() {}
-
-    @Override
-    public final void set(Player player) {}
-
-    @Override
-    public final void add(Player player) {}
 
     public Board getBoard() {
         return board;
