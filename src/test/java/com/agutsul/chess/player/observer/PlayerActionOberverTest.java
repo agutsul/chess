@@ -39,12 +39,12 @@ import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.position.Position;
 
 @ExtendWith(MockitoExtension.class)
-public class PlayerOutputOberverTest {
+public class PlayerActionOberverTest {
 
     @Test
     void testNoProcessingEvent() {
         var game = mock(AbstractGame.class);
-        var observer = new PlayerOutputOberver(game);
+        var observer = new PlayerActionOberver(game);
         observer.observe(mock(Event.class));
 
         verify(game, never()).notifyObservers(any());
@@ -76,7 +76,7 @@ public class PlayerOutputOberverTest {
         when(game.getBoard())
             .thenReturn(board);
 
-        var observer = new PlayerOutputOberver(game);
+        var observer = new PlayerActionOberver(game);
         observer.observe(new PlayerActionEvent(mock(Player.class), "a2", "a3"));
 
         verify(game, times(2)).notifyObservers(any());
@@ -92,7 +92,7 @@ public class PlayerOutputOberverTest {
         when(game.getBoard())
             .thenReturn(board);
 
-        var observer = new PlayerOutputOberver(game);
+        var observer = new PlayerActionOberver(game);
         observer.observe(new PlayerActionEvent(mock(Player.class), "a2", "a3"));
 
         verify(game, times(1)).notifyObservers(any(PlayerActionExceptionEvent.class));
@@ -113,7 +113,7 @@ public class PlayerOutputOberverTest {
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
-        var observer = new PlayerOutputOberver(game);
+        var observer = new PlayerActionOberver(game);
         observer.observe(new PlayerCancelActionEvent(player));
 
         verify(game, times(1)).notifyObservers(any(PlayerCancelActionExceptionEvent.class));
@@ -155,7 +155,7 @@ public class PlayerOutputOberverTest {
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
-        var observer = new PlayerOutputOberver(game);
+        var observer = new PlayerActionOberver(game);
         observer.observe(new PlayerCancelActionEvent(player));
 
         verify(game, atLeast(2)).notifyObservers(any());

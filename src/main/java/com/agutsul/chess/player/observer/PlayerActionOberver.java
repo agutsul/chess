@@ -22,14 +22,14 @@ import com.agutsul.chess.player.event.PlayerCancelActionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 
-public final class PlayerOutputOberver
+public final class PlayerActionOberver
         implements Observer {
 
-    private static final Logger LOGGER = getLogger(PlayerOutputOberver.class);
+    private static final Logger LOGGER = getLogger(PlayerActionOberver.class);
 
     private final Game game;
 
-    public PlayerOutputOberver(Game game) {
+    public PlayerActionOberver(Game game) {
         this.game = game;
     }
 

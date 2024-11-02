@@ -12,8 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.event.ActionCancelledEvent;
-import com.agutsul.chess.action.event.ActionPerformedEvent;
+import com.agutsul.chess.action.event.AbstractProccessedActionEvent;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
@@ -46,7 +45,7 @@ abstract class AbstractPiece<COLOR extends Color>
     protected final AbstractPieceState<AbstractPiece<Color>> activeState;
     protected AbstractPieceState<AbstractPiece<Color>> currentState;
 
-    private ActionEventObserver observer;
+    private Observer observer;
 
     @SuppressWarnings("unchecked")
     AbstractPiece(Board board, Type type, COLOR color, String unicode, Position position,
@@ -270,11 +269,12 @@ abstract class AbstractPiece<COLOR extends Color>
         this.impacts.clear();
     }
 
-    private final class ActionEventObserver implements Observer {
+    private final class ActionEventObserver
+            implements Observer {
 
         @Override
         public void observe(Event event) {
-            if (event instanceof ActionPerformedEvent || event instanceof ActionCancelledEvent) {
+            if (event instanceof AbstractProccessedActionEvent) {
                 // clear cached calculated actions and impacts
                 // to force its recalculation for the new board state
                 clearCalculatedData();

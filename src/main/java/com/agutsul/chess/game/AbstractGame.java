@@ -14,10 +14,6 @@ import com.agutsul.chess.action.event.ActionCancelledEvent;
 import com.agutsul.chess.action.event.ActionPerformedEvent;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
-import com.agutsul.chess.board.state.CheckMatedBoardState;
-import com.agutsul.chess.board.state.CheckedBoardState;
-import com.agutsul.chess.board.state.DefaultBoardState;
-import com.agutsul.chess.board.state.StaleMatedBoardState;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
@@ -28,10 +24,12 @@ import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.journal.Memento;
 import com.agutsul.chess.player.Player;
-import com.agutsul.chess.player.observer.PlayerOutputOberver;
+import com.agutsul.chess.player.observer.PlayerActionOberver;
 import com.agutsul.chess.player.state.ActivePlayerState;
 import com.agutsul.chess.player.state.LockedPlayerState;
 import com.agutsul.chess.player.state.PlayerState;
+import com.agutsul.chess.rule.board.BoardStateEvaluator;
+import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 
 public abstract class AbstractGame
         implements Game, PlayerIterator, Observable {
@@ -41,6 +39,11 @@ public abstract class AbstractGame
 
     private final Logger logger;
 
+    private final Board board;
+    private final BoardStateEvaluator boardStateEvaluator;
+
+    private final Journal<Memento> journal;
+
     private final PlayerState activeState;
     private final PlayerState lockedState;
 
@@ -48,31 +51,26 @@ public abstract class AbstractGame
     private final Player blackPlayer;
 
     private final List<Observer> observers;
-    private final Journal<Memento> journal;
-
-    private final Board board;
 
     private Player currentPlayer;
 
     protected AbstractGame(Logger logger, Player whitePlayer, Player blackPlayer, Board board) {
         this.logger = logger;
 
-        this.activeState = new ActivePlayerState(board);
-        this.lockedState = new LockedPlayerState();
-
-        this.whitePlayer = whitePlayer;
-        this.whitePlayer.setState(activeState);
-
-        this.blackPlayer = blackPlayer;
-        this.blackPlayer.setState(lockedState);
-
-        this.currentPlayer = whitePlayer;
         this.board = board;
+        this.boardStateEvaluator = new BoardStateEvaluatorImpl(board);
 
         this.journal = new JournalImpl<>();
 
+        this.activeState = new ActivePlayerState(board);
+        this.lockedState = new LockedPlayerState();
+
+        this.whitePlayer = initPlayer(whitePlayer, activeState);
+        this.blackPlayer = initPlayer(blackPlayer, lockedState);
+        this.currentPlayer = whitePlayer;
+
         this.observers = new CopyOnWriteArrayList<>();
-        this.observers.add(new PlayerOutputOberver(this));
+        this.observers.add(new PlayerActionOberver(this));
         this.observers.add(new ActionEventObserver());
     }
 
@@ -96,7 +94,7 @@ public abstract class AbstractGame
     @Override
     public boolean hasNext() {
         logger.info("Checking board state ...");
-        var nextPlayer = getOpponent(currentPlayer);
+        var nextPlayer = getOpponentPlayer();
 
         var nextBoardState = evaluateBoardState(nextPlayer);
         board.setState(nextBoardState);
@@ -164,24 +162,11 @@ public abstract class AbstractGame
     }
 
     private BoardState evaluateBoardState(Player player) {
-        if (board.isChecked(player.getColor())) {
-
-            if (board.isCheckMated(player.getColor())) {
-                return new CheckMatedBoardState(board, player.getColor());
-            }
-
-            return new CheckedBoardState(board, player.getColor());
-        }
-
-        if (board.isStaleMated(player.getColor())) {
-            return new StaleMatedBoardState(board, player.getColor());
-        }
-
-        return new DefaultBoardState(board, player.getColor());
+        return boardStateEvaluator.evaluate(player.getColor());
     }
 
     private Player switchPlayers() {
-        var player = getOpponent(currentPlayer);
+        var player = getOpponentPlayer();
 
         currentPlayer.setState(lockedState);
         player.setState(activeState);
@@ -196,8 +181,13 @@ public abstract class AbstractGame
         return player;
     }
 
-    private Player getOpponent(Player currentPlayer) {
+    private Player getOpponentPlayer() {
         return currentPlayer.equals(whitePlayer) ? blackPlayer : whitePlayer;
+    }
+
+    private static Player initPlayer(Player player, PlayerState state) {
+        player.setState(state);
+        return player;
     }
 
     private final class ActionEventObserver

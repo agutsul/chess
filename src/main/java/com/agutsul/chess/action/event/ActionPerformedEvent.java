@@ -1,10 +1,9 @@
 package com.agutsul.chess.action.event;
 
 import com.agutsul.chess.action.memento.ActionMemento;
-import com.agutsul.chess.event.Event;
 
 public class ActionPerformedEvent
-        implements Event {
+        extends AbstractProccessedActionEvent {
 
     private final ActionMemento<?,?> actionMemento;
 
