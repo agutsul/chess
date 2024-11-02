@@ -23,7 +23,7 @@ import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
-import com.agutsul.chess.iterator.Iterator;
+import com.agutsul.chess.iterator.PlayerIterator;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.journal.Memento;
@@ -34,7 +34,7 @@ import com.agutsul.chess.player.state.LockedPlayerState;
 import com.agutsul.chess.player.state.PlayerState;
 
 public abstract class AbstractGame
-        implements Game, Iterator<Player>, Observable {
+        implements Game, PlayerIterator, Observable {
 
     private static final Set<BoardState.Type> TERMINAL_BOARD_STATES =
             Set.of(CHECK_MATED, STALE_MATED);
