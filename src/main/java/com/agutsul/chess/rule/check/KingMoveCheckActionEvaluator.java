@@ -3,11 +3,11 @@ package com.agutsul.chess.rule.check;
 import java.util.Collection;
 import java.util.HashSet;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 
 final class KingMoveCheckActionEvaluator<COLOR extends Color,

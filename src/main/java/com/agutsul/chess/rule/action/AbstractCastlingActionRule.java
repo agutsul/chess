@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.action.PieceCastlingAction;
 import com.agutsul.chess.action.PieceCastlingAction.CastlingMoveAction;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Castlingable;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Movable;

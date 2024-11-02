@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.Colors;
 import com.agutsul.chess.action.PiecePromoteAction;
+import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.AbstractGame;

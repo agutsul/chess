@@ -17,8 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.Color;
-import com.agutsul.chess.Colors;
+import com.agutsul.chess.color.Color;
+import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.piece.Disposable;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;

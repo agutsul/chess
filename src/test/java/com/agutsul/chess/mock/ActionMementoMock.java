@@ -1,9 +1,9 @@
 package com.agutsul.chess.mock;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.Action.Type;
 import com.agutsul.chess.action.memento.ActionMemento;
+import com.agutsul.chess.color.Color;
 
 public class ActionMementoMock<SOURCE,TARGET>
         implements ActionMemento<SOURCE,TARGET> {

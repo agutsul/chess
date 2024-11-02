@@ -2,8 +2,8 @@ package com.agutsul.chess.rule.check;
 
 import java.util.Collection;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.rule.Rule;
 

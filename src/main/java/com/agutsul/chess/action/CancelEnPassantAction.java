@@ -4,7 +4,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.Color;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 
 public class CancelEnPassantAction<COLOR1 extends Color,

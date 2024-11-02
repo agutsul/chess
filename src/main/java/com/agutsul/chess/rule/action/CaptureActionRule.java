@@ -2,8 +2,8 @@ package com.agutsul.chess.rule.action;
 
 import java.util.Collection;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.action.PieceCaptureAction;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.Rule;

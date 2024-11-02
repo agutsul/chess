@@ -9,11 +9,11 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.action.AbstractCaptureAction;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PieceEnPassantAction;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 

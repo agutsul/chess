@@ -18,8 +18,6 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
-import com.agutsul.chess.Color;
-import com.agutsul.chess.Colors;
 import com.agutsul.chess.action.AbstractCaptureAction;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
@@ -28,6 +26,8 @@ import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.function.ActionFilter;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.DefaultBoardState;
+import com.agutsul.chess.color.Color;
+import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.impact.Impact;

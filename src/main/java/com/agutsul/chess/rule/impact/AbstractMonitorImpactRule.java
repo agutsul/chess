@@ -4,8 +4,8 @@ import static java.util.Collections.emptyList;
 
 import java.util.Collection;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.impact.PieceMonitorImpact;
 import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.Piece;

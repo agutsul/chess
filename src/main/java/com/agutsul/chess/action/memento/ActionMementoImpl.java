@@ -1,7 +1,7 @@
 package com.agutsul.chess.action.memento;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
+import com.agutsul.chess.color.Color;
 
 final class ActionMementoImpl<SOURCE,TARGET>
         implements ActionMemento<SOURCE,TARGET> {

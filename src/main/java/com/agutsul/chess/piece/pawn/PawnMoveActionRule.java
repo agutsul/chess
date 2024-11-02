@@ -1,8 +1,8 @@
 package com.agutsul.chess.piece.pawn;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Calculated;

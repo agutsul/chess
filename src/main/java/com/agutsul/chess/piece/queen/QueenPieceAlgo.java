@@ -2,8 +2,8 @@ package com.agutsul.chess.piece.queen;
 
 import java.util.Collection;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.piece.algo.AbstractAlgo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;

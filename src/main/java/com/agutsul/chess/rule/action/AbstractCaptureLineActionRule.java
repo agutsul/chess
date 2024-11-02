@@ -7,9 +7,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;

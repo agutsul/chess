@@ -1,6 +1,6 @@
 package com.agutsul.chess.piece.algo;
 
-import com.agutsul.chess.Color;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.EnPassantable;
 import com.agutsul.chess.piece.Piece;

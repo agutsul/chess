@@ -8,8 +8,8 @@ import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.impact.PiecePinImpact;
 import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.KingPiece;

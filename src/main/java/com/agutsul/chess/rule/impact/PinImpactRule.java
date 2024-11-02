@@ -2,7 +2,7 @@ package com.agutsul.chess.rule.impact;
 
 import java.util.Collection;
 
-import com.agutsul.chess.Color;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.impact.PiecePinImpact;
 import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.KingPiece;

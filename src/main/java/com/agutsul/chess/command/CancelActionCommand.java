@@ -6,13 +6,13 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.event.ActionCancelledEvent;
 import com.agutsul.chess.action.event.ActionCancellingEvent;
 import com.agutsul.chess.action.memento.ActionMemento;
 import com.agutsul.chess.action.memento.CancelActionMementoFactory;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.CommandException;
 import com.agutsul.chess.game.AbstractGame;

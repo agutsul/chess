@@ -2,7 +2,7 @@ package com.agutsul.chess.player;
 
 import java.util.UUID;
 
-import com.agutsul.chess.Color;
+import com.agutsul.chess.color.Color;
 
 // Under development
 public class BotPlayer

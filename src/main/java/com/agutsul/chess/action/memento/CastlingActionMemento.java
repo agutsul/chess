@@ -1,8 +1,8 @@
 package com.agutsul.chess.action.memento;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.Action.Type;
+import com.agutsul.chess.color.Color;
 
 public final class CastlingActionMemento
         implements ActionMemento<ActionMemento<String,String>,ActionMemento<String,String>> {

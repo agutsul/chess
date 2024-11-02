@@ -3,7 +3,7 @@ package com.agutsul.chess.rule;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
-import com.agutsul.chess.Color;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.position.Positionable;

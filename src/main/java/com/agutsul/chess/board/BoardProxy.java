@@ -3,9 +3,9 @@ package com.agutsul.chess.board;
 import java.util.Collection;
 import java.util.Optional;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.impact.Impact;

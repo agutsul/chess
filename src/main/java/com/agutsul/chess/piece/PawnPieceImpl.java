@@ -7,10 +7,10 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceEnPassantAction;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.piece.pawn.PawnPieceActionRule;

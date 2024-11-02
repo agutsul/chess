@@ -4,8 +4,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.position.PositionFactory;
 

@@ -1,7 +1,7 @@
 package com.agutsul.chess.player.event;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.action.PiecePromoteAction;
+import com.agutsul.chess.color.Color;
 
 public class RequestPromotionPieceTypeEvent
         extends AbstractRequestEvent {

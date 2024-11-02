@@ -6,8 +6,8 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KnightPiece;
 import com.agutsul.chess.piece.algo.AbstractAlgo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;

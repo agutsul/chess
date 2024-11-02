@@ -3,7 +3,7 @@ package com.agutsul.chess.piece;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import com.agutsul.chess.Color;
+import com.agutsul.chess.color.Color;
 
 abstract class AbstractsPieceFactoryTest {
 

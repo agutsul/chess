@@ -1,6 +1,6 @@
 package com.agutsul.chess.player;
 
-import com.agutsul.chess.Color;
+import com.agutsul.chess.color.Color;
 
 public class UserPlayer
         extends AbstractPlayer {

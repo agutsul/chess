@@ -1,6 +1,6 @@
 package com.agutsul.chess.player.event;
 
-import com.agutsul.chess.Color;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
 
 public abstract class AbstractRequestEvent

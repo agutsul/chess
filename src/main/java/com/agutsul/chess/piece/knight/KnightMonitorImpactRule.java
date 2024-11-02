@@ -1,7 +1,7 @@
 package com.agutsul.chess.piece.knight;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.impact.PieceMonitorImpact;
 import com.agutsul.chess.piece.KnightPiece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;

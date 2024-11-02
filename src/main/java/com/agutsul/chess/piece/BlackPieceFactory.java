@@ -1,8 +1,8 @@
 package com.agutsul.chess.piece;
 
-import com.agutsul.chess.Color;
-import com.agutsul.chess.Colors;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
+import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.piece.PawnPiece.PawnPieceProxy;
 import com.agutsul.chess.position.Position;
 

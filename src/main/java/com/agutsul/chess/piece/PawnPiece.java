@@ -13,10 +13,10 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.position.Position;

@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.impact.PieceProtectImpact;
 import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.Piece;

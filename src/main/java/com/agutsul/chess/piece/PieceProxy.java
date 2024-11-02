@@ -3,8 +3,8 @@ package com.agutsul.chess.piece;
 import java.util.Collection;
 import java.util.List;
 
-import com.agutsul.chess.Color;
 import com.agutsul.chess.action.Action;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;

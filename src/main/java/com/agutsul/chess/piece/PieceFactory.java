@@ -1,6 +1,6 @@
 package com.agutsul.chess.piece;
 
-import com.agutsul.chess.Color;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.position.Position;
 
 public interface PieceFactory {

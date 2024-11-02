@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.Color;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.PieceFactory;
 
