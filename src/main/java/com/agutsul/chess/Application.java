@@ -1,7 +1,7 @@
 package com.agutsul.chess;
 
 import com.agutsul.chess.color.Colors;
-import com.agutsul.chess.console.ConsoleGame;
+import com.agutsul.chess.game.console.ConsoleGame;
 import com.agutsul.chess.player.UserPlayer;
 
 public class Application

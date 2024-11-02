@@ -1,4 +1,4 @@
-package com.agutsul.chess.console;
+package com.agutsul.chess.game.console;
 
 import static java.lang.System.lineSeparator;
 import static org.apache.commons.lang3.StringUtils.isEmpty;

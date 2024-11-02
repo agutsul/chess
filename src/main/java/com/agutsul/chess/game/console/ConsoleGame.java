@@ -1,4 +1,4 @@
-package com.agutsul.chess.console;
+package com.agutsul.chess.game.console;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
