@@ -85,6 +85,7 @@ public class GameTest {
     @Test
     void testPositiveGameFlow() {
         var board = spy(new StandardBoard());
+        doCallRealMethod().when(board).notifyObservers(any());
 
         when(board.isChecked(any()))
             .thenReturn(false);
@@ -140,30 +141,30 @@ public class GameTest {
     @Test
     void testPositiveGameFlowWithWhiteUndo() {
         var board = spy(new StandardBoard());
+        doCallRealMethod().when(board).notifyObservers(any());
 
-        var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
-        doCallRealMethod().when(whitePlayer).play();
+        var wPlayer = spy(new UserPlayer("test1", Colors.WHITE));
+        doCallRealMethod().when(wPlayer).play();
 
-        var blackPlayer = spy(new UserPlayer("test2", Colors.BLACK));
-        doCallRealMethod().when(blackPlayer).play();
+        var bPlayer = spy(new UserPlayer("test2", Colors.BLACK));
+        doCallRealMethod().when(bPlayer).play();
 
-        var game = new GameMock(whitePlayer, blackPlayer, board);
+        var game = new GameMock(wPlayer, bPlayer, board);
 
-        var playerInputObserver = new PlayerInputObserverInteratorMock(
-                whitePlayer, game, "e2 e4", "undo"
-        );
+        var wPlayerObserver = new PlayerInputObserverInteratorMock(wPlayer, game, "e2 e4", "undo", "e2 e4");
+        var bPlayerObserver = new PlayerInputObserverInteratorMock(bPlayer, game, "e7 e5", "e7 e5");
 
-        board.addObserver(playerInputObserver);
-        board.addObserver(new PlayerInputObserverInteratorMock(blackPlayer, game, "e7 e5"));
+        board.addObserver(wPlayerObserver);
+        board.addObserver(bPlayerObserver);
 
         when(board.isChecked(any()))
             .thenReturn(false);
         when(board.isStaleMated(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                // allow white and black moves and breaks on the second white move
-                return Colors.WHITE.equals(color)
-                        && !playerInputObserver.getIterator().hasNext();
+                var isWhiteMoveAvailable = wPlayerObserver.getIterator().hasNext();
+
+                return Colors.WHITE.equals(color) && !isWhiteMoveAvailable;
             });
 
         Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
@@ -180,16 +181,17 @@ public class GameTest {
         game.addObserver(new GameOutputObserverMock(game, assertionMap));
         game.run();
 
-        assertEquals(0, game.getJournal().size());
+        assertEquals(2, game.getJournal().size());
         assertTrue(game.getWinner().isEmpty());
 
-        verify(whitePlayer, times(2)).play();
-        verify(blackPlayer, times(1)).play();
+        verify(wPlayer, times(2)).play();
+        verify(bPlayer, times(2)).play();
     }
 
     @Test
     void testNegativeGameFlowWithWhiteUndo() {
         var board = spy(new StandardBoard());
+        doCallRealMethod().when(board).notifyObservers(any());
 
         var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
         doCallRealMethod().when(whitePlayer).play();
