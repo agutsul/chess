@@ -10,7 +10,9 @@ import static org.apache.commons.lang3.ArrayUtils.getLength;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.apache.commons.lang3.StringUtils.contains;
 import static org.apache.commons.lang3.StringUtils.split;
+import static org.apache.commons.lang3.ThreadUtils.sleepQuietly;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -21,11 +23,13 @@ import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.game.AbstractGame;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.AbstractRequestEvent;
 import com.agutsul.chess.player.event.PlayerActionEvent;
+import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionEvent;
 import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
@@ -102,14 +106,23 @@ public abstract class AbstractPlayerInputObserver
                 command
         );
 
-        if (UNDO_COMMAND.equalsIgnoreCase(command)) {
-            processUndoCommand(this.player);
-        } else if (contains(command, SPACE)) {
-            processActionCommand(this.player, command);
-        } else {
-            throw new IllegalActionException(
-                    String.format("%s: '%s'", UNABLE_TO_PROCESS_MESSAGE, command)
-            );
+        try {
+            if (UNDO_COMMAND.equalsIgnoreCase(command)) {
+                processUndoCommand(this.player);
+            } else if (contains(command, SPACE)) {
+                processActionCommand(this.player, command);
+            } else {
+                throw new IllegalActionException(
+                        String.format("%s: '%s'", UNABLE_TO_PROCESS_MESSAGE, command)
+                );
+            }
+        } catch (Exception e) {
+            logger.error("Processing player action failed", e);
+
+            notifyExceptionEvent(new PlayerActionExceptionEvent(e.getMessage()));
+
+            // re-ask player action
+            ((AbstractGame) this.game).getBoard().notifyObservers(event);
         }
     }
 
@@ -127,5 +140,11 @@ public abstract class AbstractPlayerInputObserver
 
         var action = new PlayerActionEvent(player, positions[0], positions[1]);
         ((Observable) this.game).notifyObservers(action);
+    }
+
+    private void notifyExceptionEvent(Event event) {
+        // display error message to player
+        ((Observable) this.game).notifyObservers(event);
+        sleepQuietly(Duration.ofMillis(1));
     }
 }

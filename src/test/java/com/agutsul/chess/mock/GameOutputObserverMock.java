@@ -18,10 +18,10 @@ import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 public class GameOutputObserverMock
         extends AbstractGameObserver {
 
-    private final Map<Class<Event>, BiConsumer<Game,Event>> consumers;
+    private final Map<Class<? extends Event>, BiConsumer<Game,Event>> consumers;
 
     public GameOutputObserverMock(Game game,
-                                  Map<Class<Event>, BiConsumer<Game,Event>> consumers) {
+                                  Map<Class<? extends Event>, BiConsumer<Game,Event>> consumers) {
         super(game);
         this.consumers = consumers;
     }
@@ -67,6 +67,9 @@ public class GameOutputObserverMock
     }
 
     private void consume(Event event) {
-        consumers.get(event.getClass()).accept(this.game, event);
+        var consumer = consumers.get(event.getClass());
+        if (consumer != null) {
+            consumer.accept(this.game, event);
+        }
     }
 }

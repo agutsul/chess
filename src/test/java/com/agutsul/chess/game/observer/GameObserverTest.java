@@ -160,9 +160,9 @@ public class GameObserverTest {
         observer.observe(event);
     }
 
-    @SuppressWarnings("unchecked")
-    private static Map<Class<Event>, BiConsumer<Game,Event>> createMap(Event event,
-                                                                       BiConsumer<Game,Event> consumer) {
-        return singletonMap((Class<Event>) event.getClass(), consumer);
+    private static Map<Class<? extends Event>, BiConsumer<Game,Event>>
+            createMap(Event event, BiConsumer<Game,Event> consumer) {
+
+        return singletonMap(event.getClass(), consumer);
     }
 }

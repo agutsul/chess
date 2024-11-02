@@ -3,6 +3,8 @@ package com.agutsul.chess.player.observer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.action.PiecePromoteAction;
+import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.exception.IllegalActionException;
@@ -21,6 +24,7 @@ import com.agutsul.chess.game.AbstractGame;
 import com.agutsul.chess.mock.PlayerInputObserverMock;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionEvent;
+import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionEvent;
 import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
@@ -78,37 +82,47 @@ public class PlayerInputObserverTest {
     @Test
     void testObservePlayerActionEventInvalidAction() {
         var game = mock(AbstractGame.class);
+        when(game.getBoard())
+            .thenReturn(mock(Board.class));
+
+        doAnswer(inv -> {
+            var event = inv.getArgument(0, PlayerActionExceptionEvent.class);
+            assertEquals("Invalid action format: 'e2 '", event.getMessage());
+
+            return null;
+        }).when(game).notifyObservers(any(PlayerActionExceptionEvent.class));
 
         var whitePlayer = mock(Player.class);
         when(whitePlayer.getColor())
             .thenReturn(Colors.WHITE);
 
         var observer = new PlayerInputObserverMock(whitePlayer, game, "e2 ");
-        var thrown = assertThrows(
-                IllegalActionException.class,
-                () -> observer.observe(new RequestPlayerActionEvent(whitePlayer))
-        );
+        observer.observe(new RequestPlayerActionEvent(whitePlayer));
 
-        assertEquals("Invalid action format: 'e2 '", thrown.getMessage());
-        verify(game, never()).notifyObservers(any());
+        verify(game, atLeastOnce()).notifyObservers(any(PlayerActionExceptionEvent.class));
     }
 
     @Test
     void testObservePlayerActionEventUnknownAction() {
         var game = mock(AbstractGame.class);
+        when(game.getBoard())
+            .thenReturn(mock(Board.class));
+
+        doAnswer(inv -> {
+            var event = inv.getArgument(0, PlayerActionExceptionEvent.class);
+            assertEquals("Unable to process: 'e2'", event.getMessage());
+
+            return null;
+        }).when(game).notifyObservers(any(PlayerActionExceptionEvent.class));
 
         var whitePlayer = mock(Player.class);
         when(whitePlayer.getColor())
             .thenReturn(Colors.WHITE);
 
         var observer = new PlayerInputObserverMock(whitePlayer, game, "e2");
-        var thrown = assertThrows(
-                IllegalActionException.class,
-                () -> observer.observe(new RequestPlayerActionEvent(whitePlayer))
-        );
+        observer.observe(new RequestPlayerActionEvent(whitePlayer));
 
-        assertEquals("Unable to process: 'e2'", thrown.getMessage());
-        verify(game, never()).notifyObservers(any());
+        verify(game, atLeastOnce()).notifyObservers(any(PlayerActionExceptionEvent.class));
     }
 
     @Test
