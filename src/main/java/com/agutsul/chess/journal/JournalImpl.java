@@ -34,7 +34,6 @@ public class JournalImpl<MEMENTO extends Memento>
 
     @Override
     public int size() {
-        LOGGER.info("Journal size");
         return this.list.size();
     }
 }
