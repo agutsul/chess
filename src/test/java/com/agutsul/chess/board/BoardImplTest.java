@@ -17,9 +17,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
-import com.agutsul.chess.piece.Disposable;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.position.PositionFactory;
@@ -166,13 +166,20 @@ public class BoardImplTest {
     void testGetCapturedPiece() {
         var board = new BoardBuilder()
                 .withWhitePawn("a2")
+                .withBlackPawn("b3")
                 .build();
 
-        var pawn = board.getPiece("a2").get();
-        ((Disposable) pawn).dispose();
+        var blackPawn = board.getPiece("b3").get();
+        var whitePawn = board.getPiece("a2").get();
 
-        var pawn2 = board.getCapturedPiece("a2").get();
-        assertEquals(pawn, pawn2);
+        var captureAction = board.getActions(blackPawn, PieceCaptureAction.class).stream()
+                .findFirst()
+                .get();
+
+        captureAction.execute();
+
+        var pawn2 = board.getCapturedPiece("a2", whitePawn.getColor()).get();
+        assertEquals(whitePawn, pawn2);
     }
 
     @Test

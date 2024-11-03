@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -22,7 +23,8 @@ import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.position.Position;
 
 public interface PawnPiece<COLOR extends Color>
-        extends Piece<COLOR>, Movable, Capturable, Promotable, EnPassantable, Disposable, Restorable {
+        extends Piece<COLOR>, Movable, Capturable, Promotable,
+                EnPassantable, Disposable, Restorable, Captured {
 
     /**
      * Mainly used to implement promotion properly.
@@ -149,6 +151,16 @@ public interface PawnPiece<COLOR extends Color>
         @Override
         public void uncastling(Position position) {
             ((Castlingable) this.origin).uncastling(position);
+        }
+
+        @Override
+        public Instant getCapturedAt() {
+            return ((Captured) this.origin).getCapturedAt();
+        }
+
+        @Override
+        public void setCapturedAt(Instant instant) {
+            ((Captured) this.origin).setCapturedAt(instant);
         }
 
         @Override

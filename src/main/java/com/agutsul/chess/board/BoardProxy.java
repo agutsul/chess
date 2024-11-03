@@ -59,8 +59,8 @@ public class BoardProxy
     }
 
     @Override
-    public Optional<Piece<Color>> getCapturedPiece(String position) {
-        return origin.getCapturedPiece(position);
+    public Optional<Piece<Color>> getCapturedPiece(String position, Color color) {
+        return origin.getCapturedPiece(position, color);
     }
 
     @Override

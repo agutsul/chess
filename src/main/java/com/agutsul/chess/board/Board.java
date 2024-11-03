@@ -36,7 +36,7 @@ public interface Board
     Optional<Piece<Color>> getPiece(Position position);
     Optional<Piece<Color>> getPiece(String position);
 
-    Optional<Piece<Color>> getCapturedPiece(String position);
+    Optional<Piece<Color>> getCapturedPiece(String position, Color color);
 
     Optional<KingPiece<Color>> getKing(Color color);
 

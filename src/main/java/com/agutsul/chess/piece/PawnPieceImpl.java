@@ -2,6 +2,7 @@ package com.agutsul.chess.piece;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -119,8 +120,12 @@ final class PawnPieceImpl<COLOR extends Color>
                 );
             }
 
+            // save captured timestamp
+            targetPiece.setCapturedAt(Instant.now());
+
             // remove target pawn from board
             targetPiece.dispose();
+
             // move this piece to target position
             ((AbstractPiece<Color>) piece).doMove(targetPosition);
         }

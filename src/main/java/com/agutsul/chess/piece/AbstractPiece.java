@@ -3,6 +3,7 @@ package com.agutsul.chess.piece;
 import static java.util.Collections.unmodifiableList;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +24,7 @@ import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
 abstract class AbstractPiece<COLOR extends Color>
-        implements Piece<COLOR>, Movable, Capturable, Disposable, Restorable {
+        implements Piece<COLOR>, Movable, Capturable, Disposable, Restorable, Captured {
 
     private static final Logger LOGGER = getLogger(AbstractPiece.class);
 
@@ -46,6 +47,7 @@ abstract class AbstractPiece<COLOR extends Color>
     protected AbstractPieceState<AbstractPiece<Color>> currentState;
 
     private Observer observer;
+    private Instant capturedAt;
 
     @SuppressWarnings("unchecked")
     AbstractPiece(Board board, Type type, COLOR color, String unicode, Position position,
@@ -226,6 +228,16 @@ abstract class AbstractPiece<COLOR extends Color>
                 && Objects.equals(getPosition(), other.getPosition());
     }
 
+    @Override
+    public Instant getCapturedAt() {
+        return capturedAt;
+    }
+
+    @Override
+    public void setCapturedAt(Instant instant) {
+        this.capturedAt = instant;
+    }
+
     final void setPosition(Position position) {
         // null can be set when piece should be removed from the board
         if (position == null) {
@@ -253,12 +265,18 @@ abstract class AbstractPiece<COLOR extends Color>
     }
 
     final void doCapture(Piece<?> piece) {
+        // save captured timestamp
+        ((Captured) piece).setCapturedAt(Instant.now());
+
         ((Disposable) piece).dispose();
+
         doMove(piece.getPosition());
     }
 
     final void cancelCapture(Piece<?> piece) {
         cancelMove(getPosition());
+        // clear capturedAt timestamp
+        ((Captured) piece).setCapturedAt(null);
         // no need to set previous position as it is already the last item in positions array
         ((Restorable) piece).restore();
     }

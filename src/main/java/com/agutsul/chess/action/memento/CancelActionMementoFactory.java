@@ -48,7 +48,10 @@ public enum CancelActionMementoFactory {
         var actionMemento = (ActionMemento<String,String>) memento;
 
         var predator = board.getPiece(actionMemento.getTarget());
-        var victim = board.getCapturedPiece(actionMemento.getTarget());
+        var victim = board.getCapturedPiece(
+                actionMemento.getTarget(),
+                actionMemento.getColor().invert()
+        );
 
         return new CancelCaptureAction(predator.get(), victim.get());
     }
@@ -98,9 +101,12 @@ public enum CancelActionMementoFactory {
         var actionMemento = (EnPassantActionMemento) memento;
         var captureMemento = actionMemento.getSource();
 
-        var predator = board.getPiece(actionMemento.getTarget()).get();
-        var victim = board.getCapturedPiece(captureMemento.getTarget()).get();
+        var predator = board.getPiece(actionMemento.getTarget());
+        var victim = board.getCapturedPiece(
+                captureMemento.getTarget(),
+                actionMemento.getColor().invert()
+        );
 
-        return new CancelEnPassantAction((PawnPiece<?>) predator, (PawnPiece<?>) victim);
+        return new CancelEnPassantAction((PawnPiece<?>) predator.get(), (PawnPiece<?>) victim.get());
     }
 }

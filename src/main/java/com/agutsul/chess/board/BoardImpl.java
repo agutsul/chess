@@ -2,6 +2,7 @@ package com.agutsul.chess.board;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -33,6 +34,7 @@ import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.impact.PieceProtectImpact;
 import com.agutsul.chess.piece.BlackPieceFactory;
+import com.agutsul.chess.piece.Captured;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.PieceFactory;
@@ -246,7 +248,7 @@ final class BoardImpl implements Board {
     }
 
     @Override
-    public Optional<Piece<Color>> getCapturedPiece(String position) {
+    public Optional<Piece<Color>> getCapturedPiece(String position, Color color) {
         LOGGER.info("Getting captured piece at '{}'", position);
 
         var optionalPosition = getPosition(position);
@@ -256,7 +258,9 @@ final class BoardImpl implements Board {
 
         var foundPiece = this.pieces.stream()
                 .filter(piece -> Objects.equals(piece.getPosition(), optionalPosition.get()))
-                .filter(piece -> !piece.isActive())
+                .filter(piece -> Objects.equals(piece.getColor(), color))
+                .filter(piece -> !piece.isActive() && ((Captured) piece).getCapturedAt() != null)
+                .sorted(comparing(piece -> ((Captured) piece).getCapturedAt()).reversed())
                 .findFirst();
 
         return foundPiece;
