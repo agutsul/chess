@@ -64,7 +64,7 @@ class JournalFormatter {
             @Override
             String toString(ActionMemento<?,?> memento) {
                 var source = Piece.Type.PAWN.equals(memento.getPieceType())
-                        ? substring(String.valueOf(memento.getSource()), 0, 1)
+                        ? formatPawnPosition(memento.getSource())
                         : memento.getPieceType();
 
                 return String.format("%sx%s", source, memento.getTarget());
@@ -74,8 +74,8 @@ class JournalFormatter {
             @Override
             String toString(ActionMemento<?,?> memento) {
                 return String.format("%sx%s e.p.",
-                        substring(String.valueOf(memento.getSource()), 0, 1),
-                        ((ActionMemento<?,?>) memento.getTarget()).getTarget()
+                        formatPawnPosition(((ActionMemento<?,?>) memento.getSource()).getSource()),
+                        memento.getTarget()
                 );
             }
         },
@@ -103,6 +103,10 @@ class JournalFormatter {
         }
 
         abstract String toString(ActionMemento<?,?> memento);
+
+        static String formatPawnPosition(Object pawnPosition) {
+            return substring(String.valueOf(pawnPosition), 0, 1);
+        }
 
         static String format(ActionMemento<?,?> memento) {
             return MODES.get(memento.getActionType()).toString(memento);

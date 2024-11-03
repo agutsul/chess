@@ -55,7 +55,7 @@ public enum CancelActionMementoFactory {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Action<?> cancelPromoteAction(Board board, ActionMemento<?,?> memento) {
-        var actionMemento = (ActionMemento<String,ActionMemento<String,String>>) memento;
+        var actionMemento = (PromoteActionMemento) memento;
         var originMemento = actionMemento.getTarget();
 
         if (Action.Type.MOVE.equals(originMemento.getActionType())) {
@@ -95,11 +95,11 @@ public enum CancelActionMementoFactory {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Action<?> cancelEnPassantAction(Board board, ActionMemento<?,?> memento) {
-        var actionMemento = (ActionMemento<String,ActionMemento<String,String>>) memento;
-        var enPassantMemento = actionMemento.getTarget();
+        var actionMemento = (EnPassantActionMemento) memento;
+        var captureMemento = actionMemento.getSource();
 
-        var predator = board.getPiece(enPassantMemento.getTarget()).get();
-        var victim = board.getCapturedPiece(enPassantMemento.getSource()).get();
+        var predator = board.getPiece(actionMemento.getTarget()).get();
+        var victim = board.getCapturedPiece(captureMemento.getTarget()).get();
 
         return new CancelEnPassantAction((PawnPiece<?>) predator, (PawnPiece<?>) victim);
     }

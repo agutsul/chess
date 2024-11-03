@@ -219,10 +219,6 @@ public class JournalImplTest {
             .thenReturn(PositionFactory.INSTANCE.createPosition("b5"));
 
         var blackPawn = mock(PawnPiece.class);
-        when(blackPawn.getColor())
-            .thenReturn(Colors.BLACK);
-        when(blackPawn.getType())
-            .thenReturn(Piece.Type.PAWN);
         when(blackPawn.getPosition())
             .thenReturn(PositionFactory.INSTANCE.createPosition("a7"));
 

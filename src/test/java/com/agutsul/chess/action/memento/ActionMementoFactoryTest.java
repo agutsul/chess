@@ -104,6 +104,6 @@ public class ActionMementoFactoryTest {
         var memento = ActionMementoFactory.INSTANCE.create(actions.iterator().next());
 
         assertEquals(Action.Type.EN_PASSANT, memento.getActionType());
-        assertEquals("EN_PASSANT PAWN(b5 CAPTURE PAWN(a5 a6))", String.valueOf(memento));
+        assertEquals("EN_PASSANT(CAPTURE PAWN(b5 a5) a6)", String.valueOf(memento));
     }
 }

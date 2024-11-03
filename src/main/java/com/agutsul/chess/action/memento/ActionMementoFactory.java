@@ -45,9 +45,7 @@ public enum ActionMementoFactory {
         return createMemento(action.getType(), action.getSource(), action.getTarget());
     }
 
-    private static ActionMemento<ActionMemento<String,String>,ActionMemento<String,String>>
-            create(PieceCastlingAction<?, ?, ?> action) {
-
+    private static CastlingActionMemento create(PieceCastlingAction<?, ?, ?> action) {
         var kingAction = Stream.of(action.getSource(), action.getTarget())
                 .filter(a -> Objects.equals(action.getPosition(), a.getPosition()))
                 .findFirst()
@@ -66,34 +64,19 @@ public enum ActionMementoFactory {
         );
     }
 
-    private static ActionMemento<String,ActionMemento<String,String>>
-            create(PieceEnPassantAction<?,?,?,?> action) {
-
+    private static EnPassantActionMemento create(PieceEnPassantAction<?,?,?,?> action) {
         var sourcePawn = action.getSource();
         var targetPawn = action.getTarget();
 
-        var memento = createMemento(Action.Type.CAPTURE, targetPawn, action.getPosition());
-        return new ActionMementoImpl<String, ActionMemento<String,String>>(
-                sourcePawn.getColor(),
-                action.getType(),
-                sourcePawn.getType(),
-                String.valueOf(sourcePawn.getPosition()),
-                memento
-        );
+        var memento = createMemento(Action.Type.CAPTURE, sourcePawn, targetPawn.getPosition());
+        return new EnPassantActionMemento(action.getType(), memento, action.getPosition());
     }
 
-    private static ActionMemento<String,ActionMemento<String,String>>
-            create(PiecePromoteAction<?,?> action) {
-
+    private static PromoteActionMemento create(PiecePromoteAction<?,?> action) {
         var originAction = action.getSource();
         var pawnPiece = originAction.getSource();
 
-        var memento = createMemento(
-                originAction.getType(),
-                pawnPiece,
-                originAction.getPosition()
-        );
-
+        var memento = createMemento(originAction.getType(), pawnPiece, originAction.getPosition());
         return new PromoteActionMemento(action.getType(), action.getPieceType(), memento);
     }
 
