@@ -3,6 +3,7 @@ package com.agutsul.chess.action.memento;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.Action.Type;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.piece.Piece;
 
 public final class CastlingActionMemento
         implements ActionMemento<ActionMemento<String,String>,ActionMemento<String,String>> {
@@ -34,6 +35,11 @@ public final class CastlingActionMemento
     @Override
     public Type getActionType() {
         return actionType;
+    }
+
+    @Override
+    public Piece.Type getPieceType() {
+        return getSource().getPieceType();
     }
 
     @Override

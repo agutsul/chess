@@ -30,6 +30,7 @@ import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.journal.Memento;
 import com.agutsul.chess.mock.ActionMementoMock;
 import com.agutsul.chess.piece.PawnPiece;
+import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
@@ -162,6 +163,6 @@ public class PlayerActionOberverTest {
     }
 
     private static ActionMemento<String,String> mockActionMemento(Color color) {
-        return new ActionMementoMock<String,String>(color, Action.Type.MOVE, "src", "trg");
+        return new ActionMementoMock<String,String>(color, Action.Type.MOVE, Piece.Type.PAWN, "src", "trg");
     }
 }

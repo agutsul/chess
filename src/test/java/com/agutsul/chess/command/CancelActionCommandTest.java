@@ -23,6 +23,7 @@ import com.agutsul.chess.game.AbstractGame;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.journal.Memento;
 import com.agutsul.chess.mock.ActionMementoMock;
+import com.agutsul.chess.piece.Piece;
 
 @ExtendWith(MockitoExtension.class)
 public class CancelActionCommandTest {
@@ -49,7 +50,13 @@ public class CancelActionCommandTest {
             .thenReturn(true);
 
         var journal = new JournalImpl<Memento>();
-        journal.add(new ActionMementoMock<String, String>(Colors.BLACK, Action.Type.MOVE, "e7", "e5"));
+        journal.add(new ActionMementoMock<String, String>(
+                Colors.BLACK,
+                Action.Type.MOVE,
+                Piece.Type.PAWN,
+                "e7",
+                "e5"
+        ));
 
         when(game.getJournal())
             .thenReturn(journal);
@@ -83,7 +90,13 @@ public class CancelActionCommandTest {
         assertFalse(board.isEmpty(targetPosition));
 
         var journal = new JournalImpl<Memento>();
-        journal.add(new ActionMementoMock<String, String>(Colors.WHITE, Action.Type.MOVE, "e2", "e4"));
+        journal.add(new ActionMementoMock<String, String>(
+                Colors.WHITE,
+                Action.Type.MOVE,
+                Piece.Type.PAWN,
+                "e2",
+                "e4"
+        ));
 
         when(game.getJournal())
             .thenReturn(journal);
@@ -122,7 +135,13 @@ public class CancelActionCommandTest {
         assertFalse(board.isEmpty(targetPosition));
 
         var journal = new JournalImpl<Memento>();
-        journal.add(new ActionMementoMock<String, String>(Colors.WHITE, Action.Type.MOVE, "e2", "e4"));
+        journal.add(new ActionMementoMock<String, String>(
+                Colors.WHITE,
+                Action.Type.MOVE,
+                Piece.Type.PAWN,
+                "e2",
+                "e4"
+        ));
 
         when(game.getJournal())
             .thenReturn(journal);

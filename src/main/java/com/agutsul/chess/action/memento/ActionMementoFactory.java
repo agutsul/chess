@@ -10,10 +10,11 @@ import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PieceCastlingAction;
 import com.agutsul.chess.action.PieceCastlingAction.CastlingMoveAction;
-import com.agutsul.chess.color.Color;
 import com.agutsul.chess.action.PieceEnPassantAction;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.PiecePromoteAction;
+import com.agutsul.chess.color.Color;
+import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
 public enum ActionMementoFactory {
@@ -41,7 +42,7 @@ public enum ActionMementoFactory {
         return createMemento(
                 predator.getColor(),
                 action.getType(),
-                predator.getPosition(),
+                predator,
                 victim.getPosition()
         );
     }
@@ -51,7 +52,7 @@ public enum ActionMementoFactory {
         return createMemento(
                 piece.getColor(),
                 action.getType(),
-                piece.getPosition(),
+                piece,
                 action.getTarget()
         );
     }
@@ -86,13 +87,14 @@ public enum ActionMementoFactory {
         var memento = createMemento(
                 targetPawn.getColor(),
                 action.getType(),
-                targetPawn.getPosition(),
+                targetPawn,
                 action.getPosition()
         );
 
         return new ActionMementoImpl<String, ActionMemento<String,String>>(
                 sourcePawn.getColor(),
                 action.getType(),
+                sourcePawn.getType(),
                 String.valueOf(sourcePawn.getPosition()),
                 memento
         );
@@ -107,13 +109,14 @@ public enum ActionMementoFactory {
         var memento = createMemento(
                 pawnPiece.getColor(),
                 originAction.getType(),
-                pawnPiece.getPosition(),
+                pawnPiece,
                 originAction.getPosition()
         );
 
         return new ActionMementoImpl<String, ActionMemento<String,String>>(
                 pawnPiece.getColor(),
                 action.getType(),
+                pawnPiece.getType(),
                 String.valueOf(pawnPiece.getPosition()),
                 memento
         );
@@ -124,19 +127,20 @@ public enum ActionMementoFactory {
         return createMemento(
                 piece.getColor(),
                 action.getType(),
-                piece.getPosition(),
+                piece,
                 action.getPosition()
         );
     }
 
     private static ActionMemento<String,String> createMemento(Color color,
                                                               Action.Type actionType,
-                                                              Position sourcePosition,
+                                                              Piece<?> sourcePiece,
                                                               Position targetPosition) {
         return new ActionMementoImpl<String,String>(
                 color,
                 actionType,
-                String.valueOf(sourcePosition),
+                sourcePiece.getType(),
+                String.valueOf(sourcePiece.getPosition()),
                 String.valueOf(targetPosition)
         );
     }

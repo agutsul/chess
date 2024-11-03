@@ -68,7 +68,10 @@ public enum CancelActionMementoFactory {
             return new CancelPromoteAction((CancelCaptureAction<?,?,?,?>) originAction);
         }
 
-        throw new IllegalActionException("Unsupported promotion action: " + originMemento.getActionType());
+        throw new IllegalActionException(String.format(
+                "Unsupported promotion action: %s",
+                originMemento.getActionType()
+        ));
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

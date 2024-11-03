@@ -86,7 +86,7 @@ public class JournalImplTest {
         assertFalse(moveAction.isEmpty());
 
         var memento = MEMENTO_FACTORY.create(moveAction.get());
-        assertEquals("MOVE(a2 a3)", memento.toString());
+        assertEquals("MOVE PAWN(a2 a3)", memento.toString());
 
         return memento;
     }

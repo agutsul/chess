@@ -31,7 +31,7 @@ public class ActionMementoFactoryTest {
         var memento = ActionMementoFactory.INSTANCE.create(actions.iterator().next());
 
         assertEquals(Action.Type.MOVE, memento.getActionType());
-        assertEquals("MOVE(e2 e3)", String.valueOf(memento));
+        assertEquals("MOVE PAWN(e2 e3)", String.valueOf(memento));
     }
 
     @Test
@@ -47,7 +47,7 @@ public class ActionMementoFactoryTest {
         var memento = ActionMementoFactory.INSTANCE.create(actions.iterator().next());
 
         assertEquals(Action.Type.CAPTURE, memento.getActionType());
-        assertEquals("CAPTURE(e2 d3)", String.valueOf(memento));
+        assertEquals("CAPTURE PAWN(e2 d3)", String.valueOf(memento));
     }
 
     @Test
@@ -63,7 +63,7 @@ public class ActionMementoFactoryTest {
         var memento = ActionMementoFactory.INSTANCE.create(actions.iterator().next());
 
         assertEquals(Action.Type.CASTLING, memento.getActionType());
-        assertEquals("CASTLING(MOVE(e1 g1) MOVE(h1 f1))", String.valueOf(memento));
+        assertEquals("CASTLING(MOVE KING(e1 g1) MOVE ROOK(h1 f1))", String.valueOf(memento));
     }
 
     @Test
@@ -78,7 +78,7 @@ public class ActionMementoFactoryTest {
         var memento = ActionMementoFactory.INSTANCE.create(actions.iterator().next());
 
         assertEquals(Action.Type.PROMOTE, memento.getActionType());
-        assertEquals("PROMOTE(e7 MOVE(e7 e8))", String.valueOf(memento));
+        assertEquals("PROMOTE PAWN(e7 MOVE PAWN(e7 e8))", String.valueOf(memento));
     }
 
     @Test
@@ -97,6 +97,6 @@ public class ActionMementoFactoryTest {
         var memento = ActionMementoFactory.INSTANCE.create(actions.iterator().next());
 
         assertEquals(Action.Type.EN_PASSANT, memento.getActionType());
-        assertEquals("EN_PASSANT(b5 EN_PASSANT(a5 a6))", String.valueOf(memento));
+        assertEquals("EN_PASSANT PAWN(b5 EN_PASSANT PAWN(a5 a6))", String.valueOf(memento));
     }
 }
