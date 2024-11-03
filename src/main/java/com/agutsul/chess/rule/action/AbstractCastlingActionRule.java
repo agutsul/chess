@@ -31,7 +31,7 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
 
     private enum Castling {
         // rook is located at "h1" or "h8"
-        KING_SIDE(7, 5, 6, "0-0") {
+        KING_SIDE(7, 5, 6, "O-O") {
             @Override
             <COLOR extends Color> boolean isAllEmptyBetween(Board board,
                                                             KingPiece<COLOR> king,
@@ -73,7 +73,7 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
             }
         },
         // rook is located at "a1" or "a8"
-        QUEEN_SIDE(0, 3, 2, "0-0-0") {
+        QUEEN_SIDE(0, 3, 2, "O-O-O") {
             @Override
             <COLOR extends Color> boolean isAllEmptyBetween(Board board,
                                                             KingPiece<COLOR> king,

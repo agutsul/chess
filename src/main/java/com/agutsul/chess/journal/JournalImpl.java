@@ -21,9 +21,9 @@ public class JournalImpl<MEMENTO extends Memento>
     }
 
     @Override
-    public void remove(int index) {
+    public MEMENTO remove(int index) {
         LOGGER.info("Journal remove memento by index '{}'", index);
-        this.list.remove(index);
+        return this.list.remove(index);
     }
 
     @Override
@@ -35,5 +35,10 @@ public class JournalImpl<MEMENTO extends Memento>
     @Override
     public int size() {
         return this.list.size();
+    }
+
+    @Override
+    public String toString() {
+        return JournalFormatter.format(this);
     }
 }

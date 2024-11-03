@@ -33,7 +33,7 @@ public class PieceCastlingActionTest {
                 .findFirst();
 
         assertTrue(castlingAction.isPresent());
-        assertEquals("0-0", castlingAction.get().getCode());
+        assertEquals("O-O", castlingAction.get().getCode());
 
         castlingAction.get().execute();
 
@@ -67,7 +67,7 @@ public class PieceCastlingActionTest {
                 .findFirst();
 
         assertTrue(castlingAction.isPresent());
-        assertEquals("0-0-0", castlingAction.get().getCode());
+        assertEquals("O-O-O", castlingAction.get().getCode());
 
         castlingAction.get().execute();
 

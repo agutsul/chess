@@ -119,7 +119,7 @@ public class RookPieceImplTest extends AbstractPieceTest {
                         "b1", "c1", "d1"
                     ),
                 List.of(),
-                List.of("0-0-0")
+                List.of("O-O-O")
         );
 
         var board2 = new BoardBuilder()
@@ -133,7 +133,7 @@ public class RookPieceImplTest extends AbstractPieceTest {
                         "f1", "g1"
                     ),
                 List.of(),
-                List.of("0-0")
+                List.of("O-O")
         );
 
         var board3 = new BoardBuilder()
@@ -147,7 +147,7 @@ public class RookPieceImplTest extends AbstractPieceTest {
                         "a1", "a2", "a3", "a4", "a5", "a6", "a7"
                     ),
                 List.of(),
-                List.of("0-0-0")
+                List.of("O-O-O")
         );
 
         var board4 = new BoardBuilder()
@@ -161,7 +161,7 @@ public class RookPieceImplTest extends AbstractPieceTest {
                         "h1", "h2", "h3", "h4", "h5", "h6", "h7"
                     ),
                 List.of(),
-                List.of("0-0")
+                List.of("O-O")
         );
     }
 

@@ -81,7 +81,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
         assertPieceActions(board1, Colors.WHITE, KING_TYPE, "e1",
                 List.of("e2", "d2", "f2", "f1", "d1"),
                 List.of(),
-                List.of("0-0", "0-0-0")
+                List.of("O-O", "O-O-O")
         );
 
         var board2 = new BoardBuilder()
@@ -92,7 +92,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
         assertPieceActions(board2, Colors.BLACK, KING_TYPE, "e8",
                 List.of("e7", "d7", "f7", "f8", "d8"),
                 List.of(),
-                List.of("0-0", "0-0-0")
+                List.of("O-O", "O-O-O")
         );
     }
 
@@ -107,7 +107,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
         assertPieceActions(board1, Colors.WHITE, KING_TYPE, "e1",
                 List.of("e2", "d2", "f2", "f1", "d1"),
                 List.of(),
-                List.of("0-0")
+                List.of("O-O")
         );
 
         var board2 = new BoardBuilder()
@@ -119,7 +119,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
         assertPieceActions(board2, Colors.BLACK, KING_TYPE, "e8",
                 List.of("e7", "d7", "f7", "f8", "d8"),
                 List.of(),
-                List.of("0-0")
+                List.of("O-O")
         );
     }
 
@@ -157,7 +157,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
         assertPieceActions(board1, Colors.WHITE, KING_TYPE, "e1",
                 List.of("e2", "d2", "f2", "f1", "d1"),
                 List.of(),
-                List.of("0-0")
+                List.of("O-O")
         );
 
         var board2 = new BoardBuilder()
@@ -169,7 +169,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
         assertPieceActions(board2, Colors.BLACK, KING_TYPE, "e8",
                 List.of("e7", "d7", "f7", "f8", "d8"),
                 List.of(),
-                List.of("0-0")
+                List.of("O-O")
         );
     }
 
@@ -184,7 +184,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
         assertPieceActions(board1, Colors.WHITE, KING_TYPE, "e1",
                 List.of("e2", "d2", "f2", "f1", "d1"),
                 List.of(),
-                List.of("0-0-0")
+                List.of("O-O-O")
         );
 
         var board2 = new BoardBuilder()
@@ -196,7 +196,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
         assertPieceActions(board2, Colors.BLACK, KING_TYPE, "e8",
                 List.of("e7", "d7", "f7", "f8", "d8"),
                 List.of(),
-                List.of("0-0-0")
+                List.of("O-O-O")
         );
     }
 

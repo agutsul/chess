@@ -156,8 +156,8 @@ public class BoardImplTest {
 
     @Test
     void testToString() throws IOException, URISyntaxException {
-        var fileName = "standard_board.txt";
-        var file = new File(getClass().getClassLoader().getResource(fileName).toURI());
+        var resource = getClass().getClassLoader().getResource("standard_board.txt");
+        var file = new File(resource.toURI());
         var standardBoard = Files.readString(file.toPath());
         assertEquals(standardBoard, board.toString());
     }

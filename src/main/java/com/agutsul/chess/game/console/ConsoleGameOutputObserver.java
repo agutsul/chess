@@ -15,6 +15,8 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.observer.AbstractGameObserver;
+import com.agutsul.chess.journal.Journal;
+import com.agutsul.chess.journal.Memento;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
@@ -43,7 +45,11 @@ final class ConsoleGameOutputObserver
 
     @Override
     protected void process(GameOverEvent event) {
-        displayWinner(event.getGame().getWinner());
+        var game = (AbstractGame) event.getGame();
+        displayWinner(game.getWinner());
+
+        System.out.println("-".repeat(50));
+        displayJournal(game.getJournal());
     }
 
     @Override
@@ -82,6 +88,10 @@ final class ConsoleGameOutputObserver
 
     private static void displayBoard(Board board) {
         System.out.println(String.format("%s%s", lineSeparator(), board));
+    }
+
+    private static void displayJournal(Journal<Memento> journal) {
+        System.out.println(journal);
     }
 
     private static void displayWinner(Optional<Player> winner) {

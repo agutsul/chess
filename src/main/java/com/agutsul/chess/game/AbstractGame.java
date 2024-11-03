@@ -12,6 +12,9 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.action.event.ActionCancelledEvent;
 import com.agutsul.chess.action.event.ActionPerformedEvent;
+import com.agutsul.chess.action.memento.ActionMemento;
+import com.agutsul.chess.action.memento.CheckMatedActionMemento;
+import com.agutsul.chess.action.memento.CheckedActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.event.Event;
@@ -97,6 +100,15 @@ public abstract class AbstractGame
         var nextPlayer = getOpponentPlayer();
 
         var nextBoardState = evaluateBoardState(nextPlayer);
+
+        if (BoardState.Type.CHECK_MATED.equals(nextBoardState.getType())) {
+            var memento = (ActionMemento<?,?>) journal.remove(journal.size() - 1);
+            journal.add(new CheckMatedActionMemento<>(memento));
+        } else if (BoardState.Type.CHECKED.equals(nextBoardState.getType())) {
+            var memento = (ActionMemento<?,?>) journal.remove(journal.size() - 1);
+            journal.add(new CheckedActionMemento<>(memento));
+        }
+
         board.setState(nextBoardState);
 
         logger.info("Board state: {}", nextBoardState);

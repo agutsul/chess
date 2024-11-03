@@ -11,7 +11,6 @@ import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.Promotable;
 import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 
@@ -23,6 +22,9 @@ public class PiecePromoteAction<COLOR1 extends Color,
     private static final Logger LOGGER = getLogger(PiecePromoteAction.class);
 
     private final Observable observable;
+
+    // player selected piece type
+    private Piece.Type pieceType;
 
     public PiecePromoteAction(PieceMoveAction<COLOR1,PIECE1> action,
                               Observable observable) {
@@ -53,11 +55,18 @@ public class PiecePromoteAction<COLOR1 extends Color,
         }
     }
 
+    public Piece.Type getPieceType() {
+        return pieceType;
+    }
+
     // actual piece promotion entry point
     private void process(PromotionPieceTypeEvent event) {
+        // store selected piece type for using in journal
+        this.pieceType = event.getPieceType();
+
         LOGGER.info("Executing promote by '{}' to '{}'",
             getSource().getSource(),
-            event.getPieceType()
+            this.pieceType
         );
 
         // source action can be either MOVE or CAPTURE
@@ -66,6 +75,6 @@ public class PiecePromoteAction<COLOR1 extends Color,
 
         // transform pawn into selected piece type
         var pawn = originAction.getSource();
-        ((Promotable) pawn).promote(getPosition(), event.getPieceType());
+        pawn.promote(getPosition(), this.pieceType);
     }
 }

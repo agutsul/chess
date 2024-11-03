@@ -4,7 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
@@ -12,8 +18,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.action.Action;
+import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.memento.ActionMementoFactory;
 import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.piece.PawnPiece;
+import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.position.PositionFactory;
 
 @ExtendWith(MockitoExtension.class)
 public class JournalImplTest {
@@ -66,6 +76,27 @@ public class JournalImplTest {
             );
 
         assertEquals("Index 0 out of bounds for length 0", thrown.getMessage());
+    }
+
+    @Test
+    void testToString() throws IOException, URISyntaxException {
+        var pawn = mock(PawnPiece.class);
+        when(pawn.getType())
+            .thenReturn(Piece.Type.PAWN);
+        when(pawn.getPosition())
+            .thenReturn(PositionFactory.INSTANCE.createPosition("e2"));
+
+        var position = PositionFactory.INSTANCE.createPosition("e4");
+        var action = new PieceMoveAction<>(pawn, position);
+
+        var journal = new JournalImpl<Memento>();
+        journal.add(ActionMementoFactory.INSTANCE.create(action));
+
+        var resource = getClass().getClassLoader().getResource("journal_move_ply.txt");
+        var file = new File(resource.toURI());
+        var fileJournalContent = Files.readString(file.toPath());
+
+        assertEquals(fileJournalContent, journal.toString());
     }
 
     private static Memento createMemento() {

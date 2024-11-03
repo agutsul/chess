@@ -35,7 +35,7 @@ public class CancelCastlingActionTest {
                 .findFirst();
 
         assertTrue(castlingAction.isPresent());
-        assertEquals("0-0", castlingAction.get().getCode());
+        assertEquals("O-O", castlingAction.get().getCode());
 
         castlingAction.get().execute();
 
@@ -50,7 +50,7 @@ public class CancelCastlingActionTest {
         var kingAction = new UncastlingMoveAction(king, kingSourcePosition);
         var rookAction = new UncastlingMoveAction(rook, rookSourcePosition);
 
-        var cancelAction = new CancelCastlingAction("0-0", kingAction, rookAction);
+        var cancelAction = new CancelCastlingAction("O-O", kingAction, rookAction);
         cancelAction.execute();
 
         assertEquals(rookSourcePosition, rook.getPosition());

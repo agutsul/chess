@@ -13,7 +13,6 @@ import com.agutsul.chess.action.PieceCastlingAction.CastlingMoveAction;
 import com.agutsul.chess.action.PieceEnPassantAction;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.PiecePromoteAction;
-import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
@@ -39,22 +38,11 @@ public enum ActionMementoFactory {
         var predator = action.getSource();
         var victim = action.getTarget();
 
-        return createMemento(
-                predator.getColor(),
-                action.getType(),
-                predator,
-                victim.getPosition()
-        );
+        return createMemento(action.getType(), predator, victim.getPosition());
     }
 
     private static ActionMemento<String,String> create(PieceMoveAction<?,?> action) {
-        var piece = action.getSource();
-        return createMemento(
-                piece.getColor(),
-                action.getType(),
-                piece,
-                action.getTarget()
-        );
+        return createMemento(action.getType(), action.getSource(), action.getTarget());
     }
 
     private static ActionMemento<ActionMemento<String,String>,ActionMemento<String,String>>
@@ -84,13 +72,7 @@ public enum ActionMementoFactory {
         var sourcePawn = action.getSource();
         var targetPawn = action.getTarget();
 
-        var memento = createMemento(
-                targetPawn.getColor(),
-                action.getType(),
-                targetPawn,
-                action.getPosition()
-        );
-
+        var memento = createMemento(Action.Type.CAPTURE, targetPawn, action.getPosition());
         return new ActionMementoImpl<String, ActionMemento<String,String>>(
                 sourcePawn.getColor(),
                 action.getType(),
@@ -107,37 +89,23 @@ public enum ActionMementoFactory {
         var pawnPiece = originAction.getSource();
 
         var memento = createMemento(
-                pawnPiece.getColor(),
                 originAction.getType(),
                 pawnPiece,
                 originAction.getPosition()
         );
 
-        return new ActionMementoImpl<String, ActionMemento<String,String>>(
-                pawnPiece.getColor(),
-                action.getType(),
-                pawnPiece.getType(),
-                String.valueOf(pawnPiece.getPosition()),
-                memento
-        );
+        return new PromoteActionMemento(action.getType(), action.getPieceType(), memento);
     }
 
     private static ActionMemento<String,String> createMemento(CastlingMoveAction<?,?> action) {
-        var piece = action.getSource();
-        return createMemento(
-                piece.getColor(),
-                action.getType(),
-                piece,
-                action.getPosition()
-        );
+        return createMemento(action.getType(), action.getSource(), action.getPosition());
     }
 
-    private static ActionMemento<String,String> createMemento(Color color,
-                                                              Action.Type actionType,
+    private static ActionMemento<String,String> createMemento(Action.Type actionType,
                                                               Piece<?> sourcePiece,
                                                               Position targetPosition) {
         return new ActionMementoImpl<String,String>(
-                color,
+                sourcePiece.getColor(),
                 actionType,
                 sourcePiece.getType(),
                 String.valueOf(sourcePiece.getPosition()),

@@ -176,7 +176,7 @@ public class CancelActionMementoFactoryTest {
         var cancelAction = CancelActionMementoFactory.INSTANCE.create(board, memento);
 
         assertEquals(Action.Type.CASTLING, cancelAction.getType());
-        assertEquals("0-0", cancelAction.getCode());
+        assertEquals("O-O", cancelAction.getCode());
         assertEquals(kingPosition, cancelAction.getPosition());
 
         var action = (CancelCastlingAction<?,?,?>) cancelAction;
