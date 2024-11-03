@@ -19,7 +19,6 @@ class JournalFormatter {
 
     public static String format(Journal<? extends Memento> journal) {
         var builder = new StringBuilder();
-
         for (int i = 0, j = 1; i < journal.size(); i+=2, j++) {
             builder.append(j).append(".");
             builder.append(format((ActionMemento<?,?>) journal.get(i)));
@@ -37,7 +36,7 @@ class JournalFormatter {
     private static String format(ActionMemento<?,?> memento) {
         var builder = new StringBuilder();
         builder.append("\t");
-        builder.append(Formatter.format(memento));
+        builder.append(AlgebraicFormatter.format(memento));
 
         if (memento instanceof CheckMatedActionMemento) {
             builder.append("#");
@@ -48,7 +47,7 @@ class JournalFormatter {
         return builder.toString();
     }
 
-    private enum Formatter {
+    private enum AlgebraicFormatter {
         MOVE_MODE(Action.Type.MOVE) {
             @Override
             String toString(ActionMemento<?,?> memento) {
@@ -90,12 +89,12 @@ class JournalFormatter {
             }
         };
 
-        private static final Map<Action.Type, Formatter> MODES =
-                Stream.of(values()).collect(toMap(Formatter::type, identity()));
+        private static final Map<Action.Type, AlgebraicFormatter> MODES =
+                Stream.of(values()).collect(toMap(AlgebraicFormatter::type, identity()));
 
         private Action.Type type;
 
-        Formatter(Action.Type type) {
+        AlgebraicFormatter(Action.Type type) {
             this.type = type;
         }
 
