@@ -68,6 +68,6 @@ public class CancelActionCommand
     }
 
     private static Action<?> createAction(Board board, ActionMemento<?,?> memento) {
-        return CancelActionMementoFactory.INSTANCE.create(board, memento);
+        return CancelActionMementoFactory.create(board, memento);
     }
 }

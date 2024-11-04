@@ -1,8 +1,10 @@
 package com.agutsul.chess.action.memento;
 
-import java.util.EnumMap;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+
 import java.util.Map;
-import java.util.function.BiFunction;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.CancelCaptureAction;
@@ -16,97 +18,118 @@ import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.PawnPiece;
 
 public enum CancelActionMementoFactory {
-    INSTANCE;
+    MOVE_MODE(Action.Type.MOVE) {
 
-    private final Map<Action.Type, BiFunction<Board, ActionMemento<?,?>, Action<?>>> MODES =
-                new EnumMap<>(Action.Type.class);
+        @Override
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        Action<?> createAction(Board board, ActionMemento<?,?> memento) {
+            var actionMemento = (ActionMemento<String,String>) memento;
 
-    CancelActionMementoFactory() {
-        MODES.put(Action.Type.MOVE,       (board, memento) -> cancelMoveAction(board, memento));
-        MODES.put(Action.Type.CAPTURE,    (board, memento) -> cancelCaptureAction(board, memento));
-        MODES.put(Action.Type.PROMOTE,    (board, memento) -> cancelPromoteAction(board, memento));
-        MODES.put(Action.Type.CASTLING,   (board, memento) -> cancelCastlingAction(board, memento));
-        MODES.put(Action.Type.EN_PASSANT, (board, memento) -> cancelEnPassantAction(board, memento));
-    }
+            var piece = board.getPiece(actionMemento.getTarget());
+            var position = board.getPosition(actionMemento.getSource());
 
-    public Action<?> create(Board board, ActionMemento<?,?> memento) {
-        return MODES.get(memento.getActionType()).apply(board, memento);
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static Action<?> cancelMoveAction(Board board, ActionMemento<?,?> memento) {
-        var actionMemento = (ActionMemento<String,String>) memento;
-
-        var piece = board.getPiece(actionMemento.getTarget());
-        var position = board.getPosition(actionMemento.getSource());
-
-        return new CancelMoveAction(piece.get(), position.get());
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static Action<?> cancelCaptureAction(Board board, ActionMemento<?,?> memento) {
-        var actionMemento = (ActionMemento<String,String>) memento;
-
-        var predator = board.getPiece(actionMemento.getTarget());
-        var victim = board.getCapturedPiece(
-                actionMemento.getTarget(),
-                actionMemento.getColor().invert()
-        );
-
-        return new CancelCaptureAction(predator.get(), victim.get());
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static Action<?> cancelPromoteAction(Board board, ActionMemento<?,?> memento) {
-        var actionMemento = (PromoteActionMemento) memento;
-        var originMemento = actionMemento.getTarget();
-
-        if (Action.Type.MOVE.equals(originMemento.getActionType())) {
-            var originAction = cancelMoveAction(board, originMemento);
-            return new CancelPromoteAction((CancelMoveAction<?,?>) originAction);
+            return new CancelMoveAction(piece.get(), position.get());
         }
+    },
+    CAPTURE_MODE(Action.Type.CAPTURE) {
 
-        if (Action.Type.CAPTURE.equals(originMemento.getActionType())) {
-            var originAction = cancelCaptureAction(board, originMemento);
-            return new CancelPromoteAction((CancelCaptureAction<?,?,?,?>) originAction);
+        @Override
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        Action<?> createAction(Board board, ActionMemento<?,?> memento) {
+            var actionMemento = (ActionMemento<String,String>) memento;
+
+            var predator = board.getPiece(actionMemento.getTarget());
+            var victim = board.getCapturedPiece(
+                    actionMemento.getTarget(),
+                    actionMemento.getColor().invert()
+            );
+
+            return new CancelCaptureAction(predator.get(), victim.get());
         }
+    },
+    PROMOTE_MODE(Action.Type.PROMOTE) {
 
-        throw new IllegalActionException(String.format(
-                "Unsupported promotion action: %s",
-                originMemento.getActionType()
-        ));
+        @Override
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        Action<?> createAction(Board board, ActionMemento<?,?> memento) {
+            var actionMemento = (PromoteActionMemento) memento;
+            var originMemento = actionMemento.getTarget();
+
+            if (Action.Type.MOVE.equals(originMemento.getActionType())) {
+                var originAction = MOVE_MODE.createAction(board, originMemento);
+                return new CancelPromoteAction((CancelMoveAction<?,?>) originAction);
+            }
+
+            if (Action.Type.CAPTURE.equals(originMemento.getActionType())) {
+                var originAction = CAPTURE_MODE.createAction(board, originMemento);
+                return new CancelPromoteAction((CancelCaptureAction<?,?,?,?>) originAction);
+            }
+
+            throw new IllegalActionException(String.format(
+                    "Unsupported promotion action: %s",
+                    originMemento.getActionType()
+            ));
+        }
+    },
+    CASTLING_MODE(Action.Type.CASTLING) {
+
+        @Override
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        Action<?> createAction(Board board, ActionMemento<?,?> memento) {
+            var castlingMemento = (CastlingActionMemento) memento;
+
+            var kingMemento = castlingMemento.getSource();
+            var kingPiece = board.getPiece(kingMemento.getTarget());
+            var kingTargetPosition = board.getPosition(kingMemento.getSource());
+
+            var rookMemento = castlingMemento.getTarget();
+            var rookPiece = board.getPiece(rookMemento.getTarget());
+            var rookTargetPosition = board.getPosition(rookMemento.getSource());
+
+            return new CancelCastlingAction(
+                    castlingMemento.getCode(),
+                    new UncastlingMoveAction(kingPiece.get(), kingTargetPosition.get()),
+                    new UncastlingMoveAction(rookPiece.get(), rookTargetPosition.get())
+            );
+        }
+    },
+    EN_PASSANT_MODE(Action.Type.EN_PASSANT) {
+
+        @Override
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        Action<?> createAction(Board board, ActionMemento<?,?> memento) {
+            var actionMemento = (EnPassantActionMemento) memento;
+            var captureMemento = actionMemento.getSource();
+
+            var predator = board.getPiece(actionMemento.getTarget());
+            var victim = board.getCapturedPiece(
+                    captureMemento.getTarget(),
+                    actionMemento.getColor().invert()
+            );
+
+            return new CancelEnPassantAction(
+                    (PawnPiece<?>) predator.get(),
+                    (PawnPiece<?>) victim.get()
+            );
+        }
+    };
+
+    private static final Map<Action.Type, CancelActionMementoFactory> MODES =
+            Stream.of(values()).collect(toMap(CancelActionMementoFactory::type, identity()));
+
+    private Action.Type type;
+
+    CancelActionMementoFactory(Action.Type type) {
+        this.type = type;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static Action<?> cancelCastlingAction(Board board, ActionMemento<?,?> memento) {
-        var castlingMemento = (CastlingActionMemento) memento;
-
-        var kingMemento = castlingMemento.getSource();
-        var kingPiece = board.getPiece(kingMemento.getTarget());
-        var kingTargetPosition = board.getPosition(kingMemento.getSource());
-
-        var rookMemento = castlingMemento.getTarget();
-        var rookPiece = board.getPiece(rookMemento.getTarget());
-        var rookTargetPosition = board.getPosition(rookMemento.getSource());
-
-        return new CancelCastlingAction(
-                castlingMemento.getCode(),
-                new UncastlingMoveAction(kingPiece.get(), kingTargetPosition.get()),
-                new UncastlingMoveAction(rookPiece.get(), rookTargetPosition.get())
-        );
+    Action.Type type() {
+        return type;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static Action<?> cancelEnPassantAction(Board board, ActionMemento<?,?> memento) {
-        var actionMemento = (EnPassantActionMemento) memento;
-        var captureMemento = actionMemento.getSource();
+    abstract Action<?> createAction(Board board, ActionMemento<?,?> memento);
 
-        var predator = board.getPiece(actionMemento.getTarget());
-        var victim = board.getCapturedPiece(
-                captureMemento.getTarget(),
-                actionMemento.getColor().invert()
-        );
-
-        return new CancelEnPassantAction((PawnPiece<?>) predator.get(), (PawnPiece<?>) victim.get());
+    public static Action<?> create(Board board, ActionMemento<?,?> memento) {
+        return MODES.get(memento.getActionType()).createAction(board, memento);
     }
 }

@@ -1,9 +1,10 @@
 package com.agutsul.chess.action.memento;
 
-import java.util.EnumMap;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.action.Action;
@@ -17,77 +18,119 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
 public enum ActionMementoFactory {
-    INSTANCE;
+    MOVE_MODE(Action.Type.MOVE) {
 
-    private final Map<Action.Type, Function<Action<?>, ActionMemento<?,?>>> MODES =
-                new EnumMap<>(Action.Type.class);
+        @Override
+        ActionMemento<?,?> createMemento(Action<?> action) {
+            return createMemento((PieceMoveAction<?,?>) action);
+        }
 
-    ActionMementoFactory() {
-        MODES.put(Action.Type.MOVE,       action -> create((PieceMoveAction<?,?>)          action));
-        MODES.put(Action.Type.CAPTURE,    action -> create((PieceCaptureAction<?,?,?,?>)   action));
-        MODES.put(Action.Type.PROMOTE,    action -> create((PiecePromoteAction<?,?>)       action));
-        MODES.put(Action.Type.CASTLING,   action -> create((PieceCastlingAction<?,?,?>)    action));
-        MODES.put(Action.Type.EN_PASSANT, action -> create((PieceEnPassantAction<?,?,?,?>) action));
+        private ActionMemento<?,?> createMemento(PieceMoveAction<?,?> action) {
+            return createMemento(action.getType(), action.getSource(), action.getTarget());
+        }
+    },
+    CAPTURE_MODE(Action.Type.CAPTURE) {
+
+        @Override
+        ActionMemento<?,?> createMemento(Action<?> action) {
+            return createMemento((PieceCaptureAction<?,?,?,?>) action);
+        }
+
+        private ActionMemento<?,?> createMemento(PieceCaptureAction<?,?,?,?> action) {
+            return createMemento(
+                    action.getType(),
+                    action.getSource(),
+                    action.getTarget().getPosition()
+            );
+        }
+    },
+    PROMOTE_MODE(Action.Type.PROMOTE) {
+
+        @Override
+        ActionMemento<?,?> createMemento(Action<?> action) {
+            return createMemento((PiecePromoteAction<?,?>) action);
+        }
+
+        private PromoteActionMemento createMemento(PiecePromoteAction<?,?> action) {
+            var originAction = action.getSource();
+            var memento = createMemento(
+                    originAction.getType(),
+                    originAction.getSource(),
+                    originAction.getPosition()
+            );
+
+            return new PromoteActionMemento(action.getType(), action.getPieceType(), memento);
+        }
+    },
+    CASTLING_MODE(Action.Type.CASTLING) {
+
+        @Override
+        ActionMemento<?,?> createMemento(Action<?> action) {
+            return createMemento((PieceCastlingAction<?,?,?>) action);
+        }
+
+        private CastlingActionMemento createMemento(PieceCastlingAction<?,?,?> action) {
+            var kingAction = Stream.of(action.getSource(), action.getTarget())
+                    .filter(a -> Objects.equals(action.getPosition(), a.getPosition()))
+                    .findFirst()
+                    .get();
+
+            var rookAction = Stream.of(action.getSource(), action.getTarget())
+                    .filter(a -> !Objects.equals(action.getPosition(), a.getPosition()))
+                    .findFirst()
+                    .get();
+
+            return new CastlingActionMemento(
+                    action.getCode(),
+                    action.getType(),
+                    createMemento(kingAction),
+                    createMemento(rookAction)
+            );
+        }
+
+        private ActionMemento<String,String> createMemento(CastlingMoveAction<?,?> action) {
+            return createMemento(action.getType(), action.getSource(), action.getPosition());
+        }
+    },
+    EN_PASSANT_MODE(Action.Type.EN_PASSANT) {
+
+        @Override
+        ActionMemento<?,?> createMemento(Action<?> action) {
+            return createMemento((PieceEnPassantAction<?,?,?,?>) action);
+        }
+
+        private EnPassantActionMemento createMemento(PieceEnPassantAction<?,?,?,?> action) {
+            var sourcePawn = action.getSource();
+            var targetPawn = action.getTarget();
+
+            var memento = createMemento(Action.Type.CAPTURE, sourcePawn, targetPawn.getPosition());
+            return new EnPassantActionMemento(action.getType(), memento, action.getPosition());
+        }
+    };
+
+    private static final Map<Action.Type, ActionMementoFactory> MODES =
+                Stream.of(values()).collect(toMap(ActionMementoFactory::type, identity()));
+
+    private Action.Type type;
+
+    ActionMementoFactory(Action.Type type) {
+        this.type = type;
     }
 
-    public ActionMemento<?,?> create(Action<?> action) {
-        return MODES.get(action.getType()).apply(action);
+    private Action.Type type() {
+        return type;
     }
 
-    private static ActionMemento<String,String> create(PieceCaptureAction<?,?,?,?> action) {
-        var predator = action.getSource();
-        var victim = action.getTarget();
+    abstract ActionMemento<?,?> createMemento(Action<?> action);
 
-        return createMemento(action.getType(), predator, victim.getPosition());
-    }
-
-    private static ActionMemento<String,String> create(PieceMoveAction<?,?> action) {
-        return createMemento(action.getType(), action.getSource(), action.getTarget());
-    }
-
-    private static CastlingActionMemento create(PieceCastlingAction<?, ?, ?> action) {
-        var kingAction = Stream.of(action.getSource(), action.getTarget())
-                .filter(a -> Objects.equals(action.getPosition(), a.getPosition()))
-                .findFirst()
-                .get();
-
-        var rookAction = Stream.of(action.getSource(), action.getTarget())
-                .filter(a -> !Objects.equals(action.getPosition(), a.getPosition()))
-                .findFirst()
-                .get();
-
-        return new CastlingActionMemento(
-                action.getCode(),
-                action.getType(),
-                createMemento(kingAction),
-                createMemento(rookAction)
-        );
-    }
-
-    private static EnPassantActionMemento create(PieceEnPassantAction<?,?,?,?> action) {
-        var sourcePawn = action.getSource();
-        var targetPawn = action.getTarget();
-
-        var memento = createMemento(Action.Type.CAPTURE, sourcePawn, targetPawn.getPosition());
-        return new EnPassantActionMemento(action.getType(), memento, action.getPosition());
-    }
-
-    private static PromoteActionMemento create(PiecePromoteAction<?,?> action) {
-        var originAction = action.getSource();
-        var pawnPiece = originAction.getSource();
-
-        var memento = createMemento(originAction.getType(), pawnPiece, originAction.getPosition());
-        return new PromoteActionMemento(action.getType(), action.getPieceType(), memento);
-    }
-
-    private static ActionMemento<String,String> createMemento(CastlingMoveAction<?,?> action) {
-        return createMemento(action.getType(), action.getSource(), action.getPosition());
+    public static ActionMemento<?,?> create(Action<?> action) {
+        return MODES.get(action.getType()).createMemento(action);
     }
 
     private static ActionMemento<String,String> createMemento(Action.Type actionType,
                                                               Piece<?> sourcePiece,
                                                               Position targetPosition) {
-        return new ActionMementoImpl<String,String>(
+        return new ActionMementoImpl<>(
                 sourcePiece.getColor(),
                 actionType,
                 sourcePiece.getType(),
