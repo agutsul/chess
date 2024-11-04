@@ -5,20 +5,23 @@ import com.agutsul.chess.exception.IllegalPositionException;
 final class PositionImpl
         implements Position {
 
+    private static final String INVALID_POSITION_MESSAGE = "Invalid position";
+
     private final int x;
     private final int y;
+    private final String code;
 
     PositionImpl(int x, int y) {
-        if (x < MIN || x >= MAX) {
-            throw new IllegalPositionException("Invalid position x: " + x);
-        }
-
-        if (y < MIN || y >= MAX) {
-            throw new IllegalPositionException("Invalid position y: " + y);
+        var code = Position.codeOf(x,y);
+        if (code == null) {
+            throw new IllegalPositionException(
+                    String.format("%s [%d,%d]", INVALID_POSITION_MESSAGE, x, y)
+            );
         }
 
         this.x = x;
         this.y = y;
+        this.code = code;
     }
 
     @Override
@@ -32,7 +35,7 @@ final class PositionImpl
     }
 
     public String getCode() {
-        return Position.codeOf(x, y);
+        return code;
     }
 
     @Override
