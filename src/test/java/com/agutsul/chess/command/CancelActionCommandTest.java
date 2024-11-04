@@ -50,7 +50,7 @@ public class CancelActionCommandTest {
             .thenReturn(true);
 
         var journal = new JournalImpl<Memento>();
-        journal.add(new ActionMementoMock<String, String>(
+        journal.add(new ActionMementoMock<>(
                 Colors.BLACK,
                 Action.Type.MOVE,
                 Piece.Type.PAWN,
@@ -90,7 +90,7 @@ public class CancelActionCommandTest {
         assertFalse(board.isEmpty(targetPosition));
 
         var journal = new JournalImpl<Memento>();
-        journal.add(new ActionMementoMock<String, String>(
+        journal.add(new ActionMementoMock<>(
                 Colors.WHITE,
                 Action.Type.MOVE,
                 Piece.Type.PAWN,
@@ -135,7 +135,7 @@ public class CancelActionCommandTest {
         assertFalse(board.isEmpty(targetPosition));
 
         var journal = new JournalImpl<Memento>();
-        journal.add(new ActionMementoMock<String, String>(
+        journal.add(new ActionMementoMock<>(
                 Colors.WHITE,
                 Action.Type.MOVE,
                 Piece.Type.PAWN,

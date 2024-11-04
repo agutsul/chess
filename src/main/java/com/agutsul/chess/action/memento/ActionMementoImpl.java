@@ -4,7 +4,7 @@ import com.agutsul.chess.action.Action;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
-final class ActionMementoImpl<SOURCE,TARGET>
+public class ActionMementoImpl<SOURCE,TARGET>
         implements ActionMemento<SOURCE,TARGET> {
 
     private final Color color;
@@ -13,12 +13,11 @@ final class ActionMementoImpl<SOURCE,TARGET>
     private final SOURCE source;
     private final TARGET target;
 
-    public ActionMementoImpl(Color color,
-                             Action.Type actionType,
-                             Piece.Type pieceType,
-                             SOURCE source,
-                             TARGET target) {
-
+    protected ActionMementoImpl(Color color,
+                                Action.Type actionType,
+                                Piece.Type pieceType,
+                                SOURCE source,
+                                TARGET target) {
         this.color = color;
         this.actionType = actionType;
         this.pieceType = pieceType;

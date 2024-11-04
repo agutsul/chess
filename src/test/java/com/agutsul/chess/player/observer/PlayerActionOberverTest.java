@@ -163,6 +163,6 @@ public class PlayerActionOberverTest {
     }
 
     private static ActionMemento<String,String> mockActionMemento(Color color) {
-        return new ActionMementoMock<String,String>(color, Action.Type.MOVE, Piece.Type.PAWN, "src", "trg");
+        return new ActionMementoMock<>(color, Action.Type.MOVE, Piece.Type.PAWN, "src", "trg");
     }
 }
