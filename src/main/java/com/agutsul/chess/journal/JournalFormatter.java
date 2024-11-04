@@ -11,10 +11,10 @@ class JournalFormatter {
         var builder = new StringBuilder();
         for (int i = 0, j = 1; i < journal.size(); i+=2, j++) {
             builder.append(j).append(".");
-            builder.append(format((ActionMemento<?,?>) journal.get(i)));
+            builder.append(format(journal.get(i)));
 
             if (i + 1 < journal.size()) {
-                builder.append(format((ActionMemento<?,?>) journal.get(i + 1)));
+                builder.append(format(journal.get(i + 1)));
             }
 
             builder.append(lineSeparator());
@@ -23,7 +23,8 @@ class JournalFormatter {
         return builder.toString();
     }
 
-    private static String format(ActionMemento<?,?> memento) {
-        return String.format("\t%s", AlgebraicActionFormatter.format(memento));
+    private static String format(Memento memento) {
+        return String.format("\t%s",
+                AlgebraicActionFormatter.format((ActionMemento<?,?>) memento));
     }
 }
