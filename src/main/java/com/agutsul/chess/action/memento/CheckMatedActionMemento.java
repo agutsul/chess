@@ -1,9 +1,22 @@
 package com.agutsul.chess.action.memento;
 
-public class CheckMatedActionMemento<SOURCE,TARGET>
-        extends ActionMementoProxy<SOURCE, TARGET> {
+import com.agutsul.chess.piece.Checkable;
 
-    public CheckMatedActionMemento(ActionMemento<SOURCE, TARGET> origin) {
+public class CheckMatedActionMemento<SOURCE,TARGET>
+        extends ActionMementoProxy<SOURCE,TARGET>
+        implements Checkable {
+
+    public CheckMatedActionMemento(ActionMemento<SOURCE,TARGET> origin) {
         super(origin);
+    }
+
+    @Override
+    public boolean isChecked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCheckMated() {
+        return true;
     }
 }

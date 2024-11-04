@@ -128,8 +128,8 @@ public enum ActionMementoFactory {
     }
 
     static ActionMemento<String,String> createMemento(Action.Type actionType,
-                                                              Piece<?> sourcePiece,
-                                                              Position targetPosition) {
+                                                      Piece<?> sourcePiece,
+                                                      Position targetPosition) {
         return new ActionMementoImpl<>(
                 sourcePiece.getColor(),
                 actionType,
