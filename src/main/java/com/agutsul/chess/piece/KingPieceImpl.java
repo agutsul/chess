@@ -2,6 +2,8 @@ package com.agutsul.chess.piece;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.time.Instant;
+
 import org.slf4j.Logger;
 
 import com.agutsul.chess.board.Board;
@@ -46,6 +48,8 @@ final class KingPieceImpl<COLOR extends Color>
         return evaluator.evaluate(this);
     }
 
+    // prevent prohibited operations
+
     @Override
     public void dispose() {
         throw new UnsupportedOperationException("Unable to dispose KING piece");
@@ -54,5 +58,15 @@ final class KingPieceImpl<COLOR extends Color>
     @Override
     public void restore() {
         throw new UnsupportedOperationException("Unable to restore KING piece");
+    }
+
+    @Override
+    public Instant getCapturedAt() {
+        throw new UnsupportedOperationException("Unable to get captured timestamp for a KING piece");
+    }
+
+    @Override
+    public void setCapturedAt(Instant instant) {
+        throw new UnsupportedOperationException("Unable set captured timestamp for a KING piece");
     }
 }

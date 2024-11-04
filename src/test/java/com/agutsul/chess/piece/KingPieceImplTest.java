@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -321,5 +322,33 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 () -> ((AbstractPiece<Color>) king).dispose()
         );
         assertEquals(thrown.getMessage(), "Unable to dispose KING piece");
+    }
+
+    @Test
+    void testKingGetCapturedAtThrowsException() {
+        var board = new BoardBuilder()
+                .withWhiteKing("e1")
+                .build();
+
+        var king = board.getPiece("e1").get();
+        var thrown = assertThrows(
+                UnsupportedOperationException.class,
+                () -> ((Captured) king).getCapturedAt()
+        );
+        assertEquals(thrown.getMessage(), "Unable to get captured timestamp for a KING piece");
+    }
+
+    @Test
+    void testKingSetCapturedAtThrowsException() {
+        var board = new BoardBuilder()
+                .withWhiteKing("e1")
+                .build();
+
+        var king = board.getPiece("e1").get();
+        var thrown = assertThrows(
+                UnsupportedOperationException.class,
+                () -> ((Captured) king).setCapturedAt(Instant.now())
+        );
+        assertEquals(thrown.getMessage(), "Unable set captured timestamp for a KING piece");
     }
 }
