@@ -16,13 +16,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceMoveAction;
+import com.agutsul.chess.action.memento.ActionMementoMock;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.AbstractGame;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.journal.Memento;
-import com.agutsul.chess.mock.ActionMementoMock;
 import com.agutsul.chess.piece.Piece;
 
 @ExtendWith(MockitoExtension.class)

@@ -1,7 +1,6 @@
-package com.agutsul.chess.mock;
+package com.agutsul.chess.action.memento;
 
 import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.memento.ActionMementoImpl;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
