@@ -15,7 +15,9 @@ import com.agutsul.chess.action.CancelMoveAction;
 import com.agutsul.chess.action.CancelPromoteAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.PawnPiece;
+import com.agutsul.chess.piece.RookPiece;
 
 public enum CancelActionMementoFactory {
     MOVE_MODE(Action.Type.MOVE) {
@@ -49,6 +51,9 @@ public enum CancelActionMementoFactory {
     },
     PROMOTE_MODE(Action.Type.PROMOTE) {
 
+        private static final String UNSUPPORTED_ACTION_MESSAGE =
+                "Unsupported promotion action";
+
         @Override
         @SuppressWarnings({ "unchecked", "rawtypes" })
         Action<?> createAction(Board board, ActionMemento<?,?> memento) {
@@ -65,8 +70,8 @@ public enum CancelActionMementoFactory {
                 return new CancelPromoteAction((CancelCaptureAction<?,?,?,?>) originAction);
             }
 
-            throw new IllegalActionException(String.format(
-                    "Unsupported promotion action: %s",
+            throw new IllegalActionException(String.format("%s: %s",
+                    UNSUPPORTED_ACTION_MESSAGE,
                     originMemento.getActionType()
             ));
         }
@@ -86,17 +91,21 @@ public enum CancelActionMementoFactory {
             var rookPiece = board.getPiece(rookMemento.getTarget());
             var rookTargetPosition = board.getPosition(rookMemento.getSource());
 
-            return new CancelCastlingAction(
-                    castlingMemento.getCode(),
-                    new UncastlingMoveAction(kingPiece.get(), kingTargetPosition.get()),
-                    new UncastlingMoveAction(rookPiece.get(), rookTargetPosition.get())
+            var kingMove = new UncastlingMoveAction<>(
+                    (KingPiece<?>) kingPiece.get(),
+                    kingTargetPosition.get()
             );
+            var rookMove = new UncastlingMoveAction<>(
+                    (RookPiece<?>) rookPiece.get(),
+                    rookTargetPosition.get()
+            );
+
+            return new CancelCastlingAction(castlingMemento.getCode(), kingMove, rookMove);
         }
     },
     EN_PASSANT_MODE(Action.Type.EN_PASSANT) {
 
         @Override
-        @SuppressWarnings({ "unchecked", "rawtypes" })
         Action<?> createAction(Board board, ActionMemento<?,?> memento) {
             var actionMemento = (EnPassantActionMemento) memento;
             var captureMemento = actionMemento.getSource();
@@ -107,7 +116,7 @@ public enum CancelActionMementoFactory {
                     actionMemento.getColor().invert()
             );
 
-            return new CancelEnPassantAction(
+            return new CancelEnPassantAction<>(
                     (PawnPiece<?>) predator.get(),
                     (PawnPiece<?>) victim.get()
             );
