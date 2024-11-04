@@ -20,7 +20,7 @@ public class CancelPromoteAction<COLOR1 extends Color,
         super(action);
     }
 
-    public <COLOR2 extends Color, PIECE2 extends Piece<COLOR2> & Capturable>
+    public <COLOR2 extends Color, PIECE2 extends Piece<COLOR2>>
             CancelPromoteAction(CancelCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2> action) {
         super(action);
     }
@@ -33,7 +33,7 @@ public class CancelPromoteAction<COLOR1 extends Color,
         LOGGER.info("Cancel promote by '{}'", piece);
 
         // cancel promotion back to pawn
-        ((Demotable) piece).demote();
+        piece.demote();
 
         // cancel origin action
         if (Action.Type.MOVE.equals(action.getType())

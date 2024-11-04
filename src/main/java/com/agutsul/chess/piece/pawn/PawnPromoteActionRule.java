@@ -7,7 +7,6 @@ import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.PromotePieceAlgo;
@@ -23,7 +22,7 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
 
     private final PromoteActionRule<COLOR1, PAWN, PiecePromoteAction<COLOR1, PAWN>> promoteActionRuleAdapter;
 
-    <COLOR2 extends Color, PIECE extends Piece<COLOR2> & Capturable> PawnPromoteActionRule(
+    <COLOR2 extends Color, PIECE extends Piece<COLOR2>> PawnPromoteActionRule(
                                  Board board,
                                  PromotePieceAlgo<COLOR1, PAWN, Position> algo,
                                  MoveActionRule<COLOR1, PAWN, PieceMoveAction<COLOR1, PAWN>> rule) {
@@ -32,7 +31,7 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
                 new PawnPromoteMoveActionRule<COLOR1, COLOR2, PAWN, PIECE>(board, algo, rule);
     }
 
-    <COLOR2 extends Color, PIECE extends Piece<COLOR2> & Capturable> PawnPromoteActionRule(
+    <COLOR2 extends Color, PIECE extends Piece<COLOR2>> PawnPromoteActionRule(
                                  Board board,
                                  PromotePieceAlgo<COLOR1, PAWN, Position> algo,
                                  CaptureActionRule<COLOR1, COLOR2, PAWN, PIECE,
@@ -52,7 +51,7 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
     private static final class PawnPromoteCaptureActionRule<COLOR1 extends Color,
                                                             COLOR2 extends Color,
                                                             PAWN extends PawnPiece<COLOR1>,
-                                                            PIECE extends Piece<COLOR2> & Capturable>
+                                                            PIECE extends Piece<COLOR2>>
             extends AbstractPromoteActionRule<COLOR1,
                                               COLOR2,
                                               PAWN,
@@ -78,7 +77,7 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
     private static final class PawnPromoteMoveActionRule<COLOR1 extends Color,
                                                          COLOR2 extends Color,
                                                          PAWN extends PawnPiece<COLOR1>,
-                                                         PIECE extends Piece<COLOR2> & Capturable>
+                                                         PIECE extends Piece<COLOR2>>
             extends AbstractPromoteActionRule<COLOR1,
                                               COLOR2,
                                               PAWN,

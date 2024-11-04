@@ -11,7 +11,7 @@ import com.agutsul.chess.piece.Piece;
 public class CancelCaptureAction<COLOR1 extends Color,
                                  COLOR2 extends Color,
                                  PIECE1 extends Piece<COLOR1> & Capturable,
-                                 PIECE2 extends Piece<COLOR2> & Capturable>
+                                 PIECE2 extends Piece<COLOR2>>
         extends AbstractCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2> {
 
     private static final Logger LOGGER = getLogger(CancelCaptureAction.class);

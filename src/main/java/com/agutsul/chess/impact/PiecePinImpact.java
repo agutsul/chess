@@ -11,7 +11,7 @@ public class PiecePinImpact<COLOR1 extends Color,
                             PIECE extends Piece<COLOR1>,
                             KING extends KingPiece<COLOR1>,
                             ATTACKER extends Piece<COLOR2> & Capturable>
-        extends AbstractTargetImpact<PIECE, AbstractTargetImpact<ATTACKER, KING>>{
+        extends AbstractTargetImpact<PIECE, AbstractTargetImpact<ATTACKER, KING>> {
 
     public PiecePinImpact(PIECE piece, KING king, ATTACKER attacker) {
         super(Type.PIN, piece, new PieceCheckImpact<>(attacker, king));

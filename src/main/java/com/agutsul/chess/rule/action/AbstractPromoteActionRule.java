@@ -9,7 +9,6 @@ import com.agutsul.chess.action.AbstractTargetAction;
 import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.PromotePieceAlgo;
@@ -20,7 +19,7 @@ import com.agutsul.chess.rule.Rule;
 public abstract class AbstractPromoteActionRule<COLOR1 extends Color,
                                                 COLOR2 extends Color,
                                                 PAWN extends PawnPiece<COLOR1>,
-                                                PIECE extends Piece<COLOR2> & Capturable,
+                                                PIECE extends Piece<COLOR2>,
                                                 ACTION extends PiecePromoteAction<COLOR1, PAWN>,
                                                 SOURCE_ACTION extends AbstractTargetAction<PAWN, ?>>
         extends AbstractRule<PAWN, ACTION>

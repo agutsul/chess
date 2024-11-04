@@ -8,7 +8,6 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
-import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
@@ -32,9 +31,9 @@ public class PiecePromoteAction<COLOR1 extends Color,
         this.observable = observable;
     }
 
-    public <COLOR2 extends Color, PIECE2 extends Piece<COLOR2> & Capturable>
-            PiecePromoteAction(PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2> action,
-                               Observable observable) {
+    public <COLOR2 extends Color, PIECE2 extends Piece<COLOR2>> PiecePromoteAction(
+                              PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2> action,
+                              Observable observable) {
         super(action);
         this.observable = observable;
     }

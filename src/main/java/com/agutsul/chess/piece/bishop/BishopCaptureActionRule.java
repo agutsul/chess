@@ -4,7 +4,6 @@ import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.BishopPiece;
-import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Line;
@@ -13,7 +12,7 @@ import com.agutsul.chess.rule.action.AbstractCaptureLineActionRule;
 class BishopCaptureActionRule<COLOR1 extends Color,
                               COLOR2 extends Color,
                               BISHOP extends BishopPiece<COLOR1>,
-                              PIECE extends Piece<COLOR2> & Capturable>
+                              PIECE extends Piece<COLOR2>>
         extends AbstractCaptureLineActionRule<COLOR1, COLOR2, BISHOP, PIECE,
                                               PieceCaptureAction<COLOR1, COLOR2, BISHOP, PIECE>> {
 
