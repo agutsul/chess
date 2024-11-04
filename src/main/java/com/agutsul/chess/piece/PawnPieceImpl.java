@@ -121,7 +121,7 @@ final class PawnPieceImpl<COLOR extends Color>
             }
 
             // save captured timestamp
-            targetPiece.setCapturedAt(Instant.now());
+            ((Captured) targetPiece).setCapturedAt(Instant.now());
 
             // remove target pawn from board
             targetPiece.dispose();
