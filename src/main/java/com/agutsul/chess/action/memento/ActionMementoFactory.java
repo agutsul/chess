@@ -127,7 +127,7 @@ public enum ActionMementoFactory {
         return MODES.get(action.getType()).createMemento(action);
     }
 
-    private static ActionMemento<String,String> createMemento(Action.Type actionType,
+    static ActionMemento<String,String> createMemento(Action.Type actionType,
                                                               Piece<?> sourcePiece,
                                                               Position targetPosition) {
         return new ActionMementoImpl<>(
