@@ -1,6 +1,6 @@
 package com.agutsul.chess.position;
 
-import static java.util.stream.Collectors.joining;
+import static org.apache.commons.lang3.StringUtils.join;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +23,7 @@ public class Line
 
     @Override
     public String toString() {
-        return this.stream()
-                .map(String::valueOf)
-                .collect(joining(COMMA_SEPARATOR));
+        return join(this, COMMA_SEPARATOR);
     }
 
     private static List<Position> getPositions(Line line1, Line line2) {

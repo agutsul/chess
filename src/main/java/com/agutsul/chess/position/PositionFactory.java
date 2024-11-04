@@ -6,7 +6,7 @@ import java.util.Map;
 public enum PositionFactory {
     INSTANCE;
 
-    private Map<String, Position> positions = new HashMap<>();
+    private Map<String, Position> positions = new HashMap<>(Position.MAX * Position.MAX);
 
     PositionFactory() {
         for (int x = Position.MIN; x < Position.MAX; x++) {
