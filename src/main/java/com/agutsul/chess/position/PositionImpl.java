@@ -32,7 +32,7 @@ final class PositionImpl
     }
 
     public String getCode() {
-        return String.format("%s%d", LABELS[x], y + 1);
+        return Position.codeOf(x, y);
     }
 
     @Override

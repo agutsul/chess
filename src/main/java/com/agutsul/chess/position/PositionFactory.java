@@ -22,9 +22,7 @@ public enum PositionFactory {
     }
 
     public Position createPosition(int x, int y) {
-        return positions.values().stream()
-                .filter(position -> position.x() == x && position.y() == y)
-                .findFirst()
-                .orElse(null);
+        var code = Position.codeOf(x, y);
+        return code != null ? createPosition(code) : null;
     }
 }

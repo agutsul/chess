@@ -10,4 +10,12 @@ public interface Position
 
     int x();
     int y();
+
+    static String codeOf(int x, int y) {
+        if (x < MIN || y < MIN || x >= MAX || y >= MAX) {
+            return null;
+        }
+
+        return String.format("%s%d", LABELS[x], y + 1);
+    }
 }
