@@ -1,21 +1,20 @@
 package com.agutsul.chess.action.memento;
 
 import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.Action.Type;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
-public final class EnPassantActionMemento
+final class EnPassantActionMemento
         implements ActionMemento<ActionMemento<String,String>,String> {
 
     private final Action.Type actionType;
     private final ActionMemento<String,String> origin;
     private final Position position;
 
-    public EnPassantActionMemento(Action.Type actionType,
-                                  ActionMemento<String,String> origin,
-                                  Position position) {
+    EnPassantActionMemento(Action.Type actionType,
+                           ActionMemento<String,String> origin,
+                           Position position) {
         this.actionType = actionType;
         this.origin = origin;
         this.position = position;
@@ -27,7 +26,7 @@ public final class EnPassantActionMemento
     }
 
     @Override
-    public Type getActionType() {
+    public Action.Type getActionType() {
         return actionType;
     }
 
@@ -48,6 +47,6 @@ public final class EnPassantActionMemento
 
     @Override
     public String toString() {
-        return String.format("%s(%s %s)", actionType, getSource(), getTarget());
+        return String.format("%s(%s %s)", getActionType(), getSource(), getTarget());
     }
 }

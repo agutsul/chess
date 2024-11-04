@@ -4,16 +4,16 @@ import com.agutsul.chess.action.Action;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
-public final class PromoteActionMemento
+final class PromoteActionMemento
         implements ActionMemento<String, ActionMemento<String,String>> {
 
     private final Action.Type actionType;
     private final Piece.Type pieceType;
     private final ActionMemento<String,String> origin;
 
-    public PromoteActionMemento(Action.Type actionType,
-                                Piece.Type pieceType,
-                                ActionMemento<String, String> origin) {
+    PromoteActionMemento(Action.Type actionType,
+                         Piece.Type pieceType,
+                         ActionMemento<String, String> origin) {
         this.actionType = actionType;
         this.pieceType = pieceType;
         this.origin = origin;
@@ -46,6 +46,7 @@ public final class PromoteActionMemento
 
     @Override
     public String toString() {
-        return String.format("%s(%s %s)", actionType, getTarget(), pieceType.name());
+        return String.format("%s(%s %s)",
+                getActionType(), getTarget(), pieceType.name());
     }
 }

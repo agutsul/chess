@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.memento.ActionMemento;
-import com.agutsul.chess.action.memento.CastlingActionMemento;
 import com.agutsul.chess.piece.Checkable;
 import com.agutsul.chess.piece.Piece;
 
@@ -23,7 +22,7 @@ public enum AlgebraicActionFormatter {
     CASTLING_MODE(Action.Type.CASTLING) {
         @Override
         String toString(ActionMemento<?,?> memento) {
-            return ((CastlingActionMemento) memento).getCode();
+            return memento.getCode();
         }
     },
     CAPTURE_MODE(Action.Type.CAPTURE) {

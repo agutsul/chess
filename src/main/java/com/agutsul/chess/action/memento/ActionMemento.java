@@ -8,6 +8,11 @@ import com.agutsul.chess.piece.Piece;
 public interface ActionMemento<SOURCE,TARGET>
         extends Memento {
 
+    // template method
+    default String getCode() {
+        return null;
+    }
+
     Color getColor();
     Action.Type getActionType();
     Piece.Type getPieceType();

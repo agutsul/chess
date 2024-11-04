@@ -1,11 +1,10 @@
 package com.agutsul.chess.action.memento;
 
 import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.Action.Type;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
-public final class CastlingActionMemento
+final class CastlingActionMemento
         implements ActionMemento<ActionMemento<String,String>,ActionMemento<String,String>> {
 
     private final String code;
@@ -13,16 +12,17 @@ public final class CastlingActionMemento
     private final ActionMemento<String,String> kingMemento;
     private final ActionMemento<String,String> rookMemento;
 
-    public CastlingActionMemento(String code,
-                                 Action.Type actionType,
-                                 ActionMemento<String,String> kingMemento,
-                                 ActionMemento<String,String> rookMemento) {
+    CastlingActionMemento(String code,
+                          Action.Type actionType,
+                          ActionMemento<String,String> kingMemento,
+                          ActionMemento<String,String> rookMemento) {
         this.code = code;
         this.actionType = actionType;
         this.kingMemento = kingMemento;
         this.rookMemento = rookMemento;
     }
 
+    @Override
     public String getCode() {
         return code;
     }
@@ -33,7 +33,7 @@ public final class CastlingActionMemento
     }
 
     @Override
-    public Type getActionType() {
+    public Action.Type getActionType() {
         return actionType;
     }
 
@@ -54,6 +54,6 @@ public final class CastlingActionMemento
 
     @Override
     public String toString() {
-        return String.format("%s(%s %s)", actionType, getSource(), getTarget());
+        return String.format("%s(%s %s)", getActionType(), getSource(), getTarget());
     }
 }
