@@ -11,18 +11,24 @@ public abstract class AbstractBoard
 
     @Override
     public final Optional<Position> getPosition(String code) {
-        var position = PositionFactory.INSTANCE.createPosition(code);
-        return Optional.ofNullable(position);
+        return Optional.ofNullable(positionOf(code));
     }
 
     @Override
     public final Optional<Position> getPosition(int x, int y) {
-        var position = PositionFactory.INSTANCE.createPosition(x, y);
-        return Optional.ofNullable(position);
+        return Optional.ofNullable(positionOf(x, y));
     }
 
     @Override
     public String toString() {
         return BoardFormatter.format(this);
+    }
+
+    static Position positionOf(int x, int y) {
+        return PositionFactory.INSTANCE.createPosition(x, y);
+    }
+
+    static Position positionOf(String code) {
+        return PositionFactory.INSTANCE.createPosition(code);
     }
 }

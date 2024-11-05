@@ -18,7 +18,6 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.Piece.Type;
 import com.agutsul.chess.piece.PieceFactory;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.position.PositionFactory;
 
 /*
  * Should be used when board with all pieces is needed
@@ -184,7 +183,6 @@ public final class StandardBoard
 
     private static Collection<Piece<Color>> createAllPieces(PieceFactory whitePieceFactory,
                                                             PieceFactory blackPieceFactory) {
-
         var pieces = new ArrayList<Piece<Color>>();
 
         pieces.addAll(createPieces(whitePieceFactory, Position.MIN + 1, Position.MIN));
@@ -201,23 +199,19 @@ public final class StandardBoard
 
         // create pawns
         for (int x = Position.MIN; x < Position.MAX; x++) {
-            pieces.add(pieceFactory.createPawn(createPosition(x, pawnY)));
+            pieces.add(pieceFactory.createPawn(positionOf(x, pawnY)));
         }
 
         // create other pieces
-        pieces.add(pieceFactory.createRook(createPosition(Position.MIN, pieceY)));
-        pieces.add(pieceFactory.createKnight(createPosition(Position.MIN + 1, pieceY)));
-        pieces.add(pieceFactory.createBishop(createPosition(Position.MIN + 2, pieceY)));
-        pieces.add(pieceFactory.createQueen(createPosition(Position.MIN + 3, pieceY)));
-        pieces.add(pieceFactory.createKing(createPosition(Position.MAX - 4, pieceY)));
-        pieces.add(pieceFactory.createBishop(createPosition(Position.MAX - 3, pieceY)));
-        pieces.add(pieceFactory.createKnight(createPosition(Position.MAX - 2, pieceY)));
-        pieces.add(pieceFactory.createRook(createPosition(Position.MAX - 1, pieceY)));
+        pieces.add(pieceFactory.createRook(positionOf(Position.MIN, pieceY)));
+        pieces.add(pieceFactory.createKnight(positionOf(Position.MIN + 1, pieceY)));
+        pieces.add(pieceFactory.createBishop(positionOf(Position.MIN + 2, pieceY)));
+        pieces.add(pieceFactory.createQueen(positionOf(Position.MIN + 3, pieceY)));
+        pieces.add(pieceFactory.createKing(positionOf(Position.MAX - 4, pieceY)));
+        pieces.add(pieceFactory.createBishop(positionOf(Position.MAX - 3, pieceY)));
+        pieces.add(pieceFactory.createKnight(positionOf(Position.MAX - 2, pieceY)));
+        pieces.add(pieceFactory.createRook(positionOf(Position.MAX - 1, pieceY)));
 
         return unmodifiableList(pieces);
-    }
-
-    private static Position createPosition(int x, int y) {
-        return PositionFactory.INSTANCE.createPosition(x, y);
     }
 }
