@@ -5,12 +5,10 @@ import static java.util.Collections.unmodifiableList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
@@ -197,19 +195,19 @@ public final class StandardBoard
     private static Collection<Piece<Color>> createAllPieces(PieceFactory whitePieceFactory,
                                                             PieceFactory blackPieceFactory) {
 
-        var whitePieces = createPieces(whitePieceFactory, Position.MIN + 1, Position.MIN);
-        var blackPieces = createPieces(blackPieceFactory, Position.MAX - 2, Position.MAX - 1);
+        var pieces = new ArrayList<Piece<Color>>();
 
-        return Stream.of(whitePieces, blackPieces)
-                .flatMap(Collection::stream)
-                .toList();
+        pieces.addAll(createPieces(whitePieceFactory, Position.MIN + 1, Position.MIN));
+        pieces.addAll(createPieces(blackPieceFactory, Position.MAX - 2, Position.MAX - 1));
+
+        return unmodifiableList(pieces);
     }
 
     private static Collection<Piece<Color>> createPieces(PieceFactory pieceFactory,
                                                          int pawnY,
                                                          int pieceY) {
 
-        var pieces = new ArrayList<Piece<Color>>(Position.MAX * Colors.values().length);
+        var pieces = new ArrayList<Piece<Color>>(Position.MAX * 2);
 
         // create pawns
         for (int x = Position.MIN; x < Position.MAX; x++) {
