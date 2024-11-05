@@ -199,30 +199,11 @@ public abstract class AbstractGame
 
         @Override
         public void observe(Event event) {
-            if (event instanceof ActionPerformedEvent) {
-                process((ActionPerformedEvent) event);
-            } else if (event instanceof ActionCancelledEvent) {
+            if (event instanceof ActionCancelledEvent) {
                 process((ActionCancelledEvent) event);
+            } else if (event instanceof ActionPerformedEvent) {
+                process((ActionPerformedEvent) event);
             }
-        }
-
-        private void process(ActionPerformedEvent event) {
-            // redirect event to clear cached piece actions/impacts
-            board.notifyObservers(event);
-
-            var nextBoardState = evaluateBoardState(getOpponentPlayer());
-
-            ActionMemento<?,?> memento = null;
-            if (CHECK_MATED.equals(nextBoardState.getType())) {
-                memento = new CheckMatedActionMemento<>(event.getActionMemento());
-            } else if (CHECKED.equals(nextBoardState.getType())) {
-                memento = new CheckedActionMemento<>(event.getActionMemento());
-            } else {
-                memento = event.getActionMemento();
-            }
-
-            // log action in history to display it later on UI or fully restore game state
-            journal.add(memento);
         }
 
         private void process(ActionCancelledEvent event) {
@@ -234,6 +215,26 @@ public abstract class AbstractGame
             currentPlayer = previous();
             // recalculate board state
             board.setState(evaluateBoardState(currentPlayer));
+        }
+
+        private void process(ActionPerformedEvent event) {
+            // redirect event to clear cached piece actions/impacts
+            board.notifyObservers(event);
+            // log action in history to display it later on UI or fully restore game state
+            journal.add(configureMemento(event.getActionMemento()));
+        }
+
+        private ActionMemento<?,?> configureMemento(ActionMemento<?,?> memento) {
+            var nextBoardState = evaluateBoardState(getOpponentPlayer());
+            if (CHECK_MATED.equals(nextBoardState.getType())) {
+                return new CheckMatedActionMemento<>(memento);
+            }
+
+            if (CHECKED.equals(nextBoardState.getType())) {
+                return new CheckedActionMemento<>(memento);
+            }
+
+            return memento;
         }
     }
 }
