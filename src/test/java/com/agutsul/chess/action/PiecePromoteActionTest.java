@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.mock.PieceTypeRequestObserverMock;
 
 @ExtendWith(MockitoExtension.class)
@@ -20,7 +21,7 @@ public class PiecePromoteActionTest {
                 .withWhitePawn("a7")
                 .build();
 
-        board.addObserver(new PieceTypeRequestObserverMock());
+        ((Observable) board).addObserver(new PieceTypeRequestObserverMock());
 
         var pawn = board.getPiece("a7").get();
         var pawnSourcePosition = pawn.getPosition();
@@ -52,7 +53,7 @@ public class PiecePromoteActionTest {
                 .withWhiteRook("b1")
                 .build();
 
-        board.addObserver(new PieceTypeRequestObserverMock());
+        ((Observable) board).addObserver(new PieceTypeRequestObserverMock());
 
         var pawn = board.getPiece("a2").get();
         var pawnSourcePosition = pawn.getPosition();

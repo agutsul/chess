@@ -28,7 +28,7 @@ import com.agutsul.chess.action.event.ActionCancelledEvent;
 import com.agutsul.chess.action.event.ActionCancellingEvent;
 import com.agutsul.chess.action.event.ActionExecutionEvent;
 import com.agutsul.chess.action.event.ActionPerformedEvent;
-import com.agutsul.chess.board.Board;
+import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.state.CheckMatedBoardState;
 import com.agutsul.chess.color.Color;
@@ -49,8 +49,7 @@ public class GameTest {
 
     @Test
     void testPlayerAskedAction() {
-        var board = mock(Board.class);
-
+        var board = mock(AbstractBoard.class);
         when(board.isChecked(any()))
             .thenReturn(false);
         when(board.isStaleMated(any()))
@@ -68,7 +67,7 @@ public class GameTest {
 
     @Test
     void testGetWinner() {
-        var board = mock(Board.class);
+        var board = mock(AbstractBoard.class);
         when(board.getState())
             .thenReturn(new CheckMatedBoardState(board, Colors.WHITE));
 

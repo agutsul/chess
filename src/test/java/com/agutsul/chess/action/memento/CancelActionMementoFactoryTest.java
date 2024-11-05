@@ -22,6 +22,7 @@ import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.mock.PieceTypeRequestObserverMock;
 import com.agutsul.chess.piece.PawnPiece;
 
@@ -89,7 +90,7 @@ public class CancelActionMementoFactoryTest {
                 .withWhitePawn("e7")
                 .build();
 
-        board.addObserver(new PieceTypeRequestObserverMock());
+        ((Observable) board).addObserver(new PieceTypeRequestObserverMock());
 
         var targetPosition = board.getPosition("e8").get();
         var sourcePosition = board.getPosition("e7").get();
@@ -124,7 +125,7 @@ public class CancelActionMementoFactoryTest {
                 .withBlackRook("d8")
                 .build();
 
-        board.addObserver(new PieceTypeRequestObserverMock());
+        ((Observable) board).addObserver(new PieceTypeRequestObserverMock());
 
         var targetPosition = board.getPosition("d8").get();
         var sourcePosition = board.getPosition("e7").get();

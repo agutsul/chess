@@ -13,7 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.action.event.ActionCancelledEvent;
-import com.agutsul.chess.board.Board;
+import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Colors;
@@ -23,7 +23,7 @@ public class CachedBoardStateEvaluatorTest {
 
     @Test
     void testGetCachedBoardState() {
-        var board = mock(Board.class);
+        var board = mock(AbstractBoard.class);
         when(board.isChecked(any()))
             .thenReturn(true);
         when(board.isCheckMated(any()))

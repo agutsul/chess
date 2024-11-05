@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.event.AbstractProccessedActionEvent;
+import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
@@ -41,7 +42,7 @@ abstract class AbstractPiece<COLOR extends Color>
     private final String unicode;
     private final int value;
 
-    protected final Board board;
+    protected final AbstractBoard board;
 
     protected final AbstractPieceState<AbstractPiece<Color>> activeState;
     protected AbstractPieceState<AbstractPiece<Color>> currentState;
@@ -55,7 +56,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
         this.observer = new ActionEventObserver();
 
-        this.board = board;
+        this.board = (AbstractBoard) board;
         this.board.addObserver(this.observer);
 
         this.type = type;

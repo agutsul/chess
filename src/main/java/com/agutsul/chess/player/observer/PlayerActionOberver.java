@@ -89,6 +89,6 @@ public final class PlayerActionOberver
 
     private void requestPlayerAction(Board board, Player player) {
         // re-ask player about new action
-        board.notifyObservers(new RequestPlayerActionEvent(player));
+        ((Observable) board).notifyObservers(new RequestPlayerActionEvent(player));
     }
 }

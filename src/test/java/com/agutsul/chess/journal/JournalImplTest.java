@@ -28,9 +28,9 @@ import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.action.memento.ActionMementoFactory;
 import com.agutsul.chess.action.memento.CheckMatedActionMemento;
 import com.agutsul.chess.action.memento.CheckedActionMemento;
-import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.KnightPiece;
 import com.agutsul.chess.piece.PawnPiece;
@@ -142,7 +142,7 @@ public class JournalImplTest {
         var position = PositionFactory.INSTANCE.createPosition("e8");
         var action = new PiecePromoteAction<>(
                 new PieceMoveAction<>(pawn, position),
-                mock(Board.class)
+                mock(Observable.class)
         );
 
         var memento = spy(ActionMementoFactory.create(action));

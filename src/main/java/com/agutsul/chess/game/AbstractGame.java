@@ -66,7 +66,7 @@ public abstract class AbstractGame
 
         this.journal = new JournalImpl<>();
 
-        this.activeState = new ActivePlayerState(board);
+        this.activeState = new ActivePlayerState((Observable) board);
         this.lockedState = new LockedPlayerState();
 
         this.whitePlayer = initPlayer(whitePlayer, activeState);
@@ -208,7 +208,7 @@ public abstract class AbstractGame
 
         private void process(ActionCancelledEvent event) {
             // redirect event to clear cached data
-            board.notifyObservers(event);
+            ((Observable) board).notifyObservers(event);
             // remove last item from journal
             journal.remove(journal.size() - 1);
             // switch players
@@ -219,7 +219,7 @@ public abstract class AbstractGame
 
         private void process(ActionPerformedEvent event) {
             // redirect event to clear cached data
-            board.notifyObservers(event);
+            ((Observable) board).notifyObservers(event);
             // log action in history to display it later on UI or fully restore game state
             journal.add(configureMemento(event.getActionMemento()));
         }

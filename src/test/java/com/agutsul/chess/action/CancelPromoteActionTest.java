@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.mock.PieceTypeRequestObserverMock;
 import com.agutsul.chess.piece.Piece;
 
@@ -22,7 +23,7 @@ public class CancelPromoteActionTest {
                 .withWhitePawn("a7")
                 .build();
 
-        board.addObserver(new PieceTypeRequestObserverMock());
+        ((Observable) board).addObserver(new PieceTypeRequestObserverMock());
 
         var pawn = board.getPiece("a7").get();
         var pawnSourcePosition = pawn.getPosition();

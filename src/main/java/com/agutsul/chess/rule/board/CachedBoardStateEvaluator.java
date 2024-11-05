@@ -8,6 +8,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
+import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
 
 public final class CachedBoardStateEvaluator
@@ -19,7 +20,7 @@ public final class CachedBoardStateEvaluator
 
     public CachedBoardStateEvaluator(Board board) {
         this.evaluator = new BoardStateEvaluatorImpl(board);
-        board.addObserver(new BoardStateObserver());
+        ((Observable) board).addObserver(new BoardStateObserver());
     }
 
     @Override

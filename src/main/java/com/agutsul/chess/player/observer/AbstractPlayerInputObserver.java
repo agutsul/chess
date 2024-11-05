@@ -122,7 +122,8 @@ public abstract class AbstractPlayerInputObserver
             notifyExceptionEvent(new PlayerActionExceptionEvent(e.getMessage()));
 
             // re-ask player action
-            ((AbstractGame) this.game).getBoard().notifyObservers(event);
+            var board = ((AbstractGame) this.game).getBoard();
+            ((Observable) board).notifyObservers(event);
         }
     }
 

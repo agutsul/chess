@@ -1,7 +1,6 @@
 package com.agutsul.chess.board;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -14,7 +13,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -42,16 +40,14 @@ import com.agutsul.chess.piece.WhitePieceFactory;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.position.PositionFactory;
 
-final class BoardImpl implements Board {
+final class BoardImpl extends AbstractBoard {
 
     private static final Logger LOGGER = getLogger(BoardImpl.class);
 
-    private static final PositionFactory POSITION_FACTORY = PositionFactory.INSTANCE;
-
-    private final List<Observer> observers;
-
     private final PieceFactory whitePieceFactory;
     private final PieceFactory blackPieceFactory;
+
+    private final List<Observer> observers;
 
     private BoardState state;
     private Set<Piece<Color>> pieces;
@@ -92,11 +88,6 @@ final class BoardImpl implements Board {
         for (var observer : this.observers) {
             observer.observe(event);
         }
-    }
-
-    @Override
-    public String toString() {
-        return BoardFormatter.format(this);
     }
 
     @Override
@@ -282,13 +273,15 @@ final class BoardImpl implements Board {
     @Override
     public Optional<Position> getPosition(String code) {
         LOGGER.debug("Getting position by code '{}'", code);
-        return Optional.ofNullable(POSITION_FACTORY.createPosition(code));
+        var position = PositionFactory.INSTANCE.createPosition(code);
+        return Optional.ofNullable(position);
     }
 
     @Override
     public Optional<Position> getPosition(int x, int y) {
         LOGGER.debug("Getting position by coordinates '({},{})'", x, y);
-        return Optional.ofNullable(POSITION_FACTORY.createPosition(x, y));
+        var position = PositionFactory.INSTANCE.createPosition(x, y);
+        return Optional.ofNullable(position);
     }
 
     @Override
@@ -461,40 +454,7 @@ final class BoardImpl implements Board {
         return blackPieceFactory;
     }
 
-    Collection<Piece<Color>> createAllPieces() {
-        var whitePieces = createPieces(whitePieceFactory, Position.MIN + 1, Position.MIN);
-        var blackPieces = createPieces(blackPieceFactory, Position.MAX - 2, Position.MAX - 1);
-
-        return Stream.of(whitePieces, blackPieces)
-                .flatMap(Collection::stream)
-                .toList();
-    }
-
     // utility methods
-
-    private static Collection<Piece<Color>> createPieces(PieceFactory pieceFactory,
-                                                         int pawnY,
-                                                         int pieceY) {
-        var pieces = new ArrayList<Piece<Color>>(16);
-
-        // create pawns
-        for (int x = Position.MIN; x < Position.MAX; x++) {
-            pieces.add(pieceFactory.createPawn(POSITION_FACTORY.createPosition(x, pawnY)));
-        }
-
-        // create other pieces
-        pieces.add(pieceFactory.createRook(POSITION_FACTORY.createPosition(Position.MIN, pieceY)));
-        pieces.add(pieceFactory.createKnight(POSITION_FACTORY.createPosition(Position.MIN + 1, pieceY)));
-        pieces.add(pieceFactory.createBishop(POSITION_FACTORY.createPosition(Position.MIN + 2, pieceY)));
-        pieces.add(pieceFactory.createQueen(POSITION_FACTORY.createPosition(Position.MIN + 3, pieceY)));
-        pieces.add(pieceFactory.createKing(POSITION_FACTORY.createPosition(Position.MAX - 4, pieceY)));
-        pieces.add(pieceFactory.createBishop(POSITION_FACTORY.createPosition(Position.MAX - 3, pieceY)));
-        pieces.add(pieceFactory.createKnight(POSITION_FACTORY.createPosition(Position.MAX - 2, pieceY)));
-        pieces.add(pieceFactory.createRook(POSITION_FACTORY.createPosition(Position.MAX - 1, pieceY)));
-
-        return unmodifiableList(pieces);
-    }
-
     private static Collection<Action<?>> filterCheckActions(Collection<Action<?>> actions,
                                                             ActionFilter<?> filter,
                                                             KingPiece<Color> king) {

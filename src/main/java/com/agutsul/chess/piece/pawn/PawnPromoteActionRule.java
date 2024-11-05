@@ -7,6 +7,7 @@ import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.PromotePieceAlgo;
@@ -70,7 +71,7 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
         protected PiecePromoteAction<COLOR1, PAWN> createAction(
                                      PieceCaptureAction<COLOR1, COLOR2, PAWN, PIECE> sourceAction) {
 
-            return new PiecePromoteAction<COLOR1, PAWN>(sourceAction, board);
+            return new PiecePromoteAction<COLOR1, PAWN>(sourceAction, (Observable) board);
         }
     }
 
@@ -96,7 +97,7 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
         protected PiecePromoteAction<COLOR1, PAWN> createAction(
                                   PieceMoveAction<COLOR1, PAWN> sourceAction) {
 
-            return new PiecePromoteAction<COLOR1, PAWN>(sourceAction, board);
+            return new PiecePromoteAction<COLOR1, PAWN>(sourceAction, (Observable) board);
         }
     }
 }

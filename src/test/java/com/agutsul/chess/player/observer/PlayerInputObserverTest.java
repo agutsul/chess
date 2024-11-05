@@ -16,7 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.action.PiecePromoteAction;
-import com.agutsul.chess.board.Board;
+import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.exception.IllegalActionException;
@@ -83,7 +83,7 @@ public class PlayerInputObserverTest {
     void testObservePlayerActionEventInvalidAction() {
         var game = mock(AbstractGame.class);
         when(game.getBoard())
-            .thenReturn(mock(Board.class));
+            .thenReturn(mock(AbstractBoard.class));
 
         doAnswer(inv -> {
             var event = inv.getArgument(0, PlayerActionExceptionEvent.class);
@@ -106,7 +106,7 @@ public class PlayerInputObserverTest {
     void testObservePlayerActionEventUnknownAction() {
         var game = mock(AbstractGame.class);
         when(game.getBoard())
-            .thenReturn(mock(Board.class));
+            .thenReturn(mock(AbstractBoard.class));
 
         doAnswer(inv -> {
             var event = inv.getArgument(0, PlayerActionExceptionEvent.class);

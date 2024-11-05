@@ -22,6 +22,7 @@ import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.event.ActionCancelledEvent;
 import com.agutsul.chess.action.memento.ActionMemento;
 import com.agutsul.chess.action.memento.ActionMementoMock;
+import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -85,7 +86,7 @@ public class PlayerActionOberverTest {
 
     @Test
     void testPlayerActionEventException() {
-        var board = mock(Board.class);
+        var board = mock(AbstractBoard.class);
         when(board.getPiece(anyString()))
             .thenReturn(Optional.empty());
 
@@ -102,7 +103,7 @@ public class PlayerActionOberverTest {
 
     @Test
     void testPlayerCancelActionEventWithEmptyJournal() {
-        var board = mock(Board.class);
+        var board = mock(AbstractBoard.class);
 
         var game = mock(AbstractGame.class);
         when(game.hasPrevious())
@@ -124,7 +125,7 @@ public class PlayerActionOberverTest {
     @Test
     @SuppressWarnings("unchecked")
     void testPlayerCancelActionEvent() {
-        var board = mock(Board.class);
+        var board = mock(AbstractBoard.class);
 
         when(board.getPiece(anyString()))
             .thenReturn(Optional.of(mock(PawnPiece.class)));

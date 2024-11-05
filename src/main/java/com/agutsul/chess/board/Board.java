@@ -6,14 +6,12 @@ import java.util.Optional;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
-public interface Board
-        extends Observable {
+public interface Board {
 
     void setState(BoardState state);
     BoardState getState();
