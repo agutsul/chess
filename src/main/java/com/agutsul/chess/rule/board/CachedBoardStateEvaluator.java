@@ -10,10 +10,10 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
 
-public class CachedBoardStateEvaluator
+public final class CachedBoardStateEvaluator
         implements BoardStateEvaluator {
 
-    private final Map<Color, BoardState> boardStateCache = new HashMap<>();
+    private final Map<Color, BoardState> cache = new HashMap<>();
 
     private final BoardStateEvaluator evaluator;
 
@@ -23,13 +23,13 @@ public class CachedBoardStateEvaluator
     }
 
     @Override
-    public BoardState evaluate(Color playerColor) {
-        if (boardStateCache.containsKey(playerColor)) {
-            return boardStateCache.get(playerColor);
+    public BoardState evaluate(Color color) {
+        if (cache.containsKey(color)) {
+            return cache.get(color);
         }
 
-        var boardState = evaluator.evaluate(playerColor);
-        boardStateCache.put(playerColor, boardState);
+        var boardState = evaluator.evaluate(color);
+        cache.put(color, boardState);
 
         return boardState;
     }
@@ -42,7 +42,7 @@ public class CachedBoardStateEvaluator
             if (event instanceof AbstractProccessedActionEvent) {
                 // clear cached calculated board states
                 // to force its recalculation for the new board state
-                boardStateCache.clear();
+                cache.clear();
             }
         }
     }
