@@ -207,7 +207,7 @@ public abstract class AbstractGame
         }
 
         private void process(ActionCancelledEvent event) {
-            // redirect event to clear cached piece actions/impacts
+            // redirect event to clear cached data
             board.notifyObservers(event);
             // remove last item from journal
             journal.remove(journal.size() - 1);
@@ -218,7 +218,7 @@ public abstract class AbstractGame
         }
 
         private void process(ActionPerformedEvent event) {
-            // redirect event to clear cached piece actions/impacts
+            // redirect event to clear cached data
             board.notifyObservers(event);
             // log action in history to display it later on UI or fully restore game state
             journal.add(configureMemento(event.getActionMemento()));
