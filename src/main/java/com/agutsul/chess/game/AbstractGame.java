@@ -33,7 +33,7 @@ import com.agutsul.chess.player.state.ActivePlayerState;
 import com.agutsul.chess.player.state.LockedPlayerState;
 import com.agutsul.chess.player.state.PlayerState;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
-import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
+import com.agutsul.chess.rule.board.CachedBoardStateEvaluator;
 
 public abstract class AbstractGame
         implements Game, PlayerIterator, Observable {
@@ -62,7 +62,7 @@ public abstract class AbstractGame
         this.logger = logger;
 
         this.board = board;
-        this.evaluator = new BoardStateEvaluatorImpl(board);
+        this.evaluator = new CachedBoardStateEvaluator(board);
 
         this.journal = new JournalImpl<>();
 
