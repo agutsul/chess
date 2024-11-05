@@ -1,5 +1,6 @@
 package com.agutsul.chess.game;
 
+import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.STALE_MATED;
 
@@ -100,15 +101,6 @@ public abstract class AbstractGame
         var nextPlayer = getOpponentPlayer();
 
         var nextBoardState = evaluateBoardState(nextPlayer);
-
-        if (BoardState.Type.CHECK_MATED.equals(nextBoardState.getType())) {
-            var memento = (ActionMemento<?,?>) journal.remove(journal.size() - 1);
-            journal.add(new CheckMatedActionMemento<>(memento));
-        } else if (BoardState.Type.CHECKED.equals(nextBoardState.getType())) {
-            var memento = (ActionMemento<?,?>) journal.remove(journal.size() - 1);
-            journal.add(new CheckedActionMemento<>(memento));
-        }
-
         board.setState(nextBoardState);
 
         logger.info("Board state: {}", nextBoardState);
@@ -217,8 +209,20 @@ public abstract class AbstractGame
         private void process(ActionPerformedEvent event) {
             // redirect event to clear cached piece actions/impacts
             board.notifyObservers(event);
+
+            var nextBoardState = evaluateBoardState(getOpponentPlayer());
+
+            ActionMemento<?,?> memento = null;
+            if (CHECK_MATED.equals(nextBoardState.getType())) {
+                memento = new CheckMatedActionMemento<>(event.getActionMemento());
+            } else if (CHECKED.equals(nextBoardState.getType())) {
+                memento = new CheckedActionMemento<>(event.getActionMemento());
+            } else {
+                memento = event.getActionMemento();
+            }
+
             // log action in history to display it later on UI or fully restore game state
-            journal.add(event.getActionMemento());
+            journal.add(memento);
         }
 
         private void process(ActionCancelledEvent event) {
