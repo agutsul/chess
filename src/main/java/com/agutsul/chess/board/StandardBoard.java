@@ -129,16 +129,6 @@ public final class StandardBoard
     }
 
     @Override
-    public Optional<Position> getPosition(String code) {
-        return this.origin.getPosition(code);
-    }
-
-    @Override
-    public Optional<Position> getPosition(int x, int y) {
-        return this.origin.getPosition(x, y);
-    }
-
-    @Override
     public boolean isEmpty(Position position) {
         return this.origin.isEmpty(position);
     }

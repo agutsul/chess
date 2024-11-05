@@ -38,7 +38,6 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.PieceFactory;
 import com.agutsul.chess.piece.WhitePieceFactory;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.position.PositionFactory;
 
 final class BoardImpl extends AbstractBoard {
 
@@ -268,20 +267,6 @@ final class BoardImpl extends AbstractBoard {
 
         var king = (KingPiece<Color>) pieces.iterator().next();
         return king.isActive() ? Optional.of(king) : Optional.empty();
-    }
-
-    @Override
-    public Optional<Position> getPosition(String code) {
-        LOGGER.debug("Getting position by code '{}'", code);
-        var position = PositionFactory.INSTANCE.createPosition(code);
-        return Optional.ofNullable(position);
-    }
-
-    @Override
-    public Optional<Position> getPosition(int x, int y) {
-        LOGGER.debug("Getting position by coordinates '({},{})'", x, y);
-        var position = PositionFactory.INSTANCE.createPosition(x, y);
-        return Optional.ofNullable(position);
     }
 
     @Override
