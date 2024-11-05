@@ -1,5 +1,6 @@
 package com.agutsul.chess.journal;
 
+import static java.nio.file.Files.readString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -11,7 +12,6 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
@@ -26,6 +26,8 @@ import com.agutsul.chess.action.PieceEnPassantAction;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.action.memento.ActionMementoFactory;
+import com.agutsul.chess.action.memento.CheckMatedActionMemento;
+import com.agutsul.chess.action.memento.CheckedActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.color.Colors;
@@ -230,10 +232,46 @@ public class JournalImplTest {
         assertEquals(fileJournalContent, journal.toString());
     }
 
+    @Test
+    void testCheckMoveToString() throws IOException, URISyntaxException {
+        var pawn = mock(PawnPiece.class);
+        when(pawn.getType())
+            .thenReturn(Piece.Type.PAWN);
+        when(pawn.getPosition())
+            .thenReturn(PositionFactory.INSTANCE.createPosition("e2"));
+
+        var position = PositionFactory.INSTANCE.createPosition("e4");
+        var action = new PieceMoveAction<>(pawn, position);
+
+        var journal = new JournalImpl<Memento>();
+        journal.add(new CheckedActionMemento<>(ActionMementoFactory.create(action)));
+
+        var fileJournalContent = readFileContent("journal_check_ply.txt");
+        assertEquals(fileJournalContent, journal.toString());
+    }
+
+    @Test
+    void testCheckMatedMoveToString() throws IOException, URISyntaxException {
+        var pawn = mock(PawnPiece.class);
+        when(pawn.getType())
+            .thenReturn(Piece.Type.PAWN);
+        when(pawn.getPosition())
+            .thenReturn(PositionFactory.INSTANCE.createPosition("e2"));
+
+        var position = PositionFactory.INSTANCE.createPosition("e4");
+        var action = new PieceMoveAction<>(pawn, position);
+
+        var journal = new JournalImpl<Memento>();
+        journal.add(new CheckMatedActionMemento<>(ActionMementoFactory.create(action)));
+
+        var fileJournalContent = readFileContent("journal_checkmate_ply.txt");
+        assertEquals(fileJournalContent, journal.toString());
+    }
+
     private String readFileContent(String fileName) throws URISyntaxException, IOException {
         var resource = getClass().getClassLoader().getResource(fileName);
         var file = new File(resource.toURI());
-        return Files.readString(file.toPath());
+        return readString(file.toPath());
     }
 
     private static Memento createMemento() {
