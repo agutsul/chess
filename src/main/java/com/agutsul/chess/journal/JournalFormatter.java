@@ -7,7 +7,31 @@ import com.agutsul.chess.action.memento.ActionMemento;
 
 class JournalFormatter {
 
+    enum Type {
+        SINGLE_LINE("\t"),
+        MULTI_LINE(lineSeparator());
+
+        private String separator;
+
+        Type(String separator) {
+            this.separator = separator;
+        }
+
+        String separator() {
+            return separator;
+        }
+
+        @Override
+        public String toString() {
+            return name();
+        }
+    }
+
     public static String format(Journal<? extends Memento> journal) {
+        return format(journal, Type.MULTI_LINE);
+    }
+
+    public static String format(Journal<? extends Memento> journal, Type type) {
         var builder = new StringBuilder();
         for (int i = 0, j = 1; i < journal.size(); i+=2, j++) {
             builder.append(j).append(".");
@@ -17,7 +41,7 @@ class JournalFormatter {
                 builder.append(format(journal.get(i + 1)));
             }
 
-            builder.append(lineSeparator());
+            builder.append(type.separator());
         }
 
         return builder.toString();
