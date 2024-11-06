@@ -12,22 +12,22 @@ import com.agutsul.chess.action.memento.ActionMemento;
 import com.agutsul.chess.piece.Checkable;
 import com.agutsul.chess.piece.Piece;
 
-public enum AlgebraicActionFormatter {
+public enum AlgebraicActionFormatter implements ActionFormatter {
     MOVE_MODE(Action.Type.MOVE) {
         @Override
-        String toString(ActionMemento<?,?> memento) {
+        public String formatMemento(ActionMemento<?,?> memento) {
             return String.format("%s%s", memento.getPieceType(), memento.getTarget());
         }
     },
     CASTLING_MODE(Action.Type.CASTLING) {
         @Override
-        String toString(ActionMemento<?,?> memento) {
+        public String formatMemento(ActionMemento<?,?> memento) {
             return memento.getCode();
         }
     },
     CAPTURE_MODE(Action.Type.CAPTURE) {
         @Override
-        String toString(ActionMemento<?,?> memento) {
+        public String formatMemento(ActionMemento<?,?> memento) {
             var source = Piece.Type.PAWN.equals(memento.getPieceType())
                     ? formatPawnPosition(memento.getSource())
                     : memento.getPieceType();
@@ -37,7 +37,7 @@ public enum AlgebraicActionFormatter {
     },
     EN_PASSANT_MODE(Action.Type.EN_PASSANT) {
         @Override
-        String toString(ActionMemento<?,?> memento) {
+        public String formatMemento(ActionMemento<?,?> memento) {
             return String.format("%sx%s e.p.",
                     formatPawnPosition(((ActionMemento<?,?>) memento.getSource()).getSource()),
                     memento.getTarget()
@@ -46,7 +46,7 @@ public enum AlgebraicActionFormatter {
     },
     PROMOTE_MODE(Action.Type.PROMOTE) {
         @Override
-        String toString(ActionMemento<?,?> memento) {
+        public String formatMemento(ActionMemento<?,?> memento) {
             return String.format("%s%s",
                     ((ActionMemento<?,?>) memento.getTarget()).getTarget(),
                     memento.getPieceType().code()
@@ -67,15 +67,15 @@ public enum AlgebraicActionFormatter {
         return type;
     }
 
-    abstract String toString(ActionMemento<?,?> memento);
-
     static String formatPawnPosition(Object pawnPosition) {
         return substring(String.valueOf(pawnPosition), 0, 1);
     }
 
     public static String format(ActionMemento<?,?> memento) {
+        var formatter = MODES.get(memento.getActionType());
+
         var builder = new StringBuilder();
-        builder.append(MODES.get(memento.getActionType()).toString(memento));
+        builder.append(formatter.formatMemento(memento));
 
         if (memento instanceof Checkable) {
             builder.append(((Checkable) memento).isCheckMated() ? "#" : "+");
