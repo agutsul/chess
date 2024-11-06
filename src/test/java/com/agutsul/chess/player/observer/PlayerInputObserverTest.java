@@ -26,6 +26,7 @@ import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionEvent;
+import com.agutsul.chess.player.event.PlayerDrawActionEvent;
 import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
@@ -139,6 +140,22 @@ public class PlayerInputObserverTest {
         observer.observe(event);
 
         verify(game, times(1)).notifyObservers(any(PlayerCancelActionEvent.class));
+    }
+
+    @Test
+    void testObservePlayerActionEventDrawAction() {
+        var game = mock(AbstractGame.class);
+
+        var whitePlayer = mock(Player.class);
+        when(whitePlayer.getColor())
+            .thenReturn(Colors.WHITE);
+
+        var event = new RequestPlayerActionEvent(whitePlayer);
+
+        var observer = new PlayerInputObserverMock(whitePlayer, game, "draw");
+        observer.observe(event);
+
+        verify(game, times(1)).notifyObservers(any(PlayerDrawActionEvent.class));
     }
 
     @Test

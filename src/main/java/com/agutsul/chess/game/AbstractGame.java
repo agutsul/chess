@@ -1,12 +1,11 @@
 package com.agutsul.chess.game;
 
+import static com.agutsul.chess.board.state.BoardState.Type.AGREED_DRAW;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
-import static com.agutsul.chess.board.state.BoardState.Type.STALE_MATED;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.Logger;
@@ -37,9 +36,6 @@ import com.agutsul.chess.rule.board.CachedBoardStateEvaluator;
 
 public abstract class AbstractGame
         implements Game, PlayerIterator, Observable {
-
-    private static final Set<BoardState.Type> TERMINAL_BOARD_STATES =
-            Set.of(CHECK_MATED, STALE_MATED);
 
     private final Logger logger;
 
@@ -98,13 +94,19 @@ public abstract class AbstractGame
     @Override
     public boolean hasNext() {
         logger.info("Checking board state ...");
+
+        var currentBoardState = board.getState();
+        if (currentBoardState.getType().isTerminal()) {
+            return false;
+        }
+
         var nextPlayer = getOpponentPlayer();
 
         var nextBoardState = evaluateBoardState(nextPlayer);
         board.setState(nextBoardState);
 
         logger.info("Board state: {}", nextBoardState);
-        return !TERMINAL_BOARD_STATES.contains(nextBoardState.getType());
+        return !nextBoardState.getType().isTerminal();
     }
 
     @Override
@@ -148,8 +150,13 @@ public abstract class AbstractGame
     @Override
     public Optional<Player> getWinner() {
         var boardState = board.getState();
+
         if (CHECK_MATED.equals(boardState.getType())) {
             var winner = currentPlayer.equals(whitePlayer) ? whitePlayer : blackPlayer;
+            logger.info("{} wins. Player '{}'", winner.getColor(), winner.getName());
+            return Optional.of(winner);
+        } else if (AGREED_DRAW.equals(boardState.getType())) {
+            var winner = currentPlayer.equals(whitePlayer) ? blackPlayer : whitePlayer;
             logger.info("{} wins. Player '{}'", winner.getColor(), winner.getName());
             return Optional.of(winner);
         }

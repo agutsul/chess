@@ -7,6 +7,8 @@ import com.agutsul.chess.action.event.ActionCancelledEvent;
 import com.agutsul.chess.action.event.ActionCancellingEvent;
 import com.agutsul.chess.action.event.ActionExecutionEvent;
 import com.agutsul.chess.action.event.ActionPerformedEvent;
+import com.agutsul.chess.action.event.DrawExecutionEvent;
+import com.agutsul.chess.action.event.DrawPerformedEvent;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.event.GameOverEvent;
@@ -14,6 +16,7 @@ import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.observer.AbstractGameObserver;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
+import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
 
 public class GameOutputObserverMock
         extends AbstractGameObserver {
@@ -63,6 +66,21 @@ public class GameOutputObserverMock
 
     @Override
     protected void process(PlayerCancelActionExceptionEvent event) {
+        consume(event);
+    }
+
+    @Override
+    protected void process(PlayerDrawActionExceptionEvent event) {
+        consume(event);
+    }
+
+    @Override
+    protected void process(DrawExecutionEvent event) {
+        consume(event);
+    }
+
+    @Override
+    protected void process(DrawPerformedEvent event) {
         consume(event);
     }
 

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.command.CancelActionCommand;
+import com.agutsul.chess.command.DrawGameCommand;
 import com.agutsul.chess.command.PerformActionCommand;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
@@ -20,6 +21,8 @@ import com.agutsul.chess.player.event.PlayerActionEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
+import com.agutsul.chess.player.event.PlayerDrawActionEvent;
+import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 
 public final class PlayerActionOberver
@@ -39,6 +42,8 @@ public final class PlayerActionOberver
             process((PlayerActionEvent) event);
         } else if (event instanceof PlayerCancelActionEvent) {
             process((PlayerCancelActionEvent) event);
+        } else if (event instanceof PlayerDrawActionEvent) {
+            process((PlayerDrawActionEvent) event);
         }
     }
 
@@ -78,7 +83,23 @@ public final class PlayerActionOberver
             sleepQuietly(Duration.ofMillis(1));
         } finally {
             var board = ((AbstractGame) this.game).getBoard();
-            requestPlayerAction(board, event.getPlayer());
+            requestPlayerAction(board, player);
+        }
+    }
+
+    private void process(PlayerDrawActionEvent event) {
+        var player = event.getPlayer();
+        try {
+            var drawGameCommand = new DrawGameCommand(this.game, player);
+            drawGameCommand.execute();
+        } catch (Exception e) {
+            LOGGER.error("Player draw exception", e);
+            notifyExceptionEvent(new PlayerDrawActionExceptionEvent(e.getMessage()));
+
+            sleepQuietly(Duration.ofMillis(1));
+
+            var board = ((AbstractGame) this.game).getBoard();
+            requestPlayerAction(board, player);
         }
     }
 
@@ -87,7 +108,7 @@ public final class PlayerActionOberver
         ((Observable) this.game).notifyObservers(event);
     }
 
-    private void requestPlayerAction(Board board, Player player) {
+    private static void requestPlayerAction(Board board, Player player) {
         // re-ask player about new action
         ((Observable) board).notifyObservers(new RequestPlayerActionEvent(player));
     }

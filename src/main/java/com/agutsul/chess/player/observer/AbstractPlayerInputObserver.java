@@ -31,6 +31,7 @@ import com.agutsul.chess.player.event.AbstractRequestEvent;
 import com.agutsul.chess.player.event.PlayerActionEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionEvent;
+import com.agutsul.chess.player.event.PlayerDrawActionEvent;
 import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
@@ -39,6 +40,7 @@ public abstract class AbstractPlayerInputObserver
         implements Observer {
 
     private static final String UNDO_COMMAND = "undo";
+    private static final String DRAW_COMMAND = "draw";
 
     private static final String UNKNOWN_PROMOTION_PIECE_TYPE_MESSAGE = "Unknown promotion piece type";
     private static final String UNABLE_TO_PROCESS_MESSAGE = "Unable to process";
@@ -109,6 +111,8 @@ public abstract class AbstractPlayerInputObserver
         try {
             if (UNDO_COMMAND.equalsIgnoreCase(command)) {
                 processUndoCommand(this.player);
+            } else if (DRAW_COMMAND.equalsIgnoreCase(command)) {
+                processDrawCommand(this.player);
             } else if (contains(command, SPACE)) {
                 processActionCommand(this.player, command);
             } else {
@@ -129,6 +133,10 @@ public abstract class AbstractPlayerInputObserver
 
     private void processUndoCommand(Player player) {
         ((Observable) this.game).notifyObservers(new PlayerCancelActionEvent(player));
+    }
+
+    private void processDrawCommand(Player player) {
+        ((Observable) this.game).notifyObservers(new PlayerDrawActionEvent(player));
     }
 
     private void processActionCommand(Player player, String command) {

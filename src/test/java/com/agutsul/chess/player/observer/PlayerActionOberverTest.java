@@ -1,9 +1,11 @@
 package com.agutsul.chess.player.observer;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -20,10 +22,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.event.ActionCancelledEvent;
+import com.agutsul.chess.action.event.DrawExecutionEvent;
+import com.agutsul.chess.action.event.DrawPerformedEvent;
 import com.agutsul.chess.action.memento.ActionMemento;
 import com.agutsul.chess.action.memento.ActionMementoMock;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
@@ -37,6 +42,8 @@ import com.agutsul.chess.player.event.PlayerActionEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
+import com.agutsul.chess.player.event.PlayerDrawActionEvent;
+import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.position.Position;
 
@@ -126,7 +133,6 @@ public class PlayerActionOberverTest {
     @SuppressWarnings("unchecked")
     void testPlayerCancelActionEvent() {
         var board = mock(AbstractBoard.class);
-
         when(board.getPiece(anyString()))
             .thenReturn(Optional.of(mock(PawnPiece.class)));
         when(board.getPosition(anyString()))
@@ -161,6 +167,52 @@ public class PlayerActionOberverTest {
         observer.observe(new PlayerCancelActionEvent(player));
 
         verify(game, atLeast(2)).notifyObservers(any());
+    }
+
+    @Test
+    void testPlayerDrawActionEvent() {
+        var board = mock(AbstractBoard.class);
+        doAnswer(inv -> {
+            var state = inv.getArgument(0, BoardState.class);
+            assertEquals(BoardState.Type.AGREED_DRAW, state.getType());
+
+            return null;
+        }).when(board).setState(any());
+
+        var game = mock(AbstractGame.class);
+        when(game.getBoard())
+            .thenReturn(board);
+
+        var player = mock(Player.class);
+        when(player.getColor())
+            .thenReturn(Colors.WHITE);
+
+        var observer = new PlayerActionOberver(game);
+        observer.observe(new PlayerDrawActionEvent(player));
+
+        verify(game, times(1)).notifyObservers(any(DrawExecutionEvent.class));
+        verify(game, times(1)).notifyObservers(any(DrawPerformedEvent.class));
+    }
+
+    @Test
+    void testPlayerDrawActionExceptionEvent() {
+        var board = mock(AbstractBoard.class);
+        doThrow(RuntimeException.class)
+            .when(board).setState(any());
+
+        var game = mock(AbstractGame.class);
+        when(game.getBoard())
+            .thenReturn(board);
+
+        var player = mock(Player.class);
+        when(player.getColor())
+            .thenReturn(Colors.WHITE);
+
+        var observer = new PlayerActionOberver(game);
+        observer.observe(new PlayerDrawActionEvent(player));
+
+        verify(game, times(1)).notifyObservers(any(PlayerDrawActionExceptionEvent.class));
+        verify(board, times(1)).notifyObservers(any(RequestPlayerActionEvent.class));
     }
 
     private static ActionMemento<String,String> mockActionMemento(Color color) {
