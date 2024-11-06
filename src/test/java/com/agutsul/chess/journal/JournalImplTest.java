@@ -95,9 +95,9 @@ public class JournalImplTest {
         when(pawn.getType())
             .thenReturn(Piece.Type.PAWN);
         when(pawn.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.createPosition("e2"));
+            .thenReturn(PositionFactory.INSTANCE.create("e2"));
 
-        var position = PositionFactory.INSTANCE.createPosition("e4");
+        var position = PositionFactory.INSTANCE.create("e4");
         var action = new PieceMoveAction<>(pawn, position);
 
         var journal = new JournalImpl<Memento>();
@@ -111,7 +111,7 @@ public class JournalImplTest {
     void testCaptureToString() throws IOException, URISyntaxException {
         var pawn = mock(PawnPiece.class);
         when(pawn.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.createPosition("e5"));
+            .thenReturn(PositionFactory.INSTANCE.create("e5"));
 
         var knight = mock(KnightPiece.class);
         when(knight.getColor())
@@ -119,7 +119,7 @@ public class JournalImplTest {
         when(knight.getType())
             .thenReturn(Piece.Type.KNIGHT);
         when(knight.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.createPosition("c6"));
+            .thenReturn(PositionFactory.INSTANCE.create("c6"));
 
         var action = new PieceCaptureAction<>(knight, pawn);
         var journal = new JournalImpl<Memento>();
@@ -137,9 +137,9 @@ public class JournalImplTest {
         when(pawn.getType())
             .thenReturn(Piece.Type.PAWN);
         when(pawn.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.createPosition("e7"));
+            .thenReturn(PositionFactory.INSTANCE.create("e7"));
 
-        var position = PositionFactory.INSTANCE.createPosition("e8");
+        var position = PositionFactory.INSTANCE.create("e8");
         var action = new PiecePromoteAction<>(
                 new PieceMoveAction<>(pawn, position),
                 mock(Observable.class)
@@ -164,7 +164,7 @@ public class JournalImplTest {
         when(whiteKing.getType())
             .thenReturn(Piece.Type.KING);
         when(whiteKing.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.createPosition("e1"));
+            .thenReturn(PositionFactory.INSTANCE.create("e1"));
 
         var whiteRook = mock(RookPiece.class);
         when(whiteRook.getColor())
@@ -172,11 +172,11 @@ public class JournalImplTest {
         when(whiteRook.getType())
             .thenReturn(Piece.Type.ROOK);
         when(whiteRook.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.createPosition("h1"));
+            .thenReturn(PositionFactory.INSTANCE.create("h1"));
 
         var whiteAction = new PieceCastlingAction<>("O-O",
-                new CastlingMoveAction<>(whiteKing, PositionFactory.INSTANCE.createPosition("g1")),
-                new CastlingMoveAction<>(whiteRook, PositionFactory.INSTANCE.createPosition("f1"))
+                new CastlingMoveAction<>(whiteKing, PositionFactory.INSTANCE.create("g1")),
+                new CastlingMoveAction<>(whiteRook, PositionFactory.INSTANCE.create("f1"))
         );
 
         var blackKing = mock(KingPiece.class);
@@ -185,7 +185,7 @@ public class JournalImplTest {
         when(blackKing.getType())
             .thenReturn(Piece.Type.KING);
         when(blackKing.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.createPosition("e8"));
+            .thenReturn(PositionFactory.INSTANCE.create("e8"));
 
         var blackRook = mock(RookPiece.class);
         when(blackRook.getColor())
@@ -193,11 +193,11 @@ public class JournalImplTest {
         when(blackRook.getType())
             .thenReturn(Piece.Type.ROOK);
         when(blackRook.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.createPosition("a8"));
+            .thenReturn(PositionFactory.INSTANCE.create("a8"));
 
         var blackAction = new PieceCastlingAction<>("O-O-O",
-                new CastlingMoveAction<>(blackKing, PositionFactory.INSTANCE.createPosition("c8")),
-                new CastlingMoveAction<>(blackRook, PositionFactory.INSTANCE.createPosition("d8"))
+                new CastlingMoveAction<>(blackKing, PositionFactory.INSTANCE.create("c8")),
+                new CastlingMoveAction<>(blackRook, PositionFactory.INSTANCE.create("d8"))
         );
 
         var journal = new JournalImpl<Memento>();
@@ -216,13 +216,13 @@ public class JournalImplTest {
         when(whitePawn.getType())
             .thenReturn(Piece.Type.PAWN);
         when(whitePawn.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.createPosition("b5"));
+            .thenReturn(PositionFactory.INSTANCE.create("b5"));
 
         var blackPawn = mock(PawnPiece.class);
         when(blackPawn.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.createPosition("a7"));
+            .thenReturn(PositionFactory.INSTANCE.create("a7"));
 
-        var position = PositionFactory.INSTANCE.createPosition("a6");
+        var position = PositionFactory.INSTANCE.create("a6");
         var action = new PieceEnPassantAction<>(whitePawn, blackPawn, position);
 
         var journal = new JournalImpl<Memento>();
@@ -238,9 +238,9 @@ public class JournalImplTest {
         when(pawn.getType())
             .thenReturn(Piece.Type.PAWN);
         when(pawn.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.createPosition("e2"));
+            .thenReturn(PositionFactory.INSTANCE.create("e2"));
 
-        var position = PositionFactory.INSTANCE.createPosition("e4");
+        var position = PositionFactory.INSTANCE.create("e4");
         var action = new PieceMoveAction<>(pawn, position);
 
         var journal = new JournalImpl<Memento>();
@@ -256,9 +256,9 @@ public class JournalImplTest {
         when(pawn.getType())
             .thenReturn(Piece.Type.PAWN);
         when(pawn.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.createPosition("e2"));
+            .thenReturn(PositionFactory.INSTANCE.create("e2"));
 
-        var position = PositionFactory.INSTANCE.createPosition("e4");
+        var position = PositionFactory.INSTANCE.create("e4");
         var action = new PieceMoveAction<>(pawn, position);
 
         var journal = new JournalImpl<Memento>();

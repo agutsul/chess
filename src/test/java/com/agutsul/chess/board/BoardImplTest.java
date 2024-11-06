@@ -1,5 +1,6 @@
 package com.agutsul.chess.board;
 
+import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,8 +27,6 @@ import com.agutsul.chess.position.PositionFactory;
 
 @ExtendWith(MockitoExtension.class)
 public class BoardImplTest {
-
-    private static final PositionFactory POSITION_FACTORY = PositionFactory.INSTANCE;
 
     private final Board board;
 
@@ -88,7 +87,7 @@ public class BoardImplTest {
         }
 
         for (var code : emptyCodes) {
-            assertTrue(board.isEmpty(POSITION_FACTORY.createPosition(code)));
+            assertTrue(board.isEmpty(positionOf(code)));
         }
     }
 
@@ -197,7 +196,7 @@ public class BoardImplTest {
 
         var piecePositions = pieces.stream().map(Piece::getPosition).toList();
         var expectedPositions = Stream.of(position)
-                .map(code -> POSITION_FACTORY.createPosition(code))
+                .map(PositionFactory::positionOf)
                 .toList();
 
         assertTrue(piecePositions.containsAll(expectedPositions));

@@ -3,6 +3,7 @@ package com.agutsul.chess.board;
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
+import static org.apache.commons.lang3.StringUtils.join;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.action.AbstractCaptureAction;
@@ -201,7 +201,7 @@ final class BoardImpl extends AbstractBoard {
         allPositions.addAll(asList(positions));
 
         LOGGER.info("Getting pieces with type of '{}' color and locations '[{}]'",
-                                                    color, StringUtils.join(allPositions, ","));
+                                                    color, join(allPositions, ","));
 
         var pieces = allPositions.stream()
                 .map(piecePosition -> getPiece(piecePosition))
@@ -246,14 +246,15 @@ final class BoardImpl extends AbstractBoard {
             return Optional.empty();
         }
 
-        var foundPiece = this.pieces.stream()
-                .filter(piece -> Objects.equals(piece.getPosition(), optionalPosition.get()))
+        var capturedPiece = this.pieces.stream()
+                .filter(piece -> !piece.isActive())
                 .filter(piece -> Objects.equals(piece.getColor(), color))
-                .filter(piece -> !piece.isActive() && ((Captured) piece).getCapturedAt() != null)
+                .filter(piece -> Objects.equals(piece.getPosition(), optionalPosition.get()))
+                .filter(piece -> Objects.nonNull(((Captured) piece).getCapturedAt()))
                 .sorted(comparing(piece -> ((Captured) piece).getCapturedAt()).reversed())
                 .findFirst();
 
-        return foundPiece;
+        return capturedPiece;
     }
 
     @Override

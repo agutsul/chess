@@ -1,5 +1,6 @@
 package com.agutsul.chess.board;
 
+import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.lang.System.lineSeparator;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 
@@ -8,11 +9,8 @@ import java.util.Optional;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.position.PositionFactory;
 
 class BoardFormatter {
-
-    private static final PositionFactory POSITION_FACTORY = PositionFactory.INSTANCE;
 
     private static final String ROW_SEPARATOR = "--+---+---+---+---+---+---+---+---+--";
     private static final String COLUMN_SEPARATOR = "|";
@@ -29,9 +27,7 @@ class BoardFormatter {
             builder.append(y + 1).append(formatColumnSeparator());
 
             for (int x = Position.MIN; x < Position.MAX; x++) {
-                var position = POSITION_FACTORY.createPosition(x, y);
-
-                builder.append(formatPiece(board.getPiece(position)));
+                builder.append(formatPiece(board.getPiece(positionOf(x, y))));
                 builder.append(formatColumnSeparator());
 
                 if (x == Position.MAX - 1) {

@@ -1,5 +1,7 @@
 package com.agutsul.chess.position;
 
+import static com.agutsul.chess.position.Position.codeOf;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,12 +19,20 @@ public enum PositionFactory {
         }
     }
 
-    public Position createPosition(String code) {
+    public Position create(String code) {
         return positions.get(code);
     }
 
-    public Position createPosition(int x, int y) {
-        var code = Position.codeOf(x, y);
-        return code != null ? createPosition(code) : null;
+    public Position create(int x, int y) {
+        var code = codeOf(x, y);
+        return code != null ? create(code) : null;
+    }
+
+    public static Position positionOf(int x, int y) {
+        return INSTANCE.create(x, y);
+    }
+
+    public static Position positionOf(String code) {
+        return INSTANCE.create(code);
     }
 }

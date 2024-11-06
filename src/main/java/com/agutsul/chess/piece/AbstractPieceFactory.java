@@ -1,20 +1,15 @@
 package com.agutsul.chess.piece;
 
-import static org.slf4j.LoggerFactory.getLogger;
+import static com.agutsul.chess.position.PositionFactory.positionOf;
 
 import org.slf4j.Logger;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.position.PositionFactory;
 
 abstract class AbstractPieceFactory<COLOR extends Color>
         implements PieceFactory {
-
-    private static final Logger LOGGER = getLogger(AbstractPieceFactory.class);
-
-    private static final PositionFactory POSITION_FACTORY = PositionFactory.INSTANCE;
 
     enum Directions implements Direction {
         UP(1),
@@ -79,15 +74,17 @@ abstract class AbstractPieceFactory<COLOR extends Color>
         }
     }
 
+    final Logger logger;
     final Board board;
     final COLOR color;
     final Direction direction;
     final Promotion promotion;
     final BigMove bigMove;
 
-    AbstractPieceFactory(Board board, COLOR color,
+    AbstractPieceFactory(Logger logger, Board board, COLOR color,
             Direction direction, Promotion promotion, BigMove bigMove) {
 
+        this.logger = logger;
         this.board = board;
         this.color = color;
         this.direction = direction;
@@ -97,62 +94,62 @@ abstract class AbstractPieceFactory<COLOR extends Color>
 
     @Override
     public final KingPiece<Color> createKing(String code) {
-        return createKing(POSITION_FACTORY.createPosition(code));
+        return createKing(positionOf(code));
     }
 
     @Override
     public final QueenPiece<Color> createQueen(String code) {
-        return createQueen(POSITION_FACTORY.createPosition(code));
+        return createQueen(positionOf(code));
     }
 
     @Override
     public final RookPiece<Color> createRook(String code) {
-        return createRook(POSITION_FACTORY.createPosition(code));
+        return createRook(positionOf(code));
     }
 
     @Override
     public final BishopPiece<Color> createBishop(String code) {
-        return createBishop(POSITION_FACTORY.createPosition(code));
+        return createBishop(positionOf(code));
     }
 
     @Override
     public final KnightPiece<Color> createKnight(String code) {
-        return createKnight(POSITION_FACTORY.createPosition(code));
+        return createKnight(positionOf(code));
     }
 
     @Override
     public final PawnPiece<Color> createPawn(String code) {
-        return createPawn(POSITION_FACTORY.createPosition(code));
+        return createPawn(positionOf(code));
     }
 
     KingPiece<COLOR> createKing(Position position, String unicode) {
-        LOGGER.debug("Create '{}' king at '{}'", color, position);
+        logger.debug("Create '{}' king at '{}'", color, position);
         return new KingPieceImpl<>(board, color, unicode, position, direction.code());
     }
 
     QueenPiece<COLOR> createQueen(Position position, String unicode) {
-        LOGGER.debug("Create '{}' queen at '{}'", color, position);
+        logger.debug("Create '{}' queen at '{}'", color, position);
         return new QueenPieceImpl<>(board, color, unicode, position, direction.code());
     }
 
     RookPiece<COLOR> createRook(Position position, String unicode) {
-        LOGGER.debug("Create '{}' rook at '{}'", color, position);
+        logger.debug("Create '{}' rook at '{}'", color, position);
         return new RookPieceImpl<>(board, color, unicode, position, direction.code());
     }
 
     BishopPiece<COLOR> createBishop(Position position, String unicode) {
-        LOGGER.debug("Create '{}' bishop at '{}'", color, position);
+        logger.debug("Create '{}' bishop at '{}'", color, position);
         return new BishopPieceImpl<>(board, color, unicode, position, direction.code());
     }
 
     KnightPiece<COLOR> createKnight(Position position, String unicode) {
-        LOGGER.debug("Create '{}' knight at '{}'", color, position);
+        logger.debug("Create '{}' knight at '{}'", color, position);
         return new KnightPieceImpl<>(board, color, unicode, position, direction.code());
     }
 
     PawnPiece<COLOR> createPawn(Position position, String unicode) {
-        LOGGER.debug("Create '{}' pawn at '{}'", color, position);
-        return new PawnPieceImpl<>(board, color, unicode, position, direction.code(),
-                promotion.line(), bigMove.line());
+        logger.debug("Create '{}' pawn at '{}'", color, position);
+        return new PawnPieceImpl<>(board, color, unicode, position,
+                direction.code(), promotion.line(), bigMove.line());
     }
 }

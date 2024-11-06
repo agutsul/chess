@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece;
 
+import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,12 +26,10 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.Piece.Type;
-import com.agutsul.chess.position.PositionFactory;
 
 @ExtendWith(MockitoExtension.class)
 public class PawnPieceImplTest extends AbstractPieceTest {
 
-    private static final PositionFactory POSITION_FACTORY = PositionFactory.INSTANCE;
     private static final Type PAWN_TYPE = Piece.Type.PAWN;
 
     @Test
@@ -60,10 +59,10 @@ public class PawnPieceImplTest extends AbstractPieceTest {
                 var direction = piece.getColor() == Colors.WHITE ? 1 : -1;
 
                 var expected = Stream.of(
-                            POSITION_FACTORY.createPosition(position.x(), position.y() + direction),
-                            POSITION_FACTORY.createPosition(position.x(), position.y() + 2 * direction)
-                        ).map(String::valueOf)
-                        .toList();
+                        positionOf(position.x(), position.y() + direction),
+                        positionOf(position.x(), position.y() + 2 * direction))
+                .map(String::valueOf)
+                .toList();
 
                 assertTrue(expectedPositions.contains(String.valueOf(position)));
                 assertPieceActions(board, color, PAWN_TYPE, String.valueOf(position), expected);

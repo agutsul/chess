@@ -1,5 +1,9 @@
 package com.agutsul.chess.piece;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
+import org.slf4j.Logger;
+
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -9,6 +13,8 @@ import com.agutsul.chess.position.Position;
 public final class BlackPieceFactory
         extends AbstractPieceFactory<Color> {
 
+    private static final Logger LOGGER = getLogger(BlackPieceFactory.class);
+
     private static final String KING_UNICODE    = "\u265A";
     private static final String QUEEN_UNICODE   = "\u265B";
     private static final String ROOK_UNICODE    = "\u265C";
@@ -17,7 +23,7 @@ public final class BlackPieceFactory
     private static final String PAWN_UNICODE    = "\u265F";
 
     public BlackPieceFactory(Board board) {
-        super(board, Colors.BLACK, Directions.DOWN, Promotions.BLACK, BigMoves.BLACK);
+        super(LOGGER, board, Colors.BLACK, Directions.DOWN, Promotions.BLACK, BigMoves.BLACK);
     }
 
     @Override

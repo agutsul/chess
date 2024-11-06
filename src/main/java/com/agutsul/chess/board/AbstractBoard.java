@@ -25,10 +25,10 @@ public abstract class AbstractBoard
     }
 
     static Position positionOf(int x, int y) {
-        return PositionFactory.INSTANCE.createPosition(x, y);
+        return PositionFactory.INSTANCE.create(x, y);
     }
 
     static Position positionOf(String code) {
-        return PositionFactory.INSTANCE.createPosition(code);
+        return PositionFactory.INSTANCE.create(code);
     }
 }
