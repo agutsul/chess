@@ -1,5 +1,7 @@
 package com.agutsul.chess.position;
 
+import static com.agutsul.chess.position.Position.codeOf;
+
 import com.agutsul.chess.exception.IllegalPositionException;
 
 final class PositionImpl
@@ -12,7 +14,7 @@ final class PositionImpl
     private final String code;
 
     PositionImpl(int x, int y) {
-        var code = Position.codeOf(x,y);
+        var code = codeOf(x,y);
         if (code == null) {
             throw new IllegalPositionException(
                     String.format("%s [%d,%d]", INVALID_POSITION_MESSAGE, x, y)

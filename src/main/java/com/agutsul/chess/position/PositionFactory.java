@@ -1,5 +1,7 @@
 package com.agutsul.chess.position;
 
+import static com.agutsul.chess.position.Position.MAX;
+import static com.agutsul.chess.position.Position.MIN;
 import static com.agutsul.chess.position.Position.codeOf;
 
 import java.util.HashMap;
@@ -8,11 +10,11 @@ import java.util.Map;
 public enum PositionFactory {
     INSTANCE;
 
-    private Map<String, Position> positions = new HashMap<>(Position.MAX * Position.MAX);
+    private Map<String, Position> positions = new HashMap<>(MAX * MAX);
 
     PositionFactory() {
-        for (int x = Position.MIN; x < Position.MAX; x++) {
-            for (int y = Position.MIN; y < Position.MAX; y++) {
+        for (int x = MIN; x < MAX; x++) {
+            for (int y = MIN; y < MAX; y++) {
                 var position = new PositionImpl(x, y);
                 positions.put(position.getCode(), position);
             }
