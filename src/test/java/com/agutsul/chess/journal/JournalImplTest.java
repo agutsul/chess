@@ -265,7 +265,9 @@ public class JournalImplTest {
         journal.add(new CheckMatedActionMemento<>(ActionMementoFactory.create(action)));
 
         var fileJournalContent = readFileContent("journal_checkmate_ply.txt");
-        assertEquals(fileJournalContent, journal.toString());
+        var journalStr = journal.toString();
+
+        assertEquals(fileJournalContent, journalStr);
     }
 
     private String readFileContent(String fileName) throws URISyntaxException, IOException {

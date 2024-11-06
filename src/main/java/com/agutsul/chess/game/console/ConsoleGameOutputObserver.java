@@ -1,5 +1,6 @@
 package com.agutsul.chess.game.console;
 
+import static com.agutsul.chess.journal.JournalFormatter.format;
 import static java.lang.System.lineSeparator;
 
 import java.util.Optional;
@@ -18,6 +19,7 @@ import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.observer.AbstractGameObserver;
 import com.agutsul.chess.journal.Journal;
+import com.agutsul.chess.journal.JournalFormatter.Mode;
 import com.agutsul.chess.journal.Memento;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
@@ -49,10 +51,13 @@ final class ConsoleGameOutputObserver
     @Override
     protected void process(GameOverEvent event) {
         var game = (AbstractGame) event.getGame();
-        displayWinner(game.getWinner());
+        var line = "-".repeat(50);
 
-        System.out.println("-".repeat(50));
+        System.out.println(line);
         displayJournal(game.getJournal());
+
+        System.out.println(line);
+        displayWinner(game.getWinner());
     }
 
     @Override
@@ -113,7 +118,7 @@ final class ConsoleGameOutputObserver
     }
 
     private static void displayJournal(Journal<Memento> journal) {
-        System.out.println(journal);
+        System.out.println(format(journal, Mode.MULTI_LINE));
     }
 
     private static void displayWinner(Optional<Player> winner) {

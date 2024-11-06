@@ -5,9 +5,9 @@ import static java.lang.System.lineSeparator;
 import com.agutsul.chess.action.formatter.AlgebraicActionFormatter;
 import com.agutsul.chess.action.memento.ActionMemento;
 
-class JournalFormatter {
+public class JournalFormatter {
 
-    enum Mode {
+    public enum Mode {
         SINGLE_LINE("\t"),
         MULTI_LINE(lineSeparator());
 
@@ -28,27 +28,30 @@ class JournalFormatter {
     }
 
     public static String format(Journal<? extends Memento> journal) {
-        return format(journal, Mode.MULTI_LINE);
+        return format(journal, Mode.SINGLE_LINE);
     }
 
     public static String format(Journal<? extends Memento> journal, Mode mode) {
         var builder = new StringBuilder();
         for (int i = 0, j = 1; i < journal.size(); i+=2, j++) {
-            builder.append(j).append(".");
+
+            if (i != 0) {
+                builder.append(mode.separator());
+            }
+
+            builder.append(j).append(". ");
             builder.append(format(journal.get(i)));
 
             if (i + 1 < journal.size()) {
+                builder.append("\t");
                 builder.append(format(journal.get(i + 1)));
             }
-
-            builder.append(mode.separator());
         }
 
         return builder.toString();
     }
 
     private static String format(Memento memento) {
-        return String.format("\t%s",
-                AlgebraicActionFormatter.format((ActionMemento<?,?>) memento));
+        return AlgebraicActionFormatter.format((ActionMemento<?,?>) memento);
     }
 }
