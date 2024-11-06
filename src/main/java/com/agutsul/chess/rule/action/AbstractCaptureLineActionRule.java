@@ -58,7 +58,7 @@ public abstract class AbstractCaptureLineActionRule<COLOR1 extends Color,
             var optionalPiece = board.getPiece(line.get(line.size() - 1));
             if (optionalPiece.isPresent()) {
                 @SuppressWarnings("unchecked")
-                PIECE2 piece2 = (PIECE2) optionalPiece.get();
+                var piece2 = (PIECE2) optionalPiece.get();
                 actions.add(createAction(piece, piece2, line));
             }
         }

@@ -23,6 +23,6 @@ class KnightCaptureActionRule<COLOR1 extends Color,
     @Override
     protected PieceCaptureAction<COLOR1, COLOR2, KNIGHT, PIECE> createAction(KNIGHT knight,
                                                                              PIECE piece) {
-        return new PieceCaptureAction<COLOR1, COLOR2, KNIGHT, PIECE>(knight, piece);
+        return new PieceCaptureAction<>(knight, piece);
     }
 }

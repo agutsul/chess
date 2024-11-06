@@ -64,7 +64,7 @@ class ActivePieceState<PIECE extends Piece<Color> & Movable & Capturable>
 
         if (!possibleMoves.contains(position)) {
             throw new IllegalActionException(
-                String.format("%s invalid move to %s", piece, position)
+                    String.format("%s invalid move to %s", piece, position)
             );
         }
 
@@ -87,7 +87,7 @@ class ActivePieceState<PIECE extends Piece<Color> & Movable & Capturable>
 
         if (!possibleCaptures.contains(targetPiece)) {
             throw new IllegalActionException(
-                String.format("%s invalid capture of %s", piece, targetPiece)
+                    String.format("%s invalid capture of %s", piece, targetPiece)
             );
         }
 

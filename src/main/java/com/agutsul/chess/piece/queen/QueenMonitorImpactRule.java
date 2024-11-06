@@ -19,6 +19,6 @@ class QueenMonitorImpactRule<COLOR extends Color,
 
     @Override
     protected PieceMonitorImpact<COLOR, QUEEN> createImpact(QUEEN piece, Position position) {
-        return new PieceMonitorImpact<COLOR, QUEEN>(piece, position);
+        return new PieceMonitorImpact<>(piece, position);
     }
 }

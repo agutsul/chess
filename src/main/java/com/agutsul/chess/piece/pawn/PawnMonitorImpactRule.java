@@ -19,6 +19,6 @@ class PawnMonitorImpactRule<COLOR extends Color,
 
     @Override
     protected PieceMonitorImpact<COLOR, PAWN> createImpact(PAWN pawn, Position position) {
-        return new PieceMonitorImpact<COLOR, PAWN>(pawn, position);
+        return new PieceMonitorImpact<>(pawn, position);
     }
 }

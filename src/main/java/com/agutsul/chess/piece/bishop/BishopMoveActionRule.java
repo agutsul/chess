@@ -19,6 +19,6 @@ class BishopMoveActionRule<COLOR extends Color,
 
     @Override
     protected PieceMoveAction<COLOR, BISHOP> createAction(BISHOP piece, Position position) {
-        return new PieceMoveAction<COLOR, BISHOP>(piece, position);
+        return new PieceMoveAction<>(piece, position);
     }
 }

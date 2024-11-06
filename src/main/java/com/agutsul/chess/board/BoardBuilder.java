@@ -1,6 +1,8 @@
 package com.agutsul.chess.board;
 
 import static java.util.Collections.emptyList;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+import static org.apache.commons.collections4.ListUtils.partition;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
@@ -239,9 +241,9 @@ public final class BoardBuilder
             return pieces;
         }
 
-        private Optional<PieceBuilderSubTask> createTask(List<String> positions,
-                                                         Function<String, Piece<Color>> function) {
-            if (positions == null || positions.isEmpty()) {
+        private static Optional<PieceBuilderSubTask> createTask(List<String> positions,
+                                                                Function<String, Piece<Color>> function) {
+            if (isEmpty(positions)) {
                 return Optional.empty();
             }
 
@@ -266,13 +268,14 @@ public final class BoardBuilder
         @Override
         protected List<Piece<Color>> compute() {
             // no more splits
-            if (positions.size() == 1) {
-                return List.of(function.apply(positions.get(0)));
+            if (this.positions.size() == 1) {
+                var position = this.positions.get(0);
+                return List.of(function.apply(position));
             }
 
             // split to subtasks
-            var tasks = positions.stream()
-                    .map(position -> new PieceBuilderSubTask(List.of(position), function))
+            var tasks = partition(this.positions, this.positions.size() / 2).stream()
+                    .map(positions -> new PieceBuilderSubTask(positions, function))
                     .toList();
 
             for (var task : tasks) {

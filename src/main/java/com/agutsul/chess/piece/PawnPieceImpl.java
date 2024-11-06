@@ -116,7 +116,7 @@ final class PawnPieceImpl<COLOR extends Color>
 
             if (!isValid) {
                 throw new IllegalActionException(
-                    String.format("%s invalid en passant of %s", piece, targetPosition)
+                        String.format("%s invalid en passant of %s", piece, targetPosition)
                 );
             }
 

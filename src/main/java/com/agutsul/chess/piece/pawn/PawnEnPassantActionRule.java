@@ -30,9 +30,9 @@ class PawnEnPassantActionRule<COLOR1 extends Color,
     }
 
     @Override
-    protected PieceEnPassantAction<COLOR1, COLOR2, PAWN1, PAWN2>
-            createAction(PAWN1 pawn1, PAWN2 pawn2, Position position) {
-
-        return new PieceEnPassantAction<COLOR1, COLOR2, PAWN1, PAWN2>(pawn1, pawn2, position);
+    protected PieceEnPassantAction<COLOR1, COLOR2, PAWN1, PAWN2> createAction(PAWN1 pawn1,
+                                                                              PAWN2 pawn2,
+                                                                              Position position) {
+        return new PieceEnPassantAction<>(pawn1, pawn2, position);
     }
 }

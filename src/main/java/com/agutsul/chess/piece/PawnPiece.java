@@ -140,9 +140,6 @@ public interface PawnPiece<COLOR extends Color>
             ((EnPassantable) this.origin).unenpassant(targetPiece);
         }
 
-        /*
-         * Castling is impossible for the promoted piece but proxy should follow interface
-         */
         @Override
         public void castling(Position position) {
             ((Castlingable) this.origin).castling(position);
@@ -161,11 +158,6 @@ public interface PawnPiece<COLOR extends Color>
         @Override
         public void setCapturedAt(Instant instant) {
             ((Captured) this.origin).setCapturedAt(instant);
-        }
-
-        @Override
-        public String toString() {
-            return this.origin.toString();
         }
 
         private void validatePromotion(Position position, Type pieceType) {
@@ -209,7 +201,7 @@ public interface PawnPiece<COLOR extends Color>
             var factory = Factory.of(pieceType);
             if (factory == null) {
                 throw new IllegalActionException(
-                    String.format("Unsupported promotion type: %s", pieceType.name())
+                        String.format("Unsupported promotion type: %s", pieceType.name())
                 );
             }
 

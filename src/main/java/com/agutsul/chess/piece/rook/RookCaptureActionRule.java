@@ -24,7 +24,6 @@ class RookCaptureActionRule<COLOR1 extends Color,
     protected PieceCaptureAction<COLOR1, COLOR2, ROOK, PIECE> createAction(ROOK piece1,
                                                                            PIECE piece2,
                                                                            Line line) {
-
-        return new PieceCaptureAction<COLOR1, COLOR2, ROOK, PIECE>(piece1, piece2, line);
+        return new PieceCaptureAction<>(piece1, piece2, line);
     }
 }

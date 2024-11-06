@@ -24,10 +24,10 @@ public final class PawnPieceActionRule
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static CompositePieceRule<Action<?>> createRule(Board board, int promotionLine,
+    private static CompositePieceRule<Action<?>> createRule(Board board,
+                                                            int promotionLine,
                                                             PawnMoveAlgo moveAlgo,
                                                             PawnCaptureAlgo captureAlgo) {
-
         var promoteAlgo = new PawnPromoteAlgo<>(board, promotionLine, moveAlgo, captureAlgo);
 
         var moveActionRule = new PawnMoveActionRule<>(board, moveAlgo);

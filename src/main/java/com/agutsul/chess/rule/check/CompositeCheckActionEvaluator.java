@@ -66,7 +66,7 @@ public final class CompositeCheckActionEvaluator<COLOR extends Color,
         } finally {
             try {
                 executor.shutdown();
-                if (!executor.awaitTermination(1, TimeUnit.MILLISECONDS)) {
+                if (!executor.awaitTermination(1, TimeUnit.MICROSECONDS)) {
                     executor.shutdownNow();
                 }
             } catch (InterruptedException e) {

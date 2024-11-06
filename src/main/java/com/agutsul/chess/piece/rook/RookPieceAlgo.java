@@ -24,10 +24,10 @@ final class RookPieceAlgo<COLOR extends Color,
     @SuppressWarnings("unchecked")
     RookPieceAlgo(Board board) {
         super(board);
-        this.algo = new CompositePieceAlgo<COLOR, ROOK, Line>(board,
-                        new HorizontalLineAlgo<COLOR, ROOK>(board),
-                        new VerticalLineAlgo<COLOR, ROOK>(board)
-                    );
+        this.algo = new CompositePieceAlgo<>(board,
+                        new HorizontalLineAlgo<>(board),
+                        new VerticalLineAlgo<>(board)
+        );
     }
 
     @Override

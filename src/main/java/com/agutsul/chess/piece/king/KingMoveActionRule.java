@@ -19,6 +19,6 @@ class KingMoveActionRule<COLOR extends Color,
 
     @Override
     protected PieceMoveAction<COLOR, KING> createAction(KING piece, Position position) {
-        return new PieceMoveAction<COLOR, KING>(piece, position);
+        return new PieceMoveAction<>(piece, position);
     }
 }

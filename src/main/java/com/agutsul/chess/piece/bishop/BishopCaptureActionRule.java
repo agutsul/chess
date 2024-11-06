@@ -21,9 +21,9 @@ class BishopCaptureActionRule<COLOR1 extends Color,
     }
 
     @Override
-    protected PieceCaptureAction<COLOR1, COLOR2, BISHOP, PIECE>
-            createAction(BISHOP bishop, PIECE piece, Line line) {
-
-        return new PieceCaptureAction<COLOR1, COLOR2, BISHOP, PIECE>(bishop, piece, line);
+    protected PieceCaptureAction<COLOR1, COLOR2, BISHOP, PIECE> createAction(BISHOP bishop,
+                                                                             PIECE piece,
+                                                                             Line line) {
+        return new PieceCaptureAction<>(bishop, piece, line);
     }
 }

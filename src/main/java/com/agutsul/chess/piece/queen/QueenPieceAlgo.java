@@ -25,11 +25,11 @@ final class QueenPieceAlgo<COLOR extends Color,
     @SuppressWarnings("unchecked")
     QueenPieceAlgo(Board board) {
         super(board);
-        this.algo = new CompositePieceAlgo<COLOR, QUEEN, Line>(board,
-                        new HorizontalLineAlgo<COLOR, QUEEN>(board),
-                        new VerticalLineAlgo<COLOR, QUEEN>(board),
-                        new DiagonalLineAlgo<COLOR, QUEEN>(board)
-                    );
+        this.algo = new CompositePieceAlgo<>(board,
+                        new HorizontalLineAlgo<>(board),
+                        new VerticalLineAlgo<>(board),
+                        new DiagonalLineAlgo<>(board)
+        );
     }
 
     @Override

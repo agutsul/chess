@@ -21,6 +21,6 @@ class KingProtectImpactRule<COLOR extends Color,
 
     @Override
     protected PieceProtectImpact<COLOR, KING, PIECE> createImpact(KING king, PIECE piece) {
-        return new PieceProtectImpact<COLOR, KING, PIECE>(king, piece);
+        return new PieceProtectImpact<>(king, piece);
     }
 }

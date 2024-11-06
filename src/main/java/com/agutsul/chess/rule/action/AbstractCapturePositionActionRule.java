@@ -43,7 +43,7 @@ public abstract class AbstractCapturePositionActionRule<COLOR1 extends Color,
             }
 
             @SuppressWarnings("unchecked")
-            PIECE2 piece2 = (PIECE2) optionalPiece.get();
+            var piece2 = (PIECE2) optionalPiece.get();
             if (piece2.getColor() == piece1.getColor()) {
                 continue;
             }

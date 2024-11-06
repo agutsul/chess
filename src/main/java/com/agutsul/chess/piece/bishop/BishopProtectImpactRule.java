@@ -21,6 +21,6 @@ class BishopProtectImpactRule<COLOR extends Color,
 
     @Override
     protected PieceProtectImpact<COLOR, BISHOP, PIECE> createImpact(BISHOP bishop, PIECE piece) {
-        return new PieceProtectImpact<COLOR, BISHOP, PIECE>(bishop, piece);
+        return new PieceProtectImpact<>(bishop, piece);
     }
 }

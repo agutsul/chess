@@ -21,6 +21,6 @@ class PawnProtectImpactRule<COLOR extends Color,
 
     @Override
     protected PieceProtectImpact<COLOR, PAWN, PIECE> createImpact(PAWN pawn, PIECE piece) {
-        return new PieceProtectImpact<COLOR, PAWN, PIECE>(pawn, piece);
+        return new PieceProtectImpact<>(pawn, piece);
     }
 }

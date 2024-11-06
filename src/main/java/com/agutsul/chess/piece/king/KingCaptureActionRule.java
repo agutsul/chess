@@ -21,9 +21,7 @@ class KingCaptureActionRule<COLOR1 extends Color,
     }
 
     @Override
-    protected PieceCaptureAction<COLOR1, COLOR2, KING, PIECE>
-            createAction(KING king, PIECE piece) {
-
-        return new PieceCaptureAction<COLOR1, COLOR2, KING, PIECE>(king, piece);
+    protected PieceCaptureAction<COLOR1, COLOR2, KING, PIECE> createAction(KING king, PIECE piece) {
+        return new PieceCaptureAction<>(king, piece);
     }
 }

@@ -4,7 +4,7 @@ import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -72,7 +72,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         @Override
         public void uncastling(PIECE piece, Position position) {
             LOGGER.info("Undo castling '{}' to '{}'", piece, position);
-            ((AbstractPiece<Color>) piece).cancelMove(position);
+            piece.cancelMove(position);
         }
     }
 
@@ -108,14 +108,13 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
                                       PIECE piece,
                                       Position position) {
 
-            var actions = List.of(castlingAction.getTarget(), castlingAction.getSource());
-            var possiblePositions = actions.stream()
+            var possiblePositions = Stream.of(castlingAction.getTarget(), castlingAction.getSource())
                     .map(CastlingMoveAction::getTarget)
                     .collect(toSet());
 
             if (!possiblePositions.contains(position)) {
                 throw new IllegalActionException(
-                    String.format("%s invalid castling to %s", piece, position)
+                        String.format("%s invalid castling to %s", piece, position)
                 );
             }
         }

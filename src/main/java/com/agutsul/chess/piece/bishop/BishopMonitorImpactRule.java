@@ -19,6 +19,6 @@ class BishopMonitorImpactRule<COLOR extends Color,
 
     @Override
     protected PieceMonitorImpact<COLOR, BISHOP> createImpact(BISHOP piece, Position position) {
-        return new PieceMonitorImpact<COLOR, BISHOP>(piece, position);
+        return new PieceMonitorImpact<>(piece, position);
     }
 }

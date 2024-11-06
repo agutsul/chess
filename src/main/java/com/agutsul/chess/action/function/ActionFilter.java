@@ -2,6 +2,7 @@ package com.agutsul.chess.action.function;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
@@ -33,7 +34,7 @@ public final class ActionFilter<ACTION extends Action<?>>
     @Override
     @SuppressWarnings("unchecked")
     public Collection<ACTION> apply(Collection<Action<?>> actions) {
-        if (actions == null || actions.isEmpty()) {
+        if (isEmpty(actions)) {
             return emptyList();
         }
 

@@ -18,6 +18,7 @@
         <argLine></argLine>
 
         <commons-lang3.version>3.17.0</commons-lang3.version>
+        <commons-collections4.version>4.5.0-M2</commons-collections4.version>
         <log4j.version>2.24.1</log4j.version>
 
         <spotbugs.version>4.8.6</spotbugs.version>
@@ -42,6 +43,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${commons-collections4.version}</version>
         </dependency>
 
         <dependency>

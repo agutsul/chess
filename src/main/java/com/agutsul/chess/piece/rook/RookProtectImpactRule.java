@@ -21,6 +21,6 @@ class RookProtectImpactRule<COLOR extends Color,
 
     @Override
     protected PieceProtectImpact<COLOR, ROOK, PIECE> createImpact(ROOK rook, PIECE piece) {
-        return new PieceProtectImpact<COLOR, ROOK, PIECE>(rook, piece);
+        return new PieceProtectImpact<>(rook, piece);
     }
 }

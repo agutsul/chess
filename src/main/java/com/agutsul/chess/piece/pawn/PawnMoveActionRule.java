@@ -19,6 +19,6 @@ class PawnMoveActionRule<COLOR extends Color,
 
     @Override
     protected PieceMoveAction<COLOR, PAWN> createAction(PAWN pawn, Position position) {
-        return new PieceMoveAction<COLOR, PAWN>(pawn, position);
+        return new PieceMoveAction<>(pawn, position);
     }
 }

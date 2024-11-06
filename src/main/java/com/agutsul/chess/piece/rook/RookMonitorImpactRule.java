@@ -19,6 +19,6 @@ class RookMonitorImpactRule<COLOR extends Color,
 
     @Override
     protected PieceMonitorImpact<COLOR, ROOK> createImpact(ROOK piece, Position position) {
-        return new PieceMonitorImpact<COLOR, ROOK>(piece, position);
+        return new PieceMonitorImpact<>(piece, position);
     }
 }

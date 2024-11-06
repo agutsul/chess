@@ -19,6 +19,6 @@ class RookMoveActionRule<COLOR extends Color,
 
     @Override
     protected PieceMoveAction<COLOR, ROOK> createAction(ROOK piece, Position position) {
-        return new PieceMoveAction<COLOR, ROOK>(piece, position);
+        return new PieceMoveAction<>(piece, position);
     }
 }

@@ -42,7 +42,7 @@ final class PawnMoveAlgo<COLOR extends Color,
             nextPositions.add(board.getPosition(
                     currentPosition.x(),
                     currentPosition.y() + this.step * 2
-                ));
+            ));
         }
 
         return nextPositions.stream()

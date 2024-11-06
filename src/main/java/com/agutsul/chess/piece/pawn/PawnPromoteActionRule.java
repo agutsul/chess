@@ -28,8 +28,7 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
                                  PromotePieceAlgo<COLOR1, PAWN, Position> algo,
                                  MoveActionRule<COLOR1, PAWN, PieceMoveAction<COLOR1, PAWN>> rule) {
 
-        this.promoteActionRuleAdapter =
-                new PawnPromoteMoveActionRule<COLOR1, COLOR2, PAWN, PIECE>(board, algo, rule);
+        this.promoteActionRuleAdapter = new PawnPromoteMoveActionRule<>(board, algo, rule);
     }
 
     <COLOR2 extends Color, PIECE extends Piece<COLOR2>> PawnPromoteActionRule(
@@ -38,8 +37,7 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
                                  CaptureActionRule<COLOR1, COLOR2, PAWN, PIECE,
                                                    PieceCaptureAction<COLOR1,COLOR2,PAWN,PIECE>> rule) {
 
-        this.promoteActionRuleAdapter =
-                new PawnPromoteCaptureActionRule<COLOR1, COLOR2, PAWN, PIECE>(board, algo, rule);
+        this.promoteActionRuleAdapter = new PawnPromoteCaptureActionRule<>(board, algo, rule);
     }
 
     @Override
@@ -71,7 +69,7 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
         protected PiecePromoteAction<COLOR1, PAWN> createAction(
                                      PieceCaptureAction<COLOR1, COLOR2, PAWN, PIECE> sourceAction) {
 
-            return new PiecePromoteAction<COLOR1, PAWN>(sourceAction, (Observable) board);
+            return new PiecePromoteAction<>(sourceAction, (Observable) board);
         }
     }
 
@@ -95,9 +93,9 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
 
         @Override
         protected PiecePromoteAction<COLOR1, PAWN> createAction(
-                                  PieceMoveAction<COLOR1, PAWN> sourceAction) {
+                                     PieceMoveAction<COLOR1, PAWN> sourceAction) {
 
-            return new PiecePromoteAction<COLOR1, PAWN>(sourceAction, (Observable) board);
+            return new PiecePromoteAction<>(sourceAction, (Observable) board);
         }
     }
 }

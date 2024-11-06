@@ -71,4 +71,9 @@ class PieceProxy implements Piece<Color> {
     public Collection<Impact<?>> getImpacts() {
         return origin.getImpacts();
     }
+
+    @Override
+    public String toString() {
+        return origin.toString();
+    }
 }
