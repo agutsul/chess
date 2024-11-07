@@ -5,4 +5,5 @@ public interface Journal<MEMENTO extends Memento> {
     MEMENTO remove(int index);
     MEMENTO get(int index);
     int size();
+    boolean isEmpty();
 }

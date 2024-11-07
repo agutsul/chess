@@ -40,11 +40,12 @@ public class CancelActionCommand
     @Override
     protected void preExecute() throws CommandException {
         var aGame = (AbstractGame) this.game;
-        if (!aGame.hasPrevious()) {
+
+        var journal = aGame.getJournal();
+        if (journal.isEmpty()) {
             throw new CommandException(NOTHING_TO_CANCEL_MESSAGE);
         }
 
-        var journal = aGame.getJournal();
         // get last executed action from journal
         var actionMemento = (ActionMemento<?,?>) journal.get(journal.size() - 1);
         if (!Objects.equals(this.color, actionMemento.getColor())) {

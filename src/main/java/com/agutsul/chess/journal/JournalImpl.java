@@ -38,6 +38,11 @@ public class JournalImpl<MEMENTO extends Memento>
     }
 
     @Override
+    public boolean isEmpty() {
+        return this.list.isEmpty();
+    }
+
+    @Override
     public String toString() {
         return JournalFormatter.format(this);
     }

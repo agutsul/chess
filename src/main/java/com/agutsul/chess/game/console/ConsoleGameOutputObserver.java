@@ -3,6 +3,7 @@ package com.agutsul.chess.game.console;
 import static com.agutsul.chess.journal.JournalFormatter.format;
 import static java.lang.System.lineSeparator;
 
+import java.time.Duration;
 import java.util.Optional;
 
 import com.agutsul.chess.action.Action;
@@ -35,6 +36,7 @@ final class ConsoleGameOutputObserver
     private static final String DRAW_MESSAGE = "Draw";
     private static final String ACTION_MESSAGE = "Action";
     private static final String GAME_OVER_MESSAGE = "Game over";
+    private static final String DURATION_MESSAGE = "Duration (minutes)";
 
     ConsoleGameOutputObserver(Game game) {
         super(game);
@@ -58,6 +60,7 @@ final class ConsoleGameOutputObserver
 
         System.out.println(line);
         displayWinner(game.getWinner());
+        displayDuration(Duration.between(game.getStartedAt(), game.getFinishedAt()));
     }
 
     @Override
@@ -127,6 +130,10 @@ final class ConsoleGameOutputObserver
                 : DRAW_MESSAGE;
 
         System.out.println(String.format("%s. %s", GAME_OVER_MESSAGE, message));
+    }
+
+    private static void displayDuration(Duration duration) {
+        System.out.println(String.format("%s: %s", DURATION_MESSAGE, duration.toMinutes()));
     }
 
     private static String formatWinnerMessage(Player player) {

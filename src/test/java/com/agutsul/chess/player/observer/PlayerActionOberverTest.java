@@ -33,6 +33,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.game.AbstractGame;
+import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.journal.Memento;
 import com.agutsul.chess.piece.PawnPiece;
@@ -109,12 +110,17 @@ public class PlayerActionOberverTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void testPlayerCancelActionEventWithEmptyJournal() {
-        var board = mock(AbstractBoard.class);
+        var journal = mock(Journal.class);
+        when(journal.isEmpty())
+            .thenReturn(true);
 
         var game = mock(AbstractGame.class);
-        when(game.hasPrevious())
-            .thenReturn(Boolean.FALSE);
+        when(game.getJournal())
+            .thenReturn(journal);
+
+        var board = mock(AbstractBoard.class);
         when(game.getBoard())
             .thenReturn(board);
 
@@ -143,8 +149,6 @@ public class PlayerActionOberverTest {
         journal.add(mockActionMemento(Colors.BLACK));
 
         var game = mock(AbstractGame.class);
-        when(game.hasPrevious())
-            .thenReturn(Boolean.TRUE);
         when(game.getBoard())
             .thenReturn(board);
         when(game.getJournal())

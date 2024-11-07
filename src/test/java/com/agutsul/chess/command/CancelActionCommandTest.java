@@ -21,6 +21,7 @@ import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.AbstractGame;
+import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.journal.Memento;
 import com.agutsul.chess.piece.Piece;
@@ -29,10 +30,15 @@ import com.agutsul.chess.piece.Piece;
 public class CancelActionCommandTest {
 
     @Test
+    @SuppressWarnings("unchecked")
     void testNoActionToCancelException() {
+        var journal = mock(Journal.class);
+        when(journal.isEmpty())
+            .thenReturn(true);
+
         var game = mock(AbstractGame.class);
-        when(game.hasPrevious())
-            .thenReturn(false);
+        when(game.getJournal())
+            .thenReturn(journal);
 
         var command = new CancelActionCommand(game, Colors.WHITE);
         var thrown = assertThrows(
@@ -46,8 +52,6 @@ public class CancelActionCommandTest {
     @Test
     void testWrongPlayerActionException() {
         var game = mock(AbstractGame.class);
-        when(game.hasPrevious())
-            .thenReturn(true);
 
         var journal = new JournalImpl<Memento>();
         journal.add(new ActionMementoMock<>(
@@ -73,8 +77,18 @@ public class CancelActionCommandTest {
     @Test
     void testCancelActionCommandWithExecutionException() {
         var game = mock(AbstractGame.class);
-        when(game.hasPrevious())
-            .thenReturn(true);
+
+        var journal = new JournalImpl<Memento>();
+        journal.add(new ActionMementoMock<>(
+                Colors.WHITE,
+                Action.Type.MOVE,
+                Piece.Type.PAWN,
+                "e2",
+                "e4"
+        ));
+
+        when(game.getJournal())
+            .thenReturn(journal);
 
         var board = new BoardBuilder()
                 .withWhitePawn("e4")
@@ -89,18 +103,6 @@ public class CancelActionCommandTest {
         assertTrue(board.isEmpty(sourcePosition));
         assertFalse(board.isEmpty(targetPosition));
 
-        var journal = new JournalImpl<Memento>();
-        journal.add(new ActionMementoMock<>(
-                Colors.WHITE,
-                Action.Type.MOVE,
-                Piece.Type.PAWN,
-                "e2",
-                "e4"
-        ));
-
-        when(game.getJournal())
-            .thenReturn(journal);
-
         var command = new CancelActionCommand(game, Colors.WHITE);
         var thrown = assertThrows(
                 IllegalActionException.class,
@@ -113,8 +115,18 @@ public class CancelActionCommandTest {
     @Test
     void testCancelActionCommand() {
         var game = mock(AbstractGame.class);
-        when(game.hasPrevious())
-            .thenReturn(true);
+
+        var journal = new JournalImpl<Memento>();
+        journal.add(new ActionMementoMock<>(
+                Colors.WHITE,
+                Action.Type.MOVE,
+                Piece.Type.PAWN,
+                "e2",
+                "e4"
+        ));
+
+        when(game.getJournal())
+            .thenReturn(journal);
 
         var board = new BoardBuilder()
                 .withWhitePawn("e2")
@@ -133,18 +145,6 @@ public class CancelActionCommandTest {
 
         assertTrue(board.isEmpty(sourcePosition));
         assertFalse(board.isEmpty(targetPosition));
-
-        var journal = new JournalImpl<Memento>();
-        journal.add(new ActionMementoMock<>(
-                Colors.WHITE,
-                Action.Type.MOVE,
-                Piece.Type.PAWN,
-                "e2",
-                "e4"
-        ));
-
-        when(game.getJournal())
-            .thenReturn(journal);
 
         var command = new CancelActionCommand(game, Colors.WHITE);
         command.execute();

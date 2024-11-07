@@ -4,6 +4,7 @@ import static com.agutsul.chess.board.state.BoardState.Type.AGREED_DRAW;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -53,6 +54,8 @@ public abstract class AbstractGame
     private final List<Observer> observers;
 
     private Player currentPlayer;
+    private LocalDateTime startedAt;
+    private LocalDateTime finishedAt;
 
     protected AbstractGame(Logger logger, Player whitePlayer, Player blackPlayer, Board board) {
         this.logger = logger;
@@ -72,6 +75,47 @@ public abstract class AbstractGame
         this.observers = new CopyOnWriteArrayList<>();
         this.observers.add(new PlayerActionOberver(this));
         this.observers.add(new ActionEventObserver());
+    }
+
+    @Override
+    public Player getWhitePlayer() {
+        return whitePlayer;
+    }
+    @Override
+    public Player getBlackPlayer() {
+        return blackPlayer;
+    }
+
+    @Override
+    public LocalDateTime getStartedAt() {
+        return startedAt;
+    }
+
+    @Override
+    public LocalDateTime getFinishedAt() {
+        return finishedAt;
+    }
+
+    @Override
+    public Journal<Memento> getJournal() {
+        return journal;
+    }
+
+    @Override
+    public Optional<Player> getWinner() {
+        var boardState = board.getState();
+
+        if (CHECK_MATED.equals(boardState.getType())) {
+            var winner = currentPlayer.equals(whitePlayer) ? whitePlayer : blackPlayer;
+            logger.info("{} wins. Player '{}'", winner.getColor(), winner.getName());
+            return Optional.of(winner);
+        } else if (AGREED_DRAW.equals(boardState.getType())) {
+            var winner = currentPlayer.equals(whitePlayer) ? blackPlayer : whitePlayer;
+            logger.info("{} wins. Player '{}'", winner.getColor(), winner.getName());
+            return Optional.of(winner);
+        }
+
+        return Optional.empty();
     }
 
     @Override
@@ -111,7 +155,7 @@ public abstract class AbstractGame
 
     @Override
     public boolean hasPrevious() {
-        return journal.size() != 0;
+        return !journal.isEmpty();
     }
 
     @Override
@@ -126,6 +170,7 @@ public abstract class AbstractGame
 
     @Override
     public void run() {
+        this.startedAt = LocalDateTime.now();
         notifyObservers(new GameStartedEvent(this));
 
         try {
@@ -143,33 +188,13 @@ public abstract class AbstractGame
         } catch (Throwable t) {
             logger.error("Game exception", t);
         } finally {
+            this.finishedAt = LocalDateTime.now();
             notifyObservers(new GameOverEvent(this));
         }
     }
 
-    @Override
-    public Optional<Player> getWinner() {
-        var boardState = board.getState();
-
-        if (CHECK_MATED.equals(boardState.getType())) {
-            var winner = currentPlayer.equals(whitePlayer) ? whitePlayer : blackPlayer;
-            logger.info("{} wins. Player '{}'", winner.getColor(), winner.getName());
-            return Optional.of(winner);
-        } else if (AGREED_DRAW.equals(boardState.getType())) {
-            var winner = currentPlayer.equals(whitePlayer) ? blackPlayer : whitePlayer;
-            logger.info("{} wins. Player '{}'", winner.getColor(), winner.getName());
-            return Optional.of(winner);
-        }
-
-        return Optional.empty();
-    }
-
     public Board getBoard() {
         return board;
-    }
-
-    public Journal<Memento> getJournal() {
-        return journal;
     }
 
     private BoardState evaluateBoardState(Player player) {
