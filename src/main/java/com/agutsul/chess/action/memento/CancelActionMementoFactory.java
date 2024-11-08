@@ -88,8 +88,8 @@ public enum CancelActionMementoFactory {
         }
 
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        private UncastlingMoveAction<?,?> uncastlingAction(Board board,
-                                                           ActionMemento<String,String> memento) {
+        private static UncastlingMoveAction<?,?> uncastlingAction(Board board,
+                                                                  ActionMemento<String,String> memento) {
             var piece = board.getPiece(memento.getTarget());
             var position = board.getPosition(memento.getSource());
 

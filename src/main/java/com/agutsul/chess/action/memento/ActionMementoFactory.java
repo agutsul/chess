@@ -27,7 +27,11 @@ public enum ActionMementoFactory {
         }
 
         private static ActionMemento<?,?> createMemento(PieceMoveAction<?,?> action) {
-            return createMemento(action.getType(), action.getSource(), action.getTarget());
+            return createMemento(
+                    action.getType(),
+                    action.getSource(),
+                    action.getTarget()
+            );
         }
     },
     CAPTURE_MODE(Action.Type.CAPTURE) {
