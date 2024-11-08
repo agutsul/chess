@@ -132,28 +132,6 @@ public class BoardImplTest {
     }
 
     @Test
-    void testIsChecked() {
-        var board = new BoardBuilder()
-                .withBlackKing("h8")
-                .withWhiteQueen("a1")
-                .build();
-
-        assertTrue(board.isChecked(Colors.BLACK));
-    }
-
-    @Test
-    void testIsCheckMated() {
-        var board = new BoardBuilder()
-                .withBlackKing("h8")
-                .withBlackBishop("g8")
-                .withWhiteBishop("e5")
-                .withWhiteKing("g6")
-                .build();
-
-        assertTrue(board.isCheckMated(Colors.BLACK));
-    }
-
-    @Test
     void testToString() throws IOException, URISyntaxException {
         var resource = getClass().getClassLoader().getResource("standard_board.txt");
         var file = new File(resource.toURI());

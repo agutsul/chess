@@ -33,16 +33,16 @@ import com.agutsul.chess.player.state.ActivePlayerState;
 import com.agutsul.chess.player.state.LockedPlayerState;
 import com.agutsul.chess.player.state.PlayerState;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
-import com.agutsul.chess.rule.board.CachedBoardStateEvaluator;
+import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 
 public abstract class AbstractPlayableGame
         extends AbstractGame
         implements Iterator<Player>, Observable {
 
     private final Board board;
-    private final BoardStateEvaluator boardStateEvaluator;
-
     private final Journal<Memento> journal;
+
+    private final BoardStateEvaluator<BoardState> boardStateEvaluator;
 
     private final PlayerState activeState;
     private final PlayerState lockedState;
@@ -56,10 +56,31 @@ public abstract class AbstractPlayableGame
                                    Player blackPlayer,
                                    Board board) {
 
+        this(logger, whitePlayer, blackPlayer, board, new JournalImpl<>());
+    }
+
+    protected AbstractPlayableGame(Logger logger,
+                                   Player whitePlayer,
+                                   Player blackPlayer,
+                                   Board board,
+                                   Journal<Memento> journal) {
+
+        this(logger, whitePlayer, blackPlayer,
+                board, journal, new BoardStateEvaluatorImpl(board, journal));
+    }
+
+    protected AbstractPlayableGame(Logger logger,
+                                   Player whitePlayer,
+                                   Player blackPlayer,
+                                   Board board,
+                                   Journal<Memento> journal,
+                                   BoardStateEvaluator<BoardState> boardStateEvaluator) {
+
         super(logger, whitePlayer, blackPlayer);
 
         this.board = board;
-        this.boardStateEvaluator = new CachedBoardStateEvaluator(board);
+        this.journal = journal;
+        this.boardStateEvaluator = boardStateEvaluator;
 
         this.activeState = new ActivePlayerState((Observable) board);
         this.lockedState = new LockedPlayerState();
@@ -68,7 +89,6 @@ public abstract class AbstractPlayableGame
         this.blackPlayer.setState(lockedState);
 
         this.currentPlayer = whitePlayer;
-        this.journal = new JournalImpl<>();
 
         this.observers = new CopyOnWriteArrayList<>();
         this.observers.add(new PlayerActionOberver(this));

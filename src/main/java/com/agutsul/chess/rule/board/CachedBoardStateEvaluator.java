@@ -11,15 +11,15 @@ import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
 
-public final class CachedBoardStateEvaluator
-        implements BoardStateEvaluator {
+final class CachedBoardStateEvaluator
+        implements BoardStateEvaluator<BoardState> {
 
     private final Map<Color, BoardState> cache = new HashMap<>();
 
-    private final BoardStateEvaluator evaluator;
+    private final BoardStateEvaluator<BoardState> evaluator;
 
-    public CachedBoardStateEvaluator(Board board) {
-        this.evaluator = new BoardStateEvaluatorImpl(board);
+    public CachedBoardStateEvaluator(Board board, BoardStateEvaluator<BoardState> evaluator) {
+        this.evaluator = evaluator;
         ((Observable) board).addObserver(new BoardStateObserver());
     }
 

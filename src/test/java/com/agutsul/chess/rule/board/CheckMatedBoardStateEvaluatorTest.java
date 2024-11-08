@@ -1,21 +1,33 @@
-package com.agutsul.chess.board.state;
+package com.agutsul.chess.rule.board;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.piece.KingPiece;
-import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.color.Colors;
 
 @ExtendWith(MockitoExtension.class)
 // https://en.wikipedia.org/wiki/Checkmate_pattern
-public class CheckMateTest {
+public class CheckMatedBoardStateEvaluatorTest {
+
+    @Test
+    void testIsCheckMated() {
+        var board = new BoardBuilder()
+                .withBlackKing("h8")
+                .withBlackBishop("g8")
+                .withWhiteBishop("e5")
+                .withWhiteKing("g6")
+                .build();
+
+        assertCheckMate(board, Colors.BLACK);
+    }
 
     @Test
     void testAnastasiaMate() {
@@ -26,7 +38,7 @@ public class CheckMateTest {
                 .withWhiteRook("h5")
                 .build();
 
-        assertCheckMate(board.getPiece("h7"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -38,7 +50,7 @@ public class CheckMateTest {
                 .withWhiteKing("f6")
                 .build();
 
-        assertCheckMate(board.getPiece("g8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -49,7 +61,7 @@ public class CheckMateTest {
                 .withWhiteKnight("f6")
                 .build();
 
-        assertCheckMate(board.getPiece("h8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -60,7 +72,7 @@ public class CheckMateTest {
                 .withWhiteRook("d8")
                 .build();
 
-        assertCheckMate(board.getPiece("g8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -71,7 +83,7 @@ public class CheckMateTest {
                 .withWhiteBishop("e6")
                 .build();
 
-        assertCheckMate(board.getPiece("g8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -83,7 +95,7 @@ public class CheckMateTest {
                 .withWhiteKing("g6")
                 .build();
 
-        assertCheckMate(board.getPiece("h8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -95,7 +107,7 @@ public class CheckMateTest {
                 .withWhiteKnight("g5")
                 .build();
 
-        assertCheckMate(board.getPiece("g8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -106,7 +118,7 @@ public class CheckMateTest {
                 .withWhiteKnight("g5")
                 .build();
 
-        assertCheckMate(board.getPiece("h8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -117,7 +129,7 @@ public class CheckMateTest {
                 .withWhiteRooks("g7", "h7")
                 .build();
 
-        assertCheckMate(board.getPiece("g8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -129,7 +141,7 @@ public class CheckMateTest {
                 .withWhiteBishops("a6", "f4")
                 .build();
 
-        assertCheckMate(board.getPiece("c8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -141,7 +153,7 @@ public class CheckMateTest {
                 .withWhiteRook("g1")
                 .build();
 
-        assertCheckMate(board.getPiece("h8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -152,7 +164,7 @@ public class CheckMateTest {
                 .withWhiteBishop("g6")
                 .build();
 
-        assertCheckMate(board.getPiece("f8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -165,7 +177,7 @@ public class CheckMateTest {
                 .withWhitePawn("g6")
                 .build();
 
-        assertCheckMate(board.getPiece("g8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -176,7 +188,7 @@ public class CheckMateTest {
                 .withWhiteBishops("c3", "d5")
                 .build();
 
-        assertCheckMate(board.getPiece("h8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -189,7 +201,7 @@ public class CheckMateTest {
                 .withWhitePawn("f5")
                 .build();
 
-        assertCheckMate(board.getPiece("e5"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -201,7 +213,7 @@ public class CheckMateTest {
                 .withWhiteKnights("c7", "d7")
                 .build();
 
-        assertCheckMate(board.getPiece("a8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -214,7 +226,7 @@ public class CheckMateTest {
                 .withWhiteKing("g1")
                 .build();
 
-        assertCheckMate(board.getPiece("g3"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -225,7 +237,7 @@ public class CheckMateTest {
                 .withWhiteQueen("g6")
                 .build();
 
-        assertCheckMate(board.getPiece("g8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -237,7 +249,7 @@ public class CheckMateTest {
                 .withWhiteBishop("c4")
                 .build();
 
-        assertCheckMate(board.getPiece("h8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -250,7 +262,7 @@ public class CheckMateTest {
                 .withWhiteKnight("f6")
                 .build();
 
-        assertCheckMate(board.getPiece("e7"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -261,7 +273,7 @@ public class CheckMateTest {
                 .withWhiteQueen("c4")
                 .build();
 
-        assertCheckMate(board.getPiece("a5"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -272,7 +284,7 @@ public class CheckMateTest {
                 .withWhiteBishops("f6", "e6")
                 .build();
 
-        assertCheckMate(board.getPiece("h8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -283,7 +295,7 @@ public class CheckMateTest {
                 .withWhiteKnights("f6", "g6")
                 .build();
 
-        assertCheckMate(board.getPiece("h8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -293,7 +305,7 @@ public class CheckMateTest {
                 .withWhiteRooks("a8", "b7")
                 .build();
 
-        assertCheckMate(board.getPiece("g8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -304,7 +316,7 @@ public class CheckMateTest {
                 .withWhiteRook("b7")
                 .build();
 
-        assertCheckMate(board.getPiece("g8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -318,7 +330,7 @@ public class CheckMateTest {
                 .withWhiteBishop("f7")
                 .build();
 
-        assertCheckMate(board.getPiece("e7"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -332,7 +344,7 @@ public class CheckMateTest {
                 .withWhiteBishops("f7", "g5")
                 .build();
 
-        assertCheckMate(board.getPiece("e7"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -344,7 +356,7 @@ public class CheckMateTest {
                 .withWhiteQueen("g7")
                 .build();
 
-        assertCheckMate(board.getPiece("g8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -356,7 +368,7 @@ public class CheckMateTest {
                 .withWhiteQueen("g8")
                 .build();
 
-        assertCheckMate(board.getPiece("h7"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -368,7 +380,7 @@ public class CheckMateTest {
                 .withWhiteRook("h8")
                 .build();
 
-        assertCheckMate(board.getPiece("g8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -380,7 +392,7 @@ public class CheckMateTest {
                 .withWhiteRook("g1")
                 .build();
 
-        assertCheckMate(board.getPiece("h8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -392,7 +404,7 @@ public class CheckMateTest {
                 .withWhiteRook("d8")
                 .build();
 
-        assertCheckMate(board.getPiece("e8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -405,7 +417,7 @@ public class CheckMateTest {
                 .withWhitePawns("a3", "b2")
                 .build();
 
-        assertCheckMate(board.getPiece("b4"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -418,7 +430,7 @@ public class CheckMateTest {
                 .withWhiteBishop("f6")
                 .build();
 
-        assertCheckMate(board.getPiece("g8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -429,7 +441,7 @@ public class CheckMateTest {
                 .withWhiteKing("d6")
                 .build();
 
-        assertCheckMate(board.getPiece("d8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -443,7 +455,7 @@ public class CheckMateTest {
                 .withWhiteBishop("d8")
                 .build();
 
-        assertCheckMate(board.getPiece("c7"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -454,7 +466,7 @@ public class CheckMateTest {
                 .withWhiteKing("d6")
                 .build();
 
-        assertCheckMate(board.getPiece("d8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -466,7 +478,7 @@ public class CheckMateTest {
                 .withWhiteKnight("f7")
                 .build();
 
-        assertCheckMate(board.getPiece("h8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -479,7 +491,7 @@ public class CheckMateTest {
                 .withWhiteBishop("c3")
                 .build();
 
-        assertCheckMate(board.getPiece("g8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -491,7 +503,7 @@ public class CheckMateTest {
                 .withWhiteQueen("e6")
                 .build();
 
-        assertCheckMate(board.getPiece("e7"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -504,7 +516,7 @@ public class CheckMateTest {
                 .withWhiteQueen("c6")
                 .build();
 
-        assertCheckMate(board.getPiece("c7"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -516,7 +528,7 @@ public class CheckMateTest {
                 .withWhiteQueen("d6")
                 .build();
 
-        assertCheckMate(board.getPiece("e7"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
     @Test
@@ -528,14 +540,14 @@ public class CheckMateTest {
                 .withWhiteKing("f6")
                 .build();
 
-        assertCheckMate(board.getPiece("e8"));
+        assertCheckMate(board, Colors.BLACK);
     }
 
-    private void assertCheckMate(Optional<Piece<Color>> piece) {
-        assertCheckMate((KingPiece<Color>) piece.get());
-    }
+    private static void assertCheckMate(Board board, Color color) {
+        var checkMateEvaluator = new CheckMatedBoardStateEvaluator(board);
+        var boardState = checkMateEvaluator.evaluate(color);
 
-    private void assertCheckMate(KingPiece<Color> king) {
-        assertTrue(king.isCheckMated());
+        assertTrue(boardState.isPresent());
+        assertEquals(BoardState.Type.CHECK_MATED, boardState.get().getType());
     }
 }

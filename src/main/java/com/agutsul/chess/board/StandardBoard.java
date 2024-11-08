@@ -157,21 +157,6 @@ public final class StandardBoard
         return this.origin.isPinned(piece);
     }
 
-    @Override
-    public boolean isChecked(Color color) {
-        return this.origin.isChecked(color);
-    }
-
-    @Override
-    public boolean isCheckMated(Color color) {
-        return this.origin.isCheckMated(color);
-    }
-
-    @Override
-    public boolean isStaleMated(Color color) {
-        return this.origin.isStaleMated(color);
-    }
-
     private static Board createBoard() {
         var board = new BoardImpl();
         board.setPieces(createAllPieces(

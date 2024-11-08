@@ -1,6 +1,7 @@
 package com.agutsul.chess.game;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -17,6 +18,7 @@ import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import org.junit.jupiter.api.Test;
@@ -36,33 +38,45 @@ import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.state.AgreedDrawBoardState;
 import com.agutsul.chess.board.state.CheckMatedBoardState;
 import com.agutsul.chess.board.state.DefaultBoardState;
+import com.agutsul.chess.board.state.StaleMatedBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
+import com.agutsul.chess.journal.JournalImpl;
+import com.agutsul.chess.journal.Memento;
 import com.agutsul.chess.mock.GameMock;
 import com.agutsul.chess.mock.GameOutputObserverMock;
 import com.agutsul.chess.mock.PlayerInputObserverMock;
+import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.UserPlayer;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
+import com.agutsul.chess.rule.board.BoardStateEvaluator;
 
 @ExtendWith(MockitoExtension.class)
 public class GameTest {
 
     @Test
+    @SuppressWarnings("unchecked")
     void testPlayerAskedAction() {
+        var king = mock(KingPiece.class);
+        when(king.isChecked())
+            .thenReturn(false);
+
         var board = mock(AbstractBoard.class);
         when(board.getState())
             .thenReturn(new DefaultBoardState(board, Colors.WHITE));
-        when(board.isChecked(any()))
-            .thenReturn(false);
-        when(board.isStaleMated(any()))
-            .thenReturn(true);
+
+        when(board.getKing(any()))
+            .thenReturn(Optional.of(king));
+
+        when(board.getPieces(any(Color.class)))
+            .thenReturn(emptyList());
 
         var whitePlayer = mock(Player.class);
         var blackPlayer = mock(Player.class);
@@ -107,16 +121,22 @@ public class GameTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void testPositiveGameFlow() {
         var board = spy(new StandardBoard());
         doCallRealMethod().when(board).notifyObservers(any());
 
-        when(board.isChecked(any()))
-            .thenReturn(false);
-        when(board.isStaleMated(any()))
-            .thenAnswer(inv -> {
-                // allow white and black moves and breaks on the second white move
-                return Colors.WHITE.equals(inv.getArgument(0, Color.class));
+        var journal = new JournalImpl<Memento>();
+
+        var boardStateEvaluator = mock(BoardStateEvaluator.class);
+        when(boardStateEvaluator.evaluate(any()))
+            .then(inv -> {
+                var color = inv.getArgument(0, Color.class);
+                if (journal.size() < 2) {
+                    return new DefaultBoardState(board, color);
+                }
+
+                return new StaleMatedBoardState(board, color);
             });
 
         var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
@@ -125,7 +145,7 @@ public class GameTest {
         var blackPlayer = spy(new UserPlayer("test2", Colors.BLACK));
         doCallRealMethod().when(blackPlayer).play();
 
-        var game = new GameMock(whitePlayer, blackPlayer, board);
+        var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
 
         board.addObserver(new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4"));
         board.addObserver(new PlayerInputObserverInteratorMock(blackPlayer, game, "e7 e5"));
@@ -163,32 +183,40 @@ public class GameTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void testPositiveGameFlowWithWhiteUndo() {
         var board = spy(new StandardBoard());
         doCallRealMethod().when(board).notifyObservers(any());
 
-        var wPlayer = spy(new UserPlayer("test1", Colors.WHITE));
-        doCallRealMethod().when(wPlayer).play();
+        var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
+        doCallRealMethod().when(whitePlayer).play();
 
-        var bPlayer = spy(new UserPlayer("test2", Colors.BLACK));
-        doCallRealMethod().when(bPlayer).play();
+        var blackPlayer = spy(new UserPlayer("test2", Colors.BLACK));
+        doCallRealMethod().when(blackPlayer).play();
 
-        var game = new GameMock(wPlayer, bPlayer, board);
+        var journal = new JournalImpl<Memento>();
+        var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
-        var wPlayerObserver = new PlayerInputObserverInteratorMock(wPlayer, game, "e2 e4", "undo", "e2 e4");
-        var bPlayerObserver = new PlayerInputObserverInteratorMock(bPlayer, game, "e7 e5", "e7 e5");
+        var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
+
+        var wPlayerObserver = new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4", "undo", "d2 d4");
+        var bPlayerObserver = new PlayerInputObserverInteratorMock(blackPlayer, game, "e7 e5", "d7 d5");
 
         board.addObserver(wPlayerObserver);
         board.addObserver(bPlayerObserver);
 
-        when(board.isChecked(any()))
-            .thenReturn(false);
-        when(board.isStaleMated(any()))
+        when(boardStateEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var isWhiteMoveAvailable = wPlayerObserver.getIterator().hasNext();
+                if (Colors.WHITE.equals(color)) {
+                    if (wPlayerObserver.getIterator().hasNext()) {
+                        return new DefaultBoardState(board, color);
+                    }
 
-                return Colors.WHITE.equals(color) && !isWhiteMoveAvailable;
+                    return new StaleMatedBoardState(board, color);
+                }
+
+                return new DefaultBoardState(board, color);
             });
 
         Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
@@ -208,11 +236,12 @@ public class GameTest {
         assertEquals(2, game.getJournal().size());
         assertTrue(game.getWinner().isEmpty());
 
-        verify(wPlayer, times(2)).play();
-        verify(bPlayer, times(2)).play();
+        verify(whitePlayer, times(2)).play();
+        verify(blackPlayer, times(2)).play();
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void testNegativeGameFlowWithWhiteUndo() {
         var board = spy(new StandardBoard());
         doCallRealMethod().when(board).notifyObservers(any());
@@ -223,7 +252,10 @@ public class GameTest {
         var blackPlayer = spy(new UserPlayer("test2", Colors.BLACK));
         doCallRealMethod().when(blackPlayer).play();
 
-        var game = new GameMock(whitePlayer, blackPlayer, board);
+        var journal = new JournalImpl<Memento>();
+        var boardStateEvaluator = mock(BoardStateEvaluator.class);
+
+        var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
 
         var playerInputObserver = new PlayerInputObserverInteratorMock(
                 whitePlayer, game, "undo", "e2 e4"
@@ -232,14 +264,18 @@ public class GameTest {
         board.addObserver(playerInputObserver);
         board.addObserver(new PlayerInputObserverInteratorMock(blackPlayer, game, "e7 ", "e7 e5"));
 
-        when(board.isChecked(any()))
-            .thenReturn(false);
-        when(board.isStaleMated(any()))
+        when(boardStateEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                // allow white and black moves and breaks on the second white move
-                return Colors.WHITE.equals(color)
-                        && !playerInputObserver.getIterator().hasNext();
+                if (Colors.WHITE.equals(color)) {
+                    if (playerInputObserver.getIterator().hasNext()) {
+                        return new DefaultBoardState(board, color);
+                    }
+
+                    return new StaleMatedBoardState(board, color);
+                }
+
+                return new DefaultBoardState(board, color);
             });
 
         Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
@@ -267,20 +303,13 @@ public class GameTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void testPositiveGameDrawFlow() {
         var board = spy(new StandardBoard());
         doCallRealMethod()
             .when(board).getState();
         doCallRealMethod()
             .when(board).notifyObservers(any());
-
-        when(board.isChecked(any()))
-            .thenReturn(false);
-        when(board.isStaleMated(any()))
-            .thenAnswer(inv -> {
-                // allow white and black moves and breaks on the second white move
-                return Colors.WHITE.equals(inv.getArgument(0, Color.class));
-            });
 
         var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
         doCallRealMethod()
@@ -290,10 +319,30 @@ public class GameTest {
         doCallRealMethod()
             .when(blackPlayer).play();
 
-        var game = new GameMock(whitePlayer, blackPlayer, board);
+        var journal = new JournalImpl<Memento>();
+        var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
-        board.addObserver(new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4"));
+        var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
+
+        var playerInputObserver =
+                new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4");
+
+        board.addObserver(playerInputObserver);
         board.addObserver(new PlayerInputObserverInteratorMock(blackPlayer, game, "draw"));
+
+        when(boardStateEvaluator.evaluate(any()))
+            .thenAnswer(inv -> {
+                var color = inv.getArgument(0, Color.class);
+                if (Colors.WHITE.equals(color)) {
+                    if (playerInputObserver.getIterator().hasNext()) {
+                        return new DefaultBoardState(board, color);
+                    }
+
+                    return new StaleMatedBoardState(board, color);
+                }
+
+                return new DefaultBoardState(board, color);
+            });
 
         Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
         assertionMap.put(DrawExecutionEvent.class, (gm, evt) -> {
@@ -323,6 +372,7 @@ public class GameTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void testNegativeGameDrawFlow() {
         var board = spy(new StandardBoard());
 
@@ -336,14 +386,6 @@ public class GameTest {
         doCallRealMethod()
             .when(board).notifyObservers(any());
 
-        when(board.isChecked(any()))
-            .thenReturn(false);
-        when(board.isStaleMated(any()))
-            .thenAnswer(inv -> {
-                // allow white and black moves and breaks on the second white move
-                return Colors.WHITE.equals(inv.getArgument(0, Color.class));
-            });
-
         var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
         doCallRealMethod()
             .when(whitePlayer).play();
@@ -352,10 +394,30 @@ public class GameTest {
         doCallRealMethod()
             .when(blackPlayer).play();
 
-        var game = new GameMock(whitePlayer, blackPlayer, board);
+        var journal = new JournalImpl<Memento>();
+        var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
-        board.addObserver(new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4"));
+        var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
+
+        var playerInputObserver =
+                new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4");
+
+        board.addObserver(playerInputObserver);
         board.addObserver(new PlayerInputObserverInteratorMock(blackPlayer, game, "draw"));
+
+        when(boardStateEvaluator.evaluate(any()))
+            .thenAnswer(inv -> {
+                var color = inv.getArgument(0, Color.class);
+                if (Colors.WHITE.equals(color)) {
+                    if (playerInputObserver.getIterator().hasNext()) {
+                        return new DefaultBoardState(board, color);
+                    }
+
+                    return new StaleMatedBoardState(board, color);
+                }
+
+                return new DefaultBoardState(board, color);
+            });
 
         Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
         assertionMap.put(PlayerDrawActionExceptionEvent.class, (gm, evt) -> {

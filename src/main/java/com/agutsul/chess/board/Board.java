@@ -49,8 +49,4 @@ public interface Board {
     boolean isMonitored(Position position, Color attackerColor);
     boolean isProtected(Piece<Color> piece);
     boolean isPinned(Piece<Color> piece);
-
-    boolean isChecked(Color color);
-    boolean isCheckMated(Color color);
-    boolean isStaleMated(Color color);
 }

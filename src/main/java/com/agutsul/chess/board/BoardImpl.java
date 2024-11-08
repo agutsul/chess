@@ -369,61 +369,9 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public boolean isChecked(Color color) {
-        LOGGER.info("Checking if '{}' is checked", color);
-
-        var optional = getKing(color);
-        if (optional.isEmpty()) {
-            return false;
-        }
-
-        var king = optional.get();
-        return king.isChecked();
-    }
-
-    @Override
-    public boolean isCheckMated(Color color) {
-        LOGGER.info("Checking if '{}' is checkmated", color);
-
-        var optional = getKing(color);
-        if (optional.isEmpty()) {
-            return false;
-        }
-
-        var king = optional.get();
-        return king.isCheckMated();
-    }
-
-    @Override
     public boolean isEmpty(Position position) {
         LOGGER.info("Checking if position '{}' is empty", position);
         return getPiece(position).isEmpty();
-    }
-
-    @Override
-    public boolean isStaleMated(Color color) {
-        LOGGER.info("Checking if '{}' is stalemated", color);
-
-        var actions = new ArrayList<Action<?>>();
-        for (var piece : getPieces(color)) {
-            actions.addAll(getActions(piece));
-        }
-
-        if (actions.isEmpty()) {
-            return true;
-        }
-
-        var allPositions = actions.stream()
-                .map(Action::getPosition)
-                .collect(toSet());
-
-        var attackerPositions = getPieces(color.invert()).stream()
-                .map(piece -> getActions(piece))
-                .flatMap(Collection::stream)
-                .map(Action::getPosition)
-                .collect(toSet());
-
-        return attackerPositions.containsAll(allPositions);
     }
 
     void setPieces(Collection<Piece<Color>> pieces) {
