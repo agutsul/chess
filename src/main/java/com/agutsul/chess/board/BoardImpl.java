@@ -84,7 +84,7 @@ final class BoardImpl extends AbstractBoard {
 
     @Override
     public void notifyObservers(Event event) {
-        observers.forEach(observer -> observer.observe(event));
+        this.observers.forEach(observer -> observer.observe(event));
     }
 
     @Override

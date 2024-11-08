@@ -18,7 +18,7 @@ final class CachedBoardStateEvaluator
 
     private final BoardStateEvaluator<BoardState> evaluator;
 
-    public CachedBoardStateEvaluator(Board board, BoardStateEvaluator<BoardState> evaluator) {
+    CachedBoardStateEvaluator(Board board, BoardStateEvaluator<BoardState> evaluator) {
         this.evaluator = evaluator;
         ((Observable) board).addObserver(new BoardStateObserver());
     }

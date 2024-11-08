@@ -1,10 +1,11 @@
 package com.agutsul.chess.board;
 
+import static com.agutsul.chess.position.PositionFactory.positionOf;
+
 import java.util.Optional;
 
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.position.PositionFactory;
 
 public abstract class AbstractBoard
         implements Board, Observable {
@@ -22,13 +23,5 @@ public abstract class AbstractBoard
     @Override
     public String toString() {
         return BoardFormatter.format(this);
-    }
-
-    static Position positionOf(int x, int y) {
-        return PositionFactory.INSTANCE.create(x, y);
-    }
-
-    static Position positionOf(String code) {
-        return PositionFactory.INSTANCE.create(code);
     }
 }

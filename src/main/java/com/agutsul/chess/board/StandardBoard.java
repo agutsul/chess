@@ -1,5 +1,6 @@
 package com.agutsul.chess.board;
 
+import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.Collections.unmodifiableList;
 
 import java.util.ArrayList;
