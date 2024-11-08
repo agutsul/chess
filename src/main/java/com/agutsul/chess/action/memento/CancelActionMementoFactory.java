@@ -15,9 +15,7 @@ import com.agutsul.chess.action.CancelMoveAction;
 import com.agutsul.chess.action.CancelPromoteAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.exception.IllegalActionException;
-import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.PawnPiece;
-import com.agutsul.chess.piece.RookPiece;
 
 public enum CancelActionMementoFactory {
     MOVE_MODE(Action.Type.MOVE) {
@@ -83,24 +81,19 @@ public enum CancelActionMementoFactory {
         Action<?> create(Board board, ActionMemento<?,?> memento) {
             var castlingMemento = (CastlingActionMemento) memento;
 
-            var kingMemento = castlingMemento.getSource();
-            var kingPiece = board.getPiece(kingMemento.getTarget());
-            var kingTargetPosition = board.getPosition(kingMemento.getSource());
+            var kingAction = uncastlingAction(board, castlingMemento.getSource());
+            var rookAction = uncastlingAction(board, castlingMemento.getTarget());
 
-            var rookMemento = castlingMemento.getTarget();
-            var rookPiece = board.getPiece(rookMemento.getTarget());
-            var rookTargetPosition = board.getPosition(rookMemento.getSource());
+            return new CancelCastlingAction(castlingMemento.getCode(), kingAction, rookAction);
+        }
 
-            var kingMove = new UncastlingMoveAction<>(
-                    (KingPiece<?>) kingPiece.get(),
-                    kingTargetPosition.get()
-            );
-            var rookMove = new UncastlingMoveAction<>(
-                    (RookPiece<?>) rookPiece.get(),
-                    rookTargetPosition.get()
-            );
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        private UncastlingMoveAction<?,?> uncastlingAction(Board board,
+                                                           ActionMemento<String,String> memento) {
+            var piece = board.getPiece(memento.getTarget());
+            var position = board.getPosition(memento.getSource());
 
-            return new CancelCastlingAction(castlingMemento.getCode(), kingMove, rookMove);
+            return new UncastlingMoveAction(piece.get(), position.get());
         }
     },
     EN_PASSANT_MODE(Action.Type.EN_PASSANT) {

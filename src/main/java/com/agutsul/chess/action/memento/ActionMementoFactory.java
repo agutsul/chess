@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toMap;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.action.Action;
@@ -25,7 +26,7 @@ public enum ActionMementoFactory {
             return createMemento((PieceMoveAction<?,?>) action);
         }
 
-        private ActionMemento<?,?> createMemento(PieceMoveAction<?,?> action) {
+        private static ActionMemento<?,?> createMemento(PieceMoveAction<?,?> action) {
             return createMemento(action.getType(), action.getSource(), action.getTarget());
         }
     },
@@ -36,7 +37,7 @@ public enum ActionMementoFactory {
             return createMemento((PieceCaptureAction<?,?,?,?>) action);
         }
 
-        private ActionMemento<?,?> createMemento(PieceCaptureAction<?,?,?,?> action) {
+        private static ActionMemento<?,?> createMemento(PieceCaptureAction<?,?,?,?> action) {
             return createMemento(
                     action.getType(),
                     action.getSource(),
@@ -51,7 +52,7 @@ public enum ActionMementoFactory {
             return createMemento((PiecePromoteAction<?,?>) action);
         }
 
-        private PromoteActionMemento createMemento(PiecePromoteAction<?,?> action) {
+        private static PromoteActionMemento createMemento(PiecePromoteAction<?,?> action) {
             var originAction = action.getSource();
             var memento = createMemento(
                     originAction.getType(),
@@ -69,16 +70,14 @@ public enum ActionMementoFactory {
             return createMemento((PieceCastlingAction<?,?,?>) action);
         }
 
-        private CastlingActionMemento createMemento(PieceCastlingAction<?,?,?> action) {
-            var kingAction = Stream.of(action.getSource(), action.getTarget())
-                    .filter(a -> Objects.equals(action.getPosition(), a.getPosition()))
-                    .findFirst()
-                    .get();
+        private static CastlingActionMemento createMemento(PieceCastlingAction<?,?,?> action) {
+            var kingPosition = action.getPosition();
 
-            var rookAction = Stream.of(action.getSource(), action.getTarget())
-                    .filter(a -> !Objects.equals(action.getPosition(), a.getPosition()))
-                    .findFirst()
-                    .get();
+            var kingAction = filterAction(action,
+                    moveAction -> Objects.equals(kingPosition,  moveAction.getPosition()));
+
+            var rookAction = filterAction(action,
+                    moveAction -> !Objects.equals(kingPosition, moveAction.getPosition()));
 
             return new CastlingActionMemento(
                     action.getCode(),
@@ -88,8 +87,23 @@ public enum ActionMementoFactory {
             );
         }
 
-        private ActionMemento<String,String> createMemento(CastlingMoveAction<?,?> action) {
-            return createMemento(action.getType(), action.getSource(), action.getPosition());
+        private static CastlingMoveAction<?,?> filterAction(PieceCastlingAction<?,?,?> castlingAction,
+                                                            Predicate<CastlingMoveAction<?,?>> predicate) {
+
+            var action = Stream.of(castlingAction.getSource(), castlingAction.getTarget())
+                    .filter(moveAction -> predicate.test(moveAction))
+                    .findFirst()
+                    .get();
+
+            return action;
+        }
+
+        private static ActionMemento<String,String> createMemento(CastlingMoveAction<?,?> action) {
+            return createMemento(
+                    action.getType(),
+                    action.getSource(),
+                    action.getPosition()
+            );
         }
     },
     EN_PASSANT_MODE(Action.Type.EN_PASSANT) {
@@ -99,7 +113,7 @@ public enum ActionMementoFactory {
             return createMemento((PieceEnPassantAction<?,?,?,?>) action);
         }
 
-        private EnPassantActionMemento createMemento(PieceEnPassantAction<?,?,?,?> action) {
+        private static EnPassantActionMemento createMemento(PieceEnPassantAction<?,?,?,?> action) {
             var sourcePawn = action.getSource();
             var targetPawn = action.getTarget();
 
