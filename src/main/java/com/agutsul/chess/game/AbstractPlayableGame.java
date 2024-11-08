@@ -119,7 +119,7 @@ public abstract class AbstractPlayableGame
         logger.info("Checking board state ...");
 
         var currentBoardState = board.getState();
-        if (currentBoardState.getType().isTerminal()) {
+        if (currentBoardState.isTerminal()) {
             return false;
         }
 
@@ -129,7 +129,7 @@ public abstract class AbstractPlayableGame
         board.setState(nextBoardState);
 
         logger.info("Board state: {}", nextBoardState);
-        return !nextBoardState.getType().isTerminal();
+        return !nextBoardState.isTerminal();
     }
 
     @Override

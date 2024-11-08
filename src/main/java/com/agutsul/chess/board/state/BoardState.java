@@ -36,9 +36,15 @@ public interface BoardState
         }
     }
 
-    Type getType();
     Color getColor();
 
+    Type getType();
+
+    default boolean isTerminal() {
+        return getType().isTerminal();
+    }
+
     Collection<Action<?>> getActions(Piece<Color> piece);
+
     Collection<Impact<?>> getImpacts(Piece<Color> piece);
 }
