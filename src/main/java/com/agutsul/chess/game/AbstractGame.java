@@ -51,7 +51,7 @@ abstract class AbstractGame
 
     @Override
     public final GameState getState() {
-        if (getFinishedAt() == null) {
+        if (Objects.isNull(getFinishedAt())) {
             return new DefaultGameState();
         }
 

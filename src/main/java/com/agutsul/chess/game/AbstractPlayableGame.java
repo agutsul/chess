@@ -88,7 +88,9 @@ public abstract class AbstractPlayableGame
             var winner = currentPlayer.equals(whitePlayer) ? whitePlayer : blackPlayer;
             logger.info("{} wins. Player '{}'", winner.getColor(), winner.getName());
             return Optional.of(winner);
-        } else if (AGREED_DRAW.equals(boardState.getType())) {
+        }
+
+        if (AGREED_DRAW.equals(boardState.getType())) {
             var winner = currentPlayer.equals(whitePlayer) ? blackPlayer : whitePlayer;
             logger.info("{} wins. Player '{}'", winner.getColor(), winner.getName());
             return Optional.of(winner);
