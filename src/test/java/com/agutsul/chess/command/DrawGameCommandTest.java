@@ -20,7 +20,7 @@ import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
-import com.agutsul.chess.game.AbstractGame;
+import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.player.UserPlayer;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,7 +29,7 @@ public class DrawGameCommandTest {
     @Test
     void testDrawGameCommand() {
         var board = new BoardBuilder().build();
-        var game = mock(AbstractGame.class);
+        var game = mock(AbstractPlayableGame.class);
         when(game.getBoard())
             .thenReturn(board);
 
@@ -53,7 +53,7 @@ public class DrawGameCommandTest {
         doThrow(new RuntimeException("test"))
             .when(board).setState(any());
 
-        var game = mock(AbstractGame.class);
+        var game = mock(AbstractPlayableGame.class);
         when(game.getBoard())
             .thenReturn(board);
 

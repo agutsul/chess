@@ -7,11 +7,11 @@ import org.slf4j.Logger;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.event.Observable;
-import com.agutsul.chess.game.AbstractGame;
+import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.player.Player;
 
 public final class ConsoleGame
-        extends AbstractGame {
+        extends AbstractPlayableGame {
 
     private static final Logger LOGGER = getLogger(ConsoleGame.class);
 

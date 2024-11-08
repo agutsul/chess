@@ -21,7 +21,7 @@ public enum ActionMementoFactory {
     MOVE_MODE(Action.Type.MOVE) {
 
         @Override
-        ActionMemento<?,?> createMemento(Action<?> action) {
+        ActionMemento<?,?> create(Action<?> action) {
             return createMemento((PieceMoveAction<?,?>) action);
         }
 
@@ -32,7 +32,7 @@ public enum ActionMementoFactory {
     CAPTURE_MODE(Action.Type.CAPTURE) {
 
         @Override
-        ActionMemento<?,?> createMemento(Action<?> action) {
+        ActionMemento<?,?> create(Action<?> action) {
             return createMemento((PieceCaptureAction<?,?,?,?>) action);
         }
 
@@ -47,7 +47,7 @@ public enum ActionMementoFactory {
     PROMOTE_MODE(Action.Type.PROMOTE) {
 
         @Override
-        ActionMemento<?,?> createMemento(Action<?> action) {
+        ActionMemento<?,?> create(Action<?> action) {
             return createMemento((PiecePromoteAction<?,?>) action);
         }
 
@@ -65,7 +65,7 @@ public enum ActionMementoFactory {
     CASTLING_MODE(Action.Type.CASTLING) {
 
         @Override
-        ActionMemento<?,?> createMemento(Action<?> action) {
+        ActionMemento<?,?> create(Action<?> action) {
             return createMemento((PieceCastlingAction<?,?,?>) action);
         }
 
@@ -95,7 +95,7 @@ public enum ActionMementoFactory {
     EN_PASSANT_MODE(Action.Type.EN_PASSANT) {
 
         @Override
-        ActionMemento<?,?> createMemento(Action<?> action) {
+        ActionMemento<?,?> create(Action<?> action) {
             return createMemento((PieceEnPassantAction<?,?,?,?>) action);
         }
 
@@ -121,10 +121,10 @@ public enum ActionMementoFactory {
         return type;
     }
 
-    abstract ActionMemento<?,?> createMemento(Action<?> action);
+    abstract ActionMemento<?,?> create(Action<?> action);
 
-    public static ActionMemento<?,?> create(Action<?> action) {
-        return MODES.get(action.getType()).createMemento(action);
+    public static ActionMemento<?,?> createMemento(Action<?> action) {
+        return MODES.get(action.getType()).create(action);
     }
 
     static ActionMemento<String,String> createMemento(Action.Type actionType,

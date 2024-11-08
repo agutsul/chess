@@ -1,5 +1,7 @@
 package com.agutsul.chess.journal;
 
-public interface Memento {
+import java.time.LocalDateTime;
 
+public interface Memento {
+    LocalDateTime getCreatedAt();
 }

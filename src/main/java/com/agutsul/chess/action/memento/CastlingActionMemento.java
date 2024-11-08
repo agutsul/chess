@@ -1,25 +1,23 @@
 package com.agutsul.chess.action.memento;
 
+import static java.time.LocalDateTime.now;
+
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
 final class CastlingActionMemento
-        implements ActionMemento<ActionMemento<String,String>,ActionMemento<String,String>> {
+        extends AbstractActionMemento<ActionMemento<String,String>,ActionMemento<String,String>> {
 
     private final String code;
-    private final Action.Type actionType;
-    private final ActionMemento<String,String> kingMemento;
-    private final ActionMemento<String,String> rookMemento;
 
     CastlingActionMemento(String code,
                           Action.Type actionType,
                           ActionMemento<String,String> kingMemento,
                           ActionMemento<String,String> rookMemento) {
+
+        super(now(), actionType, kingMemento, rookMemento);
         this.code = code;
-        this.actionType = actionType;
-        this.kingMemento = kingMemento;
-        this.rookMemento = rookMemento;
     }
 
     @Override
@@ -29,27 +27,12 @@ final class CastlingActionMemento
 
     @Override
     public Color getColor() {
-        return kingMemento.getColor();
-    }
-
-    @Override
-    public Action.Type getActionType() {
-        return actionType;
+        return getSource().getColor();
     }
 
     @Override
     public Piece.Type getPieceType() {
         return getSource().getPieceType();
-    }
-
-    @Override
-    public ActionMemento<String,String> getSource() {
-        return kingMemento;
-    }
-
-    @Override
-    public ActionMemento<String,String> getTarget() {
-        return rookMemento;
     }
 
     @Override

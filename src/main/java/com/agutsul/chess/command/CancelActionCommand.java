@@ -15,7 +15,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.CommandException;
-import com.agutsul.chess.game.AbstractGame;
+import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
 
 public class CancelActionCommand
@@ -39,7 +39,7 @@ public class CancelActionCommand
 
     @Override
     protected void preExecute() throws CommandException {
-        var aGame = (AbstractGame) this.game;
+        var aGame = (AbstractPlayableGame) this.game;
 
         var journal = aGame.getJournal();
         if (journal.isEmpty()) {
@@ -69,6 +69,6 @@ public class CancelActionCommand
     }
 
     private static Action<?> createAction(Board board, ActionMemento<?,?> memento) {
-        return CancelActionMementoFactory.create(board, memento);
+        return CancelActionMementoFactory.createAction(board, memento);
     }
 }

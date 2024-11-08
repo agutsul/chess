@@ -44,11 +44,11 @@ public class CancelActionMementoFactoryTest {
                 .findFirst()
                 .get();
 
-        var memento = ActionMementoFactory.create(moveAction);
+        var memento = ActionMementoFactory.createMemento(moveAction);
 
         moveAction.execute();
 
-        var cancelAction = CancelActionMementoFactory.create(board, memento);
+        var cancelAction = CancelActionMementoFactory.createAction(board, memento);
 
         assertEquals(Action.Type.MOVE, cancelAction.getType());
         assertEquals(sourcePosition, cancelAction.getPosition());
@@ -73,11 +73,11 @@ public class CancelActionMementoFactoryTest {
                 .findFirst()
                 .get();
 
-        var memento = ActionMementoFactory.create(captureAction);
+        var memento = ActionMementoFactory.createMemento(captureAction);
 
         captureAction.execute();
 
-        var cancelAction = CancelActionMementoFactory.create(board, memento);
+        var cancelAction = CancelActionMementoFactory.createAction(board, memento);
 
         assertEquals(Action.Type.CAPTURE, cancelAction.getType());
         assertEquals(targetPosition, cancelAction.getPosition());
@@ -101,13 +101,13 @@ public class CancelActionMementoFactoryTest {
                 .findFirst()
                 .get();
 
-        var memento = ActionMementoFactory.create(promoteAction);
+        var memento = ActionMementoFactory.createMemento(promoteAction);
 
         promoteAction.execute();
 
         var queen = board.getPiece(targetPosition).get();
 
-        var cancelAction = CancelActionMementoFactory.create(board, memento);
+        var cancelAction = CancelActionMementoFactory.createAction(board, memento);
 
         assertEquals(Action.Type.PROMOTE, cancelAction.getType());
         assertEquals(sourcePosition, cancelAction.getPosition());
@@ -138,7 +138,7 @@ public class CancelActionMementoFactoryTest {
                 .findFirst()
                 .get();
 
-        var memento = ActionMementoFactory.create(promoteAction);
+        var memento = ActionMementoFactory.createMemento(promoteAction);
 
         promoteAction.execute();
         assertFalse(rook.isActive());
@@ -146,7 +146,7 @@ public class CancelActionMementoFactoryTest {
         var queen = board.getPiece(targetPosition).get();
         assertTrue(queen.isActive());
 
-        var cancelAction = CancelActionMementoFactory.create(board, memento);
+        var cancelAction = CancelActionMementoFactory.createAction(board, memento);
 
         assertEquals(Action.Type.PROMOTE, cancelAction.getType());
         assertEquals(Action.Type.CAPTURE, ((Action<?>) cancelAction.getSource()).getType());
@@ -170,11 +170,11 @@ public class CancelActionMementoFactoryTest {
                 .findFirst()
                 .get();
 
-        var memento = ActionMementoFactory.create(castlingAction);
+        var memento = ActionMementoFactory.createMemento(castlingAction);
 
         castlingAction.execute();
 
-        var cancelAction = CancelActionMementoFactory.create(board, memento);
+        var cancelAction = CancelActionMementoFactory.createAction(board, memento);
 
         assertEquals(Action.Type.CASTLING, cancelAction.getType());
         assertEquals("O-O", cancelAction.getCode());
@@ -201,11 +201,11 @@ public class CancelActionMementoFactoryTest {
                 .findFirst()
                 .get();
 
-        var memento = ActionMementoFactory.create(enPassantAction);
+        var memento = ActionMementoFactory.createMemento(enPassantAction);
 
         enPassantAction.execute();
 
-        var cancelAction = CancelActionMementoFactory.create(board, memento);
+        var cancelAction = CancelActionMementoFactory.createAction(board, memento);
 
         assertEquals(Action.Type.EN_PASSANT, cancelAction.getType());
 

@@ -31,7 +31,7 @@ public class ActionMementoFactoryTest {
         var pawn = board.getPiece("e2");
         var actions = board.getActions(pawn.get(), PieceMoveAction.class);
 
-        var memento = ActionMementoFactory.create(actions.iterator().next());
+        var memento = ActionMementoFactory.createMemento(actions.iterator().next());
 
         assertEquals(Action.Type.MOVE, memento.getActionType());
         assertEquals("MOVE PAWN(e2 e3)", String.valueOf(memento));
@@ -47,7 +47,7 @@ public class ActionMementoFactoryTest {
         var pawn = board.getPiece("e2");
         var actions = board.getActions(pawn.get(), PieceCaptureAction.class);
 
-        var memento = ActionMementoFactory.create(actions.iterator().next());
+        var memento = ActionMementoFactory.createMemento(actions.iterator().next());
 
         assertEquals(Action.Type.CAPTURE, memento.getActionType());
         assertEquals("CAPTURE PAWN(e2 d3)", String.valueOf(memento));
@@ -63,7 +63,7 @@ public class ActionMementoFactoryTest {
         var king = board.getPiece("e1");
         var actions = board.getActions(king.get(), PieceCastlingAction.class);
 
-        var memento = ActionMementoFactory.create(actions.iterator().next());
+        var memento = ActionMementoFactory.createMemento(actions.iterator().next());
 
         assertEquals(Action.Type.CASTLING, memento.getActionType());
         assertEquals("CASTLING(MOVE KING(e1 g1) MOVE ROOK(h1 f1))", String.valueOf(memento));
@@ -82,7 +82,7 @@ public class ActionMementoFactoryTest {
         when(action.getPieceType())
             .thenReturn(Piece.Type.QUEEN);
 
-        var memento = ActionMementoFactory.create(action);
+        var memento = ActionMementoFactory.createMemento(action);
 
         assertEquals(Action.Type.PROMOTE, memento.getActionType());
         assertEquals("PROMOTE(MOVE PAWN(e7 e8) QUEEN)", String.valueOf(memento));
@@ -101,7 +101,7 @@ public class ActionMementoFactoryTest {
         var whitePawn = (PawnPiece<Color>) board.getPiece("b5").get();
         var actions = board.getActions(whitePawn, PieceEnPassantAction.class);
 
-        var memento = ActionMementoFactory.create(actions.iterator().next());
+        var memento = ActionMementoFactory.createMemento(actions.iterator().next());
 
         assertEquals(Action.Type.EN_PASSANT, memento.getActionType());
         assertEquals("EN_PASSANT(CAPTURE PAWN(b5 a5) a6)", String.valueOf(memento));

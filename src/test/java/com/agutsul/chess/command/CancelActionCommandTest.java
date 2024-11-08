@@ -20,7 +20,7 @@ import com.agutsul.chess.action.memento.ActionMementoMock;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
-import com.agutsul.chess.game.AbstractGame;
+import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.journal.Memento;
@@ -36,7 +36,7 @@ public class CancelActionCommandTest {
         when(journal.isEmpty())
             .thenReturn(true);
 
-        var game = mock(AbstractGame.class);
+        var game = mock(AbstractPlayableGame.class);
         when(game.getJournal())
             .thenReturn(journal);
 
@@ -51,7 +51,7 @@ public class CancelActionCommandTest {
 
     @Test
     void testWrongPlayerActionException() {
-        var game = mock(AbstractGame.class);
+        var game = mock(AbstractPlayableGame.class);
 
         var journal = new JournalImpl<Memento>();
         journal.add(new ActionMementoMock<>(
@@ -76,7 +76,7 @@ public class CancelActionCommandTest {
 
     @Test
     void testCancelActionCommandWithExecutionException() {
-        var game = mock(AbstractGame.class);
+        var game = mock(AbstractPlayableGame.class);
 
         var journal = new JournalImpl<Memento>();
         journal.add(new ActionMementoMock<>(
@@ -114,7 +114,7 @@ public class CancelActionCommandTest {
 
     @Test
     void testCancelActionCommand() {
-        var game = mock(AbstractGame.class);
+        var game = mock(AbstractPlayableGame.class);
 
         var journal = new JournalImpl<Memento>();
         journal.add(new ActionMementoMock<>(

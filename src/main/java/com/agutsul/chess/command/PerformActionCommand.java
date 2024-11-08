@@ -100,6 +100,6 @@ public class PerformActionCommand
     }
 
     private static ActionMemento<?,?> createMemento(Action<?> action) {
-        return ActionMementoFactory.create(action);
+        return ActionMementoFactory.createMemento(action);
     }
 }

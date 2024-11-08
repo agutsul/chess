@@ -14,7 +14,7 @@ import com.agutsul.chess.command.PerformActionCommand;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
-import com.agutsul.chess.game.AbstractGame;
+import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionEvent;
@@ -48,7 +48,7 @@ public final class PlayerActionOberver
     }
 
     private void process(PlayerActionEvent event) {
-        var board = ((AbstractGame) this.game).getBoard();
+        var board = ((AbstractPlayableGame) this.game).getBoard();
         try {
             var command = new PerformActionCommand(board, (Observable) this.game);
             command.setSource(event.getSource());
@@ -82,7 +82,7 @@ public final class PlayerActionOberver
 
             sleepQuietly(Duration.ofMillis(1));
         } finally {
-            var board = ((AbstractGame) this.game).getBoard();
+            var board = ((AbstractPlayableGame) this.game).getBoard();
             requestPlayerAction(board, player);
         }
     }
@@ -98,7 +98,7 @@ public final class PlayerActionOberver
 
             sleepQuietly(Duration.ofMillis(1));
 
-            var board = ((AbstractGame) this.game).getBoard();
+            var board = ((AbstractPlayableGame) this.game).getBoard();
             requestPlayerAction(board, player);
         }
     }

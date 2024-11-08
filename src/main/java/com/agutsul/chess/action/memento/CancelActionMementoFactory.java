@@ -24,7 +24,7 @@ public enum CancelActionMementoFactory {
 
         @Override
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        Action<?> createAction(Board board, ActionMemento<?,?> memento) {
+        Action<?> create(Board board, ActionMemento<?,?> memento) {
             var actionMemento = (ActionMemento<String,String>) memento;
 
             var piece = board.getPiece(actionMemento.getTarget());
@@ -37,7 +37,7 @@ public enum CancelActionMementoFactory {
 
         @Override
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        Action<?> createAction(Board board, ActionMemento<?,?> memento) {
+        Action<?> create(Board board, ActionMemento<?,?> memento) {
             var actionMemento = (ActionMemento<String,String>) memento;
 
             var predator = board.getPiece(actionMemento.getTarget());
@@ -56,17 +56,17 @@ public enum CancelActionMementoFactory {
 
         @Override
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        Action<?> createAction(Board board, ActionMemento<?,?> memento) {
+        Action<?> create(Board board, ActionMemento<?,?> memento) {
             var actionMemento = (PromoteActionMemento) memento;
             var originMemento = actionMemento.getTarget();
 
             if (Action.Type.MOVE.equals(originMemento.getActionType())) {
-                var originAction = MOVE_MODE.createAction(board, originMemento);
+                var originAction = MOVE_MODE.create(board, originMemento);
                 return new CancelPromoteAction((CancelMoveAction<?,?>) originAction);
             }
 
             if (Action.Type.CAPTURE.equals(originMemento.getActionType())) {
-                var originAction = CAPTURE_MODE.createAction(board, originMemento);
+                var originAction = CAPTURE_MODE.create(board, originMemento);
                 return new CancelPromoteAction((CancelCaptureAction<?,?,?,?>) originAction);
             }
 
@@ -80,7 +80,7 @@ public enum CancelActionMementoFactory {
 
         @Override
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        Action<?> createAction(Board board, ActionMemento<?,?> memento) {
+        Action<?> create(Board board, ActionMemento<?,?> memento) {
             var castlingMemento = (CastlingActionMemento) memento;
 
             var kingMemento = castlingMemento.getSource();
@@ -106,7 +106,7 @@ public enum CancelActionMementoFactory {
     EN_PASSANT_MODE(Action.Type.EN_PASSANT) {
 
         @Override
-        Action<?> createAction(Board board, ActionMemento<?,?> memento) {
+        Action<?> create(Board board, ActionMemento<?,?> memento) {
             var actionMemento = (EnPassantActionMemento) memento;
             var captureMemento = actionMemento.getSource();
 
@@ -136,9 +136,9 @@ public enum CancelActionMementoFactory {
         return type;
     }
 
-    abstract Action<?> createAction(Board board, ActionMemento<?,?> memento);
+    abstract Action<?> create(Board board, ActionMemento<?,?> memento);
 
-    public static Action<?> create(Board board, ActionMemento<?,?> memento) {
-        return MODES.get(memento.getActionType()).createAction(board, memento);
+    public static Action<?> createAction(Board board, ActionMemento<?,?> memento) {
+        return MODES.get(memento.getActionType()).create(board, memento);
     }
 }

@@ -1,5 +1,7 @@
 package com.agutsul.chess.action.memento;
 
+import java.time.LocalDateTime;
+
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
@@ -11,6 +13,11 @@ class ActionMementoProxy<SOURCE,TARGET>
 
     ActionMementoProxy(ActionMemento<SOURCE,TARGET> origin) {
         this.origin = origin;
+    }
+
+    @Override
+    public LocalDateTime getCreatedAt() {
+        return origin.getCreatedAt();
     }
 
     @Override

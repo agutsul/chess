@@ -9,7 +9,7 @@ import com.agutsul.chess.action.event.DrawPerformedEvent;
 import com.agutsul.chess.board.state.AgreedDrawBoardState;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.CommandException;
-import com.agutsul.chess.game.AbstractGame;
+import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 
@@ -32,7 +32,7 @@ public class DrawGameCommand
         ((Observable) this.game).notifyObservers(new DrawExecutionEvent(this.player));
 
         try {
-            var board = ((AbstractGame) this.game).getBoard();
+            var board = ((AbstractPlayableGame) this.game).getBoard();
             board.setState(new AgreedDrawBoardState(board, player.getColor()));
         } catch (Exception e) {
             throw new CommandException(e.getMessage());

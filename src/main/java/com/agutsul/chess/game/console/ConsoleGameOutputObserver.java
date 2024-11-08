@@ -14,7 +14,7 @@ import com.agutsul.chess.action.event.ActionPerformedEvent;
 import com.agutsul.chess.action.event.DrawExecutionEvent;
 import com.agutsul.chess.action.event.DrawPerformedEvent;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.game.AbstractGame;
+import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
@@ -47,12 +47,12 @@ final class ConsoleGameOutputObserver
         System.out.println(ENTER_ACTION_MESSAGE);
         System.out.println(ENTER_ACTION_EXAMPLE_MESSAGE);
 
-        displayBoard(((AbstractGame) event.getGame()).getBoard());
+        displayBoard(((AbstractPlayableGame) event.getGame()).getBoard());
     }
 
     @Override
     protected void process(GameOverEvent event) {
-        var game = (AbstractGame) event.getGame();
+        var game = (AbstractPlayableGame) event.getGame();
         var line = "-".repeat(50);
 
         System.out.println(line);
@@ -65,7 +65,7 @@ final class ConsoleGameOutputObserver
 
     @Override
     protected void process(ActionPerformedEvent ignoredEvent) {
-        displayBoard(((AbstractGame) this.game).getBoard());
+        displayBoard(((AbstractPlayableGame) this.game).getBoard());
     }
 
     @Override
@@ -75,7 +75,7 @@ final class ConsoleGameOutputObserver
 
     @Override
     protected void process(ActionCancelledEvent ignoredEvent) {
-        displayBoard(((AbstractGame) this.game).getBoard());
+        displayBoard(((AbstractPlayableGame) this.game).getBoard());
     }
 
     @Override
@@ -109,7 +109,7 @@ final class ConsoleGameOutputObserver
 
     @Override
     protected void process(DrawPerformedEvent ignoredEvent) {
-        displayBoard(((AbstractGame) this.game).getBoard());
+        displayBoard(((AbstractPlayableGame) this.game).getBoard());
     }
 
     private static void displayAction(Action<?> action) {

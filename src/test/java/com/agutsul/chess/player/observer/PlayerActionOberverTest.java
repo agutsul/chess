@@ -32,7 +32,7 @@ import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
-import com.agutsul.chess.game.AbstractGame;
+import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.journal.Memento;
@@ -53,7 +53,7 @@ public class PlayerActionOberverTest {
 
     @Test
     void testNoProcessingEvent() {
-        var game = mock(AbstractGame.class);
+        var game = mock(AbstractPlayableGame.class);
         var observer = new PlayerActionOberver(game);
         observer.observe(mock(Event.class));
 
@@ -82,7 +82,7 @@ public class PlayerActionOberverTest {
         when(board.getActions(any()))
             .thenReturn(List.of(action));
 
-        var game = mock(AbstractGame.class);
+        var game = mock(AbstractPlayableGame.class);
         when(game.getBoard())
             .thenReturn(board);
 
@@ -98,7 +98,7 @@ public class PlayerActionOberverTest {
         when(board.getPiece(anyString()))
             .thenReturn(Optional.empty());
 
-        var game = mock(AbstractGame.class);
+        var game = mock(AbstractPlayableGame.class);
         when(game.getBoard())
             .thenReturn(board);
 
@@ -116,7 +116,7 @@ public class PlayerActionOberverTest {
         when(journal.isEmpty())
             .thenReturn(true);
 
-        var game = mock(AbstractGame.class);
+        var game = mock(AbstractPlayableGame.class);
         when(game.getJournal())
             .thenReturn(journal);
 
@@ -148,7 +148,7 @@ public class PlayerActionOberverTest {
         journal.add(mockActionMemento(Colors.WHITE));
         journal.add(mockActionMemento(Colors.BLACK));
 
-        var game = mock(AbstractGame.class);
+        var game = mock(AbstractPlayableGame.class);
         when(game.getBoard())
             .thenReturn(board);
         when(game.getJournal())
@@ -183,7 +183,7 @@ public class PlayerActionOberverTest {
             return null;
         }).when(board).setState(any());
 
-        var game = mock(AbstractGame.class);
+        var game = mock(AbstractPlayableGame.class);
         when(game.getBoard())
             .thenReturn(board);
 
@@ -204,7 +204,7 @@ public class PlayerActionOberverTest {
         doThrow(RuntimeException.class)
             .when(board).setState(any());
 
-        var game = mock(AbstractGame.class);
+        var game = mock(AbstractPlayableGame.class);
         when(game.getBoard())
             .thenReturn(board);
 
