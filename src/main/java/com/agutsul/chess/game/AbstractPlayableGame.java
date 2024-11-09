@@ -51,11 +51,7 @@ public abstract class AbstractPlayableGame
 
     private Player currentPlayer;
 
-    protected AbstractPlayableGame(Logger logger,
-                                   Player whitePlayer,
-                                   Player blackPlayer,
-                                   Board board) {
-
+    public AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer, Board board) {
         this(logger, whitePlayer, blackPlayer, board, new JournalImpl());
     }
 
@@ -105,7 +101,7 @@ public abstract class AbstractPlayableGame
         var boardState = board.getState();
 
         if (CHECK_MATED.equals(boardState.getType())) {
-            var winner = currentPlayer.equals(whitePlayer) ? whitePlayer : blackPlayer;
+            var winner = currentPlayer;
             logger.info("{} wins. Player '{}'", winner.getColor(), winner.getName());
             return Optional.of(winner);
         }
@@ -113,7 +109,7 @@ public abstract class AbstractPlayableGame
         if (AGREED_DRAW.equals(boardState.getType())
                 || FIVE_FOLD_REPETITION.equals(boardState.getType())) {
 
-            var winner = currentPlayer.equals(whitePlayer) ? blackPlayer : whitePlayer;
+            var winner = getOpponentPlayer();
             logger.info("{} wins. Player '{}'", winner.getColor(), winner.getName());
             return Optional.of(winner);
         }

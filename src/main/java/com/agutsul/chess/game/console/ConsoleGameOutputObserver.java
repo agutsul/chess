@@ -60,7 +60,10 @@ final class ConsoleGameOutputObserver
 
         System.out.println(line);
         displayWinner(game.getWinner());
-        displayDuration(Duration.between(game.getStartedAt(), game.getFinishedAt()));
+
+        if (game.getFinishedAt() != null) {
+            displayDuration(Duration.between(game.getStartedAt(), game.getFinishedAt()));
+        }
     }
 
     @Override
