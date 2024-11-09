@@ -60,9 +60,7 @@ final class FoldRepetitionBoardStateEvaluator
             );
 
             var currentStat = stats.getOrDefault(code, 0);
-            var newStat = currentStat + 1;
-
-            stats.put(code, newStat);
+            stats.put(code, currentStat + 1);
         }
 
         return stats;
