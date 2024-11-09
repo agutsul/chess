@@ -27,11 +27,11 @@ public class JournalFormatter {
         }
     }
 
-    public static String format(Journal<? extends Memento> journal) {
+    public static String format(Journal<ActionMemento<?,?>> journal) {
         return format(journal, Mode.SINGLE_LINE);
     }
 
-    public static String format(Journal<? extends Memento> journal, Mode mode) {
+    public static String format(Journal<ActionMemento<?,?>> journal, Mode mode) {
         var builder = new StringBuilder();
         for (int i = 0, j = 1; i < journal.size(); i+=2, j++) {
 
@@ -51,7 +51,7 @@ public class JournalFormatter {
         return builder.toString();
     }
 
-    private static String format(Memento memento) {
-        return AlgebraicActionFormatter.format((ActionMemento<?,?>) memento);
+    private static String format(ActionMemento<?,?> memento) {
+        return AlgebraicActionFormatter.format(memento);
     }
 }

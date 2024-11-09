@@ -3,6 +3,7 @@ package com.agutsul.chess.game;
 import static com.agutsul.chess.board.state.BoardState.Type.AGREED_DRAW;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
+import static com.agutsul.chess.board.state.BoardState.Type.FIVE_FOLD_REPETITION;
 import static java.time.LocalDateTime.now;
 
 import java.util.Iterator;
@@ -26,7 +27,6 @@ import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
-import com.agutsul.chess.journal.Memento;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.observer.PlayerActionOberver;
 import com.agutsul.chess.player.state.ActivePlayerState;
@@ -40,7 +40,7 @@ public abstract class AbstractPlayableGame
         implements Iterator<Player>, Observable {
 
     private final Board board;
-    private final Journal<Memento> journal;
+    private final Journal<ActionMemento<?,?>> journal;
 
     private final BoardStateEvaluator<BoardState> boardStateEvaluator;
 
@@ -56,14 +56,14 @@ public abstract class AbstractPlayableGame
                                    Player blackPlayer,
                                    Board board) {
 
-        this(logger, whitePlayer, blackPlayer, board, new JournalImpl<>());
+        this(logger, whitePlayer, blackPlayer, board, new JournalImpl());
     }
 
     protected AbstractPlayableGame(Logger logger,
                                    Player whitePlayer,
                                    Player blackPlayer,
                                    Board board,
-                                   Journal<Memento> journal) {
+                                   Journal<ActionMemento<?,?>> journal) {
 
         this(logger, whitePlayer, blackPlayer,
                 board, journal, new BoardStateEvaluatorImpl(board, journal));
@@ -73,7 +73,7 @@ public abstract class AbstractPlayableGame
                                    Player whitePlayer,
                                    Player blackPlayer,
                                    Board board,
-                                   Journal<Memento> journal,
+                                   Journal<ActionMemento<?,?>> journal,
                                    BoardStateEvaluator<BoardState> boardStateEvaluator) {
 
         super(logger, whitePlayer, blackPlayer);
@@ -96,7 +96,7 @@ public abstract class AbstractPlayableGame
     }
 
     @Override
-    public final Journal<Memento> getJournal() {
+    public final Journal<ActionMemento<?,?>> getJournal() {
         return journal;
     }
 
@@ -110,7 +110,9 @@ public abstract class AbstractPlayableGame
             return Optional.of(winner);
         }
 
-        if (AGREED_DRAW.equals(boardState.getType())) {
+        if (AGREED_DRAW.equals(boardState.getType())
+                || FIVE_FOLD_REPETITION.equals(boardState.getType())) {
+
             var winner = currentPlayer.equals(whitePlayer) ? blackPlayer : whitePlayer;
             logger.info("{} wins. Player '{}'", winner.getColor(), winner.getName());
             return Optional.of(winner);

@@ -45,7 +45,6 @@ import com.agutsul.chess.event.Event;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.journal.JournalImpl;
-import com.agutsul.chess.journal.Memento;
 import com.agutsul.chess.mock.GameMock;
 import com.agutsul.chess.mock.GameOutputObserverMock;
 import com.agutsul.chess.mock.PlayerInputObserverMock;
@@ -126,7 +125,7 @@ public class GameTest {
         var board = spy(new StandardBoard());
         doCallRealMethod().when(board).notifyObservers(any());
 
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
 
         var boardStateEvaluator = mock(BoardStateEvaluator.class);
         when(boardStateEvaluator.evaluate(any()))
@@ -194,7 +193,7 @@ public class GameTest {
         var blackPlayer = spy(new UserPlayer("test2", Colors.BLACK));
         doCallRealMethod().when(blackPlayer).play();
 
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
         var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
         var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
@@ -252,7 +251,7 @@ public class GameTest {
         var blackPlayer = spy(new UserPlayer("test2", Colors.BLACK));
         doCallRealMethod().when(blackPlayer).play();
 
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
         var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
         var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
@@ -319,7 +318,7 @@ public class GameTest {
         doCallRealMethod()
             .when(blackPlayer).play();
 
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
         var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
         var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
@@ -394,7 +393,7 @@ public class GameTest {
         doCallRealMethod()
             .when(blackPlayer).play();
 
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
         var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
         var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);

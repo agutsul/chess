@@ -25,6 +25,7 @@ import com.agutsul.chess.action.PieceCastlingAction.CastlingMoveAction;
 import com.agutsul.chess.action.PieceEnPassantAction;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.PiecePromoteAction;
+import com.agutsul.chess.action.memento.ActionMemento;
 import com.agutsul.chess.action.memento.ActionMementoFactory;
 import com.agutsul.chess.action.memento.CheckMatedActionMemento;
 import com.agutsul.chess.action.memento.CheckedActionMemento;
@@ -45,7 +46,7 @@ public class JournalImplTest {
     void testAddMemento() {
         var memento = createMemento();
 
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
         assertTrue(journal.size() == 0);
 
         journal.add(memento);
@@ -57,7 +58,7 @@ public class JournalImplTest {
     void testRemoveMemento() {
         var memento = createMemento();
 
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
         journal.add(memento);
 
         assertEquals(1, journal.size());
@@ -71,7 +72,7 @@ public class JournalImplTest {
     void testGetMemento() {
         var memento = createMemento();
 
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
         journal.add(memento);
 
         assertEquals(memento, journal.get(0));
@@ -79,7 +80,7 @@ public class JournalImplTest {
 
     @Test
     void testGetMementoIndexOutOfBoundsException() {
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
 
         var thrown = assertThrows(
                 IndexOutOfBoundsException.class,
@@ -100,7 +101,7 @@ public class JournalImplTest {
         var position = PositionFactory.INSTANCE.create("e4");
         var action = new PieceMoveAction<>(pawn, position);
 
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
         journal.add(ActionMementoFactory.createMemento(action));
 
         var fileJournalContent = readFileContent("journal_move_ply.txt");
@@ -122,7 +123,7 @@ public class JournalImplTest {
             .thenReturn(PositionFactory.INSTANCE.create("c6"));
 
         var action = new PieceCaptureAction<>(knight, pawn);
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
         journal.add(ActionMementoFactory.createMemento(action));
 
         var fileJournalContent = readFileContent("journal_capture_ply.txt");
@@ -149,7 +150,7 @@ public class JournalImplTest {
         when(memento.getPieceType())
             .thenReturn(Piece.Type.QUEEN);
 
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
         journal.add(memento);
 
         var fileJournalContent = readFileContent("journal_promote_ply.txt");
@@ -200,7 +201,7 @@ public class JournalImplTest {
                 new CastlingMoveAction<>(blackRook, PositionFactory.INSTANCE.create("d8"))
         );
 
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
         journal.add(ActionMementoFactory.createMemento(whiteAction));
         journal.add(ActionMementoFactory.createMemento(blackAction));
 
@@ -225,7 +226,7 @@ public class JournalImplTest {
         var position = PositionFactory.INSTANCE.create("a6");
         var action = new PieceEnPassantAction<>(whitePawn, blackPawn, position);
 
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
         journal.add(ActionMementoFactory.createMemento(action));
 
         var fileJournalContent = readFileContent("journal_en_passant_ply.txt");
@@ -243,7 +244,7 @@ public class JournalImplTest {
         var position = PositionFactory.INSTANCE.create("e4");
         var action = new PieceMoveAction<>(pawn, position);
 
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
         journal.add(new CheckedActionMemento<>(ActionMementoFactory.createMemento(action)));
 
         var fileJournalContent = readFileContent("journal_check_ply.txt");
@@ -261,7 +262,7 @@ public class JournalImplTest {
         var position = PositionFactory.INSTANCE.create("e4");
         var action = new PieceMoveAction<>(pawn, position);
 
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
         journal.add(new CheckMatedActionMemento<>(ActionMementoFactory.createMemento(action)));
 
         var fileJournalContent = readFileContent("journal_checkmate_ply.txt");
@@ -276,7 +277,7 @@ public class JournalImplTest {
         return readString(file.toPath());
     }
 
-    private static Memento createMemento() {
+    private static ActionMemento<?,?> createMemento() {
         var board = new BoardBuilder()
                 .withWhitePawn("a2")
                 .build();

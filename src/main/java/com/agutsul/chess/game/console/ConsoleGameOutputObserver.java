@@ -13,6 +13,7 @@ import com.agutsul.chess.action.event.ActionExecutionEvent;
 import com.agutsul.chess.action.event.ActionPerformedEvent;
 import com.agutsul.chess.action.event.DrawExecutionEvent;
 import com.agutsul.chess.action.event.DrawPerformedEvent;
+import com.agutsul.chess.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
@@ -21,7 +22,6 @@ import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.observer.AbstractGameObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalFormatter.Mode;
-import com.agutsul.chess.journal.Memento;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
@@ -120,7 +120,7 @@ final class ConsoleGameOutputObserver
         System.out.println(String.format("%s%s", lineSeparator(), board));
     }
 
-    private static void displayJournal(Journal<Memento> journal) {
+    private static void displayJournal(Journal<ActionMemento<?,?>> journal) {
         System.out.println(format(journal, Mode.MULTI_LINE));
     }
 

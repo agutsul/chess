@@ -35,7 +35,6 @@ import com.agutsul.chess.event.Event;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
-import com.agutsul.chess.journal.Memento;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
@@ -144,7 +143,7 @@ public class PlayerActionOberverTest {
         when(board.getPosition(anyString()))
             .thenReturn(Optional.of(mock(Position.class)));
 
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
         journal.add(mockActionMemento(Colors.WHITE));
         journal.add(mockActionMemento(Colors.BLACK));
 

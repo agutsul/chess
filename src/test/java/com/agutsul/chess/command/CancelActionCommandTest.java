@@ -23,7 +23,6 @@ import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
-import com.agutsul.chess.journal.Memento;
 import com.agutsul.chess.piece.Piece;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,7 +52,7 @@ public class CancelActionCommandTest {
     void testWrongPlayerActionException() {
         var game = mock(AbstractPlayableGame.class);
 
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
         journal.add(new ActionMementoMock<>(
                 Colors.BLACK,
                 Action.Type.MOVE,
@@ -78,7 +77,7 @@ public class CancelActionCommandTest {
     void testCancelActionCommandWithExecutionException() {
         var game = mock(AbstractPlayableGame.class);
 
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
         journal.add(new ActionMementoMock<>(
                 Colors.WHITE,
                 Action.Type.MOVE,
@@ -116,7 +115,7 @@ public class CancelActionCommandTest {
     void testCancelActionCommand() {
         var game = mock(AbstractPlayableGame.class);
 
-        var journal = new JournalImpl<Memento>();
+        var journal = new JournalImpl();
         journal.add(new ActionMementoMock<>(
                 Colors.WHITE,
                 Action.Type.MOVE,
