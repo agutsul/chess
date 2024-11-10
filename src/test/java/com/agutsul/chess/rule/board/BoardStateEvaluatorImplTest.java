@@ -20,7 +20,7 @@ public class BoardStateEvaluatorImplTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    void test() {
+    void testBoardStateEvaluatorImpl() {
         var board = mock(AbstractBoard.class);
         var journal = mock(Journal.class);
 

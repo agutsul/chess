@@ -58,12 +58,12 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
 
                 var rookPosition = rook.getPosition();
                 var kingPosition = king.getPosition();
-                var color = king.getColor().invert();
+                var attackerColor = king.getColor().invert();
 
                 for (int i = kingPosition.x() + 1; i < rookPosition.x(); i++) {
                     var optionalPosition = board.getPosition(i, rookPosition.y());
                     if (optionalPosition.isEmpty()
-                            || board.isAttacked(optionalPosition.get(), color)) {
+                            || board.isAttacked(optionalPosition.get(), attackerColor)) {
 
                         return true;
                     }
@@ -101,12 +101,12 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
 
                 var rookPosition = rook.getPosition();
                 var kingPosition = king.getPosition();
-                var color = king.getColor().invert();
+                var attackerColor = king.getColor().invert();
 
                 for (int i = kingPosition.x() - 1; i > rookPosition.x() + 1; i--) {
                     var optionalPosition = board.getPosition(i, rookPosition.y());
                     if (optionalPosition.isEmpty()
-                            || board.isAttacked(optionalPosition.get(), color)) {
+                            || board.isAttacked(optionalPosition.get(), attackerColor)) {
 
                         return true;
                     }
