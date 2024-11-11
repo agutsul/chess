@@ -168,6 +168,7 @@ public abstract class AbstractPlayableGame
                 currentPlayer.play();
 
                 if (!hasNext()) {
+                    logger.info("Game stopped due to board state: {}", board.getState());
                     break;
                 }
 
@@ -177,6 +178,7 @@ public abstract class AbstractPlayableGame
             finishedAt = now();
             logger.info("Game over");
         } catch (Throwable t) {
+            logger.error("{}: board state: {}", currentPlayer.getColor(), board.getState());
             logger.error("Game exception", t);
         } finally {
             notifyObservers(new GameOverEvent(this));
