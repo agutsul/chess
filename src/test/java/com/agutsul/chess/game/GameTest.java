@@ -44,6 +44,7 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
+import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.mock.GameMock;
 import com.agutsul.chess.mock.GameOutputObserverMock;
@@ -80,7 +81,20 @@ public class GameTest {
         var whitePlayer = mock(Player.class);
         var blackPlayer = mock(Player.class);
 
-        var game = new GameMock(whitePlayer, blackPlayer, board);
+        var journal = mock(Journal.class);
+
+        var boardStateEvaluator = mock(BoardStateEvaluator.class);
+        when(boardStateEvaluator.evaluate(any(Color.class)))
+            .thenAnswer(inv -> {
+                var color = inv.getArgument(0, Color.class);
+                if (Colors.WHITE.equals(color)) {
+                    return new DefaultBoardState(board, color);
+                }
+
+                return new CheckMatedBoardState(board, color);
+            });
+
+        var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
         game.run();
 
         verify(whitePlayer, times(1)).play();
