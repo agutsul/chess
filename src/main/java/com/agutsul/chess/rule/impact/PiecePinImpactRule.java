@@ -118,10 +118,10 @@ public class PiecePinImpactRule<COLOR1 extends Color,
             }
         }
 
-        if (king == null || attacker == null) {
-            return null;
+        if (king != null && attacker != null) {
+            return new PiecePinImpact<>(pinnedPiece, king, attacker);
         }
 
-        return new PiecePinImpact<>(pinnedPiece, king, attacker);
+        return null;
     }
 }
