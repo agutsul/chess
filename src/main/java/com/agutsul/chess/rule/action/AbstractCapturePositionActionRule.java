@@ -19,7 +19,7 @@ public abstract class AbstractCapturePositionActionRule<COLOR1 extends Color,
                                                         ACTION extends PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>>
         extends AbstractCaptureActionRule<COLOR1, COLOR2, PIECE1, PIECE2, ACTION> {
 
-    private final CapturePieceAlgo<COLOR1, PIECE1, Calculated> algo;
+    protected final CapturePieceAlgo<COLOR1, PIECE1, Calculated> algo;
 
     protected AbstractCapturePositionActionRule(Board board,
                                                 CapturePieceAlgo<COLOR1, PIECE1, Calculated> algo) {

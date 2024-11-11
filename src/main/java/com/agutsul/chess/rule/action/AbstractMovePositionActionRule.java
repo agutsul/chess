@@ -17,7 +17,7 @@ public abstract class AbstractMovePositionActionRule<COLOR extends Color,
                                                      ACTION extends PieceMoveAction<COLOR, PIECE>>
         extends AbstractMoveActionRule<COLOR, PIECE, ACTION> {
 
-    private final MovePieceAlgo<COLOR, PIECE, Calculated> algo;
+    protected final MovePieceAlgo<COLOR, PIECE, Calculated> algo;
 
     protected AbstractMovePositionActionRule(Board board,
                                              MovePieceAlgo<COLOR, PIECE, Calculated> algo) {

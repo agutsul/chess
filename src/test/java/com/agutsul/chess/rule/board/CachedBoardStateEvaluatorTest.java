@@ -65,7 +65,7 @@ public class CachedBoardStateEvaluatorTest {
 
         assertEquals(BoardState.Type.CHECK_MATED, boardState.getType());
 
-        board.notifyObservers(new ActionCancelledEvent());
+        board.notifyObservers(new ActionCancelledEvent(Colors.WHITE));
 
         var boardState2 = evaluator.evaluate(Colors.WHITE);
         assertEquals(BoardState.Type.CHECK_MATED, boardState2.getType());

@@ -1,10 +1,7 @@
 package com.agutsul.chess.rule.board;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +24,5 @@ public class BoardStateEvaluatorImplTest {
         var boardStateEvaluator = new BoardStateEvaluatorImpl(board, journal);
         var boardState = boardStateEvaluator.evaluate(Colors.WHITE);
         assertEquals(BoardState.Type.STALE_MATED, boardState.getType());
-
-        verify(board, times(1)).addObserver(any());
     }
 }

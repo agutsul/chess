@@ -5,11 +5,13 @@ import static java.util.Collections.emptyList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.impact.PiecePinImpact;
 import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.KingPiece;
@@ -57,8 +59,18 @@ public class PiecePinImpactRule<COLOR1 extends Color,
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .filter(otherPiece -> piece.getColor() != otherPiece.getColor())
-                    .map(Piece::getType)
-                    .anyMatch(pieceType -> LINE_ATTACK_PIECE_TYPES.contains(pieceType));
+                    .anyMatch(otherPiece -> {
+                        if (!LINE_ATTACK_PIECE_TYPES.contains(otherPiece.getType())) {
+                            return false;
+                        }
+
+                        var impacts = board.getImpacts(otherPiece);
+                        var isMonitored = impacts.stream()
+                                .filter(impact -> Impact.Type.MONITOR.equals(impact.getType()))
+                                .anyMatch(impact -> Objects.equals(impact.getPosition(), king.getPosition()));
+
+                        return isMonitored;
+                    });
 
             if (hasAttacker) {
                 pinLines.add(line);

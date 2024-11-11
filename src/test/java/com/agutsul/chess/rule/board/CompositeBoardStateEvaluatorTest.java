@@ -116,13 +116,8 @@ public class CompositeBoardStateEvaluatorTest {
         var board = mock(Board.class);
 
         var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
-        when(checkedEvaluator.evaluate(any()))
-            .thenReturn(Optional.empty());
-
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
-        when(staleMatedEvaluator.evaluate(any()))
-            .thenReturn(Optional.empty());
 
         var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
         when(foldRepetitionEvaluator.evaluate(any()))

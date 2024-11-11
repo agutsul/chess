@@ -33,9 +33,9 @@ final class CompositeBoardStateEvaluator
                                  FoldRepetitionBoardStateEvaluator foldRepetitionEvaluator) {
         this.board = board;
         this.evaluators = List.of(
+                color -> evaluate(color, foldRepetitionEvaluator),
                 color -> evaluate(color, checkedEvaluator, checkMatedEvaluator),
-                color -> evaluate(color, staleMatedEvaluator),
-                color -> evaluate(color, foldRepetitionEvaluator)
+                color -> evaluate(color, staleMatedEvaluator)
         );
     }
 

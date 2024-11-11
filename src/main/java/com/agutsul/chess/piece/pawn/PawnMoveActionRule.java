@@ -1,5 +1,8 @@
 package com.agutsul.chess.piece.pawn;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -15,6 +18,21 @@ class PawnMoveActionRule<COLOR extends Color,
 
     PawnMoveActionRule(Board board, MovePieceAlgo<COLOR, PAWN, Calculated> algo) {
         super(board, algo);
+    }
+
+    @Override
+    protected Collection<Calculated> calculate(PAWN piece) {
+        var calculatedPositions = algo.calculate(piece);
+
+        var positions = new ArrayList<Calculated>();
+        for (var position : calculatedPositions) {
+            if (!board.isEmpty((Position) position)) {
+                break;
+            }
+            positions.add(position);
+        }
+
+        return positions;
     }
 
     @Override

@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 
 import java.time.Instant;
 import java.util.List;
@@ -13,8 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.action.event.ActionPerformedEvent;
-import com.agutsul.chess.action.memento.ActionMemento;
+import com.agutsul.chess.action.event.ClearPieceDataEvent;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Color;
@@ -205,41 +203,42 @@ public class KingPieceImplTest extends AbstractPieceTest {
     // https://en.wikipedia.org/wiki/Scholar%27s_mate
     void testKingScholarCheckmate() {
         var board = new StandardBoard();
-        var actionPerformedEvent = new ActionPerformedEvent(mock(ActionMemento.class));
+        var whiteActionPerformedEvent = new ClearPieceDataEvent(Colors.WHITE);
+        var blackActionPerformedEvent = new ClearPieceDataEvent(Colors.BLACK);
 
         var whitePawn = (PawnPiece<Color>) board.getPiece("e2").get();
         whitePawn.move(board.getPosition("e4").get());
 
-        board.notifyObservers(actionPerformedEvent);
+        board.notifyObservers(whiteActionPerformedEvent);
 
         var blackPawn = (PawnPiece<Color>) board.getPiece("e7").get();
         blackPawn.move(board.getPosition("e5").get());
 
-        board.notifyObservers(actionPerformedEvent);
+        board.notifyObservers(blackActionPerformedEvent);
 
         var whiteQueen = (QueenPiece<Color>) board.getPiece("d1").get();
         whiteQueen.move(board.getPosition("h5").get());
 
-        board.notifyObservers(actionPerformedEvent);
+        board.notifyObservers(whiteActionPerformedEvent);
 
         var blackKnight1 = (KnightPiece<Color>) board.getPiece("b8").get();
         blackKnight1.move(board.getPosition("c6").get());
 
-        board.notifyObservers(actionPerformedEvent);
+        board.notifyObservers(blackActionPerformedEvent);
 
         var whiteBishop = (BishopPiece<Color>) board.getPiece("f1").get();
         whiteBishop.move(board.getPosition("c4").get());
 
-        board.notifyObservers(actionPerformedEvent);
+        board.notifyObservers(whiteActionPerformedEvent);
 
         var blackKnight2 = (KnightPiece<Color>) board.getPiece("g8").get();
         blackKnight2.move(board.getPosition("f6").get());
 
-        board.notifyObservers(actionPerformedEvent);
+        board.notifyObservers(blackActionPerformedEvent);
 
         whiteQueen.capture(board.getPiece("f7").get());
 
-        board.notifyObservers(actionPerformedEvent);
+        board.notifyObservers(whiteActionPerformedEvent);
 
         var blackKing = (KingPiece<Color>) board.getPiece("e8").get();
 

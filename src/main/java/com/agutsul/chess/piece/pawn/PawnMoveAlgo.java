@@ -35,7 +35,7 @@ final class PawnMoveAlgo<COLOR extends Color,
         nextPositions.add(board.getPosition(
                 currentPosition.x(),
                 currentPosition.y() + this.step
-            ));
+        ));
 
         if (currentPosition.y() == initialLine) {
             // move for 2 cells available for the first time when piece not yet moved

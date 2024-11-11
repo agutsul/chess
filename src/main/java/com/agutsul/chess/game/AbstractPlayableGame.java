@@ -3,7 +3,6 @@ package com.agutsul.chess.game;
 import static com.agutsul.chess.board.state.BoardState.Type.AGREED_DRAW;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
-import static com.agutsul.chess.board.state.BoardState.Type.FIVE_FOLD_REPETITION;
 import static java.time.LocalDateTime.now;
 
 import java.util.Iterator;
@@ -15,6 +14,7 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.action.event.ActionCancelledEvent;
 import com.agutsul.chess.action.event.ActionPerformedEvent;
+import com.agutsul.chess.action.event.ClearPieceDataEvent;
 import com.agutsul.chess.action.memento.ActionMemento;
 import com.agutsul.chess.action.memento.CheckMatedActionMemento;
 import com.agutsul.chess.action.memento.CheckedActionMemento;
@@ -106,9 +106,7 @@ public abstract class AbstractPlayableGame
             return Optional.of(winner);
         }
 
-        if (AGREED_DRAW.equals(boardState.getType())
-                || FIVE_FOLD_REPETITION.equals(boardState.getType())) {
-
+        if (AGREED_DRAW.equals(boardState.getType())) {
             var winner = getOpponentPlayer();
             logger.info("{} wins. Player '{}'", winner.getColor(), winner.getName());
             return Optional.of(winner);
@@ -129,7 +127,9 @@ public abstract class AbstractPlayableGame
 
     @Override
     public final void notifyObservers(Event event) {
-        observers.forEach(observer -> observer.observe(event));
+        for (var observer : this.observers) {
+            observer.observe(event);
+        }
     }
 
     @Override
@@ -142,6 +142,8 @@ public abstract class AbstractPlayableGame
         }
 
         var nextPlayer = getOpponentPlayer();
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(nextPlayer.getColor()));
 
         var nextBoardState = evaluateBoardState(nextPlayer);
         board.setState(nextBoardState);
@@ -222,21 +224,23 @@ public abstract class AbstractPlayableGame
         }
 
         private void process(ActionCancelledEvent event) {
-            // redirect event to clear cached data
-            ((Observable) board).notifyObservers(event);
+            ((Observable) board).notifyObservers(new ClearPieceDataEvent(event.getColor()));
             // remove last item from journal
             journal.remove(journal.size() - 1);
             // switch players
             currentPlayer = switchPlayers();
+
+            ((Observable) board).notifyObservers(new ClearPieceDataEvent(currentPlayer.getColor()));
             // recalculate board state
             board.setState(evaluateBoardState(currentPlayer));
         }
 
         private void process(ActionPerformedEvent event) {
-            // redirect event to clear cached data
-            ((Observable) board).notifyObservers(event);
-            // log action in history to display it later on UI or fully restore game state
-            journal.add(configureMemento(event.getActionMemento()));
+            var memento = event.getActionMemento();
+
+            ((Observable) board).notifyObservers(new ClearPieceDataEvent(memento.getColor()));
+
+            journal.add(configureMemento(memento));
         }
 
         private ActionMemento<?,?> configureMemento(ActionMemento<?,?> memento) {

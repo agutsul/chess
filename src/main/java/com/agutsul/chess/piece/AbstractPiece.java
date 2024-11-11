@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.event.AbstractProccessedActionEvent;
+import com.agutsul.chess.action.event.ClearPieceDataEvent;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -293,10 +293,11 @@ abstract class AbstractPiece<COLOR extends Color>
 
         @Override
         public void observe(Event event) {
-            if (event instanceof AbstractProccessedActionEvent) {
-                // clear cached calculated actions and impacts
-                // to force its recalculation for the new board state
-                clearCalculatedData();
+            if (event instanceof ClearPieceDataEvent) {
+                var clearEvent = (ClearPieceDataEvent) event;
+                if (Objects.equals(getColor(), clearEvent.getColor())) {
+                    clearCalculatedData();
+                }
             }
         }
     }

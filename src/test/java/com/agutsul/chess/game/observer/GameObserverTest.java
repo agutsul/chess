@@ -17,6 +17,7 @@ import com.agutsul.chess.action.event.ActionCancellingEvent;
 import com.agutsul.chess.action.event.ActionExecutionEvent;
 import com.agutsul.chess.action.event.ActionPerformedEvent;
 import com.agutsul.chess.action.memento.ActionMemento;
+import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.event.GameOverEvent;
@@ -98,7 +99,7 @@ public class GameObserverTest {
 
     @Test
     void testObserveActionCancelledEvent() {
-        var event = new ActionCancelledEvent();
+        var event = new ActionCancelledEvent(Colors.WHITE);
 
         var game = mock(Game.class);
         var observer = new GameOutputObserverMock(game,

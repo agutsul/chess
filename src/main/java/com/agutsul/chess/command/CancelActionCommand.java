@@ -47,7 +47,7 @@ public class CancelActionCommand
         }
 
         // get last executed action from journal
-        var actionMemento = (ActionMemento<?,?>) journal.get(journal.size() - 1);
+        var actionMemento = journal.get(journal.size() - 1);
         if (!Objects.equals(this.color, actionMemento.getColor())) {
             throw new CommandException(UNEXPECTED_ACTION_MESSAGE);
         }
@@ -65,7 +65,7 @@ public class CancelActionCommand
             throw new CommandException(e.getMessage());
         }
 
-        ((Observable) this.game).notifyObservers(new ActionCancelledEvent());
+        ((Observable) this.game).notifyObservers(new ActionCancelledEvent(this.color));
     }
 
     private static Action<?> createAction(Board board, ActionMemento<?,?> memento) {

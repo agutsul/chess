@@ -25,8 +25,8 @@ public abstract class AbstractPromoteActionRule<COLOR1 extends Color,
         extends AbstractRule<PAWN, ACTION>
         implements PromoteActionRule<COLOR1, PAWN, ACTION> {
 
-    private final PromotePieceAlgo<COLOR1, PAWN, Position> algo;
-    private final Rule<PAWN, Collection<SOURCE_ACTION>> rule;
+    protected final PromotePieceAlgo<COLOR1, PAWN, Position> algo;
+    protected final Rule<PAWN, Collection<SOURCE_ACTION>> rule;
 
     protected AbstractPromoteActionRule(Board board,
                                         PromotePieceAlgo<COLOR1, PAWN, Position> algo,
