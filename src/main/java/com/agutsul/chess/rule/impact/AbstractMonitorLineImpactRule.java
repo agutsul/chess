@@ -19,7 +19,7 @@ public abstract class AbstractMonitorLineImpactRule<COLOR extends Color,
                                                     IMPACT extends PieceMonitorImpact<COLOR, PIECE>>
         extends AbstractMonitorImpactRule<COLOR, PIECE, IMPACT> {
 
-    private final CapturePieceAlgo<COLOR, PIECE, Line> algo;
+    protected final CapturePieceAlgo<COLOR, PIECE, Line> algo;
 
     protected AbstractMonitorLineImpactRule(Board board,
                                             CapturePieceAlgo<COLOR, PIECE, Line> algo) {

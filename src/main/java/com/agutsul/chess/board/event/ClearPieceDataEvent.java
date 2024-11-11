@@ -1,4 +1,4 @@
-package com.agutsul.chess.action.event;
+package com.agutsul.chess.board.event;
 
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;

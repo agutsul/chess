@@ -18,7 +18,7 @@ public abstract class AbstractProtectPositionImpactRule<COLOR extends Color,
                                                         IMPACT extends PieceProtectImpact<COLOR,PIECE1,PIECE2>>
         extends AbstractProtectImpactRule<COLOR, PIECE1, PIECE2, IMPACT> {
 
-    private final CapturePieceAlgo<COLOR, PIECE1, Calculated> algo;
+    protected final CapturePieceAlgo<COLOR, PIECE1, Calculated> algo;
 
     protected AbstractProtectPositionImpactRule(Board board,
                                                 CapturePieceAlgo<COLOR, PIECE1, Calculated> algo) {
