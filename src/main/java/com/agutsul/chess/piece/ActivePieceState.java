@@ -78,7 +78,11 @@ class ActivePieceState<PIECE extends Piece<Color> & Movable & Capturable>
 
         var possibleActions = new HashSet<>();
         possibleActions.addAll(board.getActions(piece, PieceCaptureAction.class));
-        possibleActions.addAll(board.getActions(piece, PieceEnPassantAction.class));
+
+        if (Piece.Type.PAWN.equals(piece.getType())
+                && Piece.Type.PAWN.equals(targetPiece.getType())) {
+            possibleActions.addAll(board.getActions(piece, PieceEnPassantAction.class));
+        }
 
         var possibleCaptures = possibleActions.stream()
                 .map(action -> (AbstractCaptureAction<Color,Color,?,?>) action)

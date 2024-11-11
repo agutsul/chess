@@ -9,14 +9,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class ActionMementoProxyTest {
+public class AbstractCheckActionMementoTest {
 
     @Test
     void testGetColor() {
         var memento = mock(ActionMemento.class);
 
         @SuppressWarnings("unchecked")
-        var proxy = new ActionMementoProxy<>(memento);
+        var proxy = new CheckedActionMemento<>(memento);
         proxy.getColor();
 
         verify(memento, times(1)).getColor();
@@ -27,7 +27,7 @@ public class ActionMementoProxyTest {
         var memento = mock(ActionMemento.class);
 
         @SuppressWarnings("unchecked")
-        var proxy = new ActionMementoProxy<>(memento);
+        var proxy = new CheckedActionMemento<>(memento);
         proxy.getActionType();
 
         verify(memento, times(1)).getActionType();
@@ -38,7 +38,7 @@ public class ActionMementoProxyTest {
         var memento = mock(ActionMemento.class);
 
         @SuppressWarnings("unchecked")
-        var proxy = new ActionMementoProxy<>(memento);
+        var proxy = new CheckedActionMemento<>(memento);
         proxy.getPieceType();
 
         verify(memento, times(1)).getPieceType();
@@ -49,7 +49,7 @@ public class ActionMementoProxyTest {
         var memento = mock(ActionMemento.class);
 
         @SuppressWarnings("unchecked")
-        var proxy = new ActionMementoProxy<>(memento);
+        var proxy = new CheckedActionMemento<>(memento);
         proxy.getSource();
 
         verify(memento, times(1)).getSource();
@@ -60,7 +60,7 @@ public class ActionMementoProxyTest {
         var memento = mock(ActionMemento.class);
 
         @SuppressWarnings("unchecked")
-        var proxy = new ActionMementoProxy<>(memento);
+        var proxy = new CheckMatedActionMemento<>(memento);
         proxy.getTarget();
 
         verify(memento, times(1)).getTarget();

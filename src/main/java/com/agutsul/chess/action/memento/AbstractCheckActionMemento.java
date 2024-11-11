@@ -4,15 +4,23 @@ import java.time.LocalDateTime;
 
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.piece.Checkable;
 import com.agutsul.chess.piece.Piece;
 
-class ActionMementoProxy<SOURCE,TARGET>
-        implements ActionMemento<SOURCE,TARGET> {
+abstract class AbstractCheckActionMemento<SOURCE,TARGET>
+        implements ActionMemento<SOURCE,TARGET>, Checkable {
 
     private final ActionMemento<SOURCE,TARGET> origin;
 
-    ActionMementoProxy(ActionMemento<SOURCE,TARGET> origin) {
+    private final boolean checked;
+    private final boolean checkMated;
+
+    AbstractCheckActionMemento(ActionMemento<SOURCE,TARGET> origin,
+                               boolean checked,
+                               boolean checkMated) {
         this.origin = origin;
+        this.checked = checked;
+        this.checkMated = checkMated;
     }
 
     @Override
@@ -48,5 +56,15 @@ class ActionMementoProxy<SOURCE,TARGET>
     @Override
     public String toString() {
         return origin.toString();
+    }
+
+    @Override
+    public boolean isChecked() {
+        return checked;
+    }
+
+    @Override
+    public boolean isCheckMated() {
+        return checkMated;
     }
 }

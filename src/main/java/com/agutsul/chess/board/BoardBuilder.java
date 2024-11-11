@@ -38,8 +38,8 @@ public final class BoardBuilder
         var executor = ForkJoinPool.commonPool();
         try {
             var tasks = List.of(
-                new PieceBuilderTask(board.getWhitePieceFactory(), whitePieceContext),
-                new PieceBuilderTask(board.getBlackPieceFactory(), blackPieceContext)
+                    new PieceBuilderTask(board.getWhitePieceFactory(), whitePieceContext),
+                    new PieceBuilderTask(board.getBlackPieceFactory(), blackPieceContext)
             );
 
             var pieces = new ArrayList<Piece<Color>>();

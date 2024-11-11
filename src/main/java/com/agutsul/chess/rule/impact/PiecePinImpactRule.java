@@ -59,11 +59,8 @@ public class PiecePinImpactRule<COLOR1 extends Color,
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .filter(otherPiece -> piece.getColor() != otherPiece.getColor())
+                    .filter(otherPiece -> LINE_ATTACK_PIECE_TYPES.contains(otherPiece.getType()))
                     .anyMatch(otherPiece -> {
-                        if (!LINE_ATTACK_PIECE_TYPES.contains(otherPiece.getType())) {
-                            return false;
-                        }
-
                         var impacts = board.getImpacts(otherPiece);
                         var isMonitored = impacts.stream()
                                 .filter(impact -> Impact.Type.MONITOR.equals(impact.getType()))
