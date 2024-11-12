@@ -17,8 +17,8 @@ import com.agutsul.chess.journal.Journal;
 final class FoldRepetitionBoardStateEvaluator
         extends AbstractBoardStateEvaluator {
 
-    private static final int THREE_REPETITIONS = 3;
-    private static final int FIVE_REPETITIONS = 5;
+    static final int THREE_REPETITIONS = 3;
+    static final int FIVE_REPETITIONS = 5;
 
     private final Journal<ActionMemento<?,?>> journal;
 
