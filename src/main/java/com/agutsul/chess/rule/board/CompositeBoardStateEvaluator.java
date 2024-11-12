@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.board;
 
+import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -56,33 +57,33 @@ final class CompositeBoardStateEvaluator
 
     @Override
     public BoardState evaluate(Color playerColor) {
-        var executor = newFixedThreadPool(this.evaluators.size());
+        var results = evaluate(evaluators, playerColor);
+
+        var boardState = results.stream()
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .sorted(comparing(bs -> bs.getType().priority()))
+                .findFirst();
+
+        if (boardState.isPresent()) {
+            return boardState.get();
+        }
+
+        return new DefaultBoardState(board, playerColor);
+    }
+
+    private static List<Optional<BoardState>> evaluate(List<Function<Color,Optional<BoardState>>> evaluators,
+                                                       Color color) {
+        var executor = newFixedThreadPool(evaluators.size());
         try {
-            var tasks = this.evaluators.stream()
-                    .map(evaluator -> new Callable<Optional<BoardState>>() {
-                        @Override
-                        public Optional<BoardState> call() throws Exception {
-                            return evaluator.apply(playerColor);
-                        }
-                    })
-                    .toList();
-
+            var tasks = createEvaluationTasks(evaluators, color);
             try {
-                var results = new ArrayList<BoardState>();
+                var results = new ArrayList<Optional<BoardState>>();
                 for (var future : executor.invokeAll(tasks)) {
-                    var optional = future.get();
-                    if (optional.isPresent()) {
-                        results.add(optional.get());
-                    }
+                    results.add(future.get());
                 }
 
-                var boardState = results.stream()
-                        .sorted(comparing(bs -> bs.getType().priority()))
-                        .findFirst();
-
-                if (boardState.isPresent()) {
-                    return boardState.get();
-                }
+                return results;
             } catch (InterruptedException e) {
                 LOGGER.error("Board state evaluation interrupted", e);
             } catch (ExecutionException e) {
@@ -99,7 +100,22 @@ final class CompositeBoardStateEvaluator
             }
         }
 
-        return new DefaultBoardState(board, playerColor);
+        return emptyList();
+    }
+
+    private static List<Callable<Optional<BoardState>>> createEvaluationTasks(List<Function<Color,Optional<BoardState>>> evaluators,
+                                                                              Color color) {
+        var tasks = new ArrayList<Callable<Optional<BoardState>>>();
+        for (var evaluator : evaluators) {
+            tasks.add(new Callable<Optional<BoardState>>() {
+                @Override
+                public Optional<BoardState> call() throws Exception {
+                    return evaluator.apply(color);
+                }
+            });
+        }
+
+        return tasks;
     }
 
     private static Optional<BoardState> evaluate(Color color,
