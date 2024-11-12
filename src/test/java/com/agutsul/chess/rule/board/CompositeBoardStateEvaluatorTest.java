@@ -16,6 +16,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.CheckMatedBoardState;
 import com.agutsul.chess.board.state.CheckedBoardState;
 import com.agutsul.chess.board.state.DefaultBoardState;
+import com.agutsul.chess.board.state.FiftyMovesBoardState;
 import com.agutsul.chess.board.state.StaleMatedBoardState;
 import com.agutsul.chess.board.state.ThreeFoldRepetitionBoardState;
 import com.agutsul.chess.color.Color;
@@ -41,10 +42,11 @@ public class CompositeBoardStateEvaluatorTest {
 
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
         var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
+        var movesEvaluator = mock(MovesBoardStateEvaluator.class);
 
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator);
+                foldRepetitionEvaluator, movesEvaluator);
 
         var boardState = evaluator.evaluate(Colors.WHITE);
 
@@ -72,10 +74,11 @@ public class CompositeBoardStateEvaluatorTest {
 
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
         var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
+        var movesEvaluator = mock(MovesBoardStateEvaluator.class);
 
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator);
+                foldRepetitionEvaluator, movesEvaluator);
 
         var boardState = evaluator.evaluate(Colors.BLACK);
 
@@ -93,6 +96,7 @@ public class CompositeBoardStateEvaluatorTest {
 
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
+        var movesEvaluator = mock(MovesBoardStateEvaluator.class);
 
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
         when(staleMatedEvaluator.evaluate(any()))
@@ -103,7 +107,7 @@ public class CompositeBoardStateEvaluatorTest {
 
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator);
+                foldRepetitionEvaluator, movesEvaluator);
 
         var boardState = evaluator.evaluate(Colors.BLACK);
 
@@ -118,6 +122,7 @@ public class CompositeBoardStateEvaluatorTest {
         var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
+        var movesEvaluator = mock(MovesBoardStateEvaluator.class);
 
         var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
         when(foldRepetitionEvaluator.evaluate(any()))
@@ -125,11 +130,34 @@ public class CompositeBoardStateEvaluatorTest {
 
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator);
+                foldRepetitionEvaluator, movesEvaluator);
 
         var boardState = evaluator.evaluate(Colors.WHITE);
 
         assertTrue(boardState instanceof ThreeFoldRepetitionBoardState);
+        assertEquals(Colors.WHITE, boardState.getColor());
+    }
+
+    @Test
+    void evaluateMovesBoardState() {
+        var board = mock(Board.class);
+
+        var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
+        var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
+        var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
+        var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
+
+        var movesEvaluator = mock(MovesBoardStateEvaluator.class);
+        when(movesEvaluator.evaluate(any()))
+            .thenReturn(Optional.of(new FiftyMovesBoardState(board, Colors.WHITE)));
+
+        var evaluator = new CompositeBoardStateEvaluator(board,
+                checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
+                foldRepetitionEvaluator, movesEvaluator);
+
+        var boardState = evaluator.evaluate(Colors.WHITE);
+
+        assertTrue(boardState instanceof FiftyMovesBoardState);
         assertEquals(Colors.WHITE, boardState.getColor());
     }
 
@@ -143,6 +171,7 @@ public class CompositeBoardStateEvaluatorTest {
 
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
+        var movesEvaluator = mock(MovesBoardStateEvaluator.class);
 
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
         when(staleMatedEvaluator.evaluate(any()))
@@ -150,7 +179,7 @@ public class CompositeBoardStateEvaluatorTest {
 
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator);
+                foldRepetitionEvaluator, movesEvaluator);
 
         var boardState = evaluator.evaluate(Colors.WHITE);
 

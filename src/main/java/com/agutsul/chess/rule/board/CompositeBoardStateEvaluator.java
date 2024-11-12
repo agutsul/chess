@@ -34,7 +34,8 @@ final class CompositeBoardStateEvaluator
                 new CheckedBoardStateEvaluator(board),
                 new CheckMatedBoardStateEvaluator(board),
                 new StaleMatedBoardStateEvaluator(board),
-                new FoldRepetitionBoardStateEvaluator(board, journal)
+                new FoldRepetitionBoardStateEvaluator(board, journal),
+                new MovesBoardStateEvaluator(board, journal)
         );
     }
 
@@ -42,9 +43,11 @@ final class CompositeBoardStateEvaluator
                                  CheckedBoardStateEvaluator checkedEvaluator,
                                  CheckMatedBoardStateEvaluator checkMatedEvaluator,
                                  StaleMatedBoardStateEvaluator staleMatedEvaluator,
-                                 FoldRepetitionBoardStateEvaluator foldRepetitionEvaluator) {
+                                 FoldRepetitionBoardStateEvaluator foldRepetitionEvaluator,
+                                 MovesBoardStateEvaluator movesBoardStateEvaluator) {
         this.board = board;
         this.evaluators = List.of(
+                color -> evaluate(color, movesBoardStateEvaluator),
                 color -> evaluate(color, foldRepetitionEvaluator),
                 color -> evaluate(color, checkedEvaluator, checkMatedEvaluator),
                 color -> evaluate(color, staleMatedEvaluator)
@@ -67,9 +70,9 @@ final class CompositeBoardStateEvaluator
             try {
                 var results = new ArrayList<BoardState>();
                 for (var future : executor.invokeAll(tasks)) {
-                    var result = future.get();
-                    if (result.isPresent()) {
-                        results.add(result.get());
+                    var optional = future.get();
+                    if (optional.isPresent()) {
+                        results.add(optional.get());
                     }
                 }
 
