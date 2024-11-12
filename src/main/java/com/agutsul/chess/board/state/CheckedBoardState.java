@@ -18,8 +18,19 @@ public final class CheckedBoardState
 
     private static final Logger LOGGER = getLogger(CheckedBoardState.class);
 
+    private boolean terminal;
+
     public CheckedBoardState(Board board, Color checkedColor) {
         super(BoardState.Type.CHECKED, board, checkedColor);
+    }
+
+    public void setTerminal(boolean terminal) {
+        this.terminal = terminal;
+    }
+
+    @Override
+    public boolean isTerminal() {
+        return terminal;
     }
 
     @Override

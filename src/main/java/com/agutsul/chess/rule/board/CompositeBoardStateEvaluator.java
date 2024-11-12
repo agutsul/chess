@@ -1,8 +1,9 @@
 package com.agutsul.chess.rule.board;
 
 import static java.util.Collections.emptyList;
-import static java.util.Comparator.comparing;
 import static java.util.concurrent.Executors.newFixedThreadPool;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import org.slf4j.Logger;
 import com.agutsul.chess.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.board.state.CheckedBoardState;
 import com.agutsul.chess.board.state.DefaultBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
@@ -59,14 +61,39 @@ final class CompositeBoardStateEvaluator
     public BoardState evaluate(Color playerColor) {
         var results = evaluate(evaluators, playerColor);
 
-        var boardState = results.stream()
+        var boardStates = results.stream()
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .sorted(comparing(bs -> bs.getType().priority()))
-                .findFirst();
+                .collect(toMap(BoardState::getType, identity()));
 
-        if (boardState.isPresent()) {
-            return boardState.get();
+        if (boardStates.isEmpty()) {
+            return new DefaultBoardState(board, playerColor);
+        }
+
+        if (boardStates.size() == 1) {
+            return boardStates.values().iterator().next();
+        }
+
+        if (boardStates.containsKey(BoardState.Type.CHECK_MATED)) {
+            return boardStates.get(BoardState.Type.CHECK_MATED);
+        }
+
+        var terminalStates = boardStates.values().stream()
+                .filter(BoardState::isTerminal)
+                .toList();
+
+        if (!terminalStates.isEmpty()) {
+            if (boardStates.containsKey(BoardState.Type.CHECKED)) {
+                var checkedState = (CheckedBoardState) boardStates.get(BoardState.Type.CHECKED);
+                checkedState.setTerminal(true);
+                return checkedState;
+            }
+
+            return terminalStates.get(0);
+        }
+
+        if (boardStates.containsKey(BoardState.Type.CHECKED)) {
+            return boardStates.get(BoardState.Type.CHECKED);
         }
 
         return new DefaultBoardState(board, playerColor);
