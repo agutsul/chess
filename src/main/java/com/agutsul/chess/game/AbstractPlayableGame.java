@@ -7,6 +7,7 @@ import static java.time.LocalDateTime.now;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -242,7 +243,16 @@ public abstract class AbstractPlayableGame
 
             ((Observable) board).notifyObservers(new ClearPieceDataEvent(memento.getColor()));
 
-            journal.add(configureMemento(memento));
+            // add current action into journal to be used in board state evaluation
+            journal.add(memento);
+
+            // verify if there is check or checkmate
+            var tmpMemento = configureMemento(memento);
+            if (!Objects.equals(memento, tmpMemento)) {
+                // replace the last item in journal with checked or checkmated
+                journal.remove(journal.size() - 1);
+                journal.add(tmpMemento);
+            }
         }
 
         private ActionMemento<?,?> configureMemento(ActionMemento<?,?> memento) {
