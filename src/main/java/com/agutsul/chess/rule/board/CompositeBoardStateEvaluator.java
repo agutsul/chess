@@ -4,6 +4,7 @@ import static java.util.Collections.emptyList;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
@@ -78,25 +79,23 @@ final class CompositeBoardStateEvaluator
             return boardStates.get(BoardState.Type.CHECK_MATED);
         }
 
+        var boardState = boardStates.get(BoardState.Type.CHECKED);
         var terminalStates = boardStates.values().stream()
                 .filter(BoardState::isTerminal)
                 .toList();
 
-        if (!terminalStates.isEmpty()) {
-            if (boardStates.containsKey(BoardState.Type.CHECKED)) {
-                var checkedState = (CheckedBoardState) boardStates.get(BoardState.Type.CHECKED);
-                checkedState.setTerminal(true);
-                return checkedState;
-            }
+        if (terminalStates.isEmpty()) {
+            return defaultIfNull(boardState, new DefaultBoardState(board, playerColor));
+        }
 
+        if (boardState == null) {
             return terminalStates.get(0);
         }
 
-        if (boardStates.containsKey(BoardState.Type.CHECKED)) {
-            return boardStates.get(BoardState.Type.CHECKED);
-        }
+        var checkedState = (CheckedBoardState) boardState;
+        checkedState.setTerminal(true);
 
-        return new DefaultBoardState(board, playerColor);
+        return checkedState;
     }
 
     private static List<Optional<BoardState>> evaluate(List<Function<Color,Optional<BoardState>>> evaluators,
@@ -134,12 +133,7 @@ final class CompositeBoardStateEvaluator
                                                                               Color color) {
         var tasks = new ArrayList<Callable<Optional<BoardState>>>();
         for (var evaluator : evaluators) {
-            tasks.add(new Callable<Optional<BoardState>>() {
-                @Override
-                public Optional<BoardState> call() throws Exception {
-                    return evaluator.apply(color);
-                }
-            });
+            tasks.add(() -> evaluator.apply(color));
         }
 
         return tasks;
@@ -150,12 +144,12 @@ final class CompositeBoardStateEvaluator
             CheckMatedBoardStateEvaluator checkMatedEvaluator) {
 
         var checked = checkedEvaluator.evaluate(color);
-        if (checked.isPresent()) {
-            var checkMated = checkMatedEvaluator.evaluate(color);
-            return checkMated.isPresent() ? checkMated : checked;
+        if (checked.isEmpty()) {
+            return Optional.empty();
         }
 
-        return Optional.empty();
+        var checkMated = checkMatedEvaluator.evaluate(color);
+        return checkMated.isPresent() ? checkMated : checked;
     }
 
     private static Optional<BoardState> evaluate(Color color,
