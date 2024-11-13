@@ -24,7 +24,7 @@ final class MovesBoardStateEvaluator
     }
 
     @Override
-    protected AbstractBoardStateEvaluator createEvaluator(Color color) {
+    AbstractBoardStateEvaluator createEvaluator(Color color) {
         return new MovesBoardStateEvaluatorImpl(color, board, journal);
     }
 

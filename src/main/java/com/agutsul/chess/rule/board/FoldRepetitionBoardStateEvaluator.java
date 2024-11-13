@@ -25,7 +25,7 @@ final class FoldRepetitionBoardStateEvaluator
     }
 
     @Override
-    protected AbstractBoardStateEvaluator createEvaluator(Color color) {
+    AbstractBoardStateEvaluator createEvaluator(Color color) {
         return new FoldRepetitionBoardStateEvaluatorImpl(color, board, journal);
     }
 

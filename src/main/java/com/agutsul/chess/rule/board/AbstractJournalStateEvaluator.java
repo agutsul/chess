@@ -41,5 +41,5 @@ abstract class AbstractJournalStateEvaluator
         return opponentState.isTerminal() ? opponentBoardState : boardState;
     }
 
-    protected abstract AbstractBoardStateEvaluator createEvaluator(Color color);
+    abstract AbstractBoardStateEvaluator createEvaluator(Color color);
 }
