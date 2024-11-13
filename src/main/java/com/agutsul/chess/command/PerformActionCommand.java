@@ -19,6 +19,7 @@ import com.agutsul.chess.exception.CommandException;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.exception.IllegalPositionException;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.player.Player;
 import com.agutsul.chess.position.Position;
 
 public class PerformActionCommand
@@ -28,7 +29,9 @@ public class PerformActionCommand
 
     private static final String MISSED_PIECE_MESSAGE = "Missed piece on position";
     private static final String MISSED_POSITION_MESSAGE = "Missed position";
+    private static final String OPPONENT_PIECE_MESSAGE = "Unable to use opponent piece";
 
+    private final Player player;
     private final Board board;
     private final Observable observable;
 
@@ -38,8 +41,9 @@ public class PerformActionCommand
     private Action<?> action;
     private ActionMemento<?,?> memento;
 
-    public PerformActionCommand(Board board, Observable observable) {
+    public PerformActionCommand(Player player, Board board, Observable observable) {
         super(LOGGER);
+        this.player = player;
         this.board = board;
         this.observable = observable;
     }
@@ -49,6 +53,12 @@ public class PerformActionCommand
         if (piece.isEmpty()) {
             throw new IllegalPositionException(
                     String.format("%s: %s", MISSED_PIECE_MESSAGE, source)
+            );
+        }
+
+        if (!Objects.equals(piece.get().getColor(), player.getColor())) {
+            throw new IllegalActionException(
+                    String.format("%s: %s", OPPONENT_PIECE_MESSAGE, piece.get())
             );
         }
 

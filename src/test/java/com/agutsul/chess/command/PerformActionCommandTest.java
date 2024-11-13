@@ -31,6 +31,7 @@ import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.exception.IllegalPositionException;
 import com.agutsul.chess.piece.PawnPiece;
+import com.agutsul.chess.player.Player;
 import com.agutsul.chess.position.Position;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,8 +42,10 @@ public class PerformActionCommandTest {
 
     @Test
     void testValidationOfMissedSourcePiece() {
+        var player = mock(Player.class);
+
         var board = new BoardBuilder().build();
-        var command = new PerformActionCommand(board, observable);
+        var command = new PerformActionCommand(player, board, observable);
 
         var thrown = assertThrows(
                 IllegalPositionException.class,
@@ -54,8 +57,10 @@ public class PerformActionCommandTest {
 
     @Test
     void testValidationOfSourcePosition() {
+        var player = mock(Player.class);
+
         var board = new BoardBuilder().build();
-        var command = new PerformActionCommand(board, observable);
+        var command = new PerformActionCommand(player, board, observable);
 
         var thrown = assertThrows(
                 IllegalPositionException.class,
@@ -67,8 +72,10 @@ public class PerformActionCommandTest {
 
     @Test
     void testValidationOfTargetPosition() {
+        var player = mock(Player.class);
+
         var board = new BoardBuilder().build();
-        var command = new PerformActionCommand(board, observable);
+        var command = new PerformActionCommand(player, board, observable);
 
         var thrown = assertThrows(
                 IllegalPositionException.class,
@@ -80,11 +87,15 @@ public class PerformActionCommandTest {
 
     @Test
     void testInvalidAction() {
+        var player = mock(Player.class);
+        when(player.getColor())
+            .thenReturn(Colors.WHITE);
+
         var board = new BoardBuilder()
                 .withWhitePawn("e2")
                 .build();
 
-        var command = new PerformActionCommand(board, observable);
+        var command = new PerformActionCommand(player, board, observable);
         command.setSource("e2");
         command.setTarget("c3");
 
@@ -100,6 +111,10 @@ public class PerformActionCommandTest {
     @Test
     @SuppressWarnings("unchecked")
     void testActionCommandException() {
+        var player = mock(Player.class);
+        when(player.getColor())
+            .thenReturn(Colors.WHITE);
+
         var board = mock(Board.class);
 
         var sourcePosition = mock(Position.class);
@@ -134,7 +149,7 @@ public class PerformActionCommandTest {
         when(board.getActions(any()))
             .thenReturn(List.of(targetAction));
 
-        var command = new PerformActionCommand(board, observable);
+        var command = new PerformActionCommand(player, board, observable);
         command.setSource("e2");
         command.setTarget("e3");
 
@@ -149,9 +164,13 @@ public class PerformActionCommandTest {
 
     @Test
     void testPerformAction() {
+        var player = mock(Player.class);
+        when(player.getColor())
+            .thenReturn(Colors.WHITE);
+
         var board = new StandardBoard();
 
-        var command = new PerformActionCommand(board, observable);
+        var command = new PerformActionCommand(player, board, observable);
         command.setSource("e2");
         command.setTarget("e4");
 
@@ -177,5 +196,26 @@ public class PerformActionCommandTest {
             );
 
         verify(observable, times(2)).notifyObservers(any());
+    }
+
+    @Test
+    void testPerformActionByOpponentPiece() {
+        var player = mock(Player.class);
+        when(player.getColor())
+            .thenReturn(Colors.BLACK);
+
+        var board = new StandardBoard();
+
+        var command = new PerformActionCommand(player, board, observable);
+
+        var sourcePosition = board.getPosition("e2").get();
+        assertFalse(board.isEmpty(sourcePosition));
+
+        var thrown = assertThrows(
+                IllegalActionException.class,
+                () -> command.setSource("e2")
+        );
+
+        assertEquals("Unable to use opponent piece: e2", thrown.getMessage());
     }
 }

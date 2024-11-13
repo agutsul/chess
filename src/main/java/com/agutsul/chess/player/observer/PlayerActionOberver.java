@@ -50,7 +50,7 @@ public final class PlayerActionOberver
     private void process(PlayerActionEvent event) {
         var board = ((AbstractPlayableGame) this.game).getBoard();
         try {
-            var command = new PerformActionCommand(board, (Observable) this.game);
+            var command = new PerformActionCommand(event.getPlayer(), board, (Observable) this.game);
             command.setSource(event.getSource());
             command.setTarget(event.getTarget());
 
