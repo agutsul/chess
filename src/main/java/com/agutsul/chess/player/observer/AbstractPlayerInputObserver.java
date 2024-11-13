@@ -147,8 +147,8 @@ public abstract class AbstractPlayerInputObserver
             );
         }
 
-        var action = new PlayerActionEvent(player, positions[0], positions[1]);
-        ((Observable) this.game).notifyObservers(action);
+        var actionEvent = new PlayerActionEvent(player, positions[0], positions[1]);
+        ((Observable) this.game).notifyObservers(actionEvent);
     }
 
     private void notifyExceptionEvent(Event event) {

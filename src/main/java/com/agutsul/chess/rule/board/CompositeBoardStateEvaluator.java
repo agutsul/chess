@@ -79,22 +79,20 @@ final class CompositeBoardStateEvaluator
             return boardStates.get(BoardState.Type.CHECK_MATED);
         }
 
-        var boardState = boardStates.get(BoardState.Type.CHECKED);
+        var checkedState = (CheckedBoardState) boardStates.get(BoardState.Type.CHECKED);
         var terminalStates = boardStates.values().stream()
                 .filter(BoardState::isTerminal)
                 .toList();
 
         if (terminalStates.isEmpty()) {
-            return defaultIfNull(boardState, new DefaultBoardState(board, playerColor));
+            return defaultIfNull(checkedState, new DefaultBoardState(board, playerColor));
         }
 
-        if (boardState == null) {
+        if (checkedState == null) {
             return terminalStates.get(0);
         }
 
-        var checkedState = (CheckedBoardState) boardState;
         checkedState.setTerminal(true);
-
         return checkedState;
     }
 
