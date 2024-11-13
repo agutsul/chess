@@ -44,6 +44,6 @@ abstract class AbstractBoardState
 
     @Override
     public String toString() {
-        return type.name();
+        return String.format("%s, terminal: %b", type.name(), isTerminal());
     }
 }
