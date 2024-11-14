@@ -154,7 +154,7 @@ public final class BoardBuilder
 
     @Override
     public BoardBuilderAdapter withBlackKnights(String position1, String position2) {
-        blackPieceContext.setBishopPositions(List.of(position1, position2));
+        blackPieceContext.setKnightPositions(List.of(position1, position2));
         return this;
     }
 
