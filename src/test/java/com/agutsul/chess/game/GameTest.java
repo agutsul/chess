@@ -78,7 +78,7 @@ public class GameTest {
         var state = game.getState();
 
         assertTrue(state instanceof DefaultGameState);
-        assertEquals(GameState.Type.ASTERISK, state.getType());
+        assertEquals(GameState.Type.UNKNOWN, state.getType());
     }
 
     @Test

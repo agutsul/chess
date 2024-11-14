@@ -7,7 +7,7 @@ public interface GameState
         extends State<Game> {
 
     enum Type {
-        ASTERISK("*"),
+        UNKNOWN("*"),
         WHITE_WIN("1-0"),
         BLACK_WIN("0-1"),
         DRAWN_GAME("1/2-1/2");

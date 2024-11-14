@@ -12,6 +12,6 @@ public class DefaultGameStateTest {
     @Test
     void testGameState() {
         var state = new DefaultGameState();
-        assertEquals(GameState.Type.ASTERISK, state.getType());
+        assertEquals(GameState.Type.UNKNOWN, state.getType());
     }
 }

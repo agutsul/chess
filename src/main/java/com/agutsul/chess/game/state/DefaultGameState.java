@@ -4,6 +4,6 @@ public class DefaultGameState
         extends AbstractGameState {
 
     public DefaultGameState() {
-        super(Type.ASTERISK);
+        super(Type.UNKNOWN);
     }
 }
