@@ -25,7 +25,7 @@ import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
 abstract class AbstractPiece<COLOR extends Color>
-        implements Piece<COLOR>, Movable, Capturable, Disposable, Restorable, Captured {
+        implements Piece<COLOR>, Movable, Capturable {
 
     private static final Logger LOGGER = getLogger(AbstractPiece.class);
 
@@ -177,7 +177,6 @@ abstract class AbstractPiece<COLOR extends Color>
         return PieceState.Type.ACTIVE.equals(this.currentState.getType());
     }
 
-    @Override
     public void dispose() {
         LOGGER.info("Disposing '{}'", this);
 
@@ -187,7 +186,6 @@ abstract class AbstractPiece<COLOR extends Color>
         this.currentState = DISPOSED_STATE;
     }
 
-    @Override
     public void restore() {
         LOGGER.info("Restoring '{}'", this);
 
@@ -229,12 +227,10 @@ abstract class AbstractPiece<COLOR extends Color>
                 && Objects.equals(getPosition(), other.getPosition());
     }
 
-    @Override
     public Instant getCapturedAt() {
         return capturedAt;
     }
 
-    @Override
     public void setCapturedAt(Instant instant) {
         this.capturedAt = instant;
     }

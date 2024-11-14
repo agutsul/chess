@@ -23,7 +23,8 @@ import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.position.Position;
 
 public interface PawnPiece<COLOR extends Color>
-        extends Piece<COLOR>, Movable, Capturable, Promotable, EnPassantable, Disposable, Restorable {
+        extends Piece<COLOR>, Movable, Capturable, Promotable,
+                EnPassantable, Disposable, Restorable, Captured {
 
     /**
      * Mainly used to implement promotion properly.
@@ -36,8 +37,7 @@ public interface PawnPiece<COLOR extends Color>
                        KnightPiece<Color>,
                        BishopPiece<Color>,
                        RookPiece<Color>,
-                       QueenPiece<Color>,
-                       Captured {
+                       QueenPiece<Color> {
 
         private static final Logger LOGGER = getLogger(PawnPieceProxy.class);
 

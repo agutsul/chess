@@ -332,7 +332,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
         var king = board.getPiece("e1").get();
         var thrown = assertThrows(
                 UnsupportedOperationException.class,
-                () -> ((Captured) king).getCapturedAt()
+                () -> ((AbstractPiece<Color>) king).getCapturedAt()
         );
         assertEquals(thrown.getMessage(), "Unable to get captured timestamp for a KING piece");
     }
@@ -346,7 +346,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
         var king = board.getPiece("e1").get();
         var thrown = assertThrows(
                 UnsupportedOperationException.class,
-                () -> ((Captured) king).setCapturedAt(Instant.now())
+                () -> ((AbstractPiece<Color>) king).setCapturedAt(Instant.now())
         );
         assertEquals(thrown.getMessage(), "Unable set captured timestamp for a KING piece");
     }
