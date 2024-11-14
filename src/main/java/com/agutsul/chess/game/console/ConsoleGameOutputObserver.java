@@ -2,6 +2,8 @@ package com.agutsul.chess.game.console;
 
 import static com.agutsul.chess.journal.JournalFormatter.format;
 import static java.lang.System.lineSeparator;
+import static java.time.LocalDateTime.now;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -61,9 +63,8 @@ final class ConsoleGameOutputObserver
         System.out.println(line);
         displayWinner(game.getWinner());
 
-        if (game.getFinishedAt() != null) {
-            displayDuration(Duration.between(game.getStartedAt(), game.getFinishedAt()));
-        }
+        var finishedAt = defaultIfNull(game.getFinishedAt(), now());
+        displayDuration(Duration.between(game.getStartedAt(), finishedAt));
     }
 
     @Override
