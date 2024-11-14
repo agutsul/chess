@@ -2,6 +2,8 @@ package com.agutsul.chess.mock;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.time.LocalDateTime;
+
 import org.slf4j.Logger;
 
 import com.agutsul.chess.action.memento.ActionMemento;
@@ -36,5 +38,13 @@ public class GameMock
 
         super(LOGGER, whitePlayer, blackPlayer,
                 board, journal, boardStateEvaluator);
+    }
+
+    public void setStartedAt(LocalDateTime startedAt) {
+        this.startedAt = startedAt;
+    }
+
+    public void setFinishedAt(LocalDateTime finishedAt) {
+        this.finishedAt = finishedAt;
     }
 }

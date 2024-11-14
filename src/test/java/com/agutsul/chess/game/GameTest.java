@@ -15,6 +15,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -44,6 +45,11 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
+import com.agutsul.chess.game.state.BlackWinGameState;
+import com.agutsul.chess.game.state.DefaultGameState;
+import com.agutsul.chess.game.state.DrawnGameState;
+import com.agutsul.chess.game.state.GameState;
+import com.agutsul.chess.game.state.WhiteWinGameState;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.mock.GameMock;
@@ -60,6 +66,74 @@ import com.agutsul.chess.rule.board.BoardStateEvaluator;
 
 @ExtendWith(MockitoExtension.class)
 public class GameTest {
+
+    @Test
+    void testGetStateReturningDefault() {
+        var board = mock(AbstractBoard.class);
+
+        var whitePlayer = mock(Player.class);
+        var blackPlayer = mock(Player.class);
+
+        var game = new GameMock(whitePlayer, blackPlayer, board);
+        var state = game.getState();
+
+        assertTrue(state instanceof DefaultGameState);
+        assertEquals(GameState.Type.ASTERISK, state.getType());
+    }
+
+    @Test
+    void testGetStateReturningDrawn() {
+        var board = mock(AbstractBoard.class);
+        when(board.getState())
+            .thenReturn(new DefaultBoardState(board, Colors.WHITE));
+
+        var whitePlayer = mock(Player.class);
+        var blackPlayer = mock(Player.class);
+
+        var game = new GameMock(whitePlayer, blackPlayer, board);
+        game.setFinishedAt(LocalDateTime.now());
+
+        var state = game.getState();
+
+        assertTrue(state instanceof DrawnGameState);
+        assertEquals(GameState.Type.DRAWN_GAME, state.getType());
+    }
+
+    @Test
+    void testGetStateReturningWhiteWin() {
+        var board = mock(AbstractBoard.class);
+        when(board.getState())
+            .thenReturn(new CheckMatedBoardState(board, Colors.WHITE));
+
+        var whitePlayer = mock(Player.class);
+        var blackPlayer = mock(Player.class);
+
+        var game = new GameMock(whitePlayer, blackPlayer, board);
+        game.setFinishedAt(LocalDateTime.now());
+
+        var state = game.getState();
+
+        assertTrue(state instanceof WhiteWinGameState);
+        assertEquals(GameState.Type.WHITE_WIN, state.getType());
+    }
+
+    @Test
+    void testGetStateReturningBlackWin() {
+        var board = mock(AbstractBoard.class);
+        when(board.getState())
+            .thenReturn(new AgreedDrawBoardState(board, Colors.BLACK));
+
+        var whitePlayer = mock(Player.class);
+        var blackPlayer = mock(Player.class);
+
+        var game = new GameMock(whitePlayer, blackPlayer, board);
+        game.setFinishedAt(LocalDateTime.now());
+
+        var state = game.getState();
+
+        assertTrue(state instanceof BlackWinGameState);
+        assertEquals(GameState.Type.BLACK_WIN, state.getType());
+    }
 
     @Test
     @SuppressWarnings("unchecked")
