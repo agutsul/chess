@@ -16,7 +16,8 @@ class QueenCaptureActionRule<COLOR1 extends Color,
         extends AbstractCaptureLineActionRule<COLOR1,COLOR2,QUEEN,PIECE,
                                               PieceCaptureAction<COLOR1,COLOR2,QUEEN,PIECE>> {
 
-    QueenCaptureActionRule(Board board, CapturePieceAlgo<COLOR1,QUEEN,Line> algo) {
+    QueenCaptureActionRule(Board board,
+                           CapturePieceAlgo<COLOR1,QUEEN,Line> algo) {
         super(board, algo);
     }
 

@@ -21,7 +21,8 @@ class KnightProtectImpactRule<COLOR extends Color,
     }
 
     @Override
-    protected PieceProtectImpact<COLOR,KNIGHT,PIECE> createImpact(KNIGHT piece1, PIECE piece2) {
+    protected PieceProtectImpact<COLOR,KNIGHT,PIECE> createImpact(KNIGHT piece1,
+                                                                  PIECE piece2) {
         return new PieceProtectImpact<>(piece1, piece2);
     }
 }

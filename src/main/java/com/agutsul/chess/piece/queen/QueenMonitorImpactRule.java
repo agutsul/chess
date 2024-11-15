@@ -11,7 +11,8 @@ import com.agutsul.chess.rule.impact.AbstractMonitorLineImpactRule;
 
 class QueenMonitorImpactRule<COLOR extends Color,
                              QUEEN extends QueenPiece<COLOR>>
-        extends AbstractMonitorLineImpactRule<COLOR,QUEEN,PieceMonitorImpact<COLOR,QUEEN>> {
+        extends AbstractMonitorLineImpactRule<COLOR,QUEEN,
+                                              PieceMonitorImpact<COLOR,QUEEN>> {
 
     QueenMonitorImpactRule(Board board,
                            CapturePieceAlgo<COLOR,QUEEN,Line> algo) {
@@ -19,7 +20,8 @@ class QueenMonitorImpactRule<COLOR extends Color,
     }
 
     @Override
-    protected PieceMonitorImpact<COLOR,QUEEN> createImpact(QUEEN piece, Position position) {
+    protected PieceMonitorImpact<COLOR,QUEEN> createImpact(QUEEN piece,
+                                                           Position position) {
         return new PieceMonitorImpact<>(piece, position);
     }
 }

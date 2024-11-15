@@ -20,7 +20,8 @@ class KnightMonitorImpactRule<COLOR extends Color,
     }
 
     @Override
-    protected PieceMonitorImpact<COLOR, KNIGHT> createImpact(KNIGHT piece, Position position) {
+    protected PieceMonitorImpact<COLOR, KNIGHT> createImpact(KNIGHT piece,
+                                                             Position position) {
         return new PieceMonitorImpact<>(piece, position);
     }
 }

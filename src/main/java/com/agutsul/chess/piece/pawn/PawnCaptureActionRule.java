@@ -22,7 +22,8 @@ class PawnCaptureActionRule<COLOR1 extends Color,
     }
 
     @Override
-    protected PieceCaptureAction<COLOR1,COLOR2,PAWN,PIECE> createAction(PAWN pawn, PIECE piece) {
+    protected PieceCaptureAction<COLOR1,COLOR2,PAWN,PIECE> createAction(PAWN pawn,
+                                                                        PIECE piece) {
         return new PieceCaptureAction<>(pawn, piece);
     }
 }

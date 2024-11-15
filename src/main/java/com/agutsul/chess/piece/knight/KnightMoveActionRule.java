@@ -20,7 +20,8 @@ class KnightMoveActionRule<COLOR extends Color,
     }
 
     @Override
-    protected PieceMoveAction<COLOR, KNIGHT> createAction(KNIGHT piece, Position position) {
+    protected PieceMoveAction<COLOR, KNIGHT> createAction(KNIGHT piece,
+                                                          Position position) {
         return new PieceMoveAction<>(piece, position);
     }
 }
