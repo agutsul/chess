@@ -36,7 +36,6 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
             <COLOR extends Color> boolean isAllEmptyBetween(Board board,
                                                             KingPiece<COLOR> king,
                                                             RookPiece<COLOR> rook) {
-
                 var rookPosition = rook.getPosition();
                 var kingPosition = king.getPosition();
 
@@ -55,7 +54,6 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
             <COLOR extends Color> boolean isAnyAttackedBetween(Board board,
                                                                KingPiece<COLOR> king,
                                                                RookPiece<COLOR> rook) {
-
                 var rookPosition = rook.getPosition();
                 var kingPosition = king.getPosition();
                 var attackerColor = king.getColor().invert();
@@ -78,7 +76,6 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
             <COLOR extends Color> boolean isAllEmptyBetween(Board board,
                                                             KingPiece<COLOR> king,
                                                             RookPiece<COLOR> rook) {
-
                 var rookPosition = rook.getPosition();
                 var kingPosition = king.getPosition();
 
@@ -98,7 +95,6 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
             <COLOR extends Color> boolean isAnyAttackedBetween(Board board,
                                                                KingPiece<COLOR> king,
                                                                RookPiece<COLOR> rook) {
-
                 var rookPosition = rook.getPosition();
                 var kingPosition = king.getPosition();
                 var attackerColor = king.getColor().invert();
