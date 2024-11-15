@@ -248,7 +248,7 @@ public abstract class AbstractPlayableGame
 
             ((Observable) board).notifyObservers(new ClearPieceDataEvent(currentPlayer.getColor()));
             // recalculate board state
-            board.setState(evaluateBoardState(currentPlayer));
+            board.setState(boardStateEvaluator.evaluate(currentPlayer.getColor()));
         }
 
         private void process(ActionPerformedEvent event) {
@@ -258,7 +258,7 @@ public abstract class AbstractPlayableGame
 
             // add current action into journal to be used in board state evaluation
             journal.add(memento);
-
+            // recalculate board state to update journal records
             evaluateBoardState(getOpponentPlayer());
         }
     }
