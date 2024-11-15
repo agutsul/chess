@@ -16,8 +16,8 @@ abstract class AbstractProtectImpactRule<COLOR extends Color,
                                          PIECE1 extends Piece<COLOR> & Capturable,
                                          PIECE2 extends Piece<COLOR>,
                                          IMPACT extends PieceProtectImpact<COLOR,PIECE1,PIECE2>>
-        extends AbstractRule<PIECE1, IMPACT>
-        implements ProtectImpactRule<COLOR, PIECE1, PIECE2, IMPACT> {
+        extends AbstractRule<PIECE1,IMPACT>
+        implements ProtectImpactRule<COLOR,PIECE1,PIECE2,IMPACT> {
 
     protected AbstractProtectImpactRule(Board board) {
         super(board);

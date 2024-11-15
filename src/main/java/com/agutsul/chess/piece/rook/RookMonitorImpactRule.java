@@ -11,14 +11,17 @@ import com.agutsul.chess.rule.impact.AbstractMonitorLineImpactRule;
 
 class RookMonitorImpactRule<COLOR extends Color,
                             ROOK extends RookPiece<COLOR>>
-        extends AbstractMonitorLineImpactRule<COLOR, ROOK, PieceMonitorImpact<COLOR, ROOK>> {
+        extends AbstractMonitorLineImpactRule<COLOR,ROOK,
+                                              PieceMonitorImpact<COLOR,ROOK>> {
 
-    RookMonitorImpactRule(Board board, CapturePieceAlgo<COLOR, ROOK, Line> algo) {
+    RookMonitorImpactRule(Board board,
+                          CapturePieceAlgo<COLOR,ROOK,Line> algo) {
         super(board, algo);
     }
 
     @Override
-    protected PieceMonitorImpact<COLOR, ROOK> createImpact(ROOK piece, Position position) {
+    protected PieceMonitorImpact<COLOR,ROOK> createImpact(ROOK piece,
+                                                          Position position) {
         return new PieceMonitorImpact<>(piece, position);
     }
 }

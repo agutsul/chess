@@ -1,7 +1,5 @@
 package com.agutsul.chess.piece.knight;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -60,7 +58,7 @@ final class KnightPieceAlgo<COLOR extends Color,
                 ))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(toList());
+                .toList();
 
         return nextPositions;
     }

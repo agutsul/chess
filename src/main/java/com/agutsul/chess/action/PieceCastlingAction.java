@@ -17,8 +17,8 @@ public class PieceCastlingAction<COLOR extends Color,
         extends AbstractCastlingAction<COLOR,
                                        PIECE1,
                                        PIECE2,
-                                       CastlingMoveAction<COLOR, PIECE1>,
-                                       CastlingMoveAction<COLOR, PIECE2>> {
+                                       CastlingMoveAction<COLOR,PIECE1>,
+                                       CastlingMoveAction<COLOR,PIECE2>> {
 
     private static final Logger LOGGER = getLogger(PieceCastlingAction.class);
 

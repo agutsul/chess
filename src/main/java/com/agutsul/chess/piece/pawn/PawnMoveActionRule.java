@@ -14,9 +14,11 @@ import com.agutsul.chess.rule.action.AbstractMovePositionActionRule;
 
 class PawnMoveActionRule<COLOR extends Color,
                          PAWN extends PawnPiece<COLOR>>
-        extends AbstractMovePositionActionRule<COLOR, PAWN, PieceMoveAction<COLOR, PAWN>> {
+        extends AbstractMovePositionActionRule<COLOR,PAWN,
+                                               PieceMoveAction<COLOR,PAWN>> {
 
-    PawnMoveActionRule(Board board, MovePieceAlgo<COLOR, PAWN, Calculated> algo) {
+    PawnMoveActionRule(Board board,
+                       MovePieceAlgo<COLOR,PAWN,Calculated> algo) {
         super(board, algo);
     }
 
@@ -36,7 +38,8 @@ class PawnMoveActionRule<COLOR extends Color,
     }
 
     @Override
-    protected PieceMoveAction<COLOR, PAWN> createAction(PAWN pawn, Position position) {
+    protected PieceMoveAction<COLOR,PAWN> createAction(PAWN pawn,
+                                                       Position position) {
         return new PieceMoveAction<>(pawn, position);
     }
 }

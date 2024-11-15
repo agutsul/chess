@@ -1,7 +1,5 @@
 package com.agutsul.chess.piece.king;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -16,9 +14,9 @@ import com.agutsul.chess.position.Position;
 
 final class KingPieceAlgo<COLOR extends Color,
                           KING extends KingPiece<COLOR>>
-        extends AbstractAlgo<KING, Position>
-        implements MovePieceAlgo<COLOR, KING, Position>,
-                   CapturePieceAlgo<COLOR, KING, Position> {
+        extends AbstractAlgo<KING,Position>
+        implements MovePieceAlgo<COLOR,KING,Position>,
+                   CapturePieceAlgo<COLOR,KING,Position> {
 
     private enum Move {
         NORTH     ( 0,  1),
@@ -60,7 +58,7 @@ final class KingPieceAlgo<COLOR extends Color,
                 ))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(toList());
+                .toList();
 
         return nextPositions;
     }

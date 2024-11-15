@@ -24,7 +24,7 @@ public class PiecePinImpactRule<COLOR1 extends Color,
                                 PIECE extends Piece<COLOR1>,
                                 KING extends KingPiece<COLOR1>,
                                 ATTACKER extends Piece<COLOR2> & Capturable>
-        extends AbstractPinImpactRule<COLOR1, COLOR2, PIECE, KING, ATTACKER,
+        extends AbstractPinImpactRule<COLOR1,COLOR2,PIECE,KING,ATTACKER,
                                       PiecePinImpact<COLOR1,COLOR2,PIECE,KING,ATTACKER>> {
 
     private static final Set<Piece.Type> LINE_ATTACK_PIECE_TYPES =
@@ -64,7 +64,9 @@ public class PiecePinImpactRule<COLOR1 extends Color,
                         var impacts = board.getImpacts(otherPiece);
                         var isMonitored = impacts.stream()
                                 .filter(impact -> Impact.Type.MONITOR.equals(impact.getType()))
-                                .anyMatch(impact -> Objects.equals(impact.getPosition(), king.getPosition()));
+                                .anyMatch(impact ->
+                                        Objects.equals(impact.getPosition(), king.getPosition())
+                                 );
 
                         return isMonitored;
                     });
@@ -78,10 +80,10 @@ public class PiecePinImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    protected Collection<PiecePinImpact<COLOR1, COLOR2, PIECE, KING, ATTACKER>>
+    protected Collection<PiecePinImpact<COLOR1,COLOR2,PIECE,KING,ATTACKER>>
             createImpacts(PIECE piece, Collection<Line> lines) {
 
-        var impacts = new ArrayList<PiecePinImpact<COLOR1, COLOR2, PIECE, KING, ATTACKER>>();
+        var impacts = new ArrayList<PiecePinImpact<COLOR1,COLOR2,PIECE,KING,ATTACKER>>();
         for (var line : lines) {
             var impact = createImpact(piece, line);
             if (impact != null) {
@@ -93,7 +95,7 @@ public class PiecePinImpactRule<COLOR1 extends Color,
     }
 
     @SuppressWarnings("unchecked")
-    private PiecePinImpact<COLOR1, COLOR2, PIECE, KING, ATTACKER>
+    private PiecePinImpact<COLOR1,COLOR2,PIECE,KING,ATTACKER>
             createImpact(PIECE pinnedPiece, Line line) {
 
         KING king = null;

@@ -14,13 +14,13 @@ import com.agutsul.chess.position.Position;
 
 public abstract class AbstractMonitorPositionImpactRule<COLOR extends Color,
                                                         PIECE extends Piece<COLOR> & Capturable,
-                                                        IMPACT extends PieceMonitorImpact<COLOR, PIECE>>
-        extends AbstractMonitorImpactRule<COLOR, PIECE, IMPACT> {
+                                                        IMPACT extends PieceMonitorImpact<COLOR,PIECE>>
+        extends AbstractMonitorImpactRule<COLOR,PIECE,IMPACT> {
 
-    protected final CapturePieceAlgo<COLOR, PIECE, Calculated> algo;
+    protected final CapturePieceAlgo<COLOR,PIECE,Calculated> algo;
 
     protected AbstractMonitorPositionImpactRule(Board board,
-                                                CapturePieceAlgo<COLOR, PIECE, Calculated> algo) {
+                                                CapturePieceAlgo<COLOR,PIECE,Calculated> algo) {
         super(board);
         this.algo = algo;
     }

@@ -6,7 +6,8 @@ import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.impact.PiecePinImpactRule;
 
-public final class KnightPieceImpactRule extends AbstractPieceRule<Impact<?>> {
+public final class KnightPieceImpactRule
+        extends AbstractPieceRule<Impact<?>> {
 
     public KnightPieceImpactRule(Board board) {
         this(board, new KnightPieceAlgo<>(board));

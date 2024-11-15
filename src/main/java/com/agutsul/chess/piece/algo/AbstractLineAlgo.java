@@ -9,7 +9,7 @@ import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 
 public abstract class AbstractLineAlgo<SOURCE,RESULT>
-        implements Algo<SOURCE, Collection<RESULT>> {
+        implements Algo<SOURCE,Collection<RESULT>> {
 
     protected final Board board;
 

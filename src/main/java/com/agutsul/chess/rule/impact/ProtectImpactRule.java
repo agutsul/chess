@@ -12,6 +12,6 @@ public interface ProtectImpactRule<COLOR extends Color,
                                    PIECE1 extends Piece<COLOR> & Capturable,
                                    PIECE2 extends Piece<COLOR>,
                                    IMPACT extends PieceProtectImpact<COLOR,PIECE1,PIECE2>>
-        extends Rule<PIECE1, Collection<IMPACT>> {
+        extends Rule<PIECE1,Collection<IMPACT>> {
 
 }

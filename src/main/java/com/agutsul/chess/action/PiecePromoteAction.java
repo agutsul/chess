@@ -31,7 +31,7 @@ public class PiecePromoteAction<COLOR1 extends Color,
         this.observable = observable;
     }
 
-    public <COLOR2 extends Color, PIECE2 extends Piece<COLOR2>> PiecePromoteAction(
+    public <COLOR2 extends Color,PIECE2 extends Piece<COLOR2>> PiecePromoteAction(
                               PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2> action,
                               Observable observable) {
         super(action);
@@ -44,7 +44,8 @@ public class PiecePromoteAction<COLOR1 extends Color,
 
         LOGGER.info("Executing promote by '{}'", piece);
         // prompt player about piece type to create during promotion
-        observable.notifyObservers(new RequestPromotionPieceTypeEvent(piece.getColor(), this));
+        var event = new RequestPromotionPieceTypeEvent(piece.getColor(), this);
+        observable.notifyObservers(event);
     }
 
     @Override

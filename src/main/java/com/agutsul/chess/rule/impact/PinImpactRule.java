@@ -15,6 +15,6 @@ public interface PinImpactRule<COLOR1 extends Color,
                                KING extends KingPiece<COLOR1>,
                                ATTACKER extends Piece<COLOR2> & Capturable,
                                IMPACT extends PiecePinImpact<COLOR1,COLOR2,PIECE,KING,ATTACKER>>
-        extends Rule<PIECE, Collection<IMPACT>> {
+        extends Rule<PIECE,Collection<IMPACT>> {
 
 }

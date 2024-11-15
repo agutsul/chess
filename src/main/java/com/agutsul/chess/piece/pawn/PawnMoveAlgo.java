@@ -1,7 +1,5 @@
 package com.agutsul.chess.piece.pawn;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -15,8 +13,8 @@ import com.agutsul.chess.position.Position;
 
 final class PawnMoveAlgo<COLOR extends Color,
                          PAWN extends PawnPiece<COLOR>>
-        extends AbstractAlgo<PAWN, Position>
-        implements MovePieceAlgo<COLOR, PAWN, Position> {
+        extends AbstractAlgo<PAWN,Position>
+        implements MovePieceAlgo<COLOR,PAWN,Position> {
 
     private final int step;
     private final int initialLine;
@@ -48,6 +46,6 @@ final class PawnMoveAlgo<COLOR extends Color,
         return nextPositions.stream()
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(toList());
+                .toList();
     }
 }

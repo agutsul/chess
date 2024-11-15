@@ -5,7 +5,7 @@ import java.util.Collection;
 import com.agutsul.chess.board.Board;
 
 public abstract class AbstractAlgo<SOURCE,RESULT>
-        implements Algo<SOURCE, Collection<RESULT>> {
+        implements Algo<SOURCE,Collection<RESULT>> {
 
     protected final Board board;
 

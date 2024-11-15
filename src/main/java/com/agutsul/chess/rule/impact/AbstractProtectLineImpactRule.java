@@ -19,12 +19,12 @@ public abstract class AbstractProtectLineImpactRule<COLOR extends Color,
                                                     PIECE1 extends Piece<COLOR> & Capturable,
                                                     PIECE2 extends Piece<COLOR>,
                                                     IMPACT extends PieceProtectImpact<COLOR,PIECE1,PIECE2>>
-        extends AbstractProtectImpactRule<COLOR, PIECE1, PIECE2, IMPACT> {
+        extends AbstractProtectImpactRule<COLOR,PIECE1,PIECE2,IMPACT> {
 
-    protected final CapturePieceAlgo<COLOR, PIECE1, Line> algo;
+    protected final CapturePieceAlgo<COLOR,PIECE1,Line> algo;
 
     protected AbstractProtectLineImpactRule(Board board,
-                                            CapturePieceAlgo<COLOR, PIECE1, Line> algo) {
+                                            CapturePieceAlgo<COLOR,PIECE1,Line> algo) {
         super(board);
         this.algo = algo;
     }

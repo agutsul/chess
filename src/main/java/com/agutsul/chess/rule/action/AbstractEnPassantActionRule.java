@@ -18,9 +18,9 @@ public abstract class AbstractEnPassantActionRule<COLOR1 extends Color,
                                                   COLOR2 extends Color,
                                                   PAWN1 extends PawnPiece<COLOR1>,
                                                   PAWN2 extends PawnPiece<COLOR2>,
-                                                  ACTION extends PieceEnPassantAction<COLOR1, COLOR2, PAWN1, PAWN2>>
-        extends AbstractRule<PAWN1, ACTION>
-        implements EnPassantActionRule<COLOR1, COLOR2, PAWN1, PAWN2, ACTION> {
+                                                  ACTION extends PieceEnPassantAction<COLOR1,COLOR2,PAWN1,PAWN2>>
+        extends AbstractRule<PAWN1,ACTION>
+        implements EnPassantActionRule<COLOR1,COLOR2,PAWN1,PAWN2,ACTION> {
 
     protected AbstractEnPassantActionRule(Board board) {
         super(board);
@@ -53,7 +53,7 @@ public abstract class AbstractEnPassantActionRule<COLOR1 extends Color,
             }
 
             @SuppressWarnings("unchecked")
-            PAWN2 enemyPawn = (PAWN2) enemyPiece;
+            var enemyPawn = (PAWN2) enemyPiece;
 
             var visitedPositions = enemyPawn.getPositions();
             if (visitedPositions.size() < 2) {
@@ -75,5 +75,5 @@ public abstract class AbstractEnPassantActionRule<COLOR1 extends Color,
 
     protected abstract Collection<Position> calculatePositions(PAWN1 piece);
 
-    protected abstract ACTION createAction(PAWN1 piece1, PAWN2 piece2, Position position);
+    protected abstract ACTION createAction(PAWN1 pawn1, PAWN2 pawn2, Position position);
 }

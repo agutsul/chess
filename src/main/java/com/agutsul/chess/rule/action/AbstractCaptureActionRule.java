@@ -17,8 +17,8 @@ abstract class AbstractCaptureActionRule<COLOR1 extends Color,
                                          PIECE1 extends Piece<COLOR1> & Capturable,
                                          PIECE2 extends Piece<COLOR2>,
                                          ACTION extends PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>>
-        extends AbstractRule<PIECE1, ACTION>
-        implements CaptureActionRule<COLOR1, COLOR2, PIECE1, PIECE2, ACTION> {
+        extends AbstractRule<PIECE1,ACTION>
+        implements CaptureActionRule<COLOR1,COLOR2,PIECE1,PIECE2,ACTION> {
 
     protected AbstractCaptureActionRule(Board board) {
         super(board);

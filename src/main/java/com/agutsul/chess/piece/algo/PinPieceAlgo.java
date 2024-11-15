@@ -11,14 +11,14 @@ import com.agutsul.chess.position.Line;
 
 public final class PinPieceAlgo<COLOR extends Color,
                                 PIECE extends Piece<COLOR>>
-        extends AbstractAlgo<PIECE, Line> {
+        extends AbstractAlgo<PIECE,Line> {
 
-    private final CompositePieceAlgo<COLOR, PIECE, Line> algo;
+    private final CompositePieceAlgo<COLOR,PIECE,Line> algo;
 
     @SuppressWarnings("unchecked")
     public PinPieceAlgo(Board board) {
         super(board);
-        this.algo = new CompositePieceAlgo<COLOR, PIECE, Line>(board,
+        this.algo = new CompositePieceAlgo<>(board,
                         new PinLineAlgo<>(board, new HorizontalLineAlgo<>(board)),
                         new PinLineAlgo<>(board, new VerticalLineAlgo<>(board)),
                         new PinDiagonalLineAlgo<>(board, new DiagonalLineAlgo<>(board))
@@ -32,19 +32,19 @@ public final class PinPieceAlgo<COLOR extends Color,
 
     private static class PinLineAlgo<COLOR extends Color,
                                      PIECE extends Piece<COLOR>>
-            extends AbstractLineAlgo<PIECE, Line> {
+            extends AbstractLineAlgo<PIECE,Line> {
 
-        private final AbstractLineAlgo<PIECE, Line> origin;
+        private final AbstractLineAlgo<PIECE,Line> origin;
 
-        public PinLineAlgo(Board board, HorizontalLineAlgo<COLOR, PIECE> algo) {
-            this(board, (AbstractLineAlgo<PIECE, Line>) algo);
+        public PinLineAlgo(Board board, HorizontalLineAlgo<COLOR,PIECE> algo) {
+            this(board, (AbstractLineAlgo<PIECE,Line>) algo);
         }
 
-        public PinLineAlgo(Board board, VerticalLineAlgo<COLOR, PIECE> algo) {
-            this(board, (AbstractLineAlgo<PIECE, Line>) algo);
+        public PinLineAlgo(Board board, VerticalLineAlgo<COLOR,PIECE> algo) {
+            this(board, (AbstractLineAlgo<PIECE,Line>) algo);
         }
 
-        private PinLineAlgo(Board board, AbstractLineAlgo<PIECE, Line> algo) {
+        private PinLineAlgo(Board board, AbstractLineAlgo<PIECE,Line> algo) {
             super(board);
             this.origin = algo;
         }
@@ -61,9 +61,10 @@ public final class PinPieceAlgo<COLOR extends Color,
 
     private static class PinDiagonalLineAlgo<COLOR extends Color,
                                              PIECE extends Piece<COLOR>>
-            extends PinLineAlgo<COLOR, PIECE> {
+            extends PinLineAlgo<COLOR,PIECE> {
 
-        public PinDiagonalLineAlgo(Board board, DiagonalLineAlgo<COLOR, PIECE> algo) {
+        public PinDiagonalLineAlgo(Board board,
+                                   DiagonalLineAlgo<COLOR, PIECE> algo) {
             super(board, algo);
         }
 

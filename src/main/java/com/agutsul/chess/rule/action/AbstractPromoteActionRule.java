@@ -20,17 +20,17 @@ public abstract class AbstractPromoteActionRule<COLOR1 extends Color,
                                                 COLOR2 extends Color,
                                                 PAWN extends PawnPiece<COLOR1>,
                                                 PIECE extends Piece<COLOR2>,
-                                                ACTION extends PiecePromoteAction<COLOR1, PAWN>,
-                                                SOURCE_ACTION extends AbstractTargetAction<PAWN, ?>>
-        extends AbstractRule<PAWN, ACTION>
-        implements PromoteActionRule<COLOR1, PAWN, ACTION> {
+                                                ACTION extends PiecePromoteAction<COLOR1,PAWN>,
+                                                SOURCE_ACTION extends AbstractTargetAction<PAWN,?>>
+        extends AbstractRule<PAWN,ACTION>
+        implements PromoteActionRule<COLOR1,PAWN,ACTION> {
 
-    protected final PromotePieceAlgo<COLOR1, PAWN, Position> algo;
-    protected final Rule<PAWN, Collection<SOURCE_ACTION>> rule;
+    protected final PromotePieceAlgo<COLOR1,PAWN,Position> algo;
+    protected final Rule<PAWN,Collection<SOURCE_ACTION>> rule;
 
     protected AbstractPromoteActionRule(Board board,
-                                        PromotePieceAlgo<COLOR1, PAWN, Position> algo,
-                                        Rule<PAWN, Collection<SOURCE_ACTION>> rule) {
+                                        PromotePieceAlgo<COLOR1,PAWN,Position> algo,
+                                        Rule<PAWN,Collection<SOURCE_ACTION>> rule) {
         super(board);
         this.algo = algo;
         this.rule = rule;

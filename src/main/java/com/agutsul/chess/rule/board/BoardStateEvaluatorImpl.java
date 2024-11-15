@@ -17,10 +17,8 @@ public final class BoardStateEvaluatorImpl
 
     private final BoardStateEvaluator<BoardState> evaluator;
 
-    public BoardStateEvaluatorImpl(Board board, Journal<ActionMemento<?,?>> journal) {
-//        this.evaluator = new CachedBoardStateEvaluator(board,
-//                new CompositeBoardStateEvaluator(board, journal)
-//        );
+    public BoardStateEvaluatorImpl(Board board,
+                                   Journal<ActionMemento<?,?>> journal) {
         this.evaluator = new CompositeBoardStateEvaluator(board, journal);
     }
 

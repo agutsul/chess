@@ -6,6 +6,7 @@ import static org.apache.commons.lang3.StringUtils.SPACE;
 
 import java.util.Optional;
 
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
@@ -42,7 +43,7 @@ class BoardFormatter {
         return builder.toString();
     }
 
-    private static String formatPiece(Optional<Piece<?>> piece) {
+    private static String formatPiece(Optional<Piece<Color>> piece) {
         return piece.isPresent() ? piece.get().getUnicode() : SPACE;
     }
 

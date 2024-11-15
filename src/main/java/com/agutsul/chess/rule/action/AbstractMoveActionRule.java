@@ -14,9 +14,9 @@ import com.agutsul.chess.rule.AbstractRule;
 
 abstract class AbstractMoveActionRule<COLOR extends Color,
                                       PIECE extends Piece<COLOR> & Movable,
-                                      ACTION extends PieceMoveAction<COLOR, PIECE>>
-        extends AbstractRule<PIECE, ACTION>
-        implements MoveActionRule<COLOR, PIECE, ACTION> {
+                                      ACTION extends PieceMoveAction<COLOR,PIECE>>
+        extends AbstractRule<PIECE,ACTION>
+        implements MoveActionRule<COLOR,PIECE,ACTION> {
 
     protected AbstractMoveActionRule(Board board) {
         super(board);

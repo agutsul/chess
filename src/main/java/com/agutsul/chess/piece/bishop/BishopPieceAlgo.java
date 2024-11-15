@@ -13,15 +13,15 @@ import com.agutsul.chess.position.Line;
 
 final class BishopPieceAlgo<COLOR extends Color,
                             BISHOP extends BishopPiece<COLOR>>
-        extends AbstractAlgo<BISHOP, Line>
-        implements MovePieceAlgo<COLOR, BISHOP, Line>,
-                   CapturePieceAlgo<COLOR, BISHOP, Line> {
+        extends AbstractAlgo<BISHOP,Line>
+        implements MovePieceAlgo<COLOR,BISHOP,Line>,
+                   CapturePieceAlgo<COLOR,BISHOP,Line> {
 
-    private final DiagonalLineAlgo<COLOR, BISHOP> algo;
+    private final DiagonalLineAlgo<COLOR,BISHOP> algo;
 
     BishopPieceAlgo(Board board) {
         super(board);
-        this.algo = new DiagonalLineAlgo<COLOR, BISHOP>(board);
+        this.algo = new DiagonalLineAlgo<>(board);
     }
 
     @Override

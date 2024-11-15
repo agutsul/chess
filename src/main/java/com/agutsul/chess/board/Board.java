@@ -24,20 +24,20 @@ public interface Board {
     Collection<Action<?>> getActions(Piece<?> piece);
     Collection<Impact<?>> getImpacts(Piece<?> piece);
 
-    Collection<Piece<?>> getAttackers(Piece<?> piece);
+    <COLOR extends Color> Collection<Piece<COLOR>> getAttackers(Piece<?> piece);
 
-    Collection<Piece<?>> getPieces();
-    Collection<Piece<?>> getPieces(Color color);
-    Collection<Piece<?>> getPieces(Piece.Type pieceType);
-    Collection<Piece<?>> getPieces(Color color, Piece.Type pieceType);
-    Collection<Piece<?>> getPieces(Color color, String position, String... positions);
+    <COLOR extends Color> Collection<Piece<COLOR>> getPieces();
+    <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color);
+    <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Piece.Type pieceType);
+    <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color, Piece.Type pieceType);
+    <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color, String position, String... positions);
 
-    Optional<Piece<?>> getPiece(Position position);
-    Optional<Piece<?>> getPiece(String position);
+    <COLOR extends Color> Optional<Piece<COLOR>> getPiece(Position position);
+    <COLOR extends Color> Optional<Piece<COLOR>> getPiece(String position);
 
-    Optional<Piece<?>> getCapturedPiece(String position, Color color);
+    <COLOR extends Color> Optional<Piece<COLOR>> getCapturedPiece(String position, Color color);
 
-    Optional<KingPiece<?>> getKing(Color color);
+    <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(Color color);
 
     Optional<Position> getPosition(String code);
     Optional<Position> getPosition(int x, int y);

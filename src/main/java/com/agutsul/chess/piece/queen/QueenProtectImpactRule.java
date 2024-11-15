@@ -12,15 +12,16 @@ import com.agutsul.chess.rule.impact.AbstractProtectLineImpactRule;
 class QueenProtectImpactRule<COLOR extends Color,
                              QUEEN extends QueenPiece<COLOR>,
                              PIECE extends Piece<COLOR>>
-        extends AbstractProtectLineImpactRule<COLOR, QUEEN, PIECE,
-                                              PieceProtectImpact<COLOR, QUEEN, PIECE>> {
+        extends AbstractProtectLineImpactRule<COLOR,QUEEN,PIECE,
+                                              PieceProtectImpact<COLOR,QUEEN,PIECE>> {
 
-    QueenProtectImpactRule(Board board, CapturePieceAlgo<COLOR, QUEEN, Line> algo) {
+    QueenProtectImpactRule(Board board,
+                           CapturePieceAlgo<COLOR,QUEEN,Line> algo) {
         super(board, algo);
     }
 
     @Override
-    protected PieceProtectImpact<COLOR, QUEEN, PIECE> createImpact(QUEEN queen, PIECE piece) {
+    protected PieceProtectImpact<COLOR,QUEEN,PIECE> createImpact(QUEEN queen, PIECE piece) {
         return new PieceProtectImpact<>(queen, piece);
     }
 }

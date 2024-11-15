@@ -11,14 +11,17 @@ import com.agutsul.chess.rule.action.AbstractMoveLineActionRule;
 
 class RookMoveActionRule<COLOR extends Color,
                          ROOK extends RookPiece<COLOR>>
-        extends AbstractMoveLineActionRule<COLOR, ROOK, PieceMoveAction<COLOR, ROOK>> {
+        extends AbstractMoveLineActionRule<COLOR,ROOK,
+                                           PieceMoveAction<COLOR,ROOK>> {
 
-    RookMoveActionRule(Board board, MovePieceAlgo<COLOR, ROOK, Line> algo) {
+    RookMoveActionRule(Board board,
+                       MovePieceAlgo<COLOR,ROOK,Line> algo) {
         super(board, algo);
     }
 
     @Override
-    protected PieceMoveAction<COLOR, ROOK> createAction(ROOK piece, Position position) {
+    protected PieceMoveAction<COLOR,ROOK> createAction(ROOK piece,
+                                                       Position position) {
         return new PieceMoveAction<>(piece, position);
     }
 }

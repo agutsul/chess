@@ -15,20 +15,23 @@ import com.agutsul.chess.rule.action.CastlingActionRule;
 class RookCastlingActionRule<COLOR extends Color,
                              ROOK extends RookPiece<COLOR>,
                              KING extends KingPiece<COLOR>>
-        extends AbstractCastlingActionRule<COLOR, ROOK, KING,
-                                           PieceCastlingAction<COLOR, ROOK, KING>>
-        implements CastlingActionRule<COLOR, ROOK, KING,
-                                           PieceCastlingAction<COLOR, ROOK, KING>> {
+        extends AbstractCastlingActionRule<COLOR,ROOK,KING,
+                                           PieceCastlingAction<COLOR,ROOK,KING>>
+        implements CastlingActionRule<COLOR,ROOK,KING,
+                                           PieceCastlingAction<COLOR,ROOK,KING>> {
 
     RookCastlingActionRule(Board board) {
         super(board);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Collection<PieceCastlingAction<COLOR, ROOK, KING>> evaluate(ROOK rook) {
-        var actions = new ArrayList<PieceCastlingAction<COLOR, ROOK, KING>>();
-        for (var king : board.getPieces(rook.getColor(), Piece.Type.KING)) {
+    public Collection<PieceCastlingAction<COLOR,ROOK,KING>> evaluate(ROOK rook) {
+        var actions = new ArrayList<PieceCastlingAction<COLOR,ROOK,KING>>();
+
+        Collection<Piece<COLOR>> kings =
+                board.getPieces(rook.getColor(), Piece.Type.KING);
+
+        for (var king : kings) {
             var castlingActions = super.evaluate(
                     (KingPiece<COLOR>) king,
                     (RookPiece<COLOR>) rook

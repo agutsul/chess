@@ -12,12 +12,13 @@ import com.agutsul.chess.position.Position;
 
 class PawnEnPassantAlgo<COLOR extends Color,
                         PAWN extends PawnPiece<COLOR>>
-        extends AbstractAlgo<PAWN, Position>
-        implements EnPassantPieceAlgo<COLOR, PAWN, Position> {
+        extends AbstractAlgo<PAWN,Position>
+        implements EnPassantPieceAlgo<COLOR,PAWN,Position> {
 
-    private final CapturePieceAlgo<COLOR, PAWN, Position> captureAlgo;
+    private final CapturePieceAlgo<COLOR,PAWN,Position> captureAlgo;
 
-    PawnEnPassantAlgo(Board board, CapturePieceAlgo<COLOR, PAWN, Position> captureAlgo) {
+    PawnEnPassantAlgo(Board board,
+                      CapturePieceAlgo<COLOR,PAWN,Position> captureAlgo) {
         super(board);
         this.captureAlgo = captureAlgo;
     }

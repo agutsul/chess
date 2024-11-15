@@ -15,11 +15,11 @@ import com.agutsul.chess.position.Line;
 
 final class RookPieceAlgo<COLOR extends Color,
                           ROOK extends RookPiece<COLOR>>
-        extends AbstractAlgo<ROOK, Line>
-        implements MovePieceAlgo<COLOR, ROOK, Line>,
-                   CapturePieceAlgo<COLOR, ROOK, Line> {
+        extends AbstractAlgo<ROOK,Line>
+        implements MovePieceAlgo<COLOR,ROOK,Line>,
+                   CapturePieceAlgo<COLOR,ROOK,Line> {
 
-    private final CompositePieceAlgo<COLOR, ROOK, Line> algo;
+    private final CompositePieceAlgo<COLOR,ROOK,Line> algo;
 
     @SuppressWarnings("unchecked")
     RookPieceAlgo(Board board) {

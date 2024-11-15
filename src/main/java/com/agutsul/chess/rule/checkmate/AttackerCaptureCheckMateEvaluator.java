@@ -73,7 +73,6 @@ final class AttackerCaptureCheckMateEvaluator
 
             for (var action : actions) {
                 var captureAction = (AbstractCaptureAction<?,?,?,?>) action;
-                //@SuppressWarnings("unchecked")
                 var targetPiece = captureAction.getTarget();
                 if (Objects.equals(targetPiece, piece)) {
                     attackActions.add(captureAction);

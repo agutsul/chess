@@ -19,8 +19,8 @@ abstract class AbstractPinImpactRule<COLOR1 extends Color,
                                      KING extends KingPiece<COLOR1>,
                                      ATTACKER extends Piece<COLOR2> & Capturable,
                                      IMPACT extends PiecePinImpact<COLOR1,COLOR2,PIECE,KING,ATTACKER>>
-        extends AbstractRule<PIECE, IMPACT>
-        implements PinImpactRule<COLOR1, COLOR2, PIECE, KING, ATTACKER, IMPACT> {
+        extends AbstractRule<PIECE,IMPACT>
+        implements PinImpactRule<COLOR1,COLOR2,PIECE,KING,ATTACKER,IMPACT> {
 
     protected AbstractPinImpactRule(Board board) {
         super(board);

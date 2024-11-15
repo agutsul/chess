@@ -7,7 +7,8 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.position.Position;
 
-abstract class AbstractPieceStateProxy<COLOR extends Color,PIECE extends Piece<COLOR> & Movable & Capturable>
+abstract class AbstractPieceStateProxy<COLOR extends Color,
+                                       PIECE extends Piece<COLOR> & Movable & Capturable>
         extends AbstractPieceState<COLOR,PIECE> {
 
     private final AbstractPieceState<COLOR,PIECE> origin;

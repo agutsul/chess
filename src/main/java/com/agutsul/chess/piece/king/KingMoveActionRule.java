@@ -11,14 +11,15 @@ import com.agutsul.chess.rule.action.AbstractMovePositionActionRule;
 
 class KingMoveActionRule<COLOR extends Color,
                          KING extends KingPiece<COLOR>>
-        extends AbstractMovePositionActionRule<COLOR, KING, PieceMoveAction<COLOR, KING>> {
+        extends AbstractMovePositionActionRule<COLOR,KING,PieceMoveAction<COLOR,KING>> {
 
-    KingMoveActionRule(Board board, MovePieceAlgo<COLOR, KING, Calculated> algo) {
+    KingMoveActionRule(Board board,
+                       MovePieceAlgo<COLOR,KING,Calculated> algo) {
         super(board, algo);
     }
 
     @Override
-    protected PieceMoveAction<COLOR, KING> createAction(KING piece, Position position) {
+    protected PieceMoveAction<COLOR,KING> createAction(KING piece, Position position) {
         return new PieceMoveAction<>(piece, position);
     }
 }

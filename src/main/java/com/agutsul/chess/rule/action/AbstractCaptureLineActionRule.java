@@ -22,12 +22,12 @@ public abstract class AbstractCaptureLineActionRule<COLOR1 extends Color,
                                                     PIECE1 extends Piece<COLOR1> & Capturable,
                                                     PIECE2 extends Piece<COLOR2>,
                                                     ACTION extends PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>>
-        extends AbstractCaptureActionRule<COLOR1, COLOR2, PIECE1, PIECE2, ACTION> {
+        extends AbstractCaptureActionRule<COLOR1,COLOR2,PIECE1,PIECE2,ACTION> {
 
-    protected final CapturePieceAlgo<COLOR1, PIECE1, Line> algo;
+    protected final CapturePieceAlgo<COLOR1,PIECE1,Line> algo;
 
     protected AbstractCaptureLineActionRule(Board board,
-                                            CapturePieceAlgo<COLOR1, PIECE1, Line> algo) {
+                                            CapturePieceAlgo<COLOR1,PIECE1,Line> algo) {
         super(board);
         this.algo = algo;
     }

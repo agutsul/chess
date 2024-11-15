@@ -11,9 +11,11 @@ import com.agutsul.chess.rule.action.AbstractMovePositionActionRule;
 
 class KnightMoveActionRule<COLOR extends Color,
                            KNIGHT extends KnightPiece<COLOR>>
-        extends AbstractMovePositionActionRule<COLOR, KNIGHT, PieceMoveAction<COLOR, KNIGHT>> {
+        extends AbstractMovePositionActionRule<COLOR,KNIGHT,
+                                               PieceMoveAction<COLOR,KNIGHT>> {
 
-    KnightMoveActionRule(Board board, MovePieceAlgo<COLOR, KNIGHT, Calculated> algo) {
+    KnightMoveActionRule(Board board,
+                         MovePieceAlgo<COLOR,KNIGHT,Calculated> algo) {
         super(board, algo);
     }
 

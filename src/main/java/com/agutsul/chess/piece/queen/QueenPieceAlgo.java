@@ -16,11 +16,11 @@ import com.agutsul.chess.position.Line;
 
 final class QueenPieceAlgo<COLOR extends Color,
                            QUEEN extends QueenPiece<COLOR>>
-        extends AbstractAlgo<QUEEN, Line>
-        implements MovePieceAlgo<COLOR, QUEEN, Line>,
-                   CapturePieceAlgo<COLOR, QUEEN, Line> {
+        extends AbstractAlgo<QUEEN,Line>
+        implements MovePieceAlgo<COLOR,QUEEN,Line>,
+                   CapturePieceAlgo<COLOR,QUEEN,Line> {
 
-    private final CompositePieceAlgo<COLOR, QUEEN, Line> algo;
+    private final CompositePieceAlgo<COLOR,QUEEN,Line> algo;
 
     @SuppressWarnings("unchecked")
     QueenPieceAlgo(Board board) {

@@ -9,6 +9,6 @@ import com.agutsul.chess.piece.Piece;
 public interface MovePieceAlgo<COLOR extends Color,
                                PIECE extends Piece<COLOR> & Movable,
                                POSITION>
-        extends Algo<PIECE, Collection<POSITION>> {
+        extends Algo<PIECE,Collection<POSITION>> {
 
 }

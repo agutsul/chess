@@ -1,7 +1,5 @@
 package com.agutsul.chess.piece.pawn;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
@@ -15,8 +13,8 @@ import com.agutsul.chess.position.Position;
 
 final class PawnCaptureAlgo<COLOR extends Color,
                             PAWN extends PawnPiece<COLOR>>
-        extends AbstractAlgo<PAWN, Position>
-        implements CapturePieceAlgo<COLOR, PAWN, Position> {
+        extends AbstractAlgo<PAWN,Position>
+        implements CapturePieceAlgo<COLOR,PAWN,Position> {
 
     private final int step;
 
@@ -42,6 +40,6 @@ final class PawnCaptureAlgo<COLOR extends Color,
         return nextPositions.stream()
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(toList());
+                .toList();
     }
 }

@@ -11,7 +11,7 @@ import com.agutsul.chess.position.Position;
 
 public class CancelMoveAction<COLOR extends Color,
                               PIECE extends Piece<COLOR> & Movable>
-        extends AbstractMoveAction<COLOR, PIECE> {
+        extends AbstractMoveAction<COLOR,PIECE> {
 
     private static final Logger LOGGER = getLogger(CancelMoveAction.class);
 

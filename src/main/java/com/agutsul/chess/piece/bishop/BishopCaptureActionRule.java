@@ -13,17 +13,18 @@ class BishopCaptureActionRule<COLOR1 extends Color,
                               COLOR2 extends Color,
                               BISHOP extends BishopPiece<COLOR1>,
                               PIECE extends Piece<COLOR2>>
-        extends AbstractCaptureLineActionRule<COLOR1, COLOR2, BISHOP, PIECE,
-                                              PieceCaptureAction<COLOR1, COLOR2, BISHOP, PIECE>> {
+        extends AbstractCaptureLineActionRule<COLOR1,COLOR2,BISHOP,PIECE,
+                                              PieceCaptureAction<COLOR1,COLOR2,BISHOP,PIECE>> {
 
-    BishopCaptureActionRule(Board board, CapturePieceAlgo<COLOR1, BISHOP, Line> algo) {
+    BishopCaptureActionRule(Board board,
+                            CapturePieceAlgo<COLOR1,BISHOP,Line> algo) {
         super(board, algo);
     }
 
     @Override
-    protected PieceCaptureAction<COLOR1, COLOR2, BISHOP, PIECE> createAction(BISHOP bishop,
-                                                                             PIECE piece,
-                                                                             Line line) {
+    protected PieceCaptureAction<COLOR1,COLOR2,BISHOP,PIECE> createAction(BISHOP bishop,
+                                                                          PIECE piece,
+                                                                          Line line) {
         return new PieceCaptureAction<>(bishop, piece, line);
     }
 }

@@ -7,7 +7,7 @@ import com.agutsul.chess.position.Position;
 
 public abstract class AbstractMoveAction<COLOR extends Color,
                                          PIECE extends Piece<COLOR> & Movable>
-        extends AbstractTargetAction<PIECE, Position> {
+        extends AbstractTargetAction<PIECE,Position> {
 
     AbstractMoveAction(PIECE source, Position target) {
         super(Type.MOVE, source, target);

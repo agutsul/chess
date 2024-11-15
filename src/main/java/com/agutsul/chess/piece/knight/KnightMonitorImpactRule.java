@@ -11,9 +11,11 @@ import com.agutsul.chess.rule.impact.AbstractMonitorPositionImpactRule;
 
 class KnightMonitorImpactRule<COLOR extends Color,
                               KNIGHT extends KnightPiece<COLOR>>
-        extends AbstractMonitorPositionImpactRule<COLOR, KNIGHT, PieceMonitorImpact<COLOR, KNIGHT>> {
+        extends AbstractMonitorPositionImpactRule<COLOR, KNIGHT,
+                                                  PieceMonitorImpact<COLOR, KNIGHT>> {
 
-    KnightMonitorImpactRule(Board board, CapturePieceAlgo<COLOR, KNIGHT, Calculated> algo) {
+    KnightMonitorImpactRule(Board board,
+                            CapturePieceAlgo<COLOR, KNIGHT, Calculated> algo) {
         super(board, algo);
     }
 

@@ -10,7 +10,7 @@ import com.agutsul.chess.position.Line;
 
 public final class HorizontalLineAlgo<COLOR extends Color,
                                       PIECE extends Piece<COLOR>>
-        extends AbstractLineAlgo<PIECE, Line> {
+        extends AbstractLineAlgo<PIECE,Line> {
 
     public HorizontalLineAlgo(Board board) {
         super(board);

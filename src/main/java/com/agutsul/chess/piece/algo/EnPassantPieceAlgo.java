@@ -8,6 +8,6 @@ import com.agutsul.chess.piece.Piece;
 public interface EnPassantPieceAlgo<COLOR extends Color,
                                     PIECE extends Piece<COLOR> & Capturable & EnPassantable,
                                     POSITION>
-        extends CapturePieceAlgo<COLOR, PIECE, POSITION> {
+        extends CapturePieceAlgo<COLOR,PIECE,POSITION> {
 
 }

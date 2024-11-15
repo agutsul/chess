@@ -12,15 +12,16 @@ import com.agutsul.chess.rule.impact.AbstractProtectPositionImpactRule;
 class KnightProtectImpactRule<COLOR extends Color,
                               KNIGHT extends KnightPiece<COLOR>,
                               PIECE extends Piece<COLOR>>
-        extends AbstractProtectPositionImpactRule<COLOR, KNIGHT, PIECE,
-                                                  PieceProtectImpact<COLOR, KNIGHT, PIECE>> {
+        extends AbstractProtectPositionImpactRule<COLOR,KNIGHT,PIECE,
+                                                  PieceProtectImpact<COLOR,KNIGHT,PIECE>> {
 
-    KnightProtectImpactRule(Board board, CapturePieceAlgo<COLOR, KNIGHT, Calculated> algo) {
+    KnightProtectImpactRule(Board board,
+                            CapturePieceAlgo<COLOR,KNIGHT,Calculated> algo) {
         super(board, algo);
     }
 
     @Override
-    protected PieceProtectImpact<COLOR, KNIGHT, PIECE> createImpact(KNIGHT piece1, PIECE piece2) {
+    protected PieceProtectImpact<COLOR,KNIGHT,PIECE> createImpact(KNIGHT piece1, PIECE piece2) {
         return new PieceProtectImpact<>(piece1, piece2);
     }
 }

@@ -13,16 +13,16 @@ class PawnCaptureActionRule<COLOR1 extends Color,
                             COLOR2 extends Color,
                             PAWN extends PawnPiece<COLOR1>,
                             PIECE extends Piece<COLOR2>>
-        extends AbstractCapturePositionActionRule<COLOR1, COLOR2, PAWN, PIECE,
-                                                  PieceCaptureAction<COLOR1, COLOR2, PAWN, PIECE>> {
+        extends AbstractCapturePositionActionRule<COLOR1,COLOR2,PAWN,PIECE,
+                                                  PieceCaptureAction<COLOR1,COLOR2,PAWN,PIECE>> {
 
-    PawnCaptureActionRule(Board board, CapturePieceAlgo<COLOR1, PAWN, Calculated> algo) {
+    PawnCaptureActionRule(Board board,
+                          CapturePieceAlgo<COLOR1,PAWN,Calculated> algo) {
         super(board, algo);
     }
 
     @Override
-    protected PieceCaptureAction<COLOR1, COLOR2, PAWN, PIECE> createAction(PAWN pawn,
-                                                                           PIECE piece) {
+    protected PieceCaptureAction<COLOR1,COLOR2,PAWN,PIECE> createAction(PAWN pawn, PIECE piece) {
         return new PieceCaptureAction<>(pawn, piece);
     }
 }

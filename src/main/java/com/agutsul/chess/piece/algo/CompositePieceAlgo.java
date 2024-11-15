@@ -17,9 +17,8 @@ public final class CompositePieceAlgo<COLOR extends Color,
 
     @SuppressWarnings("unchecked")
     public CompositePieceAlgo(Board board,
-            Algo<SOURCE,Collection<RESULT>> algo,
-            Algo<SOURCE,Collection<RESULT>>... additionalAlgos) {
-
+                              Algo<SOURCE,Collection<RESULT>> algo,
+                              Algo<SOURCE,Collection<RESULT>>... additionalAlgos) {
         super(board);
 
         var algos = new ArrayList<Algo<SOURCE,Collection<RESULT>>>();

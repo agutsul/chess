@@ -27,6 +27,7 @@ public final class PawnPieceActionRule
                                                             int promotionLine,
                                                             PawnMoveAlgo moveAlgo,
                                                             PawnCaptureAlgo captureAlgo) {
+
         var promoteAlgo = new PawnPromoteAlgo<>(board, promotionLine, moveAlgo, captureAlgo);
 
         var moveActionRule = new PawnMoveActionRule<>(board, moveAlgo);

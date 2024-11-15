@@ -14,12 +14,13 @@ class PawnEnPassantActionRule<COLOR1 extends Color,
                               COLOR2 extends Color,
                               PAWN1 extends PawnPiece<COLOR1>,
                               PAWN2 extends PawnPiece<COLOR2>>
-        extends AbstractEnPassantActionRule<COLOR1, COLOR2, PAWN1, PAWN2,
+        extends AbstractEnPassantActionRule<COLOR1,COLOR2,PAWN1,PAWN2,
                                             PieceEnPassantAction<COLOR1,COLOR2,PAWN1,PAWN2>> {
 
-    private final EnPassantPieceAlgo<COLOR1, PAWN1, Position> algo;
+    private final EnPassantPieceAlgo<COLOR1,PAWN1,Position> algo;
 
-    PawnEnPassantActionRule(Board board, EnPassantPieceAlgo<COLOR1, PAWN1, Position> algo) {
+    PawnEnPassantActionRule(Board board,
+                            EnPassantPieceAlgo<COLOR1,PAWN1,Position> algo) {
         super(board);
         this.algo = algo;
     }
@@ -30,9 +31,9 @@ class PawnEnPassantActionRule<COLOR1 extends Color,
     }
 
     @Override
-    protected PieceEnPassantAction<COLOR1, COLOR2, PAWN1, PAWN2> createAction(PAWN1 pawn1,
-                                                                              PAWN2 pawn2,
-                                                                              Position position) {
+    protected PieceEnPassantAction<COLOR1,COLOR2,PAWN1,PAWN2> createAction(PAWN1 pawn1,
+                                                                           PAWN2 pawn2,
+                                                                           Position position) {
         return new PieceEnPassantAction<>(pawn1, pawn2, position);
     }
 }

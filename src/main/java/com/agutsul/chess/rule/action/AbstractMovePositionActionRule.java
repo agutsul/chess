@@ -14,13 +14,13 @@ import com.agutsul.chess.position.Position;
 
 public abstract class AbstractMovePositionActionRule<COLOR extends Color,
                                                      PIECE extends Piece<COLOR> & Movable,
-                                                     ACTION extends PieceMoveAction<COLOR, PIECE>>
-        extends AbstractMoveActionRule<COLOR, PIECE, ACTION> {
+                                                     ACTION extends PieceMoveAction<COLOR,PIECE>>
+        extends AbstractMoveActionRule<COLOR,PIECE,ACTION> {
 
-    protected final MovePieceAlgo<COLOR, PIECE, Calculated> algo;
+    protected final MovePieceAlgo<COLOR,PIECE,Calculated> algo;
 
     protected AbstractMovePositionActionRule(Board board,
-                                             MovePieceAlgo<COLOR, PIECE, Calculated> algo) {
+                                             MovePieceAlgo<COLOR,PIECE,Calculated> algo) {
         super(board);
         this.algo = algo;
     }
@@ -34,7 +34,8 @@ public abstract class AbstractMovePositionActionRule<COLOR extends Color,
     }
 
     @Override
-    protected Collection<ACTION> createActions(PIECE piece, Collection<Calculated> next) {
+    protected Collection<ACTION> createActions(PIECE piece,
+                                               Collection<Calculated> next) {
         var actions = new ArrayList<ACTION>();
         for (var entry : next) {
             actions.add(createAction(piece, (Position) entry));

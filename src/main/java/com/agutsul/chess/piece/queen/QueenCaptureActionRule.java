@@ -13,17 +13,17 @@ class QueenCaptureActionRule<COLOR1 extends Color,
                              COLOR2 extends Color,
                              QUEEN extends QueenPiece<COLOR1>,
                              PIECE extends Piece<COLOR2>>
-        extends AbstractCaptureLineActionRule<COLOR1, COLOR2, QUEEN, PIECE,
-                                              PieceCaptureAction<COLOR1, COLOR2, QUEEN, PIECE>> {
+        extends AbstractCaptureLineActionRule<COLOR1,COLOR2,QUEEN,PIECE,
+                                              PieceCaptureAction<COLOR1,COLOR2,QUEEN,PIECE>> {
 
-    QueenCaptureActionRule(Board board, CapturePieceAlgo<COLOR1, QUEEN, Line> algo) {
+    QueenCaptureActionRule(Board board, CapturePieceAlgo<COLOR1,QUEEN,Line> algo) {
         super(board, algo);
     }
 
     @Override
-    protected PieceCaptureAction<COLOR1, COLOR2, QUEEN, PIECE> createAction(QUEEN queen,
-                                                                            PIECE piece,
-                                                                            Line line) {
+    protected PieceCaptureAction<COLOR1,COLOR2,QUEEN,PIECE> createAction(QUEEN queen,
+                                                                         PIECE piece,
+                                                                         Line line) {
         return new PieceCaptureAction<>(queen, piece, line);
     }
 }

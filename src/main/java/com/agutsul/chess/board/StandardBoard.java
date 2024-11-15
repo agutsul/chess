@@ -79,52 +79,52 @@ public final class StandardBoard
     }
 
     @Override
-    public Collection<Piece<?>> getAttackers(Piece<?> piece) {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getAttackers(Piece<?> piece) {
         return this.origin.getAttackers(piece);
     }
 
     @Override
-    public Collection<Piece<?>> getPieces() {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces() {
         return this.origin.getPieces();
     }
 
     @Override
-    public Collection<Piece<?>> getPieces(Color color) {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color) {
         return this.origin.getPieces(color);
     }
 
     @Override
-    public Collection<Piece<?>> getPieces(Type pieceType) {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Type pieceType) {
         return this.origin.getPieces(pieceType);
     }
 
     @Override
-    public Collection<Piece<?>> getPieces(Color color, Type pieceType) {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color, Type pieceType) {
         return this.origin.getPieces(color, pieceType);
     }
 
     @Override
-    public Collection<Piece<?>> getPieces(Color color, String position, String... positions) {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color, String position, String... positions) {
         return this.origin.getPieces(color, position, positions);
     }
 
     @Override
-    public Optional<Piece<?>> getPiece(Position position) {
+    public <COLOR extends Color> Optional<Piece<COLOR>> getPiece(Position position) {
         return this.origin.getPiece(position);
     }
 
     @Override
-    public Optional<Piece<?>> getPiece(String position) {
+    public <COLOR extends Color> Optional<Piece<COLOR>> getPiece(String position) {
         return this.origin.getPiece(position);
     }
 
     @Override
-    public Optional<Piece<?>> getCapturedPiece(String position, Color color) {
+    public <COLOR extends Color> Optional<Piece<COLOR>> getCapturedPiece(String position, Color color) {
         return this.origin.getCapturedPiece(position, color);
     }
 
     @Override
-    public Optional<KingPiece<?>> getKing(Color color) {
+    public <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(Color color) {
         return this.origin.getKing(color);
     }
 
@@ -168,7 +168,7 @@ public final class StandardBoard
     }
 
     private static Collection<Piece<?>> createAllPieces(PieceFactory whitePieceFactory,
-                                                        PieceFactory blackPieceFactory) {
+                                                            PieceFactory blackPieceFactory) {
         var pieces = new ArrayList<Piece<?>>();
 
         pieces.addAll(createPieces(whitePieceFactory, Position.MIN + 1, Position.MIN));
@@ -178,8 +178,8 @@ public final class StandardBoard
     }
 
     private static Collection<Piece<?>> createPieces(PieceFactory pieceFactory,
-                                                     int pawnY,
-                                                     int pieceY) {
+                                                         int pawnY,
+                                                         int pieceY) {
 
         var pieces = new ArrayList<Piece<?>>(Position.MAX * 2);
 

@@ -9,6 +9,6 @@ import com.agutsul.chess.piece.Piece;
 public interface CapturePieceAlgo<COLOR extends Color,
                                   PIECE extends Piece<COLOR> & Capturable,
                                   POSITION>
-        extends Algo<PIECE, Collection<POSITION>> {
+        extends Algo<PIECE,Collection<POSITION>> {
 
 }

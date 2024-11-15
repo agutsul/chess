@@ -25,7 +25,7 @@ import com.agutsul.chess.rule.AbstractRule;
 public abstract class AbstractCastlingActionRule<COLOR extends Color,
                                                  KING extends Piece<COLOR> & Castlingable & Movable,
                                                  ROOK extends Piece<COLOR> & Castlingable & Movable,
-                                                 ACTION extends PieceCastlingAction<COLOR, KING, ROOK>>
+                                                 ACTION extends PieceCastlingAction<COLOR,KING,ROOK>>
         extends AbstractRule<KING, ACTION>
         implements CastlingActionRule<COLOR, KING, ROOK, ACTION> {
 
@@ -169,9 +169,8 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
         super(board);
     }
 
-    protected Collection<PieceCastlingAction<COLOR, KING, ROOK>> evaluate(KingPiece<COLOR> king,
-                                                                          RookPiece<COLOR> rook) {
-
+    protected Collection<PieceCastlingAction<COLOR,KING,ROOK>> evaluate(KingPiece<COLOR> king,
+                                                                        RookPiece<COLOR> rook) {
         // Neither the king nor the rook has previously moved.
         if (king.isMoved() || rook.isMoved()) {
             return emptyList();
@@ -200,9 +199,9 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
         return List.of(createAction(castling, king, rook));
     }
 
-    private PieceCastlingAction<COLOR, KING, ROOK> createAction(Castling castling,
-                                                                KingPiece<COLOR> king,
-                                                                RookPiece<COLOR> rook) {
+    private PieceCastlingAction<COLOR,KING,ROOK> createAction(Castling castling,
+                                                              KingPiece<COLOR> king,
+                                                              RookPiece<COLOR> rook) {
 
         var kPosition = board.getPosition(castling.getKingTarget(), king.getPosition().y());
         var rPosition = board.getPosition(castling.getRookTarget(), rook.getPosition().y());

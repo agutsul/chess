@@ -14,9 +14,9 @@ import com.agutsul.chess.rule.AbstractRule;
 
 abstract class AbstractMonitorImpactRule<COLOR extends Color,
                                          PIECE extends Piece<COLOR> & Capturable,
-                                         IMPACT extends PieceMonitorImpact<COLOR, PIECE>>
-        extends AbstractRule<PIECE, IMPACT>
-        implements MonitorImpactRule<COLOR, PIECE, IMPACT> {
+                                         IMPACT extends PieceMonitorImpact<COLOR,PIECE>>
+        extends AbstractRule<PIECE,IMPACT>
+        implements MonitorImpactRule<COLOR,PIECE,IMPACT> {
 
     protected AbstractMonitorImpactRule(Board board) {
         super(board);

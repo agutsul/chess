@@ -19,29 +19,29 @@ import com.agutsul.chess.rule.action.PromoteActionRule;
 
 final class PawnPromoteActionRule<COLOR1 extends Color,
                                   PAWN extends PawnPiece<COLOR1>>
-        implements PromoteActionRule<COLOR1, PAWN, PiecePromoteAction<COLOR1, PAWN>> {
+        implements PromoteActionRule<COLOR1,PAWN,PiecePromoteAction<COLOR1,PAWN>> {
 
-    private final PromoteActionRule<COLOR1, PAWN, PiecePromoteAction<COLOR1, PAWN>> promoteActionRuleAdapter;
+    private final PromoteActionRule<COLOR1,PAWN,PiecePromoteAction<COLOR1,PAWN>> promoteActionRuleAdapter;
 
-    <COLOR2 extends Color, PIECE extends Piece<COLOR2>> PawnPromoteActionRule(
+    <COLOR2 extends Color,PIECE extends Piece<COLOR2>> PawnPromoteActionRule(
                                  Board board,
-                                 PromotePieceAlgo<COLOR1, PAWN, Position> algo,
-                                 MoveActionRule<COLOR1, PAWN, PieceMoveAction<COLOR1, PAWN>> rule) {
+                                 PromotePieceAlgo<COLOR1,PAWN, Position> algo,
+                                 MoveActionRule<COLOR1,PAWN,PieceMoveAction<COLOR1,PAWN>> rule) {
 
         this.promoteActionRuleAdapter = new PawnPromoteMoveActionRule<>(board, algo, rule);
     }
 
-    <COLOR2 extends Color, PIECE extends Piece<COLOR2>> PawnPromoteActionRule(
+    <COLOR2 extends Color,PIECE extends Piece<COLOR2>> PawnPromoteActionRule(
                                  Board board,
-                                 PromotePieceAlgo<COLOR1, PAWN, Position> algo,
-                                 CaptureActionRule<COLOR1, COLOR2, PAWN, PIECE,
+                                 PromotePieceAlgo<COLOR1,PAWN,Position> algo,
+                                 CaptureActionRule<COLOR1,COLOR2,PAWN,PIECE,
                                                    PieceCaptureAction<COLOR1,COLOR2,PAWN,PIECE>> rule) {
 
         this.promoteActionRuleAdapter = new PawnPromoteCaptureActionRule<>(board, algo, rule);
     }
 
     @Override
-    public Collection<PiecePromoteAction<COLOR1, PAWN>> evaluate(PAWN pawn) {
+    public Collection<PiecePromoteAction<COLOR1,PAWN>> evaluate(PAWN pawn) {
         return promoteActionRuleAdapter.evaluate(pawn);
     }
 
@@ -55,19 +55,19 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
                                               COLOR2,
                                               PAWN,
                                               PIECE,
-                                              PiecePromoteAction<COLOR1, PAWN>,
-                                              PieceCaptureAction<COLOR1, COLOR2, PAWN, PIECE>> {
+                                              PiecePromoteAction<COLOR1,PAWN>,
+                                              PieceCaptureAction<COLOR1,COLOR2,PAWN,PIECE>> {
 
         PawnPromoteCaptureActionRule(Board board,
-                                     PromotePieceAlgo<COLOR1, PAWN, Position> algo,
-                                     CaptureActionRule<COLOR1, COLOR2, PAWN, PIECE,
-                                                       PieceCaptureAction<COLOR1, COLOR2, PAWN, PIECE>> rule) {
+                                     PromotePieceAlgo<COLOR1,PAWN,Position> algo,
+                                     CaptureActionRule<COLOR1,COLOR2,PAWN,PIECE,
+                                                       PieceCaptureAction<COLOR1,COLOR2,PAWN,PIECE>> rule) {
             super(board, algo, rule);
         }
 
         @Override
-        protected PiecePromoteAction<COLOR1, PAWN> createAction(
-                                     PieceCaptureAction<COLOR1, COLOR2, PAWN, PIECE> sourceAction) {
+        protected PiecePromoteAction<COLOR1,PAWN> createAction(
+                                     PieceCaptureAction<COLOR1,COLOR2,PAWN,PIECE> sourceAction) {
 
             return new PiecePromoteAction<>(sourceAction, (Observable) board);
         }
@@ -81,19 +81,19 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
                                               COLOR2,
                                               PAWN,
                                               PIECE,
-                                              PiecePromoteAction<COLOR1, PAWN>,
-                                              PieceMoveAction<COLOR1, PAWN>> {
+                                              PiecePromoteAction<COLOR1,PAWN>,
+                                              PieceMoveAction<COLOR1,PAWN>> {
 
         PawnPromoteMoveActionRule(Board board,
-                                  PromotePieceAlgo<COLOR1, PAWN, Position> algo,
-                                  MoveActionRule<COLOR1, PAWN,
-                                                 PieceMoveAction<COLOR1, PAWN>> rule) {
+                                  PromotePieceAlgo<COLOR1,PAWN,Position> algo,
+                                  MoveActionRule<COLOR1,PAWN,
+                                                 PieceMoveAction<COLOR1,PAWN>> rule) {
             super(board, algo, rule);
         }
 
         @Override
-        protected PiecePromoteAction<COLOR1, PAWN> createAction(
-                                     PieceMoveAction<COLOR1, PAWN> sourceAction) {
+        protected PiecePromoteAction<COLOR1,PAWN> createAction(
+                                     PieceMoveAction<COLOR1,PAWN> sourceAction) {
 
             return new PiecePromoteAction<>(sourceAction, (Observable) board);
         }

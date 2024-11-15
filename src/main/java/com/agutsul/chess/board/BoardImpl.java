@@ -2,7 +2,6 @@ package com.agutsul.chess.board;
 
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -150,84 +149,97 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public Collection<Piece<?>> getPieces() {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces() {
         LOGGER.info("Getting all pieces");
 
-        var pieces = this.pieces.stream()
+        @SuppressWarnings("unchecked")
+        Collection<Piece<COLOR>> pieces = this.pieces.stream()
                 .filter(Piece::isActive)
+                .map(piece -> ((Piece<COLOR>) piece) )
                 .toList();
 
         return pieces;
     }
 
     @Override
-    public Collection<Piece<?>> getPieces(Color color) {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color) {
         LOGGER.info("Getting pieces with '{}' color", color);
 
-        var pieces = this.pieces.stream()
+        @SuppressWarnings("unchecked")
+        Collection<Piece<COLOR>> pieces = this.pieces.stream()
                 .filter(piece -> Objects.equals(color, piece.getColor()))
                 .filter(Piece::isActive)
+                .map(piece -> (Piece<COLOR>) piece)
                 .toList();
 
         return pieces;
     }
 
     @Override
-    public Collection<Piece<?>> getPieces(Piece.Type pieceType) {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Piece.Type pieceType) {
         LOGGER.info("Getting pieces with type '{}'", pieceType);
 
-        var pieces = this.pieces.stream()
+        @SuppressWarnings("unchecked")
+        Collection<Piece<COLOR>> pieces = this.pieces.stream()
                 .filter(piece -> Objects.equals(pieceType, piece.getType()))
                 .filter(Piece::isActive)
+                .map(piece -> (Piece<COLOR>) piece)
                 .toList();
 
         return pieces;
     }
 
     @Override
-    public Collection<Piece<?>> getPieces(Color color, Piece.Type pieceType) {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color, Piece.Type pieceType) {
         LOGGER.info("Getting pieces with type '{}' and '{}' color", pieceType, color);
 
-        var pieces = getPieces(color).stream()
+        @SuppressWarnings("unchecked")
+        Collection<Piece<COLOR>> pieces = getPieces(color).stream()
                 .filter(piece -> Objects.equals(pieceType, piece.getType()))
+                .map(piece -> (Piece<COLOR>) piece)
                 .toList();
 
         return pieces;
     }
 
     @Override
-    public Collection<Piece<?>> getPieces(Color color, String position, String... positions) {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color,
+                                                                    String position,
+                                                                    String... positions) {
         var allPositions = new ArrayList<String>();
         allPositions.add(position);
         allPositions.addAll(asList(positions));
 
         LOGGER.info("Getting pieces with type of '{}' color and locations '[{}]'",
                                                     color, join(allPositions, ","));
-
-        Collection<Piece<?>> pieces = allPositions.stream()
+        @SuppressWarnings("unchecked")
+        Collection<Piece<COLOR>> pieces = allPositions.stream()
                 .map(piecePosition -> getPiece(piecePosition))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .filter(piece -> Objects.equals(color, piece.getColor()))
-                .collect(toList());
+                .map(piece -> (Piece<COLOR>) piece)
+                .toList();
 
         return pieces;
     }
 
     @Override
-    public Optional<Piece<?>> getPiece(Position position) {
+    public <COLOR extends Color> Optional<Piece<COLOR>> getPiece(Position position) {
         LOGGER.info("Getting piece at '{}'", position);
 
+        @SuppressWarnings("unchecked")
         var foundPiece = this.pieces.stream()
                 .filter(piece -> Objects.equals(piece.getPosition(), position))
                 .filter(Piece::isActive)
+                .map(piece -> (Piece<COLOR>) piece)
                 .findFirst();
 
         return foundPiece;
     }
 
     @Override
-    public Optional<Piece<?>> getPiece(String position) {
+    public <COLOR extends Color> Optional<Piece<COLOR>> getPiece(String position) {
         LOGGER.info("Getting piece at '{}'", position);
 
         var optionalPosition = getPosition(position);
@@ -239,7 +251,7 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public Optional<Piece<?>> getCapturedPiece(String position, Color color) {
+    public <COLOR extends Color> Optional<Piece<COLOR>> getCapturedPiece(String position, Color color) {
         LOGGER.info("Getting captured piece at '{}'", position);
 
         var optionalPosition = getPosition(position);
@@ -247,19 +259,21 @@ final class BoardImpl extends AbstractBoard {
             return Optional.empty();
         }
 
+        @SuppressWarnings("unchecked")
         var capturedPiece = this.pieces.stream()
                 .filter(piece -> !piece.isActive())
                 .filter(piece -> Objects.equals(piece.getColor(), color))
                 .filter(piece -> Objects.equals(piece.getPosition(), optionalPosition.get()))
                 .filter(piece -> Objects.nonNull(((Captured) piece).getCapturedAt()))
                 .sorted(comparing(piece -> ((Captured) piece).getCapturedAt()).reversed())
+                .map(piece -> (Piece<COLOR>) piece)
                 .findFirst();
 
         return capturedPiece;
     }
 
     @Override
-    public Optional<KingPiece<?>> getKing(Color color) {
+    public <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(Color color) {
         LOGGER.info("Getting king of '{}'", color);
 
         var pieces = getPieces(color, Piece.Type.KING);
@@ -267,7 +281,8 @@ final class BoardImpl extends AbstractBoard {
             return Optional.empty();
         }
 
-        var king = (KingPiece<?>) pieces.iterator().next();
+        @SuppressWarnings("unchecked")
+        var king = (KingPiece<COLOR>) pieces.iterator().next();
         return king.isActive() ? Optional.of(king) : Optional.empty();
     }
 
@@ -307,8 +322,7 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Collection<Piece<?>> getAttackers(Piece<?> piece) {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getAttackers(Piece<?> piece) {
         LOGGER.info("Get piece '{}' attackers", piece);
 
         var attackerPieces = getPieces(piece.getColor().invert());
@@ -319,13 +333,15 @@ final class BoardImpl extends AbstractBoard {
             actions.addAll(getActions(attacker, PieceEnPassantAction.class));
         }
 
-        Collection<Piece<?>> attackActions = actions.stream()
-                .map(action -> (AbstractCaptureAction<Color,Color,?,?>) action)
+        @SuppressWarnings("unchecked")
+        Collection<Piece<COLOR>> attackers = actions.stream()
+                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), piece))
                 .map(AbstractCaptureAction::getSource)
+                .map(attacker -> (Piece<COLOR>) attacker)
                 .collect(toSet());
 
-        return attackActions;
+        return attackers;
     }
 
     @Override

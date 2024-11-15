@@ -13,16 +13,17 @@ class KnightCaptureActionRule<COLOR1 extends Color,
                               COLOR2 extends Color,
                               KNIGHT extends KnightPiece<COLOR1>,
                               PIECE extends Piece<COLOR2>>
-        extends AbstractCapturePositionActionRule<COLOR1, COLOR2, KNIGHT, PIECE,
-                                                  PieceCaptureAction<COLOR1, COLOR2, KNIGHT, PIECE>> {
+        extends AbstractCapturePositionActionRule<COLOR1,COLOR2,KNIGHT,PIECE,
+                                                  PieceCaptureAction<COLOR1,COLOR2,KNIGHT,PIECE>> {
 
-    KnightCaptureActionRule(Board board, CapturePieceAlgo<COLOR1, KNIGHT, Calculated> algo) {
+    KnightCaptureActionRule(Board board,
+                            CapturePieceAlgo<COLOR1,KNIGHT,Calculated> algo) {
         super(board, algo);
     }
 
     @Override
-    protected PieceCaptureAction<COLOR1, COLOR2, KNIGHT, PIECE> createAction(KNIGHT knight,
-                                                                             PIECE piece) {
+    protected PieceCaptureAction<COLOR1,COLOR2,KNIGHT,PIECE> createAction(KNIGHT knight,
+                                                                          PIECE piece) {
         return new PieceCaptureAction<>(knight, piece);
     }
 }
