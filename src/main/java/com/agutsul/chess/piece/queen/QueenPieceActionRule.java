@@ -12,8 +12,8 @@ public final class QueenPieceActionRule
         this(board, new QueenPieceAlgo<>(board));
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private QueenPieceActionRule(Board board, QueenPieceAlgo algo) {
+    @SuppressWarnings("unchecked")
+    private QueenPieceActionRule(Board board, QueenPieceAlgo<?,?> algo) {
         super(new CompositePieceRule<Action<?>>(
                 new QueenCaptureActionRule<>(board, algo),
                 new QueenMoveActionRule<>(board, algo)

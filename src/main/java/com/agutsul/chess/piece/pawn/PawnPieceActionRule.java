@@ -15,10 +15,9 @@ public final class PawnPieceActionRule
         );
     }
 
-    @SuppressWarnings("rawtypes")
     private PawnPieceActionRule(Board board, int promotionLine,
-                                PawnMoveAlgo moveAlgo,
-                                PawnCaptureAlgo captureAlgo) {
+                                PawnMoveAlgo<?,?> moveAlgo,
+                                PawnCaptureAlgo<?,?> captureAlgo) {
 
         super(createRule(board, promotionLine, moveAlgo, captureAlgo));
     }

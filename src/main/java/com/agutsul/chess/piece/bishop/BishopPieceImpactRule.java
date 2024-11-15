@@ -13,8 +13,8 @@ public final class BishopPieceImpactRule
         this(board, new BishopPieceAlgo<>(board));
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private BishopPieceImpactRule(Board board, BishopPieceAlgo algo) {
+    @SuppressWarnings("unchecked")
+    private BishopPieceImpactRule(Board board, BishopPieceAlgo<?,?> algo) {
         super(new CompositePieceRule<Impact<?>>(
                 new BishopProtectImpactRule<>(board, algo),
                 new BishopMonitorImpactRule<>(board, algo),

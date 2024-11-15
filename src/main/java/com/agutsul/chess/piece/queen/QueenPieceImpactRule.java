@@ -13,8 +13,8 @@ public final class QueenPieceImpactRule
         this(board, new QueenPieceAlgo<>(board));
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private QueenPieceImpactRule(Board board, QueenPieceAlgo algo) {
+    @SuppressWarnings("unchecked")
+    private QueenPieceImpactRule(Board board, QueenPieceAlgo<?,?> algo) {
         super(new CompositePieceRule<Impact<?>>(
                 new QueenProtectImpactRule<>(board, algo),
                 new QueenMonitorImpactRule<>(board, algo),

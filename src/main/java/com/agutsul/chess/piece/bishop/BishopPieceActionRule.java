@@ -12,8 +12,8 @@ public final class BishopPieceActionRule
         this(board, new BishopPieceAlgo<>(board));
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private BishopPieceActionRule(Board board, BishopPieceAlgo algo) {
+    @SuppressWarnings("unchecked")
+    private BishopPieceActionRule(Board board, BishopPieceAlgo<?,?> algo) {
         super(new CompositePieceRule<Action<?>>(
                 new BishopCaptureActionRule<>(board, algo),
                 new BishopMoveActionRule<>(board, algo)

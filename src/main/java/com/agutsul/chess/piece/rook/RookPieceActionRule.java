@@ -15,8 +15,8 @@ public final class RookPieceActionRule
         this(board, new RookPieceAlgo<>(board));
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private RookPieceActionRule(Board board, RookPieceAlgo algo) {
+    @SuppressWarnings("unchecked")
+    private RookPieceActionRule(Board board, RookPieceAlgo<?,?> algo) {
         super(new CompositePieceRule<Action<?>>(
                 new RookCastlingActionRule<>(board),
                 new RookCaptureActionRule<>(board, algo),

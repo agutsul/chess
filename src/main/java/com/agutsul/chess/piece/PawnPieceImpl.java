@@ -30,7 +30,7 @@ final class PawnPieceImpl<COLOR extends Color>
     private static final PieceState<?,?> DISPOSED_STATE = new PawnDisposedPieceState<>();
 
     PawnPieceImpl(Board board, COLOR color, String unicode, Position position,
-            int direction, int promotionLine, int initialLine) {
+                  int direction, int promotionLine, int initialLine) {
 
         super(board, Piece.Type.PAWN, color, unicode, position, direction,
                 new PawnActivePieceState<>(board,
