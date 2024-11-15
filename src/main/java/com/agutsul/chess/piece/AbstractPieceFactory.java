@@ -82,7 +82,7 @@ abstract class AbstractPieceFactory<COLOR extends Color>
     final BigMove bigMove;
 
     AbstractPieceFactory(Logger logger, Board board, COLOR color,
-            Direction direction, Promotion promotion, BigMove bigMove) {
+                         Direction direction, Promotion promotion, BigMove bigMove) {
 
         this.logger = logger;
         this.board = board;
@@ -150,6 +150,6 @@ abstract class AbstractPieceFactory<COLOR extends Color>
     PawnPiece<COLOR> createPawn(Position position, String unicode) {
         logger.debug("Create '{}' pawn at '{}'", color, position);
         return new PawnPieceImpl<>(board, color, unicode, position,
-                direction.code(), promotion.line(), bigMove.line());
+                                   direction.code(), promotion.line(), bigMove.line());
     }
 }

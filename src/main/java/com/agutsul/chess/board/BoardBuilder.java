@@ -1,6 +1,7 @@
 package com.agutsul.chess.board;
 
 import static java.util.Collections.emptyList;
+import static java.util.concurrent.ForkJoinPool.commonPool;
 import static java.util.concurrent.TimeUnit.MICROSECONDS;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.collections4.ListUtils.partition;
@@ -9,7 +10,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 import java.util.function.Function;
 
@@ -35,19 +35,23 @@ public final class BoardBuilder
         LOGGER.debug("Building board started ...");
         var board = new BoardImpl();
 
-        var tasks = List.of(
-                new PieceBuilderTask(board.getWhitePieceFactory(), whitePieceContext),
-                new PieceBuilderTask(board.getBlackPieceFactory(), blackPieceContext)
-        );
-
-        var executor = ForkJoinPool.commonPool();
+        var executor = commonPool();
         try {
-            var pieces = new ArrayList<Piece<?>>();
-            for (var task : tasks) {
-                pieces.addAll(executor.invoke(task));
-            }
+            var tasks = List.of(
+                    new PieceBuilderTask(board.getWhitePieceFactory(), whitePieceContext),
+                    new PieceBuilderTask(board.getBlackPieceFactory(), blackPieceContext)
+            );
 
-            board.setPieces(pieces);
+            try {
+                var pieces = new ArrayList<Piece<?>>();
+                for (var task : tasks) {
+                    pieces.addAll(executor.invoke(task));
+                }
+
+                board.setPieces(pieces);
+            } catch (Exception e) {
+                LOGGER.error("Board builder failed", e);
+            }
         } finally {
             try {
                 executor.shutdown();
@@ -182,7 +186,9 @@ public final class BoardBuilder
     }
 
     private BoardBuilderAdapter withPawns(BoardContext context,
-            String position1, String position2, String... positions) {
+                                          String position1,
+                                          String position2,
+                                          String... positions) {
 
         var pawnPositions = new ArrayList<String>();
 

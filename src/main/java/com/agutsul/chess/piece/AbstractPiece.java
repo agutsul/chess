@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece;
 
+import static java.time.Instant.now;
 import static java.util.Collections.unmodifiableList;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -272,7 +273,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
     final void doCapture(Piece<?> piece) {
         // save captured timestamp
-        ((Captured) piece).setCapturedAt(Instant.now());
+        ((Captured) piece).setCapturedAt(now());
 
         ((Disposable) piece).dispose();
 
