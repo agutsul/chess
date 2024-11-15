@@ -3,13 +3,12 @@ package com.agutsul.chess.rule;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
-import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.position.Positionable;
 
 public abstract class AbstractPieceRule<P extends Positionable>
-        implements Rule<Piece<Color>, Collection<P>> {
+        implements Rule<Piece<?>, Collection<P>> {
 
     protected final Rule<Piece<?>, Collection<P>> rule;
 
@@ -18,7 +17,7 @@ public abstract class AbstractPieceRule<P extends Positionable>
     }
 
     @Override
-    public Collection<P> evaluate(Piece<Color> piece) {
+    public Collection<P> evaluate(Piece<?> piece) {
         var positionedMap = new LinkedHashMap<Position, P>();
         for (P result : rule.evaluate(piece)) {
             var targetPosition = result.getPosition();

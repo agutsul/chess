@@ -27,7 +27,7 @@ abstract class AbstractBoardState
     }
 
     @Override
-    public Collection<Impact<?>> getImpacts(Piece<Color> piece) {
+    public Collection<Impact<?>> getImpacts(Piece<?> piece) {
         LOGGER.info("Getting impacts for piece '{}'", piece);
         return piece.getImpacts();
     }

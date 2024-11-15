@@ -1,46 +1,41 @@
 package com.agutsul.chess.rule.checkmate;
 
 import static java.util.concurrent.Executors.newFixedThreadPool;
+import static java.util.concurrent.TimeUnit.MICROSECONDS;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 
-public final class CompositeCheckMateEvaluator<COLOR extends Color,
-                                               KING extends KingPiece<COLOR>>
-        implements CheckMateEvaluator<COLOR, KING> {
+public final class CompositeCheckMateEvaluator
+        implements CheckMateEvaluator {
 
     private static final Logger LOGGER = getLogger(CompositeCheckMateEvaluator.class);
 
-    private final List<CheckMateEvaluator<COLOR, KING>> evaluators;
+    private final List<CheckMateEvaluator> evaluators;
 
     public CompositeCheckMateEvaluator(Board board) {
         this.evaluators = List.of(
-                new KingMoveCheckMateEvaluator<>(board),
-                new AttackerCaptureCheckMateEvaluator<>(board),
-                new AttackerPinCheckMateEvaluator<>(board)
+                new KingMoveCheckMateEvaluator(board),
+                new AttackerCaptureCheckMateEvaluator(board),
+                new AttackerPinCheckMateEvaluator(board)
             );
     }
 
     @Override
-    public Boolean evaluate(KING king) {
+    public Boolean evaluate(KingPiece<?> king) {
         var results = new ArrayList<Boolean>();
 
         var executor = newFixedThreadPool(this.evaluators.size());
         try {
-            var tasks = this.evaluators.stream()
-                    .map(evaluator -> new CheckMateEvaluatorTask<>(king, evaluator))
-                    .toList();
-
+            var tasks = createEvaluationTasks(this.evaluators, king);
             try {
                 for (var future : executor.invokeAll(tasks)) {
                     results.add(future.get());
@@ -53,7 +48,7 @@ public final class CompositeCheckMateEvaluator<COLOR extends Color,
         } finally {
             try {
                 executor.shutdown();
-                if (!executor.awaitTermination(1, TimeUnit.MICROSECONDS)) {
+                if (!executor.awaitTermination(1, MICROSECONDS)) {
                     executor.shutdownNow();
                 }
             } catch (InterruptedException e) {
@@ -67,22 +62,13 @@ public final class CompositeCheckMateEvaluator<COLOR extends Color,
         return isCheckMated;
     }
 
-    private static class CheckMateEvaluatorTask<COLOR extends Color,
-                                                KING extends KingPiece<COLOR>>
-            implements Callable<Boolean> {
-
-        private final KING king;
-        private final CheckMateEvaluator<COLOR, KING> checkMateEvaluator;
-
-        CheckMateEvaluatorTask(KING king,
-                               CheckMateEvaluator<COLOR, KING> checkMateEvaluator) {
-            this.king = king;
-            this.checkMateEvaluator = checkMateEvaluator;
+    private static List<Callable<Boolean>> createEvaluationTasks(List<CheckMateEvaluator> evaluators,
+                                                                 KingPiece<?> king) {
+        var tasks = new ArrayList<Callable<Boolean>>();
+        for (var evaluator : evaluators) {
+            tasks.add(() -> evaluator.evaluate(king));
         }
 
-        @Override
-        public Boolean call() throws Exception {
-            return checkMateEvaluator.evaluate(king);
-        }
+        return tasks;
     }
 }

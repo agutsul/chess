@@ -10,10 +10,11 @@ import com.agutsul.chess.piece.state.MovablePieceState;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
-abstract class AbstractPieceState<PIECE extends Piece<Color> & Movable & Capturable>
-        implements PieceState<PIECE>,
-                   MovablePieceState<PIECE>,
-                   CapturablePieceState<PIECE> {
+abstract class AbstractPieceState<COLOR extends Color,
+                                  PIECE extends Piece<COLOR> & Movable & Capturable>
+        implements PieceState<COLOR,PIECE>,
+                   MovablePieceState<COLOR,PIECE>,
+                   CapturablePieceState<COLOR,PIECE> {
 
     private static final Logger LOGGER = getLogger(AbstractPieceState.class);
 
@@ -24,17 +25,15 @@ abstract class AbstractPieceState<PIECE extends Piece<Color> & Movable & Captura
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void unmove(PIECE piece, Position position) {
         LOGGER.info("Undo move '{}' to '{}'", piece, position);
-        ((AbstractPiece<Color>) piece).cancelMove(position);
+        ((AbstractPiece<?>) piece).cancelMove(position);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void uncapture(PIECE piece, Piece<?> targetPiece) {
         LOGGER.info("Undo capture '{}' by '{}'", targetPiece, piece);
-        ((AbstractPiece<Color>) piece).cancelCapture(targetPiece);
+        ((AbstractPiece<?>) piece).cancelCapture(targetPiece);
     }
 
     @Override

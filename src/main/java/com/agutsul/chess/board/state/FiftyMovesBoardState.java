@@ -21,7 +21,7 @@ public final class FiftyMovesBoardState
     }
 
     @Override
-    public Collection<Action<?>> getActions(Piece<Color> piece) {
+    public Collection<Action<?>> getActions(Piece<?> piece) {
         LOGGER.info("Getting actions for piece '{}'", piece);
         return piece.getActions();
     }

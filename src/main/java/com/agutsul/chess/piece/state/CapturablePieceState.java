@@ -5,7 +5,8 @@ import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.state.State;
 
-public interface CapturablePieceState<PIECE extends Piece<Color> & Capturable>
+public interface CapturablePieceState<COLOR extends Color,
+                                      PIECE extends Piece<COLOR> & Capturable>
         extends State<PIECE> {
 
     void capture(PIECE piece, Piece<?> targetPiece);

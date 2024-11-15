@@ -6,7 +6,8 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.state.State;
 
-public interface CastlingablePieceState<PIECE extends Piece<Color> & Castlingable>
+public interface CastlingablePieceState<COLOR extends Color,
+                                        PIECE extends Piece<COLOR> & Castlingable>
         extends State<PIECE> {
 
     void castling(PIECE piece, Position position);

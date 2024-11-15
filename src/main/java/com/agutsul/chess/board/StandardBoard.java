@@ -63,68 +63,68 @@ public final class StandardBoard
     }
 
     @Override
-    public <ACTION extends Action<?>> Collection<ACTION> getActions(Piece<Color> piece,
+    public <ACTION extends Action<?>> Collection<ACTION> getActions(Piece<?> piece,
                                                                     Class<ACTION> actionClass) {
         return this.origin.getActions(piece, actionClass);
     }
 
     @Override
-    public Collection<Action<?>> getActions(Piece<Color> piece) {
+    public Collection<Action<?>> getActions(Piece<?> piece) {
         return this.origin.getActions(piece);
     }
 
     @Override
-    public Collection<Impact<?>> getImpacts(Piece<Color> piece) {
+    public Collection<Impact<?>> getImpacts(Piece<?> piece) {
         return this.origin.getImpacts(piece);
     }
 
     @Override
-    public Collection<Piece<Color>> getAttackers(Piece<Color> piece) {
+    public Collection<Piece<?>> getAttackers(Piece<?> piece) {
         return this.origin.getAttackers(piece);
     }
 
     @Override
-    public Collection<Piece<Color>> getPieces() {
+    public Collection<Piece<?>> getPieces() {
         return this.origin.getPieces();
     }
 
     @Override
-    public Collection<Piece<Color>> getPieces(Color color) {
+    public Collection<Piece<?>> getPieces(Color color) {
         return this.origin.getPieces(color);
     }
 
     @Override
-    public Collection<Piece<Color>> getPieces(Type pieceType) {
+    public Collection<Piece<?>> getPieces(Type pieceType) {
         return this.origin.getPieces(pieceType);
     }
 
     @Override
-    public Collection<Piece<Color>> getPieces(Color color, Type pieceType) {
+    public Collection<Piece<?>> getPieces(Color color, Type pieceType) {
         return this.origin.getPieces(color, pieceType);
     }
 
     @Override
-    public Collection<Piece<Color>> getPieces(Color color, String position, String... positions) {
+    public Collection<Piece<?>> getPieces(Color color, String position, String... positions) {
         return this.origin.getPieces(color, position, positions);
     }
 
     @Override
-    public Optional<Piece<Color>> getPiece(Position position) {
+    public Optional<Piece<?>> getPiece(Position position) {
         return this.origin.getPiece(position);
     }
 
     @Override
-    public Optional<Piece<Color>> getPiece(String position) {
+    public Optional<Piece<?>> getPiece(String position) {
         return this.origin.getPiece(position);
     }
 
     @Override
-    public Optional<Piece<Color>> getCapturedPiece(String position, Color color) {
+    public Optional<Piece<?>> getCapturedPiece(String position, Color color) {
         return this.origin.getCapturedPiece(position, color);
     }
 
     @Override
-    public Optional<KingPiece<Color>> getKing(Color color) {
+    public Optional<KingPiece<?>> getKing(Color color) {
         return this.origin.getKing(color);
     }
 
@@ -139,7 +139,7 @@ public final class StandardBoard
     }
 
     @Override
-    public boolean isAttacked(Piece<Color> piece) {
+    public boolean isAttacked(Piece<?> piece) {
         return this.origin.isAttacked(piece);
     }
 
@@ -149,12 +149,12 @@ public final class StandardBoard
     }
 
     @Override
-    public boolean isProtected(Piece<Color> piece) {
+    public boolean isProtected(Piece<?> piece) {
         return this.origin.isProtected(piece);
     }
 
     @Override
-    public boolean isPinned(Piece<Color> piece) {
+    public boolean isPinned(Piece<?> piece) {
         return this.origin.isPinned(piece);
     }
 
@@ -167,9 +167,9 @@ public final class StandardBoard
         return board;
     }
 
-    private static Collection<Piece<Color>> createAllPieces(PieceFactory whitePieceFactory,
-                                                            PieceFactory blackPieceFactory) {
-        var pieces = new ArrayList<Piece<Color>>();
+    private static Collection<Piece<?>> createAllPieces(PieceFactory whitePieceFactory,
+                                                        PieceFactory blackPieceFactory) {
+        var pieces = new ArrayList<Piece<?>>();
 
         pieces.addAll(createPieces(whitePieceFactory, Position.MIN + 1, Position.MIN));
         pieces.addAll(createPieces(blackPieceFactory, Position.MAX - 2, Position.MAX - 1));
@@ -177,11 +177,11 @@ public final class StandardBoard
         return unmodifiableList(pieces);
     }
 
-    private static Collection<Piece<Color>> createPieces(PieceFactory pieceFactory,
-                                                         int pawnY,
-                                                         int pieceY) {
+    private static Collection<Piece<?>> createPieces(PieceFactory pieceFactory,
+                                                     int pawnY,
+                                                     int pieceY) {
 
-        var pieces = new ArrayList<Piece<Color>>(Position.MAX * 2);
+        var pieces = new ArrayList<Piece<?>>(Position.MAX * 2);
 
         // create pawns
         for (int x = Position.MIN; x < Position.MAX; x++) {

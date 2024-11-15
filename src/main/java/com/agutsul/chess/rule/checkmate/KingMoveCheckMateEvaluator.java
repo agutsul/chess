@@ -6,13 +6,11 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 
-final class KingMoveCheckMateEvaluator<COLOR extends Color,
-                                       KING extends KingPiece<COLOR>>
-        implements CheckMateEvaluator<COLOR, KING> {
+final class KingMoveCheckMateEvaluator
+        implements CheckMateEvaluator {
 
     private static final Logger LOGGER = getLogger(KingMoveCheckMateEvaluator.class);
 
@@ -23,12 +21,11 @@ final class KingMoveCheckMateEvaluator<COLOR extends Color,
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Boolean evaluate(KING king) {
+    public Boolean evaluate(KingPiece<?> king) {
         LOGGER.info("Evaluate king '{}' escape ability", king);
 
         var attackerColor = king.getColor().invert();
-        var moveActions = board.getActions((Piece<Color>) king, PieceMoveAction.class);
+        var moveActions = board.getActions((Piece<?>) king, PieceMoveAction.class);
 
         for (var action : moveActions) {
             var targetPosition = action.getPosition();

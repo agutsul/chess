@@ -50,7 +50,7 @@ public interface BoardState
         return getType().isTerminal();
     }
 
-    Collection<Action<?>> getActions(Piece<Color> piece);
+    Collection<Action<?>> getActions(Piece<?> piece);
 
-    Collection<Impact<?>> getImpacts(Piece<Color> piece);
+    Collection<Impact<?>> getImpacts(Piece<?> piece);
 }

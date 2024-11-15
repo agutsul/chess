@@ -21,6 +21,8 @@ import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.IllegalPositionException;
 import com.agutsul.chess.impact.Impact;
+import com.agutsul.chess.piece.state.CapturablePieceState;
+import com.agutsul.chess.piece.state.MovablePieceState;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
@@ -29,8 +31,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
     private static final Logger LOGGER = getLogger(AbstractPiece.class);
 
-    private static final DisposedPieceState<AbstractPiece<Color>> DISPOSED_STATE =
-            new DisposedPieceState<>();
+    private static final PieceState<?,?> DISPOSED_STATE = new DisposedPieceState<>();
 
     private final List<Position> positions = new ArrayList<>();
 
@@ -44,15 +45,16 @@ abstract class AbstractPiece<COLOR extends Color>
 
     protected final AbstractBoard board;
 
-    protected final AbstractPieceState<AbstractPiece<Color>> activeState;
-    protected AbstractPieceState<AbstractPiece<Color>> currentState;
+    protected final PieceState<COLOR,Piece<COLOR>> activeState;
+    protected PieceState<COLOR,Piece<COLOR>> currentState;
 
     private Observer observer;
     private Instant capturedAt;
 
     @SuppressWarnings("unchecked")
-    AbstractPiece(Board board, Type type, COLOR color, String unicode, Position position,
-            int direction, AbstractPieceState<? extends AbstractPiece<Color>> state) {
+    AbstractPiece(Board board, Type type, COLOR color, String unicode,
+                  Position position, int direction,
+                  AbstractPieceState<COLOR,? extends Piece<COLOR>> state) {
 
         this.observer = new ActionEventObserver();
 
@@ -64,37 +66,34 @@ abstract class AbstractPiece<COLOR extends Color>
         this.unicode = unicode;
         this.value = type.value() * direction;
 
-        this.activeState = (AbstractPieceState<AbstractPiece<Color>>) state;
-        this.currentState = this.activeState;
+        this.activeState = (PieceState<COLOR,Piece<COLOR>>) state;
+        this.currentState = (PieceState<COLOR,Piece<COLOR>>) state;
 
         setPosition(position);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public final PieceState<Piece<Color>> getState() {
-        return (PieceState<Piece<Color>>) (PieceState<?>) this.currentState;
+    public final PieceState<COLOR,Piece<COLOR>> getState() {
+        return this.currentState;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public final Collection<Action<?>> getActions() {
         LOGGER.info("Get '{}' actions", this);
 
         if (this.actions.isEmpty()) {
-            this.actions.addAll(this.currentState.calculateActions((AbstractPiece<Color>) this));
+            this.actions.addAll(getState().calculateActions(this));
         }
 
         return this.actions;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public final Collection<Impact<?>> getImpacts() {
         LOGGER.info("Get '{}' impacts", this);
 
         if (this.impacts.isEmpty()) {
-            this.impacts.addAll(this.currentState.calculateImpacts((AbstractPiece<Color>) this));
+            this.impacts.addAll(getState().calculateImpacts(this));
         }
 
         return this.impacts;
@@ -104,28 +103,36 @@ abstract class AbstractPiece<COLOR extends Color>
     @SuppressWarnings("unchecked")
     public final void move(Position position) {
         LOGGER.info("'{}' moves to '{}'", this, position);
-        this.currentState.move((AbstractPiece<Color>) this, position);
+
+        var movableState = (MovablePieceState<?,?>) getState();
+        ((MovablePieceState<COLOR,AbstractPiece<COLOR>>) movableState).move(this, position);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public final void unmove(Position position) {
         LOGGER.info("'{}' unmove to '{}'", this, position);
-        this.currentState.unmove((AbstractPiece<Color>) this, position);
+
+        var movableState = (MovablePieceState<?,?>) getState();
+        ((MovablePieceState<COLOR,AbstractPiece<COLOR>>) movableState).unmove(this, position);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public final void capture(Piece<?> piece) {
         LOGGER.info("'{}' captures '{}'", this, piece);
-        this.currentState.capture((AbstractPiece<Color>) this, piece);
+
+        var capturableState = (CapturablePieceState<?,?>) getState();
+        ((CapturablePieceState<COLOR,AbstractPiece<COLOR>>) capturableState).capture(this, piece);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public final void uncapture(Piece<?> piece) {
         LOGGER.info("'{}' uncaptures '{}'", this, piece);
-        this.currentState.uncapture((AbstractPiece<Color>) this, piece);
+
+        var capturableState = (CapturablePieceState<?,?>) getState();
+        ((CapturablePieceState<COLOR,AbstractPiece<COLOR>>) capturableState).uncapture(this, piece);
     }
 
     @Override
@@ -174,16 +181,17 @@ abstract class AbstractPiece<COLOR extends Color>
 
     @Override
     public final boolean isActive() {
-        return PieceState.Type.ACTIVE.equals(this.currentState.getType());
+        return PieceState.Type.ACTIVE.equals(getState().getType());
     }
 
+    @SuppressWarnings("unchecked")
     public void dispose() {
         LOGGER.info("Disposing '{}'", this);
 
         clearCalculatedData();
 
         this.board.removeObserver(this.observer);
-        this.currentState = DISPOSED_STATE;
+        this.currentState = (PieceState<COLOR,Piece<COLOR>>) DISPOSED_STATE;
     }
 
     public void restore() {
@@ -251,8 +259,9 @@ abstract class AbstractPiece<COLOR extends Color>
 
     final void cancelMove(Position position) {
         if (!this.positions.contains(position)) {
-            var message = String.format("Unable to cancel unvisited position '%s'", position);
-            throw new IllegalPositionException(message);
+            throw new IllegalPositionException(
+                    String.format("Unable to cancel unvisited position '%s'", position)
+            );
         }
 
         var lastPosition = this.positions.removeLast();

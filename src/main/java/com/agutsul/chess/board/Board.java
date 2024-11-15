@@ -18,25 +18,26 @@ public interface Board {
 
     int calculateValue(Color color);
 
-    <ACTION extends Action<?>> Collection<ACTION> getActions(Piece<Color> piece, Class<ACTION> actionClass);
+    <ACTION extends Action<?>> Collection<ACTION> getActions(Piece<?> piece,
+                                                             Class<ACTION> actionClass);
 
-    Collection<Action<?>> getActions(Piece<Color> piece);
-    Collection<Impact<?>> getImpacts(Piece<Color> piece);
+    Collection<Action<?>> getActions(Piece<?> piece);
+    Collection<Impact<?>> getImpacts(Piece<?> piece);
 
-    Collection<Piece<Color>> getAttackers(Piece<Color> piece);
+    Collection<Piece<?>> getAttackers(Piece<?> piece);
 
-    Collection<Piece<Color>> getPieces();
-    Collection<Piece<Color>> getPieces(Color color);
-    Collection<Piece<Color>> getPieces(Piece.Type pieceType);
-    Collection<Piece<Color>> getPieces(Color color, Piece.Type pieceType);
-    Collection<Piece<Color>> getPieces(Color color, String position, String... positions);
+    Collection<Piece<?>> getPieces();
+    Collection<Piece<?>> getPieces(Color color);
+    Collection<Piece<?>> getPieces(Piece.Type pieceType);
+    Collection<Piece<?>> getPieces(Color color, Piece.Type pieceType);
+    Collection<Piece<?>> getPieces(Color color, String position, String... positions);
 
-    Optional<Piece<Color>> getPiece(Position position);
-    Optional<Piece<Color>> getPiece(String position);
+    Optional<Piece<?>> getPiece(Position position);
+    Optional<Piece<?>> getPiece(String position);
 
-    Optional<Piece<Color>> getCapturedPiece(String position, Color color);
+    Optional<Piece<?>> getCapturedPiece(String position, Color color);
 
-    Optional<KingPiece<Color>> getKing(Color color);
+    Optional<KingPiece<?>> getKing(Color color);
 
     Optional<Position> getPosition(String code);
     Optional<Position> getPosition(int x, int y);
@@ -44,9 +45,9 @@ public interface Board {
     boolean isEmpty(Position position);
 
     boolean isAttacked(Position position, Color attackerColor);
-    boolean isAttacked(Piece<Color> piece);
+    boolean isAttacked(Piece<?> piece);
 
     boolean isMonitored(Position position, Color attackerColor);
-    boolean isProtected(Piece<Color> piece);
-    boolean isPinned(Piece<Color> piece);
+    boolean isProtected(Piece<?> piece);
+    boolean isPinned(Piece<?> piece);
 }

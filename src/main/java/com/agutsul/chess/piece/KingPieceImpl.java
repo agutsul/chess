@@ -20,7 +20,7 @@ final class KingPieceImpl<COLOR extends Color>
 
     private static final Logger LOGGER = getLogger(KingPieceImpl.class);
 
-    private final CheckMateEvaluator<COLOR, KingPiece<COLOR>> evaluator;
+    private final CheckMateEvaluator evaluator;
 
     KingPieceImpl(Board board, COLOR color, String unicode, Position position, int direction) {
         super(board, Piece.Type.KING, color, unicode, position, direction,
@@ -28,14 +28,13 @@ final class KingPieceImpl<COLOR extends Color>
                 new KingPieceImpactRule(board)
         );
 
-        this.evaluator = new CompositeCheckMateEvaluator<>(board);
+        this.evaluator = new CompositeCheckMateEvaluator(board);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public boolean isChecked() {
         LOGGER.info("Verify check for '{}'", this);
-        return board.isAttacked((Piece<Color>) this);
+        return board.isAttacked(this);
     }
 
     @Override

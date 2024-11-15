@@ -7,7 +7,6 @@ import static java.time.LocalDateTime.now;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -52,7 +51,10 @@ public abstract class AbstractPlayableGame
 
     private Player currentPlayer;
 
-    public AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer, Board board) {
+    public AbstractPlayableGame(Logger logger,
+                                Player whitePlayer,
+                                Player blackPlayer,
+                                Board board) {
         this(logger, whitePlayer, blackPlayer, board, new JournalImpl());
     }
 
@@ -191,7 +193,18 @@ public abstract class AbstractPlayableGame
     }
 
     private BoardState evaluateBoardState(Player player) {
-        return boardStateEvaluator.evaluate(player.getColor());
+        var boardState = boardStateEvaluator.evaluate(player.getColor());
+        if (CHECK_MATED.equals(boardState.getType())) {
+            var memento = journal.remove(journal.size() - 1);
+            journal.add(new CheckMatedActionMemento<>(memento));
+        }
+
+        if (CHECKED.equals(boardState.getType())) {
+            var memento = journal.remove(journal.size() - 1);
+            journal.add(new CheckedActionMemento<>(memento));
+        }
+
+        return boardState;
     }
 
     private Player switchPlayers() {
@@ -246,26 +259,7 @@ public abstract class AbstractPlayableGame
             // add current action into journal to be used in board state evaluation
             journal.add(memento);
 
-            // verify if there is check or checkmate
-            var tmpMemento = configureMemento(memento);
-            if (!Objects.equals(memento, tmpMemento)) {
-                // replace the last item in journal with checked or checkmated
-                journal.remove(journal.size() - 1);
-                journal.add(tmpMemento);
-            }
-        }
-
-        private ActionMemento<?,?> configureMemento(ActionMemento<?,?> memento) {
-            var nextBoardState = evaluateBoardState(getOpponentPlayer());
-            if (CHECK_MATED.equals(nextBoardState.getType())) {
-                return new CheckMatedActionMemento<>(memento);
-            }
-
-            if (CHECKED.equals(nextBoardState.getType())) {
-                return new CheckedActionMemento<>(memento);
-            }
-
-            return memento;
+            evaluateBoardState(getOpponentPlayer());
         }
     }
 }

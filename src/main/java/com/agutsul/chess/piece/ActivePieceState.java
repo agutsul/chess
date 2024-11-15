@@ -20,19 +20,20 @@ import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.Rule;
 
-class ActivePieceState<PIECE extends Piece<Color> & Movable & Capturable>
-        extends AbstractPieceState<PIECE> {
+class ActivePieceState<COLOR extends Color,
+                       PIECE extends Piece<COLOR> & Movable & Capturable>
+        extends AbstractPieceState<COLOR,PIECE> {
 
     private static final Logger LOGGER = getLogger(ActivePieceState.class);
 
-    private final Rule<Piece<Color>, Collection<Action<?>>> actionRule;
-    private final Rule<Piece<Color>, Collection<Impact<?>>> impactRule;
+    private final Rule<Piece<?>, Collection<Action<?>>> actionRule;
+    private final Rule<Piece<?>, Collection<Impact<?>>> impactRule;
 
     protected final Board board;
 
     ActivePieceState(Board board,
-                     Rule<Piece<Color>, Collection<Action<?>>> actionRule,
-                     Rule<Piece<Color>, Collection<Impact<?>>> impactRule) {
+                     Rule<Piece<?>, Collection<Action<?>>> actionRule,
+                     Rule<Piece<?>, Collection<Impact<?>>> impactRule) {
 
         super(Type.ACTIVE);
 
@@ -54,7 +55,6 @@ class ActivePieceState<PIECE extends Piece<Color> & Movable & Capturable>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void move(PIECE piece, Position position) {
         LOGGER.info("Move '{}' to '{}'", piece, position);
 
@@ -68,11 +68,10 @@ class ActivePieceState<PIECE extends Piece<Color> & Movable & Capturable>
             );
         }
 
-        ((AbstractPiece<Color>) piece).doMove(position);
+        ((AbstractPiece<?>) piece).doMove(position);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void capture(PIECE piece, Piece<?> targetPiece) {
         LOGGER.info("Capture '{}' by '{}'", targetPiece, piece);
 
@@ -85,7 +84,7 @@ class ActivePieceState<PIECE extends Piece<Color> & Movable & Capturable>
         }
 
         var possibleCaptures = possibleActions.stream()
-                .map(action -> (AbstractCaptureAction<Color,Color,?,?>) action)
+                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .map(AbstractCaptureAction::getTarget)
                 .collect(toSet());
 
@@ -95,6 +94,6 @@ class ActivePieceState<PIECE extends Piece<Color> & Movable & Capturable>
             );
         }
 
-        ((AbstractPiece<Color>) piece).doCapture(targetPiece);
+        ((AbstractPiece<?>) piece).doCapture(targetPiece);
     }
 }

@@ -8,7 +8,8 @@ import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.state.State;
 
-public interface PieceState<PIECE extends Piece<Color>>
+public interface PieceState<COLOR extends Color,
+                            PIECE extends Piece<COLOR>>
         extends State<PIECE> {
 
     enum Type {

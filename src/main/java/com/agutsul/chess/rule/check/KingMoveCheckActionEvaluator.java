@@ -7,12 +7,10 @@ import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 
-final class KingMoveCheckActionEvaluator<COLOR extends Color,
-                                         KING extends KingPiece<COLOR>>
-        extends AbstractMoveCheckActionEvaluator<COLOR, KING> {
+final class KingMoveCheckActionEvaluator
+        extends AbstractMoveCheckActionEvaluator {
 
     KingMoveCheckActionEvaluator(Board board,
                                  Collection<Action<?>> pieceActions) {
@@ -20,7 +18,7 @@ final class KingMoveCheckActionEvaluator<COLOR extends Color,
     }
 
     @Override
-    Collection<Action<?>> process(KING king,
+    Collection<Action<?>> process(KingPiece<?> king,
                                   Collection<PieceCaptureAction<?,?,?,?>> checkActions,
                                   Collection<PieceMoveAction<?,?>> pieceMoveActions) {
 

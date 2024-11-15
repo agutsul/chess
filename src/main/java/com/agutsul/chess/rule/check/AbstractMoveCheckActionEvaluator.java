@@ -11,13 +11,10 @@ import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.function.ActionFilter;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
-import com.agutsul.chess.piece.Piece;
 
-abstract class AbstractMoveCheckActionEvaluator<COLOR extends Color,
-                                                KING extends KingPiece<COLOR>>
-        implements CheckActionEvaluator<COLOR, KING> {
+abstract class AbstractMoveCheckActionEvaluator
+        implements CheckActionEvaluator {
 
     protected final Board board;
     protected final Collection<Action<?>> pieceActions;
@@ -29,9 +26,8 @@ abstract class AbstractMoveCheckActionEvaluator<COLOR extends Color,
     }
 
     @Override
-    public Collection<Action<?>> evaluate(KING king) {
-        @SuppressWarnings("unchecked")
-        var attackers = board.getAttackers((Piece<Color>) king);
+    public Collection<Action<?>> evaluate(KingPiece<?> king) {
+        var attackers = board.getAttackers(king);
 
         Collection<PieceCaptureAction<?,?,?,?>> checkActions = attackers.stream()
                 .map(attacker -> board.getActions(attacker, PieceCaptureAction.class))
@@ -51,7 +47,7 @@ abstract class AbstractMoveCheckActionEvaluator<COLOR extends Color,
         return process(king, checkActions, pieceMoveActions);
     }
 
-    abstract Collection<Action<?>> process(KING king,
+    abstract Collection<Action<?>> process(KingPiece<?> king,
                                            Collection<PieceCaptureAction<?,?,?,?>> checkActions,
                                            Collection<PieceMoveAction<?,?>> moveActions);
 }

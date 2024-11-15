@@ -10,13 +10,10 @@ import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PieceEnPassantAction;
 import com.agutsul.chess.action.function.ActionFilter;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
-import com.agutsul.chess.piece.Piece;
 
-final class AttackerCaptureCheckActionEvaluator<COLOR extends Color,
-                                                KING extends KingPiece<COLOR>>
-        implements CheckActionEvaluator<COLOR, KING> {
+final class AttackerCaptureCheckActionEvaluator
+        implements CheckActionEvaluator {
 
     private final Board board;
     private final Collection<Action<?>> pieceActions;
@@ -28,9 +25,8 @@ final class AttackerCaptureCheckActionEvaluator<COLOR extends Color,
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Collection<Action<?>> evaluate(KING king) {
-        var attackers = board.getAttackers((Piece<Color>) king);
+    public Collection<Action<?>> evaluate(KingPiece<?> king) {
+        var attackers = board.getAttackers(king);
 
         var filteredActions = new HashSet<>();
 
@@ -45,7 +41,7 @@ final class AttackerCaptureCheckActionEvaluator<COLOR extends Color,
             for (var action : filteredActions) {
                 var captureAction = (AbstractCaptureAction<?,?,?,?>) action;
 
-                var targetPiece = (Piece<Color>) captureAction.getTarget();
+                var targetPiece = captureAction.getTarget();
                 if (Objects.equals(targetPiece, attacker)) {
                     actions.add(captureAction);
                 }

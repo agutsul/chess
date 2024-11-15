@@ -13,13 +13,11 @@ import com.agutsul.chess.action.AbstractCaptureAction;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PieceEnPassantAction;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 
-final class AttackerCaptureCheckMateEvaluator<COLOR extends Color,
-                                              KING extends KingPiece<COLOR>>
-        implements CheckMateEvaluator<COLOR, KING> {
+final class AttackerCaptureCheckMateEvaluator
+        implements CheckMateEvaluator {
 
     private static final Logger LOGGER = getLogger(AttackerCaptureCheckMateEvaluator.class);
 
@@ -30,11 +28,10 @@ final class AttackerCaptureCheckMateEvaluator<COLOR extends Color,
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Boolean evaluate(KING king) {
+    public Boolean evaluate(KingPiece<?> king) {
         LOGGER.info("Evaluate attacker capture by king '{}'", king);
 
-        var attackers = board.getAttackers((Piece<Color>) king);
+        var attackers = board.getAttackers(king);
         for (var attacker : attackers) {
             // find any action to capture piece making check
             var captureActions = getAttackActions(attacker);
@@ -66,7 +63,7 @@ final class AttackerCaptureCheckMateEvaluator<COLOR extends Color,
         return true;
     }
 
-    private Collection<AbstractCaptureAction<?,?,?,?>> getAttackActions(Piece<Color> piece) {
+    private Collection<AbstractCaptureAction<?,?,?,?>> getAttackActions(Piece<?> piece) {
         var attackActions = new ArrayList<AbstractCaptureAction<?,?,?,?>>();
         for (var attacker : board.getAttackers(piece)) {
 
@@ -76,8 +73,8 @@ final class AttackerCaptureCheckMateEvaluator<COLOR extends Color,
 
             for (var action : actions) {
                 var captureAction = (AbstractCaptureAction<?,?,?,?>) action;
-                @SuppressWarnings("unchecked")
-                var targetPiece = (Piece<Color>) captureAction.getTarget();
+                //@SuppressWarnings("unchecked")
+                var targetPiece = captureAction.getTarget();
                 if (Objects.equals(targetPiece, piece)) {
                     attackActions.add(captureAction);
                 }

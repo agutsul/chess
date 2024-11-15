@@ -34,7 +34,7 @@ public final class CheckedBoardState
     }
 
     @Override
-    public Collection<Action<?>> getActions(Piece<Color> piece) {
+    public Collection<Action<?>> getActions(Piece<?> piece) {
         LOGGER.info("Getting actions for piece '{}'", piece);
 
         var actions = piece.getActions();
@@ -47,7 +47,7 @@ public final class CheckedBoardState
             return actions;
         }
 
-        var evaluator = new CompositeCheckActionEvaluator<>(board, piece, actions);
+        var evaluator = new CompositeCheckActionEvaluator(board, piece, actions);
         return evaluator.evaluate(optionalKing.get());
     }
 }

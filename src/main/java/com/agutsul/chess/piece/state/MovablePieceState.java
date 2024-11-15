@@ -6,7 +6,8 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.state.State;
 
-public interface MovablePieceState<PIECE extends Piece<Color> & Movable>
+public interface MovablePieceState<COLOR extends Color,
+                                   PIECE extends Piece<COLOR> & Movable>
         extends State<PIECE> {
 
     void move(PIECE piece, Position position);

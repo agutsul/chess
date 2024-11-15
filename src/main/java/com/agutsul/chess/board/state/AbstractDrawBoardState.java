@@ -23,13 +23,13 @@ abstract class AbstractDrawBoardState
     }
 
     @Override
-    public final Collection<Action<?>> getActions(Piece<Color> piece) {
+    public final Collection<Action<?>> getActions(Piece<?> piece) {
         logger.info("Getting actions for piece '{}'", piece);
         return emptyList();
     }
 
     @Override
-    public final Collection<Impact<?>> getImpacts(Piece<Color> piece) {
+    public final Collection<Impact<?>> getImpacts(Piece<?> piece) {
         logger.info("Getting impacts for piece '{}'", piece);
         return emptyList();
     }

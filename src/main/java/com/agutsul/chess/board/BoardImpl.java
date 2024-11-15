@@ -2,6 +2,7 @@ package com.agutsul.chess.board;
 
 import static java.util.Arrays.asList;
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -49,7 +50,7 @@ final class BoardImpl extends AbstractBoard {
     private final List<Observer> observers;
 
     private BoardState state;
-    private Set<Piece<Color>> pieces;
+    private Set<Piece<?>> pieces;
 
     BoardImpl() {
         this.whitePieceFactory = new WhitePieceFactory(this);
@@ -102,7 +103,7 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public <ACTION extends Action<?>> Collection<ACTION> getActions(Piece<Color> piece,
+    public <ACTION extends Action<?>> Collection<ACTION> getActions(Piece<?> piece,
                                                                     Class<ACTION> actionClass) {
         LOGGER.info("Getting actions for '{}' and type '{}'",
                 piece,
@@ -116,7 +117,7 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public Collection<Action<?>> getActions(Piece<Color> piece) {
+    public Collection<Action<?>> getActions(Piece<?> piece) {
         LOGGER.info("Getting actions for '{}'", piece);
 
         var actions = this.state.getActions(piece);
@@ -143,13 +144,13 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public Collection<Impact<?>> getImpacts(Piece<Color> piece) {
+    public Collection<Impact<?>> getImpacts(Piece<?> piece) {
         LOGGER.info("Getting impacts for '{}'", piece);
         return this.state.getImpacts(piece);
     }
 
     @Override
-    public Collection<Piece<Color>> getPieces() {
+    public Collection<Piece<?>> getPieces() {
         LOGGER.info("Getting all pieces");
 
         var pieces = this.pieces.stream()
@@ -160,7 +161,7 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public Collection<Piece<Color>> getPieces(Color color) {
+    public Collection<Piece<?>> getPieces(Color color) {
         LOGGER.info("Getting pieces with '{}' color", color);
 
         var pieces = this.pieces.stream()
@@ -172,7 +173,7 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public Collection<Piece<Color>> getPieces(Piece.Type pieceType) {
+    public Collection<Piece<?>> getPieces(Piece.Type pieceType) {
         LOGGER.info("Getting pieces with type '{}'", pieceType);
 
         var pieces = this.pieces.stream()
@@ -184,7 +185,7 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public Collection<Piece<Color>> getPieces(Color color, Piece.Type pieceType) {
+    public Collection<Piece<?>> getPieces(Color color, Piece.Type pieceType) {
         LOGGER.info("Getting pieces with type '{}' and '{}' color", pieceType, color);
 
         var pieces = getPieces(color).stream()
@@ -195,7 +196,7 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public Collection<Piece<Color>> getPieces(Color color, String position, String... positions) {
+    public Collection<Piece<?>> getPieces(Color color, String position, String... positions) {
         var allPositions = new ArrayList<String>();
         allPositions.add(position);
         allPositions.addAll(asList(positions));
@@ -203,18 +204,18 @@ final class BoardImpl extends AbstractBoard {
         LOGGER.info("Getting pieces with type of '{}' color and locations '[{}]'",
                                                     color, join(allPositions, ","));
 
-        var pieces = allPositions.stream()
+        Collection<Piece<?>> pieces = allPositions.stream()
                 .map(piecePosition -> getPiece(piecePosition))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .filter(piece -> Objects.equals(color, piece.getColor()))
-                .toList();
+                .collect(toList());
 
         return pieces;
     }
 
     @Override
-    public Optional<Piece<Color>> getPiece(Position position) {
+    public Optional<Piece<?>> getPiece(Position position) {
         LOGGER.info("Getting piece at '{}'", position);
 
         var foundPiece = this.pieces.stream()
@@ -226,7 +227,7 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public Optional<Piece<Color>> getPiece(String position) {
+    public Optional<Piece<?>> getPiece(String position) {
         LOGGER.info("Getting piece at '{}'", position);
 
         var optionalPosition = getPosition(position);
@@ -238,7 +239,7 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public Optional<Piece<Color>> getCapturedPiece(String position, Color color) {
+    public Optional<Piece<?>> getCapturedPiece(String position, Color color) {
         LOGGER.info("Getting captured piece at '{}'", position);
 
         var optionalPosition = getPosition(position);
@@ -258,7 +259,7 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public Optional<KingPiece<Color>> getKing(Color color) {
+    public Optional<KingPiece<?>> getKing(Color color) {
         LOGGER.info("Getting king of '{}'", color);
 
         var pieces = getPieces(color, Piece.Type.KING);
@@ -266,7 +267,7 @@ final class BoardImpl extends AbstractBoard {
             return Optional.empty();
         }
 
-        var king = (KingPiece<Color>) pieces.iterator().next();
+        var king = (KingPiece<?>) pieces.iterator().next();
         return king.isActive() ? Optional.of(king) : Optional.empty();
     }
 
@@ -287,7 +288,7 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public boolean isAttacked(Piece<Color> piece) {
+    public boolean isAttacked(Piece<?> piece) {
         LOGGER.info("Checking is piece '{}' attacked", piece);
 
         var attackerPieces = getPieces(piece.getColor().invert());
@@ -307,7 +308,7 @@ final class BoardImpl extends AbstractBoard {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Collection<Piece<Color>> getAttackers(Piece<Color> piece) {
+    public Collection<Piece<?>> getAttackers(Piece<?> piece) {
         LOGGER.info("Get piece '{}' attackers", piece);
 
         var attackerPieces = getPieces(piece.getColor().invert());
@@ -318,7 +319,7 @@ final class BoardImpl extends AbstractBoard {
             actions.addAll(getActions(attacker, PieceEnPassantAction.class));
         }
 
-        Collection<Piece<Color>> attackActions = actions.stream()
+        Collection<Piece<?>> attackActions = actions.stream()
                 .map(action -> (AbstractCaptureAction<Color,Color,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), piece))
                 .map(AbstractCaptureAction::getSource)
@@ -328,7 +329,7 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public boolean isProtected(Piece<Color> piece) {
+    public boolean isProtected(Piece<?> piece) {
         LOGGER.info("Checking if piece '{}' is protected by the other piece", piece);
 
         var isProtected = getPieces(piece.getColor()).stream()
@@ -344,7 +345,7 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public boolean isPinned(Piece<Color> piece) {
+    public boolean isPinned(Piece<?> piece) {
         LOGGER.info("Checking if piece '{}' is pinned", piece);
 
         var isPinned = getImpacts(piece).stream()
@@ -376,8 +377,8 @@ final class BoardImpl extends AbstractBoard {
         return getPiece(position).isEmpty();
     }
 
-    void setPieces(Collection<Piece<Color>> pieces) {
-        this.pieces = new HashSet<Piece<Color>>(pieces);
+    void setPieces(Collection<Piece<?>> pieces) {
+        this.pieces = new HashSet<Piece<?>>(pieces);
     }
 
     PieceFactory getWhitePieceFactory() {
@@ -391,7 +392,7 @@ final class BoardImpl extends AbstractBoard {
     // utility methods
     private static Collection<Action<?>> filterCheckActions(Collection<Action<?>> actions,
                                                             ActionFilter<?> filter,
-                                                            KingPiece<Color> king) {
+                                                            KingPiece<?> king) {
         var filterActions = filter.apply(actions);
         return filterActions.stream()
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)

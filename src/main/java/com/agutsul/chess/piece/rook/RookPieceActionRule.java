@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
@@ -27,7 +26,7 @@ public final class RookPieceActionRule
     }
 
     @Override
-    public Collection<Action<?>> evaluate(Piece<Color> piece) {
+    public Collection<Action<?>> evaluate(Piece<?> piece) {
         // No need for unique position check because rook can have duplicated positions
         // returned by horizontal and castling rules
         return rule.evaluate(piece);

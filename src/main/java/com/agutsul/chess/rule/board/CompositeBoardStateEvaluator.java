@@ -2,6 +2,7 @@ package com.agutsul.chess.rule.board;
 
 import static java.util.Collections.emptyList;
 import static java.util.concurrent.Executors.newFixedThreadPool;
+import static java.util.concurrent.TimeUnit.MICROSECONDS;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
@@ -12,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -116,7 +116,7 @@ final class CompositeBoardStateEvaluator
         } finally {
             try {
                 executor.shutdown();
-                if (!executor.awaitTermination(1, TimeUnit.MICROSECONDS)) {
+                if (!executor.awaitTermination(1, MICROSECONDS)) {
                     executor.shutdownNow();
                 }
             } catch (InterruptedException e) {

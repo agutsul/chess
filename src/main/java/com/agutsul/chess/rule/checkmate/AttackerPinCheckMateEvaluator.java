@@ -11,14 +11,12 @@ import org.slf4j.Logger;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Line;
 
-final class AttackerPinCheckMateEvaluator<COLOR extends Color,
-                                          KING extends KingPiece<COLOR>>
-        implements CheckMateEvaluator<COLOR, KING> {
+final class AttackerPinCheckMateEvaluator
+        implements CheckMateEvaluator {
 
     private static final Logger LOGGER = getLogger(AttackerPinCheckMateEvaluator.class);
 
@@ -29,7 +27,7 @@ final class AttackerPinCheckMateEvaluator<COLOR extends Color,
     }
 
     @Override
-    public Boolean evaluate(KING king) {
+    public Boolean evaluate(KingPiece<?> king) {
         LOGGER.info("Evaluate attacker block for king '{}'", king);
         // get all piece moves of the same color as king except the king itself
         var pieceMovePositions = board.getPieces(king.getColor()).stream()
@@ -43,8 +41,7 @@ final class AttackerPinCheckMateEvaluator<COLOR extends Color,
             return false;
         }
 
-        @SuppressWarnings("unchecked")
-        var attackers = board.getAttackers((Piece<Color>) king);
+        var attackers = board.getAttackers(king);
         var isPinnable = attackers.stream()
                 .map(piece -> board.getActions(piece, PieceCaptureAction.class))
                 .flatMap(Collection::stream)

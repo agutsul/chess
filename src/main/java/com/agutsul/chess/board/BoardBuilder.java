@@ -1,6 +1,7 @@
 package com.agutsul.chess.board;
 
 import static java.util.Collections.emptyList;
+import static java.util.concurrent.TimeUnit.MICROSECONDS;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.collections4.ListUtils.partition;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -10,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -42,7 +42,7 @@ public final class BoardBuilder
 
         var executor = ForkJoinPool.commonPool();
         try {
-            var pieces = new ArrayList<Piece<Color>>();
+            var pieces = new ArrayList<Piece<?>>();
             for (var task : tasks) {
                 pieces.addAll(executor.invoke(task));
             }
@@ -51,7 +51,7 @@ public final class BoardBuilder
         } finally {
             try {
                 executor.shutdown();
-                if (!executor.awaitTermination(1, TimeUnit.MICROSECONDS)) {
+                if (!executor.awaitTermination(1, MICROSECONDS)) {
                     executor.shutdownNow();
                 }
             } catch (InterruptedException e) {
