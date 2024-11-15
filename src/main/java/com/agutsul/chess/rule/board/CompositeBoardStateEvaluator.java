@@ -33,7 +33,8 @@ final class CompositeBoardStateEvaluator
     private final Board board;
     private final List<Function<Color,Optional<BoardState>>> evaluators;
 
-    CompositeBoardStateEvaluator(Board board, Journal<ActionMemento<?,?>> journal) {
+    CompositeBoardStateEvaluator(Board board,
+                                 Journal<ActionMemento<?,?>> journal) {
         this(board,
                 new CheckedBoardStateEvaluator(board),
                 new CheckMatedBoardStateEvaluator(board),

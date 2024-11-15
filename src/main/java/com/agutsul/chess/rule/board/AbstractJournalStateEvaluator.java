@@ -13,7 +13,8 @@ abstract class AbstractJournalStateEvaluator
 
     protected final Journal<ActionMemento<?,?>> journal;
 
-    AbstractJournalStateEvaluator(Board board, Journal<ActionMemento<?,?>> journal) {
+    AbstractJournalStateEvaluator(Board board,
+                                  Journal<ActionMemento<?,?>> journal) {
         super(board);
         this.journal = journal;
     }

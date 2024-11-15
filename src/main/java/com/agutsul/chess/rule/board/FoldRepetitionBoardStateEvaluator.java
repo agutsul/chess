@@ -20,7 +20,8 @@ final class FoldRepetitionBoardStateEvaluator
     static final int THREE_REPETITIONS = 3;
     static final int FIVE_REPETITIONS = 5;
 
-    FoldRepetitionBoardStateEvaluator(Board board, Journal<ActionMemento<?,?>> journal) {
+    FoldRepetitionBoardStateEvaluator(Board board,
+                                      Journal<ActionMemento<?,?>> journal) {
         super(board, journal);
     }
 

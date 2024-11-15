@@ -168,7 +168,7 @@ public final class StandardBoard
     }
 
     private static Collection<Piece<?>> createAllPieces(PieceFactory whitePieceFactory,
-                                                            PieceFactory blackPieceFactory) {
+                                                        PieceFactory blackPieceFactory) {
         var pieces = new ArrayList<Piece<?>>();
 
         pieces.addAll(createPieces(whitePieceFactory, Position.MIN + 1, Position.MIN));
@@ -178,8 +178,8 @@ public final class StandardBoard
     }
 
     private static Collection<Piece<?>> createPieces(PieceFactory pieceFactory,
-                                                         int pawnY,
-                                                         int pieceY) {
+                                                     int pawnY,
+                                                     int pieceY) {
 
         var pieces = new ArrayList<Piece<?>>(Position.MAX * 2);
 

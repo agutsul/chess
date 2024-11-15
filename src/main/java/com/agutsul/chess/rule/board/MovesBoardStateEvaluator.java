@@ -19,7 +19,8 @@ final class MovesBoardStateEvaluator
     static final int FIFTY_MOVES = 50;
     static final int SEVENTY_FIVE_MOVES = 75;
 
-    MovesBoardStateEvaluator(Board board, Journal<ActionMemento<?, ?>> journal) {
+    MovesBoardStateEvaluator(Board board,
+                             Journal<ActionMemento<?, ?>> journal) {
         super(board, journal);
     }
 
