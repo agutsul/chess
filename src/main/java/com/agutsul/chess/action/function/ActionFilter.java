@@ -42,7 +42,7 @@ public final class ActionFilter<ACTION extends Action<?>>
         if (function == null) {
             LOGGER.warn("Unknown filtration for action class: '{}'",
                     this.actionClass.getName()
-                );
+            );
 
             return emptyList();
         }

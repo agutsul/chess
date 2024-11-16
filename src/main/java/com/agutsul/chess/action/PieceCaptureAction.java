@@ -18,7 +18,7 @@ public class PieceCaptureAction<COLOR1 extends Color,
 
     private static final Logger LOGGER = getLogger(PieceCaptureAction.class);
 
-    protected static final Line EMPTY_LINE = new Line(emptyList());
+    private static final Line EMPTY_LINE = new Line(emptyList());
 
     private final Line attackLine;
 
