@@ -20,113 +20,106 @@ final class MovesBoardStateEvaluator
     static final int SEVENTY_FIVE_MOVES = 75;
 
     MovesBoardStateEvaluator(Board board,
-                             Journal<ActionMemento<?, ?>> journal) {
+                             Journal<ActionMemento<?,?>> journal) {
         super(board, journal);
     }
 
     @Override
-    AbstractBoardStateEvaluator createEvaluator(Color color) {
-        return new MovesBoardStateEvaluatorImpl(color, board, journal);
-    }
+    public Optional<BoardState> evaluate(Color color) {
+        var actions = journal.get(color);
 
-    private static final class MovesBoardStateEvaluatorImpl
-            extends AbstractBoardStateEvaluator {
-
-        private final Color color;
-        private final Journal<ActionMemento<?, ?>> journal;
-
-        MovesBoardStateEvaluatorImpl(Color color,
-                                     Board board,
-                                     Journal<ActionMemento<?, ?>> journal) {
-            super(board);
-            this.color = color;
-            this.journal = journal;
-        }
-
-        @Override
-        public Optional<BoardState> evaluate(Color playerColor) {
-            var actions = journal.get(playerColor);
-            if (actions.size() < FIFTY_MOVES) {
-                return Optional.empty();
-            }
-
-            if (actions.size() >= SEVENTY_FIVE_MOVES
-                    && isBoardStateApplicable(actions, SEVENTY_FIVE_MOVES)) {
-
-                return Optional.of(new SeventyFiveMovesBoardState(board, color));
-            }
-
-            if (actions.size() >= FIFTY_MOVES
-                    && isBoardStateApplicable(actions, FIFTY_MOVES)) {
-
-                return Optional.of(new FiftyMovesBoardState(board, color));
-            }
-
+        var performedActions = actions.size();
+        if (performedActions < FIFTY_MOVES) {
             return Optional.empty();
         }
 
-        private static boolean isBoardStateApplicable(List<ActionMemento<?, ?>> actions,
-                                                      int lastMovesCount) {
+        if (performedActions >= SEVENTY_FIVE_MOVES
+                && isBoardStateApplicable(actions, SEVENTY_FIVE_MOVES)) {
 
-            var countCaptures = calculateCaptures(actions, lastMovesCount);
-            var countPawnMoves = calculatePawnMoves(actions, lastMovesCount);
-
-            return countCaptures == 0 && countPawnMoves == 0;
+            return Optional.of(new SeventyFiveMovesBoardState(board, color));
         }
 
-        private static int calculateCaptures(List<ActionMemento<?, ?>> actions, int limit) {
-            int counter = 0;
+        if (performedActions >= FIFTY_MOVES
+                && isBoardStateApplicable(actions, FIFTY_MOVES)) {
 
-            for (int i = actions.size() - 1, j = 0; i >= 0 && j < limit; i--, j++) {
-                var memento = actions.get(i);
+            return Optional.of(new FiftyMovesBoardState(board, color));
+        }
 
-                if (Action.Type.CAPTURE.equals(memento.getActionType())
-                        || Action.Type.EN_PASSANT.equals(memento.getActionType())) {
+        return Optional.empty();
+    }
 
-                    counter++;
-                    continue;
-                }
+    private static boolean isBoardStateApplicable(List<ActionMemento<?,?>> actions,
+                                                  int lastMovesCount) {
 
-                if (Action.Type.PROMOTE.equals(memento.getActionType())) {
-                    @SuppressWarnings("unchecked")
-                    var promoteMemento = (ActionMemento<String, ActionMemento<String, String>>) memento;
-                    var originAction = promoteMemento.getTarget();
+        var countCaptures = calculateCaptures(actions, lastMovesCount);
+        if (countCaptures != 0) {
+            return false;
+        }
 
-                    if (Action.Type.CAPTURE.equals(originAction.getActionType())) {
-                        counter++;
-                    }
-                }
+        var countPawnMoves = calculatePawnMoves(actions, lastMovesCount);
+        if (countPawnMoves != 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static int calculateCaptures(List<ActionMemento<?,?>> actions, int limit) {
+        int counter = 0;
+
+        for (int i = actions.size() - 1, j = 0; i >= 0 && j < limit; i--, j++) {
+            var memento = actions.get(i);
+
+            var actionType = memento.getActionType();
+            if (Action.Type.CAPTURE.equals(actionType)
+                    || Action.Type.EN_PASSANT.equals(actionType)) {
+
+                counter++;
+                continue;
             }
 
-            return counter;
-        }
+            if (Action.Type.PROMOTE.equals(actionType)) {
+                @SuppressWarnings("unchecked")
+                var promoteMemento =
+                        (ActionMemento<String,ActionMemento<String,String>>) memento;
 
-        private static int calculatePawnMoves(List<ActionMemento<?, ?>> actions, int limit) {
-            int counter = 0;
-
-            for (int i = actions.size() - 1, j = 0; i >= 0 && j < limit; i--, j++) {
-                var memento = actions.get(i);
-                if (!Piece.Type.PAWN.equals(memento.getPieceType())) {
-                    continue;
-                }
-
-                if (Action.Type.MOVE.equals(memento.getActionType())) {
+                var originAction = promoteMemento.getTarget();
+                if (Action.Type.CAPTURE.equals(originAction.getActionType())) {
                     counter++;
-                    continue;
-                }
-
-                if (Action.Type.PROMOTE.equals(memento.getActionType())) {
-                    @SuppressWarnings("unchecked")
-                    var promoteMemento = (ActionMemento<String, ActionMemento<String, String>>) memento;
-                    var originAction = promoteMemento.getTarget();
-
-                    if (Action.Type.MOVE.equals(originAction.getActionType())) {
-                        counter++;
-                    }
                 }
             }
-
-            return counter;
         }
+
+        return counter;
+    }
+
+    private static int calculatePawnMoves(List<ActionMemento<?,?>> actions, int limit) {
+        int counter = 0;
+
+        for (int i = actions.size() - 1, j = 0; i >= 0 && j < limit; i--, j++) {
+            var memento = actions.get(i);
+            if (!Piece.Type.PAWN.equals(memento.getPieceType())) {
+                continue;
+            }
+
+            var actionType = memento.getActionType();
+            if (Action.Type.MOVE.equals(actionType)) {
+                counter++;
+                continue;
+            }
+
+            if (Action.Type.PROMOTE.equals(actionType)) {
+                @SuppressWarnings("unchecked")
+                var promoteMemento =
+                        (ActionMemento<String,ActionMemento<String,String>>) memento;
+
+                var originAction = promoteMemento.getTarget();
+                if (Action.Type.MOVE.equals(originAction.getActionType())) {
+                    counter++;
+                }
+            }
+        }
+
+        return counter;
     }
 }

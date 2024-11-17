@@ -26,7 +26,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 
 final class CompositeBoardStateEvaluator
-        implements BoardStateEvaluator<BoardState> {
+        implements StateEvaluator<BoardState> {
 
     private static final Logger LOGGER = getLogger(CompositeBoardStateEvaluator.class);
 
@@ -52,8 +52,8 @@ final class CompositeBoardStateEvaluator
                                  MovesBoardStateEvaluator movesBoardStateEvaluator) {
         this.board = board;
         this.evaluators = List.of(
-                color -> evaluate(color, movesBoardStateEvaluator),
-                color -> evaluate(color, foldRepetitionEvaluator),
+                color -> evaluate(color, new BoardStatisticStateEvaluator(movesBoardStateEvaluator)),
+                color -> evaluate(color, new BoardStatisticStateEvaluator(foldRepetitionEvaluator)),
                 color -> evaluate(color, checkedEvaluator, checkMatedEvaluator),
                 color -> evaluate(color, staleMatedEvaluator)
         );
@@ -139,9 +139,8 @@ final class CompositeBoardStateEvaluator
     }
 
     private static Optional<BoardState> evaluate(Color color,
-            CheckedBoardStateEvaluator checkedEvaluator,
-            CheckMatedBoardStateEvaluator checkMatedEvaluator) {
-
+                                                 CheckedBoardStateEvaluator checkedEvaluator,
+                                                 CheckMatedBoardStateEvaluator checkMatedEvaluator) {
         var checked = checkedEvaluator.evaluate(color);
         if (checked.isEmpty()) {
             return Optional.empty();
@@ -152,8 +151,7 @@ final class CompositeBoardStateEvaluator
     }
 
     private static Optional<BoardState> evaluate(Color color,
-            BoardStateEvaluator<Optional<BoardState>> evaluator) {
-
+                                                 StateEvaluator<Optional<BoardState>> evaluator) {
         return evaluator.evaluate(color);
     }
 }

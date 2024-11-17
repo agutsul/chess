@@ -32,7 +32,7 @@ import com.agutsul.chess.player.observer.PlayerActionOberver;
 import com.agutsul.chess.player.state.ActivePlayerState;
 import com.agutsul.chess.player.state.LockedPlayerState;
 import com.agutsul.chess.player.state.PlayerState;
-import com.agutsul.chess.rule.board.BoardStateEvaluator;
+import com.agutsul.chess.rule.board.StateEvaluator;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 
 public abstract class AbstractPlayableGame
@@ -42,7 +42,7 @@ public abstract class AbstractPlayableGame
     private final Board board;
     private final Journal<ActionMemento<?,?>> journal;
 
-    private final BoardStateEvaluator<BoardState> boardStateEvaluator;
+    private final StateEvaluator<BoardState> boardStateEvaluator;
 
     private final PlayerState activeState;
     private final PlayerState lockedState;
@@ -73,7 +73,7 @@ public abstract class AbstractPlayableGame
                                    Player blackPlayer,
                                    Board board,
                                    Journal<ActionMemento<?,?>> journal,
-                                   BoardStateEvaluator<BoardState> boardStateEvaluator) {
+                                   StateEvaluator<BoardState> boardStateEvaluator) {
 
         super(logger, whitePlayer, blackPlayer);
 

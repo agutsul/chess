@@ -62,7 +62,7 @@ import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
-import com.agutsul.chess.rule.board.BoardStateEvaluator;
+import com.agutsul.chess.rule.board.StateEvaluator;
 
 @ExtendWith(MockitoExtension.class)
 public class GameTest {
@@ -157,7 +157,7 @@ public class GameTest {
 
         var journal = mock(Journal.class);
 
-        var boardStateEvaluator = mock(BoardStateEvaluator.class);
+        var boardStateEvaluator = mock(StateEvaluator.class);
         when(boardStateEvaluator.evaluate(any(Color.class)))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
@@ -215,7 +215,7 @@ public class GameTest {
 
         var journal = new JournalImpl();
 
-        var boardStateEvaluator = mock(BoardStateEvaluator.class);
+        var boardStateEvaluator = mock(StateEvaluator.class);
         when(boardStateEvaluator.evaluate(any()))
             .then(inv -> {
                 var color = inv.getArgument(0, Color.class);
@@ -282,7 +282,7 @@ public class GameTest {
         doCallRealMethod().when(blackPlayer).play();
 
         var journal = new JournalImpl();
-        var boardStateEvaluator = mock(BoardStateEvaluator.class);
+        var boardStateEvaluator = mock(StateEvaluator.class);
 
         var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
 
@@ -340,7 +340,7 @@ public class GameTest {
         doCallRealMethod().when(blackPlayer).play();
 
         var journal = new JournalImpl();
-        var boardStateEvaluator = mock(BoardStateEvaluator.class);
+        var boardStateEvaluator = mock(StateEvaluator.class);
 
         var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
 
@@ -407,7 +407,7 @@ public class GameTest {
             .when(blackPlayer).play();
 
         var journal = new JournalImpl();
-        var boardStateEvaluator = mock(BoardStateEvaluator.class);
+        var boardStateEvaluator = mock(StateEvaluator.class);
 
         var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
 
@@ -482,7 +482,7 @@ public class GameTest {
             .when(blackPlayer).play();
 
         var journal = new JournalImpl();
-        var boardStateEvaluator = mock(BoardStateEvaluator.class);
+        var boardStateEvaluator = mock(StateEvaluator.class);
 
         var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
 

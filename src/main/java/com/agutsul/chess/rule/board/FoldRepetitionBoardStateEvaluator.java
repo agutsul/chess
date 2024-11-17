@@ -26,61 +26,45 @@ final class FoldRepetitionBoardStateEvaluator
     }
 
     @Override
-    AbstractBoardStateEvaluator createEvaluator(Color color) {
-        return new FoldRepetitionBoardStateEvaluatorImpl(color, board, journal);
-    }
-
-    private static final class FoldRepetitionBoardStateEvaluatorImpl
-            extends AbstractBoardStateEvaluator {
-
-        private final Color color;
-        private final Journal<ActionMemento<?,?>> journal;
-
-        FoldRepetitionBoardStateEvaluatorImpl(Color color,
-                                              Board board,
-                                              Journal<ActionMemento<?,?>> journal) {
-            super(board);
-            this.color = color;
-            this.journal = journal;
-        }
-
-        @Override
-        public Optional<BoardState> evaluate(Color playerColor) {
-            var actions = journal.get(playerColor);
-            if (actions.size() < THREE_REPETITIONS) {
-                return Optional.empty();
-            }
-
-            var stats = calculateStatistics(actions);
-            var maxRepetitions = stats.entrySet().stream()
-                    .mapToInt(Entry::getValue)
-                    .max()
-                    .orElse(0);
-
-            if (maxRepetitions >= FIVE_REPETITIONS) {
-                return Optional.of(new FiveFoldRepetitionBoardState(board, color));
-            }
-
-            if (maxRepetitions >= THREE_REPETITIONS) {
-                return Optional.of(new ThreeFoldRepetitionBoardState(board, color));
-            }
-
+    public Optional<BoardState> evaluate(Color color) {
+        var actions = journal.get(color);
+        if (actions.size() < THREE_REPETITIONS) {
             return Optional.empty();
         }
 
-        private static Map<String,Integer> calculateStatistics(Collection<ActionMemento<?,?>> actions) {
-            var stats = new HashMap<String,Integer>();
-            for (var action : actions) {
-                var code = String.format("%s_%s",
-                        action.getPieceType().name(),
-                        String.valueOf(action.getTarget())
-                );
-
-                var currentStat = stats.getOrDefault(code, 0);
-                stats.put(code, currentStat + 1);
-            }
-
-            return stats;
+        var stats = calculateStatistics(actions);
+        if (stats.isEmpty()) {
+            return Optional.empty();
         }
+
+        var maxRepetitions = stats.entrySet().stream()
+                .mapToInt(Entry::getValue)
+                .max()
+                .orElse(0);
+
+        if (maxRepetitions >= FIVE_REPETITIONS) {
+            return Optional.of(new FiveFoldRepetitionBoardState(board, color));
+        }
+
+        if (maxRepetitions >= THREE_REPETITIONS) {
+            return Optional.of(new ThreeFoldRepetitionBoardState(board, color));
+        }
+
+        return Optional.empty();
+    }
+
+    private static Map<String,Integer> calculateStatistics(Collection<ActionMemento<?,?>> actions) {
+        var stats = new HashMap<String,Integer>();
+        for (var action : actions) {
+            var code = String.format("%s_%s",
+                    action.getPieceType().name(),
+                    String.valueOf(action.getTarget())
+            );
+
+            var currentStat = stats.getOrDefault(code, 0);
+            stats.put(code, currentStat + 1);
+        }
+
+        return stats;
     }
 }

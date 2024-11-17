@@ -13,7 +13,7 @@ import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
-import com.agutsul.chess.rule.board.BoardStateEvaluator;
+import com.agutsul.chess.rule.board.StateEvaluator;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 
 public class GameMock
@@ -34,7 +34,7 @@ public class GameMock
 
     public GameMock(Player whitePlayer, Player blackPlayer,
             Board board, Journal<ActionMemento<?,?>> journal,
-            BoardStateEvaluator<BoardState> boardStateEvaluator) {
+            StateEvaluator<BoardState> boardStateEvaluator) {
 
         super(LOGGER, whitePlayer, blackPlayer,
                 board, journal, boardStateEvaluator);
