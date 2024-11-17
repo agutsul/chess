@@ -30,7 +30,7 @@ final class BoardStatisticStateEvaluator
 
         var boardState = evaluator.evaluate(color);
         if (boardState.isEmpty()) {
-            LOGGER.info("Checking opponent '{}' statistics when board state iss empty", color);
+            LOGGER.info("Checking opponent '{}' statistics when board state is empty", color);
             return wrapBoardState(evaluator.evaluate(color.invert()));
         }
 
