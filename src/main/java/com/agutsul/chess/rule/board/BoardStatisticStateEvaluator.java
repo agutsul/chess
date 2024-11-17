@@ -1,7 +1,11 @@
 package com.agutsul.chess.rule.board;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import java.util.Collection;
 import java.util.Optional;
+
+import org.slf4j.Logger;
 
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.board.state.BoardState;
@@ -12,6 +16,8 @@ import com.agutsul.chess.piece.Piece;
 final class BoardStatisticStateEvaluator
         implements BoardStateEvaluator<Optional<BoardState>> {
 
+    private static final Logger LOGGER = getLogger(BoardStatisticStateEvaluator.class);
+
     private final BoardStateEvaluator<Optional<BoardState>> evaluator;
 
     BoardStatisticStateEvaluator(BoardStateEvaluator<Optional<BoardState>> evaluator) {
@@ -20,8 +26,11 @@ final class BoardStatisticStateEvaluator
 
     @Override
     public Optional<BoardState> evaluate(Color color) {
+        LOGGER.info("Checking '{}' statistics", color);
+
         var boardState = evaluator.evaluate(color);
         if (boardState.isEmpty()) {
+            LOGGER.info("Checking opponent '{}' statistics when board state iss empty", color);
             return wrapBoardState(evaluator.evaluate(color.invert()));
         }
 
@@ -29,6 +38,8 @@ final class BoardStatisticStateEvaluator
         if (state.isTerminal()) {
             return boardState;
         }
+
+        LOGGER.info("Checking opponent '{}' statistics for non-terminal board state", color);
 
         var opponentBoardState = evaluator.evaluate(color.invert());
         if (opponentBoardState.isEmpty()) {

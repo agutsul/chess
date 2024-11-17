@@ -1,7 +1,11 @@
 package com.agutsul.chess.rule.board;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import java.util.List;
 import java.util.Optional;
+
+import org.slf4j.Logger;
 
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.memento.ActionMemento;
@@ -16,6 +20,8 @@ import com.agutsul.chess.piece.Piece;
 final class MovesBoardStateEvaluator
         extends AbstractJournalStateEvaluator {
 
+    private static final Logger LOGGER = getLogger(MovesBoardStateEvaluator.class);
+
     static final int FIFTY_MOVES = 50;
     static final int SEVENTY_FIVE_MOVES = 75;
 
@@ -26,6 +32,8 @@ final class MovesBoardStateEvaluator
 
     @Override
     public Optional<BoardState> evaluate(Color color) {
+        LOGGER.info("Checking if '{}' missed any capture or pawn moves", color);
+
         var actions = journal.get(color);
 
         var performedActions = actions.size();

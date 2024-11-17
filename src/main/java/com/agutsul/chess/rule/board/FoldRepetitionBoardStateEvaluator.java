@@ -1,10 +1,14 @@
 package com.agutsul.chess.rule.board;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+
+import org.slf4j.Logger;
 
 import com.agutsul.chess.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
@@ -17,6 +21,8 @@ import com.agutsul.chess.journal.Journal;
 final class FoldRepetitionBoardStateEvaluator
         extends AbstractJournalStateEvaluator {
 
+    private static final Logger LOGGER = getLogger(FoldRepetitionBoardStateEvaluator.class);
+
     static final int THREE_REPETITIONS = 3;
     static final int FIVE_REPETITIONS = 5;
 
@@ -27,6 +33,8 @@ final class FoldRepetitionBoardStateEvaluator
 
     @Override
     public Optional<BoardState> evaluate(Color color) {
+        LOGGER.info("Checking if '{}' piece action repetitions", color);
+
         var actions = journal.get(color);
         if (actions.size() < THREE_REPETITIONS) {
             return Optional.empty();
