@@ -6,7 +6,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 
 abstract class AbstractBoardStateEvaluator
-        implements StateEvaluator<Optional<BoardState>> {
+        implements BoardStateEvaluator<Optional<BoardState>> {
 
     protected final Board board;
 

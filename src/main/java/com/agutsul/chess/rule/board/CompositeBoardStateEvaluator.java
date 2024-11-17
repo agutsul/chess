@@ -26,7 +26,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 
 final class CompositeBoardStateEvaluator
-        implements StateEvaluator<BoardState> {
+        implements BoardStateEvaluator<BoardState> {
 
     private static final Logger LOGGER = getLogger(CompositeBoardStateEvaluator.class);
 
@@ -141,6 +141,7 @@ final class CompositeBoardStateEvaluator
     private static Optional<BoardState> evaluate(Color color,
                                                  CheckedBoardStateEvaluator checkedEvaluator,
                                                  CheckMatedBoardStateEvaluator checkMatedEvaluator) {
+
         var checked = checkedEvaluator.evaluate(color);
         if (checked.isEmpty()) {
             return Optional.empty();
@@ -151,7 +152,7 @@ final class CompositeBoardStateEvaluator
     }
 
     private static Optional<BoardState> evaluate(Color color,
-                                                 StateEvaluator<Optional<BoardState>> evaluator) {
+                                                 BoardStateEvaluator<Optional<BoardState>> evaluator) {
         return evaluator.evaluate(color);
     }
 }

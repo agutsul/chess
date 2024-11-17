@@ -11,11 +11,11 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 
 public final class BoardStateEvaluatorImpl
-        implements StateEvaluator<BoardState> {
+        implements BoardStateEvaluator<BoardState> {
 
     private static final Logger LOGGER = getLogger(BoardStateEvaluatorImpl.class);
 
-    private final StateEvaluator<BoardState> evaluator;
+    private final BoardStateEvaluator<BoardState> evaluator;
 
     public BoardStateEvaluatorImpl(Board board,
                                    Journal<ActionMemento<?,?>> journal) {

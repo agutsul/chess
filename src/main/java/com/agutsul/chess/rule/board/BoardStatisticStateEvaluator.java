@@ -10,11 +10,11 @@ import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.piece.Piece;
 
 final class BoardStatisticStateEvaluator
-        implements StateEvaluator<Optional<BoardState>> {
+        implements BoardStateEvaluator<Optional<BoardState>> {
 
-    private final StateEvaluator<Optional<BoardState>> evaluator;
+    private final BoardStateEvaluator<Optional<BoardState>> evaluator;
 
-    BoardStatisticStateEvaluator(StateEvaluator<Optional<BoardState>> evaluator) {
+    BoardStatisticStateEvaluator(BoardStateEvaluator<Optional<BoardState>> evaluator) {
         this.evaluator = evaluator;
     }
 

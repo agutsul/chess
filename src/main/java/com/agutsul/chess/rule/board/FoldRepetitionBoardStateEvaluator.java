@@ -33,10 +33,6 @@ final class FoldRepetitionBoardStateEvaluator
         }
 
         var stats = calculateStatistics(actions);
-        if (stats.isEmpty()) {
-            return Optional.empty();
-        }
-
         var maxRepetitions = stats.entrySet().stream()
                 .mapToInt(Entry::getValue)
                 .max()
