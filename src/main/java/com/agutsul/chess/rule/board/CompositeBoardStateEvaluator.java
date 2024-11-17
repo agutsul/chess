@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Function;
 
 import org.slf4j.Logger;
 
@@ -31,7 +30,7 @@ final class CompositeBoardStateEvaluator
     private static final Logger LOGGER = getLogger(CompositeBoardStateEvaluator.class);
 
     private final Board board;
-    private final List<Function<Color,Optional<BoardState>>> evaluators;
+    private final List<BoardStateEvaluator<Optional<BoardState>>> evaluators;
 
     CompositeBoardStateEvaluator(Board board,
                                  Journal<ActionMemento<?,?>> journal) {
@@ -52,10 +51,10 @@ final class CompositeBoardStateEvaluator
                                  MovesBoardStateEvaluator movesBoardStateEvaluator) {
         this.board = board;
         this.evaluators = List.of(
-                color -> evaluate(color, new BoardStatisticStateEvaluator(movesBoardStateEvaluator)),
-                color -> evaluate(color, new BoardStatisticStateEvaluator(foldRepetitionEvaluator)),
-                color -> evaluate(color, checkedEvaluator, checkMatedEvaluator),
-                color -> evaluate(color, staleMatedEvaluator)
+                new BoardStatisticStateEvaluator(movesBoardStateEvaluator),
+                new BoardStatisticStateEvaluator(foldRepetitionEvaluator),
+                new CheckableBoardStateEvaluator(checkedEvaluator, checkMatedEvaluator),
+                staleMatedEvaluator
         );
     }
 
@@ -97,8 +96,9 @@ final class CompositeBoardStateEvaluator
         return checkedState;
     }
 
-    private static List<Optional<BoardState>> evaluate(List<Function<Color,Optional<BoardState>>> evaluators,
+    private static List<Optional<BoardState>> evaluate(List<BoardStateEvaluator<Optional<BoardState>>> evaluators,
                                                        Color color) {
+
         var executor = newFixedThreadPool(evaluators.size());
         try {
             var tasks = createEvaluationTasks(evaluators, color);
@@ -128,31 +128,13 @@ final class CompositeBoardStateEvaluator
         return emptyList();
     }
 
-    private static List<Callable<Optional<BoardState>>> createEvaluationTasks(List<Function<Color,Optional<BoardState>>> evaluators,
+    private static List<Callable<Optional<BoardState>>> createEvaluationTasks(List<BoardStateEvaluator<Optional<BoardState>>> evaluators,
                                                                               Color color) {
         var tasks = new ArrayList<Callable<Optional<BoardState>>>();
         for (var evaluator : evaluators) {
-            tasks.add(() -> evaluator.apply(color));
+            tasks.add(() -> evaluator.evaluate(color));
         }
 
         return tasks;
-    }
-
-    private static Optional<BoardState> evaluate(Color color,
-                                                 CheckedBoardStateEvaluator checkedEvaluator,
-                                                 CheckMatedBoardStateEvaluator checkMatedEvaluator) {
-
-        var checked = checkedEvaluator.evaluate(color);
-        if (checked.isEmpty()) {
-            return Optional.empty();
-        }
-
-        var checkMated = checkMatedEvaluator.evaluate(color);
-        return checkMated.isPresent() ? checkMated : checked;
-    }
-
-    private static Optional<BoardState> evaluate(Color color,
-                                                 BoardStateEvaluator<Optional<BoardState>> evaluator) {
-        return evaluator.evaluate(color);
     }
 }
