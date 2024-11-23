@@ -43,6 +43,9 @@ public final class PgnGame
         var observable = (Observable) board;
         observable.addObserver(createPlayerObserver(whitePlayer, actions, index -> index % 2 == 0));
         observable.addObserver(createPlayerObserver(blackPlayer, actions, index -> index % 2 != 0));
+
+        // uncomment below for local debug of pgn file
+//        addObserver(new ConsoleGameOutputObserver(this));
     }
 
     public GameState getParsedGameState() {

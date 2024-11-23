@@ -49,6 +49,11 @@ final class PgnPlayerInputObserver
 
         // simulate a delay
         sleepQuietly(Duration.ofMillis(10));
+
+        // uncomment below for local debug of pgn file
+//        System.out.println(String.format("%s: %s: '%s'",
+//                player.getColor(), player.getName(), adaptedAction));
+
         return adaptedAction;
     }
 
