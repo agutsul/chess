@@ -38,7 +38,7 @@ public interface GameState
         }
 
         public static Type codeOf(String code) {
-            return CODES.get(lowerCase(code));
+            return CODES.getOrDefault(lowerCase(code), UNKNOWN);
         }
     }
 
