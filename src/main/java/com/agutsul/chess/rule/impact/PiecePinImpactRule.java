@@ -66,8 +66,7 @@ public class PiecePinImpactRule<COLOR1 extends Color,
             }
 
             // searched pattern: attacker - pinned piece - king
-            var pattern = List.of(lineAttacker.get(), piece, king);
-            if (isPiecePinned(linePieces, pattern)) {
+            if (isPiecePinned(linePieces, List.of(lineAttacker.get(), piece, king))) {
                 pinLines.add(line);
             }
         }
