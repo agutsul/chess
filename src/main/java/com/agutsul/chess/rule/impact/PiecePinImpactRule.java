@@ -59,11 +59,7 @@ public class PiecePinImpactRule<COLOR1 extends Color,
                     .map(Optional::get)
                     .toList();
 
-            var attackers = linePieces.stream()
-                    .filter(otherPiece -> piece.getColor() != otherPiece.getColor())
-                    .toList();
-
-            var lineAttacker = findLineAttacker(attackers, king);
+            var lineAttacker = findLineAttacker(linePieces, king);
             if (lineAttacker.isEmpty()) {
                 continue;
             }
@@ -130,8 +126,8 @@ public class PiecePinImpactRule<COLOR1 extends Color,
     private Optional<Piece<Color>> findLineAttacker(List<Piece<Color>> attackers,
                                                     KingPiece<Color> king) {
         var lineAttacker = attackers.stream()
-                .filter(attacker -> LINE_ATTACK_PIECE_TYPES.contains(attacker.getType()))
                 .filter(attacker -> attacker.getColor() != king.getColor())
+                .filter(attacker -> LINE_ATTACK_PIECE_TYPES.contains(attacker.getType()))
                 .filter(attacker -> {
                     var impacts = board.getImpacts(attacker);
                     var isMonitored = impacts.stream()
