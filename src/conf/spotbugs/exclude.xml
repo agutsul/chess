@@ -27,4 +27,16 @@
     <Bug code="IJU" />
   </Not>
   </Match>
+
+  <!-- All bugs in generated ANTLR classes-->
+  <Match>
+    <Or>
+        <Class name="com.agutsul.chess.pgn.PGNLexer" />
+        <Class name="com.agutsul.chess.pgn.PGNParser" />
+    </Or>
+  <Not>
+    <Bug code="IJU" />
+  </Not>
+  </Match>
+
 </FindBugsFilter>

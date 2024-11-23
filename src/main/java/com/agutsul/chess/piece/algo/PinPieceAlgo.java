@@ -1,13 +1,18 @@
 package com.agutsul.chess.piece.algo;
 
+import static java.util.Collections.sort;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Line;
+import com.agutsul.chess.position.Position;
+import com.agutsul.chess.position.PositionComparator;
 
 public final class PinPieceAlgo<COLOR extends Color,
                                 PIECE extends Piece<COLOR>>
@@ -34,6 +39,8 @@ public final class PinPieceAlgo<COLOR extends Color,
                                      PIECE extends Piece<COLOR>>
             extends AbstractLineAlgo<PIECE,Line> {
 
+        private static final Comparator<Position> COMPARATOR = new PositionComparator();
+
         private final AbstractLineAlgo<PIECE,Line> origin;
 
         public PinLineAlgo(Board board, HorizontalLineAlgo<COLOR,PIECE> algo) {
@@ -51,11 +58,23 @@ public final class PinPieceAlgo<COLOR extends Color,
 
         @Override
         public Collection<Line> calculate(PIECE piece) {
-            return process(new ArrayList<>(origin.calculate(piece)));
+            return process(piece, origin.calculate(piece));
         }
 
-        protected Collection<Line> process(List<Line> lines) {
-            return List.of(new Line(lines.get(0), lines.get(1)));
+        protected Collection<Line> process(PIECE piece, Collection<Line> lines) {
+            return List.of(createLine(piece, new ArrayList<>(lines)));
+        }
+
+        protected Line createLine(PIECE piece, List<Line> lines) {
+            List<Position> positions = new ArrayList<>();
+
+            positions.addAll(lines.get(0));
+            positions.add(piece.getPosition());
+            positions.addAll(lines.get(1));
+
+            sort(positions, COMPARATOR);
+
+            return new Line(positions);
         }
     }
 
@@ -69,9 +88,11 @@ public final class PinPieceAlgo<COLOR extends Color,
         }
 
         @Override
-        protected Collection<Line> process(List<Line> lines) {
-            var line1 = new Line(lines.get(0), lines.get(1));
-            var line2 = new Line(lines.get(2), lines.get(3));
+        protected Collection<Line> process(PIECE piece, Collection<Line> lines) {
+            var list = new ArrayList<>(lines);
+
+            var line1 = createLine(piece, List.of(list.get(0), list.get(1)));
+            var line2 = createLine(piece, List.of(list.get(2), list.get(3)));
 
             return List.of(line1, line2);
         }

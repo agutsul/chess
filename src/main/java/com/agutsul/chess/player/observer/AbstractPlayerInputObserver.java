@@ -39,8 +39,8 @@ import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 public abstract class AbstractPlayerInputObserver
         implements Observer {
 
-    private static final String UNDO_COMMAND = "undo";
-    private static final String DRAW_COMMAND = "draw";
+    protected static final String UNDO_COMMAND = "undo";
+    protected static final String DRAW_COMMAND = "draw";
 
     private static final String UNKNOWN_PROMOTION_PIECE_TYPE_MESSAGE = "Unknown promotion piece type";
     private static final String UNABLE_TO_PROCESS_MESSAGE = "Unable to process";
@@ -105,7 +105,7 @@ public abstract class AbstractPlayerInputObserver
 
         logger.debug("Processing player '{}' command '{}'",
                 this.player.getName(),
-                command
+                String.valueOf(command)
         );
 
         try {

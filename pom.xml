@@ -20,6 +20,7 @@
         <commons-lang3.version>3.17.0</commons-lang3.version>
         <commons-collections4.version>4.5.0-M2</commons-collections4.version>
         <log4j.version>2.24.1</log4j.version>
+        <antlr4.version>4.13.2</antlr4.version>
 
         <spotbugs.version>4.8.6</spotbugs.version>
         <junit-jupiter.version>5.11.0</junit-jupiter.version>
@@ -66,6 +67,16 @@
             <version>${log4j.version}</version>
         </dependency>
 
+        <!-- ANTLR v4 -->
+        <!-- see https://github.com/antlr/antlr4 -->
+        <!-- chess grammar file https://github.com/antlr/grammars-v4/blob/master/pgn/PGN.g4-->
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>${antlr4.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
         <dependency>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-annotations</artifactId>
@@ -103,6 +114,27 @@
                     <target>${project.java.version}</target>
                 </configuration>
             </plugin>
+            
+            <!-- ANTLR v4 Maven Plugin -->
+            <!-- see https://github.com/antlr/antlr4 -->
+            <!-- see https://www.antlr.org/api/maven-plugin/latest/usage.html -->
+            <plugin>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>${antlr4.version}</version>
+                <configuration>
+                    <listener>true</listener>
+                    <visitor>true</visitor>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -217,6 +249,9 @@
                     <excludes>
                         <exclude>com/agutsul/chess/piece/*PieceFactory.java</exclude>
                         <exclude>com/agutsul/chess/rule/action/AbstractCastlingActionRule.java</exclude>
+                        <!-- antlr generated classes -->
+                        <exclude>com/agutsul/chess/pgn/PGNParser.java</exclude>
+                        <exclude>com/agutsul/chess/pgn/PGNLexer.java</exclude>
                     </excludes>
                     <rulesets>
                         <ruleset>${project.basedir}/src/conf/pmd/ruleset.xml</ruleset>

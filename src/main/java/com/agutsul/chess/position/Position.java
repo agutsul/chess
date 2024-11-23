@@ -18,4 +18,8 @@ public interface Position
 
         return String.format("%s%d", LABELS[x], y + 1);
     }
+
+    static String codeOf(Position position) {
+        return codeOf(position.x(), position.y());
+    }
 }

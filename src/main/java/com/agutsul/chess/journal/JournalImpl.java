@@ -20,25 +20,25 @@ public final class JournalImpl
 
     @Override
     public void add(ActionMemento<?,?> memento) {
-        LOGGER.info("Journal add new memento '{}'", memento);
+        LOGGER.debug("Journal add new memento '{}'", memento);
         this.list.add(memento);
     }
 
     @Override
     public ActionMemento<?,?> remove(int index) {
-        LOGGER.info("Journal remove memento by index '{}'", index);
+        LOGGER.debug("Journal remove memento by index '{}'", index);
         return this.list.remove(index);
     }
 
     @Override
     public ActionMemento<?,?> get(int index) {
-        LOGGER.info("Journal get memento '{}'", index);
+        LOGGER.debug("Journal get memento '{}'", index);
         return this.list.get(index);
     }
 
     @Override
     public List<ActionMemento<?,?>> get(Color color) {
-        LOGGER.info("Journal get memento '{}'", color);
+        LOGGER.debug("Journal get memento '{}'", color);
         return this.list.stream()
                 .filter(am -> Objects.equals(color, am.getColor()))
                 .toList();

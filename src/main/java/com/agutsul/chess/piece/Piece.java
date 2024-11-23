@@ -1,7 +1,12 @@
 package com.agutsul.chess.piece;
 
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.color.Color;
@@ -20,6 +25,9 @@ public interface Piece<COLOR extends Color>
         ROOK("R",   5),
         QUEEN("Q",  9),
         KING("K", 400);
+
+        private static final Map<String,Type> TYPES = Stream.of(values())
+                .collect(toMap(Type::code, identity()));
 
         private String code;
         private int value;
@@ -40,6 +48,10 @@ public interface Piece<COLOR extends Color>
         @Override
         public String toString() {
             return code();
+        }
+
+        public static Type codeOf(String code) {
+            return TYPES.get(code);
         }
     }
 

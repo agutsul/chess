@@ -29,7 +29,7 @@ import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
 
-final class ConsoleGameOutputObserver
+public final class ConsoleGameOutputObserver
         extends AbstractGameObserver {
 
     private static final String ENTER_ACTION_MESSAGE = "Please, enter an action in the following format: '<source_position> <target_position>'.";
@@ -40,7 +40,7 @@ final class ConsoleGameOutputObserver
     private static final String GAME_OVER_MESSAGE = "Game over";
     private static final String DURATION_MESSAGE = "Duration (minutes)";
 
-    ConsoleGameOutputObserver(Game game) {
+    public ConsoleGameOutputObserver(Game game) {
         super(game);
     }
 

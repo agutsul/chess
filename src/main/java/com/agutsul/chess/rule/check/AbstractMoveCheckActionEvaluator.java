@@ -33,7 +33,6 @@ abstract class AbstractMoveCheckActionEvaluator
                 .map(attacker -> board.getActions(attacker, PieceCaptureAction.class))
                 .flatMap(Collection::stream)
                 .filter(action -> Objects.equals(king, action.getTarget()))
-                .filter(action -> !action.getAttackLine().isEmpty())
                 .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                 .collect(toSet());
 

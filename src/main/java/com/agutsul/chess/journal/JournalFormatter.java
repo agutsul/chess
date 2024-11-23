@@ -8,7 +8,7 @@ import com.agutsul.chess.action.memento.ActionMemento;
 public class JournalFormatter {
 
     public enum Mode {
-        SINGLE_LINE("\t"),
+        SINGLE_LINE(" "),
         MULTI_LINE(lineSeparator());
 
         private String separator;
@@ -43,7 +43,7 @@ public class JournalFormatter {
             builder.append(format(journal.get(i)));
 
             if (i + 1 < journal.size()) {
-                builder.append("\t");
+                builder.append(" ");
                 builder.append(format(journal.get(i + 1)));
             }
         }

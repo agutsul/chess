@@ -155,7 +155,7 @@ final class BoardImpl extends AbstractBoard {
         @SuppressWarnings("unchecked")
         Collection<Piece<COLOR>> pieces = this.pieces.stream()
                 .filter(Piece::isActive)
-                .map(piece -> ((Piece<COLOR>) piece) )
+                .map(piece -> (Piece<COLOR>) piece)
                 .toList();
 
         return pieces;

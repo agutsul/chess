@@ -1,10 +1,12 @@
 package com.agutsul.chess.rule.impact;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.indexOfSubList;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -45,33 +47,29 @@ public class PiecePinImpactRule<COLOR1 extends Color,
         }
 
         var king = optinalKing.get();
+        var kingLines = algo.calculate(piece).stream()
+                .filter(line -> line.contains(king.getPosition()))
+                .toList();
 
         var pinLines = new ArrayList<Line>();
-        for (var line : algo.calculate(piece)) {
-
-            var hasKing = line.contains(king.getPosition());
-            if (!hasKing) {
-                continue;
-            }
-
-            var hasAttacker = line.stream()
+        for (var line : kingLines) {
+            var linePieces = line.stream()
                     .map(position -> board.getPiece(position))
                     .filter(Optional::isPresent)
                     .map(Optional::get)
+                    .toList();
+
+            var attackers = linePieces.stream()
                     .filter(otherPiece -> piece.getColor() != otherPiece.getColor())
-                    .filter(otherPiece -> LINE_ATTACK_PIECE_TYPES.contains(otherPiece.getType()))
-                    .anyMatch(otherPiece -> {
-                        var impacts = board.getImpacts(otherPiece);
-                        var isMonitored = impacts.stream()
-                                .filter(impact -> Impact.Type.MONITOR.equals(impact.getType()))
-                                .anyMatch(impact ->
-                                        Objects.equals(impact.getPosition(), king.getPosition())
-                                 );
+                    .toList();
 
-                        return isMonitored;
-                    });
+            var lineAttacker = findLineAttacker(attackers, king);
+            if (lineAttacker.isEmpty()) {
+                continue;
+            }
 
-            if (hasAttacker) {
+            // searched pattern: attacker - pinned piece - king
+            if (isPiecePinned(linePieces, List.of(lineAttacker.get(), piece, king))) {
                 pinLines.add(line);
             }
         }
@@ -120,10 +118,47 @@ public class PiecePinImpactRule<COLOR1 extends Color,
             }
         }
 
-        if (king != null && attacker != null) {
+        if (king != null && attacker != null
+                && king.getColor() != attacker.getColor()) {
+
             return new PiecePinImpact<>(pinnedPiece, king, attacker);
         }
 
         return null;
+    }
+
+    private Optional<Piece<Color>> findLineAttacker(List<Piece<Color>> attackers,
+                                                    KingPiece<Color> king) {
+        var lineAttacker = attackers.stream()
+                .filter(attacker -> LINE_ATTACK_PIECE_TYPES.contains(attacker.getType()))
+                .filter(attacker -> attacker.getColor() != king.getColor())
+                .filter(attacker -> {
+                    var impacts = board.getImpacts(attacker);
+                    var isMonitored = impacts.stream()
+                            .filter(impact -> Impact.Type.MONITOR.equals(impact.getType()))
+                            .anyMatch(impact ->
+                                    Objects.equals(impact.getPosition(), king.getPosition())
+                             );
+
+                    return isMonitored;
+                })
+                .findFirst();
+
+        return lineAttacker;
+    }
+
+    // utilities
+
+    private static boolean isPiecePinned(List<Piece<Color>> pieces,
+                                         List<Piece<?>> pattern) {
+
+        return containsPattern(pieces, pattern)
+                || containsPattern(pieces, pattern.reversed());
+    }
+
+    private static boolean containsPattern(List<Piece<Color>> pieces,
+                                           List<Piece<?>> pattern) {
+
+        return indexOfSubList(pieces, pattern) != -1;
     }
 }
