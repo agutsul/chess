@@ -65,7 +65,8 @@ public class PiecePinImpactRule<COLOR1 extends Color,
             }
 
             // searched pattern: attacker - pinned piece - king
-            if (isPiecePinned(linePieces, List.of(lineAttacker.get(), piece, king))) {
+            var pattern = List.of(lineAttacker.get(), piece, king);
+            if (isPiecePinned(linePieces, pattern)) {
                 pinLines.add(line);
             }
         }
@@ -128,19 +129,19 @@ public class PiecePinImpactRule<COLOR1 extends Color,
         var lineAttacker = attackers.stream()
                 .filter(attacker -> attacker.getColor() != king.getColor())
                 .filter(attacker -> LINE_ATTACK_PIECE_TYPES.contains(attacker.getType()))
-                .filter(attacker -> {
-                    var impacts = board.getImpacts(attacker);
-                    var isMonitored = impacts.stream()
-                            .filter(impact -> Impact.Type.MONITOR.equals(impact.getType()))
-                            .anyMatch(impact ->
-                                    Objects.equals(impact.getPosition(), king.getPosition())
-                             );
-
-                    return isMonitored;
-                })
+                .filter(attacker -> isMonitored(attacker, king))
                 .findFirst();
 
         return lineAttacker;
+    }
+
+    private boolean isMonitored(Piece<Color> attacker, KingPiece<Color> king) {
+        var impacts = board.getImpacts(attacker);
+        var isMonitored = impacts.stream()
+                .filter(impact -> Impact.Type.MONITOR.equals(impact.getType()))
+                .anyMatch(impact -> Objects.equals(impact.getPosition(), king.getPosition()));
+
+        return isMonitored;
     }
 
     // utilities
