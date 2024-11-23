@@ -102,6 +102,7 @@ public final class PieceActionAdapter
     }
 
     private String adaptPieceAction(String action) {
+
         if (!contains(action, CAPTURE)) {
             return pieceMoveActionAdapter.adapt(action);
         }

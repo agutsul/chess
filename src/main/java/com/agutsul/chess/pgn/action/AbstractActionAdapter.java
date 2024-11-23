@@ -70,6 +70,6 @@ abstract class AbstractActionAdapter
     }
 
     static String formatUnknownPieceMessage(String action) {
-        return String.format("Invalid action format: '%s'", action);
+        return String.format("Unknown source piece for action: '%s'", action);
     }
 }
