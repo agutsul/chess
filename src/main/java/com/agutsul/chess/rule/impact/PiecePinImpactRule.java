@@ -20,6 +20,7 @@ import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.PinPieceAlgo;
 import com.agutsul.chess.position.Line;
+import com.agutsul.chess.position.Position;
 
 public class PiecePinImpactRule<COLOR1 extends Color,
                                 COLOR2 extends Color,
@@ -129,17 +130,17 @@ public class PiecePinImpactRule<COLOR1 extends Color,
         var lineAttacker = attackers.stream()
                 .filter(attacker -> attacker.getColor() != king.getColor())
                 .filter(attacker -> LINE_ATTACK_PIECE_TYPES.contains(attacker.getType()))
-                .filter(attacker -> isMonitored(attacker, king))
+                .filter(attacker -> isMonitoredPosition(attacker, king.getPosition()))
                 .findFirst();
 
         return lineAttacker;
     }
 
-    private boolean isMonitored(Piece<Color> attacker, KingPiece<Color> king) {
+    private boolean isMonitoredPosition(Piece<Color> attacker, Position position) {
         var impacts = board.getImpacts(attacker);
         var isMonitored = impacts.stream()
                 .filter(impact -> Impact.Type.MONITOR.equals(impact.getType()))
-                .anyMatch(impact -> Objects.equals(impact.getPosition(), king.getPosition()));
+                .anyMatch(impact -> Objects.equals(impact.getPosition(), position));
 
         return isMonitored;
     }
