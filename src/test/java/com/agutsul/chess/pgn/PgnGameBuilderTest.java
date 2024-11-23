@@ -39,5 +39,7 @@ public class PgnGameBuilderTest {
 
         assertTrue(game.getParsedActions().contains(ACTION));
         assertTrue(game.getParsedTags().containsKey(TAG_KEY));
+
+        assertEquals(TAG_VALUE, game.getParsedTags().get(TAG_KEY));
     }
 }
