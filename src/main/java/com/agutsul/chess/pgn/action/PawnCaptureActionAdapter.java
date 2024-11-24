@@ -2,11 +2,9 @@ package com.agutsul.chess.pgn.action;
 
 import static com.agutsul.chess.position.Position.codeOf;
 import static java.util.regex.Pattern.compile;
-import static org.apache.commons.lang3.StringUtils.contains;
 
 import java.util.EnumSet;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import com.agutsul.chess.action.Action;
@@ -49,27 +47,12 @@ final class PawnCaptureActionAdapter
     }
 
     @Override
-    Optional<Piece<Color>> getCapturablePiece(Piece.Type pieceType,
-                                              String code,
-                                              String position) {
+    boolean containsAction(Piece<Color> piece, String position, Class<?> ignoredActionClass) {
+        var actions = board.getActions(piece);
+        var actionExists = actions.stream()
+                .filter(action -> CAPTURE_TYPES.contains(action.getType()))
+                .anyMatch(action -> Objects.equals(codeOf(action.getPosition()), position));
 
-        var pieces = board.getPieces(color, pieceType).stream()
-                .filter(piece -> code == null || contains(codeOf(piece.getPosition()), code))
-                .toList();
-
-        for (var piece : pieces) {
-            var actions = board.getActions(piece).stream()
-                            .filter(action -> CAPTURE_TYPES.contains(action.getType()))
-                            .toList();
-
-            for (var action : actions) {
-                var targetPosition = codeOf(action.getPosition());
-                if (Objects.equals(targetPosition, position)) {
-                    return Optional.of(piece);
-                }
-            }
-        }
-
-        return Optional.empty();
+        return actionExists;
     }
 }
