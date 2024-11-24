@@ -51,7 +51,7 @@ final class PawnCaptureActionAdapter
     @Override
     Optional<Piece<Color>> getCapturablePiece(Piece.Type pieceType, String code, String position) {
         var pieces = board.getPieces(color, pieceType).stream()
-                .filter(piece -> contains(codeOf(piece.getPosition()), code))
+                .filter(piece -> code == null ? true : contains(codeOf(piece.getPosition()), code))
                 .toList();
 
         for (var piece : pieces) {

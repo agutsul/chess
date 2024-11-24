@@ -42,7 +42,7 @@ abstract class AbstractActionAdapter
                                             Class<?> actionClass) {
 
         var pieces = board.getPieces(color, pieceType).stream()
-                .filter(piece -> contains(codeOf(piece.getPosition()), code))
+                .filter(piece -> code == null ? true : contains(codeOf(piece.getPosition()), code))
                 .toList();
 
         for (var piece : pieces) {
