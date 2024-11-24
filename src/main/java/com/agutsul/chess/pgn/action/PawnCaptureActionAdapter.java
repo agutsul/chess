@@ -1,13 +1,13 @@
 package com.agutsul.chess.pgn.action;
 
 import static com.agutsul.chess.position.Position.codeOf;
-import static org.apache.commons.lang3.StringUtils.startsWith;
+import static java.util.regex.Pattern.compile;
+import static org.apache.commons.lang3.StringUtils.contains;
 
 import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.board.Board;
@@ -30,7 +30,7 @@ final class PawnCaptureActionAdapter
 
     @Override
     public String adapt(String action) {
-        var pattern = Pattern.compile(PAWN_CAPTURE_PATTERN);
+        var pattern = compile(PAWN_CAPTURE_PATTERN);
         var matcher = pattern.matcher(action);
 
         if (!matcher.matches()) {
@@ -50,12 +50,11 @@ final class PawnCaptureActionAdapter
 
     @Override
     Optional<Piece<Color>> getCapturablePiece(Piece.Type pieceType, String code, String position) {
-        var pieces = board.getPieces(color, pieceType);
-        for (var piece : pieces) {
-            if (code != null && !startsWith(codeOf(piece.getPosition()), code)) {
-                continue;
-            }
+        var pieces = board.getPieces(color, pieceType).stream()
+                .filter(piece -> contains(codeOf(piece.getPosition()), code))
+                .toList();
 
+        for (var piece : pieces) {
             var actions = board.getActions(piece).stream()
                             .filter(action -> CAPTURE_TYPES.contains(action.getType()))
                             .toList();

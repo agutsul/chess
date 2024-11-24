@@ -41,12 +41,11 @@ abstract class AbstractActionAdapter
                                             String position,
                                             Class<?> actionClass) {
 
-        var pieces = board.getPieces(color, pieceType);
-        for (var piece : pieces) {
-            if (code != null && !contains(codeOf(piece.getPosition()), code)) {
-                continue;
-            }
+        var pieces = board.getPieces(color, pieceType).stream()
+                .filter(piece -> contains(codeOf(piece.getPosition()), code))
+                .toList();
 
+        for (var piece : pieces) {
             @SuppressWarnings("unchecked")
             var actions = board.getActions(piece, (Class<? extends Action<?>>) actionClass);
             for (var action : actions) {

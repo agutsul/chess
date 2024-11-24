@@ -1,6 +1,6 @@
 package com.agutsul.chess.pgn.action;
 
-import java.util.regex.Pattern;
+import static java.util.regex.Pattern.compile;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -19,7 +19,7 @@ final class PawnPromoteMoveActionAdapter
 
     @Override
     public String adapt(String action) {
-        var pattern = Pattern.compile(PROMOTE_MOVE_PATTERN);
+        var pattern = compile(PROMOTE_MOVE_PATTERN);
         var matcher = pattern.matcher(action);
 
         if (!matcher.matches()) {
