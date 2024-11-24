@@ -1,5 +1,6 @@
 package com.agutsul.chess.game.pgn;
 
+import static com.agutsul.chess.game.state.GameState.Type.DRAWN_GAME;
 import static org.apache.commons.lang3.ThreadUtils.sleepQuietly;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -42,10 +43,7 @@ final class PgnPlayerInputObserver
     @Override
     protected String getActionCommand() {
         if (!actionIterator.hasNext()) {
-            var gameState = ((PgnGame) game).getParsedGameState();
-            return GameState.Type.DRAWN_GAME.equals(gameState.getType())
-                    ? DRAW_COMMAND
-                    : EXIT_COMMAND;
+            return finalCommand(((PgnGame) this.game).getParsedGameState());
         }
 
         var action = actionIterator.next();
@@ -65,6 +63,14 @@ final class PgnPlayerInputObserver
     protected String getPromotionPieceType() {
         var action = actionIterator.current();
         return promotionTypeAdapter.adapt(action);
+    }
+
+    private static String finalCommand(GameState gameState) {
+        var command = DRAWN_GAME.equals(gameState.getType())
+                ? DRAW_COMMAND
+                : EXIT_COMMAND;
+
+        return command;
     }
 
     private static final class ActionIterator
