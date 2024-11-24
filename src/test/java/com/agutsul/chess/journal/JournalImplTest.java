@@ -1,6 +1,5 @@
 package com.agutsul.chess.journal;
 
-import static java.nio.file.Files.readString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -9,7 +8,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Objects;
@@ -18,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.TestFileReader;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PieceCastlingAction;
@@ -40,7 +39,7 @@ import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.position.PositionFactory;
 
 @ExtendWith(MockitoExtension.class)
-public class JournalImplTest {
+public class JournalImplTest implements TestFileReader {
 
     @Test
     void testAddMemento() {
@@ -269,12 +268,6 @@ public class JournalImplTest {
         var journalStr = journal.toString();
 
         assertEquals(fileJournalContent, journalStr);
-    }
-
-    private String readFileContent(String fileName) throws URISyntaxException, IOException {
-        var resource = getClass().getClassLoader().getResource(fileName);
-        var file = new File(resource.toURI());
-        return readString(file.toPath());
     }
 
     private static ActionMemento<?,?> createMemento() {

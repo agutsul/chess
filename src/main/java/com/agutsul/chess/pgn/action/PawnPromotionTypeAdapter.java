@@ -10,7 +10,7 @@ public final class PawnPromotionTypeAdapter
         extends AbstractActionAdapter {
 
     private static final String PROMOTE_PATTERN =
-            "[a-h]{0,1}[x]{0,1}[a-h]{1}[1,8]{1}([N,B,R,Q]){1}";
+            "[a-h]{0,1}[x]{0,1}[a-h]{1}[1,8]{1}([N,B,R,Q]{1}){1}";
 
     public PawnPromotionTypeAdapter(Board board, Color color) {
         super(board, color);

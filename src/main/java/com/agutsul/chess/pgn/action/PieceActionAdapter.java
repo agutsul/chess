@@ -1,21 +1,22 @@
 package com.agutsul.chess.pgn.action;
 
-import static com.agutsul.chess.pgn.action.KingCastlingActionAdapter.CastlingSide.KING;
-import static com.agutsul.chess.pgn.action.KingCastlingActionAdapter.CastlingSide.QUEEN;
+import static com.agutsul.chess.pgn.action.KingCastlingActionAdapter.CastlingSide.KING_SIDE;
+import static com.agutsul.chess.pgn.action.KingCastlingActionAdapter.CastlingSide.QUEEN_SIDE;
 import static org.apache.commons.lang3.StringUtils.contains;
 import static org.apache.commons.lang3.StringUtils.isAllUpperCase;
 import static org.apache.commons.lang3.StringUtils.remove;
 import static org.apache.commons.lang3.StringUtils.substring;
 
+import java.util.Objects;
+
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.pgn.action.KingCastlingActionAdapter.CastlingSide;
 
 public final class PieceActionAdapter
         extends AbstractActionAdapter {
 
-    private static final String KING_SIDE_CASTLING = "O-O";
-    private static final String QUEEN_SIDE_CASTLING = "O-O-O";
     private static final String CAPTURE = "x";
 
     private final PawnMoveActionAdapter pawnMoveActionAdapter;
@@ -60,32 +61,33 @@ public final class PieceActionAdapter
 
     @Override
     public String adapt(String action) {
-        // clear action
-        action = remove(remove(action, "+"), "#");
-        action = remove(remove(action, "!"), "?");
+        var command = prepare(action);
 
-        if (KING_SIDE_CASTLING.equalsIgnoreCase(action)) {
-            var adapter = new KingCastlingActionAdapter(board, color, KING);
-            return adapter.adapt(action);
+        if (Objects.equals(KING_SIDE.code(), command)) {
+            return adaptCastlingAction(command, KING_SIDE);
         }
 
-        if (QUEEN_SIDE_CASTLING.equalsIgnoreCase(action)) {
-            var adapter = new KingCastlingActionAdapter(board, color, QUEEN);
-            return adapter.adapt(action);
+        if (Objects.equals(QUEEN_SIDE.code(), command)) {
+            return adaptCastlingAction(command, QUEEN_SIDE);
         }
 
-        switch (action.length()) {
+        switch (command.length()) {
         case 2:
-            return pawnMoveActionAdapter.adapt(action);
+            return pawnMoveActionAdapter.adapt(command);
         case 3:
-            return adaptPieceMoveAction(action);
+            return adaptPieceMoveAction(command);
         case 4:
-            return adaptPieceAction(action);
+            return adaptPieceAction(command);
         case 5:
-            return adaptPieceCaptureAction(action);
+            return adaptPieceCaptureAction(command);
         default:
-            throw new IllegalActionException(formatInvalidActionMessage(action));
+            throw new IllegalActionException(formatInvalidActionMessage(command));
         }
+    }
+
+    private String adaptCastlingAction(String action, CastlingSide castlingSide) {
+        var adapter = new KingCastlingActionAdapter(board, color, castlingSide);
+        return adapter.adapt(action);
     }
 
     private String adaptPieceCaptureAction(String action) {
@@ -125,6 +127,11 @@ public final class PieceActionAdapter
         }
 
         throw new IllegalActionException(formatInvalidActionMessage(action));
+    }
+
+    private static String prepare(String action) {
+        var command = remove(remove(action, "+"), "#");
+        return remove(remove(command, "!"), "?");
     }
 
     private static String firstSymbol(String action) {

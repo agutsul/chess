@@ -1,10 +1,8 @@
 package com.agutsul.chess.game.pgn;
 
-import static java.nio.file.Files.readString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -13,12 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.TestFileReader;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.state.GameState;
 import com.agutsul.chess.pgn.PgnGameParser;
 
 @ExtendWith(MockitoExtension.class)
-public class PgnGameTest {
+public class PgnGameTest implements TestFileReader {
 
     @Test
     void testPgnGameFileWhiteWins() throws URISyntaxException, IOException {
@@ -56,13 +55,5 @@ public class PgnGameTest {
         assertEquals(expectedGames, games.size());
 
         return games;
-    }
-
-    private String readFileContent(String fileName)
-            throws URISyntaxException, IOException {
-
-        var resource = getClass().getClassLoader().getResource(fileName);
-        var file = new File(resource.toURI());
-        return readString(file.toPath());
     }
 }
