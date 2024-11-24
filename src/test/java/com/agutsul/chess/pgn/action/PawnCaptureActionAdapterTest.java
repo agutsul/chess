@@ -55,7 +55,7 @@ public class PawnCaptureActionAdapterTest {
     }
 
     @Test
-    void testAdaptPawnMoveAction() {
+    void testAdaptPawnCaptureAction() {
         var captureBoard = new BoardBuilder()
                 .withWhitePawn("e5")
                 .withBlackKnight("d6")
