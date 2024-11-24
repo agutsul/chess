@@ -103,24 +103,24 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
             LOGGER.info("Castling '{}' to '{}'", piece, position);
 
             var actions = board.getActions(piece, PieceCastlingAction.class);
-            var optionalAction = actions.stream()
+            var validAction = actions.stream()
                     .filter(action -> isValidCastling(action, position))
                     .findFirst();
 
-            if (optionalAction.isEmpty()) {
+            if (validAction.isEmpty()) {
                 throw new IllegalActionException(
                         String.format("%s invalid castling to %s", piece, position)
                 );
             }
 
-            PieceCastlingAction<?,?,?> castlingAction = optionalAction.get();
+            PieceCastlingAction<?,?,?> castlingAction = validAction.get();
 
             doCastling(castlingAction.getSource());
             doCastling(castlingAction.getTarget());
         }
 
-        private boolean isValidCastling(PieceCastlingAction<?,?,?> action,
-                                        Position position) {
+        private static boolean isValidCastling(PieceCastlingAction<?,?,?> action,
+                                               Position position) {
 
             var possiblePositions = Stream.of(action.getTarget(), action.getSource())
                     .map(CastlingMoveAction::getTarget)
@@ -129,7 +129,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
             return possiblePositions.contains(position);
         }
 
-        private void doCastling(CastlingMoveAction<?,?> action) {
+        private static void doCastling(CastlingMoveAction<?,?> action) {
             LOGGER.info("Castling '{}' to '{}'", action.getSource(), action.getPosition());
 
             var piece = (AbstractPiece<?>) action.getSource();
