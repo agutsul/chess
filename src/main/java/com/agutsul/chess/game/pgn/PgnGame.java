@@ -2,9 +2,9 @@ package com.agutsul.chess.game.pgn;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.stream.IntStream.range;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -74,13 +74,11 @@ public final class PgnGame
     private static List<String> filterActions(List<String> allActions,
                                               Function<Integer,Boolean> function) {
 
-        var filteredActions = new ArrayList<String>();
-        for (int i = 0; i < allActions.size(); i++) {
-            if (function.apply(i)) {
-                filteredActions.add(allActions.get(i));
-            }
-        }
+        var actions = range(0, allActions.size())
+                .filter(index -> function.apply(index))
+                .mapToObj(index -> allActions.get(index))
+                .toList();
 
-        return unmodifiableList(filteredActions);
+        return actions;
     }
 }
