@@ -14,21 +14,21 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.board.StandardBoard;
+import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
 
 @ExtendWith(MockitoExtension.class)
-public class PawnMoveActionAdapterTest {
+public class PawnPromoteMoveActionAdapterTest {
 
     @Mock
     Board board;
 
     @Test
-    void testAdaptInvalidPawnMoveAction() {
-        var adapter = new PawnMoveActionAdapter(board, Colors.WHITE);
+    void testAdaptInvalidPawnPromoteMoveAction() {
+        var adapter = new PawnPromoteMoveActionAdapter(board, Colors.WHITE);
 
-        for (var action : List.of("z9", "a0", "2a", "A2", "Aa", "a11", "cxb3", "e4e4")) {
+        for (var action : List.of("z9Q", "a0R", "2aQ", "A2r", "Aa22", "a11", "cxb3", "e4e4")) {
             var thrown = assertThrows(
                     IllegalActionException.class,
                     () -> adapter.adapt(action)
@@ -40,25 +40,27 @@ public class PawnMoveActionAdapterTest {
     }
 
     @Test
-    void testAdaptUnknownPawnMoveAction() {
+    void testAdaptUnknownPawnPromoteMoveAction() {
         when(board.getPieces(any(), any()))
             .thenReturn(emptyList());
 
-        var adapter = new PawnMoveActionAdapter(board, Colors.WHITE);
+        var adapter = new PawnPromoteMoveActionAdapter(board, Colors.WHITE);
 
         var thrown = assertThrows(
                 IllegalActionException.class,
-                () -> adapter.adapt("e4")
+                () -> adapter.adapt("e8R")
         );
 
-        assertEquals("Unknown source piece for action: 'e4'", thrown.getMessage());
+        assertEquals("Unknown source piece for action: 'e8R'", thrown.getMessage());
     }
 
     @Test
-    void testAdaptPawnMoveAction() {
-        var adapter = new PawnMoveActionAdapter(new StandardBoard(), Colors.WHITE);
-        var action = adapter.adapt("e4");
+    void testAdaptPiecePromoteMoveAction() {
+        var promotionBoard = new BoardBuilder().withWhitePawn("e7").build();
 
-        assertEquals("e2 e4", action);
+        var adapter = new PawnPromoteMoveActionAdapter(promotionBoard, Colors.WHITE);
+        var action = adapter.adapt("e8Q");
+
+        assertEquals("e7 e8", action);
     }
 }
