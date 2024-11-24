@@ -6,6 +6,8 @@ import com.agutsul.chess.action.event.ActionExecutionEvent;
 import com.agutsul.chess.action.event.ActionPerformedEvent;
 import com.agutsul.chess.action.event.DrawExecutionEvent;
 import com.agutsul.chess.action.event.DrawPerformedEvent;
+import com.agutsul.chess.action.event.ExitExecutionEvent;
+import com.agutsul.chess.action.event.ExitPerformedEvent;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.game.Game;
@@ -14,6 +16,7 @@ import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
+import com.agutsul.chess.player.event.PlayerExitActionExceptionEvent;
 
 public abstract class AbstractGameObserver
         implements Observer {
@@ -48,6 +51,12 @@ public abstract class AbstractGameObserver
             process((DrawExecutionEvent) event);
         } else if (event instanceof DrawPerformedEvent) {
             process((DrawPerformedEvent) event);
+        } else if (event instanceof ExitExecutionEvent) {
+            process((ExitExecutionEvent) event);
+        } else if (event instanceof ExitPerformedEvent) {
+            process((ExitPerformedEvent) event);
+        } else if (event instanceof PlayerExitActionExceptionEvent) {
+            process((PlayerExitActionExceptionEvent) event);
         }
     }
 
@@ -72,4 +81,10 @@ public abstract class AbstractGameObserver
     protected abstract void process(DrawExecutionEvent event);
 
     protected abstract void process(DrawPerformedEvent event);
+
+    protected abstract void process(ExitExecutionEvent event);
+
+    protected abstract void process(ExitPerformedEvent event);
+
+    protected abstract void process(PlayerExitActionExceptionEvent event);
 }

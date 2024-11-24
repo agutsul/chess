@@ -154,6 +154,12 @@ public class PawnProxyTest {
                 IllegalActionException.class,
                 () -> proxy.promote(position, Piece.Type.KING)
             );
-        assertEquals(thrown.getMessage(), "Unsupported promotion type: " + Piece.Type.KING.name());
+
+        var expectedMessage = String.format(
+                "Unsupported promotion type: %s",
+                Piece.Type.KING.name()
+        );
+
+        assertEquals(expectedMessage, thrown.getMessage());
     }
 }

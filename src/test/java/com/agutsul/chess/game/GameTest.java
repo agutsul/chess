@@ -34,11 +34,14 @@ import com.agutsul.chess.action.event.ActionExecutionEvent;
 import com.agutsul.chess.action.event.ActionPerformedEvent;
 import com.agutsul.chess.action.event.DrawExecutionEvent;
 import com.agutsul.chess.action.event.DrawPerformedEvent;
+import com.agutsul.chess.action.event.ExitExecutionEvent;
+import com.agutsul.chess.action.event.ExitPerformedEvent;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.state.AgreedDrawBoardState;
 import com.agutsul.chess.board.state.CheckMatedBoardState;
 import com.agutsul.chess.board.state.DefaultBoardState;
+import com.agutsul.chess.board.state.ExitedDrawBoardState;
 import com.agutsul.chess.board.state.StaleMatedBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -62,6 +65,8 @@ import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
+import com.agutsul.chess.player.event.PlayerExitActionEvent;
+import com.agutsul.chess.player.event.PlayerExitActionExceptionEvent;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
 
 @ExtendWith(MockitoExtension.class)
@@ -121,7 +126,7 @@ public class GameTest {
     void testGetStateReturningBlackWin() {
         var board = mock(AbstractBoard.class);
         when(board.getState())
-            .thenReturn(new AgreedDrawBoardState(board, Colors.BLACK));
+            .thenReturn(new ExitedDrawBoardState(board, Colors.BLACK));
 
         var whitePlayer = mock(Player.class);
         var blackPlayer = mock(Player.class);
@@ -196,6 +201,21 @@ public class GameTest {
         var board = mock(AbstractBoard.class);
         when(board.getState())
             .thenReturn(new AgreedDrawBoardState(board, Colors.WHITE));
+
+        var whitePlayer = new UserPlayer("test1", Colors.WHITE);
+        var blackPlayer = new UserPlayer("test2", Colors.BLACK);
+
+        var game = new GameMock(whitePlayer, blackPlayer, board);
+        var winner = game.getWinner();
+
+        assertTrue(winner.isEmpty());
+    }
+
+    @Test
+    void testGetWinnerByExitedDraw() {
+        var board = mock(AbstractBoard.class);
+        when(board.getState())
+            .thenReturn(new ExitedDrawBoardState(board, Colors.WHITE));
 
         var whitePlayer = new UserPlayer("test1", Colors.WHITE);
         var blackPlayer = new UserPlayer("test2", Colors.BLACK);
@@ -451,8 +471,7 @@ public class GameTest {
         assertEquals(1, game.getJournal().size());
 
         var winner = game.getWinner();
-        assertTrue(winner.isPresent());
-        assertEquals(whitePlayer, winner.get());
+        assertTrue(winner.isEmpty());
 
         verify(whitePlayer, times(1)).play();
         verify(blackPlayer, times(1)).play();
@@ -510,6 +529,141 @@ public class GameTest {
         assertionMap.put(PlayerDrawActionExceptionEvent.class, (gm, evt) -> {
             assertTrue(evt instanceof PlayerDrawActionExceptionEvent);
             assertEquals("test", ((PlayerDrawActionExceptionEvent) evt).getMessage());
+        });
+
+        game.addObserver(new GameOutputObserverMock(game, assertionMap));
+        game.run();
+
+        assertEquals(1, game.getJournal().size());
+
+        var winner = game.getWinner();
+        assertTrue(winner.isEmpty());
+
+        verify(whitePlayer, times(1)).play();
+        verify(blackPlayer, times(1)).play();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void testPositiveGameExitFlow() {
+        var board = spy(new StandardBoard());
+        doCallRealMethod()
+            .when(board).getState();
+        doCallRealMethod()
+            .when(board).notifyObservers(any());
+
+        var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
+        doCallRealMethod()
+            .when(whitePlayer).play();
+
+        var blackPlayer = spy(new UserPlayer("test2", Colors.BLACK));
+        doCallRealMethod()
+            .when(blackPlayer).play();
+
+        var journal = new JournalImpl();
+        var boardStateEvaluator = mock(BoardStateEvaluator.class);
+
+        var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
+
+        var playerInputObserver =
+                new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4");
+
+        board.addObserver(playerInputObserver);
+        board.addObserver(new PlayerInputObserverInteratorMock(blackPlayer, game, "exit"));
+
+        when(boardStateEvaluator.evaluate(any()))
+            .thenAnswer(inv -> {
+                var color = inv.getArgument(0, Color.class);
+                if (Colors.WHITE.equals(color)) {
+                    if (playerInputObserver.getIterator().hasNext()) {
+                        return new DefaultBoardState(board, color);
+                    }
+
+                    return new StaleMatedBoardState(board, color);
+                }
+
+                return new DefaultBoardState(board, color);
+            });
+
+        Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
+        assertionMap.put(ExitExecutionEvent.class, (gm, evt) -> {
+            assertTrue(evt instanceof ExitExecutionEvent);
+            assertEquals(blackPlayer, ((ExitExecutionEvent) evt).getPlayer());
+        });
+        assertionMap.put(ExitPerformedEvent.class, (gm, evt) -> {
+            assertTrue(evt instanceof ExitPerformedEvent);
+            assertEquals(blackPlayer, ((ExitPerformedEvent) evt).getPlayer());
+        });
+        assertionMap.put(PlayerExitActionEvent.class, (gm, evt) -> {
+            assertTrue(evt instanceof PlayerExitActionEvent);
+            assertEquals(blackPlayer, ((PlayerExitActionEvent) evt).getPlayer());
+        });
+
+        game.addObserver(new GameOutputObserverMock(game, assertionMap));
+        game.run();
+
+        assertEquals(1, game.getJournal().size());
+
+        var winner = game.getWinner();
+        assertTrue(winner.isPresent());
+        assertEquals(whitePlayer, winner.get());
+
+        verify(whitePlayer, times(1)).play();
+        verify(blackPlayer, times(1)).play();
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void testNegativeGameExitFlow() {
+        var board = spy(new StandardBoard());
+
+        doCallRealMethod()
+            .when(board).setState(any(DefaultBoardState.class));
+        doThrow(new RuntimeException("test"))
+            .when(board).setState(any(ExitedDrawBoardState.class));
+
+        doCallRealMethod()
+            .when(board).getState();
+        doCallRealMethod()
+            .when(board).notifyObservers(any());
+
+        var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
+        doCallRealMethod()
+            .when(whitePlayer).play();
+
+        var blackPlayer = spy(new UserPlayer("test2", Colors.BLACK));
+        doCallRealMethod()
+            .when(blackPlayer).play();
+
+        var journal = new JournalImpl();
+        var boardStateEvaluator = mock(BoardStateEvaluator.class);
+
+        var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
+
+        var playerInputObserver =
+                new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4");
+
+        board.addObserver(playerInputObserver);
+        board.addObserver(new PlayerInputObserverInteratorMock(blackPlayer, game, "exit"));
+
+        when(boardStateEvaluator.evaluate(any()))
+            .thenAnswer(inv -> {
+                var color = inv.getArgument(0, Color.class);
+                if (Colors.WHITE.equals(color)) {
+                    if (playerInputObserver.getIterator().hasNext()) {
+                        return new DefaultBoardState(board, color);
+                    }
+
+                    return new StaleMatedBoardState(board, color);
+                }
+
+                return new DefaultBoardState(board, color);
+            });
+
+        Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
+        assertionMap.put(PlayerExitActionExceptionEvent.class, (gm, evt) -> {
+            assertTrue(evt instanceof PlayerExitActionExceptionEvent);
+            assertEquals("test", ((PlayerExitActionExceptionEvent) evt).getMessage());
         });
 
         game.addObserver(new GameOutputObserverMock(game, assertionMap));

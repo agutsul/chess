@@ -15,6 +15,8 @@ import com.agutsul.chess.action.event.ActionExecutionEvent;
 import com.agutsul.chess.action.event.ActionPerformedEvent;
 import com.agutsul.chess.action.event.DrawExecutionEvent;
 import com.agutsul.chess.action.event.DrawPerformedEvent;
+import com.agutsul.chess.action.event.ExitExecutionEvent;
+import com.agutsul.chess.action.event.ExitPerformedEvent;
 import com.agutsul.chess.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.game.AbstractPlayableGame;
@@ -28,6 +30,7 @@ import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
+import com.agutsul.chess.player.event.PlayerExitActionExceptionEvent;
 
 public final class ConsoleGameOutputObserver
         extends AbstractGameObserver {
@@ -116,6 +119,27 @@ public final class ConsoleGameOutputObserver
         displayBoard(((AbstractPlayableGame) this.game).getBoard());
     }
 
+    @Override
+    protected void process(ExitExecutionEvent event) {
+        var player = event.getPlayer();
+        System.out.println(String.format("%s: Player '%s' exit",
+                player.getColor(),
+                player.getName()
+        ));
+    }
+
+    @Override
+    protected void process(ExitPerformedEvent ignoredEvent) {
+        displayBoard(((AbstractPlayableGame) this.game).getBoard());
+    }
+
+    @Override
+    protected void process(PlayerExitActionExceptionEvent event) {
+        displayErrorMessage(event.getMessage());
+    }
+
+    // utilities
+
     private static void displayAction(Action<?> action) {
         System.out.println(String.format("%s: %s", ACTION_MESSAGE, action));
     }
@@ -150,5 +174,4 @@ public final class ConsoleGameOutputObserver
     private static void displayErrorMessage(String message) {
         System.err.println(message);
     }
-
 }

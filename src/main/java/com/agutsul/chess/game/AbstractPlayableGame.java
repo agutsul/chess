@@ -1,8 +1,8 @@
 package com.agutsul.chess.game;
 
-import static com.agutsul.chess.board.state.BoardState.Type.AGREED_DRAW;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
+import static com.agutsul.chess.board.state.BoardState.Type.EXITED_DRAW;
 import static java.time.LocalDateTime.now;
 
 import java.util.Iterator;
@@ -109,7 +109,7 @@ public abstract class AbstractPlayableGame
             return Optional.of(winner);
         }
 
-        if (AGREED_DRAW.equals(boardState.getType())) {
+        if (EXITED_DRAW.equals(boardState.getType())) {
             var winner = getOpponentPlayer();
             logger.info("{} wins. Player '{}'", winner.getColor(), winner.getName());
             return Optional.of(winner);

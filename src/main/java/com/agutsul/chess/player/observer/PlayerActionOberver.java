@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.command.CancelActionCommand;
 import com.agutsul.chess.command.DrawGameCommand;
+import com.agutsul.chess.command.ExitGameCommand;
 import com.agutsul.chess.command.PerformActionCommand;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
@@ -23,6 +24,8 @@ import com.agutsul.chess.player.event.PlayerCancelActionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
+import com.agutsul.chess.player.event.PlayerExitActionEvent;
+import com.agutsul.chess.player.event.PlayerExitActionExceptionEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 
 public final class PlayerActionOberver
@@ -44,6 +47,8 @@ public final class PlayerActionOberver
             process((PlayerCancelActionEvent) event);
         } else if (event instanceof PlayerDrawActionEvent) {
             process((PlayerDrawActionEvent) event);
+        } else if (event instanceof PlayerExitActionEvent) {
+            process((PlayerExitActionEvent) event);
         }
     }
 
@@ -57,7 +62,7 @@ public final class PlayerActionOberver
             command.execute();
         } catch (Exception e) {
             LOGGER.error("Player action exception", e);
-            notifyExceptionEvent(new PlayerActionExceptionEvent(e.getMessage()));
+            notifyGameEvent(new PlayerActionExceptionEvent(e.getMessage()));
 
             sleepQuietly(Duration.ofMillis(1));
             requestPlayerAction(board, event.getPlayer());
@@ -78,7 +83,7 @@ public final class PlayerActionOberver
             cancelActionCommand.execute();
         } catch (Exception e) {
             LOGGER.error("Player cancel action exception", e);
-            notifyExceptionEvent(new PlayerCancelActionExceptionEvent(e.getMessage()));
+            notifyGameEvent(new PlayerCancelActionExceptionEvent(e.getMessage()));
 
             sleepQuietly(Duration.ofMillis(1));
         } finally {
@@ -94,7 +99,7 @@ public final class PlayerActionOberver
             drawGameCommand.execute();
         } catch (Exception e) {
             LOGGER.error("Player draw exception", e);
-            notifyExceptionEvent(new PlayerDrawActionExceptionEvent(e.getMessage()));
+            notifyGameEvent(new PlayerDrawActionExceptionEvent(e.getMessage()));
 
             sleepQuietly(Duration.ofMillis(1));
 
@@ -103,7 +108,23 @@ public final class PlayerActionOberver
         }
     }
 
-    private void notifyExceptionEvent(Event event) {
+    private void process(PlayerExitActionEvent event) {
+        var player = event.getPlayer();
+        try {
+            var exitGameCommand = new ExitGameCommand(this.game, player);
+            exitGameCommand.execute();
+        } catch (Exception e) {
+            LOGGER.error("Player exit exception", e);
+            notifyGameEvent(new PlayerExitActionExceptionEvent(e.getMessage()));
+
+            sleepQuietly(Duration.ofMillis(1));
+
+            var board = ((AbstractPlayableGame) this.game).getBoard();
+            requestPlayerAction(board, player);
+        }
+    }
+
+    private void notifyGameEvent(Event event) {
         // display error message to player
         ((Observable) this.game).notifyObservers(event);
     }

@@ -32,6 +32,7 @@ import com.agutsul.chess.player.event.PlayerActionEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionEvent;
+import com.agutsul.chess.player.event.PlayerExitActionEvent;
 import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
@@ -41,6 +42,7 @@ public abstract class AbstractPlayerInputObserver
 
     protected static final String UNDO_COMMAND = "undo";
     protected static final String DRAW_COMMAND = "draw";
+    protected static final String EXIT_COMMAND = "exit";
 
     private static final String UNKNOWN_PROMOTION_PIECE_TYPE_MESSAGE = "Unknown promotion piece type";
     private static final String UNABLE_TO_PROCESS_MESSAGE = "Unable to process";
@@ -113,6 +115,8 @@ public abstract class AbstractPlayerInputObserver
                 processUndoCommand(this.player);
             } else if (DRAW_COMMAND.equalsIgnoreCase(command)) {
                 processDrawCommand(this.player);
+            } else if (EXIT_COMMAND.equalsIgnoreCase(command)) {
+                processExitCommand(this.player);
             } else if (contains(command, SPACE)) {
                 processActionCommand(this.player, command);
             } else {
@@ -123,7 +127,7 @@ public abstract class AbstractPlayerInputObserver
         } catch (Exception e) {
             logger.error("Processing player action failed", e);
 
-            notifyExceptionEvent(new PlayerActionExceptionEvent(e.getMessage()));
+            notifyExceptionEvent(e.getMessage());
 
             // re-ask player action
             var board = ((AbstractPlayableGame) this.game).getBoard();
@@ -132,11 +136,15 @@ public abstract class AbstractPlayerInputObserver
     }
 
     private void processUndoCommand(Player player) {
-        ((Observable) this.game).notifyObservers(new PlayerCancelActionEvent(player));
+        notifyGameEvent(new PlayerCancelActionEvent(player));
     }
 
     private void processDrawCommand(Player player) {
-        ((Observable) this.game).notifyObservers(new PlayerDrawActionEvent(player));
+        notifyGameEvent(new PlayerDrawActionEvent(player));
+    }
+
+    private void processExitCommand(Player player) {
+        notifyGameEvent(new PlayerExitActionEvent(player));
     }
 
     private void processActionCommand(Player player, String command) {
@@ -147,13 +155,16 @@ public abstract class AbstractPlayerInputObserver
             );
         }
 
-        var actionEvent = new PlayerActionEvent(player, positions[0], positions[1]);
-        ((Observable) this.game).notifyObservers(actionEvent);
+        notifyGameEvent(new PlayerActionEvent(player, positions[0], positions[1]));
     }
 
-    private void notifyExceptionEvent(Event event) {
-        // display error message to player
+    private void notifyGameEvent(Event event) {
         ((Observable) this.game).notifyObservers(event);
+    }
+
+    private void notifyExceptionEvent(String message) {
+        // display error message to player
+        notifyGameEvent(new PlayerActionExceptionEvent(message));
         sleepQuietly(Duration.ofMillis(1));
     }
 }

@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
+import com.agutsul.chess.game.state.GameState;
 import com.agutsul.chess.pgn.action.PawnPromotionTypeAdapter;
 import com.agutsul.chess.pgn.action.PieceActionAdapter;
 import com.agutsul.chess.player.Player;
@@ -41,7 +42,10 @@ final class PgnPlayerInputObserver
     @Override
     protected String getActionCommand() {
         if (!actionIterator.hasNext()) {
-            return DRAW_COMMAND;
+            var gameState = ((PgnGame) game).getParsedGameState();
+            return GameState.Type.DRAWN_GAME.equals(gameState.getType())
+                    ? DRAW_COMMAND
+                    : EXIT_COMMAND;
         }
 
         var action = actionIterator.next();
