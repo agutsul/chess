@@ -64,7 +64,6 @@ public final class PlayerActionOberver
             LOGGER.error("Player action exception", e);
             notifyGameEvent(new PlayerActionExceptionEvent(e.getMessage()));
 
-            sleepQuietly(Duration.ofMillis(1));
             requestPlayerAction(board, event.getPlayer());
         }
     }
@@ -84,11 +83,8 @@ public final class PlayerActionOberver
         } catch (Exception e) {
             LOGGER.error("Player cancel action exception", e);
             notifyGameEvent(new PlayerCancelActionExceptionEvent(e.getMessage()));
-
-            sleepQuietly(Duration.ofMillis(1));
         } finally {
-            var board = ((AbstractPlayableGame) this.game).getBoard();
-            requestPlayerAction(board, player);
+            requestPlayerAction(player);
         }
     }
 
@@ -101,10 +97,7 @@ public final class PlayerActionOberver
             LOGGER.error("Player draw exception", e);
             notifyGameEvent(new PlayerDrawActionExceptionEvent(e.getMessage()));
 
-            sleepQuietly(Duration.ofMillis(1));
-
-            var board = ((AbstractPlayableGame) this.game).getBoard();
-            requestPlayerAction(board, player);
+            requestPlayerAction(player);
         }
     }
 
@@ -117,16 +110,19 @@ public final class PlayerActionOberver
             LOGGER.error("Player exit exception", e);
             notifyGameEvent(new PlayerExitActionExceptionEvent(e.getMessage()));
 
-            sleepQuietly(Duration.ofMillis(1));
-
-            var board = ((AbstractPlayableGame) this.game).getBoard();
-            requestPlayerAction(board, player);
+            requestPlayerAction(player);
         }
     }
 
     private void notifyGameEvent(Event event) {
         // display error message to player
         ((Observable) this.game).notifyObservers(event);
+        sleepQuietly(Duration.ofMillis(1));
+    }
+
+    private void requestPlayerAction(Player player) {
+        var board = ((AbstractPlayableGame) this.game).getBoard();
+        requestPlayerAction(board, player);
     }
 
     private static void requestPlayerAction(Board board, Player player) {
