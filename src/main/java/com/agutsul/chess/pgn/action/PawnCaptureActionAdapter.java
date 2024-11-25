@@ -11,6 +11,7 @@ import com.agutsul.chess.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.exception.UnknownPieceException;
 import com.agutsul.chess.piece.Piece;
 
 final class PawnCaptureActionAdapter
@@ -40,7 +41,7 @@ final class PawnCaptureActionAdapter
 
         var foundPiece = getCapturablePiece(Piece.Type.PAWN, code, position);
         if (foundPiece.isEmpty()) {
-            throw new IllegalActionException(formatUnknownPieceMessage(action));
+            throw new UnknownPieceException(formatUnknownPieceMessage(action));
         }
 
         return adapt(foundPiece.get(), position);

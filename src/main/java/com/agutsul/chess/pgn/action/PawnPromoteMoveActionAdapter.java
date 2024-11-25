@@ -5,6 +5,7 @@ import static java.util.regex.Pattern.compile;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.exception.UnknownPieceException;
 import com.agutsul.chess.piece.Piece;
 
 final class PawnPromoteMoveActionAdapter
@@ -30,7 +31,7 @@ final class PawnPromoteMoveActionAdapter
 
         var foundPiece = getMovablePiece(Piece.Type.PAWN, position);
         if (foundPiece.isEmpty()) {
-            throw new IllegalActionException(formatUnknownPieceMessage(action));
+            throw new UnknownPieceException(formatUnknownPieceMessage(action));
         }
 
         return adapt(foundPiece.get(), position);

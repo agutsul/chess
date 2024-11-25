@@ -17,6 +17,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.exception.UnknownPieceException;
 
 @ExtendWith(MockitoExtension.class)
 public class PawnCaptureActionAdapterTest {
@@ -47,7 +48,7 @@ public class PawnCaptureActionAdapterTest {
         var adapter = new PawnCaptureActionAdapter(board, Colors.WHITE);
 
         var thrown = assertThrows(
-                IllegalActionException.class,
+                UnknownPieceException.class,
                 () -> adapter.adapt("dxe4")
         );
 

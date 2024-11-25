@@ -17,6 +17,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.exception.UnknownPieceException;
 import com.agutsul.chess.pgn.action.KingCastlingActionAdapter.CastlingSide;
 import com.agutsul.chess.piece.KingPiece;
 
@@ -105,7 +106,7 @@ public class KingCastlingActionAdapterTest {
         var adapter = new KingCastlingActionAdapter(board, Colors.BLACK, CastlingSide.QUEEN_SIDE);
 
         var thrown = assertThrows(
-                IllegalActionException.class,
+                UnknownPieceException.class,
                 () -> adapter.adapt("O-O-O")
         );
 

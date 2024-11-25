@@ -17,6 +17,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.exception.UnknownPieceException;
 
 @ExtendWith(MockitoExtension.class)
 public class PieceMoveActionAdapterTest {
@@ -47,7 +48,7 @@ public class PieceMoveActionAdapterTest {
         var adapter = new PieceMoveActionAdapter(board, Colors.WHITE);
 
         var thrown = assertThrows(
-                IllegalActionException.class,
+                UnknownPieceException.class,
                 () -> adapter.adapt("Nf3")
         );
 

@@ -7,6 +7,7 @@ import java.util.Objects;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.exception.UnknownPieceException;
 
 final class KingCastlingActionAdapter
         extends AbstractActionAdapter {
@@ -47,7 +48,7 @@ final class KingCastlingActionAdapter
 
         var kingPiece = board.getKing(color);
         if (kingPiece.isEmpty()) {
-            throw new IllegalActionException(formatUnknownPieceMessage(action));
+            throw new UnknownPieceException(formatUnknownPieceMessage(action));
         }
 
         var king = kingPiece.get();
