@@ -300,10 +300,13 @@ abstract class AbstractPiece<COLOR extends Color>
         @Override
         public void observe(Event event) {
             if (event instanceof ClearPieceDataEvent) {
-                var clearEvent = (ClearPieceDataEvent) event;
-                if (Objects.equals(getColor(), clearEvent.getColor())) {
-                    clearCalculatedData();
-                }
+                process((ClearPieceDataEvent) event);
+            }
+        }
+
+        private void process(ClearPieceDataEvent event) {
+            if (Objects.equals(getColor(), event.getColor())) {
+                clearCalculatedData();
             }
         }
     }
