@@ -1,9 +1,13 @@
 package com.agutsul.chess.player.observer;
 
+import static java.util.Collections.unmodifiableMap;
 import static org.apache.commons.lang3.ThreadUtils.sleepQuietly;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 
@@ -33,23 +37,31 @@ public final class PlayerActionOberver
 
     private static final Logger LOGGER = getLogger(PlayerActionOberver.class);
 
+    private final Map<Class<? extends Event>, Consumer<Event>> processors;
     private final Game game;
 
     public PlayerActionOberver(Game game) {
         this.game = game;
+        this.processors = createEventProcessors();
     }
 
     @Override
     public void observe(Event event) {
-        if (event instanceof PlayerActionEvent) {
-            process((PlayerActionEvent) event);
-        } else if (event instanceof PlayerCancelActionEvent) {
-            process((PlayerCancelActionEvent) event);
-        } else if (event instanceof PlayerDrawActionEvent) {
-            process((PlayerDrawActionEvent) event);
-        } else if (event instanceof PlayerExitActionEvent) {
-            process((PlayerExitActionEvent) event);
+        var processor = this.processors.get(event.getClass());
+        if (processor != null) {
+            processor.accept(event);
         }
+    }
+
+    private Map<Class<? extends Event>, Consumer<Event>> createEventProcessors() {
+        var processors = new HashMap<Class<? extends Event>, Consumer<Event>>();
+
+        processors.put(PlayerActionEvent.class,       event -> process((PlayerActionEvent) event));
+        processors.put(PlayerCancelActionEvent.class, event -> process((PlayerCancelActionEvent) event));
+        processors.put(PlayerDrawActionEvent.class,   event -> process((PlayerDrawActionEvent) event));
+        processors.put(PlayerExitActionEvent.class,   event -> process((PlayerExitActionEvent) event));
+
+        return unmodifiableMap(processors);
     }
 
     private void process(PlayerActionEvent event) {
@@ -121,8 +133,8 @@ public final class PlayerActionOberver
     }
 
     private void requestPlayerAction(Player player) {
-        var board = ((AbstractPlayableGame) this.game).getBoard();
-        requestPlayerAction(board, player);
+        var agame = (AbstractPlayableGame) this.game;
+        requestPlayerAction(agame.getBoard(), player);
     }
 
     private static void requestPlayerAction(Board board, Player player) {
