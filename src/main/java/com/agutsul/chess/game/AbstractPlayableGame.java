@@ -4,11 +4,15 @@ import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.EXITED_DRAW;
 import static java.time.LocalDateTime.now;
+import static java.util.Collections.unmodifiableMap;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 
@@ -20,6 +24,7 @@ import com.agutsul.chess.action.memento.CheckedActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
@@ -194,14 +199,15 @@ public abstract class AbstractPlayableGame
 
     private BoardState evaluateBoardState(Player player) {
         var boardState = boardStateEvaluator.evaluate(player.getColor());
+
         if (CHECK_MATED.equals(boardState.getType())) {
-            var memento = journal.remove(journal.size() - 1);
-            journal.add(new CheckMatedActionMemento<>(memento));
+            var lastMemento = journal.remove(journal.size() - 1);
+            journal.add(new CheckMatedActionMemento<>(lastMemento));
         }
 
         if (CHECKED.equals(boardState.getType())) {
-            var memento = journal.remove(journal.size() - 1);
-            journal.add(new CheckedActionMemento<>(memento));
+            var lastMemento = journal.remove(journal.size() - 1);
+            journal.add(new CheckedActionMemento<>(lastMemento));
         }
 
         return boardState;
@@ -230,23 +236,37 @@ public abstract class AbstractPlayableGame
     private final class ActionEventObserver
             implements Observer {
 
+        private final Map<Class<? extends Event>, Consumer<Event>> processors;
+
+        ActionEventObserver() {
+            this.processors = createEventProcessors();
+        }
+
         @Override
         public void observe(Event event) {
-            if (event instanceof ActionCancelledEvent) {
-                process((ActionCancelledEvent) event);
-            } else if (event instanceof ActionPerformedEvent) {
-                process((ActionPerformedEvent) event);
+            var processor = this.processors.get(event.getClass());
+            if (processor != null) {
+                processor.accept(event);
             }
         }
 
+        private Map<Class<? extends Event>, Consumer<Event>> createEventProcessors() {
+            var processors = new HashMap<Class<? extends Event>, Consumer<Event>>();
+
+            processors.put(ActionCancelledEvent.class, event -> process((ActionCancelledEvent) event));
+            processors.put(ActionPerformedEvent.class, event -> process((ActionPerformedEvent) event));
+
+            return unmodifiableMap(processors);
+        }
+
         private void process(ActionCancelledEvent event) {
-            ((Observable) board).notifyObservers(new ClearPieceDataEvent(event.getColor()));
+            clearPieceData(event.getColor());
             // remove last item from journal
             journal.remove(journal.size() - 1);
             // switch players
             currentPlayer = switchPlayers();
 
-            ((Observable) board).notifyObservers(new ClearPieceDataEvent(currentPlayer.getColor()));
+            clearPieceData(currentPlayer.getColor());
             // recalculate board state
             board.setState(boardStateEvaluator.evaluate(currentPlayer.getColor()));
         }
@@ -254,12 +274,20 @@ public abstract class AbstractPlayableGame
         private void process(ActionPerformedEvent event) {
             var memento = event.getActionMemento();
 
-            ((Observable) board).notifyObservers(new ClearPieceDataEvent(memento.getColor()));
+            clearPieceData(memento.getColor());
 
             // add current action into journal to be used in board state evaluation
             journal.add(memento);
             // recalculate board state to update journal records
             evaluateBoardState(getOpponentPlayer());
+        }
+
+        private void clearPieceData(Color color) {
+            notifyBoardObservers(new ClearPieceDataEvent(color));
+        }
+
+        private void notifyBoardObservers(Event event) {
+            ((Observable) board).notifyObservers(event);
         }
     }
 }
