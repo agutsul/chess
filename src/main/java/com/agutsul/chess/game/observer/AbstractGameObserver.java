@@ -1,5 +1,11 @@
 package com.agutsul.chess.game.observer;
 
+import static java.util.Collections.unmodifiableMap;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
+
 import com.agutsul.chess.action.event.ActionCancelledEvent;
 import com.agutsul.chess.action.event.ActionCancellingEvent;
 import com.agutsul.chess.action.event.ActionExecutionEvent;
@@ -21,43 +27,45 @@ import com.agutsul.chess.player.event.PlayerExitActionExceptionEvent;
 public abstract class AbstractGameObserver
         implements Observer {
 
+    private final Map<Class<? extends Event>, Consumer<Event>> processors;
+
     protected final Game game;
 
     public AbstractGameObserver(Game game) {
         this.game = game;
+        this.processors = createEventProcessors();
     }
 
     @Override
     public final void observe(Event event) {
-        if (event instanceof GameStartedEvent) {
-            process((GameStartedEvent) event);
-        } else if (event instanceof GameOverEvent) {
-            process((GameOverEvent) event);
-        } else if (event instanceof ActionPerformedEvent) {
-            process((ActionPerformedEvent) event);
-        } else if (event instanceof ActionExecutionEvent) {
-            process((ActionExecutionEvent) event);
-        } else if (event instanceof PlayerActionExceptionEvent) {
-            process((PlayerActionExceptionEvent) event);
-        } else if (event instanceof PlayerCancelActionExceptionEvent) {
-            process((PlayerCancelActionExceptionEvent) event);
-        } else if (event instanceof ActionCancelledEvent) {
-            process((ActionCancelledEvent) event);
-        } else if (event instanceof ActionCancellingEvent) {
-            process((ActionCancellingEvent) event);
-        } else if (event instanceof PlayerDrawActionExceptionEvent) {
-            process((PlayerDrawActionExceptionEvent) event);
-        } else if (event instanceof DrawExecutionEvent) {
-            process((DrawExecutionEvent) event);
-        } else if (event instanceof DrawPerformedEvent) {
-            process((DrawPerformedEvent) event);
-        } else if (event instanceof ExitExecutionEvent) {
-            process((ExitExecutionEvent) event);
-        } else if (event instanceof ExitPerformedEvent) {
-            process((ExitPerformedEvent) event);
-        } else if (event instanceof PlayerExitActionExceptionEvent) {
-            process((PlayerExitActionExceptionEvent) event);
+        var processor = this.processors.get(event.getClass());
+        if (processor != null) {
+            processor.accept(event);
         }
+    }
+
+    private Map<Class<? extends Event>, Consumer<Event>> createEventProcessors() {
+        var processors = new HashMap<Class<? extends Event>, Consumer<Event>>();
+
+        processors.put(GameStartedEvent.class,      event -> process((GameStartedEvent) event));
+        processors.put(GameOverEvent.class,         event -> process((GameOverEvent) event));
+
+        processors.put(ActionExecutionEvent.class,  event -> process((ActionExecutionEvent) event));
+        processors.put(ActionCancellingEvent.class, event -> process((ActionCancellingEvent) event));
+        processors.put(DrawExecutionEvent.class,    event -> process((DrawExecutionEvent) event));
+        processors.put(ExitExecutionEvent.class,    event -> process((ExitExecutionEvent) event));
+
+        processors.put(ActionPerformedEvent.class,  event -> process((ActionPerformedEvent) event));
+        processors.put(ActionCancelledEvent.class,  event -> process((ActionCancelledEvent) event));
+        processors.put(DrawPerformedEvent.class,    event -> process((DrawPerformedEvent) event));
+        processors.put(ExitPerformedEvent.class,    event -> process((ExitPerformedEvent) event));
+
+        processors.put(PlayerActionExceptionEvent.class,       event -> process((PlayerActionExceptionEvent) event));
+        processors.put(PlayerCancelActionExceptionEvent.class, event -> process((PlayerCancelActionExceptionEvent) event));
+        processors.put(PlayerDrawActionExceptionEvent.class,   event -> process((PlayerDrawActionExceptionEvent) event));
+        processors.put(PlayerExitActionExceptionEvent.class,   event -> process((PlayerExitActionExceptionEvent) event));
+
+        return unmodifiableMap(processors);
     }
 
     protected abstract void process(GameStartedEvent event);
