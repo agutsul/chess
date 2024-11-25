@@ -11,8 +11,6 @@ import java.util.List;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.game.AbstractPlayableGame;
-import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.state.GameState;
 import com.agutsul.chess.pgn.action.PawnPromotionTypeAdapter;
 import com.agutsul.chess.pgn.action.PieceActionAdapter;
@@ -30,10 +28,10 @@ final class PgnPlayerInputObserver
     private final PieceActionAdapter pieceActionAdapter;
     private final PawnPromotionTypeAdapter promotionTypeAdapter;
 
-    PgnPlayerInputObserver(Player player, Game game, List<String> actions) {
+    PgnPlayerInputObserver(Player player, PgnGame game, List<String> actions) {
         super(LOGGER, player, game);
 
-        this.board = ((AbstractPlayableGame) game).getBoard();
+        this.board = game.getBoard();
         this.actionIterator = new ActionIterator(actions);
 
         this.pieceActionAdapter = new PieceActionAdapter(board, player.getColor());

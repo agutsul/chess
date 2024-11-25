@@ -7,7 +7,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.IntFunction;
 
 import org.slf4j.Logger;
 
@@ -65,14 +65,14 @@ public final class PgnGame
     }
 
     private Observer createPlayerObserver(Player player, List<String> allActions,
-                                          Function<Integer,Boolean> filterFunction) {
+                                          IntFunction<Boolean> filterFunction) {
 
         var playerActions = filterActions(allActions, filterFunction);
         return new PgnPlayerInputObserver(player, this, playerActions);
     }
 
     private static List<String> filterActions(List<String> allActions,
-                                              Function<Integer,Boolean> function) {
+                                              IntFunction<Boolean> function) {
 
         var actions = range(0, allActions.size())
                 .filter(index -> function.apply(index))
