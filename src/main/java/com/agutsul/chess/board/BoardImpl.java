@@ -120,7 +120,7 @@ final class BoardImpl extends AbstractBoard {
         LOGGER.info("Getting actions for '{}'", piece);
 
         var actions = this.state.getActions(piece);
-        if (!isPinned(piece)) {
+        if (Piece.Type.KING.equals(piece.getType()) || !isPinned(piece)) {
             return actions;
         }
 
