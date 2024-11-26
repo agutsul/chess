@@ -1,12 +1,12 @@
 package com.agutsul.chess.game.pgn;
 
+import static java.util.regex.Pattern.compile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,19 +46,17 @@ public class PgnGameTest implements TestFileReader {
 
     @Test
     void testPgnGameToString() throws URISyntaxException, IOException {
-        var pgnGame = readFileContent("scholar_mate.pgn");
+        var pgnGames = readFileContent("scholar_mate.pgn");
 
-        var games = parseGames(pgnGame, 1);
+        var games = parseGames(pgnGames, 1);
         var game = (PgnGame) games.get(0);
-
         game.run();
-
-        var gameString = game.toString();
 
         var builder = new StringBuilder();
 
-        var pattern = Pattern.compile("\\d{4}\\.\\d{2}\\.\\d{2}");
-        var matcher = pattern.matcher(gameString);
+        // remove generated date from pgn file
+        var pattern = compile("\\d{4}\\.\\d{2}\\.\\d{2}");
+        var matcher = pattern.matcher(game.toString());
 
         while (matcher.find()) {
             matcher.appendReplacement(builder, "");
@@ -66,7 +64,7 @@ public class PgnGameTest implements TestFileReader {
 
         matcher.appendTail(builder);
 
-        assertEquals(pgnGame, builder.toString());
+        assertEquals(pgnGames, builder.toString());
     }
 
     private static void assertGame(PgnGame game, GameState.Type expectedGameState,
