@@ -64,6 +64,11 @@ public final class PgnGame
         return unmodifiableList(this.actions);
     }
 
+    @Override
+    public String toString() {
+        return PgnGameFormatter.format(this);
+    }
+
     private Observer createPlayerObserver(Player player, List<String> allActions,
                                           IntFunction<Boolean> filterFunction) {
 

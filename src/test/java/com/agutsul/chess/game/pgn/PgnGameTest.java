@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +22,7 @@ public class PgnGameTest implements TestFileReader {
 
     @Test
     void testPgnGameFileWhiteWins() throws URISyntaxException, IOException {
-        var games = parseGames("chess_white.pgn", 1);
+        var games = parseGames(readFileContent("chess_white.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
         assertGame(game, GameState.Type.WHITE_WIN, 157, 10);
@@ -29,7 +30,7 @@ public class PgnGameTest implements TestFileReader {
 
     @Test
     void testPgnGameFileBlackWins() throws URISyntaxException, IOException {
-        var games = parseGames("chess_black.pgn", 1);
+        var games = parseGames(readFileContent("chess_black.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
         assertGame(game, GameState.Type.BLACK_WIN, 90, 15);
@@ -37,10 +38,35 @@ public class PgnGameTest implements TestFileReader {
 
     @Test
     void testPgnGameFileDrawn() throws URISyntaxException, IOException {
-        var games = parseGames("chess_drawn.pgn", 1);
+        var games = parseGames(readFileContent("chess_drawn.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
         assertGame(game, GameState.Type.DRAWN_GAME, 121, 11);
+    }
+
+    @Test
+    void testPgnGameToString() throws URISyntaxException, IOException {
+        var pgnGame = readFileContent("scholar_mate.pgn");
+
+        var games = parseGames(pgnGame, 1);
+        var game = (PgnGame) games.get(0);
+
+        game.run();
+
+        var gameString = game.toString();
+
+        var builder = new StringBuilder();
+
+        var pattern = Pattern.compile("\\d{4}\\.\\d{2}\\.\\d{2}");
+        var matcher = pattern.matcher(gameString);
+
+        while (matcher.find()) {
+            matcher.appendReplacement(builder, "");
+        }
+
+        matcher.appendTail(builder);
+
+        assertEquals(pgnGame, builder.toString());
     }
 
     private static void assertGame(PgnGame game, GameState.Type expectedGameState,
@@ -55,10 +81,10 @@ public class PgnGameTest implements TestFileReader {
         assertEquals(expectedGameState, game.getState().getType());
     }
 
-    private List<Game> parseGames(String fileName, int expectedGames)
+    private List<Game> parseGames(String pgn, int expectedGames)
             throws URISyntaxException, IOException {
 
-        var games = PgnGameParser.parse(readFileContent(fileName));
+        var games = PgnGameParser.parse(pgn);
 
         assertFalse(games.isEmpty());
         assertEquals(expectedGames, games.size());

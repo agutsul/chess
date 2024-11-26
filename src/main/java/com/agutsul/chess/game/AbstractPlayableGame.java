@@ -5,11 +5,13 @@ import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.EXITED_DRAW;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.unmodifiableMap;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
@@ -28,8 +30,10 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
+import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
+import com.agutsul.chess.game.observer.GameExceptionObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
@@ -97,19 +101,20 @@ public abstract class AbstractPlayableGame
         this.observers = new CopyOnWriteArrayList<>();
         this.observers.add(new PlayerActionOberver(this));
         this.observers.add(new ActionEventObserver());
+        this.observers.add(new GameExceptionObserver());
     }
 
     @Override
     public final Journal<ActionMemento<?,?>> getJournal() {
-        return journal;
+        return this.journal;
     }
 
     @Override
     public final Optional<Player> getWinner() {
-        var boardState = board.getState();
+        var boardState = this.board.getState();
 
         if (CHECK_MATED.equals(boardState.getType())) {
-            var winner = currentPlayer;
+            var winner = this.currentPlayer;
             logger.info("{} wins. Player '{}'", winner.getColor(), winner.getName());
             return Optional.of(winner);
         }
@@ -125,12 +130,12 @@ public abstract class AbstractPlayableGame
 
     @Override
     public final void addObserver(Observer observer) {
-        observers.add(observer);
+        this.observers.add(observer);
     }
 
     @Override
     public final void removeObserver(Observer observer) {
-        observers.remove(observer);
+        this.observers.remove(observer);
     }
 
     @Override
@@ -144,17 +149,16 @@ public abstract class AbstractPlayableGame
     public final boolean hasNext() {
         logger.info("Checking board state ...");
 
-        var currentBoardState = board.getState();
+        var currentBoardState = this.board.getState();
         if (currentBoardState.isTerminal()) {
             return false;
         }
 
         var nextPlayer = getOpponentPlayer();
-
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(nextPlayer.getColor()));
+        clearPieceData(nextPlayer.getColor());
 
         var nextBoardState = evaluateBoardState(nextPlayer);
-        board.setState(nextBoardState);
+        this.board.setState(nextBoardState);
 
         logger.info("Board state: {}", nextBoardState);
         return !nextBoardState.isTerminal();
@@ -167,47 +171,54 @@ public abstract class AbstractPlayableGame
 
     @Override
     public final void run() {
-        startedAt = now();
+        this.startedAt = now();
         notifyObservers(new GameStartedEvent(this));
 
         try {
             logger.info("Game started ...");
             while (true) {
-                currentPlayer.play();
+                this.currentPlayer.play();
 
                 if (!hasNext()) {
-                    logger.info("Game stopped due to board state: {}", board.getState());
+                    logger.info("Game stopped due to board state: {}",
+                            this.board.getState()
+                    );
                     break;
                 }
 
-                currentPlayer = next();
+                this.currentPlayer = next();
             }
 
-            finishedAt = now();
+            this.finishedAt = now();
             logger.info("Game over");
-        } catch (Throwable t) {
-            logger.error("{}: board state: {}", currentPlayer.getColor(), board.getState());
-            logger.error("Game exception", t);
+        } catch (Throwable throwable) {
+            logger.error("{}: Game exception, board state '{}': {}",
+                    this.currentPlayer.getColor(),
+                    this.board.getState(),
+                    getStackTrace(throwable)
+            );
+
+            notifyObservers(new GameExceptionEvent(this, throwable));
         } finally {
             notifyObservers(new GameOverEvent(this));
         }
     }
 
     public final Board getBoard() {
-        return board;
+        return this.board;
     }
 
     private BoardState evaluateBoardState(Player player) {
-        var boardState = boardStateEvaluator.evaluate(player.getColor());
+        var boardState = this.boardStateEvaluator.evaluate(player.getColor());
 
         if (CHECK_MATED.equals(boardState.getType())) {
-            var lastMemento = journal.remove(journal.size() - 1);
-            journal.add(new CheckMatedActionMemento<>(lastMemento));
+            var lastMemento = this.journal.remove(this.journal.size() - 1);
+            this.journal.add(new CheckMatedActionMemento<>(lastMemento));
         }
 
         if (CHECKED.equals(boardState.getType())) {
-            var lastMemento = journal.remove(journal.size() - 1);
-            journal.add(new CheckedActionMemento<>(lastMemento));
+            var lastMemento = this.journal.remove(this.journal.size() - 1);
+            this.journal.add(new CheckedActionMemento<>(lastMemento));
         }
 
         return boardState;
@@ -216,12 +227,12 @@ public abstract class AbstractPlayableGame
     private Player switchPlayers() {
         var player = getOpponentPlayer();
 
-        currentPlayer.setState(lockedState);
-        player.setState(activeState);
+        this.currentPlayer.setState(this.lockedState);
+        player.setState(this.activeState);
 
         logger.info("Switched player '{}({})' => '{}({})'",
-                currentPlayer.getName(),
-                currentPlayer.getColor(),
+                this.currentPlayer.getName(),
+                this.currentPlayer.getColor(),
                 player.getName(),
                 player.getColor()
         );
@@ -230,7 +241,17 @@ public abstract class AbstractPlayableGame
     }
 
     private Player getOpponentPlayer() {
-        return currentPlayer.equals(whitePlayer) ? blackPlayer : whitePlayer;
+        return Objects.equals(this.currentPlayer, this.whitePlayer)
+                ? this.blackPlayer
+                : this.whitePlayer;
+    }
+
+    private void clearPieceData(Color color) {
+        notifyBoardObservers(new ClearPieceDataEvent(color));
+    }
+
+    private void notifyBoardObservers(Event event) {
+        ((Observable) this.board).notifyObservers(event);
     }
 
     private final class ActionEventObserver
@@ -280,14 +301,6 @@ public abstract class AbstractPlayableGame
             journal.add(memento);
             // recalculate board state to update journal records
             evaluateBoardState(getOpponentPlayer());
-        }
-
-        private void clearPieceData(Color color) {
-            notifyBoardObservers(new ClearPieceDataEvent(color));
-        }
-
-        private void notifyBoardObservers(Event event) {
-            ((Observable) board).notifyObservers(event);
         }
     }
 }
