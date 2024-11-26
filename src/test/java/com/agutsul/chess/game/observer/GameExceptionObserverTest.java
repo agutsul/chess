@@ -72,9 +72,8 @@ public class GameExceptionObserverTest implements TestFileReader {
 
         game.run();
 
-        var event = new GameExceptionEvent(game, new Exception(ERROR_MESSAGE));
         var observer = new GameExceptionObserver(tempDir.toString());
-        observer.observe(event);
+        observer.observe(new GameExceptionEvent(game, new Exception(ERROR_MESSAGE)));
 
         var fileNames = listFileNames(tempDir);
         assertEquals(2, fileNames.size());
