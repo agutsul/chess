@@ -17,8 +17,11 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.CleanupMode;
 import org.junit.jupiter.api.io.TempDir;
@@ -31,6 +34,7 @@ import com.agutsul.chess.player.Player;
 
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(OrderAnnotation.class)
 public class GameExceptionObserverTest implements TestFileReader {
 
     private static final String ERROR_MESSAGE = "test";
@@ -39,13 +43,32 @@ public class GameExceptionObserverTest implements TestFileReader {
     static Path tempDir;
 
     @Test
+    @Order(1)
+    void testProcessingGameExceptionEventForUnknownErrorFolder()
+            throws URISyntaxException, IOException {
+
+        var games = parse(readFileContent("scholar_mate.pgn"));
+        var game = (PgnGame) games.get(0);
+
+        assertTrue(listFileNames(tempDir).isEmpty());
+
+        game.run();
+
+        var observer = new GameExceptionObserver(null);
+        observer.observe(new GameExceptionEvent(game, new Exception(ERROR_MESSAGE)));
+
+        assertTrue(listFileNames(tempDir).isEmpty());
+    }
+
+    @Test
+    @Order(2)
     void testProcessingGameExceptionEvent()
             throws URISyntaxException, IOException {
 
         var games = parse(readFileContent("scholar_mate.pgn"));
         var game = (PgnGame) games.get(0);
 
-        assertTrue(litFileNames(tempDir).isEmpty());
+        assertTrue(listFileNames(tempDir).isEmpty());
 
         game.run();
 
@@ -53,7 +76,7 @@ public class GameExceptionObserverTest implements TestFileReader {
         var observer = new GameExceptionObserver(tempDir.toString());
         observer.observe(event);
 
-        var fileNames = litFileNames(tempDir);
+        var fileNames = listFileNames(tempDir);
         assertEquals(2, fileNames.size());
 
         var pgnFileName = fileNames.get(0);
@@ -75,7 +98,7 @@ public class GameExceptionObserverTest implements TestFileReader {
         return contains(fileName, player.getName());
     }
 
-    private static List<String> litFileNames(Path folder) throws IOException {
+    private static List<String> listFileNames(Path folder) throws IOException {
         try (Stream<Path> stream = list(tempDir)) {
             return stream.filter(file -> !isDirectory(file))
                     .map(Path::getFileName)

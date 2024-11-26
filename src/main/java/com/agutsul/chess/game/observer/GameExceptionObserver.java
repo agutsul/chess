@@ -55,16 +55,16 @@ public class GameExceptionObserver
                 currentTimeMillis()
         );
 
-        writeFile(fileName, PgnGameFormatter.format(game));
-        writeFile(fileName + ".err", getStackTrace(event.getThrowable()));
-    }
-
-    private void writeFile(String fileName, String content) {
         if (this.folderName == null) {
             LOGGER.error("Unknown folder: unable to write game file '{}'", fileName);
             return;
         }
 
+        writeFile(fileName, PgnGameFormatter.format(game));
+        writeFile(fileName + ".err", getStackTrace(event.getThrowable()));
+    }
+
+    private void writeFile(String fileName, String content) {
         var file = new File(this.folderName, fileName);
         try {
             writeStringToFile(file, content, UTF_8);
