@@ -37,6 +37,11 @@ public class Application
     }
 
     public static String getProperty(String key) {
+        if (CONFIGURATION == null) {
+            LOGGER.error("Initializing application properties failed");
+            return null;
+        }
+
         return CONFIGURATION.getString(key);
     }
 

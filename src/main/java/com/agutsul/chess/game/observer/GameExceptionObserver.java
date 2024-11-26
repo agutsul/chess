@@ -29,7 +29,7 @@ public class GameExceptionObserver
 
     private static final String FOLDER_NAME_PROPERTY_KEY = "error.folder.path";
 
-    private String folderName;
+    private final String folderName;
 
     public GameExceptionObserver() {
         this(getProperty(FOLDER_NAME_PROPERTY_KEY));
@@ -60,6 +60,11 @@ public class GameExceptionObserver
     }
 
     private void writeFile(String fileName, String content) {
+        if (this.folderName == null) {
+            LOGGER.error("Unknown folder: unable to write game file '{}'", fileName);
+            return;
+        }
+
         var file = new File(this.folderName, fileName);
         try {
             writeStringToFile(file, content, UTF_8);
