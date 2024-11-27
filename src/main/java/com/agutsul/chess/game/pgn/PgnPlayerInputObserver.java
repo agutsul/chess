@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.board.Board;
 import com.agutsul.chess.game.state.GameState;
 import com.agutsul.chess.pgn.action.PawnPromotionTypeAdapter;
 import com.agutsul.chess.pgn.action.PieceActionAdapter;
@@ -22,7 +21,6 @@ final class PgnPlayerInputObserver
 
     private static final Logger LOGGER = getLogger(PgnPlayerInputObserver.class);
 
-    private final Board board;
     private final ActionIterator actionIterator;
 
     private final PieceActionAdapter pieceActionAdapter;
@@ -31,11 +29,10 @@ final class PgnPlayerInputObserver
     PgnPlayerInputObserver(Player player, PgnGame game, List<String> actions) {
         super(LOGGER, player, game);
 
-        this.board = game.getBoard();
         this.actionIterator = new ActionIterator(actions);
 
-        this.pieceActionAdapter = new PieceActionAdapter(board, player.getColor());
-        this.promotionTypeAdapter = new PawnPromotionTypeAdapter(board, player.getColor());
+        this.pieceActionAdapter = new PieceActionAdapter(game.getBoard(), player.getColor());
+        this.promotionTypeAdapter = new PawnPromotionTypeAdapter(game.getBoard(), player.getColor());
     }
 
     @Override
@@ -74,23 +71,23 @@ final class PgnPlayerInputObserver
     private static final class ActionIterator
             implements Iterator<String> {
 
-        private final Iterator<String> actionIterator;
+        private final Iterator<String> iterator;
 
         // temporary cache action to be used later for promotion action
         // to resolve user selected promotion piece type
         private String current;
 
         ActionIterator(List<String> actions) {
-            this.actionIterator = actions.iterator();
-        }
-
-        public String current() {
-            return this.current;
+            this.iterator = actions.iterator();
         }
 
         @Override
         public boolean hasNext() {
-            return this.actionIterator.hasNext();
+            return this.iterator.hasNext();
+        }
+
+        public String current() {
+            return this.current;
         }
 
         @Override
@@ -99,7 +96,7 @@ final class PgnPlayerInputObserver
                 return null;
             }
 
-            var action = this.actionIterator.next();
+            var action = this.iterator.next();
             this.current = action;
 
             return action;
