@@ -12,7 +12,7 @@ final class PawnPromoteMoveActionAdapter
         extends AbstractActionAdapter {
 
     private static final String PROMOTE_MOVE_PATTERN =
-            "([a-h]{1}[1,8]{1}){1}([N,B,R,Q]){1}";
+            "([a-h]{1}[1,8]{1}){1}[=]{0,1}([N,B,R,Q]){1}";
 
     PawnPromoteMoveActionAdapter(Board board, Color color) {
         super(board, color);

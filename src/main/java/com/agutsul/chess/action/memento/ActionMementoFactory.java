@@ -64,7 +64,7 @@ public enum ActionMementoFactory {
                     originAction.getPosition()
             );
 
-            return new PromoteActionMemento(action.getType(), action.getPieceType(), memento);
+            return new PromoteActionMemento(action.getType(), memento);
         }
     },
     CASTLING_MODE(Action.Type.CASTLING) {

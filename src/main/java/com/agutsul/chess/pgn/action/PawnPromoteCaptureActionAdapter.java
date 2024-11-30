@@ -12,7 +12,7 @@ final class PawnPromoteCaptureActionAdapter
         extends AbstractActionAdapter {
 
     private static final String PROMOTE_CAPTURE_PATTERN =
-            "([a-h]{1}){1}[x]{1}([a-h]{1}[1,8]{1}){1}([N,B,R,Q]){1}";
+            "([a-h]{1}){1}[x]{1}([a-h]{1}[1,8]{1}){1}[=]{0,1}([N,B,R,Q]){1}";
 
     PawnPromoteCaptureActionAdapter(Board board, Color color) {
         super(board, color);

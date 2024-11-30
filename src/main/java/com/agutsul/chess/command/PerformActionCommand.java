@@ -8,10 +8,12 @@ import java.util.Objects;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.action.Action;
+import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.action.event.ActionExecutionEvent;
 import com.agutsul.chess.action.event.ActionPerformedEvent;
 import com.agutsul.chess.action.memento.ActionMemento;
 import com.agutsul.chess.action.memento.ActionMementoFactory;
+import com.agutsul.chess.action.memento.PromoteActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.CommandException;
@@ -103,6 +105,11 @@ public class PerformActionCommand
             this.action.execute();
         } catch (Exception e) {
             throw new CommandException(e.getMessage());
+        }
+
+        if (Action.Type.PROMOTE.equals(this.action.getType())) {
+            var pieceType = ((PiecePromoteAction<?,?>) this.action).getPieceType();
+            ((PromoteActionMemento) this.memento).setPieceType(pieceType);
         }
 
         this.observable.notifyObservers(new ActionPerformedEvent(this.memento));

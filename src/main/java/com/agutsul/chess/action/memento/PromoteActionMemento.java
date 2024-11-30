@@ -6,22 +6,24 @@ import com.agutsul.chess.action.Action;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
-final class PromoteActionMemento
+public final class PromoteActionMemento
         extends AbstractActionMemento<String, ActionMemento<String,String>> {
 
-    private final Piece.Type pieceType;
+    private Piece.Type pieceType;
 
     PromoteActionMemento(Action.Type actionType,
-                         Piece.Type pieceType,
                          ActionMemento<String, String> origin) {
 
         super(now(), actionType, origin.getSource(), origin);
-        this.pieceType = pieceType;
     }
 
     @Override
     public Color getColor() {
         return getTarget().getColor();
+    }
+
+    public void setPieceType(Piece.Type pieceType) {
+        this.pieceType = pieceType;
     }
 
     @Override
@@ -31,6 +33,10 @@ final class PromoteActionMemento
 
     @Override
     public String toString() {
-        return String.format("%s(%s %s)", getActionType(), getTarget(), pieceType.name());
+        return String.format("%s(%s %s)",
+                getActionType(),
+                getTarget(),
+                pieceType != null ? pieceType.name() : "?"
+        );
     }
 }

@@ -2,7 +2,6 @@ package com.agutsul.chess.action.memento;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +16,6 @@ import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
-import com.agutsul.chess.piece.Piece;
 
 @ExtendWith(MockitoExtension.class)
 public class ActionMementoFactoryTest {
@@ -79,13 +77,10 @@ public class ActionMementoFactoryTest {
         var actions = board.getActions(pawn.get(), PiecePromoteAction.class);
 
         var action = spy(actions.iterator().next());
-        when(action.getPieceType())
-            .thenReturn(Piece.Type.QUEEN);
-
         var memento = ActionMementoFactory.createMemento(action);
 
         assertEquals(Action.Type.PROMOTE, memento.getActionType());
-        assertEquals("PROMOTE(MOVE PAWN(e7 e8) QUEEN)", String.valueOf(memento));
+        assertEquals("PROMOTE(MOVE PAWN(e7 e8) ?)", String.valueOf(memento));
     }
 
     @Test
