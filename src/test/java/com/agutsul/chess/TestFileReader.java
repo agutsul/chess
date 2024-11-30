@@ -8,12 +8,17 @@ import java.net.URISyntaxException;
 
 public interface TestFileReader {
 
-    default String readFileContent(String fileName)
+    default File readFile(String fileName)
             throws URISyntaxException, IOException {
 
         var resource = getClass().getClassLoader().getResource(fileName);
-        var file = new File(resource.toURI());
+        return new File(resource.toURI());
+    }
 
+    default String readFileContent(String fileName)
+            throws URISyntaxException, IOException {
+
+        var file = readFile(fileName);
         return readString(file.toPath());
     }
 }
