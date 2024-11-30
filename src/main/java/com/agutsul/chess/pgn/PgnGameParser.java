@@ -34,13 +34,18 @@ public final class PgnGameParser {
             ParseTreeWalker.DEFAULT.walk(pgnListener, parser.parse());
 
             if (errorListener.hasAnyErrors()) {
-                LOGGER.error("Parsing errors: {}", errorListener.getErrors());
+                var message = String.format("Parsing:\n%s\nErrors: %s",
+                        string,
+                        errorListener.getErrors()
+                );
+                LOGGER.error(message);
                 return emptyList();
             }
 
             return pgnListener.getGames();
         } catch (IOException e) {
-            LOGGER.error("PGN parsing exception", e);
+            var message = String.format("PGN parsing:\n%s\nException: ", string);
+            LOGGER.error(message, e);
         }
 
         return emptyList();
