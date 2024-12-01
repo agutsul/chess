@@ -47,7 +47,11 @@ public final class CheckedBoardState
             return actions;
         }
 
-        var evaluator = new CompositeCheckActionEvaluator(board, piece, actions);
-        return evaluator.evaluate(optionalKing.get());
+        var king = optionalKing.get();
+        var evaluator = Objects.equals(piece, king)
+                ? new CompositeCheckActionEvaluator(board, king, actions)
+                : new CompositeCheckActionEvaluator(board, piece, actions);
+
+        return evaluator.evaluate(king);
     }
 }

@@ -29,8 +29,11 @@ final class KingMoveCheckMateEvaluator
 
         for (var action : moveActions) {
             var targetPosition = action.getPosition();
-            if (!board.isAttacked(targetPosition, attackerColor)
-                    && !board.isMonitored(targetPosition, attackerColor)) {
+
+            var isAttacked = board.isAttacked(targetPosition, attackerColor);
+            var isMonitored = board.isMonitored(targetPosition, attackerColor);
+
+            if (!isAttacked && !isMonitored) {
                 return true;
             }
         }

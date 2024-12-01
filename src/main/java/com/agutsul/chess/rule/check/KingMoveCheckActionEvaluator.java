@@ -34,9 +34,10 @@ final class KingMoveCheckActionEvaluator
                     continue;
                 }
 
-                if (!board.isAttacked(targetPosition, attackerColor)
-                        && !board.isMonitored(targetPosition, attackerColor)) {
+                var isAttacked = board.isAttacked(targetPosition, attackerColor);
+                var isMonitored = board.isMonitored(targetPosition, attackerColor);
 
+                if (!isAttacked && !isMonitored) {
                     actions.add(pieceMoveAction);
                 }
             }

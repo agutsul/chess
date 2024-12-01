@@ -26,13 +26,20 @@ public final class CompositeCheckActionEvaluator
     private final List<CheckActionEvaluator> evaluators;
 
     public CompositeCheckActionEvaluator(Board board,
-                                         Piece<?> piece,
+                                         KingPiece<?> unusedPiece,
                                          Collection<Action<?>> actions) {
         this.evaluators = List.of(
                 new AttackerCaptureCheckActionEvaluator(board, actions),
-                Piece.Type.KING.equals(piece.getType())
-                    ? new KingMoveCheckActionEvaluator(board, actions)
-                    : new AttackerPinCheckActionEvaluator(board, actions)
+                new KingMoveCheckActionEvaluator(board, actions)
+        );
+    }
+
+    public CompositeCheckActionEvaluator(Board board,
+                                         Piece<?> unusedPiece,
+                                         Collection<Action<?>> actions) {
+        this.evaluators = List.of(
+                new AttackerCaptureCheckActionEvaluator(board, actions),
+                new AttackerPinCheckActionEvaluator(board, actions)
         );
     }
 
