@@ -34,7 +34,7 @@ final class PromoteActionMemento
     @Override
     public Piece.Type getPieceType() {
         try {
-            return pieceTypeInitializer.get();
+            return this.pieceTypeInitializer.get();
         } catch (ConcurrentException e) {
             LOGGER.error("Piece type initialization exception", e);
         }
