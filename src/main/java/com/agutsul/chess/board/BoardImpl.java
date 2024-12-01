@@ -294,6 +294,8 @@ final class BoardImpl extends AbstractBoard {
 
         // check if position is reachable by any attacker move
         var isAttacked = attackerPieces.stream()
+                // pawn attacks differently from moves
+                .filter(attacker -> !Piece.Type.PAWN.equals(attacker.getType()))
                 .map(attacker -> getActions(attacker, PieceMoveAction.class))
                 .flatMap(Collection::stream)
                 .map(PieceMoveAction::getPosition)
