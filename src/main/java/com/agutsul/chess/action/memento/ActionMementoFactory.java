@@ -16,6 +16,7 @@ import com.agutsul.chess.action.PieceEnPassantAction;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.PieceTypeLazyInitializer;
 import com.agutsul.chess.position.Position;
 
 public enum ActionMementoFactory {
@@ -64,7 +65,8 @@ public enum ActionMementoFactory {
                     originAction.getPosition()
             );
 
-            return new PromoteActionMemento(action.getType(), memento);
+            var pieceTypeInitilizer = new PieceTypeLazyInitializer(action);
+            return new PromoteActionMemento(action.getType(), pieceTypeInitilizer, memento);
         }
     },
     CASTLING_MODE(Action.Type.CASTLING) {
