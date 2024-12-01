@@ -24,6 +24,8 @@ public class PgnGameFormatter {
     private static final String RESULT_TAG = "Result";
     private static final String DATE_TAG = "Date";
 
+    private static final String DATE_PATTERN = "yyyy.MM.dd";
+
     public static String format(Game game) {
         var gameState = formatGameState(game.getState());
 
@@ -58,7 +60,7 @@ public class PgnGameFormatter {
             return EMPTY;
         }
 
-        return dateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+        return dateTime.format(DateTimeFormatter.ofPattern(DATE_PATTERN));
     }
 
     private static String formatJournal(Journal<ActionMemento<?,?>> journal) {
