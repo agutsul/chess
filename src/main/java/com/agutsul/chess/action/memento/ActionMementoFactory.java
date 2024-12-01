@@ -65,8 +65,8 @@ public enum ActionMementoFactory {
                     originAction.getPosition()
             );
 
-            var pieceTypeInitilizer = new PieceTypeLazyInitializer(action);
-            return new PromoteActionMemento(action.getType(), pieceTypeInitilizer, memento);
+            var pieceTypeInitializer = new PieceTypeLazyInitializer(action);
+            return new PromoteActionMemento(action.getType(), pieceTypeInitializer, memento);
         }
     },
     CASTLING_MODE(Action.Type.CASTLING) {
