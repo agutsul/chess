@@ -4,22 +4,22 @@ import static java.time.LocalDateTime.now;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import org.apache.commons.lang3.concurrent.ConcurrentException;
+import org.apache.commons.lang3.concurrent.LazyInitializer;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.PieceTypeLazyInitializer;
 
 final class PromoteActionMemento
         extends AbstractActionMemento<String, ActionMemento<String,String>> {
 
     private static final Logger LOGGER = getLogger(PromoteActionMemento.class);
 
-    private final PieceTypeLazyInitializer pieceTypeInitializer;
+    private final LazyInitializer<Piece.Type> pieceTypeInitializer;
 
     PromoteActionMemento(Action.Type actionType,
-                         PieceTypeLazyInitializer pieceTypeInitializer,
+                         LazyInitializer<Piece.Type> pieceTypeInitializer,
                          ActionMemento<String, String> origin) {
 
         super(now(), actionType, origin.getSource(), origin);
