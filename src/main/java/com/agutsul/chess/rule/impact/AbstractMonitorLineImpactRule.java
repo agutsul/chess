@@ -44,8 +44,13 @@ public abstract class AbstractMonitorLineImpactRule<COLOR extends Color,
                 }
 
                 if (!isPieceFound) {
-                    isPieceFound = true;
-                    continue;
+                    var foundPiece = optionalPiece.get();
+                    if (foundPiece.getColor() != piece.getColor()) {
+                        isPieceFound = true;
+                        continue;
+                    } else {
+                        break;
+                    }
                 }
 
                 monitorPositions.add(position);
