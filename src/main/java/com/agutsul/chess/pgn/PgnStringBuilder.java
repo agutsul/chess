@@ -1,6 +1,7 @@
 package com.agutsul.chess.pgn;
 
 import static java.lang.System.lineSeparator;
+import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.RegExUtils.removeAll;
 import static org.apache.commons.lang3.StringUtils.containsAny;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -23,8 +24,9 @@ final class PgnStringBuilder
 
     public PgnStringBuilder() {
         this.stringBuilder = new StringBuilder();
-        this.evalPattern = Pattern.compile(EVAL_PATTERN_TEMPLATE);
-        this.dotsPattern = Pattern.compile(DOTS_PATTERN_TEMPLATE);
+
+        this.evalPattern = compile(EVAL_PATTERN_TEMPLATE);
+        this.dotsPattern = compile(DOTS_PATTERN_TEMPLATE);
     }
 
     public PgnStringBuilder append(String string) {
