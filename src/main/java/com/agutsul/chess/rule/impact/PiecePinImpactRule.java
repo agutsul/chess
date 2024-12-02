@@ -11,6 +11,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import com.agutsul.chess.action.AbstractCaptureAction;
+import com.agutsul.chess.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.impact.Impact;
@@ -65,9 +67,19 @@ public class PiecePinImpactRule<COLOR1 extends Color,
                 continue;
             }
 
+            var attacker = lineAttacker.get();
             // searched pattern: attacker - pinned piece - king
-            if (isPiecePinned(linePieces, List.of(lineAttacker.get(), piece, king))) {
-                pinLines.add(line);
+            if (isPiecePinned(linePieces, List.of(attacker, piece, king))) {
+
+                var pieceActions = piece.getActions();
+                var isAttackerCapturable = pieceActions.stream()
+                    .filter(action -> Action.Type.CAPTURE.equals(action.getType()))
+                    .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
+                    .anyMatch(action -> Objects.equals(action.getTarget(), attacker));
+
+                if (!isAttackerCapturable) {
+                    pinLines.add(line);
+                }
             }
         }
 
