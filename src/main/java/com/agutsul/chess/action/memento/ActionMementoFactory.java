@@ -31,7 +31,7 @@ public enum ActionMementoFactory {
             return createMemento(
                     action.getType(),
                     action.getSource(),
-                    action.getTarget()
+                    action.getPosition()
             );
         }
     },
@@ -46,7 +46,7 @@ public enum ActionMementoFactory {
             return createMemento(
                     action.getType(),
                     action.getSource(),
-                    action.getTarget().getPosition()
+                    action.getPosition()
             );
         }
     },
@@ -66,7 +66,11 @@ public enum ActionMementoFactory {
             );
 
             var pieceTypeInitializer = new PieceTypeLazyInitializer(action);
-            return new PromoteActionMemento(action.getType(), pieceTypeInitializer, memento);
+            return new PromoteActionMemento(
+                    action.getType(),
+                    pieceTypeInitializer,
+                    memento
+            );
         }
     },
     CASTLING_MODE(Action.Type.CASTLING) {
@@ -77,13 +81,11 @@ public enum ActionMementoFactory {
         }
 
         private static CastlingActionMemento createMemento(PieceCastlingAction<?,?,?> action) {
-            var kingPosition = action.getPosition();
+            Predicate<CastlingMoveAction<?,?>> predicate =
+                    moveAction -> Objects.equals(action.getPosition(), moveAction.getPosition());
 
-            var kingAction = filterAction(action,
-                    moveAction -> Objects.equals(kingPosition,  moveAction.getPosition()));
-
-            var rookAction = filterAction(action,
-                    moveAction -> !Objects.equals(kingPosition, moveAction.getPosition()));
+            var kingAction = filter(action, predicate);
+            var rookAction = filter(action, predicate.negate());
 
             return new CastlingActionMemento(
                     action.getCode(),
@@ -93,8 +95,8 @@ public enum ActionMementoFactory {
             );
         }
 
-        private static CastlingMoveAction<?,?> filterAction(PieceCastlingAction<?,?,?> castlingAction,
-                                                            Predicate<CastlingMoveAction<?,?>> predicate) {
+        private static CastlingMoveAction<?,?> filter(PieceCastlingAction<?,?,?> castlingAction,
+                                                      Predicate<CastlingMoveAction<?,?>> predicate) {
 
             var action = Stream.of(castlingAction.getSource(), castlingAction.getTarget())
                     .filter(moveAction -> predicate.test(moveAction))
@@ -123,8 +125,17 @@ public enum ActionMementoFactory {
             var sourcePawn = action.getSource();
             var targetPawn = action.getTarget();
 
-            var memento = createMemento(Action.Type.CAPTURE, sourcePawn, targetPawn.getPosition());
-            return new EnPassantActionMemento(action.getType(), memento, action.getPosition());
+            var memento = createMemento(
+                    Action.Type.CAPTURE,
+                    sourcePawn,
+                    targetPawn.getPosition()
+            );
+
+            return new EnPassantActionMemento(
+                    action.getType(),
+                    memento,
+                    action.getPosition()
+            );
         }
     };
 
