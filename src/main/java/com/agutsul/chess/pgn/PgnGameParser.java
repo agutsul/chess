@@ -2,10 +2,17 @@ package com.agutsul.chess.pgn;
 
 import static java.util.Collections.emptyList;
 import static org.antlr.v4.runtime.CharStreams.fromReader;
+import static org.apache.commons.io.FileUtils.lineIterator;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNumeric;
+import static org.apache.commons.lang3.StringUtils.trim;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -49,5 +56,32 @@ public final class PgnGameParser {
         }
 
         return emptyList();
+    }
+
+    public static List<Game> parse(File file) {
+        var games = new ArrayList<Game>();
+
+        var builder = new PgnStringBuilder();
+        try (var iterator = lineIterator(file)) {
+
+            String line = null;
+            while (iterator.hasNext()) {
+                line = trim(iterator.next());
+                builder.append(line);
+
+                if (isNotBlank(line) && isNumeric(line.substring(0,1))) {
+                    games.addAll(parse(builder.build()));
+                    builder.reset();
+                }
+            }
+
+        } catch (IOException e) {
+            LOGGER.error("Exception reading file '{}': {}",
+                    file.getAbsolutePath(),
+                    getStackTrace(e)
+            );
+        }
+
+        return games;
     }
 }

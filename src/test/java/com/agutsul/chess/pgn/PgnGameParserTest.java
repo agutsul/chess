@@ -43,6 +43,17 @@ public class PgnGameParserTest implements TestFileReader {
         assertGame(game, GameState.Type.DRAWN_GAME, 121, 11);
     }
 
+    @Test
+    void testParsingEvalFormatGameFile() throws URISyntaxException, IOException {
+        var games = PgnGameParser.parse(readFile("chess_eval_format.pgn"));
+
+        assertFalse(games.isEmpty());
+        assertEquals(1, games.size());
+
+        var game = (PgnGame) games.get(0);
+        assertGame(game, GameState.Type.BLACK_WIN, 26, 15);
+    }
+
     private static void assertGame(PgnGame game, GameState.Type expectedGameState,
                                    int expectedActionsCount, int expectedTagsCount) {
 

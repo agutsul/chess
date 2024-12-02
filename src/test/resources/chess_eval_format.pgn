@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "0-1"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:02:03"]
+[WhiteElo "1122"]
+[BlackElo "1797"]
+[WhiteRatingDiff "-3"]
+[BlackRatingDiff "+1"]
+[ECO "C20"]
+[Opening "King's Pawn Game"]
+[TimeControl "300+0"]
+[Termination "Normal"]
+
+1. e4 { [%eval 0.27] } 1... e5 { [%eval 0.23] } 2. Qg4 { [%eval -0.65] } 2... Nc6 { [%eval -0.72] } 3. Nc3 { [%eval -0.69] } 3... d5 { [%eval -0.72] } 4. Qf3 { [%eval -0.91] } 4... d4 { [%eval -0.73] } 5. Nd5 { [%eval -0.82] } 5... Be6 { [%eval -0.82] } 6. Bc4 { [%eval -1.05] } 6... Nge7 { [%eval -0.48] } 7. Ne2 { [%eval -0.81] } 7... Ng6 { [%eval -0.36] } 8. g3 { [%eval -0.63] } 8... Bc5 { [%eval -0.46] } 9. c3 { [%eval -0.57] } 9... O-O { [%eval -0.32] } 10. cxd4 { [%eval -2.58] } 10... Bxd4 { [%eval -1.07] } 11. O-O { [%eval -1.15] } 11... f5 { [%eval -0.42] } 12. d3 { [%eval -0.59] } 12... fxe4 { [%eval -0.48] } 13. dxe4 { [%eval -11.0] } 13... Rxf3 { [%eval -10.84] } 0-1
