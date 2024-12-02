@@ -34,7 +34,7 @@ public final class PgnGameParser {
             ParseTreeWalker.DEFAULT.walk(pgnListener, parser.parse());
 
             if (errorListener.hasAnyErrors()) {
-                var message = String.format("Parsing:\n%s\nErrors: %s",
+                var message = String.format("Parsing: '%s'. Errors: %s",
                         string,
                         errorListener.getErrors()
                 );
@@ -44,7 +44,7 @@ public final class PgnGameParser {
 
             return pgnListener.getGames();
         } catch (IOException e) {
-            var message = String.format("PGN parsing:\n%s\nException: ", string);
+            var message = String.format("Exception parsing PGN: '%s'", string);
             LOGGER.error(message, e);
         }
 
