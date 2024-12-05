@@ -2,6 +2,7 @@ package com.agutsul.chess.board;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.board.state.BoardState;
@@ -15,6 +16,9 @@ public interface Board {
 
     void setState(BoardState state);
     BoardState getState();
+
+    void setExecutorService(ExecutorService executorService);
+    ExecutorService getExecutorService();
 
     int calculateValue(Color color);
 
@@ -45,7 +49,6 @@ public interface Board {
     boolean isEmpty(Position position);
 
     boolean isAttacked(Position position, Color attackerColor);
-    boolean isAttacked(Piece<?> piece);
 
     boolean isMonitored(Position position, Color attackerColor);
     boolean isProtected(Piece<?> piece);

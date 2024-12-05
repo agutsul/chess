@@ -16,6 +16,7 @@ public final class BishopPieceImpactRule
     @SuppressWarnings("unchecked")
     private BishopPieceImpactRule(Board board, BishopPieceAlgo<?,?> algo) {
         super(new CompositePieceRule<Impact<?>>(
+                new BishopCheckImpactRule<>(board, algo),
                 new BishopProtectImpactRule<>(board, algo),
                 new BishopMonitorImpactRule<>(board, algo),
                 new PiecePinImpactRule<>(board)

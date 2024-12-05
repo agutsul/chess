@@ -138,8 +138,6 @@ public class PerformActionCommandTest {
             .thenReturn(targetPosition);
         when(targetAction.getSource())
             .thenReturn(piece);
-        when(targetAction.getTarget())
-            .thenReturn(targetPosition);
 
         var errorMessage = "test";
         doThrow(new IllegalActionException("test"))

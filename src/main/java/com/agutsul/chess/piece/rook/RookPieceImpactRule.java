@@ -16,6 +16,7 @@ public final class RookPieceImpactRule
     @SuppressWarnings("unchecked")
     private RookPieceImpactRule(Board board, RookPieceAlgo<?,?> algo) {
         super(new CompositePieceRule<Impact<?>>(
+                new RookCheckImpactRule<>(board, algo),
                 new RookProtectImpactRule<>(board, algo),
                 new RookMonitorImpactRule<>(board, algo),
                 new PiecePinImpactRule<>(board)

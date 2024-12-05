@@ -16,6 +16,7 @@ public final class KnightPieceImpactRule
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private KnightPieceImpactRule(Board board, KnightPieceAlgo algo) {
         super(new CompositePieceRule<Impact<?>>(
+                new KnightCheckImpactRule<>(board, algo),
                 new KnightProtectImpactRule<>(board, algo),
                 new KnightMonitorImpactRule<>(board, algo),
                 new PiecePinImpactRule<>(board)

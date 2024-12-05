@@ -6,6 +6,7 @@ import static java.util.Collections.unmodifiableList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.board.state.BoardState;
@@ -55,6 +56,16 @@ public final class StandardBoard
     @Override
     public BoardState getState() {
         return this.origin.getState();
+    }
+
+    @Override
+    public void setExecutorService(ExecutorService executorService) {
+        this.origin.setExecutorService(executorService);
+    }
+
+    @Override
+    public ExecutorService getExecutorService() {
+        return this.origin.getExecutorService();
     }
 
     @Override
@@ -136,11 +147,6 @@ public final class StandardBoard
     @Override
     public boolean isAttacked(Position position, Color attackerColor) {
         return this.origin.isAttacked(position, attackerColor);
-    }
-
-    @Override
-    public boolean isAttacked(Piece<?> piece) {
-        return this.origin.isAttacked(piece);
     }
 
     @Override

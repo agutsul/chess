@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.action.AbstractCaptureAction;
 import com.agutsul.chess.action.PieceCaptureAction;
-import com.agutsul.chess.action.PieceEnPassantAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
@@ -69,12 +68,6 @@ final class AttackerCaptureCheckMateEvaluator
 
             var actions = new HashSet<>();
             actions.addAll(board.getActions(attacker, PieceCaptureAction.class));
-
-            if (Piece.Type.PAWN.equals(piece.getType())
-                    && Piece.Type.PAWN.equals(attacker.getType())) {
-
-                actions.addAll(board.getActions(attacker, PieceEnPassantAction.class));
-            }
 
             for (var action : actions) {
                 var captureAction = (AbstractCaptureAction<?,?,?,?>) action;

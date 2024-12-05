@@ -26,8 +26,8 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
                                                  KING extends Piece<COLOR> & Castlingable & Movable,
                                                  ROOK extends Piece<COLOR> & Castlingable & Movable,
                                                  ACTION extends PieceCastlingAction<COLOR,KING,ROOK>>
-        extends AbstractRule<KING, ACTION>
-        implements CastlingActionRule<COLOR, KING, ROOK, ACTION> {
+        extends AbstractRule<KING,ACTION>
+        implements CastlingActionRule<COLOR,KING,ROOK,ACTION> {
 
     private enum Castling {
         // rook is located at "h1" or "h8"
@@ -172,6 +172,11 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
             return emptyList();
         }
 
+        // The king is not currently in check.
+        if (king.isChecked()) {
+            return emptyList();
+        }
+
         var castling = Castling.of(rook.getPosition());
         if (castling == null) {
             return emptyList();
@@ -184,11 +189,6 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
 
         // The king does not pass through or finish on a square that is attacked by an enemy piece.
         if (castling.isAnyAttackedBetween(board, king, rook)) {
-            return emptyList();
-        }
-
-        // The king is not currently in check.
-        if (king.isChecked()) {
             return emptyList();
         }
 

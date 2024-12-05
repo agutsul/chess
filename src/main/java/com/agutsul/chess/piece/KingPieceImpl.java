@@ -3,11 +3,15 @@ package com.agutsul.chess.piece;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Instant;
+import java.util.Collection;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.impact.Impact;
+import com.agutsul.chess.impact.PieceCheckImpact;
 import com.agutsul.chess.piece.king.KingPieceActionRule;
 import com.agutsul.chess.piece.king.KingPieceImpactRule;
 import com.agutsul.chess.position.Position;
@@ -34,7 +38,16 @@ final class KingPieceImpl<COLOR extends Color>
     @Override
     public boolean isChecked() {
         LOGGER.info("Verify check for '{}'", this);
-        return board.isAttacked(this);
+
+        var pieces = board.getPieces(getColor().invert());
+        var isChecked = pieces.stream()
+                .map(Piece::getImpacts)
+                .flatMap(Collection::stream)
+                .filter(impact -> Impact.Type.CHECK.equals(impact.getType()))
+                .map(impact -> (PieceCheckImpact<?,?,?,?>) impact)
+                .anyMatch(impact -> Objects.equals(impact.getTarget(), this));
+
+        return isChecked;
     }
 
     @Override

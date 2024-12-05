@@ -14,6 +14,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 
@@ -49,6 +50,8 @@ final class BoardImpl extends AbstractBoard {
     private final List<Observer> observers;
 
     private BoardState state;
+    private ExecutorService executorService;
+
     private Set<Piece<?>> pieces;
 
     BoardImpl() {
@@ -70,6 +73,16 @@ final class BoardImpl extends AbstractBoard {
     @Override
     public BoardState getState() {
         return this.state;
+    }
+
+    @Override
+    public void setExecutorService(ExecutorService executorService) {
+        this.executorService = executorService;
+    }
+
+    @Override
+    public ExecutorService getExecutorService() {
+        return this.executorService;
     }
 
     @Override
@@ -305,25 +318,6 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public boolean isAttacked(Piece<?> piece) {
-        LOGGER.info("Checking is piece '{}' attacked", piece);
-
-        var attackerPieces = getPieces(piece.getColor().invert());
-
-        var actions = new HashSet<>();
-        for (var attacker : attackerPieces) {
-            actions.addAll(getActions(attacker, PieceCaptureAction.class));
-            actions.addAll(getActions(attacker, PieceEnPassantAction.class));
-        }
-
-        var isAttacked = actions.stream()
-                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                .anyMatch(action -> Objects.equals(action.getTarget(), piece));
-
-        return isAttacked;
-    }
-
-    @Override
     public <COLOR extends Color> Collection<Piece<COLOR>> getAttackers(Piece<?> piece) {
         LOGGER.info("Get piece '{}' attackers", piece);
 
@@ -332,7 +326,12 @@ final class BoardImpl extends AbstractBoard {
         var actions = new HashSet<>();
         for (var attacker : attackerPieces) {
             actions.addAll(getActions(attacker, PieceCaptureAction.class));
-            actions.addAll(getActions(attacker, PieceEnPassantAction.class));
+
+            if (Piece.Type.PAWN.equals(piece.getType())
+                    && Piece.Type.PAWN.equals(attacker.getType())) {
+
+                actions.addAll(getActions(attacker, PieceEnPassantAction.class));
+            }
         }
 
         @SuppressWarnings("unchecked")

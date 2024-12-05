@@ -16,6 +16,7 @@ public final class QueenPieceImpactRule
     @SuppressWarnings("unchecked")
     private QueenPieceImpactRule(Board board, QueenPieceAlgo<?,?> algo) {
         super(new CompositePieceRule<Impact<?>>(
+                new QueenCheckImpactRule<>(board, algo),
                 new QueenProtectImpactRule<>(board, algo),
                 new QueenMonitorImpactRule<>(board, algo),
                 new PiecePinImpactRule<>(board)
