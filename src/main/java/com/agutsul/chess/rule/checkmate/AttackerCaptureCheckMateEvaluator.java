@@ -4,7 +4,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -65,16 +64,13 @@ final class AttackerCaptureCheckMateEvaluator
     private Collection<AbstractCaptureAction<?,?,?,?>> getAttackActions(Piece<?> piece) {
         var attackActions = new ArrayList<AbstractCaptureAction<?,?,?,?>>();
         for (var attacker : board.getAttackers(piece)) {
+            var actions = board.getActions(attacker, PieceCaptureAction.class);
 
-            var actions = new HashSet<>();
-            actions.addAll(board.getActions(attacker, PieceCaptureAction.class));
-
-            for (var action : actions) {
-                var captureAction = (AbstractCaptureAction<?,?,?,?>) action;
-                if (Objects.equals(captureAction.getTarget(), piece)) {
-                    attackActions.add(captureAction);
-                }
-            }
+            attackActions.addAll(actions.stream()
+                    .filter(action -> Objects.equals(action.getTarget(), piece))
+                    .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
+                    .toList()
+            );
         }
 
         return attackActions;
