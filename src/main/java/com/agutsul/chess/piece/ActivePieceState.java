@@ -80,6 +80,7 @@ class ActivePieceState<COLOR extends Color,
 
         if (Piece.Type.PAWN.equals(piece.getType())
                 && Piece.Type.PAWN.equals(targetPiece.getType())) {
+
             possibleActions.addAll(board.getActions(piece, PieceEnPassantAction.class));
         }
 

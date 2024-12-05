@@ -69,12 +69,16 @@ final class AttackerCaptureCheckMateEvaluator
 
             var actions = new HashSet<>();
             actions.addAll(board.getActions(attacker, PieceCaptureAction.class));
-            actions.addAll(board.getActions(attacker, PieceEnPassantAction.class));
+
+            if (Piece.Type.PAWN.equals(piece.getType())
+                    && Piece.Type.PAWN.equals(attacker.getType())) {
+
+                actions.addAll(board.getActions(attacker, PieceEnPassantAction.class));
+            }
 
             for (var action : actions) {
                 var captureAction = (AbstractCaptureAction<?,?,?,?>) action;
-                var targetPiece = captureAction.getTarget();
-                if (Objects.equals(targetPiece, piece)) {
+                if (Objects.equals(captureAction.getTarget(), piece)) {
                     attackActions.add(captureAction);
                 }
             }

@@ -17,7 +17,7 @@ final class MoveActionFunction
         }
 
         if (Action.Type.PROMOTE.equals(action.getType())) {
-            var sourceAction = ((PiecePromoteAction<?, ?>) action).getSource();
+            var sourceAction = ((PiecePromoteAction<?,?>) action).getSource();
 
             if (Action.Type.MOVE.equals(sourceAction.getType())) {
                 return Optional.of((PieceMoveAction<?,?>) sourceAction);
