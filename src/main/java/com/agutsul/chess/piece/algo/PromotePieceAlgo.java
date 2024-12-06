@@ -9,7 +9,7 @@ import com.agutsul.chess.piece.Promotable;
 public interface PromotePieceAlgo<COLOR extends Color,
                                   PIECE extends Piece<COLOR> & Movable & Capturable & Promotable,
                                   POSITION>
-    extends MovePieceAlgo<COLOR,PIECE,POSITION>,
-            CapturePieceAlgo<COLOR,PIECE,POSITION> {
+        extends MovePieceAlgo<COLOR,PIECE,POSITION>,
+                CapturePieceAlgo<COLOR,PIECE,POSITION> {
 
 }

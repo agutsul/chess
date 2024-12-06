@@ -13,15 +13,15 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.rule.AbstractRule;
 
-public abstract class AbstractCheckImpactRule<COLOR1 extends Color,
-                                              COLOR2 extends Color,
-                                              PIECE extends Piece<COLOR1> & Capturable,
-                                              KING extends KingPiece<COLOR2>,
-                                              IMPACT extends PieceCheckImpact<COLOR1,COLOR2,PIECE,KING>>
+abstract class AbstractCheckImpactRule<COLOR1 extends Color,
+                                       COLOR2 extends Color,
+                                       PIECE extends Piece<COLOR1> & Capturable,
+                                       KING extends KingPiece<COLOR2>,
+                                       IMPACT extends PieceCheckImpact<COLOR1,COLOR2,PIECE,KING>>
         extends AbstractRule<PIECE,IMPACT>
         implements CheckImpactRule<COLOR1,COLOR2,PIECE,KING,IMPACT> {
 
-    protected AbstractCheckImpactRule(Board board) {
+    AbstractCheckImpactRule(Board board) {
         super(board);
     }
 
