@@ -62,18 +62,16 @@ public final class PinPieceAlgo<COLOR extends Color,
         }
 
         protected Collection<Line> process(PIECE piece, Collection<Line> lines) {
-            return List.of(createLine(piece, new ArrayList<>(lines)));
+            return List.of(createLine(piece, lines));
         }
 
-        protected Line createLine(PIECE piece, List<Line> lines) {
-            List<Position> positions = new ArrayList<>();
-
-            positions.addAll(lines.get(0));
+        protected Line createLine(PIECE piece, Collection<Line> lines) {
+            var positions = new ArrayList<Position>();
             positions.add(piece.getPosition());
-            positions.addAll(lines.get(1));
+
+            lines.forEach(line -> positions.addAll(line));
 
             sort(positions, COMPARATOR);
-
             return new Line(positions);
         }
     }
