@@ -1,8 +1,6 @@
 package com.agutsul.chess.rule.board;
 
 import static java.util.Collections.emptyList;
-import static java.util.concurrent.Executors.newFixedThreadPool;
-import static java.util.concurrent.TimeUnit.MICROSECONDS;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
@@ -96,33 +94,23 @@ final class CompositeBoardStateEvaluator
         return checkedState;
     }
 
-    private static List<Optional<BoardState>> evaluate(List<BoardStateEvaluator<Optional<BoardState>>> evaluators,
-                                                       Color color) {
+    private List<Optional<BoardState>> evaluate(List<BoardStateEvaluator<Optional<BoardState>>> evaluators,
+                                                Color color) {
 
-        var executor = newFixedThreadPool(evaluators.size());
+        var tasks = createEvaluationTasks(evaluators, color);
         try {
-            var tasks = createEvaluationTasks(evaluators, color);
-            try {
-                var results = new ArrayList<Optional<BoardState>>();
-                for (var future : executor.invokeAll(tasks)) {
-                    results.add(future.get());
-                }
+            var results = new ArrayList<Optional<BoardState>>();
 
-                return results;
-            } catch (InterruptedException e) {
-                LOGGER.error("Board state evaluation interrupted", e);
-            } catch (ExecutionException e) {
-                LOGGER.error("Board state evaluation failed", e);
+            var executor = board.getExecutorService();
+            for (var future : executor.invokeAll(tasks)) {
+                results.add(future.get());
             }
-        } finally {
-            try {
-                executor.shutdown();
-                if (!executor.awaitTermination(1, MICROSECONDS)) {
-                    executor.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                executor.shutdownNow();
-            }
+
+            return results;
+        } catch (InterruptedException e) {
+            LOGGER.error("Board state evaluation interrupted", e);
+        } catch (ExecutionException e) {
+            LOGGER.error("Board state evaluation failed", e);
         }
 
         return emptyList();

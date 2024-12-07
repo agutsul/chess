@@ -2,9 +2,10 @@ package com.agutsul.chess.game;
 
 import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
-import static com.agutsul.chess.board.state.BoardState.Type.EXITED_DRAW;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.concurrent.Executors.newFixedThreadPool;
+import static java.util.concurrent.TimeUnit.MICROSECONDS;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Executable;
 import com.agutsul.chess.action.event.ActionCancelledEvent;
 import com.agutsul.chess.action.event.ActionPerformedEvent;
 import com.agutsul.chess.action.memento.ActionMemento;
@@ -46,7 +48,7 @@ import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 
 public abstract class AbstractPlayableGame
         extends AbstractGame
-        implements Iterator<Player>, Observable {
+        implements Iterator<Player>, Observable, Executable {
 
     private final Board board;
     private final Journal<ActionMemento<?,?>> journal;
@@ -113,19 +115,14 @@ public abstract class AbstractPlayableGame
     public final Optional<Player> getWinner() {
         var boardState = this.board.getState();
 
-        if (CHECK_MATED.equals(boardState.getType())) {
-            var winner = this.currentPlayer;
-            logger.info("{} wins. Player '{}'", winner.getColor(), winner.getName());
-            return Optional.of(winner);
+        switch (boardState.getType()) {
+        case CHECK_MATED:
+            return createWinner(this.currentPlayer);
+        case EXITED_DRAW:
+            return createWinner(getOpponentPlayer());
+        default:
+            return Optional.empty();
         }
-
-        if (EXITED_DRAW.equals(boardState.getType())) {
-            var winner = getOpponentPlayer();
-            logger.info("{} wins. Player '{}'", winner.getColor(), winner.getName());
-            return Optional.of(winner);
-        }
-
-        return Optional.empty();
     }
 
     @Override
@@ -172,22 +169,12 @@ public abstract class AbstractPlayableGame
     @Override
     public final void run() {
         this.startedAt = now();
+
         notifyObservers(new GameStartedEvent(this));
+        logger.info("Game started ...");
 
         try {
-            logger.info("Game started ...");
-            while (true) {
-                this.currentPlayer.play();
-
-                if (!hasNext()) {
-                    logger.info("Game stopped due to board state: {}",
-                            this.board.getState()
-                    );
-                    break;
-                }
-
-                this.currentPlayer = next();
-            }
+            execute();
 
             this.finishedAt = now();
             logger.info("Game over");
@@ -204,8 +191,44 @@ public abstract class AbstractPlayableGame
         }
     }
 
+    @Override
+    public final void execute() {
+        var executor = newFixedThreadPool(5);
+        board.setExecutorService(executor);
+
+        try {
+            while (true) {
+                this.currentPlayer.play();
+
+                if (!hasNext()) {
+                    logger.info("Game stopped due to board state: {}",
+                            this.board.getState()
+                    );
+                    break;
+                }
+
+                this.currentPlayer = next();
+            }
+        } finally {
+            try {
+                executor.shutdown();
+                if (!executor.awaitTermination(1, MICROSECONDS)) {
+                    executor.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                executor.shutdownNow();
+            }
+        }
+
+    }
+
     public final Board getBoard() {
         return this.board;
+    }
+
+    private Optional<Player> createWinner(Player player) {
+        logger.info("{} wins. Player '{}'", player.getColor(), player.getName());
+        return Optional.of(player);
     }
 
     private BoardState evaluateBoardState(Player player) {

@@ -1,7 +1,5 @@
 package com.agutsul.chess.rule.checkmate;
 
-import static java.util.concurrent.Executors.newFixedThreadPool;
-import static java.util.concurrent.TimeUnit.MICROSECONDS;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
@@ -19,9 +17,11 @@ public final class CompositeCheckMateEvaluator
 
     private static final Logger LOGGER = getLogger(CompositeCheckMateEvaluator.class);
 
+    private final Board board;
     private final List<CheckMateEvaluator> evaluators;
 
     public CompositeCheckMateEvaluator(Board board) {
+        this.board = board;
         this.evaluators = List.of(
                 new KingMoveCheckMateEvaluator(board),
                 new AttackerCaptureCheckMateEvaluator(board),
@@ -33,27 +33,16 @@ public final class CompositeCheckMateEvaluator
     public Boolean evaluate(KingPiece<?> king) {
         var results = new ArrayList<Boolean>();
 
-        var executor = newFixedThreadPool(this.evaluators.size());
+        var tasks = createEvaluationTasks(this.evaluators, king);
         try {
-            var tasks = createEvaluationTasks(this.evaluators, king);
-            try {
-                for (var future : executor.invokeAll(tasks)) {
-                    results.add(future.get());
-                }
-            } catch (InterruptedException e) {
-                LOGGER.error("Checkmate evaluation interrupted", e);
-            } catch (ExecutionException e) {
-                LOGGER.error("Checkmate evaluation failed", e);
+            var executor = board.getExecutorService();
+            for (var future : executor.invokeAll(tasks)) {
+                results.add(future.get());
             }
-        } finally {
-            try {
-                executor.shutdown();
-                if (!executor.awaitTermination(1, MICROSECONDS)) {
-                    executor.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                executor.shutdownNow();
-            }
+        } catch (InterruptedException e) {
+            LOGGER.error("Checkmate evaluation interrupted", e);
+        } catch (ExecutionException e) {
+            LOGGER.error("Checkmate evaluation failed", e);
         }
 
         var isCheckMated = results.size() == this.evaluators.size() && !results.contains(true);

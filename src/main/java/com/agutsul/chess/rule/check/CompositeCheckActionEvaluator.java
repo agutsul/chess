@@ -1,8 +1,6 @@
 package com.agutsul.chess.rule.check;
 
 import static java.util.Collections.emptyList;
-import static java.util.concurrent.Executors.newFixedThreadPool;
-import static java.util.concurrent.TimeUnit.MICROSECONDS;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
@@ -23,52 +21,49 @@ public final class CompositeCheckActionEvaluator
 
     private static final Logger LOGGER = getLogger(CompositeCheckActionEvaluator.class);
 
+    private final Board board;
     private final List<CheckActionEvaluator> evaluators;
 
     public CompositeCheckActionEvaluator(Board board,
                                          KingPiece<?> unusedPiece,
                                          Collection<Action<?>> actions) {
-        this.evaluators = List.of(
+        this(board, List.of(
                 new AttackerCaptureCheckActionEvaluator(board, actions),
                 new KingMoveCheckActionEvaluator(board, actions)
-        );
+        ));
     }
 
     public CompositeCheckActionEvaluator(Board board,
                                          Piece<?> unusedPiece,
                                          Collection<Action<?>> actions) {
-        this.evaluators = List.of(
+        this(board, List.of(
                 new AttackerCaptureCheckActionEvaluator(board, actions),
                 new AttackerPinCheckActionEvaluator(board, actions)
-        );
+        ));
+    }
+
+    private CompositeCheckActionEvaluator(Board board,
+                                          List<CheckActionEvaluator> evaluators) {
+        this.board = board;
+        this.evaluators = evaluators;
     }
 
     @Override
     public Collection<Action<?>> evaluate(KingPiece<?> king) {
-        var executor = newFixedThreadPool(this.evaluators.size());
+        var tasks = createEvaluationTasks(king);
         try {
-            var tasks = createEvaluationTasks(king);
-            try {
-                var results = new ArrayList<Action<?>>();
-                for (var future : executor.invokeAll(tasks)) {
-                    results.addAll(future.get());
-                }
+            var results = new ArrayList<Action<?>>();
 
-                return results;
-            } catch (InterruptedException e) {
-                LOGGER.error("Check action evaluation interrupted", e);
-            } catch (ExecutionException e) {
-                LOGGER.error("Check action evaluation failed", e);
+            var executor = board.getExecutorService();
+            for (var future : executor.invokeAll(tasks)) {
+                results.addAll(future.get());
             }
-        } finally {
-            try {
-                executor.shutdown();
-                if (!executor.awaitTermination(1, MICROSECONDS)) {
-                    executor.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                executor.shutdownNow();
-            }
+
+            return results;
+        } catch (InterruptedException e) {
+            LOGGER.error("Check action evaluation interrupted", e);
+        } catch (ExecutionException e) {
+            LOGGER.error("Check action evaluation failed", e);
         }
 
         return emptyList();
