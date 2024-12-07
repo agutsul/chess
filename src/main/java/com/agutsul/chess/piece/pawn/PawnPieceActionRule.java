@@ -1,7 +1,12 @@
 package com.agutsul.chess.piece.pawn;
 
+import java.util.Collection;
+import java.util.LinkedHashMap;
+
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 
@@ -40,5 +45,21 @@ public final class PawnPieceActionRule
                 captureActionRule,
                 moveActionRule
         );
+    }
+
+    @Override
+    public Collection<Action<?>> evaluate(Piece<?> piece) {
+        var positionedMap = new LinkedHashMap<Position, Action<?>>();
+        // make unique actions per position to return first calculated action only
+        // for example when there are promotion and move for the same position
+        //               promotion should be returned
+        for (var result : rule.evaluate(piece)) {
+            var targetPosition = result.getPosition();
+            if (targetPosition != null && !positionedMap.containsKey(targetPosition)) {
+                positionedMap.put(targetPosition, result);
+            }
+        }
+
+        return positionedMap.values();
     }
 }
