@@ -19,6 +19,7 @@ public final class BishopPieceImpactRule
                 new BishopCheckImpactRule<>(board, algo),
                 new BishopProtectImpactRule<>(board, algo),
                 new BishopMonitorImpactRule<>(board, algo),
+                new BishopControlImpactRule<>(board, algo),
                 new PiecePinImpactRule<>(board)
             )
         );

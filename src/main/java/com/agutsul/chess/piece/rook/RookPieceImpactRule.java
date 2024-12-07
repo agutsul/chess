@@ -19,6 +19,7 @@ public final class RookPieceImpactRule
                 new RookCheckImpactRule<>(board, algo),
                 new RookProtectImpactRule<>(board, algo),
                 new RookMonitorImpactRule<>(board, algo),
+                new RookControlImpactRule<>(board, algo),
                 new PiecePinImpactRule<>(board)
             )
         );

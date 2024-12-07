@@ -22,7 +22,6 @@ import com.agutsul.chess.action.AbstractCaptureAction;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PieceEnPassantAction;
-import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.function.ActionFilter;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.DefaultBoardState;
@@ -31,6 +30,7 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.impact.Impact;
+import com.agutsul.chess.impact.PieceControlImpact;
 import com.agutsul.chess.impact.PieceProtectImpact;
 import com.agutsul.chess.piece.BlackPieceFactory;
 import com.agutsul.chess.piece.Captured;
@@ -304,14 +304,12 @@ final class BoardImpl extends AbstractBoard {
         LOGGER.info("Checking is position '{}' attacked by '{}'", position, attackerColor);
 
         var attackerPieces = getPieces(attackerColor);
-
-        // check if position is reachable by any attacker move
         var isAttacked = attackerPieces.stream()
-                // pawn attacks differently from moves
-                .filter(attacker -> !Piece.Type.PAWN.equals(attacker.getType()))
-                .map(attacker -> getActions(attacker, PieceMoveAction.class))
+                .map(Piece::getImpacts)
                 .flatMap(Collection::stream)
-                .map(PieceMoveAction::getPosition)
+                .filter(impact -> Impact.Type.CONTROL.equals(impact.getType()))
+                .map(impact -> (PieceControlImpact<?,?>) impact)
+                .map(PieceControlImpact::getPosition)
                 .anyMatch(targetPosition -> Objects.equals(targetPosition, position));
 
         return isAttacked;
@@ -349,7 +347,8 @@ final class BoardImpl extends AbstractBoard {
     public boolean isProtected(Piece<?> piece) {
         LOGGER.info("Checking if piece '{}' is protected by the other piece", piece);
 
-        var isProtected = getPieces(piece.getColor()).stream()
+        var protectors = getPieces(piece.getColor());
+        var isProtected = protectors.stream()
                 .filter(protector -> !Objects.equals(protector, piece))
                 .map(Piece::getImpacts)
                 .flatMap(Collection::stream)
@@ -378,7 +377,8 @@ final class BoardImpl extends AbstractBoard {
         LOGGER.info("Checking if position '{}' is monitored by the other piece of '{}'",
                 position, attackerColor);
 
-        var isMonitored = getPieces(attackerColor).stream()
+        var attackers = getPieces(attackerColor);
+        var isMonitored = attackers.stream()
                 .map(Piece::getImpacts)
                 .flatMap(Collection::stream)
                 .filter(impact -> Impact.Type.MONITOR.equals(impact.getType()))

@@ -6,6 +6,7 @@ public interface Impact<SOURCE>
         extends Positionable {
 
     enum Type {
+        CONTROL,
         PROTECT,
         MONITOR,
         PIN,

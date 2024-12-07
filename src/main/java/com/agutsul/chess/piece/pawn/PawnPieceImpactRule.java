@@ -14,11 +14,12 @@ public final class PawnPieceImpactRule
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private PawnPieceImpactRule(Board board, PawnCaptureAlgo algo) {
+    private PawnPieceImpactRule(Board board, PawnCaptureAlgo captureAlgo) {
         super(new CompositePieceRule<Impact<?>>(
-                new PawnCheckImpactRule<>(board, algo),
-                new PawnProtectImpactRule<>(board, algo),
-                new PawnMonitorImpactRule<>(board, algo),
+                new PawnCheckImpactRule<>(board, captureAlgo),
+                new PawnProtectImpactRule<>(board, captureAlgo),
+                new PawnMonitorImpactRule<>(board, captureAlgo),
+                new PawnControlImpactRule<>(board, captureAlgo),
                 new PiecePinImpactRule<>(board)
             )
         );

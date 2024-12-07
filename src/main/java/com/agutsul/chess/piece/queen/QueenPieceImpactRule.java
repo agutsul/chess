@@ -19,6 +19,7 @@ public final class QueenPieceImpactRule
                 new QueenCheckImpactRule<>(board, algo),
                 new QueenProtectImpactRule<>(board, algo),
                 new QueenMonitorImpactRule<>(board, algo),
+                new QueenControlImpactRule<>(board, algo),
                 new PiecePinImpactRule<>(board)
             )
         );
