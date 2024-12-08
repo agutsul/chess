@@ -1,7 +1,10 @@
 package com.agutsul.chess.rule.board;
 
+import static java.util.concurrent.TimeUnit.MICROSECONDS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.concurrent.Executors;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -544,10 +547,24 @@ public class CheckMatedBoardStateEvaluatorTest {
     }
 
     private static void assertCheckMate(Board board, Color color) {
-        var checkMateEvaluator = new CheckMatedBoardStateEvaluator(board);
-        var boardState = checkMateEvaluator.evaluate(color);
+        var executor = Executors.newSingleThreadExecutor();
+        board.setExecutorService(executor);
 
-        assertTrue(boardState.isPresent());
-        assertEquals(BoardState.Type.CHECK_MATED, boardState.get().getType());
+        var checkMateEvaluator = new CheckMatedBoardStateEvaluator(board);
+        try {
+            var boardState = checkMateEvaluator.evaluate(color);
+
+            assertTrue(boardState.isPresent());
+            assertEquals(BoardState.Type.CHECK_MATED, boardState.get().getType());
+        } finally {
+            try {
+                executor.shutdown();
+                if (!executor.awaitTermination(1, MICROSECONDS)) {
+                    executor.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                executor.shutdownNow();
+            }
+        }
     }
 }

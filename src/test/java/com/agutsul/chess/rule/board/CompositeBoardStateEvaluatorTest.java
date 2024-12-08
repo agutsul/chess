@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.board;
 
+import static java.util.concurrent.TimeUnit.MICROSECONDS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -8,9 +9,14 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.Board;
@@ -29,10 +35,32 @@ import com.agutsul.chess.color.Colors;
 @ExtendWith(MockitoExtension.class)
 public class CompositeBoardStateEvaluatorTest {
 
+    ExecutorService executorService;
+
+    @Mock
+    Board board;
+
+    @BeforeEach
+    void setUp() {
+        this.executorService = Executors.newSingleThreadExecutor();
+        when(board.getExecutorService())
+            .thenReturn(executorService);
+    }
+
+    @AfterEach
+    void tearDown() {
+        try {
+            this.executorService.shutdown();
+            if (!this.executorService.awaitTermination(1, MICROSECONDS)) {
+                this.executorService.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            this.executorService.shutdownNow();
+        }
+    }
+
     @Test
     void evaluateCheckedBoardState() {
-        var board = mock(Board.class);
-
         var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
@@ -60,8 +88,6 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateCheckMatedBoardState() {
-        var board = mock(Board.class);
-
         var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
@@ -92,8 +118,6 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateStaleMatedBoardState() {
-        var board = mock(Board.class);
-
         var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         when(checkedEvaluator.evaluate(any()))
             .thenReturn(Optional.empty());
@@ -121,8 +145,6 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateFoldRepetitionBoardState() {
-        var board = mock(Board.class);
-
         var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
@@ -144,8 +166,6 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateMovesBoardState() {
-        var board = mock(Board.class);
-
         var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
@@ -167,8 +187,6 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateCheckMatedAndFoldRepetitionBoardState() {
-        var board = mock(Board.class);
-
         var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
@@ -209,8 +227,6 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateCheckedAndFoldRepetitionBoardState() {
-        var board = mock(Board.class);
-
         var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
@@ -244,8 +260,6 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateMultipleNonTerminalBoardStates() {
-        var board = mock(Board.class);
-
         var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
@@ -278,8 +292,6 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateMultipleTerminalStates() {
-        var board = mock(Board.class);
-
         var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
@@ -316,8 +328,6 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateMultipleTerminalStatesAndCheckedState() {
-        var board = mock(Board.class);
-
         var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
@@ -358,8 +368,6 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateDefaultBoardState() {
-        var board = mock(Board.class);
-
         var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         when(checkedEvaluator.evaluate(any()))
             .thenReturn(Optional.empty());
