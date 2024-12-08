@@ -45,8 +45,7 @@ final class KingPieceImpl<COLOR extends Color>
                 .flatMap(Collection::stream)
                 .filter(impact -> Impact.Type.CHECK.equals(impact.getType()))
                 .map(impact -> (PieceCheckImpact<?,?,?,?>) impact)
-                .map(PieceCheckImpact::getTarget)
-                .anyMatch(targetPiece -> Objects.equals(targetPiece.getPosition(), getPosition()));
+                .anyMatch(impact -> Objects.equals(impact.getTarget(), this));
 
         return isChecked;
     }

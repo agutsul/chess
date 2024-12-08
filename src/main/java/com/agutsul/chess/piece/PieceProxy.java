@@ -76,4 +76,14 @@ class PieceProxy implements Piece<Color> {
     public String toString() {
         return origin.toString();
     }
+
+    @Override
+    public int hashCode() {
+        return origin.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return origin.equals(obj);
+    }
 }

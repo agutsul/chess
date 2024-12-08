@@ -23,7 +23,7 @@ import com.agutsul.chess.rule.Rule;
 
 final class PawnPieceImpl<COLOR extends Color>
         extends AbstractPiece<COLOR>
-        implements PawnPiece<COLOR> {
+        implements PawnPiece<COLOR>, IEnPassantable {
 
     private static final Logger LOGGER = getLogger(PawnPieceImpl.class);
 
@@ -74,6 +74,23 @@ final class PawnPieceImpl<COLOR extends Color>
         ((EnPassantablePieceState<COLOR,PawnPiece<COLOR>>) enpassantableState).unenpassant(this, targetPiece);
     }
 
+    @Override
+    public void doEnPassant(PawnPiece<?> targetPiece, Position targetPosition) {
+        // save captured timestamp
+        targetPiece.setCapturedAt(now());
+
+        // remove target pawn from board
+        targetPiece.dispose();
+
+        // move this piece to target position
+        super.doMove(targetPosition);
+    }
+
+    @Override
+    public void cancelEnPassant(PawnPiece<?> targetPiece) {
+        super.cancelCapture(targetPiece);
+    }
+
     static abstract class AbstractEnPassantablePieceState<COLOR extends Color,
                                                           PIECE extends PawnPiece<COLOR>>
             extends AbstractPieceStateProxy<COLOR,PIECE>
@@ -88,7 +105,7 @@ final class PawnPieceImpl<COLOR extends Color>
         @Override
         public void unenpassant(PIECE piece, PawnPiece<?> targetPiece) {
             LOGGER.info("Undo en-passante '{}' by '{}'", targetPiece, piece);
-            ((AbstractPiece<?>) piece).cancelCapture(targetPiece);
+            ((IEnPassantable) piece).cancelEnPassant(targetPiece);
         }
     }
 
@@ -114,17 +131,8 @@ final class PawnPieceImpl<COLOR extends Color>
 
             var isValid = board.getActions(piece, PieceEnPassantAction.class).stream()
                     .map(action -> (PieceEnPassantAction<?,?,?,?>) action)
-                    .anyMatch(action -> {
-                        var enTarget = action.getTarget();
-
-                        var isPieceMatched =
-                                Objects.equals(enTarget.getPosition(), targetPiece.getPosition());
-
-                        var isPositionMatched =
-                                Objects.equals(action.getPosition(), targetPosition);
-
-                        return isPieceMatched && isPositionMatched;
-                    });
+                    .anyMatch(action -> Objects.equals(action.getTarget(), targetPiece)
+                            && Objects.equals(action.getPosition(), targetPosition));
 
             if (!isValid) {
                 throw new IllegalActionException(
@@ -132,14 +140,7 @@ final class PawnPieceImpl<COLOR extends Color>
                 );
             }
 
-            // save captured timestamp
-            targetPiece.setCapturedAt(now());
-
-            // remove target pawn from board
-            targetPiece.dispose();
-
-            // move this piece to target position
-            ((AbstractPiece<?>) piece).doMove(targetPosition);
+            ((IEnPassantable) piece).doEnPassant(targetPiece, targetPosition);
         }
     }
 

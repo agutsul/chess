@@ -69,10 +69,7 @@ final class AttackerCaptureCheckMateEvaluator
 
             attackActions.addAll(actions.stream()
                     .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                    .filter(action -> {
-                        var victim = action.getTarget();
-                        return Objects.equals(victim.getPosition(), piece.getPosition());
-                    })
+                    .filter(action -> Objects.equals(action.getTarget(), piece))
                     .toList()
             );
         }

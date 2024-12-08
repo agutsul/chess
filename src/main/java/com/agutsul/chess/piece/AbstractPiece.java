@@ -29,7 +29,7 @@ import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
 abstract class AbstractPiece<COLOR extends Color>
-        implements Piece<COLOR>, Movable, Capturable, Protectable {
+        implements Piece<COLOR>, IMovable, ICapturable, Protectable {
 
     private static final Logger LOGGER = getLogger(AbstractPiece.class);
 
@@ -259,13 +259,13 @@ abstract class AbstractPiece<COLOR extends Color>
             return false;
         }
 
-        if (getClass() != obj.getClass()) {
+        if (!(obj instanceof Piece<?>)) {
             return false;
         }
 
-        var other = (AbstractPiece<?>) obj;
-        return this.type == other.type
-                && Objects.equals(this.color, other.color)
+        var other = (Piece<?>) obj;
+        return this.type == other.getType()
+                && Objects.equals(this.color, other.getColor())
                 && Objects.equals(getPosition(), other.getPosition());
     }
 
@@ -277,21 +277,13 @@ abstract class AbstractPiece<COLOR extends Color>
         this.capturedAt = instant;
     }
 
-    final void setPosition(Position position) {
-        // null can be set when piece should be removed from the board
-        if (position == null) {
-            dispose();
-            return;
-        }
-
-        this.positions.add(position);
-    }
-
-    final void doMove(Position position) {
+    @Override
+    public final void doMove(Position position) {
         setPosition(position);
     }
 
-    final void cancelMove(Position position) {
+    @Override
+    public final void cancelMove(Position position) {
         if (!this.positions.contains(position)) {
             throw new IllegalPositionException(
                     String.format("Unable to cancel unvisited position '%s'", position)
@@ -304,7 +296,8 @@ abstract class AbstractPiece<COLOR extends Color>
         // no need to set previous position as it is already the last item in positions array
     }
 
-    final void doCapture(Piece<?> piece) {
+    @Override
+    public final void doCapture(Piece<?> piece) {
         // save captured timestamp
         ((Captured) piece).setCapturedAt(now());
 
@@ -313,12 +306,23 @@ abstract class AbstractPiece<COLOR extends Color>
         doMove(piece.getPosition());
     }
 
-    final void cancelCapture(Piece<?> piece) {
+    @Override
+    public final void cancelCapture(Piece<?> piece) {
         cancelMove(getPosition());
         // clear capturedAt timestamp
         ((Captured) piece).setCapturedAt(null);
         // no need to set previous position as it is already the last item in positions array
         ((Restorable) piece).restore();
+    }
+
+    final void setPosition(Position position) {
+        // null can be set when piece should be removed from the board
+        if (position == null) {
+            dispose();
+            return;
+        }
+
+        this.positions.add(position);
     }
 
     final void clearCalculatedData() {

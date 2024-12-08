@@ -75,8 +75,7 @@ public class PiecePinImpactRule<COLOR1 extends Color,
                 var isAttackerCapturable = pieceActions.stream()
                     .filter(action -> Action.Type.CAPTURE.equals(action.getType()))
                     .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                    .map(AbstractCaptureAction::getTarget)
-                    .anyMatch(victim -> Objects.equals(victim.getPosition(), attacker.getPosition()));
+                    .anyMatch(action -> Objects.equals(action.getTarget(), attacker));
 
                 if (!isAttackerCapturable) {
                     pinLines.add(line);

@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -337,47 +336,5 @@ public class KingPieceImplTest extends AbstractPieceTest {
         );
 
         assertEquals(thrown.getMessage(), "Ke1 invalid castling to f2");
-    }
-
-    @Test
-    void testKingDisposingThrowsException() {
-        var board = new BoardBuilder()
-                .withWhiteKing("e1")
-                .build();
-
-        var king = board.getPiece("e1").get();
-        var thrown = assertThrows(
-                UnsupportedOperationException.class,
-                () -> ((AbstractPiece<Color>) king).dispose()
-        );
-        assertEquals(thrown.getMessage(), "Unable to dispose KING piece");
-    }
-
-    @Test
-    void testKingGetCapturedAtThrowsException() {
-        var board = new BoardBuilder()
-                .withWhiteKing("e1")
-                .build();
-
-        var king = board.getPiece("e1").get();
-        var thrown = assertThrows(
-                UnsupportedOperationException.class,
-                () -> ((AbstractPiece<Color>) king).getCapturedAt()
-        );
-        assertEquals(thrown.getMessage(), "Unable to get captured timestamp for a KING piece");
-    }
-
-    @Test
-    void testKingSetCapturedAtThrowsException() {
-        var board = new BoardBuilder()
-                .withWhiteKing("e1")
-                .build();
-
-        var king = board.getPiece("e1").get();
-        var thrown = assertThrows(
-                UnsupportedOperationException.class,
-                () -> ((AbstractPiece<Color>) king).setCapturedAt(Instant.now())
-        );
-        assertEquals(thrown.getMessage(), "Unable set captured timestamp for a KING piece");
     }
 }

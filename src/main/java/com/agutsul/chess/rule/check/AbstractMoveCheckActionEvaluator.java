@@ -33,10 +33,7 @@ abstract class AbstractMoveCheckActionEvaluator
                 .map(attacker -> board.getActions(attacker, PieceCaptureAction.class))
                 .flatMap(Collection::stream)
                 .map(action -> (PieceCaptureAction<?,?,?,?>) action)
-                .filter(action -> {
-                    var victim = action.getTarget();
-                    return Objects.equals(king.getPosition(), victim.getPosition());
-                })
+                .filter(action -> Objects.equals(king, action.getTarget()))
                 .collect(toSet());
 
         var actionFilter = new ActionFilter<>(PieceMoveAction.class);

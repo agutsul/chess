@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.piece.KingPiece.KingPieceProxy;
 import com.agutsul.chess.piece.PawnPiece.PawnPieceProxy;
 import com.agutsul.chess.position.Position;
 
@@ -28,7 +29,8 @@ public final class WhitePieceFactory
 
     @Override
     public KingPiece<Color> createKing(Position position) {
-        return super.createKing(position, KING_UNICODE);
+        var king = super.createKing(position, KING_UNICODE);
+        return new KingPieceProxy(king);
     }
 
     @Override

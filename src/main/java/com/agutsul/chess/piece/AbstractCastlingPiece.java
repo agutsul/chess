@@ -22,7 +22,7 @@ import com.agutsul.chess.rule.Rule;
 
 abstract class AbstractCastlingPiece<COLOR extends Color>
         extends AbstractPiece<COLOR>
-        implements Castlingable {
+        implements ICastlingable {
 
     private static final Logger LOGGER = getLogger(AbstractCastlingPiece.class);
 
@@ -57,6 +57,16 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     }
 
     @Override
+    public final void doCastling(Position position) {
+        super.doMove(position);
+    }
+
+    @Override
+    public final void cancelCastling(Position position) {
+        super.cancelMove(position);
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public void dispose() {
         super.dispose();
@@ -78,12 +88,12 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         @Override
         public void uncastling(PIECE piece, Position position) {
             LOGGER.info("Undo castling '{}' to '{}'", piece, position);
-            ((AbstractPiece<?>) piece).cancelMove(position);
+            ((ICastlingable) piece).cancelCastling(position);
         }
     }
 
     static final class ActiveCastlingablePieceState<COLOR extends Color,
-                                                    PIECE extends AbstractPiece<COLOR> & Castlingable>
+                                                    PIECE extends Piece<COLOR> & Movable & Capturable & Castlingable>
             extends AbstractCastlingablePieceState<COLOR,PIECE> {
 
         private static final Logger LOGGER = getLogger(ActiveCastlingablePieceState.class);
@@ -119,8 +129,8 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
             doCastling(castlingAction.getTarget());
         }
 
-        private static boolean isValidCastling(PieceCastlingAction<?,?,?> action,
-                                               Position position) {
+        private boolean isValidCastling(PieceCastlingAction<?,?,?> action,
+                                        Position position) {
 
             var possiblePositions = Stream.of(action.getTarget(), action.getSource())
                     .map(CastlingMoveAction::getTarget)
@@ -129,16 +139,17 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
             return possiblePositions.contains(position);
         }
 
-        private static void doCastling(CastlingMoveAction<?,?> action) {
-            LOGGER.info("Castling '{}' to '{}'", action.getSource(), action.getPosition());
+        private void doCastling(CastlingMoveAction<?,?> action) {
+            var piece = action.getSource();
 
-            var piece = (AbstractPiece<?>) action.getSource();
-            piece.doMove(action.getPosition());
+            LOGGER.info("Castling '{}' to '{}'", piece, action.getPosition());
+
+            ((ICastlingable) piece).doCastling(action.getPosition());
         }
     }
 
     static final class DisposedCastlingablePieceState<COLOR extends Color,
-                                                      PIECE extends AbstractPiece<COLOR> & Castlingable>
+                                                      PIECE extends Piece<COLOR> & Movable & Capturable & Castlingable>
             extends AbstractCastlingablePieceState<COLOR,PIECE> {
 
         private static final Logger LOGGER = getLogger(DisposedCastlingablePieceState.class);

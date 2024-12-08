@@ -17,8 +17,7 @@ public final class KingPieceImpactRule
         super(new CompositePieceRule<Impact<?>>(
                 new KingProtectImpactRule<>(board, algo),
                 new KingMonitorImpactRule<>(board, algo),
-                new KingControlImpactRule<>(board, algo),
-                new KingAccessImpactRule<>(board, algo)
+                new KingControlImpactRule<>(board, algo)
             )
         );
     }
