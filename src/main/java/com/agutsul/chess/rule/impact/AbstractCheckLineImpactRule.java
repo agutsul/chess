@@ -74,7 +74,8 @@ public abstract class AbstractCheckLineImpactRule<COLOR1 extends Color,
                 continue;
             }
 
-            if (!Objects.equals(optionalPiece.get(), king)) {
+            var piece = optionalPiece.get();
+            if (!Objects.equals(piece.getPosition(), king.getPosition())) {
                 break;
             } else {
                 positions.add(position);

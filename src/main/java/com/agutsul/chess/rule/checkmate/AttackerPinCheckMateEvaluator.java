@@ -45,7 +45,11 @@ final class AttackerPinCheckMateEvaluator
         var isPinnable = attackers.stream()
                 .map(piece -> board.getActions(piece, PieceCaptureAction.class))
                 .flatMap(Collection::stream)
-                .filter(action -> Objects.equals(action.getTarget(), king))
+                .map(action -> (PieceCaptureAction<?,?,?,?>) action)
+                .filter(action -> {
+                    var victim = action.getTarget();
+                    return Objects.equals(victim.getPosition(), king.getPosition());
+                })
                 .map(PieceCaptureAction::getAttackLine)
                 .flatMap(Line::stream)
                 .anyMatch(position -> pieceMovePositions.contains(position));

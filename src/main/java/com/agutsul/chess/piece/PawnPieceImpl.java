@@ -114,8 +114,17 @@ final class PawnPieceImpl<COLOR extends Color>
 
             var isValid = board.getActions(piece, PieceEnPassantAction.class).stream()
                     .map(action -> (PieceEnPassantAction<?,?,?,?>) action)
-                    .anyMatch(action -> Objects.equals(action.getTarget(), targetPiece)
-                                && Objects.equals(action.getPosition(), targetPosition));
+                    .anyMatch(action -> {
+                        var enTarget = action.getTarget();
+
+                        var isPieceMatched =
+                                Objects.equals(enTarget.getPosition(), targetPiece.getPosition());
+
+                        var isPositionMatched =
+                                Objects.equals(action.getPosition(), targetPosition);
+
+                        return isPieceMatched && isPositionMatched;
+                    });
 
             if (!isValid) {
                 throw new IllegalActionException(

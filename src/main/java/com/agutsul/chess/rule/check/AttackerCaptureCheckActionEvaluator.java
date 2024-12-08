@@ -36,7 +36,9 @@ final class AttackerCaptureCheckActionEvaluator
         for (var attacker : attackers) {
             for (var action : filteredActions) {
                 var captureAction = (AbstractCaptureAction<?,?,?,?>) action;
-                if (Objects.equals(captureAction.getTarget(), attacker)) {
+
+                var victim = captureAction.getTarget();
+                if (Objects.equals(victim.getPosition(), attacker.getPosition())) {
                     actions.add(captureAction);
                 }
             }

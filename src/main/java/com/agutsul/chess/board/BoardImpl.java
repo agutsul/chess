@@ -335,7 +335,10 @@ final class BoardImpl extends AbstractBoard {
         @SuppressWarnings("unchecked")
         Collection<Piece<COLOR>> attackers = actions.stream()
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                .filter(action -> Objects.equals(action.getTarget(), piece))
+                .filter(action -> {
+                    var victim = action.getTarget();
+                    return Objects.equals(victim.getPosition(), piece.getPosition());
+                })
                 .map(AbstractCaptureAction::getSource)
                 .map(attacker -> (Piece<COLOR>) attacker)
                 .collect(toSet());
@@ -384,7 +387,10 @@ final class BoardImpl extends AbstractBoard {
         var filterActions = filter.apply(actions);
         return filterActions.stream()
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                .filter(action -> Objects.equals(action.getTarget(), king))
+                .filter(action -> {
+                    var victim = action.getTarget();
+                    return Objects.equals(victim.getPosition(), king.getPosition());
+                })
                 .collect(toSet());
     }
 }
