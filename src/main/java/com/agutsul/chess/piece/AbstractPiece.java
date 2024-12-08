@@ -201,7 +201,8 @@ abstract class AbstractPiece<COLOR extends Color>
                 .filter(impact -> Impact.Type.PROTECT.equals(impact.getType()))
                 .map(impact -> (PieceProtectImpact<?,?,?>) impact)
                 .map(PieceProtectImpact::getTarget)
-                .anyMatch(protectedPiece -> Objects.equals(protectedPiece.getPosition(), getPosition()));
+                .map(Piece::getPosition)
+                .anyMatch(protectedPosition -> Objects.equals(protectedPosition, getPosition()));
 
         return isProtected;
     }
