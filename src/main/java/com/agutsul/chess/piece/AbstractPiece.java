@@ -22,13 +22,14 @@ import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.IllegalPositionException;
 import com.agutsul.chess.impact.Impact;
+import com.agutsul.chess.impact.PieceProtectImpact;
 import com.agutsul.chess.piece.state.CapturablePieceState;
 import com.agutsul.chess.piece.state.MovablePieceState;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
 abstract class AbstractPiece<COLOR extends Color>
-        implements Piece<COLOR>, Movable, Capturable {
+        implements Piece<COLOR>, Movable, Capturable, Protectable {
 
     private static final Logger LOGGER = getLogger(AbstractPiece.class);
 
@@ -183,6 +184,37 @@ abstract class AbstractPiece<COLOR extends Color>
     @Override
     public final boolean isActive() {
         return PieceState.Type.ACTIVE.equals(getState().getType());
+    }
+
+    @Override
+    public final boolean isProtected() {
+        LOGGER.info("Checking if piece '{}' is protected by the other piece", this);
+
+        // piece can't protect itself. only other piece with the same color
+        var protectors = board.getPieces(getColor()).stream()
+                .filter(piece -> !Objects.equals(piece.getPosition(), getPosition()))
+                .toList();
+
+        var isProtected = protectors.stream()
+                .map(Piece::getImpacts)
+                .flatMap(Collection::stream)
+                .filter(impact -> Impact.Type.PROTECT.equals(impact.getType()))
+                .map(impact -> (PieceProtectImpact<?,?,?>) impact)
+                .map(PieceProtectImpact::getTarget)
+                .anyMatch(protectedPiece -> Objects.equals(protectedPiece.getPosition(), getPosition()));
+
+        return isProtected;
+    }
+
+    public boolean isPinned() {
+        LOGGER.info("Checking if piece '{}' is pinned", this);
+
+        var isPinned = getImpacts().stream()
+                .filter(impact -> Impact.Type.PIN.equals(impact.getType()))
+                .map(Impact::getPosition)
+                .anyMatch(targetPosition -> Objects.equals(getPosition(), targetPosition));
+
+        return isPinned;
     }
 
     @SuppressWarnings("unchecked")

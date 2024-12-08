@@ -31,12 +31,12 @@ import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.impact.PieceControlImpact;
-import com.agutsul.chess.impact.PieceProtectImpact;
 import com.agutsul.chess.piece.BlackPieceFactory;
 import com.agutsul.chess.piece.Captured;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.PieceFactory;
+import com.agutsul.chess.piece.Pinnable;
 import com.agutsul.chess.piece.WhitePieceFactory;
 import com.agutsul.chess.position.Position;
 
@@ -133,7 +133,7 @@ final class BoardImpl extends AbstractBoard {
         LOGGER.info("Getting actions for '{}'", piece);
 
         var actions = this.state.getActions(piece);
-        if (Piece.Type.KING.equals(piece.getType()) || !isPinned(piece)) {
+        if (Piece.Type.KING.equals(piece.getType()) || !((Pinnable) piece).isPinned()) {
             return actions;
         }
 
@@ -341,35 +341,6 @@ final class BoardImpl extends AbstractBoard {
                 .collect(toSet());
 
         return attackers;
-    }
-
-    @Override
-    public boolean isProtected(Piece<?> piece) {
-        LOGGER.info("Checking if piece '{}' is protected by the other piece", piece);
-
-        var protectors = getPieces(piece.getColor());
-        var isProtected = protectors.stream()
-                .filter(protector -> !Objects.equals(protector, piece))
-                .map(Piece::getImpacts)
-                .flatMap(Collection::stream)
-                .filter(impact -> Impact.Type.PROTECT.equals(impact.getType()))
-                .map(impact -> (PieceProtectImpact<?,?,?>) impact)
-                .map(PieceProtectImpact::getTarget)
-                .anyMatch(protectedPiece -> Objects.equals(protectedPiece, piece));
-
-        return isProtected;
-    }
-
-    @Override
-    public boolean isPinned(Piece<?> piece) {
-        LOGGER.info("Checking if piece '{}' is pinned", piece);
-
-        var isPinned = getImpacts(piece).stream()
-                .filter(impact -> Impact.Type.PIN.equals(impact.getType()))
-                .map(Impact::getPosition)
-                .anyMatch(targetPosition -> Objects.equals(piece.getPosition(), targetPosition));
-
-        return isPinned;
     }
 
     @Override

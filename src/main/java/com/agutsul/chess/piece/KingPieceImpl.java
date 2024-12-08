@@ -81,4 +81,9 @@ final class KingPieceImpl<COLOR extends Color>
     public void setCapturedAt(Instant instant) {
         throw new UnsupportedOperationException("Unable set captured timestamp for a KING piece");
     }
+
+    @Override
+    public boolean isPinned() {
+        throw new UnsupportedOperationException("Unable to pin KING piece");
+    }
 }

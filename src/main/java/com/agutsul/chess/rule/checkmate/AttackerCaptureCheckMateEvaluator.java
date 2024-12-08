@@ -13,6 +13,7 @@ import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.Protectable;
 
 final class AttackerCaptureCheckMateEvaluator
         implements CheckMateEvaluator {
@@ -44,7 +45,7 @@ final class AttackerCaptureCheckMateEvaluator
                 // it can happen when piece making check is protected
                 // by some other piece of the same color
                 if (Piece.Type.KING.equals(sourcePiece.getType())
-                        && board.isProtected(attacker)) {
+                        && ((Protectable) attacker).isProtected()) {
 
                     isCapturable = false;
                     break;

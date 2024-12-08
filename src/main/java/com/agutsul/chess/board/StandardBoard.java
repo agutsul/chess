@@ -154,16 +154,6 @@ public final class StandardBoard
         return this.origin.isMonitored(position, attackerColor);
     }
 
-    @Override
-    public boolean isProtected(Piece<?> piece) {
-        return this.origin.isProtected(piece);
-    }
-
-    @Override
-    public boolean isPinned(Piece<?> piece) {
-        return this.origin.isPinned(piece);
-    }
-
     private static Board createBoard() {
         var board = new BoardImpl();
         board.setPieces(createAllPieces(

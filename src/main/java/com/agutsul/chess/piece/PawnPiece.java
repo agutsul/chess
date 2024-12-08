@@ -24,7 +24,8 @@ import com.agutsul.chess.position.Position;
 
 public interface PawnPiece<COLOR extends Color>
         extends Piece<COLOR>, Movable, Capturable, Promotable,
-                EnPassantable, Disposable, Restorable, Captured {
+                EnPassantable, Disposable, Restorable, Captured,
+                Pinnable, Protectable {
 
     /**
      * Mainly used to implement promotion properly.
@@ -148,6 +149,16 @@ public interface PawnPiece<COLOR extends Color>
         @Override
         public void uncastling(Position position) {
             ((Castlingable) this.origin).uncastling(position);
+        }
+
+        @Override
+        public boolean isPinned() {
+            return ((Pinnable) this.origin).isPinned();
+        }
+
+        @Override
+        public boolean isProtected() {
+            return ((Protectable) this.origin).isProtected();
         }
 
         @Override

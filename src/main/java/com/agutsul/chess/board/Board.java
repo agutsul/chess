@@ -51,6 +51,4 @@ public interface Board {
     boolean isAttacked(Position position, Color attackerColor);
 
     boolean isMonitored(Position position, Color attackerColor);
-    boolean isProtected(Piece<?> piece);
-    boolean isPinned(Piece<?> piece);
 }
