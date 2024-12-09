@@ -87,7 +87,14 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         @Override
         public void uncastling(PIECE piece, Position position) {
             LOGGER.info("Undo castling '{}' to '{}'", piece, position);
-            ((AbstractCastlingPiece<?>) piece).cancelCastling(position);
+
+            // TODO: re-factor
+            if (piece instanceof KingPieceProxy) {
+                var kingPiece = ((KingPieceProxy) piece).origin;
+                ((AbstractCastlingPiece<?>) kingPiece).cancelCastling(position);
+            } else {
+                ((AbstractCastlingPiece<?>) piece).cancelCastling(position);
+            }
         }
     }
 
