@@ -210,7 +210,8 @@ abstract class AbstractPiece<COLOR extends Color>
     public boolean isPinned() {
         LOGGER.info("Checking if piece '{}' is pinned", this);
 
-        var isPinned = getImpacts().stream()
+        var impacts = getImpacts();
+        var isPinned = impacts.stream()
                 .filter(impact -> Impact.Type.PIN.equals(impact.getType()))
                 .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
                 .anyMatch(impact -> Objects.equals(impact.getSource(), this));

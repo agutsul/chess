@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1-0"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:01:11"]
+[WhiteElo "1348"]
+[BlackElo "1166"]
+[WhiteRatingDiff "+7"]
+[BlackRatingDiff "-7"]
+[ECO "A40"]
+[Opening "English Defense #2"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. d4 b6 2. e4 Bb7 3. Ba6 g6 4. Bxb7 Na6 5. Bxa8 Qxa8 6. Nc3 c6 7. Qe2 b5 8. Nf3 Qb7 9. O-O b4 10. Nd1 c5 11. dxc5 Nxc5 12. c3 Qxe4 13. Qxe4 Nxe4 14. Ne3 bxc3 15. bxc3 Nxc3 16. Bb2 Ne2+ 17. Kh1 f5 18. Rfe1 Nf4 19. g3 Nh5 20. Ng5 Bh6 21. f4 Bxg5 22. fxg5 h6 23. Nd5 hxg5 24. Bxh8 Kf7 25. Bb2 e6 26. Nc3 Ngf6 27. Rad1 Ne4 28. Nxe4 fxe4 29. Rxd7+ Ke8 30. Rxa7 Nxg3+ 31. hxg3 g4 32. Rc1 g5 33. Rc8# 1-0

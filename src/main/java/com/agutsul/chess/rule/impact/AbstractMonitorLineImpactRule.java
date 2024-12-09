@@ -54,6 +54,10 @@ public abstract class AbstractMonitorLineImpactRule<COLOR extends Color,
                 }
 
                 monitorPositions.add(position);
+
+                if (!board.isEmpty(position)) {
+                    break;
+                }
             }
 
             if (!monitorPositions.isEmpty()) {

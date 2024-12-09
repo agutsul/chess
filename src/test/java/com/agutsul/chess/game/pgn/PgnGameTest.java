@@ -115,6 +115,14 @@ public class PgnGameTest implements TestFileReader {
         assertGame(game, GameState.Type.WHITE_WIN, 97, 15);
     }
 
+    @Test
+    void testMonitoringEmptyPositionWhileCheckedPgnGame() throws URISyntaxException, IOException {
+        var games = parseGames(readFileContent("chess_monitoring_empty_position.pgn"), 1);
+        var game = (PgnGame) games.get(0);
+
+        assertGame(game, GameState.Type.WHITE_WIN, 65, 15);
+    }
+
     private static void assertGame(PgnGame game, GameState.Type expectedGameState,
                                    int expectedActionsCount, int expectedTagsCount) {
 
