@@ -5,6 +5,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -29,7 +30,8 @@ public final class CompositeCheckActionEvaluator
                                          Collection<Action<?>> actions) {
         this(board, List.of(
                 new AttackerCaptureCheckActionEvaluator(board, actions),
-                new KingMoveCheckActionEvaluator(board, actions)
+                new KingMoveCheckActionEvaluator(board, actions),
+                new KingCapturePieceActionEvaluator(board, actions)
         ));
     }
 
@@ -52,7 +54,7 @@ public final class CompositeCheckActionEvaluator
     public Collection<Action<?>> evaluate(KingPiece<?> king) {
         var tasks = createEvaluationTasks(king);
         try {
-            var results = new ArrayList<Action<?>>();
+            var results = new LinkedHashSet<Action<?>>();
 
             var executor = board.getExecutorService();
             for (var future : executor.invokeAll(tasks)) {

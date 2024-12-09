@@ -35,8 +35,13 @@ public abstract class AbstractEnPassantActionRule<COLOR1 extends Color,
 
         var actions = new ArrayList<ACTION>();
         for (var attackedPosition : nextPositions) {
-            var enemyPiecePosition = board.getPosition(attackedPosition.x(),
-                                                       pawn.getPosition().y());
+            if (!board.isEmpty(attackedPosition)) {
+                continue;
+            }
+
+            var enemyPiecePosition =
+                    board.getPosition(attackedPosition.x(), pawn.getPosition().y());
+
             if (enemyPiecePosition.isEmpty()) {
                 continue;
             }

@@ -122,8 +122,10 @@ final class BoardImpl extends AbstractBoard {
                 actionClass.getSimpleName()
         );
 
+        var actions = getActions(piece);
+
         var actionFilter = new ActionFilter<>(actionClass);
-        var filteredActions = actionFilter.apply(getActions(piece));
+        var filteredActions = actionFilter.apply(actions);
 
         return filteredActions;
     }
