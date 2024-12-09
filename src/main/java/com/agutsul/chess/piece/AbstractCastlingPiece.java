@@ -15,7 +15,6 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.impact.Impact;
-import com.agutsul.chess.piece.KingPiece.KingPieceProxy;
 import com.agutsul.chess.piece.state.CastlingablePieceState;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
@@ -88,10 +87,9 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         public void uncastling(PIECE piece, Position position) {
             LOGGER.info("Undo castling '{}' to '{}'", piece, position);
 
-            // TODO: re-factor
-            if (piece instanceof KingPieceProxy) {
-                var kingPiece = ((KingPieceProxy) piece).origin;
-                ((AbstractCastlingPiece<?>) kingPiece).cancelCastling(position);
+            if (piece instanceof PieceProxy) {
+                var proxy = (PieceProxy) piece;
+                ((AbstractCastlingPiece<?>) proxy.origin).cancelCastling(position);
             } else {
                 ((AbstractCastlingPiece<?>) piece).cancelCastling(position);
             }
@@ -147,16 +145,23 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
         private void doCastling(CastlingMoveAction<?,?> action) {
             var piece = action.getSource();
+            var position = action.getPosition();
 
-            LOGGER.info("Castling '{}' to '{}'", piece, action.getPosition());
+            LOGGER.info("Castling '{}' to '{}'", piece, position);
 
-            // TODO: re-factor
-            if (piece instanceof KingPieceProxy) {
-                var kingPiece = ((KingPieceProxy) piece).origin;
-                ((AbstractCastlingPiece<?>) kingPiece).doCastling(action.getPosition());
+            if (piece instanceof PieceProxy) {
+                doCastling((PieceProxy) piece, position);
             } else {
-                ((AbstractCastlingPiece<?>) piece).doCastling(action.getPosition());
+                doCastling((AbstractCastlingPiece<?>) piece, position);
             }
+        }
+
+        private void doCastling(PieceProxy proxy, Position position) {
+            doCastling((AbstractCastlingPiece<?>) proxy.origin, position);
+        }
+
+        private void doCastling(AbstractCastlingPiece<?> piece, Position position) {
+            piece.doCastling(position);
         }
     }
 
