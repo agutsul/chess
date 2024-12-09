@@ -48,7 +48,7 @@ public abstract class AbstractSourceAction<SOURCE>
         }
 
         var other = (AbstractSourceAction<?>) obj;
-        return Objects.equals(source, other.getSource())
+        return Objects.equals(getSource(), other.getSource())
                 && Objects.equals(getType(), other.getType());
     }
 }

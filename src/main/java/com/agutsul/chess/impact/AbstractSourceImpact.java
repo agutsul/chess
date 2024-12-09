@@ -48,7 +48,7 @@ public abstract class AbstractSourceImpact<SOURCE>
         }
 
         var other = (AbstractSourceImpact<?>) obj;
-        return Objects.equals(source, other.getSource())
+        return Objects.equals(getSource(), other.getSource())
                 && Objects.equals(getType(), other.getType());
     }
 }
