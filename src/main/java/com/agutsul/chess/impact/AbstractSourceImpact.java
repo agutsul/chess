@@ -1,5 +1,7 @@
 package com.agutsul.chess.impact;
 
+import java.util.Objects;
+
 public abstract class AbstractSourceImpact<SOURCE>
         implements Impact<SOURCE> {
 
@@ -24,5 +26,29 @@ public abstract class AbstractSourceImpact<SOURCE>
     @Override
     public String toString() {
         return getCode();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(source, type);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null) {
+            return false;
+        }
+
+        if (!(obj instanceof AbstractSourceImpact)) {
+            return false;
+        }
+
+        var other = (AbstractSourceImpact<?>) obj;
+        return Objects.equals(source, other.getSource())
+                && Objects.equals(getType(), other.getType());
     }
 }
