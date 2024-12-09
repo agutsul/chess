@@ -16,7 +16,7 @@ public interface KingPiece<COLOR extends Color>
      */
     final class KingPieceProxy
             extends PieceProxy
-            implements KingPiece<Color>, ICastlingable {
+            implements KingPiece<Color> {
 
         KingPieceProxy(KingPiece<Color> origin) {
             super(origin);
@@ -75,16 +75,6 @@ public interface KingPiece<COLOR extends Color>
         @Override
         public void uncastling(Position position) {
             ((Castlingable) this.origin).uncastling(position);
-        }
-
-        @Override
-        public void doCastling(Position position) {
-            ((ICastlingable) this.origin).doCastling(position);
-        }
-
-        @Override
-        public void cancelCastling(Position position) {
-            ((ICastlingable) this.origin).cancelCastling(position);
         }
     }
 }

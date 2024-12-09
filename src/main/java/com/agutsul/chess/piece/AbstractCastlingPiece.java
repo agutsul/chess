@@ -15,6 +15,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.impact.Impact;
+import com.agutsul.chess.piece.KingPiece.KingPieceProxy;
 import com.agutsul.chess.piece.state.CastlingablePieceState;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
@@ -22,7 +23,7 @@ import com.agutsul.chess.rule.Rule;
 
 abstract class AbstractCastlingPiece<COLOR extends Color>
         extends AbstractPiece<COLOR>
-        implements ICastlingable {
+        implements Castlingable {
 
     private static final Logger LOGGER = getLogger(AbstractCastlingPiece.class);
 
@@ -56,13 +57,11 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         ((CastlingablePieceState<COLOR,AbstractCastlingPiece<COLOR>>) state).uncastling(this, position);
     }
 
-    @Override
-    public final void doCastling(Position position) {
+    final void doCastling(Position position) {
         super.doMove(position);
     }
 
-    @Override
-    public final void cancelCastling(Position position) {
+    final void cancelCastling(Position position) {
         super.cancelMove(position);
     }
 
@@ -88,7 +87,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         @Override
         public void uncastling(PIECE piece, Position position) {
             LOGGER.info("Undo castling '{}' to '{}'", piece, position);
-            ((ICastlingable) piece).cancelCastling(position);
+            ((AbstractCastlingPiece<?>) piece).cancelCastling(position);
         }
     }
 
@@ -144,7 +143,13 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
             LOGGER.info("Castling '{}' to '{}'", piece, action.getPosition());
 
-            ((ICastlingable) piece).doCastling(action.getPosition());
+            // TODO: re-factor
+            if (piece instanceof KingPieceProxy) {
+                var kingPiece = ((KingPieceProxy) piece).origin;
+                ((AbstractCastlingPiece<?>) kingPiece).doCastling(action.getPosition());
+            } else {
+                ((AbstractCastlingPiece<?>) piece).doCastling(action.getPosition());
+            }
         }
     }
 

@@ -29,7 +29,7 @@ import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
 abstract class AbstractPiece<COLOR extends Color>
-        implements Piece<COLOR>, IMovable, ICapturable, Protectable {
+        implements Piece<COLOR>, Movable, Capturable, Protectable {
 
     private static final Logger LOGGER = getLogger(AbstractPiece.class);
 
@@ -264,8 +264,8 @@ abstract class AbstractPiece<COLOR extends Color>
         }
 
         var other = (Piece<?>) obj;
-        return this.type == other.getType()
-                && Objects.equals(this.color, other.getColor())
+        return Objects.equals(getType(), other.getType())
+                && Objects.equals(getColor(), other.getColor())
                 && Objects.equals(getPosition(), other.getPosition());
     }
 
@@ -277,13 +277,11 @@ abstract class AbstractPiece<COLOR extends Color>
         this.capturedAt = instant;
     }
 
-    @Override
-    public final void doMove(Position position) {
+    final void doMove(Position position) {
         setPosition(position);
     }
 
-    @Override
-    public final void cancelMove(Position position) {
+    final void cancelMove(Position position) {
         if (!this.positions.contains(position)) {
             throw new IllegalPositionException(
                     String.format("Unable to cancel unvisited position '%s'", position)
@@ -296,8 +294,7 @@ abstract class AbstractPiece<COLOR extends Color>
         // no need to set previous position as it is already the last item in positions array
     }
 
-    @Override
-    public final void doCapture(Piece<?> piece) {
+    final void doCapture(Piece<?> piece) {
         // save captured timestamp
         ((Captured) piece).setCapturedAt(now());
 
@@ -306,8 +303,7 @@ abstract class AbstractPiece<COLOR extends Color>
         doMove(piece.getPosition());
     }
 
-    @Override
-    public final void cancelCapture(Piece<?> piece) {
+    final void cancelCapture(Piece<?> piece) {
         cancelMove(getPosition());
         // clear capturedAt timestamp
         ((Captured) piece).setCapturedAt(null);
