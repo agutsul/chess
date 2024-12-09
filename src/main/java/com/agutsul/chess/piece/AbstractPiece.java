@@ -22,6 +22,7 @@ import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.IllegalPositionException;
 import com.agutsul.chess.impact.Impact;
+import com.agutsul.chess.impact.PiecePinImpact;
 import com.agutsul.chess.impact.PieceProtectImpact;
 import com.agutsul.chess.piece.state.CapturablePieceState;
 import com.agutsul.chess.piece.state.MovablePieceState;
@@ -192,7 +193,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
         // piece can't protect itself. only other piece with the same color
         var protectors = board.getPieces(getColor()).stream()
-                .filter(piece -> !Objects.equals(piece.getPosition(), getPosition()))
+                .filter(piece -> !Objects.equals(piece, this))
                 .toList();
 
         var isProtected = protectors.stream()
@@ -201,8 +202,7 @@ abstract class AbstractPiece<COLOR extends Color>
                 .filter(impact -> Impact.Type.PROTECT.equals(impact.getType()))
                 .map(impact -> (PieceProtectImpact<?,?,?>) impact)
                 .map(PieceProtectImpact::getTarget)
-                .map(Piece::getPosition)
-                .anyMatch(protectedPosition -> Objects.equals(protectedPosition, getPosition()));
+                .anyMatch(protector -> Objects.equals(protector, this));
 
         return isProtected;
     }
@@ -212,8 +212,8 @@ abstract class AbstractPiece<COLOR extends Color>
 
         var isPinned = getImpacts().stream()
                 .filter(impact -> Impact.Type.PIN.equals(impact.getType()))
-                .map(Impact::getPosition)
-                .anyMatch(targetPosition -> Objects.equals(getPosition(), targetPosition));
+                .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
+                .anyMatch(impact -> Objects.equals(impact.getSource(), this));
 
         return isPinned;
     }
