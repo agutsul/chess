@@ -195,14 +195,14 @@ public class PerformActionCommand
                 this.type = type;
             }
 
-            static boolean matches(Action<?> action, Piece<?> source, Position target) {
-                return MODES.get(action.getType()).equals(action, source, target);
-            }
-
             abstract boolean equals(Action<?> action, Piece<?> piece, Position position);
 
             private Action.Type type() {
                 return type;
+            }
+
+            private static boolean matches(Action<?> action, Piece<?> source, Position target) {
+                return MODES.get(action.getType()).equals(action, source, target);
             }
         }
     }
