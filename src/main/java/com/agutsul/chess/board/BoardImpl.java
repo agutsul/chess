@@ -31,6 +31,7 @@ import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.impact.PieceControlImpact;
+import com.agutsul.chess.impact.PiecePinImpact;
 import com.agutsul.chess.piece.BlackPieceFactory;
 import com.agutsul.chess.piece.Captured;
 import com.agutsul.chess.piece.KingPiece;
@@ -135,8 +136,34 @@ final class BoardImpl extends AbstractBoard {
         LOGGER.info("Getting actions for '{}'", piece);
 
         var actions = this.state.getActions(piece);
-        if (Piece.Type.KING.equals(piece.getType()) || !((Pinnable) piece).isPinned()) {
+        if (Piece.Type.KING.equals(piece.getType())
+                || !((Pinnable) piece).isPinned()) {
+
             return actions;
+        }
+
+        var impacts = getImpacts(piece);
+        var optinalPinImpact = impacts.stream()
+                .filter(impact -> Impact.Type.PIN.equals(impact.getType()))
+                .findFirst();
+
+        if (optinalPinImpact.isEmpty()) {
+            return actions;
+        }
+
+        var pinImpact = (PiecePinImpact<?,?,?,?,?>) optinalPinImpact.get();
+        var checkImpact = pinImpact.getTarget();
+
+        var pinnedLine = checkImpact.getAttackLine();
+        if (pinnedLine.isPresent()) {
+            var line = pinnedLine.get();
+            var allowedActions = actions.stream()
+                    .filter(action -> line.contains(action.getPosition()))
+                    .toList();
+
+            if (!allowedActions.isEmpty()) {
+                return allowedActions;
+            }
         }
 
         var optionalKing = getKing(piece.getColor().invert());

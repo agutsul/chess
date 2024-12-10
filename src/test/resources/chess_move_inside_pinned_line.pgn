@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "0-1"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:01:11"]
+[WhiteElo "1506"]
+[BlackElo "1426"]
+[WhiteRatingDiff "-16"]
+[BlackRatingDiff "+14"]
+[ECO "A02"]
+[Opening "Bird Opening"]
+[TimeControl "60+0"]
+[Termination "Time forfeit"]
+
+1. f4 b6 2. c3 Bb7 3. d4 g6 4. e4 Bg7 5. e5 f6 6. Nf3 fxe5 7. fxe5 Nh6 8. Bc4 e6 9. O-O O-O 10. Ng5 Nf5 11. Bd3 d5 12. Bxf5 exf5 13. Na3 Qe7 14. Bf4 Nd7 15. Qb3 h6 16. Nf3 c5 17. Rae1 c4 18. Qc2 a6 19. Qc1 b5 20. Bxh6 Nb6 21. Bxg7 Kxg7 22. Ng5 Rh8 23. e6 Raf8 24. Nf7 Rh7 25. Re3 Bc8 26. Nc2 Bxe6 27. Ne5 f4 28. Ref3 g5 29. Ne3 Rfh8 30. h3 fxe3 31. Qxe3 Nd7 32. Rg3 Nxe5 33. dxe5 g4 34. Rxg4+ Bxg4 35. Qg5+ Qxg5 36. hxg4 Qe3+ 0-1

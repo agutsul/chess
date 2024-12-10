@@ -130,7 +130,7 @@ public class PiecePinImpactRule<COLOR1 extends Color,
         if (king != null && attacker != null
                 && king.getColor() != attacker.getColor()) {
 
-            return new PiecePinImpact<>(pinnedPiece, king, attacker);
+            return new PiecePinImpact<>(pinnedPiece, king, attacker, line);
         }
 
         return null;
