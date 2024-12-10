@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toMap;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -19,11 +20,13 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.PieceTypeLazyInitializer;
 import com.agutsul.chess.position.Position;
 
-public enum ActionMementoFactory {
+public enum ActionMementoFactory
+        implements Function<Action<?>,ActionMemento<?,?>> {
+
     MOVE_MODE(Action.Type.MOVE) {
 
         @Override
-        ActionMemento<?,?> create(Action<?> action) {
+        public ActionMemento<?,?> apply(Action<?> action) {
             return createMemento((PieceMoveAction<?,?>) action);
         }
 
@@ -38,7 +41,7 @@ public enum ActionMementoFactory {
     CAPTURE_MODE(Action.Type.CAPTURE) {
 
         @Override
-        ActionMemento<?,?> create(Action<?> action) {
+        public ActionMemento<?,?> apply(Action<?> action) {
             return createMemento((PieceCaptureAction<?,?,?,?>) action);
         }
 
@@ -53,7 +56,7 @@ public enum ActionMementoFactory {
     PROMOTE_MODE(Action.Type.PROMOTE) {
 
         @Override
-        ActionMemento<?,?> create(Action<?> action) {
+        public ActionMemento<?,?> apply(Action<?> action) {
             return createMemento((PiecePromoteAction<?,?>) action);
         }
 
@@ -76,7 +79,7 @@ public enum ActionMementoFactory {
     CASTLING_MODE(Action.Type.CASTLING) {
 
         @Override
-        ActionMemento<?,?> create(Action<?> action) {
+        public ActionMemento<?,?> apply(Action<?> action) {
             return createMemento((PieceCastlingAction<?,?,?>) action);
         }
 
@@ -117,7 +120,7 @@ public enum ActionMementoFactory {
     EN_PASSANT_MODE(Action.Type.EN_PASSANT) {
 
         @Override
-        ActionMemento<?,?> create(Action<?> action) {
+        public ActionMemento<?,?> apply(Action<?> action) {
             return createMemento((PieceEnPassantAction<?,?,?,?>) action);
         }
 
@@ -152,10 +155,8 @@ public enum ActionMementoFactory {
         return type;
     }
 
-    abstract ActionMemento<?,?> create(Action<?> action);
-
     public static ActionMemento<?,?> createMemento(Action<?> action) {
-        return MODES.get(action.getType()).create(action);
+        return MODES.get(action.getType()).apply(action);
     }
 
     static ActionMemento<String,String> createMemento(Action.Type actionType,

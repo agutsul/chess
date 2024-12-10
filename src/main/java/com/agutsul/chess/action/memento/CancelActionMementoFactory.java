@@ -4,6 +4,7 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.action.Action;
@@ -17,12 +18,14 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.PawnPiece;
 
-public enum CancelActionMementoFactory {
+public enum CancelActionMementoFactory
+        implements BiFunction<Board,ActionMemento<?,?>,Action<?>> {
+
     MOVE_MODE(Action.Type.MOVE) {
 
         @Override
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        Action<?> create(Board board, ActionMemento<?,?> memento) {
+        public Action<?> apply(Board board, ActionMemento<?,?> memento) {
             var actionMemento = (ActionMemento<String,String>) memento;
 
             var piece = board.getPiece(actionMemento.getTarget());
@@ -35,7 +38,7 @@ public enum CancelActionMementoFactory {
 
         @Override
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        Action<?> create(Board board, ActionMemento<?,?> memento) {
+        public Action<?> apply(Board board, ActionMemento<?,?> memento) {
             var actionMemento = (ActionMemento<String,String>) memento;
 
             var predator = board.getPiece(actionMemento.getTarget());
@@ -54,37 +57,40 @@ public enum CancelActionMementoFactory {
 
         @Override
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        Action<?> create(Board board, ActionMemento<?,?> memento) {
+        public Action<?> apply(Board board, ActionMemento<?,?> memento) {
             var actionMemento = (PromoteActionMemento) memento;
             var originMemento = actionMemento.getTarget();
 
-            if (Action.Type.MOVE.equals(originMemento.getActionType())) {
-                var originAction = MOVE_MODE.create(board, originMemento);
+            var originAction = createAction(board, originMemento);
+
+            switch (originMemento.getActionType()) {
+            case Action.Type.MOVE:
                 return new CancelPromoteAction((CancelMoveAction<?,?>) originAction);
-            }
-
-            if (Action.Type.CAPTURE.equals(originMemento.getActionType())) {
-                var originAction = CAPTURE_MODE.create(board, originMemento);
+            case Action.Type.CAPTURE:
                 return new CancelPromoteAction((CancelCaptureAction<?,?,?,?>) originAction);
+            default:
+                throw new IllegalActionException(String.format("%s: %s",
+                        UNSUPPORTED_ACTION_MESSAGE,
+                        originMemento.getActionType()
+                ));
             }
-
-            throw new IllegalActionException(String.format("%s: %s",
-                    UNSUPPORTED_ACTION_MESSAGE,
-                    originMemento.getActionType()
-            ));
         }
     },
     CASTLING_MODE(Action.Type.CASTLING) {
 
         @Override
         @SuppressWarnings({ "unchecked", "rawtypes" })
-        Action<?> create(Board board, ActionMemento<?,?> memento) {
+        public Action<?> apply(Board board, ActionMemento<?,?> memento) {
             var castlingMemento = (CastlingActionMemento) memento;
 
             var kingAction = uncastlingAction(board, castlingMemento.getSource());
             var rookAction = uncastlingAction(board, castlingMemento.getTarget());
 
-            return new CancelCastlingAction(castlingMemento.getCode(), kingAction, rookAction);
+            return new CancelCastlingAction(
+                    castlingMemento.getCode(),
+                    kingAction,
+                    rookAction
+            );
         }
 
         @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -99,7 +105,7 @@ public enum CancelActionMementoFactory {
     EN_PASSANT_MODE(Action.Type.EN_PASSANT) {
 
         @Override
-        Action<?> create(Board board, ActionMemento<?,?> memento) {
+        public Action<?> apply(Board board, ActionMemento<?,?> memento) {
             var actionMemento = (EnPassantActionMemento) memento;
             var captureMemento = actionMemento.getSource();
 
@@ -129,9 +135,7 @@ public enum CancelActionMementoFactory {
         return type;
     }
 
-    abstract Action<?> create(Board board, ActionMemento<?,?> memento);
-
     public static Action<?> createAction(Board board, ActionMemento<?,?> memento) {
-        return MODES.get(memento.getActionType()).create(board, memento);
+        return MODES.get(memento.getActionType()).apply(board, memento);
     }
 }
