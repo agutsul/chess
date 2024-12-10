@@ -1,6 +1,5 @@
 package com.agutsul.chess.command;
 
-import static com.agutsul.chess.command.PerformActionCommand.ActionMatcher.matches;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
@@ -90,7 +89,7 @@ public class PerformActionCommand
     protected void preExecute() throws CommandException {
         var allActions = board.getActions(this.sourcePiece);
         var targetAction = allActions.stream()
-                .filter(action -> matches(action, this.sourcePiece, this.targetPosition))
+                .filter(a -> ActionMatcher.matches(a, this.sourcePiece, this.targetPosition))
                 .findFirst();
 
         if (targetAction.isEmpty()) {
@@ -124,7 +123,7 @@ public class PerformActionCommand
         return ActionMementoFactory.createMemento(action);
     }
 
-    enum ActionMatcher {
+    private enum ActionMatcher {
         MOVE_MODE(Action.Type.MOVE) {
             @Override
             boolean equals(Action<?> action, Piece<?> piece, Position position) {
