@@ -61,13 +61,13 @@ public enum CancelActionMementoFactory
             var actionMemento = (PromoteActionMemento) memento;
             var originMemento = actionMemento.getTarget();
 
-            var originAction = createAction(board, originMemento);
+            var action = createAction(board, originMemento);
 
             switch (originMemento.getActionType()) {
             case Action.Type.MOVE:
-                return new CancelPromoteAction((CancelMoveAction<?,?>) originAction);
+                return new CancelPromoteAction((CancelMoveAction<?,?>) action);
             case Action.Type.CAPTURE:
-                return new CancelPromoteAction((CancelCaptureAction<?,?,?,?>) originAction);
+                return new CancelPromoteAction((CancelCaptureAction<?,?,?,?>) action);
             default:
                 throw new IllegalActionException(String.format("%s: %s",
                         UNSUPPORTED_ACTION_MESSAGE,
@@ -131,7 +131,7 @@ public enum CancelActionMementoFactory
         this.type = type;
     }
 
-    Action.Type type() {
+    private Action.Type type() {
         return type;
     }
 

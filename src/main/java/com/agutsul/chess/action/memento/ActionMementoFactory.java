@@ -159,9 +159,9 @@ public enum ActionMementoFactory
         return MODES.get(action.getType()).apply(action);
     }
 
-    static ActionMemento<String,String> createMemento(Action.Type actionType,
-                                                      Piece<?> sourcePiece,
-                                                      Position targetPosition) {
+    private static ActionMemento<String,String> createMemento(Action.Type actionType,
+                                                              Piece<?> sourcePiece,
+                                                              Position targetPosition) {
         return new ActionMementoImpl<>(
                 sourcePiece.getColor(),
                 actionType,
