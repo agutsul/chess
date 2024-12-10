@@ -7,6 +7,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -87,9 +88,11 @@ public class PerformActionCommand
 
     @Override
     protected void preExecute() throws CommandException {
+        var actionFilter = new ActionFilter(this.sourcePiece, this.targetPosition);
+
         var allActions = board.getActions(this.sourcePiece);
         var targetAction = allActions.stream()
-                .filter(a -> ActionMatcher.matches(a, this.sourcePiece, this.targetPosition))
+                .filter(action -> actionFilter.test(action))
                 .findFirst();
 
         if (targetAction.isEmpty()) {
@@ -123,67 +126,84 @@ public class PerformActionCommand
         return ActionMementoFactory.createMemento(action);
     }
 
-    private enum ActionMatcher {
-        MOVE_MODE(Action.Type.MOVE) {
-            @Override
-            boolean equals(Action<?> action, Piece<?> piece, Position position) {
-                var moveAction = (PieceMoveAction<?,?>) action;
-                return Objects.equals(moveAction.getSource(), piece)
-                        && Objects.equals(moveAction.getPosition(), position);
-            }
-        },
-        CAPTURE_MODE(Action.Type.CAPTURE) {
-            @Override
-            boolean equals(Action<?> action, Piece<?> piece, Position position) {
-                var captureAction = (PieceCaptureAction<?,?,?,?>) action;
-                return Objects.equals(captureAction.getSource(), piece)
-                        && Objects.equals(captureAction.getPosition(), position);
-            }
-        },
-        PROMOTE_MODE(Action.Type.PROMOTE) {
-            @Override
-            boolean equals(Action<?> action, Piece<?> piece, Position position) {
-                var promoteAction = (PiecePromoteAction<?,?>) action;
-                return matches(promoteAction.getSource(), piece, position);
-            }
-        },
-        CASTLING_MODE(Action.Type.CASTLING) {
-            @Override
-            boolean equals(Action<?> action, Piece<?> piece, Position position) {
-                var castlingAction = (PieceCastlingAction<?,?,?>) action;
-                if (matches(castlingAction.getSource(), piece, position)) {
-                    return true;
+    private static final class ActionFilter
+            implements Predicate<Action<?>> {
+
+        private final Piece<?> piece;
+        private final Position position;
+
+        ActionFilter(Piece<?> piece, Position position) {
+            this.piece = piece;
+            this.position = position;
+        }
+
+        @Override
+        public boolean test(Action<?> action) {
+            return ActionMatcher.matches(action, this.piece, this.position);
+        }
+
+        private enum ActionMatcher {
+            MOVE_MODE(Action.Type.MOVE) {
+                @Override
+                boolean equals(Action<?> action, Piece<?> piece, Position position) {
+                    var moveAction = (PieceMoveAction<?,?>) action;
+                    return Objects.equals(moveAction.getSource(), piece)
+                            && Objects.equals(moveAction.getPosition(), position);
                 }
+            },
+            CAPTURE_MODE(Action.Type.CAPTURE) {
+                @Override
+                boolean equals(Action<?> action, Piece<?> piece, Position position) {
+                    var captureAction = (PieceCaptureAction<?,?,?,?>) action;
+                    return Objects.equals(captureAction.getSource(), piece)
+                            && Objects.equals(captureAction.getPosition(), position);
+                }
+            },
+            PROMOTE_MODE(Action.Type.PROMOTE) {
+                @Override
+                boolean equals(Action<?> action, Piece<?> piece, Position position) {
+                    var promoteAction = (PiecePromoteAction<?,?>) action;
+                    return matches(promoteAction.getSource(), piece, position);
+                }
+            },
+            CASTLING_MODE(Action.Type.CASTLING) {
+                @Override
+                boolean equals(Action<?> action, Piece<?> piece, Position position) {
+                    var castlingAction = (PieceCastlingAction<?,?,?>) action;
+                    if (matches(castlingAction.getSource(), piece, position)) {
+                        return true;
+                    }
 
-                return matches(castlingAction.getTarget(), piece, position);
+                    return matches(castlingAction.getTarget(), piece, position);
+                }
+            },
+            EN_PASSANT_MODE(Action.Type.EN_PASSANT) {
+                @Override
+                boolean equals(Action<?> action, Piece<?> piece, Position position) {
+                    var enPassantAction = (PieceEnPassantAction<?,?,?,?>) action;
+                    return Objects.equals(enPassantAction.getSource(), piece)
+                            && Objects.equals(enPassantAction.getPosition(), position);
+                }
+            };
+
+            private static final Map<Action.Type, ActionMatcher> MODES =
+                    Stream.of(values()).collect(toMap(ActionMatcher::type, identity()));
+
+            private Action.Type type;
+
+            ActionMatcher(Action.Type type) {
+                this.type = type;
             }
-        },
-        EN_PASSANT_MODE(Action.Type.EN_PASSANT) {
-            @Override
-            boolean equals(Action<?> action, Piece<?> piece, Position position) {
-                var enPassantAction = (PieceEnPassantAction<?,?,?,?>) action;
-                return Objects.equals(enPassantAction.getSource(), piece)
-                        && Objects.equals(enPassantAction.getPosition(), position);
+
+            static boolean matches(Action<?> action, Piece<?> source, Position target) {
+                return MODES.get(action.getType()).equals(action, source, target);
             }
-        };
 
-        private static final Map<Action.Type, ActionMatcher> MODES =
-                Stream.of(values()).collect(toMap(ActionMatcher::type, identity()));
+            abstract boolean equals(Action<?> action, Piece<?> piece, Position position);
 
-        private Action.Type type;
-
-        ActionMatcher(Action.Type type) {
-            this.type = type;
-        }
-
-        static boolean matches(Action<?> action, Piece<?> source, Position target) {
-            return MODES.get(action.getType()).equals(action, source, target);
-        }
-
-        abstract boolean equals(Action<?> action, Piece<?> piece, Position position);
-
-        private Action.Type type() {
-            return type;
+            private Action.Type type() {
+                return type;
+            }
         }
     }
 }
