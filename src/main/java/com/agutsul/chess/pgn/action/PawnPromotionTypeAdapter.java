@@ -18,11 +18,13 @@ public final class PawnPromotionTypeAdapter
 
     @Override
     public String adapt(String action) {
+        var command = prepare(action);
+
         var pattern = compile(PROMOTE_PATTERN);
-        var matcher = pattern.matcher(action);
+        var matcher = pattern.matcher(command);
 
         if (!matcher.matches()) {
-            throw new IllegalActionException(formatInvalidActionMessage(action));
+            throw new IllegalActionException(formatInvalidActionMessage(command));
         }
 
         // promotion piece type

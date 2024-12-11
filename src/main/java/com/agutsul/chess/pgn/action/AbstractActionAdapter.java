@@ -2,6 +2,7 @@ package com.agutsul.chess.pgn.action;
 
 import static com.agutsul.chess.position.Position.codeOf;
 import static org.apache.commons.lang3.StringUtils.contains;
+import static org.apache.commons.lang3.StringUtils.remove;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -76,5 +77,10 @@ abstract class AbstractActionAdapter
 
     static String formatUnknownPieceMessage(String action) {
         return String.format("Unknown source piece for action: '%s'", action);
+    }
+
+    static String prepare(String action) {
+        var command = remove(remove(action, "+"), "#");
+        return remove(remove(command, "!"), "?");
     }
 }

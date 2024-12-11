@@ -15,7 +15,7 @@ import org.apache.commons.lang3.builder.Builder;
 final class PgnStringBuilder
         implements Builder<String> {
 
-    private static final String EVAL_PATTERN_TEMPLATE = "(%eval ){1}[-]{0,1}[#]{0,1}[\\d\\.]{1,}";
+    private static final String EVAL_PATTERN_TEMPLATE = "(%eval ){1}[-]{0,1}[#]{0,1}[-]{0,1}[\\d\\.]{1,}";
     private static final String DOTS_PATTERN_TEMPLATE = "([\\d]{1,}[\\.]{3}){1}";
 
     private final StringBuilder stringBuilder;

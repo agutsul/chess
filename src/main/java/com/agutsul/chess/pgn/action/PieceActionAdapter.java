@@ -4,7 +4,6 @@ import static com.agutsul.chess.pgn.action.KingCastlingActionAdapter.CastlingSid
 import static com.agutsul.chess.pgn.action.KingCastlingActionAdapter.CastlingSide.QUEEN_SIDE;
 import static org.apache.commons.lang3.StringUtils.contains;
 import static org.apache.commons.lang3.StringUtils.isAllUpperCase;
-import static org.apache.commons.lang3.StringUtils.remove;
 import static org.apache.commons.lang3.StringUtils.substring;
 
 import java.util.Objects;
@@ -127,11 +126,6 @@ public final class PieceActionAdapter
         }
 
         throw new IllegalActionException(formatInvalidActionMessage(action));
-    }
-
-    private static String prepare(String action) {
-        var command = remove(remove(action, "+"), "#");
-        return remove(remove(command, "!"), "?");
     }
 
     private static String firstSymbol(String action) {

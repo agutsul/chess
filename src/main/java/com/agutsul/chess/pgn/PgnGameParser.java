@@ -1,10 +1,12 @@
 package com.agutsul.chess.pgn;
 
+import static java.lang.System.lineSeparator;
 import static java.util.Collections.emptyList;
 import static org.antlr.v4.runtime.CharStreams.fromReader;
 import static org.apache.commons.io.FileUtils.lineIterator;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
+import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.trim;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -27,35 +29,7 @@ public final class PgnGameParser {
     private static final Logger LOGGER = getLogger(PgnGame.class);
 
     public static List<Game> parse(String string) {
-        try (var reader = new StringReader(string)) {
-            var lexer = new PGNLexer(fromReader(reader));
-            var parser = new PGNParser(new CommonTokenStream(lexer));
-
-            parser.removeErrorListeners();
-
-            var errorListener = new PgnAntlrErrorListener();
-            parser.addErrorListener(errorListener);
-
-            var pgnListener = new PgnAntlrListener();
-
-            ParseTreeWalker.DEFAULT.walk(pgnListener, parser.parse());
-
-            if (errorListener.hasAnyErrors()) {
-                var message = String.format("Parsing: '%s'. Errors: %s",
-                        string,
-                        errorListener.getErrors()
-                );
-                LOGGER.error(message);
-                return emptyList();
-            }
-
-            return pgnListener.getGames();
-        } catch (IOException e) {
-            var message = String.format("Exception parsing PGN: '%s'", string);
-            LOGGER.error(message, e);
-        }
-
-        return emptyList();
+        return parse(string.split(lineSeparator()));
     }
 
     public static List<Game> parse(File file) {
@@ -83,5 +57,53 @@ public final class PgnGameParser {
         }
 
         return games;
+    }
+
+    private static List<Game> parse(String[] lines) {
+        var games = new ArrayList<String>();
+
+        var builder = new PgnStringBuilder();
+
+        String string = null;
+        for (var line : lines) {
+            string = trim(line);
+            builder.append(string);
+
+            if (isNotBlank(string) && isNumeric(string.substring(0,1))) {
+                games.add(builder.build());
+                builder.reset();
+            }
+        }
+
+        var gameString = join(games, lineSeparator());
+        try (var reader = new StringReader(gameString)) {
+            var lexer = new PGNLexer(fromReader(reader));
+            var parser = new PGNParser(new CommonTokenStream(lexer));
+
+            parser.removeErrorListeners();
+
+            var errorListener = new PgnAntlrErrorListener();
+            parser.addErrorListener(errorListener);
+
+            var pgnListener = new PgnAntlrListener();
+
+            ParseTreeWalker.DEFAULT.walk(pgnListener, parser.parse());
+
+            if (errorListener.hasAnyErrors()) {
+                var message = String.format("Parsing: '%s'. Errors: %s",
+                        gameString,
+                        errorListener.getErrors()
+                );
+                LOGGER.error(message);
+                return emptyList();
+            }
+
+            return pgnListener.getGames();
+        } catch (IOException e) {
+            var message = String.format("Exception parsing PGN: '%s'", gameString);
+            LOGGER.error(message, e);
+        }
+
+        return emptyList();
     }
 }
