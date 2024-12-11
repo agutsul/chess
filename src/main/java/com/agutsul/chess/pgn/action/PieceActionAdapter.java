@@ -80,7 +80,7 @@ public final class PieceActionAdapter
         case 5:
             return adaptPieceCaptureAction(command);
         default:
-            throw new IllegalActionException(formatInvalidActionMessage(command));
+            throw new IllegalActionException(formatInvalidActionMessage(action));
         }
     }
 

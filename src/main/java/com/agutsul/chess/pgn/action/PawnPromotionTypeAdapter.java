@@ -24,7 +24,7 @@ public final class PawnPromotionTypeAdapter
         var matcher = pattern.matcher(command);
 
         if (!matcher.matches()) {
-            throw new IllegalActionException(formatInvalidActionMessage(command));
+            throw new IllegalActionException(formatInvalidActionMessage(action));
         }
 
         // promotion piece type
