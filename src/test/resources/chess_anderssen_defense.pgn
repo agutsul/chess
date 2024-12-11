@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1-0"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:05:08"]
+[WhiteElo "1361"]
+[BlackElo "1477"]
+[WhiteRatingDiff "+16"]
+[BlackRatingDiff "-15"]
+[ECO "C25"]
+[Opening "Vienna Game: Anderssen Defense"]
+[TimeControl "60+3"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nc3 Bc5 3. d3 a6 4. f4 exf4 5. Bxf4 d6 6. Nf3 h6 7. Be2 Nf6 8. Qd2 Nh5 9. Be3 Bxe3 10. Qxe3 Nf6 11. O-O Bg4 12. h3 Bh5 13. Nh2 Bxe2 14. Qxe2 O-O 15. Ng4 Nbd7 16. Nxf6+ Nxf6 17. Qf3 Qe7 18. Qg3 Nh7 19. Nd5 Qd7 20. Rf2 c6 21. Nf6+ Nxf6 22. Rxf6 Qe7 23. Rxh6 g6 24. Rh4 Qf6 25. Rf1 Qg7 26. Qxd6 Qxb2 27. e5 Qxc2 28. Qf6 Qc3 29. Qh8# 1-0

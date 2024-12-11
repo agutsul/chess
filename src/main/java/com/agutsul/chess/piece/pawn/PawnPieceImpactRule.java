@@ -18,7 +18,7 @@ public final class PawnPieceImpactRule
         super(new CompositePieceRule<Impact<?>>(
                 new PawnCheckImpactRule<>(board, captureAlgo),
                 new PawnProtectImpactRule<>(board, captureAlgo),
-                new PawnMonitorImpactRule<>(board, captureAlgo),
+//                new PawnMonitorImpactRule<>(board, captureAlgo),
                 new PawnControlImpactRule<>(board, captureAlgo),
                 new PiecePinImpactRule<>(board)
             )

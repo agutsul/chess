@@ -197,7 +197,7 @@ abstract class AbstractPiece<COLOR extends Color>
                 .toList();
 
         var isProtected = protectors.stream()
-                .map(Piece::getImpacts)
+                .map(piece -> board.getImpacts(piece))
                 .flatMap(Collection::stream)
                 .filter(impact -> Impact.Type.PROTECT.equals(impact.getType()))
                 .map(impact -> (PieceProtectImpact<?,?,?>) impact)
@@ -210,7 +210,7 @@ abstract class AbstractPiece<COLOR extends Color>
     public boolean isPinned() {
         LOGGER.info("Checking if piece '{}' is pinned", this);
 
-        var impacts = getImpacts();
+        var impacts = board.getImpacts(this);
         var isPinned = impacts.stream()
                 .filter(impact -> Impact.Type.PIN.equals(impact.getType()))
                 .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)

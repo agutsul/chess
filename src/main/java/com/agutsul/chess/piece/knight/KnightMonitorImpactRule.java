@@ -9,6 +9,7 @@ import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.AbstractMonitorPositionImpactRule;
 
+@Deprecated
 class KnightMonitorImpactRule<COLOR extends Color,
                               KNIGHT extends KnightPiece<COLOR>>
         extends AbstractMonitorPositionImpactRule<COLOR, KNIGHT,

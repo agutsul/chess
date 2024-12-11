@@ -12,6 +12,7 @@ import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Position;
 
+@Deprecated
 public abstract class AbstractMonitorPositionImpactRule<COLOR extends Color,
                                                         PIECE extends Piece<COLOR> & Capturable,
                                                         IMPACT extends PieceMonitorImpact<COLOR,PIECE>>

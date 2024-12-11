@@ -35,29 +35,24 @@ public abstract class AbstractMonitorLineImpactRule<COLOR extends Color,
         for (var line : lines) {
             var monitorPositions = new ArrayList<Position>();
 
-            var isPieceFound = false;
+            var isKingFound = false;
 
             for (var position : line) {
                 var optionalPiece = board.getPiece(position);
-                if (!isPieceFound && optionalPiece.isEmpty()) {
+                if (!isKingFound && optionalPiece.isEmpty()) {
                     continue;
                 }
 
-                if (!isPieceFound) {
+                if (!isKingFound) {
                     var foundPiece = optionalPiece.get();
                     if (foundPiece.getColor() != piece.getColor()) {
-                        isPieceFound = true;
-                        continue;
+                        isKingFound = Piece.Type.KING.equals(foundPiece.getType());
                     } else {
                         break;
                     }
                 }
 
                 monitorPositions.add(position);
-
-                if (!board.isEmpty(position)) {
-                    break;
-                }
             }
 
             if (!monitorPositions.isEmpty()) {

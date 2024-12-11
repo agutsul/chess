@@ -2,12 +2,15 @@ package com.agutsul.chess.rule.checkmate;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.util.HashSet;
+
 import org.slf4j.Logger;
 
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.position.Position;
 
 final class KingMoveCheckMateEvaluator
         implements CheckMateEvaluator {
@@ -27,6 +30,7 @@ final class KingMoveCheckMateEvaluator
         var attackerColor = king.getColor().invert();
         var moveActions = board.getActions((Piece<?>) king, PieceMoveAction.class);
 
+        var positions = new HashSet<Position>();
         for (var action : moveActions) {
             var targetPosition = action.getPosition();
 
@@ -34,10 +38,10 @@ final class KingMoveCheckMateEvaluator
             var isMonitored = board.isMonitored(targetPosition, attackerColor);
 
             if (!isAttacked && !isMonitored) {
-                return true;
+                positions.add(targetPosition);
             }
         }
 
-        return false;
+        return !positions.isEmpty();
     }
 }

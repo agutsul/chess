@@ -1,6 +1,7 @@
 package com.agutsul.chess.board;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.join;
@@ -30,6 +31,7 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.impact.Impact;
+import com.agutsul.chess.impact.PieceCheckImpact;
 import com.agutsul.chess.impact.PieceControlImpact;
 import com.agutsul.chess.impact.PiecePinImpact;
 import com.agutsul.chess.piece.BlackPieceFactory;
@@ -145,25 +147,18 @@ final class BoardImpl extends AbstractBoard {
         var impacts = getImpacts(piece);
         var optinalPinImpact = impacts.stream()
                 .filter(impact -> Impact.Type.PIN.equals(impact.getType()))
+                .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
                 .findFirst();
 
         if (optinalPinImpact.isEmpty()) {
             return actions;
         }
 
-        var pinImpact = (PiecePinImpact<?,?,?,?,?>) optinalPinImpact.get();
-        var checkImpact = pinImpact.getTarget();
-
-        var pinnedLine = checkImpact.getAttackLine();
-        if (pinnedLine.isPresent()) {
-            var line = pinnedLine.get();
-            var allowedActions = actions.stream()
-                    .filter(action -> line.contains(action.getPosition()))
-                    .toList();
-
-            if (!allowedActions.isEmpty()) {
-                return allowedActions;
-            }
+        var pinImpact = optinalPinImpact.get();
+        // return actions the on pinned line
+        var allowedActions = filterActions(actions, pinImpact.getTarget());
+        if (!allowedActions.isEmpty()) {
+            return allowedActions;
         }
 
         var optionalKing = getKing(piece.getColor().invert());
@@ -325,7 +320,9 @@ final class BoardImpl extends AbstractBoard {
 
         @SuppressWarnings("unchecked")
         var king = (KingPiece<COLOR>) pieces.iterator().next();
-        return king.isActive() ? Optional.of(king) : Optional.empty();
+        return king.isActive()
+                ? Optional.of(king)
+                : Optional.empty();
     }
 
     @Override
@@ -334,7 +331,7 @@ final class BoardImpl extends AbstractBoard {
 
         var attackerPieces = getPieces(attackerColor);
         var isAttacked = attackerPieces.stream()
-                .map(Piece::getImpacts)
+                .map(piece -> getImpacts(piece))
                 .flatMap(Collection::stream)
                 .filter(impact -> Impact.Type.CONTROL.equals(impact.getType()))
                 .map(impact -> (PieceControlImpact<?,?>) impact)
@@ -379,7 +376,7 @@ final class BoardImpl extends AbstractBoard {
 
         var attackers = getPieces(attackerColor);
         var isMonitored = attackers.stream()
-                .map(Piece::getImpacts)
+                .map(piece -> getImpacts(piece))
                 .flatMap(Collection::stream)
                 .filter(impact -> Impact.Type.MONITOR.equals(impact.getType()))
                 .map(Impact::getPosition)
@@ -407,6 +404,21 @@ final class BoardImpl extends AbstractBoard {
     }
 
     // utility methods
+
+    private static Collection<Action<?>> filterActions(Collection<Action<?>> actions,
+                                                       PieceCheckImpact<?,?,?,?> impact) {
+
+        var pinnedLine = impact.getAttackLine();
+        if (pinnedLine.isEmpty()) {
+            return emptyList();
+        }
+
+        var line = pinnedLine.get();
+        return actions.stream()
+                .filter(action -> line.contains(action.getPosition()))
+                .toList();
+    }
+
     private static Collection<Action<?>> filterCheckActions(Collection<Action<?>> actions,
                                                             ActionFilter<?> filter,
                                                             KingPiece<?> king) {

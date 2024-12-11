@@ -18,7 +18,7 @@ public final class KnightPieceImpactRule
         super(new CompositePieceRule<Impact<?>>(
                 new KnightCheckImpactRule<>(board, algo),
                 new KnightProtectImpactRule<>(board, algo),
-                new KnightMonitorImpactRule<>(board, algo),
+//                new KnightMonitorImpactRule<>(board, algo),
                 new KnightControlImpactRule<>(board, algo),
                 new PiecePinImpactRule<>(board)
             )
