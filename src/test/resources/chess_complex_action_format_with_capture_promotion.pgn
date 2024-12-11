@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "0-1"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:02:18"]
+[WhiteElo "1373"]
+[BlackElo "1494"]
+[WhiteRatingDiff "-7"]
+[BlackRatingDiff "+7"]
+[ECO "A09"]
+[Opening "Reti Opening"]
+[TimeControl "120+0"]
+[Termination "Time forfeit"]
+
+1. Nf3 { [%eval 0.21] } 1... d5 { [%eval 0.15] } 2. c4 { [%eval 0.24] } 2... Bg4 { [%eval 1.04] } 3. e3 { [%eval 0.43] } 3... Bxf3 { [%eval 0.56] } 4. Qxf3 { [%eval 0.46] } 4... e6 { [%eval 0.51] } 5. cxd5 { [%eval 0.42] } 5... Qxd5 { [%eval 0.43] } 6. Nc3 { [%eval 0.3] } 6... Qxf3 { [%eval 0.28] } 7. gxf3 { [%eval 0.24] } 7... Bb4 { [%eval 0.54] } 8. a3 { [%eval 0.5] } 8... Bxc3 { [%eval 0.5] } 9. bxc3 { [%eval 0.62] } 9... Nc6 { [%eval 0.54] } 10. d4 { [%eval 0.54] } 10... O-O-O { [%eval 0.52] } 11. e4 { [%eval 0.46] } 11... f6 { [%eval 1.02] } 12. f4 { [%eval 0.39] } 12... g6 { [%eval 0.72] } 13. Bg2 { [%eval 0.2] } 13... e5 { [%eval 0.9] } 14. d5 { [%eval 0.77] } 14... Na5 { [%eval 0.61] } 15. Rb1 { [%eval 0.63] } 15... Nc4 { [%eval 1.62] } 16. a4 { [%eval 0.48] } 16... Nd6 { [%eval 1.1] } 17. Ba3 { [%eval -0.19] } 17... Nc4 { [%eval 0.32] } 18. Bc5 { [%eval 0.59] } 18... b6 { [%eval 0.57] } 19. Bb4 { [%eval -0.56] } 19... exf4 { [%eval -0.49] } 20. O-O { [%eval -1.1] } 20... Nh6 { [%eval 0.5] } 21. f3 { [%eval -1.05] } 21... g5 { [%eval 0.12] } 22. Bh3+ { [%eval -0.12] } 22... Kb8 { [%eval 0.02] } 23. Be6 { [%eval -0.41] } 23... Ne3 { [%eval 0.46] } 24. Rfe1 { [%eval 0.0] } 24... g4 { [%eval 0.92] } 25. fxg4 { [%eval -0.66] } 25... Nhxg4 { [%eval -0.59] } 26. h3 { [%eval -1.21] } 26... Ne5 { [%eval -1.19] } 27. Be7 { [%eval -1.29] } 27... Rdg8+ { [%eval -1.18] } 28. Kf2 { [%eval #-1] } 28... Nd3+ { [%eval -1.61] } 29. Ke2 { [%eval -1.7] } 29... Rg2+ { [%eval 4.79] } 30. Kxd3 { [%eval 4.94] } 30... c6 { [%eval 8.55] } 31. Bxf6 { [%eval 8.03] } 31... c5 { [%eval 11.15] } 32. d6 { [%eval 6.92] } 32... Rf8 { [%eval 7.18] } 33. Be5 { [%eval 3.93] } 33... Re8 { [%eval 114.94] } 34. d7+ { [%eval 115.43] } 34... Kb7 { [%eval #9] } 35. dxe8=Q { [%eval #7] } 35... c4+ { [%eval #7] } 36. Bxc4 { [%eval #6] } 36... Nxc4 { [%eval #5] } 37. Kxc4 { [%eval #4] } 37... Rg6 { [%eval #4] } 38. Rxb6+ { [%eval #4] } 38... axb6 { [%eval #2] } 39. Qe7+ { [%eval #4] } 39... Ka6 { [%eval #4] } 40. Rb1 { [%eval #5] } 40... Ka5 { [%eval #1] } 41. Rb5+ { [%eval #4] } 41... Ka6 { [%eval #4] } 42. Qd7 { [%eval #3] } 42... Rc6+ { [%eval #3] } 43. Kd5 { [%eval #3] } 43... Rd6+ { [%eval #3] } 0-1

@@ -78,6 +78,7 @@ public final class PieceActionAdapter
         case 4:
             return adaptPieceAction(command);
         case 5:
+        case 6:
             return adaptPieceCaptureAction(command);
         default:
             throw new IllegalActionException(formatInvalidActionMessage(action));
