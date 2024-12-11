@@ -7,6 +7,8 @@ import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.impact.Impact;
+import com.agutsul.chess.impact.PieceMonitorImpact;
 import com.agutsul.chess.piece.KingPiece;
 
 final class KingMoveCheckActionEvaluator
@@ -27,6 +29,13 @@ final class KingMoveCheckActionEvaluator
         var actions = new HashSet<Action<?>>();
         for (var checkedAction : checkActions) {
             var attackLine = checkedAction.getAttackLine();
+            var checkedPiece = checkedAction.getSource();
+
+            var checkedPieceMonitoringPositions = board.getImpacts(checkedPiece).stream()
+                    .filter(impact -> Impact.Type.MONITOR.equals(impact.getType()))
+                    .map(impact -> (PieceMonitorImpact<?,?>) impact)
+                    .map(PieceMonitorImpact::getPosition)
+                    .toList();
 
             for (var pieceMoveAction : pieceMoveActions) {
                 var targetPosition = pieceMoveAction.getPosition();
@@ -35,10 +44,17 @@ final class KingMoveCheckActionEvaluator
                 }
 
                 var isAttacked = board.isAttacked(targetPosition, attackerColor);
-                var isMonitored = board.isMonitored(targetPosition, attackerColor);
+                if (!isAttacked) {
+                    var isMonitored = board.isMonitored(targetPosition, attackerColor);
+                    if (!isMonitored) {
+                        actions.add(pieceMoveAction);
+                        continue;
+                    }
 
-                if (!isAttacked && !isMonitored) {
-                    actions.add(pieceMoveAction);
+                    // verify if checked piece is monitoring targetPosition
+                    if (!checkedPieceMonitoringPositions.contains(targetPosition)) {
+                        actions.add(pieceMoveAction);
+                    }
                 }
             }
         }

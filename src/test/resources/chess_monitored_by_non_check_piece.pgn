@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/1G131wny"]
+[White "zagnos"]
+[Black "jrjs"]
+[Result "1-0"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:02:14"]
+[WhiteElo "1717"]
+[BlackElo "1724"]
+[WhiteRatingDiff "+11"]
+[BlackRatingDiff "-11"]
+[ECO "B27"]
+[Opening "Sicilian Defense: Hyperaccelerated Pterodactyl"]
+[TimeControl "420+0"]
+[Termination "Normal"]
+
+1. e4 c5 2. Nf3 g6 3. d4 Bg7 4. c3 cxd4 5. cxd4 d6 6. Nc3 Nc6 7. Be3 e6 8. a3 Nge7 9. Qd2 O-O 10. Bd3 d5 11. e5 f5 12. Bh6 Bd7 13. Bxg7 Kxg7 14. Qg5 h6 15. Qd2 g5 16. Ne2 f4 17. h4 Nf5 18. Bxf5 exf5 19. hxg5 hxg5 20. O-O-O Rc8 21. Kb1 Rg8 22. Nxf4 gxf4 23. Qxf4 Kf7 24. Rh7+ Rg7 25. Rdh1 Ne7 26. e6+ Bxe6 27. Ne5+ Kf8 28. Rxg7 Kxg7 29. Qh6+ 1-0

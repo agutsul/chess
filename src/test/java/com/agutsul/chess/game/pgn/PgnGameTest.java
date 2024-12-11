@@ -132,8 +132,16 @@ public class PgnGameTest implements TestFileReader {
     }
 
     @Test
-    void testAnderssenDefansePgnGame() throws URISyntaxException, IOException {
+    void testAnderssenDefensePgnGame() throws URISyntaxException, IOException {
         var games = parseGames(readFileContent("chess_anderssen_defense.pgn"), 1);
+        var game = (PgnGame) games.get(0);
+
+        assertGame(game, GameState.Type.WHITE_WIN, 57, 15);
+    }
+
+    @Test
+    void testCheckedKingMoveMonitorByNonCheckPiecePgnGame() throws URISyntaxException, IOException {
+        var games = parseGames(readFileContent("chess_monitored_by_non_check_piece.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
         assertGame(game, GameState.Type.WHITE_WIN, 57, 15);
@@ -149,6 +157,7 @@ public class PgnGameTest implements TestFileReader {
         game.run();
 
         assertEquals(expectedGameState, game.getState().getType());
+        assertEquals(game.getParsedActions().size(), game.getJournal().size());
     }
 
     private List<Game> parseGames(String pgn, int expectedGames)
