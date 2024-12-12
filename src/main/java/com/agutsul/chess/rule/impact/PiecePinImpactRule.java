@@ -132,8 +132,7 @@ public class PiecePinImpactRule<COLOR1 extends Color,
     }
 
     private static boolean hasPattern(List<Piece<Color>> pieces,
-                                           List<Piece<?>> pattern) {
-
+                                      List<Piece<?>> pattern) {
         return indexOfSubList(pieces, pattern) != -1;
     }
 }
