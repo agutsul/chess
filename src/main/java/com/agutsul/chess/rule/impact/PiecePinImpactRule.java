@@ -22,7 +22,6 @@ import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.PinPieceAlgo;
 import com.agutsul.chess.position.Line;
-import com.agutsul.chess.position.Position;
 
 public class PiecePinImpactRule<COLOR1 extends Color,
                                 COLOR2 extends Color,
@@ -44,17 +43,24 @@ public class PiecePinImpactRule<COLOR1 extends Color,
 
     @Override
     protected Collection<Line> calculate(PIECE piece) {
+        return algo.calculate(piece);
+    }
+
+    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected Collection<PiecePinImpact<COLOR1,COLOR2,PIECE,KING,ATTACKER>> createImpacts(PIECE piece,
+                                                                                          Collection<Line> lines) {
         var optinalKing = board.getKing(piece.getColor());
         if (optinalKing.isEmpty()) {
             return emptyList();
         }
 
         var king = optinalKing.get();
-        var kingLines = algo.calculate(piece).stream()
+        var kingLines = lines.stream()
                 .filter(line -> line.contains(king.getPosition()))
                 .toList();
 
-        var pinLines = new ArrayList<Line>();
+        var impacts = new ArrayList<PiecePinImpact<COLOR1,COLOR2,PIECE,KING,ATTACKER>>();
         for (var line : kingLines) {
             var linePieces = line.stream()
                     .map(position -> board.getPiece(position))
@@ -62,110 +68,70 @@ public class PiecePinImpactRule<COLOR1 extends Color,
                     .map(Optional::get)
                     .toList();
 
-            var lineAttacker = findLineAttacker(linePieces, king);
-            if (lineAttacker.isEmpty()) {
+            var lineAttackers = linePieces.stream()
+                    .filter(attacker -> attacker.getColor() != king.getColor())
+                    .filter(attacker -> LINE_ATTACK_PIECE_TYPES.contains(attacker.getType()))
+                    .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, king)))
+                    .toList();
+
+            if (lineAttackers.isEmpty()) {
                 continue;
             }
 
-            var attacker = lineAttacker.get();
-            // searched pattern: attacker - pinned piece - king
-            if (isPiecePinned(linePieces, List.of(attacker, piece, king))) {
+            var optinalAttacker = lineAttackers.stream()
+                    .filter(lineAttacker -> {
+                        // check if piece is attacked by line attacker
+                        var attackerImpacts = board.getImpacts(lineAttacker);
+                        var isPieceAttacked = attackerImpacts.stream()
+                                .filter(impact -> Impact.Type.CONTROL.equals(impact.getType()))
+                                .map(Impact::getPosition)
+                                .anyMatch(position -> Objects.equals(position, piece.getPosition()));
 
-                var pieceActions = piece.getActions();
-                var isAttackerCapturable = pieceActions.stream()
+                        return isPieceAttacked;
+                    })
+                    .filter(lineAttacker -> {
+                        // check if king is monitored by line attacker
+                        var attackerImpacts = board.getImpacts(lineAttacker);
+                        var isKingMonitored = attackerImpacts.stream()
+                                .filter(impact -> Impact.Type.MONITOR.equals(impact.getType()))
+                                .map(Impact::getPosition)
+                                .anyMatch(position -> Objects.equals(position, king.getPosition()));
+
+                        return isKingMonitored;
+                    })
+                    .findFirst();
+
+            if (optinalAttacker.isEmpty()) {
+                continue;
+            }
+
+            var attacker = optinalAttacker.get();
+
+            var pieceActions = piece.getActions();
+            var attackedPieces = pieceActions.stream()
                     .filter(action -> Action.Type.CAPTURE.equals(action.getType()))
                     .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                    .anyMatch(action -> Objects.equals(action.getTarget(), attacker));
+                    .map(AbstractCaptureAction::getTarget)
+                    .toList();
 
-                if (!isAttackerCapturable) {
-                    pinLines.add(line);
-                }
-            }
-        }
-
-        return pinLines;
-    }
-
-    @Override
-    protected Collection<PiecePinImpact<COLOR1,COLOR2,PIECE,KING,ATTACKER>>
-            createImpacts(PIECE piece, Collection<Line> lines) {
-
-        var impacts = new ArrayList<PiecePinImpact<COLOR1,COLOR2,PIECE,KING,ATTACKER>>();
-        for (var line : lines) {
-            var impact = createImpact(piece, line);
-            if (impact != null) {
-                impacts.add(impact);
+            if (!attackedPieces.contains(attacker)) {
+                impacts.add(new PiecePinImpact(piece, king, attacker, line));
             }
         }
 
         return impacts;
     }
 
-    @SuppressWarnings("unchecked")
-    private PiecePinImpact<COLOR1,COLOR2,PIECE,KING,ATTACKER>
-            createImpact(PIECE pinnedPiece, Line line) {
-
-        KING king = null;
-        ATTACKER attacker = null;
-
-        for (var position : line) {
-            var optionalPiece = board.getPiece(position);
-            if (optionalPiece.isEmpty()) {
-                continue;
-            }
-
-            var piece = optionalPiece.get();
-            if (Piece.Type.KING.equals(piece.getType())) {
-                king = (KING) piece;
-                continue;
-            }
-
-            if (LINE_ATTACK_PIECE_TYPES.contains(piece.getType())
-                    && piece.getColor() != pinnedPiece.getColor()) {
-
-                attacker = (ATTACKER) piece;
-            }
-        }
-
-        if (king != null && attacker != null
-                && king.getColor() != attacker.getColor()) {
-
-            return new PiecePinImpact<>(pinnedPiece, king, attacker, line);
-        }
-
-        return null;
-    }
-
-    private Optional<Piece<Color>> findLineAttacker(List<Piece<Color>> attackers,
-                                                    KingPiece<Color> king) {
-        var lineAttacker = attackers.stream()
-                .filter(attacker -> attacker.getColor() != king.getColor())
-                .filter(attacker -> LINE_ATTACK_PIECE_TYPES.contains(attacker.getType()))
-                .filter(attacker -> isMonitoredPosition(attacker, king.getPosition()))
-                .findFirst();
-
-        return lineAttacker;
-    }
-
-    private boolean isMonitoredPosition(Piece<Color> attacker, Position position) {
-        var impacts = board.getImpacts(attacker);
-        var isMonitored = impacts.stream()
-                .filter(impact -> Impact.Type.MONITOR.equals(impact.getType()))
-                .anyMatch(impact -> Objects.equals(impact.getPosition(), position));
-
-        return isMonitored;
-    }
-
     // utilities
 
-    private static boolean isPiecePinned(List<Piece<Color>> pieces,
-                                         List<Piece<?>> pattern) {
-
-        return containsPattern(pieces, pattern)
-                || containsPattern(pieces, pattern.reversed());
+    private static boolean containsPattern(List<Piece<Color>> pieces,
+                                           List<Piece<?>> pattern) {
+        // searched pattern: attacker - pinned piece - king or reverse
+        return hasPattern(pieces, pattern)
+                || hasPattern(pieces, pattern.reversed());
     }
 
-    private static boolean containsPattern(List<Piece<Color>> pieces,
+    private static boolean hasPattern(List<Piece<Color>> pieces,
                                            List<Piece<?>> pattern) {
 
         return indexOfSubList(pieces, pattern) != -1;
