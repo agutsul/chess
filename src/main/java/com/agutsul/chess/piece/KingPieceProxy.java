@@ -13,7 +13,8 @@ import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.position.Position;
 
 /**
- * Mainly used to prevent any unsupported method received by extending AbstractPiece class
+ * Mainly used to prevent any usage of unsupported methods
+ * received by extending AbstractPiece class
  */
 final class KingPieceProxy extends PieceProxy
         implements KingPiece<Color> {
