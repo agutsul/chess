@@ -26,25 +26,25 @@ class DisposedPieceState<COLOR extends Color,
 
     @Override
     public Collection<Action<?>> calculateActions(PIECE piece) {
-        LOGGER.info("Calculate '{}' actions", piece);
+        LOGGER.warn("Calculate actions of disabled piece '{}'", piece);
         return emptyList();
     }
 
     @Override
     public Collection<Impact<?>> calculateImpacts(PIECE piece) {
-        LOGGER.info("Calculate '{}' impacts", piece);
+        LOGGER.warn("Calculate impacts of disabled piece '{}'", piece);
         return emptyList();
     }
 
     @Override
     public void move(PIECE piece, Position position) {
-        LOGGER.info("Move '{}' to '{}'", piece, position);
+        LOGGER.warn("Move disabled piece '{}' to '{}'", piece, position);
         // do nothing because piece is disposed
     }
 
     @Override
     public void capture(PIECE piece, Piece<?> targetPiece) {
-        LOGGER.info("Capture '{}' by '{}'", targetPiece, piece);
+        LOGGER.warn("Capture by disabled piece '{}' of '{}'", targetPiece, piece);
         // do nothing because piece is disposed
     }
 }

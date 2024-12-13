@@ -187,7 +187,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
         @Override
         public void castling(PIECE piece, Position position) {
-            LOGGER.info("Castling '{}' to '{}'", piece, position);
+            LOGGER.warn("Castling by disabled '{}' to '{}'", piece, position);
             // do nothing
         }
     }

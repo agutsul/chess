@@ -185,7 +185,7 @@ final class PawnPieceProxy extends PieceProxy
         ((Captured) this.origin).setCapturedAt(instant);
     }
 
-    void doPromote(Position position, Piece.Type pieceType) {
+    private void doPromote(Position position, Piece.Type pieceType) {
         // create promoted piece
         var promotedPiece = createPiece(position, pieceType);
 
@@ -196,7 +196,7 @@ final class PawnPieceProxy extends PieceProxy
         this.origin = promotedPiece;
     }
 
-    void cancelPromote() {
+    private void cancelPromote() {
         // dispose promoted piece
         ((Disposable) this.origin).dispose();
         // restore pawn piece
@@ -265,13 +265,13 @@ final class PawnPieceProxy extends PieceProxy
 
         @Override
         public Collection<Action<?>> calculateActions(PIECE piece) {
-            LOGGER.info("Calculating actions for piece '{}' to '{}'", piece);
+            LOGGER.info("Calculating actions for piece '{}'", piece);
             return emptyList();
         }
 
         @Override
         public Collection<Impact<?>> calculateImpacts(PIECE piece) {
-            LOGGER.info("Calculating impacts for piece '{}' to '{}'", piece);
+            LOGGER.info("Calculating impacts for piece '{}'", piece);
             return emptyList();
         }
     }
@@ -367,19 +367,19 @@ final class PawnPieceProxy extends PieceProxy
 
         @Override
         public void promote(PIECE piece, Position position, Piece.Type pieceType) {
-            LOGGER.info("Promoting disabled '{}' to '{}'", piece, position);
+            LOGGER.warn("Promoting disabled '{}' to '{}'", piece, position);
             // do nothing
         }
 
         @Override
         public void move(PIECE piece, Position position) {
-            LOGGER.info("Moving disabled '{}' to '{}'", piece, position);
+            LOGGER.warn("Moving disabled '{}' to '{}'", piece, position);
             // do nothing
         }
 
         @Override
         public void capture(PIECE piece, Piece<?> targetPiece) {
-            LOGGER.info("Capturing by disabled '{}' to '{}'", piece, targetPiece);
+            LOGGER.warn("Capturing by disabled '{}' to '{}'", piece, targetPiece);
             // do nothing
         }
     }

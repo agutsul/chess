@@ -137,7 +137,7 @@ final class PawnPieceImpl<COLOR extends Color>
 
         @Override
         public void enpassant(PIECE piece, PawnPiece<?> targetPiece, Position targetPosition) {
-            LOGGER.info("En-passante '{}' by '{}'", targetPiece, this);
+            LOGGER.warn("En-passante by disabled '{}' by '{}'", targetPiece, this);
             // do nothing
         }
     }
