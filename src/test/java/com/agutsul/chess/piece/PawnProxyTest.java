@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -41,6 +41,12 @@ public class PawnProxyTest {
 
     @BeforeEach
     public void setUp() {
+        var activeState = new ActivePieceState<>(board, null, null);
+        when(pawn.getState())
+            .then(inv -> {
+                return activeState;
+            });
+
         this.proxy = new PawnPieceProxy(board, pawn, 7, pieceFactory);
     }
 
@@ -49,21 +55,27 @@ public class PawnProxyTest {
     void testPromoteToBishop() {
         var position = mock(Position.class);
 
-        when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
-            .then(inv -> List.of(new PiecePromoteAction(
-                    new PieceMoveAction<Color,PawnPiece<Color>>(null, position),
-                    board)
-            ));
+        doNothing()
+            .when(pawn).dispose();
 
-        doReturn(true).when(pawn).isActive();
-        doNothing().when(pawn).promote(any(), any());
-        when(pieceFactory.createBishop(eq(position))).thenReturn(mock(BishopPiece.class));
+        when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
+            .then(inv -> {
+                var piece = inv.getArgument(0, PawnPiece.class);
+                var moveAction = new PieceMoveAction<Color,PawnPiece<Color>>(piece, position);
+
+                return List.of(new PiecePromoteAction(moveAction, board));
+            });
+
+        when(pieceFactory.createBishop(eq(position)))
+            .thenReturn(mock(BishopPiece.class));
 
         var origin = (PawnPiece<?>) proxy.origin;
 
         proxy.promote(position, Piece.Type.BISHOP);
 
-        verify(origin, times(1)).promote(any(), any());
+        verify(origin, times(1)).dispose();
+        verify(origin, never()).promote(any(), any());
+
         assertNotEquals(proxy.origin, origin);
     }
 
@@ -72,21 +84,27 @@ public class PawnProxyTest {
     void testPromoteToKnight() {
         var position = mock(Position.class);
 
-        when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
-            .then(inv -> List.of(new PiecePromoteAction(
-                    new PieceMoveAction<Color,PawnPiece<Color>>(null, position),
-                    board)
-            ));
+        doNothing()
+            .when(pawn).dispose();
 
-        doReturn(true).when(pawn).isActive();
-        doNothing().when(pawn).promote(any(), any());
-        when(pieceFactory.createKnight(eq(position))).thenReturn(mock(KnightPiece.class));
+        when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
+            .then(inv -> {
+                var piece = inv.getArgument(0, PawnPiece.class);
+                var moveAction = new PieceMoveAction<Color,PawnPiece<Color>>(piece, position);
+
+                return List.of(new PiecePromoteAction(moveAction, board));
+            });
+
+        when(pieceFactory.createKnight(eq(position)))
+            .thenReturn(mock(KnightPiece.class));
 
         var origin = (PawnPiece<?>) proxy.origin;
 
         proxy.promote(position, Piece.Type.KNIGHT);
 
-        verify(origin, times(1)).promote(any(), any());
+        verify(origin, times(1)).dispose();
+        verify(origin, never()).promote(any(), any());
+
         assertNotEquals(proxy.origin, origin);
     }
 
@@ -95,21 +113,27 @@ public class PawnProxyTest {
     void testPromoteToQueen() {
         var position = mock(Position.class);
 
-        when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
-            .then(inv -> List.of(new PiecePromoteAction(
-                    new PieceMoveAction<Color,PawnPiece<Color>>(null, position),
-                    board)
-            ));
+        doNothing()
+            .when(pawn).dispose();
 
-        doReturn(true).when(pawn).isActive();
-        doNothing().when(pawn).promote(any(), any());
-        when(pieceFactory.createQueen(eq(position))).thenReturn(mock(QueenPiece.class));
+        when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
+            .then(inv -> {
+                var piece = inv.getArgument(0, PawnPiece.class);
+                var moveAction = new PieceMoveAction<Color,PawnPiece<Color>>(piece, position);
+
+                return List.of(new PiecePromoteAction(moveAction, board));
+            });
+
+        when(pieceFactory.createQueen(eq(position)))
+            .thenReturn(mock(QueenPiece.class));
 
         var origin = (PawnPiece<?>) proxy.origin;
 
         proxy.promote(position, Piece.Type.QUEEN);
 
-        verify(origin, times(1)).promote(any(), any());
+        verify(origin, times(1)).dispose();
+        verify(origin, never()).promote(any(), any());
+
         assertNotEquals(proxy.origin, origin);
     }
 
@@ -118,21 +142,27 @@ public class PawnProxyTest {
     void testPromoteToRook() {
         var position = mock(Position.class);
 
-        when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
-            .then(inv -> List.of(new PiecePromoteAction(
-                    new PieceMoveAction<Color,PawnPiece<Color>>(null, position),
-                    board)
-            ));
+        doNothing()
+            .when(pawn).dispose();
 
-        doReturn(true).when(pawn).isActive();
-        doNothing().when(pawn).promote(any(), any());
-        when(pieceFactory.createRook(eq(position))).thenReturn(mock(RookPiece.class));
+        when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
+            .then(inv -> {
+                var piece = inv.getArgument(0, PawnPiece.class);
+                var moveAction = new PieceMoveAction<Color,PawnPiece<Color>>(piece, position);
+
+                return List.of(new PiecePromoteAction(moveAction, board));
+        });
+
+        when(pieceFactory.createRook(eq(position)))
+            .thenReturn(mock(RookPiece.class));
 
         var origin = (PawnPiece<?>) proxy.origin;
 
         proxy.promote(position, Piece.Type.ROOK);
 
-        verify(origin, times(1)).promote(any(), any());
+        verify(origin, times(1)).dispose();
+        verify(origin, never()).promote(any(), any());
+
         assertNotEquals(proxy.origin, origin);
     }
 
@@ -141,13 +171,13 @@ public class PawnProxyTest {
     void testUnsupportedPromotionType() {
         var position = mock(Position.class);
 
-        doReturn(true).when(pawn).isActive();
-
         when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
-            .then(inv -> List.of(new PiecePromoteAction(
-                    new PieceMoveAction<Color,PawnPiece<Color>>(null, position),
-                    board)
-            ));
+            .then(inv -> {
+                var piece = inv.getArgument(0, PawnPiece.class);
+                var moveAction = new PieceMoveAction<Color,PawnPiece<Color>>(piece, position);
+
+                return List.of(new PiecePromoteAction(moveAction, board));
+        });
 
         var thrown = assertThrows(
                 IllegalActionException.class,

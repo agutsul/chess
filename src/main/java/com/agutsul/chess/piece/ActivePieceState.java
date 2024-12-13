@@ -60,7 +60,8 @@ class ActivePieceState<COLOR extends Color,
     public void move(PIECE piece, Position position) {
         LOGGER.info("Move '{}' to '{}'", piece, position);
 
-        var possibleMoves = board.getActions(piece, PieceMoveAction.class).stream()
+        var actions = board.getActions(piece, PieceMoveAction.class);
+        var possibleMoves = actions.stream()
                 .map(PieceMoveAction::getTarget)
                 .collect(toSet());
 

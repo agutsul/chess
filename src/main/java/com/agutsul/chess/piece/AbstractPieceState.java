@@ -20,9 +20,9 @@ abstract class AbstractPieceState<COLOR extends Color,
 
     private static final Logger LOGGER = getLogger(AbstractPieceState.class);
 
-    private final Type type;
+    private final PieceState.Type type;
 
-    AbstractPieceState(Type type) {
+    AbstractPieceState(PieceState.Type type) {
         this.type = type;
     }
 
@@ -39,7 +39,7 @@ abstract class AbstractPieceState<COLOR extends Color,
     }
 
     @Override
-    public Type getType() {
+    public PieceState.Type getType() {
         return this.type;
     }
 

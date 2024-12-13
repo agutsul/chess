@@ -43,21 +43,11 @@ final class PawnPieceImpl<COLOR extends Color>
     @Override
     @SuppressWarnings({ "unchecked" })
     public void dispose() {
+        LOGGER.info("Dispose origin pawn '{}'", this);
+
         super.dispose();
 
         this.currentState = (PieceState<COLOR,Piece<COLOR>>) DISPOSED_STATE;
-    }
-
-    @Override
-    public void promote(Position targetPosition, Type pieceType) {
-        LOGGER.info("Promote origin pawn '{}' to '{}'", this, pieceType);
-
-        if (!isActive()) {
-            return;
-        }
-
-        // remove origin pawn from board as all the promotion-related logic is in proxy class
-        dispose();
     }
 
     @Override
@@ -112,10 +102,11 @@ final class PawnPieceImpl<COLOR extends Color>
         public void enpassant(PIECE piece, PawnPiece<?> targetPiece, Position targetPosition) {
             LOGGER.info("En-passante '{}' by '{}'", targetPiece, piece);
 
-            var isValid = board.getActions(piece, PieceEnPassantAction.class).stream()
+            var actions = board.getActions(piece, PieceEnPassantAction.class);
+            var isValid = actions.stream()
                     .map(action -> (PieceEnPassantAction<?,?,?,?>) action)
                     .anyMatch(action -> Objects.equals(action.getTarget(), targetPiece)
-                            && Objects.equals(action.getPosition(), targetPosition));
+                                            && Objects.equals(action.getPosition(), targetPosition));
 
             if (!isValid) {
                 throw new IllegalActionException(
