@@ -78,7 +78,7 @@ final class PawnPieceProxy extends PieceProxy
     @Override
     @SuppressWarnings("unchecked")
     public PieceState<Color,Piece<Color>> getState() {
-        return (PieceState<Color,Piece<Color>>) ((PieceState<?,?>) this.currentState);
+        return (PieceState<Color,Piece<Color>>) (PieceState<?,?>) this.currentState;
     }
 
     @Override
@@ -185,7 +185,7 @@ final class PawnPieceProxy extends PieceProxy
         ((Captured) this.origin).setCapturedAt(instant);
     }
 
-    final void doPromote(Position position, Piece.Type pieceType) {
+    void doPromote(Position position, Piece.Type pieceType) {
         // create promoted piece
         var promotedPiece = createPiece(position, pieceType);
 
@@ -196,7 +196,7 @@ final class PawnPieceProxy extends PieceProxy
         this.origin = promotedPiece;
     }
 
-    final void cancelPromote() {
+    void cancelPromote() {
         // dispose promoted piece
         ((Disposable) this.origin).dispose();
         // restore pawn piece
