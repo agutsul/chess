@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece;
 
+import static java.util.Collections.emptyList;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
@@ -46,14 +47,13 @@ final class PawnPieceProxy extends PieceProxy
 
     private static final Logger LOGGER = getLogger(PawnPieceProxy.class);
 
-    private static final PromotablePieceState<?,?> DISPOSED_STATE =
-            new DisposedPromotablePieceState<>();
+    private static final PieceState<?,?> DISPOSED_STATE = new DisposedPromotablePieceState<>();
 
     private final PieceFactory pieceFactory;
     private final PawnPiece<Color> pawnPiece;
 
-    private final PromotablePieceState<Color,PawnPiece<Color>> activeState;
-    private PromotablePieceState<?,?> currentState;
+    protected final PieceState<?,?> activeState;
+    protected PieceState<?,?> currentState;
 
     PawnPieceProxy(Board board,
                    PawnPiece<Color> pawnPiece,
@@ -65,7 +65,7 @@ final class PawnPieceProxy extends PieceProxy
         this.pawnPiece = pawnPiece;
         this.pieceFactory = pieceFactory;
 
-        var state = new ActivePromotablePieceState<Color,PawnPiece<Color>>(
+        var state = new ActivePromotablePieceState<>(
                 board,
                 pawnPiece,
                 promotionLine
@@ -78,7 +78,7 @@ final class PawnPieceProxy extends PieceProxy
     @Override
     @SuppressWarnings("unchecked")
     public PieceState<Color,Piece<Color>> getState() {
-        return (PieceState<Color,Piece<Color>>) this.currentState;
+        return (PieceState<Color,Piece<Color>>) ((PieceState<?,?>) this.currentState);
     }
 
     @Override
@@ -94,21 +94,21 @@ final class PawnPieceProxy extends PieceProxy
     }
 
     @Override
-    public void promote(Position position, Type pieceType) {
+    @SuppressWarnings("unchecked")
+    public void promote(Position position, Piece.Type pieceType) {
         LOGGER.info("Promote '{}' to '{}'", this, pieceType);
 
-        @SuppressWarnings("unchecked")
-        var state = (PromotablePieceState<Color,PawnPiece<Color>>) this.currentState;
-        state.promote(this, position, pieceType);
+        var promotableState = (PromotablePieceState<?,?>) getState();
+        ((PromotablePieceState<Color,PawnPiece<Color>>) promotableState).promote(this, position, pieceType);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void demote() {
         LOGGER.info("Demote '{}' to '{}'", this, Piece.Type.PAWN);
 
-        @SuppressWarnings("unchecked")
-        var state = ((PromotablePieceState<Color,? extends Piece<Color>>) this.currentState);
-        state.unpromote(this);
+        var promotableState = (PromotablePieceState<?,?>) getState();
+        ((PromotablePieceState<Color,PawnPiece<Color>>) promotableState).unpromote(this);
     }
 
     @Override
@@ -185,7 +185,7 @@ final class PawnPieceProxy extends PieceProxy
         ((Captured) this.origin).setCapturedAt(instant);
     }
 
-    final void doPromote(Position position, Type pieceType) {
+    final void doPromote(Position position, Piece.Type pieceType) {
         // create promoted piece
         var promotedPiece = createPiece(position, pieceType);
 
@@ -205,7 +205,7 @@ final class PawnPieceProxy extends PieceProxy
         this.origin = this.pawnPiece;
     }
 
-    private Piece<Color> createPiece(Position position, Type pieceType) {
+    private Piece<Color> createPiece(Position position, Piece.Type pieceType) {
         var factory = Factory.of(pieceType);
         if (factory == null) {
             throw new IllegalActionException(
@@ -248,19 +248,31 @@ final class PawnPieceProxy extends PieceProxy
 
     static abstract class AbstractPromotablePieceState<COLOR extends Color,
                                                        PIECE extends Piece<COLOR> & Promotable & Movable & Capturable>
-            extends AbstractPieceStateProxy<COLOR,PIECE>
+            extends AbstractPieceState<COLOR,PIECE>
             implements PromotablePieceState<COLOR,PIECE> {
 
         private static final Logger LOGGER = getLogger(AbstractEnPassantablePieceState.class);
 
-        AbstractPromotablePieceState(AbstractPieceState<COLOR,PIECE> originState) {
-            super(originState);
+        AbstractPromotablePieceState(PieceState.Type type) {
+            super(type);
         }
 
         @Override
         public void unpromote(Piece<COLOR> piece) {
             LOGGER.info("Undo promote by '{}'", piece);
             ((PawnPieceProxy) piece).cancelPromote();
+        }
+
+        @Override
+        public Collection<Action<?>> calculateActions(PIECE piece) {
+            LOGGER.info("Calculating actions for piece '{}' to '{}'", piece);
+            return emptyList();
+        }
+
+        @Override
+        public Collection<Impact<?>> calculateImpacts(PIECE piece) {
+            LOGGER.info("Calculating impacts for piece '{}' to '{}'", piece);
+            return emptyList();
         }
     }
 
@@ -273,11 +285,10 @@ final class PawnPieceProxy extends PieceProxy
         private final Board board;
         private final int promotionLine;
 
-        private PawnPiece<Color> origin;
+        private PawnPiece<?> origin;
 
-        @SuppressWarnings("unchecked")
-        ActivePromotablePieceState(Board board, PawnPiece<Color> pawnPiece, int promotionLine) {
-            super((AbstractPieceState<COLOR,PIECE>) pawnPiece.getState());
+        ActivePromotablePieceState(Board board, PawnPiece<?> pawnPiece, int promotionLine) {
+            super(Type.ACTIVE);
 
             this.board = board;
             this.promotionLine = promotionLine;
@@ -291,6 +302,16 @@ final class PawnPieceProxy extends PieceProxy
             validatePromotion(piece, position, pieceType);
 
             ((PawnPieceProxy) piece).doPromote(position, pieceType);
+        }
+
+        @Override
+        public void move(PIECE piece, Position position) {
+            piece.move(position);
+        }
+
+        @Override
+        public void capture(PIECE piece, Piece<?> targetPiece) {
+            piece.capture(targetPiece);
         }
 
         private void validatePromotion(PIECE piece, Position position, Piece.Type pieceType) {
@@ -322,9 +343,9 @@ final class PawnPieceProxy extends PieceProxy
             }
         }
 
-        private String formatInvalidPromotionMessage(PIECE piece,
-                                                     Position position,
-                                                     Piece.Type pieceType) {
+        private static String formatInvalidPromotionMessage(Piece<?> piece,
+                                                            Position position,
+                                                            Piece.Type pieceType) {
 
             return String.format("%s invalid promotion to %s at '%s'",
                     piece.getType().name(),
@@ -338,15 +359,27 @@ final class PawnPieceProxy extends PieceProxy
                                                     PIECE extends Piece<COLOR> & Promotable & Movable & Capturable>
             extends AbstractPromotablePieceState<COLOR,PIECE> {
 
-        DisposedPromotablePieceState() {
-            super(new DisposedPieceState<>());
-        }
-
         private static final Logger LOGGER = getLogger(DisposedPromotablePieceState.class);
+
+        DisposedPromotablePieceState() {
+            super(Type.INACTIVE);
+        }
 
         @Override
         public void promote(PIECE piece, Position position, Piece.Type pieceType) {
-            LOGGER.info("Promoting '{}' to '{}'", piece, position);
+            LOGGER.info("Promoting disabled '{}' to '{}'", piece, position);
+            // do nothing
+        }
+
+        @Override
+        public void move(PIECE piece, Position position) {
+            LOGGER.info("Moving disabled '{}' to '{}'", piece, position);
+            // do nothing
+        }
+
+        @Override
+        public void capture(PIECE piece, Piece<?> targetPiece) {
+            LOGGER.info("Capturing by disabled '{}' to '{}'", piece, targetPiece);
             // do nothing
         }
     }
