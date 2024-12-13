@@ -8,6 +8,8 @@ import java.util.HashSet;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Movable;
 import com.agutsul.chess.action.AbstractCaptureAction;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;

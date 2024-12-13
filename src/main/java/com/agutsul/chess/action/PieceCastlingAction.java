@@ -4,10 +4,10 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Castlingable;
+import com.agutsul.chess.Movable;
 import com.agutsul.chess.action.PieceCastlingAction.CastlingMoveAction;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.piece.Castlingable;
-import com.agutsul.chess.piece.Movable;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 

@@ -7,10 +7,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import com.agutsul.chess.Capturable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.impact.PieceCheckImpact;
-import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;

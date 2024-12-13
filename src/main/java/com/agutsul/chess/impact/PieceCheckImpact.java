@@ -2,9 +2,9 @@ package com.agutsul.chess.impact;
 
 import java.util.Optional;
 
+import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Checkable;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.piece.Capturable;
-import com.agutsul.chess.piece.Checkable;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;

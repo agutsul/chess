@@ -2,9 +2,9 @@ package com.agutsul.chess.action.memento;
 
 import java.time.LocalDateTime;
 
+import com.agutsul.chess.Checkable;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.piece.Checkable;
 import com.agutsul.chess.piece.Piece;
 
 abstract class AbstractCheckActionMemento<SOURCE,TARGET>

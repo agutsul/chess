@@ -19,6 +19,8 @@ import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Captured;
+import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.action.AbstractCaptureAction;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
@@ -35,11 +37,9 @@ import com.agutsul.chess.impact.PieceCheckImpact;
 import com.agutsul.chess.impact.PieceControlImpact;
 import com.agutsul.chess.impact.PiecePinImpact;
 import com.agutsul.chess.piece.BlackPieceFactory;
-import com.agutsul.chess.piece.Captured;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.PieceFactory;
-import com.agutsul.chess.piece.Pinnable;
 import com.agutsul.chess.piece.WhitePieceFactory;
 import com.agutsul.chess.position.Position;
 

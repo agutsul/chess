@@ -2,9 +2,9 @@ package com.agutsul.chess.action;
 
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Castlingable;
+import com.agutsul.chess.Movable;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.piece.Castlingable;
-import com.agutsul.chess.piece.Movable;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 

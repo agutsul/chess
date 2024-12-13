@@ -1,7 +1,7 @@
 package com.agutsul.chess.impact;
 
+import com.agutsul.chess.Capturable;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 

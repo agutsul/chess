@@ -7,9 +7,9 @@ import static org.apache.commons.lang3.StringUtils.substring;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Checkable;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.memento.ActionMemento;
-import com.agutsul.chess.piece.Checkable;
 import com.agutsul.chess.piece.Piece;
 
 public enum AlgebraicActionFormatter implements ActionFormatter {

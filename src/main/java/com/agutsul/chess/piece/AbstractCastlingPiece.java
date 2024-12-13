@@ -8,6 +8,9 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Castlingable;
+import com.agutsul.chess.Movable;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCastlingAction;
 import com.agutsul.chess.action.PieceCastlingAction.CastlingMoveAction;

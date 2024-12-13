@@ -4,8 +4,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Capturable;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.piece.Capturable;
 import com.agutsul.chess.piece.Piece;
 
 public class CancelCaptureAction<COLOR1 extends Color,

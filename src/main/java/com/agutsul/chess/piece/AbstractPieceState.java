@@ -4,6 +4,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Movable;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.state.CapturablePieceState;
 import com.agutsul.chess.piece.state.MovablePieceState;

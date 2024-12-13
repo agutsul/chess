@@ -2,6 +2,11 @@ package com.agutsul.chess.piece;
 
 import java.util.Collection;
 
+import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Castlingable;
+import com.agutsul.chess.Checkable;
+import com.agutsul.chess.Movable;
+import com.agutsul.chess.Protectable;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.impact.Impact;

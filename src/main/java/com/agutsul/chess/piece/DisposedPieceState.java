@@ -7,6 +7,8 @@ import java.util.Collection;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Movable;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.impact.Impact;

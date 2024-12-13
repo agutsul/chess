@@ -13,6 +13,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Captured;
+import com.agutsul.chess.Disposable;
+import com.agutsul.chess.Movable;
+import com.agutsul.chess.Protectable;
+import com.agutsul.chess.Restorable;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.Board;

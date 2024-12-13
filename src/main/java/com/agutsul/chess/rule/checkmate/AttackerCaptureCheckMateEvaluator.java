@@ -8,12 +8,12 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Protectable;
 import com.agutsul.chess.action.AbstractCaptureAction;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.Protectable;
 
 final class AttackerCaptureCheckMateEvaluator
         implements CheckMateEvaluator {

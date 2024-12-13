@@ -59,11 +59,16 @@ abstract class AbstractActionAdapter
                                     String position, Class<?> actionClass) {
 
         var pieces = findPieces(pieceType, code);
-        var foundPiece = pieces.stream()
-                .filter(piece -> containsAction(piece, position, actionClass))
-                .findFirst();
+        for (var piece : pieces) {
+            if (containsAction(piece, position, actionClass)) {
+                return Optional.of(piece);
+            }
+        }
+//        var foundPiece = pieces.stream()
+//                .filter(piece -> containsAction(piece, position, actionClass))
+//                .findFirst();
 
-        return foundPiece;
+        return Optional.empty();
     }
 
     static final String adapt(Piece<Color> piece, String target) {

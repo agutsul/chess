@@ -1,4 +1,4 @@
-package com.agutsul.chess.piece;
+package com.agutsul.chess;
 
 import com.agutsul.chess.position.Position;
 
