@@ -46,22 +46,21 @@ final class PawnPieceImpl<COLOR extends Color>
         LOGGER.info("Dispose origin pawn '{}'", this);
 
         super.dispose();
-
         this.currentState = (PieceState<COLOR,Piece<COLOR>>) DISPOSED_STATE;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void enpassant(PawnPiece<?> targetPiece, Position targetPosition) {
-        var enpassantableState = (EnPassantablePieceState<?,?>) getState();
-        ((EnPassantablePieceState<COLOR,PawnPiece<COLOR>>) enpassantableState).enpassant(this, targetPiece, targetPosition);
+    public void enpassant(PawnPiece<?> piece, Position position) {
+        var state = (EnPassantablePieceState<?,?>) getState();
+        ((EnPassantablePieceState<COLOR,PawnPiece<COLOR>>) state).enpassant(this, piece, position);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void unenpassant(PawnPiece<?> targetPiece) {
-        var enpassantableState = (EnPassantablePieceState<?,?>) getState();
-        ((EnPassantablePieceState<COLOR,PawnPiece<COLOR>>) enpassantableState).unenpassant(this, targetPiece);
+    public void unenpassant(PawnPiece<?> piece) {
+        var state = (EnPassantablePieceState<?,?>) getState();
+        ((EnPassantablePieceState<COLOR,PawnPiece<COLOR>>) state).unenpassant(this, piece);
     }
 
     static abstract class AbstractEnPassantablePieceState<COLOR extends Color,
