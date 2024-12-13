@@ -52,8 +52,8 @@ final class PawnPieceProxy extends PieceProxy
     private final PieceFactory pieceFactory;
     private final PawnPiece<Color> pawnPiece;
 
-    protected final PieceState<?,?> activeState;
-    protected PieceState<?,?> currentState;
+    private final PieceState<?,?> activeState;
+    private PieceState<?,?> currentState;
 
     PawnPieceProxy(Board board,
                    PawnPiece<Color> pawnPiece,
@@ -65,12 +65,7 @@ final class PawnPieceProxy extends PieceProxy
         this.pawnPiece = pawnPiece;
         this.pieceFactory = pieceFactory;
 
-        var state = new ActivePromotablePieceState<>(
-                board,
-                pawnPiece,
-                promotionLine
-        );
-
+        var state = new ActivePromotablePieceState<>(board, pawnPiece, promotionLine);
         this.activeState = state;
         this.currentState = state;
     }
@@ -98,30 +93,28 @@ final class PawnPieceProxy extends PieceProxy
     public void promote(Position position, Piece.Type pieceType) {
         LOGGER.info("Promote '{}' to '{}'", this, pieceType);
 
-        var promotableState = (PromotablePieceState<?,?>) getState();
-        ((PromotablePieceState<Color,PawnPiece<Color>>) promotableState).promote(this, position, pieceType);
+        var state = (PromotablePieceState<?,?>) getState();
+        ((PromotablePieceState<Color,PawnPiece<Color>>) state).promote(this, position, pieceType);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void demote() {
-        LOGGER.info("Demote '{}' to '{}'", this, Piece.Type.PAWN);
+        LOGGER.info("Demote '{}' to '{}'", this, Piece.Type.PAWN.name());
 
-        var promotableState = (PromotablePieceState<?,?>) getState();
-        ((PromotablePieceState<Color,? extends Piece<Color>>) promotableState).unpromote(this);
+        var state = (PromotablePieceState<?,?>) getState();
+        ((PromotablePieceState<Color,? extends Piece<Color>>) state).unpromote(this);
     }
 
     @Override
     public void restore() {
         ((Restorable) this.origin).restore();
-
         this.currentState = this.activeState;
     }
 
     @Override
     public void dispose() {
         ((Disposable) this.origin).dispose();
-
         this.currentState = DISPOSED_STATE;
     }
 
@@ -220,13 +213,13 @@ final class PawnPieceProxy extends PieceProxy
         ROOK_MODE(Piece.Type.ROOK,     (pieceFactory, position) -> pieceFactory.createRook(position)),
         QUEEN_MODE(Piece.Type.QUEEN,   (pieceFactory, position) -> pieceFactory.createQueen(position));
 
-        private static final Map<Piece.Type, Factory> MODES =
+        private static final Map<Piece.Type,Factory> MODES =
                 Stream.of(values()).collect(toMap(Factory::type, identity()));
 
         private Piece.Type type;
-        private BiFunction<PieceFactory, Position, Piece<Color>> function;
+        private BiFunction<PieceFactory,Position,Piece<Color>> function;
 
-        Factory(Piece.Type type, BiFunction<PieceFactory, Position, Piece<Color>> function) {
+        Factory(Piece.Type type, BiFunction<PieceFactory,Position,Piece<Color>> function) {
             this.type = type;
             this.function = function;
         }
