@@ -59,20 +59,20 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         ((CastlingablePieceState<COLOR,AbstractCastlingPiece<COLOR>>) state).uncastling(this, position);
     }
 
-    final void doCastling(Position position) {
-        super.doMove(position);
-    }
-
-    final void cancelCastling(Position position) {
-        super.cancelMove(position);
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public void dispose() {
         super.dispose();
 
         this.currentState = (PieceState<COLOR,Piece<COLOR>>) DISPOSED_STATE;
+    }
+
+    private final void doCastling(Position position) {
+        super.doMove(position);
+    }
+
+    private final void cancelCastling(Position position) {
+        super.cancelMove(position);
     }
 
     static abstract class AbstractCastlingablePieceState<COLOR extends Color,

@@ -108,7 +108,7 @@ final class PawnPieceProxy extends PieceProxy
         LOGGER.info("Demote '{}' to '{}'", this, Piece.Type.PAWN);
 
         var promotableState = (PromotablePieceState<?,?>) getState();
-        ((PromotablePieceState<Color,PawnPiece<Color>>) promotableState).unpromote(this);
+        ((PromotablePieceState<Color,? extends Piece<Color>>) promotableState).unpromote(this);
     }
 
     @Override
@@ -188,10 +188,8 @@ final class PawnPieceProxy extends PieceProxy
     private void doPromote(Position position, Piece.Type pieceType) {
         // create promoted piece
         var promotedPiece = createPiece(position, pieceType);
-
         // dispose origin pawn to remove it from the board
         ((Disposable) this.origin).dispose();
-
         // replace pawn with promoted piece
         this.origin = promotedPiece;
     }
