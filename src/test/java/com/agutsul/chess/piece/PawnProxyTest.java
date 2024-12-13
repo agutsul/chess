@@ -41,12 +41,6 @@ public class PawnProxyTest {
 
     @BeforeEach
     public void setUp() {
-//        var activeState = new ActivePieceState<>(board, null, null);
-//        when(pawn.getState())
-//            .then(inv -> {
-//                return activeState;
-//            });
-
         this.proxy = new PawnPieceProxy(board, pawn, 7, pieceFactory);
     }
 
