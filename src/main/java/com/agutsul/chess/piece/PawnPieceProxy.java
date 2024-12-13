@@ -238,14 +238,21 @@ final class PawnPieceProxy extends PieceProxy
     }
 
     static abstract class AbstractPromotablePieceState<COLOR extends Color,
-                                                       PIECE extends Piece<COLOR> & Promotable & Movable & Capturable>
-            extends AbstractPieceState<COLOR,PIECE>
-            implements PromotablePieceState<COLOR,PIECE> {
+                                                       PIECE extends Piece<COLOR> & Promotable>
+            implements PieceState<COLOR,PIECE>,
+                       PromotablePieceState<COLOR,PIECE> {
 
         private static final Logger LOGGER = getLogger(AbstractEnPassantablePieceState.class);
 
+        private PieceState.Type type;
+
         AbstractPromotablePieceState(PieceState.Type type) {
-            super(type);
+            this.type = type;
+        }
+
+        @Override
+        public final PieceState.Type getType() {
+            return this.type;
         }
 
         @Override
@@ -276,14 +283,14 @@ final class PawnPieceProxy extends PieceProxy
         private final Board board;
         private final int promotionLine;
 
-        private PawnPiece<?> origin;
+        private Piece<?> origin;
 
-        ActivePromotablePieceState(Board board, PawnPiece<?> pawnPiece, int promotionLine) {
+        ActivePromotablePieceState(Board board, PawnPiece<?> piece, int promotionLine) {
             super(Type.ACTIVE);
 
             this.board = board;
             this.promotionLine = promotionLine;
-            this.origin = pawnPiece;
+            this.origin = piece;
         }
 
         @Override
@@ -293,16 +300,6 @@ final class PawnPieceProxy extends PieceProxy
             validatePromotion(piece, position, pieceType);
 
             ((PawnPieceProxy) piece).doPromote(position, pieceType);
-        }
-
-        @Override
-        public void move(PIECE piece, Position position) {
-            piece.move(position);
-        }
-
-        @Override
-        public void capture(PIECE piece, Piece<?> targetPiece) {
-            piece.capture(targetPiece);
         }
 
         private void validatePromotion(PIECE piece, Position position, Piece.Type pieceType) {
@@ -359,18 +356,6 @@ final class PawnPieceProxy extends PieceProxy
         @Override
         public void promote(PIECE piece, Position position, Piece.Type pieceType) {
             LOGGER.warn("Promoting disabled '{}' to '{}'", piece, position);
-            // do nothing
-        }
-
-        @Override
-        public void move(PIECE piece, Position position) {
-            LOGGER.warn("Moving disabled '{}' to '{}'", piece, position);
-            // do nothing
-        }
-
-        @Override
-        public void capture(PIECE piece, Piece<?> targetPiece) {
-            LOGGER.warn("Capturing by disabled '{}' to '{}'", piece, targetPiece);
             // do nothing
         }
     }
