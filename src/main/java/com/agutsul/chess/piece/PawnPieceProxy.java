@@ -91,7 +91,7 @@ final class PawnPieceProxy extends PieceProxy
     @Override
     @SuppressWarnings("unchecked")
     public void promote(Position position, Piece.Type pieceType) {
-        LOGGER.info("Promote '{}' to '{}'", this, pieceType);
+        LOGGER.info("Promote '{}' to '{}'", this, pieceType.name());
 
         var state = (PromotablePieceState<?,?>) getState();
         ((PromotablePieceState<Color,PawnPiece<Color>>) state).promote(this, position, pieceType);
@@ -344,7 +344,7 @@ final class PawnPieceProxy extends PieceProxy
     }
 
     static final class DisposedPromotablePieceState<COLOR extends Color,
-                                                    PIECE extends Piece<COLOR> & Promotable & Movable & Capturable>
+                                                    PIECE extends Piece<COLOR> & Promotable>
             extends AbstractPromotablePieceState<COLOR,PIECE> {
 
         private static final Logger LOGGER = getLogger(DisposedPromotablePieceState.class);
