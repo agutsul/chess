@@ -25,7 +25,6 @@ import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
-import com.agutsul.chess.piece.PawnPiece.PawnPieceProxy;
 import com.agutsul.chess.position.Position;
 
 @ExtendWith(MockitoExtension.class)
