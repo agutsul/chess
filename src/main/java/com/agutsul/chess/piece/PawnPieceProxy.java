@@ -191,6 +191,19 @@ final class PawnPieceProxy extends PieceProxy
         ((Captured) this.origin).setCapturedAt(instant);
     }
 
+    // Because of the nature of proxy it should rely on origin piece.
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    // Because of the nature of proxy it shouldn't include any additional fields into equals(..).
+    // It should fully rely on origin piece equals(..)
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
     private void doPromote(Position position, Piece.Type pieceType) {
         // create promoted piece
         var promotedPiece = createPiece(position, pieceType);
