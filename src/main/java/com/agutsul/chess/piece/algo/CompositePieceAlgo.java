@@ -13,7 +13,7 @@ public final class CompositePieceAlgo<COLOR extends Color,
                                       RESULT>
         extends AbstractAlgo<SOURCE,RESULT> {
 
-    private final List<Algo<SOURCE,Collection<RESULT>>> algos;
+    private final List<Algo<SOURCE,Collection<RESULT>>> algos = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
     public CompositePieceAlgo(Board board,
@@ -21,11 +21,8 @@ public final class CompositePieceAlgo<COLOR extends Color,
                               Algo<SOURCE,Collection<RESULT>>... additionalAlgos) {
         super(board);
 
-        var algos = new ArrayList<Algo<SOURCE,Collection<RESULT>>>();
         algos.add(algo);
         algos.addAll(List.of(additionalAlgos));
-
-        this.algos = algos;
     }
 
     @Override
