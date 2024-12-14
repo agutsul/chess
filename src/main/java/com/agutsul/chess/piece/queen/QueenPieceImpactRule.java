@@ -7,15 +7,15 @@ import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.impact.PiecePinImpactRule;
 
 public final class QueenPieceImpactRule
-        extends AbstractPieceRule<Impact<?>> {
+        extends AbstractPieceRule<Impact<?>,Impact.Type> {
 
     public QueenPieceImpactRule(Board board) {
         this(board, new QueenPieceAlgo<>(board));
     }
 
-    @SuppressWarnings("unchecked")
-    private QueenPieceImpactRule(Board board, QueenPieceAlgo<?,?> algo) {
-        super(new CompositePieceRule<Impact<?>>(
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private QueenPieceImpactRule(Board board, QueenPieceAlgo algo) {
+        super(new CompositePieceRule<>(
                 new QueenCheckImpactRule<>(board, algo),
                 new QueenProtectImpactRule<>(board, algo),
                 new QueenMonitorImpactRule<>(board, algo),

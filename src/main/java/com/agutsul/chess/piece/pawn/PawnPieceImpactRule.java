@@ -7,7 +7,7 @@ import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.impact.PiecePinImpactRule;
 
 public final class PawnPieceImpactRule
-        extends AbstractPieceRule<Impact<?>> {
+        extends AbstractPieceRule<Impact<?>,Impact.Type> {
 
     public PawnPieceImpactRule(Board board, int step) {
         this(board, new PawnCaptureAlgo<>(board, step));
@@ -15,7 +15,7 @@ public final class PawnPieceImpactRule
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private PawnPieceImpactRule(Board board, PawnCaptureAlgo captureAlgo) {
-        super(new CompositePieceRule<Impact<?>>(
+        super(new CompositePieceRule<>(
                 new PawnCheckImpactRule<>(board, captureAlgo),
                 new PawnProtectImpactRule<>(board, captureAlgo),
 //                new PawnMonitorImpactRule<>(board, captureAlgo),

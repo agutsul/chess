@@ -26,8 +26,18 @@ abstract class AbstractPieceStateProxy<COLOR extends Color,
     }
 
     @Override
+    public Collection<Action<?>> calculateActions(PIECE piece, Action.Type actionType) {
+        return this.origin.calculateActions(piece, actionType);
+    }
+
+    @Override
     public Collection<Impact<?>> calculateImpacts(PIECE piece) {
         return this.origin.calculateImpacts(piece);
+    }
+
+    @Override
+    public Collection<Impact<?>> calculateImpacts(PIECE piece, Impact.Type impactType) {
+        return this.origin.calculateImpacts(piece, impactType);
     }
 
     @Override

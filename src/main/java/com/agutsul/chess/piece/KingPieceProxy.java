@@ -29,8 +29,18 @@ final class KingPieceProxy extends PieceProxy
     }
 
     @Override
+    public Collection<Action<?>> getActions(Action.Type actionType) {
+        return getState().calculateActions(this, actionType);
+    }
+
+    @Override
     public Collection<Impact<?>> getImpacts() {
         return getState().calculateImpacts(this);
+    }
+
+    @Override
+    public Collection<Impact<?>> getImpacts(Impact.Type impactType) {
+        return getState().calculateImpacts(this, impactType);
     }
 
     @Override

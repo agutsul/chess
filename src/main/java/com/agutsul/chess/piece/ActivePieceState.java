@@ -20,6 +20,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.position.Position;
+import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.Rule;
 
 class ActivePieceState<COLOR extends Color,
@@ -51,9 +52,25 @@ class ActivePieceState<COLOR extends Color,
     }
 
     @Override
+    public Collection<Action<?>> calculateActions(PIECE piece, Action.Type actionType) {
+        LOGGER.info("Calculate '{}' actions ({})", piece, actionType.name());
+
+        var rule = (AbstractPieceRule<Action<?>,Action.Type>) actionRule;
+        return rule.evaluate(piece, actionType);
+    }
+
+    @Override
     public Collection<Impact<?>> calculateImpacts(PIECE piece) {
         LOGGER.info("Calculate '{}' impacts", piece);
         return impactRule.evaluate(piece);
+    }
+
+    @Override
+    public Collection<Impact<?>> calculateImpacts(PIECE piece, Impact.Type impactType) {
+        LOGGER.info("Calculate '{}' impacts ({})", piece, impactType.name());
+
+        var rule = (AbstractPieceRule<Impact<?>,Impact.Type>) impactRule;
+        return rule.evaluate(piece, impactType);
     }
 
     @Override

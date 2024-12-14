@@ -7,15 +7,15 @@ import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.impact.PiecePinImpactRule;
 
 public final class BishopPieceImpactRule
-        extends AbstractPieceRule<Impact<?>> {
+        extends AbstractPieceRule<Impact<?>,Impact.Type> {
 
     public BishopPieceImpactRule(Board board) {
         this(board, new BishopPieceAlgo<>(board));
     }
 
-    @SuppressWarnings("unchecked")
-    private BishopPieceImpactRule(Board board, BishopPieceAlgo<?,?> algo) {
-        super(new CompositePieceRule<Impact<?>>(
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private BishopPieceImpactRule(Board board, BishopPieceAlgo algo) {
+        super(new CompositePieceRule<>(
                 new BishopCheckImpactRule<>(board, algo),
                 new BishopProtectImpactRule<>(board, algo),
                 new BishopMonitorImpactRule<>(board, algo),

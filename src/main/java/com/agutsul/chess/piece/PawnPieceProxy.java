@@ -66,6 +66,7 @@ final class PawnPieceProxy extends PieceProxy
         this.pieceFactory = pieceFactory;
 
         var state = new ActivePromotablePieceState<>(board, pawnPiece, promotionLine);
+
         this.activeState = state;
         this.currentState = state;
     }
@@ -83,9 +84,21 @@ final class PawnPieceProxy extends PieceProxy
     }
 
     @Override
+    public Collection<Action<?>> getActions(Action.Type actionType) {
+        var originState = super.getState();
+        return originState.calculateActions(this, actionType);
+    }
+
+    @Override
     public Collection<Impact<?>> getImpacts() {
         var originState = super.getState();
         return originState.calculateImpacts(this);
+    }
+
+    @Override
+    public Collection<Impact<?>> getImpacts(Impact.Type impactType) {
+        var originState = super.getState();
+        return originState.calculateImpacts(this, impactType);
     }
 
     @Override
@@ -244,7 +257,7 @@ final class PawnPieceProxy extends PieceProxy
 
         private static final Logger LOGGER = getLogger(AbstractEnPassantablePieceState.class);
 
-        private PieceState.Type type;
+        private final PieceState.Type type;
 
         AbstractPromotablePieceState(PieceState.Type type) {
             this.type = type;
@@ -268,8 +281,20 @@ final class PawnPieceProxy extends PieceProxy
         }
 
         @Override
+        public Collection<Action<?>> calculateActions(PIECE piece, Action.Type actionType) {
+            LOGGER.warn("Calculating actions({}) of disabled piece '{}'", actionType.name(), piece);
+            return emptyList();
+        }
+
+        @Override
         public Collection<Impact<?>> calculateImpacts(PIECE piece) {
-            LOGGER.info("Calculating impacts for piece '{}'", piece);
+            LOGGER.warn("Calculating impacts of disabled piece '{}'", piece);
+            return emptyList();
+        }
+
+        @Override
+        public Collection<Impact<?>> calculateImpacts(PIECE piece, Impact.Type impactType) {
+            LOGGER.warn("Calculating impacts({}) of disabled piece '{}'", impactType.name(), piece);
             return emptyList();
         }
     }
@@ -283,7 +308,7 @@ final class PawnPieceProxy extends PieceProxy
         private final Board board;
         private final int promotionLine;
 
-        private Piece<?> origin;
+        private PawnPiece<?> origin;
 
         ActivePromotablePieceState(Board board, PawnPiece<?> piece, int promotionLine) {
             super(Type.ACTIVE);
@@ -314,20 +339,22 @@ final class PawnPieceProxy extends PieceProxy
                         formatInvalidPromotionMessage(piece, position, pieceType)
                     );
                 }
-            } else {
-                // validate promotion action ( check if promoted position is legal )
-                var promoteActions = this.board.getActions(this.origin, PiecePromoteAction.class);
-                var possiblePromotions = promoteActions.stream()
-                        .map(action -> (PiecePromoteAction<?,?>) action)
-                        .map(PiecePromoteAction::getSource)
-                        .map(Action::getPosition)
-                        .collect(toSet());
 
-                if (!possiblePromotions.contains(position)) {
-                    throw new IllegalActionException(
-                        formatInvalidPromotionMessage(piece, position, pieceType)
-                    );
-                }
+                return;
+            }
+
+            // validate promotion action ( check if promoted position is legal )
+            var promoteActions = this.board.getActions(this.origin, PiecePromoteAction.class);
+            var possiblePromotions = promoteActions.stream()
+                    .map(action -> (PiecePromoteAction<?,?>) action)
+                    .map(PiecePromoteAction::getSource)
+                    .map(Action::getPosition)
+                    .collect(toSet());
+
+            if (!possiblePromotions.contains(position)) {
+                throw new IllegalActionException(
+                    formatInvalidPromotionMessage(piece, position, pieceType)
+                );
             }
         }
 

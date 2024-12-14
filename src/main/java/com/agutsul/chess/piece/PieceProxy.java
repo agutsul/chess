@@ -68,8 +68,18 @@ class PieceProxy implements Piece<Color> {
     }
 
     @Override
+    public Collection<Action<?>> getActions(Action.Type actionType) {
+        return origin.getActions(actionType);
+    }
+
+    @Override
     public Collection<Impact<?>> getImpacts() {
         return origin.getImpacts();
+    }
+
+    @Override
+    public Collection<Impact<?>> getImpacts(Impact.Type impactType) {
+        return origin.getImpacts(impactType);
     }
 
     @Override

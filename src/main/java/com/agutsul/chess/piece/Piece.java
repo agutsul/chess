@@ -65,7 +65,10 @@ public interface Piece<COLOR extends Color>
     List<Position> getPositions();
 
     Collection<Action<?>> getActions();
+    Collection<Action<?>> getActions(Action.Type actionType);
+
     Collection<Impact<?>> getImpacts();
+    Collection<Impact<?>> getImpacts(Impact.Type impactType);
 
     boolean isActive();
     boolean isMoved();

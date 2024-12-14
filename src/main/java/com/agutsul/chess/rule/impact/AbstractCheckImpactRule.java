@@ -7,6 +7,7 @@ import java.util.Collection;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.impact.PieceCheckImpact;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
@@ -18,11 +19,11 @@ abstract class AbstractCheckImpactRule<COLOR1 extends Color,
                                        PIECE extends Piece<COLOR1> & Capturable,
                                        KING extends KingPiece<COLOR2>,
                                        IMPACT extends PieceCheckImpact<COLOR1,COLOR2,PIECE,KING>>
-        extends AbstractRule<PIECE,IMPACT>
+        extends AbstractRule<PIECE,IMPACT,Impact.Type>
         implements CheckImpactRule<COLOR1,COLOR2,PIECE,KING,IMPACT> {
 
     AbstractCheckImpactRule(Board board) {
-        super(board);
+        super(board, Impact.Type.CHECK);
     }
 
     @Override

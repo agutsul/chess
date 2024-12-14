@@ -11,7 +11,7 @@ import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 
 public final class PawnPieceActionRule
-        extends AbstractPieceRule<Action<?>> {
+        extends AbstractPieceRule<Action<?>,Action.Type> {
 
     public PawnPieceActionRule(Board board, int step, int initialLine, int promotionLine) {
         this(board, promotionLine,
@@ -28,17 +28,16 @@ public final class PawnPieceActionRule
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static CompositePieceRule<Action<?>> createRule(Board board,
-                                                            int promotionLine,
-                                                            PawnMoveAlgo moveAlgo,
-                                                            PawnCaptureAlgo captureAlgo) {
-
+    private static CompositePieceRule<Action<?>,Action.Type> createRule(Board board,
+                                                                        int promotionLine,
+                                                                        PawnMoveAlgo moveAlgo,
+                                                                        PawnCaptureAlgo captureAlgo) {
         var promoteAlgo = new PawnPromoteAlgo<>(board, promotionLine, moveAlgo, captureAlgo);
 
         var moveActionRule = new PawnMoveActionRule<>(board, moveAlgo);
         var captureActionRule = new PawnCaptureActionRule<>(board, captureAlgo);
 
-        return new CompositePieceRule<Action<?>>(
+        return new CompositePieceRule<>(
                 new PawnEnPassantActionRule<>(board, new PawnEnPassantAlgo<>(board, captureAlgo)),
                 new PawnPromoteActionRule<>(board, promoteAlgo, captureActionRule),
                 new PawnPromoteActionRule<>(board, promoteAlgo, moveActionRule),

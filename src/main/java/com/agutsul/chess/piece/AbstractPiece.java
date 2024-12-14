@@ -98,6 +98,21 @@ abstract class AbstractPiece<COLOR extends Color>
     }
 
     @Override
+    public final Collection<Action<?>> getActions(Action.Type actionType) {
+        LOGGER.info("Get '{}' actions({})", this, actionType.name());
+
+        var filtered = this.actions.stream()
+                .filter(action -> Objects.equals(actionType, action.getType()))
+                .toList();
+
+        if (!filtered.isEmpty()) {
+            return filtered;
+        }
+
+        return getState().calculateActions(this, actionType);
+    }
+
+    @Override
     public final Collection<Impact<?>> getImpacts() {
         LOGGER.info("Get '{}' impacts", this);
 
@@ -106,6 +121,21 @@ abstract class AbstractPiece<COLOR extends Color>
         }
 
         return this.impacts;
+    }
+
+    @Override
+    public final Collection<Impact<?>> getImpacts(Impact.Type impactType) {
+        LOGGER.info("Get '{}' impacts({})", this, impactType.name());
+
+        var filtered = this.impacts.stream()
+                .filter(impact -> Objects.equals(impactType, impact.getType()))
+                .toList();
+
+        if (!filtered.isEmpty()) {
+            return filtered;
+        }
+
+        return getState().calculateImpacts(this, impactType);
     }
 
     @Override

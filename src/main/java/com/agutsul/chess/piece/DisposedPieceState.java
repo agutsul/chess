@@ -31,8 +31,20 @@ class DisposedPieceState<COLOR extends Color,
     }
 
     @Override
+    public Collection<Action<?>> calculateActions(PIECE piece, Action.Type actionType) {
+        LOGGER.warn("Calculate actions({}) of disabled piece '{}'", actionType.name(), piece);
+        return emptyList();
+    }
+
+    @Override
     public Collection<Impact<?>> calculateImpacts(PIECE piece) {
         LOGGER.warn("Calculate impacts of disabled piece '{}'", piece);
+        return emptyList();
+    }
+
+    @Override
+    public Collection<Impact<?>> calculateImpacts(PIECE piece, Impact.Type impactType) {
+        LOGGER.warn("Calculate impacts({}) of disabled piece '{}'", impactType.name(), piece);
         return emptyList();
     }
 

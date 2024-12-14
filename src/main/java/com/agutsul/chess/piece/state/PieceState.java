@@ -20,5 +20,8 @@ public interface PieceState<COLOR extends Color,
     Type getType();
 
     Collection<Action<?>> calculateActions(PIECE piece);
+    Collection<Action<?>> calculateActions(PIECE piece, Action.Type actionType);
+
     Collection<Impact<?>> calculateImpacts(PIECE piece);
+    Collection<Impact<?>> calculateImpacts(PIECE piece, Impact.Type impactType);
 }

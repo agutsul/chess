@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.agutsul.chess.action.AbstractTargetAction;
+import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -22,7 +23,7 @@ public abstract class AbstractPromoteActionRule<COLOR1 extends Color,
                                                 PIECE extends Piece<COLOR2>,
                                                 ACTION extends PiecePromoteAction<COLOR1,PAWN>,
                                                 SOURCE_ACTION extends AbstractTargetAction<PAWN,?>>
-        extends AbstractRule<PAWN,ACTION>
+        extends AbstractRule<PAWN,ACTION,Action.Type>
         implements PromoteActionRule<COLOR1,PAWN,ACTION> {
 
     protected final PromotePieceAlgo<COLOR1,PAWN,Position> algo;
@@ -31,7 +32,7 @@ public abstract class AbstractPromoteActionRule<COLOR1 extends Color,
     protected AbstractPromoteActionRule(Board board,
                                         PromotePieceAlgo<COLOR1,PAWN,Position> algo,
                                         Rule<PAWN,Collection<SOURCE_ACTION>> rule) {
-        super(board);
+        super(board, Action.Type.PROMOTE);
         this.algo = algo;
         this.rule = rule;
     }

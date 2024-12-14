@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
+import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceEnPassantAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -19,11 +20,11 @@ public abstract class AbstractEnPassantActionRule<COLOR1 extends Color,
                                                   PAWN1 extends PawnPiece<COLOR1>,
                                                   PAWN2 extends PawnPiece<COLOR2>,
                                                   ACTION extends PieceEnPassantAction<COLOR1,COLOR2,PAWN1,PAWN2>>
-        extends AbstractRule<PAWN1,ACTION>
+        extends AbstractRule<PAWN1,ACTION,Action.Type>
         implements EnPassantActionRule<COLOR1,COLOR2,PAWN1,PAWN2,ACTION> {
 
     protected AbstractEnPassantActionRule(Board board) {
-        super(board);
+        super(board, Action.Type.EN_PASSANT);
     }
 
     @Override

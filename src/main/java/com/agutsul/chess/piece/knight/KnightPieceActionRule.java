@@ -6,7 +6,7 @@ import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 
 public final class KnightPieceActionRule
-        extends AbstractPieceRule<Action<?>> {
+        extends AbstractPieceRule<Action<?>,Action.Type> {
 
     public KnightPieceActionRule(Board board) {
         this(board, new KnightPieceAlgo<>(board));
@@ -14,7 +14,7 @@ public final class KnightPieceActionRule
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private KnightPieceActionRule(Board board, KnightPieceAlgo algo) {
-        super(new CompositePieceRule<Action<?>>(
+        super(new CompositePieceRule<>(
                 new KnightCaptureActionRule<>(board, algo),
                 new KnightMoveActionRule<>(board, algo)
             )

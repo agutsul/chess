@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Movable;
+import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCastlingAction;
 import com.agutsul.chess.action.PieceCastlingAction.CastlingMoveAction;
 import com.agutsul.chess.board.Board;
@@ -26,7 +27,7 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
                                                  KING extends Piece<COLOR> & Castlingable & Movable,
                                                  ROOK extends Piece<COLOR> & Castlingable & Movable,
                                                  ACTION extends PieceCastlingAction<COLOR,KING,ROOK>>
-        extends AbstractRule<KING,ACTION>
+        extends AbstractRule<KING,ACTION,Action.Type>
         implements CastlingActionRule<COLOR,KING,ROOK,ACTION> {
 
     private enum Castling {
@@ -162,7 +163,7 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
     }
 
     protected AbstractCastlingActionRule(Board board) {
-        super(board);
+        super(board, Action.Type.CASTLING);
     }
 
     protected Collection<PieceCastlingAction<COLOR,KING,ROOK>> evaluate(KingPiece<COLOR> king,

@@ -67,11 +67,11 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         this.currentState = (PieceState<COLOR,Piece<COLOR>>) DISPOSED_STATE;
     }
 
-    private final void doCastling(Position position) {
+    private void doCastling(Position position) {
         super.doMove(position);
     }
 
-    private final void cancelCastling(Position position) {
+    private void cancelCastling(Position position) {
         super.cancelMove(position);
     }
 

@@ -6,15 +6,15 @@ import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 
 public final class QueenPieceActionRule
-        extends AbstractPieceRule<Action<?>> {
+        extends AbstractPieceRule<Action<?>,Action.Type> {
 
     public QueenPieceActionRule(Board board) {
         this(board, new QueenPieceAlgo<>(board));
     }
 
-    @SuppressWarnings("unchecked")
-    private QueenPieceActionRule(Board board, QueenPieceAlgo<?,?> algo) {
-        super(new CompositePieceRule<Action<?>>(
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private QueenPieceActionRule(Board board, QueenPieceAlgo algo) {
+        super(new CompositePieceRule<>(
                 new QueenCaptureActionRule<>(board, algo),
                 new QueenMoveActionRule<>(board, algo)
             )

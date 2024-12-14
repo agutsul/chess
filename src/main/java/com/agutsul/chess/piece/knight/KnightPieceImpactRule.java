@@ -7,7 +7,7 @@ import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.impact.PiecePinImpactRule;
 
 public final class KnightPieceImpactRule
-        extends AbstractPieceRule<Impact<?>> {
+        extends AbstractPieceRule<Impact<?>,Impact.Type> {
 
     public KnightPieceImpactRule(Board board) {
         this(board, new KnightPieceAlgo<>(board));
@@ -15,7 +15,7 @@ public final class KnightPieceImpactRule
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private KnightPieceImpactRule(Board board, KnightPieceAlgo algo) {
-        super(new CompositePieceRule<Impact<?>>(
+        super(new CompositePieceRule<>(
                 new KnightCheckImpactRule<>(board, algo),
                 new KnightProtectImpactRule<>(board, algo),
 //                new KnightMonitorImpactRule<>(board, algo),

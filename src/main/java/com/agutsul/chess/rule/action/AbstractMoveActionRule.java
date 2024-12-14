@@ -5,6 +5,7 @@ import static java.util.Collections.emptyList;
 import java.util.Collection;
 
 import com.agutsul.chess.Movable;
+import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -15,11 +16,11 @@ import com.agutsul.chess.rule.AbstractRule;
 abstract class AbstractMoveActionRule<COLOR extends Color,
                                       PIECE extends Piece<COLOR> & Movable,
                                       ACTION extends PieceMoveAction<COLOR,PIECE>>
-        extends AbstractRule<PIECE,ACTION>
+        extends AbstractRule<PIECE,ACTION,Action.Type>
         implements MoveActionRule<COLOR,PIECE,ACTION> {
 
     protected AbstractMoveActionRule(Board board) {
-        super(board);
+        super(board, Action.Type.MOVE);
     }
 
     @Override

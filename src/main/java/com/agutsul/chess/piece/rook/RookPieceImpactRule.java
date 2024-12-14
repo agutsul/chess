@@ -7,15 +7,15 @@ import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.impact.PiecePinImpactRule;
 
 public final class RookPieceImpactRule
-        extends AbstractPieceRule<Impact<?>> {
+        extends AbstractPieceRule<Impact<?>,Impact.Type> {
 
     public RookPieceImpactRule(Board board) {
         this(board, new RookPieceAlgo<>(board));
     }
 
-    @SuppressWarnings("unchecked")
-    private RookPieceImpactRule(Board board, RookPieceAlgo<?,?> algo) {
-        super(new CompositePieceRule<Impact<?>>(
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private RookPieceImpactRule(Board board, RookPieceAlgo algo) {
+        super(new CompositePieceRule<>(
                 new RookCheckImpactRule<>(board, algo),
                 new RookProtectImpactRule<>(board, algo),
                 new RookMonitorImpactRule<>(board, algo),

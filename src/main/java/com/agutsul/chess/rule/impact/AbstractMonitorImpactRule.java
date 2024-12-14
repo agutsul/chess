@@ -7,6 +7,7 @@ import java.util.Collection;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.impact.PieceMonitorImpact;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Calculated;
@@ -15,11 +16,11 @@ import com.agutsul.chess.rule.AbstractRule;
 abstract class AbstractMonitorImpactRule<COLOR extends Color,
                                          PIECE extends Piece<COLOR> & Capturable,
                                          IMPACT extends PieceMonitorImpact<COLOR,PIECE>>
-        extends AbstractRule<PIECE,IMPACT>
+        extends AbstractRule<PIECE,IMPACT,Impact.Type>
         implements MonitorImpactRule<COLOR,PIECE,IMPACT> {
 
     protected AbstractMonitorImpactRule(Board board) {
-        super(board);
+        super(board, Impact.Type.MONITOR);
     }
 
     @Override

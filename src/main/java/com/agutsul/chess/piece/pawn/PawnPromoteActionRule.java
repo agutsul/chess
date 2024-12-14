@@ -2,6 +2,7 @@ package com.agutsul.chess.piece.pawn;
 
 import java.util.Collection;
 
+import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.PiecePromoteAction;
@@ -12,6 +13,7 @@ import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.PromotePieceAlgo;
 import com.agutsul.chess.position.Position;
+import com.agutsul.chess.rule.AbstractRule;
 import com.agutsul.chess.rule.action.AbstractPromoteActionRule;
 import com.agutsul.chess.rule.action.CaptureActionRule;
 import com.agutsul.chess.rule.action.MoveActionRule;
@@ -19,6 +21,7 @@ import com.agutsul.chess.rule.action.PromoteActionRule;
 
 final class PawnPromoteActionRule<COLOR1 extends Color,
                                   PAWN extends PawnPiece<COLOR1>>
+        extends AbstractRule<PAWN,PiecePromoteAction<COLOR1,PAWN>,Action.Type>
         implements PromoteActionRule<COLOR1,PAWN,PiecePromoteAction<COLOR1,PAWN>> {
 
     private final PromoteActionRule<COLOR1,PAWN,PiecePromoteAction<COLOR1,PAWN>> promoteActionRuleAdapter;
@@ -28,6 +31,7 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
                                  PromotePieceAlgo<COLOR1,PAWN, Position> algo,
                                  MoveActionRule<COLOR1,PAWN,PieceMoveAction<COLOR1,PAWN>> rule) {
 
+        super(board, Action.Type.PROMOTE);
         this.promoteActionRuleAdapter = new PawnPromoteMoveActionRule<>(board, algo, rule);
     }
 
@@ -37,6 +41,7 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
                                  CaptureActionRule<COLOR1,COLOR2,PAWN,PIECE,
                                                    PieceCaptureAction<COLOR1,COLOR2,PAWN,PIECE>> rule) {
 
+        super(board, Action.Type.PROMOTE);
         this.promoteActionRuleAdapter = new PawnPromoteCaptureActionRule<>(board, algo, rule);
     }
 

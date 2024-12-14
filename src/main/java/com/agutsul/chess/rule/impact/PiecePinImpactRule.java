@@ -60,6 +60,12 @@ public class PiecePinImpactRule<COLOR1 extends Color,
                 .filter(line -> line.contains(king.getPosition()))
                 .toList();
 
+        var pieceActions = piece.getActions(Action.Type.CAPTURE);
+        var attackedPieces = pieceActions.stream()
+                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
+                .map(AbstractCaptureAction::getTarget)
+                .toList();
+
         var impacts = new ArrayList<PiecePinImpact<COLOR1,COLOR2,PIECE,KING,ATTACKER>>();
         for (var line : kingLines) {
             var linePieces = line.stream()
@@ -67,6 +73,10 @@ public class PiecePinImpactRule<COLOR1 extends Color,
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .toList();
+
+            if (linePieces.size() < 3) {
+                continue;
+            }
 
             var lineAttackers = linePieces.stream()
                     .filter(attacker -> attacker.getColor() != king.getColor())
@@ -81,9 +91,8 @@ public class PiecePinImpactRule<COLOR1 extends Color,
             var optinalAttacker = lineAttackers.stream()
                     .filter(lineAttacker -> {
                         // check if piece is attacked by line attacker
-                        var attackerImpacts = board.getImpacts(lineAttacker);
+                        var attackerImpacts = lineAttacker.getImpacts(Impact.Type.CONTROL);
                         var isPieceAttacked = attackerImpacts.stream()
-                                .filter(impact -> Impact.Type.CONTROL.equals(impact.getType()))
                                 .map(Impact::getPosition)
                                 .anyMatch(position -> Objects.equals(position, piece.getPosition()));
 
@@ -91,9 +100,8 @@ public class PiecePinImpactRule<COLOR1 extends Color,
                     })
                     .filter(lineAttacker -> {
                         // check if king is monitored by line attacker
-                        var attackerImpacts = board.getImpacts(lineAttacker);
+                        var attackerImpacts = lineAttacker.getImpacts(Impact.Type.MONITOR);
                         var isKingMonitored = attackerImpacts.stream()
-                                .filter(impact -> Impact.Type.MONITOR.equals(impact.getType()))
                                 .map(Impact::getPosition)
                                 .anyMatch(position -> Objects.equals(position, king.getPosition()));
 
@@ -106,14 +114,6 @@ public class PiecePinImpactRule<COLOR1 extends Color,
             }
 
             var attacker = optinalAttacker.get();
-
-            var pieceActions = piece.getActions();
-            var attackedPieces = pieceActions.stream()
-                    .filter(action -> Action.Type.CAPTURE.equals(action.getType()))
-                    .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                    .map(AbstractCaptureAction::getTarget)
-                    .toList();
-
             if (!attackedPieces.contains(attacker)) {
                 impacts.add(new PiecePinImpact(piece, king, attacker, line));
             }
