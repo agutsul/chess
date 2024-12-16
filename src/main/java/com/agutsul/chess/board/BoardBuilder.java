@@ -186,9 +186,9 @@ public final class BoardBuilder
     }
 
     private BoardBuilderDecorator withPawns(BoardContext context,
-                                          String position1,
-                                          String position2,
-                                          String... positions) {
+                                            String position1,
+                                            String position2,
+                                            String... positions) {
 
         var pawnPositions = new ArrayList<String>();
 

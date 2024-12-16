@@ -24,7 +24,7 @@ final class KingPieceImpl<COLOR extends Color>
 
     private static final Logger LOGGER = getLogger(KingPieceImpl.class);
 
-    private final CheckMateEvaluator evaluator;
+    private final CheckMateEvaluator checkMateEvaluator;
 
     KingPieceImpl(Board board, COLOR color, String unicode, Position position, int direction) {
         super(board, Piece.Type.KING, color, unicode, position, direction,
@@ -32,7 +32,7 @@ final class KingPieceImpl<COLOR extends Color>
                 new KingPieceImpactRule(board)
         );
 
-        this.evaluator = new CompositeCheckMateEvaluator(board);
+        this.checkMateEvaluator = new CompositeCheckMateEvaluator(board);
     }
 
     @Override
@@ -44,7 +44,8 @@ final class KingPieceImpl<COLOR extends Color>
                 .map(piece -> board.getImpacts(piece, Impact.Type.CHECK))
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceCheckImpact<?,?,?,?>) impact)
-                .anyMatch(impact -> Objects.equals(impact.getTarget(), this));
+                .map(PieceCheckImpact::getTarget)
+                .anyMatch(piece -> Objects.equals(piece, this));
 
         return isChecked;
     }
@@ -56,7 +57,7 @@ final class KingPieceImpl<COLOR extends Color>
             return false;
         }
 
-        return evaluator.evaluate(this);
+        return checkMateEvaluator.evaluate(this);
     }
 
     // prevent prohibited operations

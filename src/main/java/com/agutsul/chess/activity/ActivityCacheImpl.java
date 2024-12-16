@@ -10,7 +10,7 @@ public class ActivityCacheImpl<TYPE extends Enum<TYPE> & Activity.Type,
     private final ActivityMap<TYPE,ACTIVITY> cache;
 
     public ActivityCacheImpl() {
-        this.cache = new ActivityMultiMap<TYPE,ACTIVITY>();
+        this.cache = new ActivityMultiMap<>();
     }
 
     @Override

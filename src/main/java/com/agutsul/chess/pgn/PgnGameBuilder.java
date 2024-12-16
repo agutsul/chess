@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.agutsul.chess.color.Colors;
-import com.agutsul.chess.game.GameBuilderAdapter;
+import com.agutsul.chess.game.GameBuilderDecorator;
 import com.agutsul.chess.game.pgn.PgnGame;
 import com.agutsul.chess.game.state.BlackWinGameState;
 import com.agutsul.chess.game.state.DefaultGameState;
@@ -16,7 +16,7 @@ import com.agutsul.chess.game.state.WhiteWinGameState;
 import com.agutsul.chess.player.UserPlayer;
 
 final class PgnGameBuilder
-        implements GameBuilderAdapter {
+        implements GameBuilderDecorator {
 
     private final List<String> actions = new ArrayList<>();
     private final Map<String,String> tags = new HashMap<>();
@@ -37,43 +37,43 @@ final class PgnGameBuilder
     }
 
     @Override
-    public GameBuilderAdapter withWhitePlayer(String playerName) {
+    public GameBuilderDecorator withWhitePlayer(String playerName) {
         this.whitePlayer = playerName;
         return this;
     }
 
     @Override
-    public GameBuilderAdapter withBlackPlayer(String playerName) {
+    public GameBuilderDecorator withBlackPlayer(String playerName) {
         this.blackPlayer = playerName;
         return this;
     }
 
     @Override
-    public GameBuilderAdapter withGameState(String state) {
+    public GameBuilderDecorator withGameState(String state) {
         this.gameState = state;
         return this;
     }
 
     @Override
-    public GameBuilderAdapter withActions(List<String> actions) {
+    public GameBuilderDecorator withActions(List<String> actions) {
         this.actions.addAll(actions);
         return this;
     }
 
     @Override
-    public GameBuilderAdapter addAction(String action) {
+    public GameBuilderDecorator addAction(String action) {
         this.actions.add(action);
         return this;
     }
 
     @Override
-    public GameBuilderAdapter withTags(Map<String,String> tags) {
+    public GameBuilderDecorator withTags(Map<String,String> tags) {
         this.tags.putAll(tags);
         return this;
     }
 
     @Override
-    public GameBuilderAdapter addTag(String name, String value) {
+    public GameBuilderDecorator addTag(String name, String value) {
         this.tags.put(name, value);
         return this;
     }
