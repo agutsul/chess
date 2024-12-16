@@ -1,13 +1,15 @@
-package com.agutsul.chess.action;
+package com.agutsul.chess.activity;
 
 import java.util.Objects;
 
-public abstract class AbstractTargetAction<SOURCE,TARGET>
-        extends AbstractSourceAction<SOURCE> {
+public abstract class AbstractTargetActivity<SOURCE,TARGET>
+        extends AbstractSourceActivity<SOURCE> {
 
     private final TARGET target;
 
-    AbstractTargetAction(Type type, SOURCE source, TARGET target) {
+    protected AbstractTargetActivity(Activity.Type type,
+                                     SOURCE source,
+                                     TARGET target) {
         super(type, source);
         this.target = target;
     }
@@ -34,11 +36,11 @@ public abstract class AbstractTargetAction<SOURCE,TARGET>
             return false;
         }
 
-        if (!(obj instanceof AbstractTargetAction)) {
+        if (!(obj instanceof AbstractTargetActivity)) {
             return false;
         }
 
-        var other = (AbstractTargetAction<?,?>) obj;
+        var other = (AbstractTargetActivity<?,?>) obj;
         return Objects.equals(getTarget(), other.getTarget());
     }
 }

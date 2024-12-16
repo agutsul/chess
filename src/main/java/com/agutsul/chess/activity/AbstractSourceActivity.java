@@ -1,20 +1,21 @@
-package com.agutsul.chess.impact;
+package com.agutsul.chess.activity;
 
 import java.util.Objects;
 
-public abstract class AbstractSourceImpact<SOURCE>
-        implements Impact<SOURCE> {
+public abstract class AbstractSourceActivity<SOURCE>
+        implements Activity<SOURCE> {
 
-    private final Type type;
+    private final Activity.Type type;
     private final SOURCE source;
 
-    AbstractSourceImpact(Type type, SOURCE source) {
+    protected AbstractSourceActivity(Activity.Type type,
+                                     SOURCE source) {
         this.type = type;
         this.source = source;
     }
 
     @Override
-    public Type getType() {
+    public Activity.Type getType() {
         return type;
     }
 
@@ -38,11 +39,11 @@ public abstract class AbstractSourceImpact<SOURCE>
             return false;
         }
 
-        if (!(obj instanceof AbstractSourceImpact)) {
+        if (!(obj instanceof AbstractSourceActivity)) {
             return false;
         }
 
-        var other = (AbstractSourceImpact<?>) obj;
+        var other = (AbstractSourceActivity<?>) obj;
         return Objects.equals(getSource(), other.getSource())
                 && Objects.equals(getType(), other.getType());
     }

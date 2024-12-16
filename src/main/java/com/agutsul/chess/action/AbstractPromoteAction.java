@@ -2,16 +2,20 @@ package com.agutsul.chess.action;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
+import com.agutsul.chess.activity.AbstractSourceActivity;
+import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
+import com.agutsul.chess.position.Positionable;
 
 public abstract class AbstractPromoteAction<COLOR extends Color,
                                             PIECE extends Piece<COLOR> & Movable & Capturable>
-        extends AbstractSourceAction<AbstractTargetAction<PIECE,?>> {
+        extends AbstractSourceActivity<AbstractTargetActivity<PIECE,?>>
+        implements Action<AbstractTargetActivity<PIECE,?>> {
 
-    AbstractPromoteAction(AbstractTargetAction<PIECE,?> source) {
-        super(Type.PROMOTE, source);
+    AbstractPromoteAction(AbstractTargetActivity<PIECE,?> source) {
+        super(Action.Type.PROMOTE, source);
     }
 
     @Override
@@ -21,6 +25,11 @@ public abstract class AbstractPromoteAction<COLOR extends Color,
 
     @Override
     public Position getPosition() {
-        return getSource().getPosition();
+        return ((Positionable) getSource()).getPosition();
+    }
+
+    @Override
+    public String toString() {
+        return getCode();
     }
 }

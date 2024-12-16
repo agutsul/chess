@@ -4,6 +4,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Executable;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
@@ -59,22 +60,26 @@ public class PiecePromoteAction<COLOR1 extends Color,
         return pieceType;
     }
 
+    private void setPieceType(Piece.Type pieceType) {
+        this.pieceType = pieceType;
+    }
+
     // actual piece promotion entry point
     private void process(PromotionPieceTypeEvent event) {
         // store selected piece type for using in journal
-        this.pieceType = event.getPieceType();
+        setPieceType(event.getPieceType());
 
         LOGGER.info("Executing promote by '{}' to '{}'",
             getSource().getSource(),
-            this.pieceType
+            getPieceType()
         );
 
         // source action can be either MOVE or CAPTURE
         var originAction = getSource();
-        originAction.execute();
+        ((Executable) originAction).execute();
 
         // transform pawn into selected piece type
         var pawn = originAction.getSource();
-        pawn.promote(getPosition(), this.pieceType);
+        pawn.promote(getPosition(), getPieceType());
     }
 }

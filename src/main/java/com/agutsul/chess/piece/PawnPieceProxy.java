@@ -368,7 +368,7 @@ final class PawnPieceProxy extends PieceProxy
             var promoteActions = this.board.getActions(this.origin, Action.Type.PROMOTE);
             var possiblePromotions = promoteActions.stream()
                     .map(action -> (PiecePromoteAction<?,?>) action)
-                    .map(PiecePromoteAction::getSource)
+                    .map(action -> (Action<?>) action.getSource())
                     .map(Action::getPosition)
                     .collect(toSet());
 

@@ -11,7 +11,7 @@ public abstract class AbstractEnPassantAction<COLOR1 extends Color,
         extends AbstractCaptureAction<COLOR1,COLOR2,PAWN1,PAWN2> {
 
     AbstractEnPassantAction(PAWN1 pawn1, PAWN2 pawn2) {
-        super(Type.EN_PASSANT, pawn1, pawn2);
+        super(Action.Type.EN_PASSANT, pawn1, pawn2);
     }
 
     @Override

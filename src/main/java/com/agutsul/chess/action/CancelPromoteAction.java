@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Demotable;
+import com.agutsul.chess.Executable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
@@ -39,7 +40,7 @@ public class CancelPromoteAction<COLOR1 extends Color,
         if (Action.Type.MOVE.equals(action.getType())
                 || Action.Type.CAPTURE.equals(action.getType())) {
 
-            action.execute();
+            ((Executable) action).execute();
         }
     }
 }

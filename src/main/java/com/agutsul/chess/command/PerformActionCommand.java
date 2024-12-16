@@ -163,7 +163,9 @@ public class PerformActionCommand
                 @Override
                 boolean equals(Action<?> action, Piece<?> piece, Position position) {
                     var promoteAction = (PiecePromoteAction<?,?>) action;
-                    return matches(promoteAction.getSource(), piece, position);
+                    var originAction = (Action<?>) promoteAction.getSource();
+
+                    return matches(originAction, piece, position);
                 }
             },
             CASTLING_MODE(Action.Type.CASTLING) {

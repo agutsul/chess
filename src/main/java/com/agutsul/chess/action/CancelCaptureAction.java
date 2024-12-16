@@ -17,7 +17,7 @@ public class CancelCaptureAction<COLOR1 extends Color,
     private static final Logger LOGGER = getLogger(CancelCaptureAction.class);
 
     public CancelCaptureAction(PIECE1 predator, PIECE2 victim) {
-        super(Type.CAPTURE, predator, victim);
+        super(Action.Type.CAPTURE, predator, victim);
     }
 
     @Override

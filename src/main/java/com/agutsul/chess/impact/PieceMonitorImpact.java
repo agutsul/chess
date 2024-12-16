@@ -1,16 +1,18 @@
 package com.agutsul.chess.impact;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
 public class PieceMonitorImpact<COLOR extends Color,
                                 PIECE extends Piece<COLOR> & Capturable>
-        extends AbstractTargetImpact<PIECE, Position> {
+        extends AbstractTargetActivity<PIECE, Position>
+        implements Impact<PIECE> {
 
     public PieceMonitorImpact(PIECE piece, Position position) {
-        super(Type.MONITOR, piece, position);
+        super(Impact.Type.MONITOR, piece, position);
     }
 
     @Override

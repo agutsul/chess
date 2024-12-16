@@ -1,16 +1,18 @@
 package com.agutsul.chess.action;
 
 import com.agutsul.chess.Movable;
+import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
 public abstract class AbstractMoveAction<COLOR extends Color,
                                          PIECE extends Piece<COLOR> & Movable>
-        extends AbstractTargetAction<PIECE,Position> {
+        extends AbstractTargetActivity<PIECE,Position>
+        implements Action<PIECE> {
 
     AbstractMoveAction(PIECE source, Position target) {
-        super(Type.MOVE, source, target);
+        super(Action.Type.MOVE, source, target);
     }
 
     @Override
@@ -21,5 +23,10 @@ public abstract class AbstractMoveAction<COLOR extends Color,
     @Override
     public Position getPosition() {
         return getTarget();
+    }
+
+    @Override
+    public String toString() {
+        return getCode();
     }
 }
