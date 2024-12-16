@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.activity.impact.PieceMonitorImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.impact.PieceMonitorImpact;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Calculated;

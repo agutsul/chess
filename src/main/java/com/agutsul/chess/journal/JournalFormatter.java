@@ -2,8 +2,8 @@ package com.agutsul.chess.journal;
 
 import static java.lang.System.lineSeparator;
 
-import com.agutsul.chess.action.formatter.AlgebraicActionFormatter;
-import com.agutsul.chess.action.memento.ActionMemento;
+import com.agutsul.chess.activity.action.formatter.AlgebraicActionFormatter;
+import com.agutsul.chess.activity.action.memento.ActionMemento;
 
 public class JournalFormatter {
 

@@ -11,12 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.event.ActionCancelledEvent;
-import com.agutsul.chess.action.event.ActionCancellingEvent;
-import com.agutsul.chess.action.event.ActionExecutionEvent;
-import com.agutsul.chess.action.event.ActionPerformedEvent;
-import com.agutsul.chess.action.memento.ActionMemento;
+import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.event.ActionCancelledEvent;
+import com.agutsul.chess.activity.action.event.ActionCancellingEvent;
+import com.agutsul.chess.activity.action.event.ActionExecutionEvent;
+import com.agutsul.chess.activity.action.event.ActionPerformedEvent;
+import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.game.Game;

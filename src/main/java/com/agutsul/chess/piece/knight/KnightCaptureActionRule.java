@@ -1,6 +1,6 @@
 package com.agutsul.chess.piece.knight;
 
-import com.agutsul.chess.action.PieceCaptureAction;
+import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KnightPiece;

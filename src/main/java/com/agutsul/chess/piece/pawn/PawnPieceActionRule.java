@@ -3,7 +3,7 @@ package com.agutsul.chess.piece.pawn;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
-import com.agutsul.chess.action.Action;
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;

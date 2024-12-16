@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.action.PiecePromoteAction;
+import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;

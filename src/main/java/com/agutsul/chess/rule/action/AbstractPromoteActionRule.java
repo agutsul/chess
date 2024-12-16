@@ -5,9 +5,9 @@ import static java.util.Collections.emptyList;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.activity.AbstractTargetActivity;
+import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;

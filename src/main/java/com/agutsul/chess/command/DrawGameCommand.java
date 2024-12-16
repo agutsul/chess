@@ -4,8 +4,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.action.event.DrawExecutionEvent;
-import com.agutsul.chess.action.event.DrawPerformedEvent;
+import com.agutsul.chess.activity.action.event.DrawExecutionEvent;
+import com.agutsul.chess.activity.action.event.DrawPerformedEvent;
 import com.agutsul.chess.board.state.AgreedDrawBoardState;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.CommandException;

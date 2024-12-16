@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.action.Action;
+import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.position.Positionable;

@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.action.memento.ActionMemento;
+import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.color.Color;
 
 public final class JournalImpl

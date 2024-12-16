@@ -3,12 +3,12 @@ package com.agutsul.chess.rule.check;
 import java.util.Collection;
 import java.util.HashSet;
 
-import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.PieceCaptureAction;
-import com.agutsul.chess.action.PieceMoveAction;
+import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.PieceCaptureAction;
+import com.agutsul.chess.activity.action.PieceMoveAction;
+import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PieceMonitorImpact;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.impact.Impact;
-import com.agutsul.chess.impact.PieceMonitorImpact;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;

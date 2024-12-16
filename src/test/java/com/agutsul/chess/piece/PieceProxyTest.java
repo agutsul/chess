@@ -16,7 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.action.Action;
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.position.Position;

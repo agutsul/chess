@@ -1,8 +1,8 @@
 package com.agutsul.chess.piece.bishop;
 
+import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.impact.PieceCheckImpact;
 import com.agutsul.chess.piece.BishopPiece;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.agutsul.chess.Movable;
-import com.agutsul.chess.action.PieceMoveAction;
+import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;

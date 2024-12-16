@@ -1,6 +1,6 @@
 package com.agutsul.chess.rule.board;
 
-import com.agutsul.chess.action.memento.ActionMemento;
+import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.journal.Journal;
 

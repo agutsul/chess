@@ -10,17 +10,17 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.PieceCaptureAction;
-import com.agutsul.chess.action.PieceEnPassantAction;
-import com.agutsul.chess.action.PieceMoveAction;
-import com.agutsul.chess.action.PiecePromoteAction;
-import com.agutsul.chess.action.function.ActionFilter;
 import com.agutsul.chess.activity.ActivityCacheImpl;
+import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.PieceCaptureAction;
+import com.agutsul.chess.activity.action.PieceEnPassantAction;
+import com.agutsul.chess.activity.action.PieceMoveAction;
+import com.agutsul.chess.activity.action.PiecePromoteAction;
+import com.agutsul.chess.activity.action.function.ActionFilter;
+import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
-import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.piece.pawn.PawnPieceActionRule;
 import com.agutsul.chess.piece.pawn.PawnPieceImpactRule;
 import com.agutsul.chess.piece.state.EnPassantablePieceState;

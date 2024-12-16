@@ -6,9 +6,9 @@ import java.util.Collection;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.piece.Piece;
 
 abstract class AbstractBoardState

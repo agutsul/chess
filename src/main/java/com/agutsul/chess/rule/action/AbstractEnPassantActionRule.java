@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
-import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.PieceEnPassantAction;
+import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.PieceEnPassantAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;

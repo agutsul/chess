@@ -4,8 +4,8 @@ import java.util.Collection;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Checkable;
+import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.impact.PieceCheckImpact;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.Rule;
 

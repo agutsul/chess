@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.action.event.DrawExecutionEvent;
-import com.agutsul.chess.action.event.DrawPerformedEvent;
+import com.agutsul.chess.activity.action.event.DrawExecutionEvent;
+import com.agutsul.chess.activity.action.event.DrawPerformedEvent;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.board.state.BoardState;

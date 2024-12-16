@@ -1,8 +1,8 @@
 package com.agutsul.chess.piece.queen;
 
+import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.impact.PieceCheckImpact;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;

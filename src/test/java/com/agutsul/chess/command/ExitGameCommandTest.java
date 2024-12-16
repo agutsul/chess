@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.action.event.ExitExecutionEvent;
-import com.agutsul.chess.action.event.ExitPerformedEvent;
+import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
+import com.agutsul.chess.activity.action.event.ExitPerformedEvent;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.board.state.BoardState;

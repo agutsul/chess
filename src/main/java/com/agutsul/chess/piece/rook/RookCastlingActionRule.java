@@ -3,7 +3,7 @@ package com.agutsul.chess.piece.rook;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.agutsul.chess.action.PieceCastlingAction;
+import com.agutsul.chess.activity.action.PieceCastlingAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;

@@ -2,7 +2,7 @@ package com.agutsul.chess.rule.action;
 
 import java.util.Collection;
 
-import com.agutsul.chess.action.PiecePromoteAction;
+import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.rule.Rule;

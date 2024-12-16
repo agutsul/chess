@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Movable;
-import com.agutsul.chess.action.PieceCastlingAction;
+import com.agutsul.chess.activity.action.PieceCastlingAction;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.Rule;

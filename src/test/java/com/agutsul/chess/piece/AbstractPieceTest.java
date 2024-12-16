@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.PieceCaptureAction;
-import com.agutsul.chess.action.PieceMoveAction;
+import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.PieceCaptureAction;
+import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 

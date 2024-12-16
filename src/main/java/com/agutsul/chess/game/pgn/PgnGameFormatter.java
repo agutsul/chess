@@ -8,7 +8,7 @@ import static org.apache.commons.lang3.StringUtils.SPACE;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.agutsul.chess.action.memento.ActionMemento;
+import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.state.GameState;
 import com.agutsul.chess.journal.Journal;

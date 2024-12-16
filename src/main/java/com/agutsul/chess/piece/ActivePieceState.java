@@ -9,13 +9,13 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
-import com.agutsul.chess.action.AbstractCaptureAction;
-import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.PieceMoveAction;
+import com.agutsul.chess.activity.action.AbstractCaptureAction;
+import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.PieceMoveAction;
+import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
-import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.Rule;

@@ -2,7 +2,7 @@ package com.agutsul.chess.piece;
 
 import org.apache.commons.lang3.concurrent.LazyInitializer;
 
-import com.agutsul.chess.action.PiecePromoteAction;
+import com.agutsul.chess.activity.action.PiecePromoteAction;
 
 public final class PieceTypeLazyInitializer
         extends LazyInitializer<Piece.Type> {

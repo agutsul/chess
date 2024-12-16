@@ -7,9 +7,9 @@ import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Checkable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.Protectable;
-import com.agutsul.chess.action.Action;
+import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.position.Position;
 
 /**

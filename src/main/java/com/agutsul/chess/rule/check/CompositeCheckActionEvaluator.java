@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.action.Action;
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;

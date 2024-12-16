@@ -10,12 +10,12 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.agutsul.chess.Pinnable;
-import com.agutsul.chess.action.AbstractCaptureAction;
-import com.agutsul.chess.action.Action;
+import com.agutsul.chess.activity.action.AbstractCaptureAction;
+import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.impact.Impact;
-import com.agutsul.chess.impact.PiecePinImpact;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 

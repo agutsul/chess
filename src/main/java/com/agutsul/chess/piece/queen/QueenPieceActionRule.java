@@ -1,6 +1,6 @@
 package com.agutsul.chess.piece.queen;
 
-import com.agutsul.chess.action.Action;
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;

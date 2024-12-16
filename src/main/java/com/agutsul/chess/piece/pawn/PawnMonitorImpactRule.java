@@ -1,8 +1,8 @@
 package com.agutsul.chess.piece.pawn;
 
+import com.agutsul.chess.activity.impact.PieceMonitorImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.impact.PieceMonitorImpact;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Calculated;

@@ -1,7 +1,7 @@
 package com.agutsul.chess.piece.pawn;
 
+import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.impact.Impact;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.impact.PiecePinImpactRule;

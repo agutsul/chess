@@ -1,6 +1,6 @@
 package com.agutsul.chess.rule.board;
 
-import static com.agutsul.chess.action.memento.ActionMementoFactory.createMemento;
+import static com.agutsul.chess.activity.action.memento.ActionMementoFactory.createMemento;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.action.PieceCaptureAction;
-import com.agutsul.chess.action.PieceMoveAction;
+import com.agutsul.chess.activity.action.PieceCaptureAction;
+import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Colors;

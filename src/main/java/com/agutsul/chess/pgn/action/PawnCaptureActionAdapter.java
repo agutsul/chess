@@ -7,7 +7,7 @@ import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
 
-import com.agutsul.chess.action.Action;
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;

@@ -8,10 +8,10 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.impact.Impact;
-import com.agutsul.chess.impact.PieceCheckImpact;
 import com.agutsul.chess.piece.king.KingPieceActionRule;
 import com.agutsul.chess.piece.king.KingPieceImpactRule;
 import com.agutsul.chess.position.Position;

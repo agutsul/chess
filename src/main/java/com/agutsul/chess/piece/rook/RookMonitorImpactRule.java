@@ -1,8 +1,8 @@
 package com.agutsul.chess.piece.rook;
 
+import com.agutsul.chess.activity.impact.PieceMonitorImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.impact.PieceMonitorImpact;
 import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Line;

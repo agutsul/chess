@@ -20,11 +20,11 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Executable;
-import com.agutsul.chess.action.event.ActionCancelledEvent;
-import com.agutsul.chess.action.event.ActionPerformedEvent;
-import com.agutsul.chess.action.memento.ActionMemento;
-import com.agutsul.chess.action.memento.CheckMatedActionMemento;
-import com.agutsul.chess.action.memento.CheckedActionMemento;
+import com.agutsul.chess.activity.action.event.ActionCancelledEvent;
+import com.agutsul.chess.activity.action.event.ActionPerformedEvent;
+import com.agutsul.chess.activity.action.memento.ActionMemento;
+import com.agutsul.chess.activity.action.memento.CheckMatedActionMemento;
+import com.agutsul.chess.activity.action.memento.CheckedActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.board.state.BoardState;

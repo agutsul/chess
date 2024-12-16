@@ -21,8 +21,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.PieceMoveAction;
+import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.board.StandardBoard;

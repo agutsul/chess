@@ -11,9 +11,9 @@ import java.util.stream.Stream;
 
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Movable;
-import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.PieceCastlingAction;
-import com.agutsul.chess.action.PieceCastlingAction.CastlingMoveAction;
+import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.PieceCastlingAction;
+import com.agutsul.chess.activity.action.PieceCastlingAction.CastlingMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;

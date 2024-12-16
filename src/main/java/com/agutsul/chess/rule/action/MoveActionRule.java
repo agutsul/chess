@@ -3,7 +3,7 @@ package com.agutsul.chess.rule.action;
 import java.util.Collection;
 
 import com.agutsul.chess.Movable;
-import com.agutsul.chess.action.PieceMoveAction;
+import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.Rule;
