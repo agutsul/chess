@@ -3,18 +3,18 @@ package com.agutsul.chess.activity;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
-public class ActivityMultiMap<KEY extends Enum<KEY> & Activity.Type,
-                              VALUE extends Activity<?>>
+class ActivityMultiMap<KEY extends Enum<KEY> & Activity.Type,
+                       VALUE extends Activity<?>>
         implements ActivityMap<KEY,VALUE> {
 
     private final MultiValuedMap<KEY,VALUE> map;
 
-    public ActivityMultiMap() {
+    ActivityMultiMap() {
         this.map = new ArrayListValuedHashMap<>();
     }
 
@@ -62,14 +62,12 @@ public class ActivityMultiMap<KEY extends Enum<KEY> & Activity.Type,
 
     @Override
     public void putAll(Map<? extends KEY,? extends Collection<VALUE>> map) {
-        if (MapUtils.isEmpty(map)) {
-            return;
-        }
-
-        for (var entry : map.entrySet()) {
-            var values = (Collection<VALUE>) entry.getValue();
-            this.map.putAll(entry.getKey(), values);
-        }
+        Stream.ofNullable(map)
+            .map(Map::entrySet)
+            .flatMap(Collection::stream)
+            .forEach(entry ->
+                this.map.putAll(entry.getKey(), entry.getValue())
+            );
     }
 
     @Override

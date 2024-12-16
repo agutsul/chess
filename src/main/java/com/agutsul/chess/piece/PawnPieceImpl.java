@@ -73,17 +73,11 @@ final class PawnPieceImpl<COLOR extends Color>
         ((EnPassantablePieceState<COLOR,PawnPiece<COLOR>>) state).unenpassant(this, piece);
     }
 
-    @Override
-    public Collection<Action<?>> getActions(Action.Type actionType) {
-        LOGGER.info("Get '{}' pawn actions({})", this, actionType.name());
-        return getState().calculateActions(this, actionType);
-    }
-
-    private static <A extends Action<?>> Collection<Action<?>>
-            filter(Collection<Action<?>> actions, Class<A> actionClass) {
-
+    private static <A extends Action<?>> Collection<Action<?>> filter(Collection<Action<?>> actions, 
+                                                                      Class<A> actionClass) {
         var filter = new ActionFilter<>(actionClass);
-        return filter.apply(actions).stream().collect(toList());
+        return filter.apply(actions).stream()
+                .collect(toList());
     }
 
     static abstract class AbstractEnPassantablePieceState<COLOR extends Color,
@@ -162,15 +156,21 @@ final class PawnPieceImpl<COLOR extends Color>
         }
 
         private Collection<Action<?>> calculateMoveActions(PIECE piece) {
-            Collection<Action<?>> actions =
-                    this.actionRule.evaluate(piece, Action.Type.MOVE, Action.Type.PROMOTE);
+            var actions = this.actionRule.evaluate(
+                    piece, 
+                    Action.Type.MOVE, 
+                    Action.Type.PROMOTE
+            );
 
             return filter(actions, PieceMoveAction.class);
         }
 
         private Collection<Action<?>> calculateCaptureActions(PIECE piece) {
-            Collection<Action<?>> calculatedActions =
-                    this.actionRule.evaluate(piece, Action.Type.CAPTURE, Action.Type.PROMOTE);
+            var calculatedActions = this.actionRule.evaluate(
+                    piece, 
+                    Action.Type.CAPTURE, 
+                    Action.Type.PROMOTE
+            );
 
             var actions = new HashSet<Action<?>>();
 

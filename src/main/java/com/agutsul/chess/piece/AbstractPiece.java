@@ -66,8 +66,8 @@ abstract class AbstractPiece<COLOR extends Color>
                   AbstractPieceState<COLOR,? extends Piece<COLOR>> state) {
 
         this(board, type, color, unicode, position, direction, state,
-                new ActivityCacheImpl<Action.Type,Action<?>>(),
-                new ActivityCacheImpl<Impact.Type,Impact<?>>()
+                new ActivityCacheImpl<>(),
+                new ActivityCacheImpl<>()
         );
     }
 
