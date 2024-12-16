@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Positionable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceCastlingAction;
@@ -20,7 +21,6 @@ import com.agutsul.chess.activity.action.PieceCastlingAction.CastlingMoveAction;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.PieceTypeLazyInitializer;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.position.Positionable;
 
 public enum ActionMementoFactory
         implements Function<Action<?>,ActionMemento<?,?>> {

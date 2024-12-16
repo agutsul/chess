@@ -2,12 +2,12 @@ package com.agutsul.chess.activity.action;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
+import com.agutsul.chess.Positionable;
 import com.agutsul.chess.activity.AbstractSourceActivity;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.position.Positionable;
 
 public abstract class AbstractPromoteAction<COLOR extends Color,
                                             PIECE extends Piece<COLOR> & Movable & Capturable>

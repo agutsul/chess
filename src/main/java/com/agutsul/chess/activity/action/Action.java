@@ -1,8 +1,8 @@
 package com.agutsul.chess.activity.action;
 
 import com.agutsul.chess.Executable;
+import com.agutsul.chess.Positionable;
 import com.agutsul.chess.activity.Activity;
-import com.agutsul.chess.position.Positionable;
 
 public interface Action<SOURCE>
         extends Executable, Positionable, Activity<SOURCE> {

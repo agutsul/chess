@@ -5,6 +5,7 @@ import static java.util.Collections.emptyList;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.agutsul.chess.Positionable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
@@ -14,7 +15,6 @@ import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.PromotePieceAlgo;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.position.Positionable;
 import com.agutsul.chess.rule.AbstractRule;
 import com.agutsul.chess.rule.Rule;
 
