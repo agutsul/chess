@@ -128,8 +128,12 @@ final class BoardImpl extends AbstractBoard {
             return actions;
         }
 
-        var impacts = getImpacts(piece, Impact.Type.PIN);
-        var optinalPinImpact = impacts.stream()
+        var pinImpacts = getImpacts(piece, Impact.Type.PIN);
+        if (pinImpacts.isEmpty()) {
+            return actions;
+        }
+
+        var optinalPinImpact = pinImpacts.stream()
                 .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
                 .findFirst();
 

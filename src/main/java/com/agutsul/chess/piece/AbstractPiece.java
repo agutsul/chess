@@ -107,7 +107,8 @@ abstract class AbstractPiece<COLOR extends Color>
         LOGGER.info("Get '{}' actions", this);
 
         if (this.actionCache.isEmpty()) {
-            this.actionCache.putAll(getState().calculateActions(this));
+            var actions = getState().calculateActions(this);
+            this.actionCache.putAll(actions);
         }
 
         return this.actionCache.getAll();
@@ -122,6 +123,7 @@ abstract class AbstractPiece<COLOR extends Color>
             return actions;
         }
 
+        LOGGER.info("Calculating '{}' actions({})", this, actionType.name());
         return getState().calculateActions(this, actionType);
     }
 
@@ -130,7 +132,8 @@ abstract class AbstractPiece<COLOR extends Color>
         LOGGER.info("Get '{}' impacts", this);
 
         if (this.impactCache.isEmpty()) {
-            this.impactCache.putAll(getState().calculateImpacts(this));
+            var impacts = getState().calculateImpacts(this);
+            this.impactCache.putAll(impacts);
         }
 
         return this.impactCache.getAll();
@@ -145,6 +148,7 @@ abstract class AbstractPiece<COLOR extends Color>
             return impacts;
         }
 
+        LOGGER.info("Calculating '{}' impacts({})", this, impactType.name());
         return getState().calculateImpacts(this, impactType);
     }
 
