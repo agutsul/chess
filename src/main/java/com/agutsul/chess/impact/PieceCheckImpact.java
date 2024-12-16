@@ -31,7 +31,7 @@ public class PieceCheckImpact<COLOR1 extends Color,
     }
 
     @Override
-    public String getCode() {
+    public String toString() {
         return String.format("%sx%s!", getSource(), getTarget());
     }
 

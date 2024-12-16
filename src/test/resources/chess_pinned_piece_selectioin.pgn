@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1-0"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:01:28"]
+[WhiteElo "1393"]
+[BlackElo "1359"]
+[WhiteRatingDiff "+31"]
+[BlackRatingDiff "-9"]
+[ECO "B00"]
+[Opening "Carr Defense"]
+[TimeControl "300+3"]
+[Termination "Normal"]
+
+1. e4 h6 2. d4 e6 3. Nf3 c6 4. Be2 d6 5. O-O b5 6. c4 bxc4 7. Bxc4 d5 8. exd5 cxd5 9. Bb3 Bd7 10. Ne5 Bd6 11. Nxd7 Nxd7 12. Ba4 Nf6 13. Nc3 O-O 14. Re1 Bb4 15. a3 Bxc3 16. bxc3 Nb6 17. Bc2 Nc4 18. Qf3 Rb8 19. Qg3 Nh5 20. Qg4 g6 21. Bxh6 Re8 22. Bxg6 Nf6 23. Bxf7+ Kxf7 24. Qg7# 1-0

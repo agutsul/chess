@@ -69,8 +69,7 @@ final class KingMoveCheckActionEvaluator
     }
 
     private Collection<Position> getMonitoredPositions(Piece<?> piece) {
-        return board.getImpacts(piece).stream()
-                .filter(impact -> Impact.Type.MONITOR.equals(impact.getType()))
+        return board.getImpacts(piece, Impact.Type.MONITOR).stream()
                 .map(impact -> (PieceMonitorImpact<?,?>) impact)
                 .map(PieceMonitorImpact::getPosition)
                 .toList();

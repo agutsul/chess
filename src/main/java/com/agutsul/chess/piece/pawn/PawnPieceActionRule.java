@@ -32,6 +32,7 @@ public final class PawnPieceActionRule
                                                                         int promotionLine,
                                                                         PawnMoveAlgo moveAlgo,
                                                                         PawnCaptureAlgo captureAlgo) {
+
         var promoteAlgo = new PawnPromoteAlgo<>(board, promotionLine, moveAlgo, captureAlgo);
 
         var moveActionRule = new PawnMoveActionRule<>(board, moveAlgo);
@@ -52,9 +53,11 @@ public final class PawnPieceActionRule
         // make unique actions per position to return first calculated action only
         // for example when there are promotion and move for the same position
         //               promotion should be returned
-        for (var result : rule.evaluate(piece)) {
+        for (var result : this.compositeRule.evaluate(piece)) {
             var targetPosition = result.getPosition();
-            if (targetPosition != null && !positionedMap.containsKey(targetPosition)) {
+            if (targetPosition != null
+                    && !positionedMap.containsKey(targetPosition)) {
+
                 positionedMap.put(targetPosition, result);
             }
         }

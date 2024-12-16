@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceCaptureAction;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
@@ -32,8 +33,9 @@ final class AttackerPinCheckMateEvaluator
         // get all piece moves of the same color as king except the king itself
         var pieceMovePositions = board.getPieces(king.getColor()).stream()
                 .filter(piece -> !Piece.Type.KING.equals(piece.getType()))
-                .map(piece -> board.getActions(piece, PieceMoveAction.class))
+                .map(piece -> board.getActions(piece, Action.Type.MOVE))
                 .flatMap(Collection::stream)
+                .map(action -> (PieceMoveAction<?,?>) action)
                 .map(PieceMoveAction::getPosition)
                 .collect(toSet());
 
@@ -43,8 +45,9 @@ final class AttackerPinCheckMateEvaluator
 
         var attackers = board.getAttackers(king);
         var isPinnable = attackers.stream()
-                .map(piece -> board.getActions(piece, PieceCaptureAction.class))
+                .map(piece -> board.getActions(piece, Action.Type.CAPTURE))
                 .flatMap(Collection::stream)
+                .filter(action -> Action.Type.CAPTURE.equals(action.getType()))
                 .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), king))
                 .map(PieceCaptureAction::getAttackLine)

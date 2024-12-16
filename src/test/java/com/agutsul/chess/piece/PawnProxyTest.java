@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.board.AbstractBoard;
@@ -52,7 +53,7 @@ public class PawnProxyTest {
         doNothing()
             .when(pawn).dispose();
 
-        when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
+        when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
             .then(inv -> {
                 var piece = inv.getArgument(0, PawnPiece.class);
                 var moveAction = new PieceMoveAction<Color,PawnPiece<Color>>(piece, position);
@@ -81,7 +82,7 @@ public class PawnProxyTest {
         doNothing()
             .when(pawn).dispose();
 
-        when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
+        when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
             .then(inv -> {
                 var piece = inv.getArgument(0, PawnPiece.class);
                 var moveAction = new PieceMoveAction<Color,PawnPiece<Color>>(piece, position);
@@ -110,7 +111,7 @@ public class PawnProxyTest {
         doNothing()
             .when(pawn).dispose();
 
-        when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
+        when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
             .then(inv -> {
                 var piece = inv.getArgument(0, PawnPiece.class);
                 var moveAction = new PieceMoveAction<Color,PawnPiece<Color>>(piece, position);
@@ -139,7 +140,7 @@ public class PawnProxyTest {
         doNothing()
             .when(pawn).dispose();
 
-        when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
+        when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
             .then(inv -> {
                 var piece = inv.getArgument(0, PawnPiece.class);
                 var moveAction = new PieceMoveAction<Color,PawnPiece<Color>>(piece, position);
@@ -165,7 +166,7 @@ public class PawnProxyTest {
     void testUnsupportedPromotionType() {
         var position = mock(Position.class);
 
-        when(board.getActions(eq(pawn), eq(PiecePromoteAction.class)))
+        when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
             .then(inv -> {
                 var piece = inv.getArgument(0, PawnPiece.class);
                 var moveAction = new PieceMoveAction<Color,PawnPiece<Color>>(piece, position);

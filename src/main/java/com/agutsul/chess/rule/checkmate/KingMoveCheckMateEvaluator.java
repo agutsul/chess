@@ -6,10 +6,9 @@ import java.util.HashSet;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.action.PieceMoveAction;
+import com.agutsul.chess.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
-import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
 final class KingMoveCheckMateEvaluator
@@ -28,7 +27,7 @@ final class KingMoveCheckMateEvaluator
         LOGGER.info("Evaluate king '{}' escape ability", king);
 
         var attackerColor = king.getColor().invert();
-        var moveActions = board.getActions((Piece<?>) king, PieceMoveAction.class);
+        var moveActions = board.getActions(king, Action.Type.MOVE);
 
         var positions = new HashSet<Position>();
         for (var action : moveActions) {

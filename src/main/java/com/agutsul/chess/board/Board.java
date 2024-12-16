@@ -22,11 +22,11 @@ public interface Board {
 
     int calculateValue(Color color);
 
-    <ACTION extends Action<?>> Collection<ACTION> getActions(Piece<?> piece,
-                                                             Class<ACTION> actionClass);
-
     Collection<Action<?>> getActions(Piece<?> piece);
+    Collection<Action<?>> getActions(Piece<?> piece, Action.Type actionType);
+
     Collection<Impact<?>> getImpacts(Piece<?> piece);
+    Collection<Impact<?>> getImpacts(Piece<?> piece, Impact.Type impactType);
 
     <COLOR extends Color> Collection<Piece<COLOR>> getAttackers(Piece<?> piece);
 

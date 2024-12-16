@@ -8,11 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.PieceCaptureAction;
-import com.agutsul.chess.action.PieceCastlingAction;
-import com.agutsul.chess.action.PieceEnPassantAction;
-import com.agutsul.chess.action.PieceMoveAction;
-import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
@@ -27,7 +22,7 @@ public class ActionMementoFactoryTest {
                 .build();
 
         var pawn = board.getPiece("e2");
-        var actions = board.getActions(pawn.get(), PieceMoveAction.class);
+        var actions = board.getActions(pawn.get(), Action.Type.MOVE);
 
         var memento = ActionMementoFactory.createMemento(actions.iterator().next());
 
@@ -43,7 +38,7 @@ public class ActionMementoFactoryTest {
                 .build();
 
         var pawn = board.getPiece("e2");
-        var actions = board.getActions(pawn.get(), PieceCaptureAction.class);
+        var actions = board.getActions(pawn.get(), Action.Type.CAPTURE);
 
         var memento = ActionMementoFactory.createMemento(actions.iterator().next());
 
@@ -59,7 +54,7 @@ public class ActionMementoFactoryTest {
                 .build();
 
         var king = board.getPiece("e1");
-        var actions = board.getActions(king.get(), PieceCastlingAction.class);
+        var actions = board.getActions(king.get(), Action.Type.CASTLING);
 
         var memento = ActionMementoFactory.createMemento(actions.iterator().next());
 
@@ -74,7 +69,7 @@ public class ActionMementoFactoryTest {
                 .build();
 
         var pawn = board.getPiece("e7");
-        var actions = board.getActions(pawn.get(), PiecePromoteAction.class);
+        var actions = board.getActions(pawn.get(), Action.Type.PROMOTE);
 
         var action = spy(actions.iterator().next());
         var memento = ActionMementoFactory.createMemento(action);
@@ -94,7 +89,7 @@ public class ActionMementoFactoryTest {
         blackPawn.move(board.getPosition("a5").get());
 
         var whitePawn = (PawnPiece<Color>) board.getPiece("b5").get();
-        var actions = board.getActions(whitePawn, PieceEnPassantAction.class);
+        var actions = board.getActions(whitePawn, Action.Type.EN_PASSANT);
 
         var memento = ActionMementoFactory.createMemento(actions.iterator().next());
 

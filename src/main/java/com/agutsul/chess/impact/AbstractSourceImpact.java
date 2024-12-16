@@ -24,11 +24,6 @@ public abstract class AbstractSourceImpact<SOURCE>
     }
 
     @Override
-    public String toString() {
-        return getCode();
-    }
-
-    @Override
     public int hashCode() {
         return Objects.hash(source, type);
     }

@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.action.PieceCaptureAction;
+import com.agutsul.chess.action.Action;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.piece.Piece;
@@ -149,7 +149,7 @@ public class BoardImplTest {
         var blackPawn = board.getPiece("b3").get();
         var whitePawn = board.getPiece("a2").get();
 
-        var captureAction = board.getActions(blackPawn, PieceCaptureAction.class).stream()
+        var captureAction = board.getActions(blackPawn, Action.Type.CAPTURE).stream()
                 .findFirst()
                 .get();
 

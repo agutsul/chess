@@ -48,7 +48,7 @@ final class PawnCaptureActionAdapter
     }
 
     @Override
-    boolean containsAction(Piece<Color> piece, String position, Class<?> ignoredActionClass) {
+    boolean containsAction(Piece<Color> piece, String position, Action.Type actionType) {
         var actions = board.getActions(piece);
         var actionExists = actions.stream()
                 .filter(action -> CAPTURE_TYPES.contains(action.getType()))

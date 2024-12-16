@@ -295,7 +295,11 @@ final class PawnPieceProxy extends PieceProxy
 
         @Override
         public Collection<Action<?>> calculateActions(PIECE piece, Action.Type actionType) {
-            LOGGER.warn("Calculating actions({}) of disabled piece '{}'", actionType.name(), piece);
+            LOGGER.warn("Calculating actions({}) of disabled piece '{}'",
+                    actionType.name(),
+                    piece
+            );
+
             return emptyList();
         }
 
@@ -307,7 +311,11 @@ final class PawnPieceProxy extends PieceProxy
 
         @Override
         public Collection<Impact<?>> calculateImpacts(PIECE piece, Impact.Type impactType) {
-            LOGGER.warn("Calculating impacts({}) of disabled piece '{}'", impactType.name(), piece);
+            LOGGER.warn("Calculating impacts({}) of disabled piece '{}'",
+                    impactType.name(),
+                    piece
+            );
+
             return emptyList();
         }
     }
@@ -357,7 +365,7 @@ final class PawnPieceProxy extends PieceProxy
             }
 
             // validate promotion action ( check if promoted position is legal )
-            var promoteActions = this.board.getActions(this.origin, PiecePromoteAction.class);
+            var promoteActions = this.board.getActions(this.origin, Action.Type.PROMOTE);
             var possiblePromotions = promoteActions.stream()
                     .map(action -> (PiecePromoteAction<?,?>) action)
                     .map(PiecePromoteAction::getSource)

@@ -14,7 +14,7 @@ public class PieceMonitorImpact<COLOR extends Color,
     }
 
     @Override
-    public String getCode() {
+    public String toString() {
         return String.format("%s[%s]", getSource(), getTarget());
     }
 

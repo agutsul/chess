@@ -10,16 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.action.AbstractCaptureAction;
 import com.agutsul.chess.action.Action;
 import com.agutsul.chess.action.CancelCaptureAction;
 import com.agutsul.chess.action.CancelCastlingAction;
 import com.agutsul.chess.action.CancelEnPassantAction;
 import com.agutsul.chess.action.CancelMoveAction;
-import com.agutsul.chess.action.PieceCaptureAction;
-import com.agutsul.chess.action.PieceCastlingAction;
-import com.agutsul.chess.action.PieceEnPassantAction;
 import com.agutsul.chess.action.PieceMoveAction;
-import com.agutsul.chess.action.PiecePromoteAction;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Observable;
@@ -39,7 +36,8 @@ public class CancelActionMementoFactoryTest {
         var sourcePosition = board.getPosition("e2").get();
 
         var pawn = board.getPiece(sourcePosition).get();
-        var moveAction = board.getActions(pawn, PieceMoveAction.class).stream()
+        var moveAction = board.getActions(pawn, Action.Type.MOVE).stream()
+                .map(action -> (PieceMoveAction<?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), targetPosition))
                 .findFirst()
                 .get();
@@ -68,7 +66,8 @@ public class CancelActionMementoFactoryTest {
         var predator = board.getPiece(sourcePosition).get();
         var victim = board.getPiece(targetPosition).get();
 
-        var captureAction = board.getActions(predator, PieceCaptureAction.class).stream()
+        var captureAction = board.getActions(predator, Action.Type.CAPTURE).stream()
+                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), victim))
                 .findFirst()
                 .get();
@@ -97,7 +96,7 @@ public class CancelActionMementoFactoryTest {
 
         var pawn = board.getPiece(sourcePosition).get();
 
-        var promoteAction = board.getActions(pawn, PiecePromoteAction.class).stream()
+        var promoteAction = board.getActions(pawn, Action.Type.PROMOTE).stream()
                 .findFirst()
                 .get();
 
@@ -134,7 +133,7 @@ public class CancelActionMementoFactoryTest {
         var rook = board.getPiece(targetPosition).get();
         assertTrue(rook.isActive());
 
-        var promoteAction = board.getActions(pawn, PiecePromoteAction.class).stream()
+        var promoteAction = board.getActions(pawn, Action.Type.PROMOTE).stream()
                 .findFirst()
                 .get();
 
@@ -166,7 +165,7 @@ public class CancelActionMementoFactoryTest {
         var kingPosition = board.getPosition("e1").get();
         var king = board.getPiece(kingPosition).get();
 
-        var castlingAction = board.getActions(king, PieceCastlingAction.class).stream()
+        var castlingAction = board.getActions(king, Action.Type.CASTLING).stream()
                 .findFirst()
                 .get();
 
@@ -197,7 +196,7 @@ public class CancelActionMementoFactoryTest {
 
         var whitePawn = (PawnPiece<Color>) board.getPiece("b5").get();
 
-        var enPassantAction = board.getActions(whitePawn, PieceEnPassantAction.class).stream()
+        var enPassantAction = board.getActions(whitePawn, Action.Type.EN_PASSANT).stream()
                 .findFirst()
                 .get();
 

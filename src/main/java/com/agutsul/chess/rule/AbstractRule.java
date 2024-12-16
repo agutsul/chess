@@ -2,9 +2,13 @@ package com.agutsul.chess.rule;
 
 import java.util.Collection;
 
+import com.agutsul.chess.activity.Activity;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.position.Positionable;
 
-public abstract class AbstractRule<SOURCE,RESULT,TYPE extends Enum<TYPE>>
+public abstract class AbstractRule<SOURCE extends Positionable,
+                                   RESULT extends Activity<?>,
+                                   TYPE extends Enum<TYPE> & Activity.Type>
         implements Rule<SOURCE,Collection<RESULT>> {
 
     protected final Board board;

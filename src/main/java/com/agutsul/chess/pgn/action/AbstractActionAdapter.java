@@ -1,6 +1,7 @@
 package com.agutsul.chess.pgn.action;
 
 import static com.agutsul.chess.position.Position.codeOf;
+import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static org.apache.commons.lang3.StringUtils.contains;
 import static org.apache.commons.lang3.StringUtils.remove;
 
@@ -8,12 +9,15 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.agutsul.chess.Pinnable;
+import com.agutsul.chess.action.AbstractCaptureAction;
 import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.PieceCaptureAction;
-import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.impact.Impact;
+import com.agutsul.chess.impact.PiecePinImpact;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.position.Position;
 
 abstract class AbstractActionAdapter
         implements ActionAdapter {
@@ -31,11 +35,11 @@ abstract class AbstractActionAdapter
     }
 
     Optional<Piece<Color>> getMovablePiece(Piece.Type pieceType, String code, String position) {
-        return getPiece(pieceType, code, position, PieceMoveAction.class);
+        return getPiece(pieceType, code, position, Action.Type.MOVE);
     }
 
     Optional<Piece<Color>> getCapturablePiece(Piece.Type pieceType, String code, String position) {
-        return getPiece(pieceType, code, position, PieceCaptureAction.class);
+        return getPiece(pieceType, code, position, Action.Type.CAPTURE);
     }
 
     Collection<Piece<Color>> findPieces(Piece.Type pieceType, String code) {
@@ -46,29 +50,62 @@ abstract class AbstractActionAdapter
         return pieces;
     }
 
-    boolean containsAction(Piece<Color> piece, String position, Class<?> actionClass) {
-        @SuppressWarnings("unchecked")
-        var actions = board.getActions(piece, (Class<? extends Action<?>>) actionClass);
+    boolean containsAction(Piece<Color> piece, String position, Action.Type actionType) {
+        var actions = board.getActions(piece, actionType);
         var actionExists = actions.stream()
-                .anyMatch(action -> Objects.equals(codeOf(action.getPosition()), position));
+                .map(Action::getPosition)
+                .map(Position::codeOf)
+                .anyMatch(targetPosition -> Objects.equals(targetPosition, position));
 
         return actionExists;
     }
 
     Optional<Piece<Color>> getPiece(Piece.Type pieceType, String code,
-                                    String position, Class<?> actionClass) {
+                                    String position, Action.Type actionType) {
 
-        var pieces = findPieces(pieceType, code);
-        for (var piece : pieces) {
-            if (containsAction(piece, position, actionClass)) {
-                return Optional.of(piece);
-            }
-        }
-//        var foundPiece = pieces.stream()
-//                .filter(piece -> containsAction(piece, position, actionClass))
-//                .findFirst();
+        var foundPieces = findPieces(pieceType, code);
+        var foundPiece = foundPieces.stream()
+                .filter(piece -> containsAction(piece, position, actionType))
+                .filter(piece -> {
+                    if (Piece.Type.KING.equals(piece.getType())) {
+                        return true;
+                    }
 
-        return Optional.empty();
+                    var isPinned = ((Pinnable) piece).isPinned();
+                    if (!isPinned) {
+                        return true;
+                    }
+
+                    // check if pinned piece action is inside checker's attack line
+                    var impacts = board.getImpacts(piece, Impact.Type.PIN);
+                    var checkImpact = impacts.stream()
+                            .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
+                            .map(PiecePinImpact::getTarget)
+                            .findFirst()
+                            .get();
+
+                    var checkLine = checkImpact.getAttackLine();
+                    if (checkLine.isPresent()) {
+                        var line = checkLine.get();
+                        if (line.contains(positionOf(position))) {
+                            return true;
+                        }
+                    }
+
+                    // check if pinned piece action is capturing checker piece
+                    var attacker = checkImpact.getSource();
+                    var pieceActions = piece.getActions(Action.Type.CAPTURE);
+
+                    var isCapturable = pieceActions.stream()
+                            .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
+                            .map(AbstractCaptureAction::getTarget)
+                            .anyMatch(targetPiece -> Objects.equals(targetPiece, attacker));
+
+                    return isCapturable;
+                })
+                .findFirst();
+
+        return foundPiece;
     }
 
     static final String adapt(Piece<Color> piece, String target) {

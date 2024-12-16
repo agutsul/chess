@@ -23,7 +23,7 @@ import com.agutsul.chess.piece.PieceFactory;
  * Should be used mainly in unit test to simplify creating board with specified pieces only
  */
 public final class BoardBuilder
-        implements BoardBuilderAdapter {
+        implements BoardBuilderDecorator {
 
     private static final Logger LOGGER = getLogger(BoardBuilder.class);
 
@@ -68,124 +68,124 @@ public final class BoardBuilder
     }
 
     @Override
-    public BoardBuilderAdapter withWhiteKing(String position) {
+    public BoardBuilderDecorator withWhiteKing(String position) {
         whitePieceContext.setKingPositions(List.of(position));
         return this;
     }
 
     @Override
-    public BoardBuilderAdapter withWhiteQueen(String position) {
+    public BoardBuilderDecorator withWhiteQueen(String position) {
         whitePieceContext.setQueenPositions(List.of(position));
         return this;
     }
 
     @Override
-    public BoardBuilderAdapter withWhiteBishop(String position) {
+    public BoardBuilderDecorator withWhiteBishop(String position) {
         whitePieceContext.setBishopPositions(List.of(position));
         return this;
     }
 
     @Override
-    public BoardBuilderAdapter withWhiteBishops(String position1, String position2) {
+    public BoardBuilderDecorator withWhiteBishops(String position1, String position2) {
         whitePieceContext.setBishopPositions(List.of(position1, position2));
         return this;
     }
 
     @Override
-    public BoardBuilderAdapter withWhiteKnight(String position) {
+    public BoardBuilderDecorator withWhiteKnight(String position) {
         whitePieceContext.setKnightPositions(List.of(position));
         return this;
     }
 
     @Override
-    public BoardBuilderAdapter withWhiteKnights(String position1, String position2) {
+    public BoardBuilderDecorator withWhiteKnights(String position1, String position2) {
         whitePieceContext.setKnightPositions(List.of(position1, position2));
         return this;
     }
 
     @Override
-    public BoardBuilderAdapter withWhiteRook(String position) {
+    public BoardBuilderDecorator withWhiteRook(String position) {
         whitePieceContext.setRookPositions(List.of(position));
         return this;
     }
 
     @Override
-    public BoardBuilderAdapter withWhiteRooks(String position1, String position2) {
+    public BoardBuilderDecorator withWhiteRooks(String position1, String position2) {
         whitePieceContext.setRookPositions(List.of(position1, position2));
         return this;
     }
 
     @Override
-    public BoardBuilderAdapter withWhitePawn(String position) {
+    public BoardBuilderDecorator withWhitePawn(String position) {
         whitePieceContext.setPawnPositions(List.of(position));
         return this;
     }
 
     @Override
-    public BoardBuilderAdapter withWhitePawns(String position1, String position2, String... positions) {
+    public BoardBuilderDecorator withWhitePawns(String position1, String position2, String... positions) {
         return withPawns(whitePieceContext, position1, position2, positions);
     }
 
     @Override
-    public BoardBuilderAdapter withBlackKing(String position) {
+    public BoardBuilderDecorator withBlackKing(String position) {
         blackPieceContext.setKingPositions(List.of(position));
         return this;
     }
 
     @Override
-    public BoardBuilderAdapter withBlackQueen(String position) {
+    public BoardBuilderDecorator withBlackQueen(String position) {
         blackPieceContext.setQueenPositions(List.of(position));
         return this;
     }
 
     @Override
-    public BoardBuilderAdapter withBlackBishop(String position) {
+    public BoardBuilderDecorator withBlackBishop(String position) {
         blackPieceContext.setBishopPositions(List.of(position));
         return this;
     }
 
     @Override
-    public BoardBuilderAdapter withBlackBishops(String position1, String position2) {
+    public BoardBuilderDecorator withBlackBishops(String position1, String position2) {
         blackPieceContext.setBishopPositions(List.of(position1, position2));
         return this;
     }
 
     @Override
-    public BoardBuilderAdapter withBlackKnight(String position) {
+    public BoardBuilderDecorator withBlackKnight(String position) {
         blackPieceContext.setKnightPositions(List.of(position));
         return this;
     }
 
     @Override
-    public BoardBuilderAdapter withBlackKnights(String position1, String position2) {
+    public BoardBuilderDecorator withBlackKnights(String position1, String position2) {
         blackPieceContext.setKnightPositions(List.of(position1, position2));
         return this;
     }
 
     @Override
-    public BoardBuilderAdapter withBlackRook(String position) {
+    public BoardBuilderDecorator withBlackRook(String position) {
         blackPieceContext.setRookPositions(List.of(position));
         return this;
     }
 
     @Override
-    public BoardBuilderAdapter withBlackRooks(String position1, String position2) {
+    public BoardBuilderDecorator withBlackRooks(String position1, String position2) {
         blackPieceContext.setRookPositions(List.of(position1, position2));
         return this;
     }
 
     @Override
-    public BoardBuilderAdapter withBlackPawn(String position) {
+    public BoardBuilderDecorator withBlackPawn(String position) {
         blackPieceContext.setPawnPositions(List.of(position));
         return this;
     }
 
     @Override
-    public BoardBuilderAdapter withBlackPawns(String position1, String position2, String... positions) {
+    public BoardBuilderDecorator withBlackPawns(String position1, String position2, String... positions) {
         return withPawns(blackPieceContext, position1, position2, positions);
     }
 
-    private BoardBuilderAdapter withPawns(BoardContext context,
+    private BoardBuilderDecorator withPawns(BoardContext context,
                                           String position1,
                                           String position2,
                                           String... positions) {

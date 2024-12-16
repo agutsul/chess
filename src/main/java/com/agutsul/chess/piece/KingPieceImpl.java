@@ -41,9 +41,8 @@ final class KingPieceImpl<COLOR extends Color>
 
         var pieces = board.getPieces(getColor().invert());
         var isChecked = pieces.stream()
-                .map(piece -> board.getImpacts(piece))
+                .map(piece -> board.getImpacts(piece, Impact.Type.CHECK))
                 .flatMap(Collection::stream)
-                .filter(impact -> Impact.Type.CHECK.equals(impact.getType()))
                 .map(impact -> (PieceCheckImpact<?,?,?,?>) impact)
                 .anyMatch(impact -> Objects.equals(impact.getTarget(), this));
 

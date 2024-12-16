@@ -5,69 +5,65 @@ import static java.util.Collections.emptyList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.tuple.Pair;
-
+import com.agutsul.chess.activity.Activity;
 import com.agutsul.chess.piece.Piece;
 
-public class CompositePieceRule<K,TYPE extends Enum<TYPE>>
-        implements Rule<Piece<?>, Collection<K>> {
+public class CompositePieceRule<RESULT extends Activity<?>,
+                                TYPE extends Enum<TYPE> & Activity.Type>
+        implements Rule<Piece<?>, Collection<RESULT>> {
 
-    private final List<Pair<TYPE,Rule<Piece<?>,?>>> rules;
+    private final List<AbstractRule<Piece<?>,?,TYPE>> rules = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
     public CompositePieceRule(Rule<? extends Piece<?>,?> rule,
                               Rule<? extends Piece<?>,?>... additionalRules) {
 
-        var rules = new ArrayList<Pair<TYPE,Rule<Piece<?>,?>>>();
+        register(rule);
 
-        registerRule(rules, rule);
-        Stream.of(additionalRules).forEach(rl -> registerRule(rules, rl));
-
-        this.rules = rules;
+        Stream.of(additionalRules)
+            .forEach(ruleItem -> register(ruleItem));
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public Collection<K> evaluate(Piece<?> piece) {
-        var list = new ArrayList<K>();
-
-        for (var ruleEntry : this.rules) {
-            var rule = ruleEntry.getValue();
-            var result = rule.evaluate(piece);
-
-            list.addAll((Collection<K>) result);
-        }
-        return list;
+    public Collection<RESULT> evaluate(Piece<?> piece) {
+        return evaluate(this.rules, piece);
     }
 
     @SuppressWarnings("unchecked")
-    public Collection<K> evaluate(Piece<?> piece, TYPE type) {
+    public Collection<RESULT> evaluate(Piece<?> piece, TYPE type, TYPE... additionalTypes) {
+        var types = new ArrayList<TYPE>();
+
+        types.add(type);
+        types.addAll(List.of(additionalTypes));
+
         var typeRules = this.rules.stream()
-                .filter(entry -> Objects.equals(entry.getKey(), type))
-                .map(entry -> entry.getValue())
+                .filter(rule -> types.contains(rule.getType()))
                 .toList();
 
         if (typeRules.isEmpty()) {
             return emptyList();
         }
 
-        var list = new ArrayList<K>();
-        for (var rule : typeRules) {
+        return evaluate(typeRules, piece);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Collection<RESULT> evaluate(Collection<? extends Rule<Piece<?>,?>> rules,
+                                        Piece<?> piece) {
+
+        var list = new ArrayList<RESULT>();
+        for (var rule : rules) {
             var result = rule.evaluate(piece);
-            list.addAll((Collection<K>) result);
+            list.addAll((Collection<RESULT>) result);
         }
 
         return list;
     }
 
-    private void registerRule(List<Pair<TYPE,Rule<Piece<?>,?>>> rules,
-                              Rule<? extends Piece<?>,?> rule) {
-
-        @SuppressWarnings("unchecked")
-        var aRule = (AbstractRule<Piece<?>,?,TYPE>) rule;
-        rules.add(Pair.of(aRule.getType(), aRule));
+    @SuppressWarnings("unchecked")
+    private void register(Rule<? extends Piece<?>,?> rule) {
+        this.rules.add((AbstractRule<Piece<?>,?,TYPE>) rule);
     }
 }

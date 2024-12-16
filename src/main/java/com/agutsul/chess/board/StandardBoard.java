@@ -74,19 +74,23 @@ public final class StandardBoard
     }
 
     @Override
-    public <ACTION extends Action<?>> Collection<ACTION> getActions(Piece<?> piece,
-                                                                    Class<ACTION> actionClass) {
-        return this.origin.getActions(piece, actionClass);
-    }
-
-    @Override
     public Collection<Action<?>> getActions(Piece<?> piece) {
         return this.origin.getActions(piece);
     }
 
     @Override
+    public Collection<Action<?>> getActions(Piece<?> piece, Action.Type actionType) {
+        return this.origin.getActions(piece, actionType);
+    }
+
+    @Override
     public Collection<Impact<?>> getImpacts(Piece<?> piece) {
         return this.origin.getImpacts(piece);
+    }
+
+    @Override
+    public Collection<Impact<?>> getImpacts(Piece<?> piece, Impact.Type impactType) {
+        return this.origin.getImpacts(piece, impactType);
     }
 
     @Override

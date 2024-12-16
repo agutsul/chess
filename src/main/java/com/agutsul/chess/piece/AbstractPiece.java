@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.Logger;
 
@@ -20,6 +19,8 @@ import com.agutsul.chess.Movable;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.Restorable;
 import com.agutsul.chess.action.Action;
+import com.agutsul.chess.activity.ActivityCache;
+import com.agutsul.chess.activity.ActivityCacheImpl;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
@@ -44,8 +45,8 @@ abstract class AbstractPiece<COLOR extends Color>
 
     private final List<Position> positions = new ArrayList<>();
 
-    private final Collection<Action<?>> actions = new CopyOnWriteArrayList<>();
-    private final Collection<Impact<?>> impacts = new CopyOnWriteArrayList<>();
+    private final ActivityCache<Action.Type,Action<?>> actionCache;
+    private final ActivityCache<Impact.Type,Impact<?>> impactCache;
 
     private final Type type;
     private final COLOR color;
@@ -60,10 +61,22 @@ abstract class AbstractPiece<COLOR extends Color>
     private Observer observer;
     private Instant capturedAt;
 
-    @SuppressWarnings("unchecked")
     AbstractPiece(Board board, Type type, COLOR color, String unicode,
                   Position position, int direction,
                   AbstractPieceState<COLOR,? extends Piece<COLOR>> state) {
+
+        this(board, type, color, unicode, position, direction, state,
+                new ActivityCacheImpl<Action.Type,Action<?>>(),
+                new ActivityCacheImpl<Impact.Type,Impact<?>>()
+        );
+    }
+
+    @SuppressWarnings("unchecked")
+    AbstractPiece(Board board, Type type, COLOR color, String unicode,
+                  Position position, int direction,
+                  AbstractPieceState<COLOR,? extends Piece<COLOR>> state,
+                  ActivityCache<Action.Type,Action<?>> actionCache,
+                  ActivityCache<Impact.Type,Impact<?>> impactCache) {
 
         this.observer = new ActionEventObserver();
 
@@ -78,6 +91,9 @@ abstract class AbstractPiece<COLOR extends Color>
         this.activeState = (PieceState<COLOR,Piece<COLOR>>) state;
         this.currentState = (PieceState<COLOR,Piece<COLOR>>) state;
 
+        this.actionCache = actionCache;
+        this.impactCache = impactCache;
+
         setPosition(position);
     }
 
@@ -90,23 +106,20 @@ abstract class AbstractPiece<COLOR extends Color>
     public final Collection<Action<?>> getActions() {
         LOGGER.info("Get '{}' actions", this);
 
-        if (this.actions.isEmpty()) {
-            this.actions.addAll(getState().calculateActions(this));
+        if (this.actionCache.isEmpty()) {
+            this.actionCache.putAll(getState().calculateActions(this));
         }
 
-        return this.actions;
+        return this.actionCache.getAll();
     }
 
     @Override
-    public final Collection<Action<?>> getActions(Action.Type actionType) {
+    public Collection<Action<?>> getActions(Action.Type actionType) {
         LOGGER.info("Get '{}' actions({})", this, actionType.name());
 
-        var filtered = this.actions.stream()
-                .filter(action -> Objects.equals(actionType, action.getType()))
-                .toList();
-
-        if (!filtered.isEmpty()) {
-            return filtered;
+        var actions = this.actionCache.get(actionType);
+        if (!actions.isEmpty()) {
+            return actions;
         }
 
         return getState().calculateActions(this, actionType);
@@ -116,23 +129,20 @@ abstract class AbstractPiece<COLOR extends Color>
     public final Collection<Impact<?>> getImpacts() {
         LOGGER.info("Get '{}' impacts", this);
 
-        if (this.impacts.isEmpty()) {
-            this.impacts.addAll(getState().calculateImpacts(this));
+        if (this.impactCache.isEmpty()) {
+            this.impactCache.putAll(getState().calculateImpacts(this));
         }
 
-        return this.impacts;
+        return this.impactCache.getAll();
     }
 
     @Override
     public final Collection<Impact<?>> getImpacts(Impact.Type impactType) {
         LOGGER.info("Get '{}' impacts({})", this, impactType.name());
 
-        var filtered = this.impacts.stream()
-                .filter(impact -> Objects.equals(impactType, impact.getType()))
-                .toList();
-
-        if (!filtered.isEmpty()) {
-            return filtered;
+        var impacts = this.impactCache.get(impactType);
+        if (!impacts.isEmpty()) {
+            return impacts;
         }
 
         return getState().calculateImpacts(this, impactType);
@@ -233,12 +243,10 @@ abstract class AbstractPiece<COLOR extends Color>
                 .toList();
 
         var isProtected = protectors.stream()
-                .map(piece -> board.getImpacts(piece))
+                .map(piece -> board.getImpacts(piece, Impact.Type.PROTECT))
                 .flatMap(Collection::stream)
-                .filter(impact -> Impact.Type.PROTECT.equals(impact.getType()))
                 .map(impact -> (PieceProtectImpact<?,?,?>) impact)
-                .map(PieceProtectImpact::getTarget)
-                .anyMatch(protector -> Objects.equals(protector, this));
+                .anyMatch(protector -> Objects.equals(protector.getTarget(), this));
 
         return isProtected;
     }
@@ -246,9 +254,8 @@ abstract class AbstractPiece<COLOR extends Color>
     public boolean isPinned() {
         LOGGER.info("Checking if piece '{}' is pinned", this);
 
-        var impacts = board.getImpacts(this);
+        var impacts = board.getImpacts(this, Impact.Type.PIN);
         var isPinned = impacts.stream()
-                .filter(impact -> Impact.Type.PIN.equals(impact.getType()))
                 .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
                 .anyMatch(impact -> Objects.equals(impact.getSource(), this));
 
@@ -360,8 +367,8 @@ abstract class AbstractPiece<COLOR extends Color>
 
     final void clearCalculatedData() {
         LOGGER.info("Clear '{}' cached actions/imports", this);
-        this.actions.clear();
-        this.impacts.clear();
+        this.actionCache.clear();
+        this.impactCache.clear();
     }
 
     private final class ActionEventObserver

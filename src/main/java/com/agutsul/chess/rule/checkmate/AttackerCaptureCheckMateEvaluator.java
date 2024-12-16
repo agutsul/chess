@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.action.AbstractCaptureAction;
-import com.agutsul.chess.action.PieceCaptureAction;
+import com.agutsul.chess.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
@@ -65,7 +65,7 @@ final class AttackerCaptureCheckMateEvaluator
     private Collection<AbstractCaptureAction<?,?,?,?>> getAttackActions(Piece<?> piece) {
         var attackActions = new ArrayList<AbstractCaptureAction<?,?,?,?>>();
         for (var attacker : board.getAttackers(piece)) {
-            var actions = board.getActions(attacker, PieceCaptureAction.class);
+            var actions = board.getActions(attacker, Action.Type.CAPTURE);
 
             attackActions.addAll(actions.stream()
                     .map(action -> (AbstractCaptureAction<?,?,?,?>) action)

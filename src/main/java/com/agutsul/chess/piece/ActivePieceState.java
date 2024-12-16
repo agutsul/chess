@@ -4,7 +4,6 @@ import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
-import java.util.HashSet;
 
 import org.slf4j.Logger;
 
@@ -12,8 +11,6 @@ import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.action.AbstractCaptureAction;
 import com.agutsul.chess.action.Action;
-import com.agutsul.chess.action.PieceCaptureAction;
-import com.agutsul.chess.action.PieceEnPassantAction;
 import com.agutsul.chess.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -29,8 +26,8 @@ class ActivePieceState<COLOR extends Color,
 
     private static final Logger LOGGER = getLogger(ActivePieceState.class);
 
-    private final Rule<Piece<?>, Collection<Action<?>>> actionRule;
-    private final Rule<Piece<?>, Collection<Impact<?>>> impactRule;
+    private final AbstractPieceRule<Action<?>,Action.Type> actionRule;
+    private final AbstractPieceRule<Impact<?>,Impact.Type> impactRule;
 
     protected final Board board;
 
@@ -41,8 +38,8 @@ class ActivePieceState<COLOR extends Color,
         super(Type.ACTIVE);
 
         this.board = board;
-        this.actionRule = actionRule;
-        this.impactRule = impactRule;
+        this.actionRule = (AbstractPieceRule<Action<?>,Action.Type>) actionRule;
+        this.impactRule = (AbstractPieceRule<Impact<?>,Impact.Type>) impactRule;
     }
 
     @Override
@@ -54,9 +51,7 @@ class ActivePieceState<COLOR extends Color,
     @Override
     public Collection<Action<?>> calculateActions(PIECE piece, Action.Type actionType) {
         LOGGER.info("Calculate '{}' actions ({})", piece, actionType.name());
-
-        var rule = (AbstractPieceRule<Action<?>,Action.Type>) actionRule;
-        return rule.evaluate(piece, actionType);
+        return actionRule.evaluate(piece, actionType);
     }
 
     @Override
@@ -68,17 +63,16 @@ class ActivePieceState<COLOR extends Color,
     @Override
     public Collection<Impact<?>> calculateImpacts(PIECE piece, Impact.Type impactType) {
         LOGGER.info("Calculate '{}' impacts ({})", piece, impactType.name());
-
-        var rule = (AbstractPieceRule<Impact<?>,Impact.Type>) impactRule;
-        return rule.evaluate(piece, impactType);
+        return impactRule.evaluate(piece, impactType);
     }
 
     @Override
     public void move(PIECE piece, Position position) {
         LOGGER.info("Move '{}' to '{}'", piece, position);
 
-        var actions = board.getActions(piece, PieceMoveAction.class);
+        var actions = board.getActions(piece, Action.Type.MOVE);
         var possibleMoves = actions.stream()
+                .map(action -> (PieceMoveAction<?,?>) action)
                 .map(PieceMoveAction::getTarget)
                 .collect(toSet());
 
@@ -95,15 +89,7 @@ class ActivePieceState<COLOR extends Color,
     public void capture(PIECE piece, Piece<?> targetPiece) {
         LOGGER.info("Capture '{}' by '{}'", targetPiece, piece);
 
-        var possibleActions = new HashSet<>();
-        possibleActions.addAll(board.getActions(piece, PieceCaptureAction.class));
-
-        if (Piece.Type.PAWN.equals(piece.getType())
-                && Piece.Type.PAWN.equals(targetPiece.getType())) {
-
-            possibleActions.addAll(board.getActions(piece, PieceEnPassantAction.class));
-        }
-
+        var possibleActions = board.getActions(piece, Action.Type.CAPTURE);
         var possibleCaptures = possibleActions.stream()
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .map(AbstractCaptureAction::getTarget)

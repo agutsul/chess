@@ -118,22 +118,6 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public <ACTION extends Action<?>> Collection<ACTION> getActions(Piece<?> piece,
-                                                                    Class<ACTION> actionClass) {
-        LOGGER.info("Getting actions for '{}' and type '{}'",
-                piece,
-                actionClass.getSimpleName()
-        );
-
-        var actions = getActions(piece);
-
-        var actionFilter = new ActionFilter<>(actionClass);
-        var filteredActions = actionFilter.apply(actions);
-
-        return filteredActions;
-    }
-
-    @Override
     public Collection<Action<?>> getActions(Piece<?> piece) {
         LOGGER.info("Getting actions for '{}'", piece);
 
@@ -144,9 +128,8 @@ final class BoardImpl extends AbstractBoard {
             return actions;
         }
 
-        var impacts = getImpacts(piece);
+        var impacts = getImpacts(piece, Impact.Type.PIN);
         var optinalPinImpact = impacts.stream()
-                .filter(impact -> Impact.Type.PIN.equals(impact.getType()))
                 .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
                 .findFirst();
 
@@ -180,9 +163,21 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
+    public Collection<Action<?>> getActions(Piece<?> piece, Action.Type actionType) {
+        LOGGER.info("Getting actions for '{}' and type '{}'", piece, actionType.name());
+        return piece.getActions(actionType);
+    }
+
+    @Override
     public Collection<Impact<?>> getImpacts(Piece<?> piece) {
         LOGGER.info("Getting impacts for '{}'", piece);
         return this.state.getImpacts(piece);
+    }
+
+    @Override
+    public Collection<Impact<?>> getImpacts(Piece<?> piece, Impact.Type impactType) {
+        LOGGER.info("Getting impacts for '{}' and type '{}'", piece, impactType.name());
+        return piece.getImpacts(impactType);
     }
 
     @Override
@@ -331,9 +326,8 @@ final class BoardImpl extends AbstractBoard {
 
         var attackerPieces = getPieces(attackerColor);
         var isAttacked = attackerPieces.stream()
-                .map(piece -> getImpacts(piece))
+                .map(piece -> getImpacts(piece, Impact.Type.CONTROL))
                 .flatMap(Collection::stream)
-                .filter(impact -> Impact.Type.CONTROL.equals(impact.getType()))
                 .map(impact -> (PieceControlImpact<?,?>) impact)
                 .map(PieceControlImpact::getPosition)
                 .anyMatch(targetPosition -> Objects.equals(targetPosition, position));
@@ -349,13 +343,7 @@ final class BoardImpl extends AbstractBoard {
 
         var actions = new HashSet<>();
         for (var attacker : attackerPieces) {
-            actions.addAll(getActions(attacker, PieceCaptureAction.class));
-
-            if (Piece.Type.PAWN.equals(piece.getType())
-                    && Piece.Type.PAWN.equals(attacker.getType())) {
-
-                actions.addAll(getActions(attacker, PieceEnPassantAction.class));
-            }
+            actions.addAll(getActions(attacker, Action.Type.CAPTURE));
         }
 
         @SuppressWarnings("unchecked")
@@ -376,9 +364,8 @@ final class BoardImpl extends AbstractBoard {
 
         var attackers = getPieces(attackerColor);
         var isMonitored = attackers.stream()
-                .map(piece -> getImpacts(piece))
+                .map(piece -> getImpacts(piece, Impact.Type.MONITOR))
                 .flatMap(Collection::stream)
-                .filter(impact -> Impact.Type.MONITOR.equals(impact.getType()))
                 .map(Impact::getPosition)
                 .anyMatch(targetPosition -> Objects.equals(targetPosition, position));
 

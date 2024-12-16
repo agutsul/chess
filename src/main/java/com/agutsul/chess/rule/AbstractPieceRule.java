@@ -2,24 +2,27 @@ package com.agutsul.chess.rule;
 
 import java.util.Collection;
 
+import com.agutsul.chess.activity.Activity;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Positionable;
 
-public abstract class AbstractPieceRule<P extends Positionable,TYPE extends Enum<TYPE>>
-        implements Rule<Piece<?>, Collection<P>> {
+public abstract class AbstractPieceRule<RESULT extends Positionable & Activity<?>,
+                                        TYPE extends Enum<TYPE> & Activity.Type>
+        implements Rule<Piece<?>, Collection<RESULT>> {
 
-    protected final CompositePieceRule<P,TYPE> rule;
+    protected final CompositePieceRule<RESULT,TYPE> compositeRule;
 
-    protected AbstractPieceRule(CompositePieceRule<P,TYPE> rule) {
-        this.rule = rule;
+    protected AbstractPieceRule(CompositePieceRule<RESULT,TYPE> rule) {
+        this.compositeRule = rule;
     }
 
     @Override
-    public Collection<P> evaluate(Piece<?> piece) {
-        return rule.evaluate(piece);
+    public Collection<RESULT> evaluate(Piece<?> piece) {
+        return compositeRule.evaluate(piece);
     }
 
-    public Collection<P> evaluate(Piece<?> piece, TYPE type) {
-        return rule.evaluate(piece, type);
+    @SuppressWarnings("unchecked")
+    public Collection<RESULT> evaluate(Piece<?> piece, TYPE type, TYPE... additionalTypes) {
+        return compositeRule.evaluate(piece, type, additionalTypes);
     }
 }

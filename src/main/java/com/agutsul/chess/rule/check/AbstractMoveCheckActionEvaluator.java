@@ -30,7 +30,7 @@ abstract class AbstractMoveCheckActionEvaluator
         var attackers = board.getAttackers(king);
 
         Collection<PieceCaptureAction<?,?,?,?>> checkActions = attackers.stream()
-                .map(attacker -> board.getActions(attacker, PieceCaptureAction.class))
+                .map(attacker -> board.getActions(attacker, Action.Type.CAPTURE))
                 .flatMap(Collection::stream)
                 .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(king, action.getTarget()))

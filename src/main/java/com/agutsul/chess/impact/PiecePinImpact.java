@@ -19,7 +19,7 @@ public class PiecePinImpact<COLOR1 extends Color,
     }
 
     @Override
-    public String getCode() {
+    public String toString() {
         return String.format("%s{%s}", getSource(), getTarget());
     }
 
