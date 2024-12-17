@@ -45,7 +45,7 @@ final class PgnPlayerInputObserver
         var adaptedAction = pieceActionAdapter.adapt(action);
 
         // simulate a delay
-        sleepQuietly(Duration.ofMillis(10));
+        sleepQuietly(Duration.ofMillis(1));
 
         // uncomment below for local debug of pgn file
 //        System.out.println(String.format("%s: %s: '%s'",

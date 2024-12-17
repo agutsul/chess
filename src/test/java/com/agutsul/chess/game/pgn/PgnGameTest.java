@@ -173,10 +173,18 @@ public class PgnGameTest implements TestFileReader {
 
     @Test
     void testPinnedPieceSelectionForMovePgnGame() throws URISyntaxException, IOException {
-        var games = parseGames(readFileContent("chess_pinned_piece_selectioin.pgn"), 1);
+        var games = parseGames(readFileContent("chess_pinned_piece_selection.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
         assertGame(game, GameState.Type.WHITE_WIN, 47, 15);
+    }
+
+    @Test
+    void testProtectedPieceEvaluationPgnGame() throws URISyntaxException, IOException {
+        var games = parseGames(readFileContent("chess_protected_piece.pgn"), 1);
+        var game = (PgnGame) games.get(0);
+
+        assertGame(game, GameState.Type.WHITE_WIN, 75, 15);
     }
 
     private static void assertGame(PgnGame game, GameState.Type expectedGameState,

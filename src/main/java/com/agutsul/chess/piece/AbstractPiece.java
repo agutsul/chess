@@ -246,10 +246,13 @@ abstract class AbstractPiece<COLOR extends Color>
                 .filter(piece -> !Objects.equals(piece, this))
                 .toList();
 
-        var isProtected = protectors.stream()
+        var protectImpacts = protectors.stream()
                 .map(piece -> board.getImpacts(piece, Impact.Type.PROTECT))
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceProtectImpact<?,?,?>) impact)
+                .toList();
+
+        var isProtected = protectImpacts.stream()
                 .anyMatch(protector -> Objects.equals(protector.getTarget(), this));
 
         return isProtected;

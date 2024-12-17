@@ -38,16 +38,14 @@ public abstract class AbstractProtectLineImpactRule<COLOR extends Color,
             var protectPositions = new ArrayList<Position>();
             for (var position : line) {
                 var optionalPiece = board.getPiece(position);
-                if (optionalPiece.isEmpty()) {
-                    continue;
-                }
+                if (optionalPiece.isPresent()) {
+                    var otherPiece = optionalPiece.get();
+                    if (Objects.equals(piece.getColor(), otherPiece.getColor())) {
+                        protectPositions.add(position);
+                    }
 
-                var otherPiece = optionalPiece.get();
-                if (!Objects.equals(piece.getColor(), otherPiece.getColor())) {
                     break;
                 }
-
-                protectPositions.add(position);
             }
 
             if (!protectPositions.isEmpty()) {

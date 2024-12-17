@@ -2,6 +2,7 @@ package com.agutsul.chess.rule.impact;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.PieceProtectImpact;
@@ -42,11 +43,9 @@ public abstract class AbstractProtectPositionImpactRule<COLOR extends Color,
 
             @SuppressWarnings("unchecked")
             var piece2 = (PIECE2) optionalPiece.get();
-            if (piece2.getColor() != piece.getColor()) {
-                continue;
+            if (Objects.equals(piece2.getColor(), piece.getColor())) {
+                impacts.add(createImpact(piece, piece2));
             }
-
-            impacts.add(createImpact(piece, piece2));
         }
 
         return impacts;

@@ -219,7 +219,6 @@ public abstract class AbstractPlayableGame
                 executor.shutdownNow();
             }
         }
-
     }
 
     public final Board getBoard() {
