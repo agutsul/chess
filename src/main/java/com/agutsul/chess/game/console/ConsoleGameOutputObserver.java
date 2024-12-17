@@ -149,12 +149,6 @@ public final class ConsoleGameOutputObserver
         var journal = game.getJournal();
         var number = (journal.size() / 2) + 1;
 
-        displayPlayerAction(number, player, action);
-    }
-
-    // utilities
-
-    private static void displayPlayerAction(int number, Player player, Action<?> action) {
         System.out.println(String.format("%d. %s %s: '%s': %s",
                 number,
                 player.getColor(),
@@ -163,6 +157,8 @@ public final class ConsoleGameOutputObserver
                 action
         ));
     }
+
+    // utilities
 
     private static void displayBoard(Board board) {
         System.out.println(String.format("%s%s", lineSeparator(), board));
