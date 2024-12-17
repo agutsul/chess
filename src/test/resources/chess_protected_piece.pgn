@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1-0"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:04:19"]
+[WhiteElo "1275"]
+[BlackElo "1207"]
+[WhiteRatingDiff "+9"]
+[BlackRatingDiff "-10"]
+[ECO "D00"]
+[Opening "Queen's Pawn Game #2"]
+[TimeControl "600+5"]
+[Termination "Time forfeit"]
+
+1. d4 { [%eval 0.24] } 1... d5 { [%eval 0.15] } 2. e3 { [%eval 0.24] } 2... c6 { [%eval 0.35] } 3. f4 { [%eval -0.07] } 3... e6 { [%eval 0.04] } 4. Nf3 { [%eval 0.04] } 4... Bb4+ { [%eval 0.22] } 5. c3 { [%eval 0.15] } 5... Bd6 { [%eval 0.12] } 6. g3 { [%eval 0.1] } 6... Nd7 { [%eval 0.12] } 7. Bg2 { [%eval 0.05] } 7... c5 { [%eval 0.17] } 8. Nbd2 { [%eval 0.12] } 8... cxd4 { [%eval 0.19] } 9. cxd4 { [%eval -0.08] } 9... b6 { [%eval 0.28] } 10. O-O { [%eval 0.05] } 10... Ba6 { [%eval 0.11] } 11. Rf2 { [%eval 0.0] } 11... b5 { [%eval 0.94] } 12. a3 { [%eval 0.32] } 12... Bb7 { [%eval 0.48] } 13. b4 { [%eval 0.22] } 13... a6 { [%eval 0.63] } 14. Nb3 { [%eval 0.6] } 14... Ra7 { [%eval 0.6] } 15. Bd2 { [%eval 0.31] } 15... Qe7 { [%eval 0.84] } 16. Rb1 { [%eval 0.18] } 16... Ngf6 { [%eval 0.19] } 17. Ne5 { [%eval 0.17] } 17... O-O { [%eval 0.18] } 18. h4 { [%eval -0.21] } 18... Rc8 { [%eval 0.0] } 19. Nxd7 { [%eval -0.21] } 19... Nxd7 { [%eval -0.2] } 20. g4 { [%eval -0.89] } 20... Nf6 { [%eval -0.04] } 21. g5 { [%eval 0.04] } 21... Ne8 { [%eval 0.43] } 22. h5 { [%eval 0.24] } 22... f6 { [%eval 0.55] } 23. h6 { [%eval -0.01] } 23... fxg5 { [%eval -0.1] } 24. hxg7 { [%eval -0.68] } 24... Nxg7 { [%eval -0.68] } 25. Nc5 { [%eval -0.97] } 25... gxf4 { [%eval -0.89] } 26. exf4 { [%eval -0.98] } 26... a5 { [%eval -0.16] } 27. Nxb7 { [%eval -0.73] } 27... Rxb7 { [%eval -0.66] } 28. Rc1 { [%eval -1.69] } 28... a4 { [%eval 12.02] } 29. Rxc8+ { [%eval 12.37] } 29... Ne8 { [%eval 12.45] } 30. Qg4+ { [%eval 12.24] } 30... Qg7 { [%eval 53.57] } 31. Rxe8+ { [%eval 14.29] } 31... Bf8 { [%eval 24.79] } 32. Rxf8+ { [%eval 10.99] } 32... Kxf8 { [%eval 11.04] } 33. Qxg7+ { [%eval 8.36] } 33... Rxg7 { [%eval 8.17] } 34. f5 { [%eval 8.37] } 34... exf5 { [%eval 50.27] } 35. Bh6 { [%eval 50.34] } 35... f4 { [%eval 112.82] } 36. Rxf4+ { [%eval 54.13] } 36... Kg8 { [%eval 52.98] } 37. Kf1 { [%eval #10] } 37... Rf7 { [%eval #3] } 38. Bxd5 { [%eval #2] } 1-0
