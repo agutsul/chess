@@ -25,16 +25,16 @@ public final class PgnGame
     private static final Logger LOGGER = getLogger(PgnGame.class);
 
     private GameState parsedGameState;
-    private Map<String,String> tags;
-    private List<String> actions;
+    private Map<String,String> parsedTags;
+    private List<String> parsedActions;
 
     public PgnGame(Player whitePlayer, Player blackPlayer,
                    Map<String,String> tags, List<String> actions) {
 
         this(whitePlayer, blackPlayer, new StandardBoard(), actions);
 
-        this.tags = tags;
-        this.actions = actions;
+        this.parsedTags = tags;
+        this.parsedActions = actions;
     }
 
     PgnGame(Player whitePlayer, Player blackPlayer, Board board, List<String> actions) {
@@ -57,11 +57,11 @@ public final class PgnGame
     }
 
     public Map<String,String> getParsedTags() {
-        return unmodifiableMap(this.tags);
+        return unmodifiableMap(this.parsedTags);
     }
 
     public List<String> getParsedActions() {
-        return unmodifiableList(this.actions);
+        return unmodifiableList(this.parsedActions);
     }
 
     @Override
