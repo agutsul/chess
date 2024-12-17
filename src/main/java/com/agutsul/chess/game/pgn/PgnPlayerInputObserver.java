@@ -1,16 +1,15 @@
 package com.agutsul.chess.game.pgn;
 
 import static com.agutsul.chess.game.state.GameState.Type.DRAWN_GAME;
-import static org.apache.commons.lang3.ThreadUtils.sleepQuietly;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.time.Duration;
 import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
 
 import com.agutsul.chess.game.state.GameState;
+import com.agutsul.chess.pgn.action.ActionAdapter;
 import com.agutsul.chess.pgn.action.PawnPromotionTypeAdapter;
 import com.agutsul.chess.pgn.action.PieceActionAdapter;
 import com.agutsul.chess.player.Player;
@@ -23,16 +22,21 @@ final class PgnPlayerInputObserver
 
     private final ActionIterator actionIterator;
 
-    private final PieceActionAdapter pieceActionAdapter;
-    private final PawnPromotionTypeAdapter promotionTypeAdapter;
+    private final ActionAdapter pieceActionAdapter;
+    private final ActionAdapter promotionTypeAdapter;
 
     PgnPlayerInputObserver(Player player, PgnGame game, List<String> actions) {
         super(LOGGER, player, game);
 
         this.actionIterator = new ActionIterator(actions);
-
-        this.pieceActionAdapter = new PieceActionAdapter(game.getBoard(), player.getColor());
-        this.promotionTypeAdapter = new PawnPromotionTypeAdapter(game.getBoard(), player.getColor());
+        this.pieceActionAdapter = new PieceActionAdapter(
+                game.getBoard(),
+                player.getColor()
+        );
+        this.promotionTypeAdapter = new PawnPromotionTypeAdapter(
+                game.getBoard(),
+                player.getColor()
+        );
     }
 
     @Override
@@ -45,11 +49,7 @@ final class PgnPlayerInputObserver
         var adaptedAction = pieceActionAdapter.adapt(action);
 
         // simulate a delay
-        sleepQuietly(Duration.ofMillis(1));
-
-        // uncomment below for local debug of pgn file
-//        System.out.println(String.format("%s: %s: '%s'",
-//                player.getColor(), player.getName(), adaptedAction));
+//        sleepQuietly(Duration.ofMillis(1));
 
         return adaptedAction;
     }
