@@ -113,7 +113,7 @@ public final class ConsoleGameOutputObserver
     @Override
     protected void process(DrawExecutionEvent event) {
         var player = event.getPlayer();
-        System.out.println(String.format("%s: Player '%s' asked a draw",
+        System.out.println(String.format("%s: '%s' asked a draw",
                 player.getColor(),
                 player.getName()
         ));
@@ -127,7 +127,7 @@ public final class ConsoleGameOutputObserver
     @Override
     protected void process(ExitExecutionEvent event) {
         var player = event.getPlayer();
-        System.out.println(String.format("%s: Player '%s' exit",
+        System.out.println(String.format("%s: '%s' exit",
                 player.getColor(),
                 player.getName()
         ));
