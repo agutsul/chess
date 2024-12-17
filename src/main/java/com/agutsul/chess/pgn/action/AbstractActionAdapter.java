@@ -64,8 +64,19 @@ abstract class AbstractActionAdapter
                                     String position, Action.Type actionType) {
 
         var foundPieces = findPieces(pieceType, code);
-        var foundPiece = foundPieces.stream()
+        var pieces = foundPieces.stream()
                 .filter(piece -> containsAction(piece, position, actionType))
+                .toList();
+
+        if (pieces.isEmpty()) {
+            return Optional.empty();
+        }
+
+        if (pieces.size() == 1) {
+            return Optional.of(pieces.iterator().next());
+        }
+
+        var foundPiece = pieces.stream()
                 .filter(piece -> {
                     if (Piece.Type.KING.equals(piece.getType())) {
                         return true;
@@ -76,36 +87,40 @@ abstract class AbstractActionAdapter
                         return true;
                     }
 
-                    // check if pinned piece action is inside checker's attack line
-                    var impacts = board.getImpacts(piece, Impact.Type.PIN);
-                    var checkImpact = impacts.stream()
-                            .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
-                            .map(PiecePinImpact::getTarget)
-                            .findFirst()
-                            .get();
-
-                    var checkLine = checkImpact.getAttackLine();
-                    if (checkLine.isPresent()) {
-                        var line = checkLine.get();
-                        if (line.contains(positionOf(position))) {
-                            return true;
-                        }
-                    }
-
-                    // check if pinned piece action is capturing checker piece
-                    var attacker = checkImpact.getSource();
-                    var pieceActions = piece.getActions(Action.Type.CAPTURE);
-
-                    var isCapturable = pieceActions.stream()
-                            .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                            .map(AbstractCaptureAction::getTarget)
-                            .anyMatch(targetPiece -> Objects.equals(targetPiece, attacker));
-
-                    return isCapturable;
+                    return isActionAvailable(piece, position);
                 })
                 .findFirst();
 
         return foundPiece;
+    }
+
+    boolean isActionAvailable(Piece<?> piece, String position) {
+        // check if pinned piece action is inside checker's attack line
+        var impacts = board.getImpacts(piece, Impact.Type.PIN);
+        var checkImpact = impacts.stream()
+                .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
+                .map(PiecePinImpact::getTarget)
+                .findFirst()
+                .get();
+
+        var checkLine = checkImpact.getAttackLine();
+        if (checkLine.isPresent()) {
+            var line = checkLine.get();
+            if (line.contains(positionOf(position))) {
+                return true;
+            }
+        }
+
+        // check if pinned piece action is capturing checker piece
+        var attacker = checkImpact.getSource();
+        var pieceActions = piece.getActions(Action.Type.CAPTURE);
+
+        var isCapturable = pieceActions.stream()
+                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
+                .map(AbstractCaptureAction::getTarget)
+                .anyMatch(targetPiece -> Objects.equals(targetPiece, attacker));
+
+        return isCapturable;
     }
 
     static final String adapt(Piece<Color> piece, String target) {
