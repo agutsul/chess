@@ -187,6 +187,24 @@ public class PgnGameTest implements TestFileReader {
         assertGame(game, GameState.Type.WHITE_WIN, 75, 15);
     }
 
+    @Test
+    void testFiveRepetitionsFailurePgnGame() throws URISyntaxException, IOException  {
+        var games = parseGames(readFileContent("chess_five_repetition_failure.pgn"), 1);
+        var game = (PgnGame) games.get(0);
+
+        assertEquals(140, game.getParsedActions().size());
+        assertEquals(GameState.Type.BLACK_WIN, game.getParsedGameState().getType());
+        assertEquals(15, game.getParsedTags().size());
+
+        game.run();
+
+        // NOTE: actual state differs from expected because of five repetitions rule ('Ke2')
+        // Looks like this rule was not applied while performing this game.
+        assertEquals(GameState.Type.DRAWN_GAME, game.getState().getType());
+        // NOTE: actual journal size is not equal to expected because not all actions applied
+        assertEquals(111, game.getJournal().size());
+    }
+
     private static void assertGame(PgnGame game, GameState.Type expectedGameState,
                                    int expectedActionsCount, int expectedTagsCount) {
 

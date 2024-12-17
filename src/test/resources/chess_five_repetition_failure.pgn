@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "0-1"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:03:52"]
+[WhiteElo "1435"]
+[BlackElo "1655"]
+[WhiteRatingDiff "-5"]
+[BlackRatingDiff "+5"]
+[ECO "B06"]
+[Opening "Robatsch (Modern) Defense"]
+[TimeControl "300+0"]
+[Termination "Normal"]
+
+1. d4 g6 2. e4 Bg7 3. Nf3 e6 4. Nc3 Ne7 5. Bg5 O-O 6. Be2 h6 7. Bh4 b6 8. O-O Bb7 9. a3 d6 10. Re1 Nd7 11. Qd3 a5 12. Rac1 g5 13. Bg3 Nf6 14. h3 c5 15. e5 dxe5 16. dxe5 Qxd3 17. Bxd3 Nfd5 18. Nxd5 Bxd5 19. Rcd1 Bxf3 20. gxf3 Rfd8 21. f4 Rd5 22. Bc4 Rdd8 23. b3 Nf5 24. fxg5 hxg5 25. Bh2 Nd4 26. a4 Nf3+ 27. Kf1 Nxe1 28. Kxe1 Rxd1+ 29. Kxd1 Rd8+ 30. Ke2 Rd4 31. Ke3 Rh4 32. Bf1 g4 33. Bg3 Rh7 34. hxg4 Rh1 35. Ke2 Rg1 36. Bh3 Rc1 37. Kd2 Rh1 38. Bg2 Rh8 39. Ke2 Kf8 40. Kf3 Ke7 41. Ke4 Rd8 42. Ke3 Bh6+ 43. Ke2 Rd2+ 44. Kf1 Rxc2 45. Be4 Rc3 46. f4 Rxg3 47. g5 Bxg5 48. fxg5 Rxb3 49. Bc6 Re3 50. Bb5 Rxe5 51. g6 fxg6 52. Kf2 g5 53. Kg3 Re4 54. Kf3 Rd4 55. Ke3 e5 56. Ke2 g4 57. Kf2 Kf6 58. Kg2 Kg5 59. Kg3 Rb4 60. Kg2 Rxb5 61. axb5 Kf4 62. Kf2 e4 63. Ke2 c4 64. Kf1 a4 65. Kf2 c3 66. Kf1 a3 67. Ke1 e3 68. Kd1 Kf3 69. Ke1 c2 70. Kf1 c1=R# 0-1
