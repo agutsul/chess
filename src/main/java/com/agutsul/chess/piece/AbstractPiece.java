@@ -1,6 +1,7 @@
 package com.agutsul.chess.piece;
 
 import static java.time.Instant.now;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -123,6 +124,10 @@ abstract class AbstractPiece<COLOR extends Color>
             return actions;
         }
 
+        if (!this.actionCache.isEmpty() && actions.isEmpty()) {
+            return emptyList();
+        }
+
         LOGGER.info("Calculating '{}' actions({})", this, actionType.name());
         return getState().calculateActions(this, actionType);
     }
@@ -146,6 +151,10 @@ abstract class AbstractPiece<COLOR extends Color>
         var impacts = this.impactCache.get(impactType);
         if (!impacts.isEmpty()) {
             return impacts;
+        }
+
+        if (!this.impactCache.isEmpty() && impacts.isEmpty()) {
+            return emptyList();
         }
 
         LOGGER.info("Calculating '{}' impacts({})", this, impactType.name());
