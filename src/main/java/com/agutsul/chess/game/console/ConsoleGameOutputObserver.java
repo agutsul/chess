@@ -19,6 +19,7 @@ import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
 import com.agutsul.chess.activity.action.event.ExitPerformedEvent;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.event.GameOverEvent;
@@ -42,6 +43,7 @@ public final class ConsoleGameOutputObserver
     private static final String ACTION_MESSAGE = "Action";
     private static final String GAME_OVER_MESSAGE = "Game over";
     private static final String DURATION_MESSAGE = "Duration (minutes)";
+    private static final String BOARD_STATE_MESSAGE = "Board state";
 
     public ConsoleGameOutputObserver(Game game) {
         super(game);
@@ -58,8 +60,11 @@ public final class ConsoleGameOutputObserver
     @Override
     protected void process(GameOverEvent event) {
         var game = (AbstractPlayableGame) event.getGame();
-        var line = "-".repeat(50);
 
+        var board = game.getBoard();
+        displayBoardState(board.getState());
+
+        var line = "-".repeat(50);
         System.out.println(line);
         displayJournal(game.getJournal());
 
@@ -146,6 +151,13 @@ public final class ConsoleGameOutputObserver
 
     private static void displayBoard(Board board) {
         System.out.println(String.format("%s%s", lineSeparator(), board));
+    }
+
+    private static void displayBoardState(BoardState boardState) {
+        System.out.println(String.format("%s: %s",
+                BOARD_STATE_MESSAGE,
+                boardState
+        ));
     }
 
     private static void displayJournal(Journal<ActionMemento<?,?>> journal) {
