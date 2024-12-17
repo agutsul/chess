@@ -221,6 +221,10 @@ public abstract class AbstractPlayableGame
         }
     }
 
+    public final Player getCurrentPlayer() {
+        return this.currentPlayer;
+    }
+
     public final Board getBoard() {
         return this.board;
     }

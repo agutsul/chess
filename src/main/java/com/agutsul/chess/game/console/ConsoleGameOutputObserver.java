@@ -143,10 +143,20 @@ public final class ConsoleGameOutputObserver
         displayErrorMessage(event.getMessage());
     }
 
+    private void displayAction(Action<?> action) {
+        var player = ((AbstractPlayableGame) this.game).getCurrentPlayer();
+        displayPlayerAction(player, action);
+    }
+
     // utilities
 
-    private static void displayAction(Action<?> action) {
-        System.out.println(String.format("%s: %s", ACTION_MESSAGE, action));
+    private static void displayPlayerAction(Player player, Action<?> action) {
+        System.out.println(String.format("%s: %s: '%s': %s",
+                ACTION_MESSAGE,
+                player.getColor(),
+                player.getName(),
+                action
+        ));
     }
 
     private static void displayBoard(Board board) {
