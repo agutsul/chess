@@ -13,6 +13,7 @@ import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
 import com.agutsul.chess.activity.action.event.ExitPerformedEvent;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.game.Game;
+import com.agutsul.chess.game.event.BoardStateNotificationEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.observer.AbstractGameObserver;
@@ -39,6 +40,11 @@ public class GameOutputObserverMock
 
     @Override
     protected void process(GameOverEvent event) {
+        consume(event);
+    }
+
+    @Override
+    protected void process(BoardStateNotificationEvent event) {
         consume(event);
     }
 

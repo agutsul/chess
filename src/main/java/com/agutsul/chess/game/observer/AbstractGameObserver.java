@@ -17,6 +17,7 @@ import com.agutsul.chess.activity.action.event.ExitPerformedEvent;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.game.Game;
+import com.agutsul.chess.game.event.BoardStateNotificationEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
@@ -49,6 +50,7 @@ public abstract class AbstractGameObserver
 
         processors.put(GameStartedEvent.class,      event -> process((GameStartedEvent) event));
         processors.put(GameOverEvent.class,         event -> process((GameOverEvent) event));
+        processors.put(BoardStateNotificationEvent.class, event -> process((BoardStateNotificationEvent) event));
 
         processors.put(ActionExecutionEvent.class,  event -> process((ActionExecutionEvent) event));
         processors.put(ActionCancellingEvent.class, event -> process((ActionCancellingEvent) event));
@@ -71,6 +73,8 @@ public abstract class AbstractGameObserver
     protected abstract void process(GameStartedEvent event);
 
     protected abstract void process(GameOverEvent event);
+
+    protected abstract void process(BoardStateNotificationEvent event);
 
     protected abstract void process(ActionPerformedEvent event);
 

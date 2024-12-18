@@ -32,6 +32,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
+import com.agutsul.chess.game.event.BoardStateNotificationEvent;
 import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
@@ -157,8 +158,14 @@ public abstract class AbstractPlayableGame
         var nextBoardState = evaluateBoardState(nextPlayer);
         this.board.setState(nextBoardState);
 
+        var isRunning = !nextBoardState.isTerminal();
+        if (isRunning && !BoardState.Type.DEFAULT.equals(nextBoardState.getType())) {
+            var lastMemento = this.journal.get(this.journal.size() - 1);
+            notifyObservers(new BoardStateNotificationEvent(nextBoardState, lastMemento));
+        }
+
         logger.info("Board state: {}", nextBoardState);
-        return !nextBoardState.isTerminal();
+        return isRunning;
     }
 
     @Override

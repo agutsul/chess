@@ -17,11 +17,13 @@ import com.agutsul.chess.activity.action.event.DrawExecutionEvent;
 import com.agutsul.chess.activity.action.event.DrawPerformedEvent;
 import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
 import com.agutsul.chess.activity.action.event.ExitPerformedEvent;
+import com.agutsul.chess.activity.action.formatter.AlgebraicActionFormatter;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
+import com.agutsul.chess.game.event.BoardStateNotificationEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.observer.AbstractGameObserver;
@@ -76,20 +78,23 @@ public final class ConsoleGameOutputObserver
     }
 
     @Override
+    protected void process(BoardStateNotificationEvent event) {
+        displayBoardState(event.getBoardState());
+
+        System.out.println(String.format("%s: %s%s",
+                ACTION_MESSAGE,
+                AlgebraicActionFormatter.format(event.getMemento()),
+                lineSeparator()
+        ));
+    }
+
+    @Override
     protected void process(ActionPerformedEvent ignoredEvent) {
         displayBoard(((AbstractPlayableGame) this.game).getBoard());
     }
 
     @Override
     protected void process(ActionExecutionEvent event) {
-        var board = ((AbstractPlayableGame) this.game).getBoard();
-
-        var boardState = board.getState();
-        if (BoardState.Type.CHECKED.equals(boardState.getType())) {
-            displayBoardState(boardState);
-            System.out.println(lineSeparator());
-        }
-
         displayAction(event.getAction());
     }
 
