@@ -205,6 +205,14 @@ public class PgnGameTest implements TestFileReader {
         assertEquals(111, game.getJournal().size());
     }
 
+    @Test
+    void testFailedPgnGame() throws URISyntaxException, IOException {
+        var games = parseGames(readFileContent("chess_wrong_castling_selection.pgn"), 1);
+        var game = (PgnGame) games.get(0);
+
+        assertGame(game, GameState.Type.BLACK_WIN, 54, 15);
+    }
+
     private static void assertGame(PgnGame game, GameState.Type expectedGameState,
                                    int expectedActionsCount, int expectedTagsCount) {
 
