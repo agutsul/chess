@@ -104,7 +104,7 @@ abstract class AbstractPiece<COLOR extends Color>
     }
 
     @Override
-    public final Collection<Action<?>> getActions() {
+    public Collection<Action<?>> getActions() {
         LOGGER.info("Get '{}' actions", this);
 
         if (this.actionCache.isEmpty()) {

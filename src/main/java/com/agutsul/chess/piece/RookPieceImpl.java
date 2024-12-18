@@ -1,5 +1,9 @@
 package com.agutsul.chess.piece;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.rook.RookPieceActionRule;
@@ -15,5 +19,22 @@ final class RookPieceImpl<COLOR extends Color>
                 new RookPieceActionRule(board),
                 new RookPieceImpactRule(board)
         );
+    }
+
+    @Override
+    public Collection<Action<?>> getActions() {
+        // Castling action for rook should have less priority
+        // (because default castling is initiated by the king)
+        // and as result be the last in the result collection.
+        // Action order influences action auto-detection used by PerformActionCommand.
+        var actions = new ArrayList<>(super.getActions());
+        actions.sort((action1, action2) -> {
+            var type1 = (Action.Type) action1.getType();
+            var type2 = (Action.Type) action2.getType();
+            // expected order: capture, move, castling
+            return type1.compareTo(type2);
+        });
+
+        return actions;
     }
 }

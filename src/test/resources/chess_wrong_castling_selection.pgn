@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "0-1"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:08:19"]
+[WhiteElo "1350"]
+[BlackElo "1424"]
+[WhiteRatingDiff "-8"]
+[BlackRatingDiff "+25"]
+[ECO "B20"]
+[Opening "Sicilian Defense"]
+[TimeControl "300+3"]
+[Termination "Normal"]
+
+1. e4 c5 2. d3 Nc6 3. Be3 e6 4. Nc3 d5 5. exd5 exd5 6. Nb5 Qa5+ 7. Nc3 d4 8. Bd2 dxc3 9. Bxc3 Qc7 10. Qe2+ Be7 11. Bxg7 Be6 12. Bxh8 Bf6 13. Bxf6 Nxf6 14. g3 O-O-O 15. Bg2 Re8 16. Be4 Nxe4 17. dxe4 Nd4 18. Qd2 Qc6 19. f3 Rd8 20. Qc3 Qa4 21. Qxc5+ Kb8 22. Qe5+ Ka8 23. Rd1 Nxc2+ 24. Ke2 Qc4+ 25. Kf2 Rxd1 26. Qh8+ Bc8 27. Kg2 Qf1# 0-1
