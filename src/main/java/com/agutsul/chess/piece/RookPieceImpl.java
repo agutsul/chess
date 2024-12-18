@@ -24,7 +24,7 @@ final class RookPieceImpl<COLOR extends Color>
     @Override
     public Collection<Action<?>> getActions() {
         // Castling action for rook should have less priority
-        // (because default castling is initiated by the king)
+        // (because by default castling is initiated by the king)
         // and as result be the last in the result collection.
         // Action order influences action auto-detection used by PerformActionCommand.
         var actions = new ArrayList<>(super.getActions());
