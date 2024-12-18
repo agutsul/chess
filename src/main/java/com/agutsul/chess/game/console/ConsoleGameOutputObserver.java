@@ -82,6 +82,14 @@ public final class ConsoleGameOutputObserver
 
     @Override
     protected void process(ActionExecutionEvent event) {
+        var board = ((AbstractPlayableGame) this.game).getBoard();
+
+        var boardState = board.getState();
+        if (BoardState.Type.CHECKED.equals(boardState.getType())) {
+            displayBoardState(boardState);
+            System.out.println(lineSeparator());
+        }
+
         displayAction(event.getAction());
     }
 
@@ -165,9 +173,10 @@ public final class ConsoleGameOutputObserver
     }
 
     private static void displayBoardState(BoardState boardState) {
-        System.out.println(String.format("%s: %s",
+        System.out.println(String.format("%s: %s: %s",
+                boardState.getColor(),
                 BOARD_STATE_MESSAGE,
-                boardState
+                boardState.getType().name()
         ));
     }
 
