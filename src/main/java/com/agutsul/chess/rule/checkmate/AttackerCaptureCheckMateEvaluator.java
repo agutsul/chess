@@ -1,9 +1,11 @@
 package com.agutsul.chess.rule.checkmate;
 
+import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -11,6 +13,7 @@ import org.slf4j.Logger;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
 import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
@@ -28,43 +31,49 @@ final class AttackerCaptureCheckMateEvaluator
 
     @Override
     public Boolean evaluate(KingPiece<?> king) {
-        LOGGER.info("Evaluate attacker capture by king '{}'", king);
+        LOGGER.info("Evaluate attacker capture by any piece except king '{}'", king);
 
-        var attackers = board.getAttackers(king);
-        for (var attacker : attackers) {
-            // find any action to capture piece making check
-            var captureActions = getAttackActions(attacker);
+        var checkMakers = board.getAttackers(king);
+        var checkMakerStatus = new HashMap<Piece<?>,Boolean>(checkMakers.size());
 
-            // if there is such action
-            var isCapturable = !captureActions.isEmpty();
-            for (var captureAction : captureActions) {
-                var sourcePiece = captureAction.getSource();
-
-                // in case if king is the piece that can attack check maker
-                // then king should not be attacked in result of capturing.
-                // it can happen when piece making check is protected
-                // by some other piece of the same color
-                if (Piece.Type.KING.equals(sourcePiece.getType())
-                        && ((Protectable) attacker).isProtected()) {
-
-                    isCapturable = false;
-                    break;
-                }
-            }
-
-            if (!isCapturable) {
-                // it means that there is at least one check maker piece that can't be captured
-                return false;
-            }
+        // check if there is any action to capture piece making a check
+        for (var checkMaker : checkMakers) {
+            var captureActions = getAttackActions(checkMaker);
+            checkMakerStatus.put(checkMaker, !captureActions.isEmpty());
         }
 
-        // all check making pieces can be captured
-        return true;
+        // check if it is possible to capture check maker by the king
+        var uncapturedCheckMakers = checkMakerStatus.entrySet().stream()
+                .filter(entry -> !entry.getValue())
+                .map(entry -> entry.getKey())
+                .toList();
+
+        LOGGER.info("Evaluate attacker capture by king '{}'", king);
+
+        var kingAttackedPieces = board.getActions(king, Action.Type.CAPTURE).stream()
+                .map(action -> (PieceCaptureAction<?,?,?,?>) action)
+                .map(PieceCaptureAction::getTarget)
+                .collect(toSet());
+
+        for (var checkMaker : uncapturedCheckMakers) {
+            var isCapturable = kingAttackedPieces.contains(checkMaker);
+            var isProtected = ((Protectable) checkMaker).isProtected();
+
+            checkMakerStatus.put(checkMaker, isCapturable && !isProtected);
+        }
+
+        var isAllCapturable = !checkMakerStatus.containsValue(false);
+        return isAllCapturable;
     }
 
     private Collection<AbstractCaptureAction<?,?,?,?>> getAttackActions(Piece<?> piece) {
         var attackActions = new ArrayList<AbstractCaptureAction<?,?,?,?>>();
-        for (var attacker : board.getAttackers(piece)) {
+
+        var attackers = board.getAttackers(piece).stream()
+                .filter(attacker -> !Piece.Type.KING.equals(attacker.getType()))
+                .toList();
+
+        for (var attacker : attackers) {
             var actions = board.getActions(attacker, Action.Type.CAPTURE);
 
             attackActions.addAll(actions.stream()

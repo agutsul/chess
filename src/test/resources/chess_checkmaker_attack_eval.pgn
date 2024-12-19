@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1-0"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:05:29"]
+[WhiteElo "1740"]
+[BlackElo "1615"]
+[WhiteRatingDiff "+8"]
+[BlackRatingDiff "-7"]
+[ECO "C00"]
+[Opening "French Defense: Knight Variation"]
+[TimeControl "300+0"]
+[Termination "Time forfeit"]
+
+1. e4  e6 2. Nf3  d6 3. d4  c6 4. Bc4  Nd7 5. Nc3  Be7 6. d5  Qc7 7. dxe6  h6 8. exf7+  Kf8 9. fxg8=Q+  Rxg8 10. Bxg8  Kxg8 11. O-O  Nf6 12. Re1  Bg4 13. h3  Bxf3 14. Qxf3  Rf8 15. Qg3  Qd7 16. Bxh6  Nh5 17. Qg6  Qe8 18. Qxe8  Rxe8 19. Be3  c5 20. Nd5  Bd8 21. f3  Rf8 22. b3  Bh4 23. Bf2  Bxf2+ 24. Kxf2  g5 25. c4  Ng7 26. Rad1 1-0
