@@ -48,7 +48,7 @@ public enum AlgebraicActionFormatter implements ActionFormatter {
         @Override
         public String formatMemento(ActionMemento<?,?> memento) {
             return String.format("%s%s",
-                    ((ActionMemento<?,?>) memento.getTarget()).getTarget(),
+                    format((ActionMemento<?,?>) memento.getTarget()),
                     memento.getPieceType().code()
             );
         }
