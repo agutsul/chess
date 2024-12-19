@@ -57,9 +57,12 @@ final class AttackerCaptureCheckMateEvaluator
 
         for (var checkMaker : uncapturedCheckMakers) {
             var isCapturable = kingAttackedPieces.contains(checkMaker);
-            var isProtected = ((Protectable) checkMaker).isProtected();
-
-            checkMakerStatus.put(checkMaker, isCapturable && !isProtected);
+            if (isCapturable) {
+                var isProtected = ((Protectable) checkMaker).isProtected();
+                checkMakerStatus.put(checkMaker, !isProtected);
+            } else {
+                checkMakerStatus.put(checkMaker, isCapturable);
+            }
         }
 
         var isAllCapturable = !checkMakerStatus.containsValue(false);
