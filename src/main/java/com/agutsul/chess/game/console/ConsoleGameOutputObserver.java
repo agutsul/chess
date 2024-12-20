@@ -1,5 +1,6 @@
 package com.agutsul.chess.game.console;
 
+import static com.agutsul.chess.activity.action.formatter.AlgebraicActionFormatter.format;
 import static com.agutsul.chess.journal.JournalFormatter.format;
 import static java.lang.System.lineSeparator;
 import static java.time.LocalDateTime.now;
@@ -17,7 +18,6 @@ import com.agutsul.chess.activity.action.event.DrawExecutionEvent;
 import com.agutsul.chess.activity.action.event.DrawPerformedEvent;
 import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
 import com.agutsul.chess.activity.action.event.ExitPerformedEvent;
-import com.agutsul.chess.activity.action.formatter.AlgebraicActionFormatter;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
@@ -83,7 +83,7 @@ public final class ConsoleGameOutputObserver
 
         System.out.println(String.format("%s: %s%s",
                 ACTION_MESSAGE,
-                AlgebraicActionFormatter.format(event.getMemento()),
+                format(event.getMemento()),
                 lineSeparator()
         ));
     }
@@ -95,7 +95,7 @@ public final class ConsoleGameOutputObserver
 
     @Override
     protected void process(ActionExecutionEvent event) {
-        displayAction(event.getAction());
+        displayAction((AbstractPlayableGame) this.game, event.getAction());
     }
 
     @Override
@@ -105,7 +105,7 @@ public final class ConsoleGameOutputObserver
 
     @Override
     protected void process(ActionCancellingEvent event) {
-        displayAction(event.getAction());
+        displayAction((AbstractPlayableGame) this.game, event.getAction());
     }
 
     @Override
@@ -148,7 +148,7 @@ public final class ConsoleGameOutputObserver
 
     @Override
     protected void process(ExitPerformedEvent ignoredEvent) {
-        displayBoard(((AbstractPlayableGame) this.game).getBoard());
+//        displayBoard(((AbstractPlayableGame) this.game).getBoard());
     }
 
     @Override
@@ -156,8 +156,10 @@ public final class ConsoleGameOutputObserver
         displayErrorMessage(event.getMessage());
     }
 
-    private void displayAction(Action<?> action) {
-        var player = ((AbstractPlayableGame) this.game).getCurrentPlayer();
+    // utilities
+
+    private static void displayAction(AbstractPlayableGame game, Action<?> action) {
+        var player = game.getCurrentPlayer();
 
         var journal = game.getJournal();
         var number = (journal.size() / 2) + 1;
@@ -170,8 +172,6 @@ public final class ConsoleGameOutputObserver
                 action
         ));
     }
-
-    // utilities
 
     private static void displayBoard(Board board) {
         System.out.println(String.format("%s%s", lineSeparator(), board));
