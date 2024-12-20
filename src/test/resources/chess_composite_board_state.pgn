@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1/2-1/2"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:06:11"]
+[WhiteElo "1831"]
+[BlackElo "1751"]
+[WhiteRatingDiff "-2"]
+[BlackRatingDiff "+3"]
+[ECO "C64"]
+[Opening "Ruy Lopez: Classical Variation, Central Variation"]
+[TimeControl "120+5"]
+[Termination "Time forfeit"]
+
+1. e4 e5 2. Nf3 Nc6 3. c3 Bc5 4. Bb5 Nge7 5. O-O O-O 6. h3 d6 7. d3 Ng6 8. Ba4 Nce7 9. Bb3 Be6 10. Bg5 Qe8 11. Nbd2 Bxb3 12. Nxb3 Bb6 13. a4 a5 14. Nbd2 f5 15. exf5 Nxf5 16. Ne4 h6 17. Bd2 Nfh4 18. Nxh4 Nxh4 19. Be3 Qg6 20. g4 h5 21. Bxb6 cxb6 22. Qe2 hxg4 23. Qxg4 Qxg4+ 24. hxg4 Rad8 25. Kh2 Ng6 26. Kg3 Nf4 27. Rad1 d5 28. Ng5 Rf6 29. Nf3 e4 30. dxe4 Ne2+ 31. Kg2 Rdf8 32. Nh2 dxe4 33. Rde1 Nf4+ 34. Kg3 Nd3 35. Rxe4 Nxb2 36. f3 Nd3 37. Rd1 Nc5 38. Red4 R8f7 39. Rd8+ Kh7 40. R1d4 Ne6 41. g5 Rf5 42. R8d6 Nxd4 43. Rxd4 Rxg5+ 44. Ng4 Rgf5 45. f4 b5 46. axb5 Rxb5 47. Ne5 Rc7 48. c4 Rbc5 49. Rd3 b5 50. cxb5 Rxb5 51. Ra3 Rcb7 52. Kg4 Kg8 53. Ra4 Ra7 54. Nd3 Rb3 55. Ne5 Ra6 56. Nc4 Rb4 57. Rxa5 Rxa5 58. Nxa5 Rb5 59. Nc4 Kf7 60. Ne5+ Kf6 61. Nd7+ Ke7 62. Ne5 Rb1 63. Kf5 Rg1 64. Ng6+ Kf7 65. Ne5+ Kg8 66. Ng6 Kf7 67. Ne5+ Ke8 68. Ng6 Kd7 69. Ne5+ Kd6 70. Ng6 Rg2 71. Ne5 Kd5 72. Ng6 Rg1 73. Ne7+ Kd4 74. Ng6 Rf1 75. Ne7 Ke3 76. Nd5+ Kf3 77. Kg6 Rg1+ 78. Kf5 Kg3 79. Kg5 Kh3+ 80. Kf5 Kh4 81. Ne7 Kh5 82. Nd5 g6+ 83. Kf6 Rg4 84. Ke5 Rg1 85. Nf6+ Kh6 86. Nd5 g5 87. fxg5+ Rxg5+ 88. Ke4 Kg7 89. Nf4 Kf7 90. Nd5 Ke6 91. Nf4+ Kf6 92. Nd5+ Ke6 93. Nf4+ Kd6 94. Nd3 Rg4+ 95. Nf4 Ke7 96. Kf5 Rg1 97. Nd5+ Kd6 98. Nf4 Rf1 99. Ke4 Re1+ 100. Kf5 Re5+ 101. Kf6 Re1 102. Kf5 Rf1 103. Ke4 Ke7 104. Kf5 Kf7 105. Ke5 Kg7 106. Kf5 Kh6 107. Kg4 Rg1+ 108. Kf5 Rg5+ 109. Kf6 Ra5 110. Ne6 Kh5 111. Nf4+ Kg4 112. Ng6 Rf5+ 113. Ke6 Ra5 114. Ne5+ Kg5 115. Nf3+ Kg6 116. Ne5+ Kg7 117. Kf5 Ra4 118. Ng4 Kf7 119. Ne5+ Ke7 120. Ng6+ Kd6 121. Nf4 Ra1 122. Kf6 Rf1 123. Kf5 Rf2 124. Ke4 Rf1 125. Kf5 Kc5 126. Ke4 Kc4 127. Ke3 Re1+ 128. Ne2 1/2-1/2

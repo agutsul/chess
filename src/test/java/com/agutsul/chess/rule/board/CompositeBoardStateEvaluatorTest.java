@@ -23,6 +23,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.CheckMatedBoardState;
 import com.agutsul.chess.board.state.CheckedBoardState;
+import com.agutsul.chess.board.state.CompositeBoardState;
 import com.agutsul.chess.board.state.DefaultBoardState;
 import com.agutsul.chess.board.state.FiftyMovesBoardState;
 import com.agutsul.chess.board.state.FiveFoldRepetitionBoardState;
@@ -254,7 +255,7 @@ public class CompositeBoardStateEvaluatorTest {
 
         var boardState = evaluator.evaluate(Colors.WHITE);
 
-        assertTrue(boardState instanceof CheckedBoardState);
+        assertTrue(boardState instanceof CompositeBoardState);
         assertEquals(Colors.WHITE, boardState.getColor());
     }
 
@@ -286,7 +287,7 @@ public class CompositeBoardStateEvaluatorTest {
 
         var boardState = evaluator.evaluate(Colors.WHITE);
 
-        assertTrue(boardState instanceof DefaultBoardState);
+        assertTrue(boardState instanceof CompositeBoardState);
         assertEquals(Colors.WHITE, boardState.getColor());
     }
 
@@ -361,8 +362,8 @@ public class CompositeBoardStateEvaluatorTest {
 
         var boardState = evaluator.evaluate(Colors.WHITE);
 
-        assertTrue(boardState instanceof CheckedBoardState);
-        assertTrue(((CheckedBoardState) boardState).isTerminal());
+        assertTrue(boardState instanceof CompositeBoardState);
+        assertTrue(boardState.isTerminal());
         assertEquals(Colors.WHITE, boardState.getColor());
     }
 

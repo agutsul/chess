@@ -181,7 +181,7 @@ public final class ConsoleGameOutputObserver
         System.out.println(String.format("%s: %s: %s",
                 boardState.getColor(),
                 BOARD_STATE_MESSAGE,
-                boardState.getType().name()
+                boardState
         ));
     }
 

@@ -1,9 +1,9 @@
 package com.agutsul.chess.rule.board;
 
 import static java.util.Collections.emptyList;
+import static java.util.Comparator.comparing;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
-import com.agutsul.chess.board.state.CheckedBoardState;
+import com.agutsul.chess.board.state.CompositeBoardState;
 import com.agutsul.chess.board.state.DefaultBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
@@ -77,21 +77,30 @@ final class CompositeBoardStateEvaluator
             return boardStates.get(BoardState.Type.CHECK_MATED);
         }
 
-        var checkedState = (CheckedBoardState) boardStates.get(BoardState.Type.CHECKED);
         var terminalStates = boardStates.values().stream()
                 .filter(BoardState::isTerminal)
                 .toList();
 
         if (terminalStates.isEmpty()) {
-            return defaultIfNull(checkedState, new DefaultBoardState(board, playerColor));
+            var states = new ArrayList<BoardState>();
+
+            if (!boardStates.containsKey(BoardState.Type.CHECKED)) {
+                states.add(new DefaultBoardState(board, playerColor));
+            }
+
+            states.addAll(boardStates.values().stream()
+                    .sorted(comparing(BoardState::getType))
+                    .toList()
+            );
+
+            return new CompositeBoardState(states);
         }
 
-        if (checkedState == null) {
-            return terminalStates.get(0);
-        }
-
-        checkedState.setTerminal(true);
-        return checkedState;
+        return new CompositeBoardState(boardStates.values().stream()
+                //  terminal states first
+                .sorted(comparing(BoardState::isTerminal).reversed())
+                .toList()
+        );
     }
 
     private List<Optional<BoardState>> evaluate(List<BoardStateEvaluator<Optional<BoardState>>> evaluators,

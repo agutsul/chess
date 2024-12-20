@@ -3,6 +3,7 @@ package com.agutsul.chess.game.pgn;
 import static java.util.regex.Pattern.compile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.TestFileReader;
+import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.board.state.CompositeBoardState;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.state.GameState;
 import com.agutsul.chess.pgn.PgnGameParser;
@@ -203,6 +206,28 @@ public class PgnGameTest implements TestFileReader {
         assertEquals(GameState.Type.DRAWN_GAME, game.getState().getType());
         // NOTE: actual journal size is not equal to expected because not all actions applied
         assertEquals(111, game.getJournal().size());
+    }
+
+    @Test
+    void testCompositeBoardStatePgnGame() throws URISyntaxException, IOException {
+        var games = parseGames(readFileContent("chess_composite_board_state.pgn"), 1);
+        var game = (PgnGame) games.get(0);
+
+        assertEquals(255, game.getParsedActions().size());
+        assertEquals(GameState.Type.DRAWN_GAME, game.getParsedGameState().getType());
+        assertEquals(15, game.getParsedTags().size());
+
+        game.run();
+
+        var boardState = game.getBoard().getState();
+
+        assertTrue(boardState instanceof CompositeBoardState);
+        assertEquals(BoardState.Type.FIVE_FOLD_REPETITION, boardState.getType());
+        assertEquals("FIVE_FOLD_REPETITION,CHECKED", boardState.toString());
+
+        assertEquals(GameState.Type.DRAWN_GAME, game.getState().getType());
+        // NOTE: actual journal size is not equal to expected because not all actions applied
+        assertEquals(129, game.getJournal().size());
     }
 
     @Test
