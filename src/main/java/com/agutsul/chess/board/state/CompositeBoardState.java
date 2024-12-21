@@ -1,6 +1,6 @@
 package com.agutsul.chess.board.state;
 
-import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.joining;
 
 import java.util.ArrayList;
@@ -22,11 +22,11 @@ public final class CompositeBoardState
             throw new IllegalArgumentException("Unable to set empty board states");
         }
 
-        this.boardStates = new ArrayList<>(boardStates);
+        this.boardStates = unmodifiableList(new ArrayList<>(boardStates));
     }
 
     public Collection<BoardState> getBoardStates() {
-        return unmodifiableCollection(boardStates);
+        return boardStates;
     }
 
     @Override
