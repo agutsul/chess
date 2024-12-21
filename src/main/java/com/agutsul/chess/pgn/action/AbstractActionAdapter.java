@@ -5,6 +5,7 @@ import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static org.apache.commons.lang3.StringUtils.contains;
 import static org.apache.commons.lang3.StringUtils.remove;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -64,9 +65,16 @@ abstract class AbstractActionAdapter
                                     String position, Action.Type actionType) {
 
         var foundPieces = findPieces(pieceType, code);
-        var pieces = foundPieces.stream()
-                .filter(piece -> containsAction(piece, position, actionType))
-                .toList();
+//        var pieces = foundPieces.stream()
+//                .filter(piece -> containsAction(piece, position, actionType))
+//                .toList();
+
+        Collection<Piece<Color>> pieces = new ArrayList<>();
+        for (var piece : foundPieces) {
+            if (containsAction(piece, position, actionType)) {
+                pieces.add(piece);
+            }
+        }
 
         if (pieces.isEmpty()) {
             return Optional.empty();

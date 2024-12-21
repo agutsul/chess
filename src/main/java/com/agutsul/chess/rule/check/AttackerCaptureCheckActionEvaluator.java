@@ -7,6 +7,7 @@ import java.util.Objects;
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
+import com.agutsul.chess.activity.action.PieceEnPassantAction;
 import com.agutsul.chess.activity.action.function.ActionFilter;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
@@ -31,6 +32,15 @@ final class AttackerCaptureCheckActionEvaluator
 
         var captureFilter = new ActionFilter<>(PieceCaptureAction.class);
         filteredActions.addAll(captureFilter.apply(this.pieceActions));
+
+        var hasEnPassante = pieceActions.stream()
+                .map(Action::getType)
+                .anyMatch(actionType -> Action.Type.EN_PASSANT.equals(actionType));
+
+        if (hasEnPassante) {
+            var enPassantFilter = new ActionFilter<>(PieceEnPassantAction.class);
+            filteredActions.addAll(enPassantFilter.apply(this.pieceActions));
+        }
 
         var actions = new HashSet<Action<?>>();
         for (var attacker : attackers) {

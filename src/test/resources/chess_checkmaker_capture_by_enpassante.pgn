@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/0Wj879BR"]
+[White "probando"]
+[Black "Jartemio"]
+[Result "1-0"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:21:33"]
+[WhiteElo "1797"]
+[BlackElo "1693"]
+[WhiteRatingDiff "+8"]
+[BlackRatingDiff "-8"]
+[ECO "D07"]
+[Opening "Queen's Gambit Refused: Chigorin Defense, Exchange Variation"]
+[TimeControl "300+2"]
+[Termination "Time forfeit"]
+
+1. d4 d5 2. c4 Nc6 3. cxd5 Qxd5 4. Nf3 e5 5. dxe5 Qxd1+ 6. Kxd1 Bg4 7. Bf4 O-O-O+ 8. Nbd2 Bb4 9. Kc2 Bxf3 10. Nxf3 Nge7 11. a3 Ba5 12. b4 Bb6 13. e3 Ng6 14. Bg3 h5 15. h4 Rhe8 16. Bb5 Nge7 17. Rhd1 a6 18. Ba4 Rxd1 19. Rxd1 Rd8 20. Rxd8+ Kxd8 21. Bxc6 Nxc6 22. Kd3 Ke7 23. Nd4 Bxd4 24. exd4 Ke6 25. Ke4 Ne7 26. f4 c6 27. Bf2 g6 28. g3 Nd5 29. Be1 f5+ 30. exf6 Nxf6+ 31. Kd3 Kd5 32. Bd2 Ne4 33. Be1 Nf6 34. a4 Nd7 35. Bc3 Nf6 36. Ke3 Ne4 37. Be1 Nd6 38. Bf2 Nc4+ 39. Kf3 b6 40. g4 b5 41. axb5 hxg4+ 42. Kxg4 axb5 43. Kg5 Nd6 44. Kxg6 Ne4 45. Be1 1-0
