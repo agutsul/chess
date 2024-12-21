@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1-0"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:09:12"]
+[WhiteElo "2005"]
+[BlackElo "1890"]
+[WhiteRatingDiff "+7"]
+[BlackRatingDiff "-7"]
+[ECO "C53"]
+[Opening "Italian Game: Classical Variation #2"]
+[TimeControl "180+0"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. c3 d6 5. b4 Bb6 6. a4 a6 7. h3 Nf6 8. d3 Be6 9. Bxe6 fxe6 10. O-O O-O 11. Be3 Kh8 12. Bxb6 cxb6 13. Ng5 Qe7 14. f4 exf4 15. Rxf4 h6 16. Nf3 Nh7 17. Rxf8+ Rxf8 18. Nbd2 Qf6 19. d4 Qf4 20. Qe2 Ng5 21. Nxg5 Qxg5 22. Rf1 Rxf1+ 23. Nxf1 Qf4 24. Qf3 Qxf3 25. gxf3 g5 26. Kg2 Kg7 27. Kg3 Kf6 28. Kg4 Kg6 29. Ne3 Ne7 30. Nc4 h5+ 31. Kg3 Nc8 32. e5 d5 33. Nd6 Nxd6 34. exd6 Kf7 35. f4 gxf4+ 36. Kxf4 Ke8 37. Kg5 Kd7 38. Kxh5 Kxd6 39. Kg6 a5 40. h4 e5 41. dxe5+ Kxe5 42. h5 d4 43. cxd4+ Kxd4 44. bxa5 bxa5 45. h6 b5 46. axb5 a4 47. h7 Kc4 48. b6 a3 49. h8=Q Kb3 50. b7 Ka2 51. Qh2+ Ka1 52. b8=Q a2 53. Qbb2# 1-0

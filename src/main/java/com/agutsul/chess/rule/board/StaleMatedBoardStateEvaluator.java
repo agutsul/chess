@@ -1,10 +1,8 @@
 package com.agutsul.chess.rule.board;
 
-import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -14,6 +12,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.StaleMatedBoardState;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.piece.Piece;
 
 // https://en.wikipedia.org/wiki/Stalemate
 final class StaleMatedBoardStateEvaluator
@@ -29,26 +28,29 @@ final class StaleMatedBoardStateEvaluator
     public Optional<BoardState> evaluate(Color color) {
         LOGGER.info("Checking if '{}' is stalemated", color);
 
-        var actions = new ArrayList<Action<?>>();
+        var attackerColor = color.invert();
+
+        var allActions = new ArrayList<Action<?>>();
         for (var piece : board.getPieces(color)) {
-            actions.addAll(board.getActions(piece));
+            var actions = board.getActions(piece);
+
+            if (Piece.Type.KING.equals(piece.getType())) {
+                for (var action : actions) {
+                    var targetPosition = action.getPosition();
+
+                    var isPositionAvailable = !board.isAttacked(targetPosition, attackerColor)
+                            && !board.isMonitored(targetPosition, attackerColor);
+
+                    if (isPositionAvailable) {
+                        allActions.add(action);
+                    }
+                }
+            } else {
+                allActions.addAll(actions);
+            }
         }
 
-        if (actions.isEmpty()) {
-            return Optional.of(new StaleMatedBoardState(board, color));
-        }
-
-        var allPositions = actions.stream()
-                .map(Action::getPosition)
-                .collect(toSet());
-
-        var attackerPositions = board.getPieces(color.invert()).stream()
-                .map(piece -> board.getActions(piece))
-                .flatMap(Collection::stream)
-                .map(Action::getPosition)
-                .collect(toSet());
-
-        return attackerPositions.containsAll(allPositions)
+        return allActions.isEmpty()
                 ? Optional.of(new StaleMatedBoardState(board, color))
                 : Optional.empty();
     }
