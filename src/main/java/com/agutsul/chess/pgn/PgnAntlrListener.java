@@ -9,6 +9,8 @@ import com.agutsul.chess.game.Game;
 final class PgnAntlrListener
         extends PGNBaseListener {
 
+    private static final String TERMINATION_TAG = "Termination";
+
     private final List<Game> games = new ArrayList<>();
     private PgnGameBuilder gameBuilder;
 
@@ -52,6 +54,10 @@ final class PgnAntlrListener
 
         if (Colors.BLACK.name().equalsIgnoreCase(tagName)) {
             this.gameBuilder.withBlackPlayer(tagValue);
+        }
+
+        if (TERMINATION_TAG.equalsIgnoreCase(tagName)) {
+            this.gameBuilder.withGameTermination(tagValue);
         }
 
         this.gameBuilder.addTag(tagName, tagValue);

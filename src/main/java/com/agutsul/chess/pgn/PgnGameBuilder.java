@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.GameBuilderDecorator;
+import com.agutsul.chess.game.Termination;
 import com.agutsul.chess.game.pgn.PgnGame;
 import com.agutsul.chess.game.state.BlackWinGameState;
 import com.agutsul.chess.game.state.DefaultGameState;
@@ -24,6 +25,7 @@ final class PgnGameBuilder
     private String whitePlayer;
     private String blackPlayer;
     private String gameState;
+    private String terminationType;
 
     @Override
     public PgnGame build() {
@@ -31,7 +33,9 @@ final class PgnGameBuilder
         var player2 = new UserPlayer(blackPlayer, Colors.BLACK);
 
         var game = new PgnGame(player1, player2, tags, actions);
+
         game.setParsedGameState(resolveState(gameState));
+        game.setParsedTermination(Termination.codeOf(terminationType));
 
         return game;
     }
@@ -51,6 +55,12 @@ final class PgnGameBuilder
     @Override
     public GameBuilderDecorator withGameState(String state) {
         this.gameState = state;
+        return this;
+    }
+
+    @Override
+    public GameBuilderDecorator withGameTermination(String terminationType) {
+        this.terminationType = terminationType;
         return this;
     }
 

@@ -16,6 +16,7 @@ import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.game.AbstractPlayableGame;
+import com.agutsul.chess.game.Termination;
 import com.agutsul.chess.game.state.GameState;
 import com.agutsul.chess.player.Player;
 
@@ -25,6 +26,7 @@ public final class PgnGame
     private static final Logger LOGGER = getLogger(PgnGame.class);
 
     private GameState parsedGameState;
+    private Termination parsedTermination;
     private Map<String,String> parsedTags;
     private List<String> parsedActions;
 
@@ -54,6 +56,14 @@ public final class PgnGame
 
     public void setParsedGameState(GameState parsedGameState) {
         this.parsedGameState = parsedGameState;
+    }
+
+    public Termination getParsedTermination() {
+        return parsedTermination;
+    }
+
+    public void setParsedTermination(Termination parsedTermination) {
+        this.parsedTermination = parsedTermination;
     }
 
     public Map<String,String> getParsedTags() {

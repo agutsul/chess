@@ -10,7 +10,9 @@ public interface GameBuilderDecorator
 
     GameBuilderDecorator withWhitePlayer(String playerName);
     GameBuilderDecorator withBlackPlayer(String playerName);
+
     GameBuilderDecorator withGameState(String state);
+    GameBuilderDecorator withGameTermination(String termination);
 
     GameBuilderDecorator withActions(List<String> actions);
     GameBuilderDecorator addAction(String action);
