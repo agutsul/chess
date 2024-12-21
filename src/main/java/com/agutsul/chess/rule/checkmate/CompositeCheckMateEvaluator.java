@@ -24,6 +24,7 @@ public final class CompositeCheckMateEvaluator
         this.board = board;
         this.evaluators = List.of(
                 new KingMoveCheckMateEvaluator(board),
+                new KingCaptureCheckMateEvaluator(board),
                 new AttackerCaptureCheckMateEvaluator(board),
                 new AttackerPinCheckMateEvaluator(board)
             );
