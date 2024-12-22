@@ -15,9 +15,8 @@ import org.slf4j.Logger;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
-import com.agutsul.chess.piece.Piece;
 
-public final class CompositeCheckActionEvaluator
+final class CompositeCheckActionEvaluator
         implements CheckActionEvaluator {
 
     private static final Logger LOGGER = getLogger(CompositeCheckActionEvaluator.class);
@@ -25,27 +24,8 @@ public final class CompositeCheckActionEvaluator
     private final Board board;
     private final List<CheckActionEvaluator> evaluators;
 
-    public CompositeCheckActionEvaluator(Board board,
-                                         KingPiece<?> unusedPiece,
-                                         Collection<Action<?>> actions) {
-        this(board, List.of(
-                new AttackerCaptureCheckActionEvaluator(board, actions),
-                new KingMoveCheckActionEvaluator(board, actions),
-                new KingCapturePieceActionEvaluator(board, actions)
-        ));
-    }
-
-    public CompositeCheckActionEvaluator(Board board,
-                                         Piece<?> unusedPiece,
-                                         Collection<Action<?>> actions) {
-        this(board, List.of(
-                new AttackerCaptureCheckActionEvaluator(board, actions),
-                new AttackerPinCheckActionEvaluator(board, actions)
-        ));
-    }
-
-    private CompositeCheckActionEvaluator(Board board,
-                                          List<CheckActionEvaluator> evaluators) {
+    CompositeCheckActionEvaluator(Board board,
+                                  List<CheckActionEvaluator> evaluators) {
         this.board = board;
         this.evaluators = evaluators;
     }
@@ -74,9 +54,38 @@ public final class CompositeCheckActionEvaluator
     private List<Callable<Collection<Action<?>>>> createEvaluationTasks(KingPiece<?> king) {
         var tasks = new ArrayList<Callable<Collection<Action<?>>>>();
         for (var evaluator : this.evaluators) {
-            tasks.add(() -> evaluator.evaluate(king));
+            tasks.add(new CheckEvaluationTask(evaluator, king));
         }
 
         return tasks;
+    }
+
+    private static final class CheckEvaluationTask
+            implements Callable<Collection<Action<?>>> {
+
+        private static final Logger LOGGER = getLogger(CheckEvaluationTask.class);
+
+        private CheckActionEvaluator evaluator;
+        private KingPiece<?> king;
+
+        CheckEvaluationTask(CheckActionEvaluator evaluator, KingPiece<?> king) {
+            this.evaluator = evaluator;
+            this.king = king;
+        }
+
+        @Override
+        public Collection<Action<?>> call() throws Exception {
+            try {
+                return evaluator.evaluate(king);
+            } catch (Exception e) {
+                var message = String.format("%s evaluation failure",
+                        evaluator.getClass().getSimpleName()
+                );
+
+                LOGGER.error(message, e);
+            }
+
+            return emptyList();
+        }
     }
 }

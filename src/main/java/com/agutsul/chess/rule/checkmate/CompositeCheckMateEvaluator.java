@@ -56,9 +56,38 @@ public final class CompositeCheckMateEvaluator
                                                                  KingPiece<?> king) {
         var tasks = new ArrayList<Callable<Boolean>>();
         for (var evaluator : evaluators) {
-            tasks.add(() -> evaluator.evaluate(king));
+            tasks.add(new CheckMateEvaluationTask(evaluator, king));
         }
 
         return tasks;
+    }
+
+    private static final class CheckMateEvaluationTask
+            implements Callable<Boolean> {
+
+        private static final Logger LOGGER = getLogger(CheckMateEvaluationTask.class);
+
+        private CheckMateEvaluator evaluator;
+        private KingPiece<?> king;
+
+        CheckMateEvaluationTask(CheckMateEvaluator evaluator, KingPiece<?> king) {
+            this.evaluator = evaluator;
+            this.king = king;
+        }
+
+        @Override
+        public Boolean call() throws Exception {
+            try {
+                return evaluator.evaluate(king);
+            } catch (Exception e) {
+                var message = String.format("%s evaluation failure",
+                        evaluator.getClass().getSimpleName()
+                );
+
+                LOGGER.error(message, e);
+            }
+
+            return false;
+        }
     }
 }

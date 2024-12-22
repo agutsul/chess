@@ -81,26 +81,26 @@ final class CompositeBoardStateEvaluator
                 .filter(BoardState::isTerminal)
                 .toList();
 
-        if (terminalStates.isEmpty()) {
-            var states = new ArrayList<BoardState>();
-
-            if (!boardStates.containsKey(BoardState.Type.CHECKED)) {
-                states.add(new DefaultBoardState(board, playerColor));
-            }
-
-            states.addAll(boardStates.values().stream()
-                    .sorted(comparing(BoardState::getType))
+        if (!terminalStates.isEmpty()) {
+            return new CompositeBoardState(boardStates.values().stream()
+                    //  terminal states first
+                    .sorted(comparing(BoardState::isTerminal).reversed())
                     .toList()
             );
-
-            return new CompositeBoardState(states);
         }
 
-        return new CompositeBoardState(boardStates.values().stream()
-                //  terminal states first
-                .sorted(comparing(BoardState::isTerminal).reversed())
+        var states = new ArrayList<BoardState>();
+
+        if (!boardStates.containsKey(BoardState.Type.CHECKED)) {
+            states.add(new DefaultBoardState(board, playerColor));
+        }
+
+        states.addAll(boardStates.values().stream()
+                .sorted(comparing(BoardState::getType))
                 .toList()
         );
+
+        return new CompositeBoardState(states);
     }
 
     private List<Optional<BoardState>> evaluate(List<BoardStateEvaluator<Optional<BoardState>>> evaluators,
@@ -129,9 +129,38 @@ final class CompositeBoardStateEvaluator
                                                                               Color color) {
         var tasks = new ArrayList<Callable<Optional<BoardState>>>();
         for (var evaluator : evaluators) {
-            tasks.add(() -> evaluator.evaluate(color));
+            tasks.add(new BoardStateEvaluationTask(evaluator, color));
         }
 
         return tasks;
+    }
+
+    private static final class BoardStateEvaluationTask
+            implements Callable<Optional<BoardState>> {
+
+        private static final Logger LOGGER = getLogger(BoardStateEvaluationTask.class);
+
+        private BoardStateEvaluator<Optional<BoardState>> evaluator;
+        private Color color;
+
+        BoardStateEvaluationTask(BoardStateEvaluator<Optional<BoardState>> evaluator, Color color) {
+            this.evaluator = evaluator;
+            this.color = color;
+        }
+
+        @Override
+        public Optional<BoardState> call() throws Exception {
+            try {
+                return evaluator.evaluate(color);
+            } catch (Exception e) {
+                var message = String.format("%s board evaluation failure",
+                        evaluator.getClass().getSimpleName()
+                );
+
+                LOGGER.error(message, e);
+            }
+
+            return Optional.empty();
+        }
     }
 }

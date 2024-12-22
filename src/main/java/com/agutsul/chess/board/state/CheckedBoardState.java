@@ -11,7 +11,7 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.rule.check.CompositeCheckActionEvaluator;
+import com.agutsul.chess.rule.check.CheckActionEvaluationFactory;
 
 public final class CheckedBoardState
         extends AbstractBoardState {
@@ -37,10 +37,11 @@ public final class CheckedBoardState
         }
 
         var king = optionalKing.get();
-        var evaluator = Objects.equals(piece, king)
-                ? new CompositeCheckActionEvaluator(board, king, actions)
-                : new CompositeCheckActionEvaluator(board, piece, actions);
+        var factory = Objects.equals(piece, king)
+                ? CheckActionEvaluationFactory.KING_MODE
+                : CheckActionEvaluationFactory.PIECE_MODE;
 
+        var evaluator = factory.create(board, actions);
         return evaluator.evaluate(king);
     }
 }
