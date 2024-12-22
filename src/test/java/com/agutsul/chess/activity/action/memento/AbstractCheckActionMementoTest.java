@@ -8,10 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.activity.action.memento.ActionMemento;
-import com.agutsul.chess.activity.action.memento.CheckMatedActionMemento;
-import com.agutsul.chess.activity.action.memento.CheckedActionMemento;
-
 @ExtendWith(MockitoExtension.class)
 public class AbstractCheckActionMementoTest {
 

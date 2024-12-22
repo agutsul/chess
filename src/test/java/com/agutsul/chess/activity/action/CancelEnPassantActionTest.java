@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.action.CancelEnPassantAction;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;

@@ -17,8 +17,6 @@ import com.agutsul.chess.activity.action.CancelCastlingAction;
 import com.agutsul.chess.activity.action.CancelEnPassantAction;
 import com.agutsul.chess.activity.action.CancelMoveAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
-import com.agutsul.chess.activity.action.memento.ActionMementoFactory;
-import com.agutsul.chess.activity.action.memento.CancelActionMementoFactory;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Observable;

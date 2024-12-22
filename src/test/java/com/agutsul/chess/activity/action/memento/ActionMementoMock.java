@@ -1,7 +1,6 @@
 package com.agutsul.chess.activity.action.memento;
 
 import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.action.memento.ActionMementoImpl;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 

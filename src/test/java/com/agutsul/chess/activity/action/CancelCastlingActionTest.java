@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.action.CancelCastlingAction;
 import com.agutsul.chess.activity.action.CancelCastlingAction.UncastlingMoveAction;
 import com.agutsul.chess.board.BoardBuilder;
 
