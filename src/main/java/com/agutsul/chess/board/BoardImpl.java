@@ -168,7 +168,11 @@ final class BoardImpl extends AbstractBoard {
 
     @Override
     public Collection<Action<?>> getActions(Piece<?> piece, Action.Type actionType) {
-        LOGGER.info("Getting actions for '{}' and type '{}'", piece, actionType.name());
+        LOGGER.info("Getting actions for '{}' and type '{}'",
+                piece,
+                actionType.name()
+        );
+
         return piece.getActions(actionType);
     }
 
@@ -180,7 +184,11 @@ final class BoardImpl extends AbstractBoard {
 
     @Override
     public Collection<Impact<?>> getImpacts(Piece<?> piece, Impact.Type impactType) {
-        LOGGER.info("Getting impacts for '{}' and type '{}'", piece, impactType.name());
+        LOGGER.info("Getting impacts for '{}' and type '{}'",
+                piece,
+                impactType.name()
+        );
+
         return piece.getImpacts(impactType);
     }
 
@@ -226,8 +234,12 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color, Piece.Type pieceType) {
-        LOGGER.info("Getting pieces with type '{}' and '{}' color", pieceType, color);
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color,
+                                                                    Piece.Type pieceType) {
+        LOGGER.info("Getting pieces with type '{}' and '{}' color",
+                pieceType,
+                color
+        );
 
         @SuppressWarnings("unchecked")
         Collection<Piece<COLOR>> pieces = getPieces(color).stream()
@@ -247,7 +259,10 @@ final class BoardImpl extends AbstractBoard {
         allPositions.addAll(asList(positions));
 
         LOGGER.info("Getting pieces with type of '{}' color and locations '[{}]'",
-                                                    color, join(allPositions, ","));
+                color,
+                join(allPositions, ",")
+        );
+
         @SuppressWarnings("unchecked")
         Collection<Piece<COLOR>> pieces = allPositions.stream()
                 .map(piecePosition -> getPiece(piecePosition))
@@ -287,7 +302,8 @@ final class BoardImpl extends AbstractBoard {
     }
 
     @Override
-    public <COLOR extends Color> Optional<Piece<COLOR>> getCapturedPiece(String position, Color color) {
+    public <COLOR extends Color> Optional<Piece<COLOR>> getCapturedPiece(String position,
+                                                                         Color color) {
         LOGGER.info("Getting captured piece at '{}'", position);
 
         var optionalPosition = getPosition(position);
@@ -326,7 +342,10 @@ final class BoardImpl extends AbstractBoard {
 
     @Override
     public boolean isAttacked(Position position, Color attackerColor) {
-        LOGGER.info("Checking is position '{}' attacked by '{}'", position, attackerColor);
+        LOGGER.info("Checking is position '{}' attacked by '{}'",
+                position,
+                attackerColor
+        );
 
         var attackerPieces = getPieces(attackerColor);
         var isAttacked = attackerPieces.stream()
@@ -343,12 +362,11 @@ final class BoardImpl extends AbstractBoard {
     public <COLOR extends Color> Collection<Piece<COLOR>> getAttackers(Piece<?> piece) {
         LOGGER.info("Get piece '{}' attackers", piece);
 
-        var attackerPieces = getPieces(piece.getColor().invert());
-
-        var actions = new HashSet<>();
-        for (var attacker : attackerPieces) {
-            actions.addAll(getActions(attacker, Action.Type.CAPTURE));
-        }
+        var pieces = getPieces(piece.getColor().invert());
+        var actions = pieces.stream()
+                .map(attacker -> getActions(attacker, Action.Type.CAPTURE))
+                .flatMap(Collection::stream)
+                .collect(toSet());
 
         @SuppressWarnings("unchecked")
         Collection<Piece<COLOR>> attackers = actions.stream()
@@ -364,7 +382,9 @@ final class BoardImpl extends AbstractBoard {
     @Override
     public boolean isMonitored(Position position, Color attackerColor) {
         LOGGER.info("Checking if position '{}' is monitored by the other piece of '{}'",
-                position, attackerColor);
+                position,
+                attackerColor
+        );
 
         var attackers = getPieces(attackerColor);
         var isMonitored = attackers.stream()
