@@ -12,8 +12,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.agutsul.chess.Capturable;
-import com.agutsul.chess.activity.action.AbstractCaptureAction;
-import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.board.Board;
@@ -60,11 +58,11 @@ public class PiecePinImpactRule<COLOR1 extends Color,
                 .filter(line -> line.contains(king.getPosition()))
                 .toList();
 
-        var pieceActions = piece.getActions(Action.Type.CAPTURE);
-        var attackedPieces = pieceActions.stream()
-                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                .map(AbstractCaptureAction::getTarget)
-                .toList();
+//        var pieceActions = piece.getActions(Action.Type.CAPTURE);
+//        var attackedPieces = pieceActions.stream()
+//                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
+//                .map(AbstractCaptureAction::getTarget)
+//                .toList();
 
         var impacts = new ArrayList<PiecePinImpact<COLOR1,COLOR2,PIECE,KING,ATTACKER>>();
         for (var line : kingLines) {
@@ -114,9 +112,9 @@ public class PiecePinImpactRule<COLOR1 extends Color,
             }
 
             var attacker = optinalAttacker.get();
-            if (!attackedPieces.contains(attacker)) {
+//            if (!attackedPieces.contains(attacker)) {
                 impacts.add(new PiecePinImpact(piece, king, attacker, line));
-            }
+//            }
         }
 
         return impacts;

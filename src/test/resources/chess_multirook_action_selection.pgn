@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/XZUjbP4O"]
+[White "chispitafer"]
+[Black "srkila64"]
+[Result "0-1"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:59:08"]
+[WhiteElo "1635"]
+[BlackElo "1711"]
+[WhiteRatingDiff "-97"]
+[BlackRatingDiff "+7"]
+[ECO "C34"]
+[Opening "King's Gambit Accepted, Fischer Defense"]
+[TimeControl "300+8"]
+[Termination "Normal"]
+
+1. e4 e5 2. f4 exf4 3. Nf3 d6 4. Bc4 h6 5. d4 Bg4 6. Nc3 c6 7. Bxf4 Be7 8. O-O Nf6 9. e5 dxe5 10. Bxe5 O-O 11. Qd2 Bxf3 12. Rxf3 Nbd7 13. Qf4 Nxe5 14. dxe5 Nh7 15. Bxf7+ Kh8 16. Ne4 Ng5 17. Nxg5 Bxg5 18. Qf5 Qd4+ 19. Kh1 Qxb2 20. Raf1 Qd4 21. e6 Rad8 22. Rh3 Qd1 23. Rf3 Qd5 24. Rh3 Qxf5 25. Rxf5 Rd1+ 26. Rf1 Rxf1# 0-1

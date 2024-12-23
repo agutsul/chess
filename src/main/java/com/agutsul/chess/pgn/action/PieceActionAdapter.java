@@ -18,14 +18,14 @@ public final class PieceActionAdapter
 
     private static final String CAPTURE = "x";
 
-    private final PawnMoveActionAdapter pawnMoveActionAdapter;
-    private final PawnCaptureActionAdapter pawnCaptureActionAdapter;
+    private final ActionAdapter pawnMoveActionAdapter;
+    private final ActionAdapter pawnCaptureActionAdapter;
 
-    private final PawnPromoteMoveActionAdapter pawnPromoteMoveActionAdapter;
-    private final PawnPromoteCaptureActionAdapter pawnPromoteCaptureActionAdapter;
+    private final ActionAdapter pawnPromoteMoveActionAdapter;
+    private final ActionAdapter pawnPromoteCaptureActionAdapter;
 
-    private final PieceMoveActionAdapter pieceMoveActionAdapter;
-    private final PieceCaptureActionAdapter pieceCaptureActionAdapter;
+    private final ActionAdapter pieceMoveActionAdapter;
+    private final ActionAdapter pieceCaptureActionAdapter;
 
     public PieceActionAdapter(Board board, Color color) {
         this(board, color,

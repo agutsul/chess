@@ -5,8 +5,8 @@ import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static org.apache.commons.lang3.StringUtils.contains;
 import static org.apache.commons.lang3.StringUtils.remove;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -64,42 +64,47 @@ abstract class AbstractActionAdapter
     Optional<Piece<Color>> getPiece(Piece.Type pieceType, String code,
                                     String position, Action.Type actionType) {
 
+        var map = new HashMap<Piece<Color>,Boolean>();
+
         var foundPieces = findPieces(pieceType, code);
-//        var pieces = foundPieces.stream()
-//                .filter(piece -> containsAction(piece, position, actionType))
-//                .toList();
-
-        Collection<Piece<Color>> pieces = new ArrayList<>();
         for (var piece : foundPieces) {
-            if (containsAction(piece, position, actionType)) {
-                pieces.add(piece);
+            if (!containsAction(piece, position, actionType)) {
+                continue;
             }
+
+            if (Piece.Type.KING.equals(piece.getType())) {
+                var isAttacked = board.isAttacked(
+                        positionOf(position),
+                        piece.getColor().invert()
+                );
+
+                if (isAttacked) {
+                    continue;
+                }
+
+                return Optional.of(piece);
+            }
+
+            map.put(piece, ((Pinnable) piece).isPinned());
         }
 
-        if (pieces.isEmpty()) {
-            return Optional.empty();
+        var unPinnedPiece = map.entrySet().stream()
+            .filter(entry -> !entry.getValue()) // filter unpinned
+            .map(entry -> entry.getKey())
+            .findFirst();
+
+        if (unPinnedPiece.isPresent()) {
+            return unPinnedPiece;
         }
 
-        if (pieces.size() == 1) {
-            return Optional.of(pieces.iterator().next());
-        }
+        // check actions for pinned pieces and find piece with available capture action
+        var piece = map.entrySet().stream()
+            .filter(entry -> entry.getValue()) // filter pinned
+            .map(entry -> entry.getKey())
+            .filter(pinnedPiece -> isActionAvailable(pinnedPiece, position))
+            .findFirst();
 
-        var foundPiece = pieces.stream()
-                .filter(piece -> {
-                    if (Piece.Type.KING.equals(piece.getType())) {
-                        return true;
-                    }
-
-                    var isPinned = ((Pinnable) piece).isPinned();
-                    if (!isPinned) {
-                        return true;
-                    }
-
-                    return isActionAvailable(piece, position);
-                })
-                .findFirst();
-
-        return foundPiece;
+        return piece;
     }
 
     boolean isActionAvailable(Piece<?> piece, String position) {
@@ -114,15 +119,14 @@ abstract class AbstractActionAdapter
         var checkLine = checkImpact.getAttackLine();
         if (checkLine.isPresent()) {
             var line = checkLine.get();
-            if (line.contains(positionOf(position))) {
-                return true;
-            }
+            return line.contains(positionOf(position));
         }
 
         // check if pinned piece action is capturing checker piece
         var attacker = checkImpact.getSource();
         var pieceActions = piece.getActions(Action.Type.CAPTURE);
 
+        // TODO: confirm that targetPiece is related to provided position
         var isCapturable = pieceActions.stream()
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .map(AbstractCaptureAction::getTarget)
