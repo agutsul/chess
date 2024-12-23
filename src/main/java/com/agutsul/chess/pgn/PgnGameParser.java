@@ -4,8 +4,6 @@ import static java.lang.System.lineSeparator;
 import static java.util.Collections.emptyList;
 import static org.antlr.v4.runtime.CharStreams.fromReader;
 import static org.apache.commons.io.FileUtils.lineIterator;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.commons.lang3.StringUtils.isNumeric;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.trim;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
@@ -37,13 +35,10 @@ public final class PgnGameParser {
 
         var builder = new PgnStringBuilder();
         try (var iterator = lineIterator(file)) {
-
-            String line = null;
             while (iterator.hasNext()) {
-                line = trim(iterator.next());
-                builder.append(line);
+                builder.append(trim(iterator.next()));
 
-                if (isNotBlank(line) && isNumeric(line.substring(0,1))) {
+                if (builder.isReady()) {
                     games.addAll(parse(builder.build()));
                     builder.reset();
                 }
@@ -63,13 +58,10 @@ public final class PgnGameParser {
         var games = new ArrayList<String>();
 
         var builder = new PgnStringBuilder();
-
-        String string = null;
         for (var line : lines) {
-            string = trim(line);
-            builder.append(string);
+            builder.append(trim(line));
 
-            if (isNotBlank(string) && isNumeric(string.substring(0,1))) {
+            if (builder.isReady()) {
                 games.add(builder.build());
                 builder.reset();
             }

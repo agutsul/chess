@@ -6,6 +6,7 @@ import static org.apache.commons.lang3.RegExUtils.removeAll;
 import static org.apache.commons.lang3.StringUtils.containsAny;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNumeric;
 import static org.apache.commons.lang3.StringUtils.remove;
 
 import java.util.regex.Pattern;
@@ -22,6 +23,8 @@ final class PgnStringBuilder
     private final Pattern evalPattern;
     private final Pattern dotsPattern;
 
+    private boolean isReady;
+
     public PgnStringBuilder() {
         this.stringBuilder = new StringBuilder();
 
@@ -30,6 +33,7 @@ final class PgnStringBuilder
     }
 
     public PgnStringBuilder append(String string) {
+        this.isReady = isNotBlank(string) && isNumeric(string.substring(0,1));
         this.stringBuilder.append(prepare(string));
 
         if (isNotBlank(string)) {
@@ -39,8 +43,13 @@ final class PgnStringBuilder
         return this;
     }
 
+    public boolean isReady() {
+        return this.isReady;
+    }
+
     public void reset() {
         this.stringBuilder.setLength(0);
+        this.isReady = false;
     }
 
     @Override
