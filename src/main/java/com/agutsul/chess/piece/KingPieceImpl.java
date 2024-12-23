@@ -26,7 +26,9 @@ final class KingPieceImpl<COLOR extends Color>
 
     private final CheckMateEvaluator checkMateEvaluator;
 
-    KingPieceImpl(Board board, COLOR color, String unicode, Position position, int direction) {
+    KingPieceImpl(Board board, COLOR color, String unicode,
+                  Position position, int direction) {
+
         super(board, Piece.Type.KING, color, unicode, position, direction,
                 new KingPieceActionRule(board),
                 new KingPieceImpactRule(board)

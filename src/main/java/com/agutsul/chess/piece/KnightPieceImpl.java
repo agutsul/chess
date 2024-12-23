@@ -10,7 +10,9 @@ final class KnightPieceImpl<COLOR extends Color>
         extends AbstractPiece<COLOR>
         implements KnightPiece<COLOR> {
 
-    KnightPieceImpl(Board board, COLOR color, String unicode, Position position, int direction) {
+    KnightPieceImpl(Board board, COLOR color, String unicode,
+                    Position position, int direction) {
+
         super(board, Piece.Type.KNIGHT, color, unicode, position, direction,
                 new ActivePieceState<>(board,
                                        new KnightPieceActionRule(board),

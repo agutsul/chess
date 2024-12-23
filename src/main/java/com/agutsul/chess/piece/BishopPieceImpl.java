@@ -10,7 +10,9 @@ final class BishopPieceImpl<COLOR extends Color>
         extends AbstractPiece<COLOR>
         implements BishopPiece<COLOR> {
 
-    BishopPieceImpl(Board board, COLOR color, String unicode, Position position, int direction) {
+    BishopPieceImpl(Board board, COLOR color, String unicode,
+                    Position position, int direction) {
+
         super(board, Piece.Type.BISHOP, color, unicode, position, direction,
                 new ActivePieceState<>(board,
                                        new BishopPieceActionRule(board),
