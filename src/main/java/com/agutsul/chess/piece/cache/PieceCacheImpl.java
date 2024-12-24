@@ -45,8 +45,6 @@ public class PieceCacheImpl implements PieceCache {
 
         this.keyFactory = new KeyFactoryImpl();
         this.pieceMap = new PieceMultiMap();
-
-        refresh();
     }
 
     @Override
@@ -124,14 +122,18 @@ public class PieceCacheImpl implements PieceCache {
     private static abstract class AbstractPieceTask
             implements Callable<PieceMap> {
 
-        final Collection<Piece<?>> pieces;
-        final KeyFactory keyFactory;
-        final Predicate<Piece<?>> predicate;
+        private final Logger logger;
+        private final Collection<Piece<?>> pieces;
+        private final Predicate<Piece<?>> predicate;
 
-        AbstractPieceTask(Collection<Piece<?>> pieces,
+        final KeyFactory keyFactory;
+
+        AbstractPieceTask(Logger logger,
+                          Collection<Piece<?>> pieces,
                           KeyFactory keyFactory,
                           Predicate<Piece<?>> predicate) {
 
+            this.logger = logger;
             this.pieces = pieces;
             this.keyFactory = keyFactory;
             this.predicate = predicate;
@@ -141,22 +143,30 @@ public class PieceCacheImpl implements PieceCache {
 
         @Override
         public PieceMap call() throws Exception {
-            var filteredPieces = this.pieces.stream()
-                    .filter(piece -> predicate.test(piece))
-                    .toList();
+            try {
+                var filteredPieces = this.pieces.stream()
+                        .filter(piece -> predicate.test(piece))
+                        .toList();
 
-            return createPieceMap(filteredPieces);
+                return createPieceMap(filteredPieces);
+            } catch (Exception e) {
+                logger.error("Piece cache processing failure", e);
+            }
+
+            return new PieceMultiMap();
         }
     }
 
     private static final class ActivePieceTask
             extends AbstractPieceTask {
 
+        private static final Logger LOGGER = getLogger(ActivePieceTask.class);
+
         ActivePieceTask(Collection<Piece<?>> pieces,
                         KeyFactory keyFactory,
                         Predicate<Piece<?>> predicate) {
 
-            super(pieces, keyFactory, predicate);
+            super(LOGGER, pieces, keyFactory, predicate);
         }
 
         @Override
@@ -198,11 +208,13 @@ public class PieceCacheImpl implements PieceCache {
     private static final class CapturedPieceTask
             extends AbstractPieceTask {
 
+        private static final Logger LOGGER = getLogger(CapturedPieceTask.class);
+
         CapturedPieceTask(Collection<Piece<?>> pieces,
                           KeyFactory keyFactory,
                           Predicate<Piece<?>> predicate) {
 
-            super(pieces, keyFactory, predicate);
+            super(LOGGER, pieces, keyFactory, predicate);
         }
 
         @Override

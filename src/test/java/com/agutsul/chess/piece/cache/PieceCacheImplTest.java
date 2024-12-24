@@ -21,7 +21,9 @@ public class PieceCacheImplTest {
     @Test
     void testGetActiveAllPieces() {
         var pieces = createPieces();
+
         var cache = new PieceCacheImpl(pieces, newSingleThreadExecutor());
+        cache.refresh();
 
         assertEquals(pieces.size(), cache.getActive().size());
     }
@@ -29,6 +31,7 @@ public class PieceCacheImplTest {
     @Test
     void testGetActiveByColor() {
         var cache = new PieceCacheImpl(createPieces(), newSingleThreadExecutor());
+        cache.refresh();
 
         assertEquals(16, cache.getActive(Colors.WHITE).size());
         assertEquals(16, cache.getActive(Colors.BLACK).size());
@@ -37,6 +40,7 @@ public class PieceCacheImplTest {
     @Test
     void testGetActiveByPieceType() {
         var cache = new PieceCacheImpl(createPieces(), newSingleThreadExecutor());
+        cache.refresh();
 
         assertEquals(4, cache.getActive(Piece.Type.ROOK).size());
         assertEquals(2, cache.getActive(Piece.Type.QUEEN).size());
@@ -46,6 +50,8 @@ public class PieceCacheImplTest {
     @Test
     void testGetActiveByColorAndPieceType() {
         var cache = new PieceCacheImpl(createPieces(), newSingleThreadExecutor());
+        cache.refresh();
+
         for (var color : Colors.values()) {
             assertEquals(1, cache.getActive(color, Piece.Type.QUEEN).size());
             assertEquals(1, cache.getActive(color, Piece.Type.KING).size());
@@ -59,6 +65,7 @@ public class PieceCacheImplTest {
     @Test
     void testGetActiveByPosition() {
         var cache = new PieceCacheImpl(createPieces(), newSingleThreadExecutor());
+        cache.refresh();
 
         var emptyPosition = PositionFactory.positionOf("e3");
         assertTrue(cache.getActive(emptyPosition).isEmpty());

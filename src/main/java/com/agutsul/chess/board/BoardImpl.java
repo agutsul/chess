@@ -424,6 +424,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     void setPieces(Collection<Piece<?>> pieces) {
         this.pieceCache = new PieceCacheImpl(pieces, this.executorService);
+        refreshPieceCache();
     }
 
     PieceFactory getWhitePieceFactory() {
