@@ -9,6 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.mock.PieceTypeRequestObserverMock;
 
@@ -41,6 +43,8 @@ public class PiecePromoteActionTest {
         assertEquals(targetPosition, promotionAction.get().getPosition());
 
         promotionAction.get().execute();
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
         assertEquals(targetPosition, pawn.getPosition());
         assertTrue(board.isEmpty(pawnSourcePosition));
@@ -80,6 +84,8 @@ public class PiecePromoteActionTest {
         assertEquals(targetPosition, promotionAction.get().getPosition());
 
         promotionAction.get().execute();
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
 
         assertEquals(targetPosition, pawn.getPosition());
         assertTrue(board.isEmpty(pawnSourcePosition));

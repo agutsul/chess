@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 
@@ -30,6 +29,7 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.activity.impact.PieceControlImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
+import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.DefaultBoardState;
 import com.agutsul.chess.color.Color;
@@ -41,6 +41,8 @@ import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.PieceFactory;
 import com.agutsul.chess.piece.WhitePieceFactory;
+import com.agutsul.chess.piece.cache.PieceCache;
+import com.agutsul.chess.piece.cache.PieceCacheImpl;
 import com.agutsul.chess.position.Position;
 
 final class BoardImpl extends AbstractBoard {
@@ -55,17 +57,17 @@ final class BoardImpl extends AbstractBoard {
     private BoardState state;
     private ExecutorService executorService;
 
-    private Set<Piece<?>> pieces;
+    private PieceCache pieceCache;
 
     BoardImpl() {
         this.whitePieceFactory = new WhitePieceFactory(this);
         this.blackPieceFactory = new BlackPieceFactory(this);
 
-        // first move always for white side, so initial state with white color
-        this.state = new DefaultBoardState(this, Colors.WHITE);
-
         this.observers = new CopyOnWriteArrayList<>();
-        this.pieces = new HashSet<>();
+        this.observers.add(new BoardEventObserver());
+
+        // first move always for white side, so initial state with white color
+        setState(new DefaultBoardState(this, Colors.WHITE));
     }
 
     @Override
@@ -109,7 +111,8 @@ final class BoardImpl extends AbstractBoard {
     public int calculateValue(Color color) {
         LOGGER.info("'{}' value...", color);
 
-        var value = getPieces(color).stream()
+        var pieces = getPieces(color);
+        var value = pieces.stream()
                 .mapToInt(Piece::getValue)
                 .sum();
 
@@ -170,7 +173,7 @@ final class BoardImpl extends AbstractBoard {
     public Collection<Action<?>> getActions(Piece<?> piece, Action.Type actionType) {
         LOGGER.info("Getting actions for '{}' and type '{}'",
                 piece,
-                actionType.name()
+                actionType
         );
 
         return piece.getActions(actionType);
@@ -186,7 +189,7 @@ final class BoardImpl extends AbstractBoard {
     public Collection<Impact<?>> getImpacts(Piece<?> piece, Impact.Type impactType) {
         LOGGER.info("Getting impacts for '{}' and type '{}'",
                 piece,
-                impactType.name()
+                impactType
         );
 
         return piece.getImpacts(impactType);
@@ -196,8 +199,10 @@ final class BoardImpl extends AbstractBoard {
     public <COLOR extends Color> Collection<Piece<COLOR>> getPieces() {
         LOGGER.info("Getting all pieces");
 
+        var allPieces = this.pieceCache.getAll();
+
         @SuppressWarnings("unchecked")
-        Collection<Piece<COLOR>> pieces = this.pieces.stream()
+        Collection<Piece<COLOR>> pieces = allPieces.stream()
                 .filter(Piece::isActive)
                 .map(piece -> (Piece<COLOR>) piece)
                 .toList();
@@ -209,10 +214,10 @@ final class BoardImpl extends AbstractBoard {
     public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color) {
         LOGGER.info("Getting pieces with '{}' color", color);
 
+        var piecesByColor = this.pieceCache.get(color);
+
         @SuppressWarnings("unchecked")
-        Collection<Piece<COLOR>> pieces = this.pieces.stream()
-                .filter(piece -> Objects.equals(color, piece.getColor()))
-                .filter(Piece::isActive)
+        Collection<Piece<COLOR>> pieces = piecesByColor.stream()
                 .map(piece -> (Piece<COLOR>) piece)
                 .toList();
 
@@ -223,10 +228,10 @@ final class BoardImpl extends AbstractBoard {
     public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Piece.Type pieceType) {
         LOGGER.info("Getting pieces with type '{}'", pieceType);
 
+        var piecesByType = this.pieceCache.get(pieceType);
+
         @SuppressWarnings("unchecked")
-        Collection<Piece<COLOR>> pieces = this.pieces.stream()
-                .filter(piece -> Objects.equals(pieceType, piece.getType()))
-                .filter(Piece::isActive)
+        Collection<Piece<COLOR>> pieces = piecesByType.stream()
                 .map(piece -> (Piece<COLOR>) piece)
                 .toList();
 
@@ -241,9 +246,10 @@ final class BoardImpl extends AbstractBoard {
                 color
         );
 
+        var filteredPieces = this.pieceCache.get(color, pieceType);
+
         @SuppressWarnings("unchecked")
-        Collection<Piece<COLOR>> pieces = getPieces(color).stream()
-                .filter(piece -> Objects.equals(pieceType, piece.getType()))
+        Collection<Piece<COLOR>> pieces = filteredPieces.stream()
                 .map(piece -> (Piece<COLOR>) piece)
                 .toList();
 
@@ -263,12 +269,17 @@ final class BoardImpl extends AbstractBoard {
                 join(allPositions, ",")
         );
 
-        @SuppressWarnings("unchecked")
-        Collection<Piece<COLOR>> pieces = allPositions.stream()
-                .map(piecePosition -> getPiece(piecePosition))
+        var requestedPositions = allPositions.stream()
+                .map(code -> getPosition(code))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .filter(piece -> Objects.equals(color, piece.getColor()))
+                .collect(toSet());
+
+        var piecesByColor = this.pieceCache.get(color);
+
+        @SuppressWarnings("unchecked")
+        Collection<Piece<COLOR>> pieces = piecesByColor.stream()
+                .filter(piece -> requestedPositions.contains(piece.getPosition()))
                 .map(piece -> (Piece<COLOR>) piece)
                 .toList();
 
@@ -278,14 +289,10 @@ final class BoardImpl extends AbstractBoard {
     @Override
     public <COLOR extends Color> Optional<Piece<COLOR>> getPiece(Position position) {
         LOGGER.info("Getting piece at '{}'", position);
+        var cachedPiece = this.pieceCache.get(position);
 
         @SuppressWarnings("unchecked")
-        var foundPiece = this.pieces.stream()
-                .filter(piece -> Objects.equals(piece.getPosition(), position))
-                .filter(Piece::isActive)
-                .map(piece -> (Piece<COLOR>) piece)
-                .findFirst();
-
+        var foundPiece = cachedPiece.map(piece -> (Piece<COLOR>) piece);
         return foundPiece;
     }
 
@@ -311,11 +318,14 @@ final class BoardImpl extends AbstractBoard {
             return Optional.empty();
         }
 
+        var capturedPosition = optionalPosition.get();
+        var allPieces = this.pieceCache.getAll();
+
         @SuppressWarnings("unchecked")
-        var capturedPiece = this.pieces.stream()
+        var capturedPiece = allPieces.stream()
                 .filter(piece -> !piece.isActive())
                 .filter(piece -> Objects.equals(piece.getColor(), color))
-                .filter(piece -> Objects.equals(piece.getPosition(), optionalPosition.get()))
+                .filter(piece -> Objects.equals(piece.getPosition(), capturedPosition))
                 .filter(piece -> Objects.nonNull(((Captured) piece).getCapturedAt()))
                 .sorted(comparing(piece -> ((Captured) piece).getCapturedAt()).reversed())
                 .map(piece -> (Piece<COLOR>) piece)
@@ -403,7 +413,7 @@ final class BoardImpl extends AbstractBoard {
     }
 
     void setPieces(Collection<Piece<?>> pieces) {
-        this.pieces = new HashSet<Piece<?>>(pieces);
+        this.pieceCache = new PieceCacheImpl(pieces);
     }
 
     PieceFactory getWhitePieceFactory() {
@@ -412,6 +422,25 @@ final class BoardImpl extends AbstractBoard {
 
     PieceFactory getBlackPieceFactory() {
         return blackPieceFactory;
+    }
+
+    private void refreshPieceCache() {
+        this.pieceCache.refresh();
+    }
+
+    private final class BoardEventObserver
+            implements Observer {
+
+        @Override
+        public void observe(Event event) {
+            if (event instanceof ClearPieceDataEvent) {
+                process((ClearPieceDataEvent) event);
+            }
+        }
+
+        private void process(ClearPieceDataEvent unusedEvent) {
+            refreshPieceCache();
+        }
     }
 
     // utility methods

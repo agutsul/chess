@@ -9,6 +9,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.event.Observable;
 
 @ExtendWith(MockitoExtension.class)
 public class PieceCaptureActionTest {
@@ -34,6 +37,8 @@ public class PieceCaptureActionTest {
         assertEquals("a3xb4", captureAction.get().getCode());
 
         captureAction.get().execute();
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
         var position = board.getPosition("a3").get();
         assertTrue(board.isEmpty(position));
@@ -65,6 +70,8 @@ public class PieceCaptureActionTest {
         assertEquals("b4xa3", captureAction.get().getCode());
 
         captureAction.get().execute();
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
 
         var position = board.getPosition("b4").get();
         assertTrue(board.isEmpty(position));

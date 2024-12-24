@@ -10,6 +10,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.event.Observable;
 
 @ExtendWith(MockitoExtension.class)
 public class PieceMoveActionTest {
@@ -36,6 +39,8 @@ public class PieceMoveActionTest {
         assertEquals("Ne5->c6", moveAction.get().getCode());
 
         moveAction.get().execute();
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
         assertEquals(targetPosition, whiteKnight.getPosition());
         assertTrue(board.isEmpty(sourcePosition));

@@ -9,6 +9,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.action.CancelCastlingAction.UncastlingMoveAction;
 import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.event.Observable;
 
 @ExtendWith(MockitoExtension.class)
 public class CancelCastlingActionTest {
@@ -39,6 +42,8 @@ public class CancelCastlingActionTest {
 
         castlingAction.get().execute();
 
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+
         var kingTargetPosition = board.getPosition("g1").get();
         assertEquals(kingTargetPosition, king.getPosition());
         assertTrue(board.isEmpty(kingSourcePosition));
@@ -52,6 +57,8 @@ public class CancelCastlingActionTest {
 
         var cancelAction = new CancelCastlingAction("O-O", kingAction, rookAction);
         cancelAction.execute();
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
         assertEquals(rookSourcePosition, rook.getPosition());
         assertEquals(kingSourcePosition, king.getPosition());

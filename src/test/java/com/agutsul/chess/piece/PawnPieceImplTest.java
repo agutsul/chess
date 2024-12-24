@@ -22,8 +22,10 @@ import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
+import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.Piece.Type;
 
@@ -134,6 +136,8 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         var blackPawn = (PawnPiece<Color>) board1.getPiece("a7").get();
         blackPawn.move(board1.getPosition("a5").get());
 
+        ((Observable) board1).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
+
         assertPawnEnPassantActions(board1, Colors.WHITE, PAWN_TYPE, "b5",
                 List.of("b6"), List.of("a6"));
 
@@ -144,6 +148,8 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
         var whitePawn = (PawnPiece<Color>) board2.getPiece("a2").get();
         whitePawn.move(board2.getPosition("a4").get());
+
+        ((Observable) board2).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
         assertPawnEnPassantActions(board2, Colors.BLACK, PAWN_TYPE, "b4",
                 List.of("b3"), List.of("a3"));
@@ -261,6 +267,9 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         var position = board.getPosition("d5").get();
 
         blackPawn.move(position);
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
+
         assertEquals(blackPawn.getPosition(), position);
 
         var targetPosition = board.getPosition("d6").get();

@@ -26,6 +26,7 @@ import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
+import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.IllegalActionException;
@@ -179,6 +180,8 @@ public class PerformActionCommandTest {
         assertTrue(board.isEmpty(targetPosition));
 
         command.execute();
+
+        board.notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
         assertTrue(board.isEmpty(sourcePosition));
         assertFalse(board.isEmpty(targetPosition));

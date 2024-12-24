@@ -18,7 +18,9 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.memento.ActionMementoMock;
 import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.journal.Journal;
@@ -142,11 +144,15 @@ public class CancelActionCommandTest {
         var moveAction = new PieceMoveAction(pawn, targetPosition);
         moveAction.execute();
 
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+
         assertTrue(board.isEmpty(sourcePosition));
         assertFalse(board.isEmpty(targetPosition));
 
         var command = new CancelActionCommand(game, Colors.WHITE);
         command.execute();
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
         assertTrue(board.isEmpty(targetPosition));
         assertFalse(board.isEmpty(sourcePosition));

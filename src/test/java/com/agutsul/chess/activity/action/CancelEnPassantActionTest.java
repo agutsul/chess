@@ -9,7 +9,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.piece.PawnPiece;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,6 +27,8 @@ public class CancelEnPassantActionTest {
 
         var blackPawn = (PawnPiece<Color>) board.getPiece("a7").get();
         blackPawn.move(board.getPosition("a5").get());
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
 
         var whitePawn = (PawnPiece<Color>) board.getPiece("b5").get();
 
@@ -44,12 +49,16 @@ public class CancelEnPassantActionTest {
 
         enPassantAction.get().execute();
 
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+
         assertEquals(targetPosition, whitePawn.getPosition());
         assertFalse(blackPawn.isActive());
 
         @SuppressWarnings({ "unchecked", "rawtypes" })
         var cancelAction = new CancelEnPassantAction(whitePawn, blackPawn);
         cancelAction.execute();
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
         assertEquals(sourcePosition, whitePawn.getPosition());
         assertTrue(blackPawn.isActive());

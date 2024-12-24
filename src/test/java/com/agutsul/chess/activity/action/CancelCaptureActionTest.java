@@ -9,6 +9,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.event.Observable;
 
 @ExtendWith(MockitoExtension.class)
 public class CancelCaptureActionTest {
@@ -34,12 +37,16 @@ public class CancelCaptureActionTest {
 
         captureAction.get().execute();
 
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+
         assertFalse(blackPawn.isActive());
         assertEquals(targetPosition, whiteBishop.getPosition());
 
         @SuppressWarnings({ "rawtypes", "unchecked" })
         var cancelAction = new CancelCaptureAction(whiteBishop, blackPawn);
         cancelAction.execute();
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
         assertEquals(sourcePosition, whiteBishop.getPosition());
         assertEquals(targetPosition, blackPawn.getPosition());

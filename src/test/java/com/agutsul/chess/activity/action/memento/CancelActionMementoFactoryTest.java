@@ -18,7 +18,9 @@ import com.agutsul.chess.activity.action.CancelEnPassantAction;
 import com.agutsul.chess.activity.action.CancelMoveAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.mock.PieceTypeRequestObserverMock;
 import com.agutsul.chess.piece.PawnPiece;
@@ -45,6 +47,8 @@ public class CancelActionMementoFactoryTest {
         var memento = ActionMementoFactory.createMemento(moveAction);
 
         moveAction.execute();
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
         var cancelAction = CancelActionMementoFactory.createAction(board, memento);
 
@@ -104,6 +108,8 @@ public class CancelActionMementoFactoryTest {
 
         promoteAction.execute();
 
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+
         var queen = board.getPiece(targetPosition).get();
 
         var cancelAction = CancelActionMementoFactory.createAction(board, memento);
@@ -140,6 +146,9 @@ public class CancelActionMementoFactoryTest {
         var memento = ActionMementoFactory.createMemento(promoteAction);
 
         promoteAction.execute();
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
+
         assertFalse(rook.isActive());
 
         var queen = board.getPiece(targetPosition).get();
@@ -173,6 +182,8 @@ public class CancelActionMementoFactoryTest {
 
         castlingAction.execute();
 
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+
         var cancelAction = CancelActionMementoFactory.createAction(board, memento);
 
         assertEquals(Action.Type.CASTLING, cancelAction.getType());
@@ -194,6 +205,8 @@ public class CancelActionMementoFactoryTest {
         var blackPawn = (PawnPiece<Color>) board.getPiece("a7").get();
         blackPawn.move(board.getPosition("a5").get());
 
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
+
         var whitePawn = (PawnPiece<Color>) board.getPiece("b5").get();
 
         var enPassantAction = board.getActions(whitePawn, Action.Type.EN_PASSANT).stream()
@@ -203,6 +216,8 @@ public class CancelActionMementoFactoryTest {
         var memento = ActionMementoFactory.createMemento(enPassantAction);
 
         enPassantAction.execute();
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
         var cancelAction = CancelActionMementoFactory.createAction(board, memento);
 

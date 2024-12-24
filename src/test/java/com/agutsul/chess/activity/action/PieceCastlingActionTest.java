@@ -8,6 +8,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.event.Observable;
 
 @ExtendWith(MockitoExtension.class)
 public class PieceCastlingActionTest {
@@ -36,6 +39,8 @@ public class PieceCastlingActionTest {
         assertEquals("O-O", castlingAction.get().getCode());
 
         castlingAction.get().execute();
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
         var kingTargetPosition = board.getPosition("g1").get();
         assertEquals(kingTargetPosition, king.getPosition());
@@ -70,6 +75,8 @@ public class PieceCastlingActionTest {
         assertEquals("O-O-O", castlingAction.get().getCode());
 
         castlingAction.get().execute();
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
 
         var kingTargetPosition = board.getPosition("c8").get();
         assertEquals(kingTargetPosition, king.getPosition());

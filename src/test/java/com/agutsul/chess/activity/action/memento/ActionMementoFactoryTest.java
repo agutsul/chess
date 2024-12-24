@@ -9,7 +9,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.piece.PawnPiece;
 
 @ExtendWith(MockitoExtension.class)
@@ -87,6 +90,8 @@ public class ActionMementoFactoryTest {
 
         var blackPawn = (PawnPiece<Color>) board.getPiece("a7").get();
         blackPawn.move(board.getPosition("a5").get());
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
         var whitePawn = (PawnPiece<Color>) board.getPiece("b5").get();
         var actions = board.getActions(whitePawn, Action.Type.EN_PASSANT);
