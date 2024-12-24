@@ -59,11 +59,6 @@ public final class StandardBoard
     }
 
     @Override
-    public void setExecutorService(ExecutorService executorService) {
-        this.origin.setExecutorService(executorService);
-    }
-
-    @Override
     public ExecutorService getExecutorService() {
         return this.origin.getExecutorService();
     }

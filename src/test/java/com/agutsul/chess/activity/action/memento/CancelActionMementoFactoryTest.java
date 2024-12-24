@@ -80,6 +80,8 @@ public class CancelActionMementoFactoryTest {
 
         captureAction.execute();
 
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
+
         var cancelAction = CancelActionMementoFactory.createAction(board, memento);
 
         assertEquals(Action.Type.CAPTURE, cancelAction.getType());

@@ -17,7 +17,6 @@ public interface Board {
     void setState(BoardState state);
     BoardState getState();
 
-    void setExecutorService(ExecutorService executorService);
     ExecutorService getExecutorService();
 
     int calculateValue(Color color);

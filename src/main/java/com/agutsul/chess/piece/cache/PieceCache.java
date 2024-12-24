@@ -11,11 +11,12 @@ public interface PieceCache {
 
     void refresh();
 
-    Collection<Piece<?>> getAll();
+    Collection<Piece<?>> getActive();
+    Collection<Piece<?>> getActive(Color color);
+    Collection<Piece<?>> getActive(Piece.Type pieceType);
+    Collection<Piece<?>> getActive(Color color, Piece.Type pieceType);
 
-    Collection<Piece<?>> get(Color color);
-    Collection<Piece<?>> get(Piece.Type pieceType);
-    Collection<Piece<?>> get(Color color, Piece.Type pieceType);
+    Optional<Piece<?>> getActive(Position position);
 
-    Optional<Piece<?>> get(Position position);
+    Collection<Piece<?>> getCaptured(Color color, Position position);
 }

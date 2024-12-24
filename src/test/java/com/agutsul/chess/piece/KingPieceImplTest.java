@@ -1,17 +1,12 @@
 package com.agutsul.chess.piece;
 
-import static java.util.concurrent.TimeUnit.MICROSECONDS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -28,25 +23,6 @@ import com.agutsul.chess.piece.Piece.Type;
 public class KingPieceImplTest extends AbstractPieceTest {
 
     private static final Type KING_TYPE = Piece.Type.KING;
-
-    ExecutorService executorService;
-
-    @BeforeEach
-    void setUp() {
-        this.executorService = Executors.newSingleThreadExecutor();
-    }
-
-    @AfterEach
-    void tearDown() {
-        try {
-            this.executorService.shutdown();
-            if (!this.executorService.awaitTermination(1, MICROSECONDS)) {
-                this.executorService.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            this.executorService.shutdownNow();
-        }
-    }
 
     @Test
     void testDefaultKingActionsOnStandardBoard() {
@@ -226,7 +202,6 @@ public class KingPieceImplTest extends AbstractPieceTest {
     // https://en.wikipedia.org/wiki/Scholar%27s_mate
     void testKingScholarCheckmate() {
         var board = new StandardBoard();
-        board.setExecutorService(executorService);
 
         var whiteActionPerformedEvent = new ClearPieceDataEvent(Colors.WHITE);
         var blackActionPerformedEvent = new ClearPieceDataEvent(Colors.BLACK);
@@ -280,8 +255,6 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .withWhiteQueen("c3")
                 .build();
 
-        board.setExecutorService(executorService);
-
         var blackKing = (KingPiece<Color>) board.getPiece("h8").get();
 
         assertTrue(blackKing.isChecked());
@@ -296,8 +269,6 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .withWhiteBishop("h7")
                 .withWhiteKing("e3")
                 .build();
-
-        board.setExecutorService(executorService);
 
         var whiteKing = (KingPiece<Color>) board.getPiece("e3").get();
 

@@ -4,8 +4,6 @@ import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.unmodifiableMap;
-import static java.util.concurrent.Executors.newFixedThreadPool;
-import static java.util.concurrent.TimeUnit.MICROSECONDS;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 
 import java.util.HashMap;
@@ -194,37 +192,26 @@ public abstract class AbstractPlayableGame
 
             notifyObservers(new GameExceptionEvent(this, throwable));
         } finally {
-            notifyObservers(new GameOverEvent(this));
+            var event = new GameOverEvent(this);
+
+            notifyBoardObservers(event);
+            notifyObservers(event);
         }
     }
 
     @Override
     public final void execute() {
-        var executor = newFixedThreadPool(5);
-        board.setExecutorService(executor);
+        while (true) {
+            this.currentPlayer.play();
 
-        try {
-            while (true) {
-                this.currentPlayer.play();
-
-                if (!hasNext()) {
-                    logger.info("Game stopped due to board state: {}",
-                            this.board.getState()
-                    );
-                    break;
-                }
-
-                this.currentPlayer = next();
+            if (!hasNext()) {
+                logger.info("Game stopped due to board state: {}",
+                        this.board.getState()
+                );
+                break;
             }
-        } finally {
-            try {
-                executor.shutdown();
-                if (!executor.awaitTermination(1, MICROSECONDS)) {
-                    executor.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                executor.shutdownNow();
-            }
+
+            this.currentPlayer = next();
         }
     }
 

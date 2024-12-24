@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.cache;
 
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -18,52 +19,52 @@ import com.agutsul.chess.position.PositionFactory;
 public class PieceCacheImplTest {
 
     @Test
-    void testGetAllPieces() {
+    void testGetActiveAllPieces() {
         var pieces = createPieces();
-        var cache = new PieceCacheImpl(pieces);
+        var cache = new PieceCacheImpl(pieces, newSingleThreadExecutor());
 
-        assertEquals(pieces.size(), cache.getAll().size());
+        assertEquals(pieces.size(), cache.getActive().size());
     }
 
     @Test
-    void testGetByColor() {
-        var cache = new PieceCacheImpl(createPieces());
+    void testGetActiveByColor() {
+        var cache = new PieceCacheImpl(createPieces(), newSingleThreadExecutor());
 
-        assertEquals(16, cache.get(Colors.WHITE).size());
-        assertEquals(16, cache.get(Colors.BLACK).size());
+        assertEquals(16, cache.getActive(Colors.WHITE).size());
+        assertEquals(16, cache.getActive(Colors.BLACK).size());
     }
 
     @Test
-    void testGetByPieceType() {
-        var cache = new PieceCacheImpl(createPieces());
+    void testGetActiveByPieceType() {
+        var cache = new PieceCacheImpl(createPieces(), newSingleThreadExecutor());
 
-        assertEquals(4, cache.get(Piece.Type.ROOK).size());
-        assertEquals(2, cache.get(Piece.Type.QUEEN).size());
-        assertEquals(16, cache.get(Piece.Type.PAWN).size());
+        assertEquals(4, cache.getActive(Piece.Type.ROOK).size());
+        assertEquals(2, cache.getActive(Piece.Type.QUEEN).size());
+        assertEquals(16, cache.getActive(Piece.Type.PAWN).size());
     }
 
     @Test
-    void testGetByColorAndPieceType() {
-        var cache = new PieceCacheImpl(createPieces());
+    void testGetActiveByColorAndPieceType() {
+        var cache = new PieceCacheImpl(createPieces(), newSingleThreadExecutor());
         for (var color : Colors.values()) {
-            assertEquals(1, cache.get(color, Piece.Type.QUEEN).size());
-            assertEquals(1, cache.get(color, Piece.Type.KING).size());
-            assertEquals(2, cache.get(color, Piece.Type.ROOK).size());
-            assertEquals(2, cache.get(color, Piece.Type.BISHOP).size());
-            assertEquals(2, cache.get(color, Piece.Type.KNIGHT).size());
-            assertEquals(8, cache.get(color, Piece.Type.PAWN).size());
+            assertEquals(1, cache.getActive(color, Piece.Type.QUEEN).size());
+            assertEquals(1, cache.getActive(color, Piece.Type.KING).size());
+            assertEquals(2, cache.getActive(color, Piece.Type.ROOK).size());
+            assertEquals(2, cache.getActive(color, Piece.Type.BISHOP).size());
+            assertEquals(2, cache.getActive(color, Piece.Type.KNIGHT).size());
+            assertEquals(8, cache.getActive(color, Piece.Type.PAWN).size());
         }
     }
 
     @Test
-    void testGetByPosition() {
-        var cache = new PieceCacheImpl(createPieces());
+    void testGetActiveByPosition() {
+        var cache = new PieceCacheImpl(createPieces(), newSingleThreadExecutor());
 
         var emptyPosition = PositionFactory.positionOf("e3");
-        assertTrue(cache.get(emptyPosition).isEmpty());
+        assertTrue(cache.getActive(emptyPosition).isEmpty());
 
         var nonEmptyPosition = PositionFactory.positionOf("e2");
-        assertTrue(cache.get(nonEmptyPosition).isPresent());
+        assertTrue(cache.getActive(nonEmptyPosition).isPresent());
     }
 
     @SuppressWarnings("unchecked")

@@ -613,6 +613,7 @@ public class GameTest {
     }
 
     @Test
+//    @Disabled
     @SuppressWarnings("unchecked")
     void testNegativeGameExitFlow() {
         var board = spy(new StandardBoard());

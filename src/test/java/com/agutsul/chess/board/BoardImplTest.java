@@ -19,8 +19,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.position.PositionFactory;
@@ -95,10 +97,10 @@ public class BoardImplTest {
     void testInitialPawnBoardSetup() {
         testInitialBoardPieceSetup(Colors.WHITE, Piece.Type.PAWN,
                 "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"
-            );
+        );
         testInitialBoardPieceSetup(Colors.BLACK, Piece.Type.PAWN,
                 "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"
-            );
+        );
     }
 
     @Test
@@ -154,6 +156,8 @@ public class BoardImplTest {
                 .get();
 
         captureAction.execute();
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
         var pawn2 = board.getCapturedPiece("a2", whitePawn.getColor()).get();
         assertEquals(whitePawn, pawn2);
