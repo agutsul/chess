@@ -434,12 +434,8 @@ final class BoardImpl extends AbstractBoard {
         @Override
         public void observe(Event event) {
             if (event instanceof ClearPieceDataEvent) {
-                process((ClearPieceDataEvent) event);
+                refreshPieceCache();
             }
-        }
-
-        private void process(ClearPieceDataEvent unusedEvent) {
-            refreshPieceCache();
         }
     }
 
