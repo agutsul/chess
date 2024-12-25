@@ -35,13 +35,13 @@ final class PawnPieceImpl<COLOR extends Color>
 
     private static final Logger LOGGER = getLogger(PawnPieceImpl.class);
 
-    private static final PieceState<?,?> DISPOSED_STATE = new PawnDisposedPieceState<>();
+    private static final PieceState<?,?> DISPOSED_STATE = new DisposedEnPassantablePieceState<>();
 
     PawnPieceImpl(Board board, COLOR color, String unicode, Position position,
                   int direction, int promotionLine, int initialLine) {
 
         super(board, Piece.Type.PAWN, color, unicode, position, direction,
-                new PawnActivePieceState<>(board,
+                new ActiveEnPassantablePieceState<>(board,
                         new PawnPieceActionRule(board, direction, initialLine, promotionLine),
                         new PawnPieceImpactRule(board, direction)
                 ),
@@ -73,7 +73,7 @@ final class PawnPieceImpl<COLOR extends Color>
         ((EnPassantablePieceState<COLOR,PawnPiece<COLOR>>) state).unenpassant(this, piece);
     }
 
-    private static <A extends Action<?>> Collection<Action<?>> filter(Collection<Action<?>> actions, 
+    private static <A extends Action<?>> Collection<Action<?>> filter(Collection<Action<?>> actions,
                                                                       Class<A> actionClass) {
         var filter = new ActionFilter<>(actionClass);
         return filter.apply(actions).stream()
@@ -98,16 +98,16 @@ final class PawnPieceImpl<COLOR extends Color>
         }
     }
 
-    static final class PawnActivePieceState<COLOR extends Color,
-                                            PIECE extends PawnPiece<COLOR>>
+    static final class ActiveEnPassantablePieceState<COLOR extends Color,
+                                                     PIECE extends PawnPiece<COLOR>>
             extends AbstractEnPassantablePieceState<COLOR,PIECE> {
 
-        private static final Logger LOGGER = getLogger(PawnActivePieceState.class);
+        private static final Logger LOGGER = getLogger(ActiveEnPassantablePieceState.class);
 
         private final AbstractPieceRule<Action<?>,Action.Type> actionRule;
         private final Board board;
 
-        PawnActivePieceState(Board board,
+        ActiveEnPassantablePieceState(Board board,
                              Rule<Piece<?>, Collection<Action<?>>> actionRule,
                              Rule<Piece<?>, Collection<Impact<?>>> impactRule) {
 
@@ -157,8 +157,8 @@ final class PawnPieceImpl<COLOR extends Color>
 
         private Collection<Action<?>> calculateMoveActions(PIECE piece) {
             var actions = this.actionRule.evaluate(
-                    piece, 
-                    Action.Type.MOVE, 
+                    piece,
+                    Action.Type.MOVE,
                     Action.Type.PROMOTE
             );
 
@@ -167,8 +167,8 @@ final class PawnPieceImpl<COLOR extends Color>
 
         private Collection<Action<?>> calculateCaptureActions(PIECE piece) {
             var calculatedActions = this.actionRule.evaluate(
-                    piece, 
-                    Action.Type.CAPTURE, 
+                    piece,
+                    Action.Type.CAPTURE,
                     Action.Type.PROMOTE
             );
 
@@ -181,13 +181,13 @@ final class PawnPieceImpl<COLOR extends Color>
         }
     }
 
-    static final class PawnDisposedPieceState<COLOR extends Color,
-                                              PIECE extends PawnPiece<COLOR>>
+    static final class DisposedEnPassantablePieceState<COLOR extends Color,
+                                                       PIECE extends PawnPiece<COLOR>>
             extends AbstractEnPassantablePieceState<COLOR,PIECE> {
 
-        private static final Logger LOGGER = getLogger(PawnDisposedPieceState.class);
+        private static final Logger LOGGER = getLogger(DisposedEnPassantablePieceState.class);
 
-        PawnDisposedPieceState() {
+        DisposedEnPassantablePieceState() {
             super(new DisposedPieceState<>());
         }
 
