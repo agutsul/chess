@@ -1,7 +1,9 @@
-package com.agutsul.chess.activity;
+package com.agutsul.chess.activity.cache;
 
 import java.util.Collection;
 import java.util.stream.Stream;
+
+import com.agutsul.chess.activity.Activity;
 
 public class ActivityCacheImpl<TYPE extends Enum<TYPE> & Activity.Type,
                                ACTIVITY extends Activity<?>>

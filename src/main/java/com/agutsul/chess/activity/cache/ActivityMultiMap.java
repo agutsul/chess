@@ -1,4 +1,4 @@
-package com.agutsul.chess.activity;
+package com.agutsul.chess.activity.cache;
 
 import java.util.Collection;
 import java.util.Map;
@@ -7,6 +7,8 @@ import java.util.stream.Stream;
 
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
+
+import com.agutsul.chess.activity.Activity;
 
 class ActivityMultiMap<KEY extends Enum<KEY> & Activity.Type,
                        VALUE extends Activity<?>>
