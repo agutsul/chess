@@ -295,7 +295,7 @@ final class PawnPieceProxy extends PieceProxy
 
         @Override
         public Collection<Action<?>> calculateActions(PIECE piece, Action.Type actionType) {
-            LOGGER.warn("Calculating actions({}) of disabled piece '{}'",
+            LOGGER.warn("Calculating actions({}) for piece '{}'",
                     actionType.name(),
                     piece
             );
@@ -305,13 +305,13 @@ final class PawnPieceProxy extends PieceProxy
 
         @Override
         public Collection<Impact<?>> calculateImpacts(PIECE piece) {
-            LOGGER.warn("Calculating impacts of disabled piece '{}'", piece);
+            LOGGER.warn("Calculating impacts for piece '{}'", piece);
             return emptyList();
         }
 
         @Override
         public Collection<Impact<?>> calculateImpacts(PIECE piece, Impact.Type impactType) {
-            LOGGER.warn("Calculating impacts({}) of disabled piece '{}'",
+            LOGGER.warn("Calculating impacts({}) for piece '{}'",
                     impactType.name(),
                     piece
             );
