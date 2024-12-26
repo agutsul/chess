@@ -14,10 +14,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.piece.Piece.Type;
+import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class KingPieceImplTest extends AbstractPieceTest {
@@ -76,6 +79,9 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .withWhiteKing("e1")
                 .build();
 
+        var boardStateEvaluator1 = new BoardStateEvaluatorImpl(board1, new JournalImpl());
+        boardStateEvaluator1.evaluate(Colors.WHITE);
+
         assertPieceActions(board1, Colors.WHITE, KING_TYPE, "e1",
                 List.of("e2", "d2", "f2", "f1", "d1"),
                 List.of(),
@@ -86,6 +92,9 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .withBlackRooks("a8", "h8")
                 .withBlackKing("e8")
                 .build();
+
+        var boardStateEvaluator2 = new BoardStateEvaluatorImpl(board2, new JournalImpl());
+        boardStateEvaluator2.evaluate(Colors.BLACK);
 
         assertPieceActions(board2, Colors.BLACK, KING_TYPE, "e8",
                 List.of("e7", "d7", "f7", "f8", "d8"),
@@ -102,6 +111,9 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .withWhiteKing("e1")
                 .build();
 
+        var boardStateEvaluator1 = new BoardStateEvaluatorImpl(board1, new JournalImpl());
+        boardStateEvaluator1.evaluate(Colors.WHITE);
+
         assertPieceActions(board1, Colors.WHITE, KING_TYPE, "e1",
                 List.of("e2", "d2", "f2", "f1", "d1"),
                 List.of(),
@@ -113,6 +125,9 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .withBlackKnight("b8")
                 .withBlackKing("e8")
                 .build();
+
+        var boardStateEvaluator2 = new BoardStateEvaluatorImpl(board2, new JournalImpl());
+        boardStateEvaluator2.evaluate(Colors.BLACK);
 
         assertPieceActions(board2, Colors.BLACK, KING_TYPE, "e8",
                 List.of("e7", "d7", "f7", "f8", "d8"),
@@ -129,6 +144,10 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .withWhiteKing("e1")
                 .build();
 
+        var boardStateEvaluator1 = new BoardStateEvaluatorImpl(board1, new JournalImpl());
+        var boardState1 = boardStateEvaluator1.evaluate(Colors.WHITE);
+        assertEquals(BoardState.Type.CHECKED, boardState1.getType());
+
         assertPieceActions(board1, Colors.WHITE, KING_TYPE, "e1",
                 List.of("e2", "d2", "f2", "f1", "d1")
         );
@@ -138,6 +157,10 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .withWhiteBishop("g6")
                 .withBlackKing("e8")
                 .build();
+
+        var boardStateEvaluator2 = new BoardStateEvaluatorImpl(board2, new JournalImpl());
+        var boardState2 = boardStateEvaluator2.evaluate(Colors.BLACK);
+        assertEquals(BoardState.Type.CHECKED, boardState2.getType());
 
         assertPieceActions(board2, Colors.BLACK, KING_TYPE, "e8",
                 List.of("e7", "d7", "f7", "f8", "d8")
@@ -152,6 +175,9 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .withWhiteKing("e1")
                 .build();
 
+        var boardStateEvaluator1 = new BoardStateEvaluatorImpl(board1, new JournalImpl());
+        boardStateEvaluator1.evaluate(Colors.WHITE);
+
         assertPieceActions(board1, Colors.WHITE, KING_TYPE, "e1",
                 List.of("e2", "d2", "f2", "f1", "d1"),
                 List.of(),
@@ -163,6 +189,9 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .withWhiteQueen("c7")
                 .withBlackKing("e8")
                 .build();
+
+        var boardStateEvaluator2 = new BoardStateEvaluatorImpl(board2, new JournalImpl());
+        boardStateEvaluator2.evaluate(Colors.BLACK);
 
         assertPieceActions(board2, Colors.BLACK, KING_TYPE, "e8",
                 List.of("e7", "d7", "f7", "f8", "d8"),
@@ -179,6 +208,9 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .withWhiteKing("e1")
                 .build();
 
+        var boardStateEvaluator1 = new BoardStateEvaluatorImpl(board1, new JournalImpl());
+        boardStateEvaluator1.evaluate(Colors.WHITE);
+
         assertPieceActions(board1, Colors.WHITE, KING_TYPE, "e1",
                 List.of("e2", "d2", "f2", "f1", "d1"),
                 List.of(),
@@ -190,6 +222,9 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .withWhiteQueen("f3")
                 .withBlackKing("e8")
                 .build();
+
+        var boardStateEvaluator2 = new BoardStateEvaluatorImpl(board2, new JournalImpl());
+        boardStateEvaluator2.evaluate(Colors.BLACK);
 
         assertPieceActions(board2, Colors.BLACK, KING_TYPE, "e8",
                 List.of("e7", "d7", "f7", "f8", "d8"),
@@ -205,6 +240,8 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
         var whiteActionPerformedEvent = new ClearPieceDataEvent(Colors.WHITE);
         var blackActionPerformedEvent = new ClearPieceDataEvent(Colors.BLACK);
+
+        var boardStateEvaluator = new BoardStateEvaluatorImpl(board, new JournalImpl());
 
         var whitePawn = (PawnPiece<Color>) board.getPiece("e2").get();
         whitePawn.move(board.getPosition("e4").get());
@@ -240,6 +277,9 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
         board.notifyObservers(whiteActionPerformedEvent);
 
+        var boardState = boardStateEvaluator.evaluate(Colors.BLACK);
+        assertEquals(BoardState.Type.CHECK_MATED, boardState.getType());
+
         var blackKing = (KingPiece<Color>) board.getPiece("e8").get();
 
         assertTrue(blackKing.isChecked());
@@ -255,6 +295,11 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .withWhiteQueen("c3")
                 .build();
 
+        var boardStateEvaluator = new BoardStateEvaluatorImpl(board, new JournalImpl());
+        var boardState = boardStateEvaluator.evaluate(Colors.BLACK);
+
+        assertEquals(BoardState.Type.CHECKED, boardState.getType());
+
         var blackKing = (KingPiece<Color>) board.getPiece("h8").get();
 
         assertTrue(blackKing.isChecked());
@@ -269,6 +314,11 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .withWhiteBishop("h7")
                 .withWhiteKing("e3")
                 .build();
+
+        var boardStateEvaluator = new BoardStateEvaluatorImpl(board, new JournalImpl());
+        var boardState = boardStateEvaluator.evaluate(Colors.WHITE);
+
+        assertEquals(BoardState.Type.CHECKED, boardState.getType());
 
         var whiteKing = (KingPiece<Color>) board.getPiece("e3").get();
 

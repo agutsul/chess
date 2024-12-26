@@ -2,10 +2,14 @@ package com.agutsul.chess.rule.board;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.CheckedBoardState;
@@ -22,7 +26,7 @@ final class CheckedBoardStateEvaluator
 
     @Override
     public Optional<BoardState> evaluate(Color color) {
-        LOGGER.info("Checking if '{}' is checked", color);
+        LOGGER.info("Checking if '{}' king is checked", color);
 
         var optional = board.getKing(color);
         if (optional.isEmpty()) {
@@ -30,7 +34,18 @@ final class CheckedBoardStateEvaluator
         }
 
         var king = optional.get();
-        return king.isChecked()
+
+        var pieces = board.getPieces(color.invert());
+        var isChecked = pieces.stream()
+                .map(piece -> board.getImpacts(piece, Impact.Type.CHECK))
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceCheckImpact<?,?,?,?>) impact)
+                .map(PieceCheckImpact::getTarget)
+                .anyMatch(piece -> Objects.equals(piece, king));
+
+        king.setChecked(isChecked);
+
+        return isChecked
                 ? Optional.of(new CheckedBoardState(board, color))
                 : Optional.empty();
     }

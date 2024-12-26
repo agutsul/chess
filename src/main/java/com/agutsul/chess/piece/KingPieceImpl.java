@@ -3,20 +3,19 @@ package com.agutsul.chess.piece;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Instant;
-import java.util.Collection;
-import java.util.Objects;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.activity.impact.Impact;
-import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.king.KingPieceActionRule;
 import com.agutsul.chess.piece.king.KingPieceImpactRule;
+import com.agutsul.chess.piece.state.CastlingablePieceState;
+import com.agutsul.chess.piece.state.CheckMatedPieceState;
+import com.agutsul.chess.piece.state.CheckedPieceState;
+import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.checkmate.CheckMateEvaluator;
-import com.agutsul.chess.rule.checkmate.CompositeCheckMateEvaluator;
 
 final class KingPieceImpl<COLOR extends Color>
         extends AbstractCastlingPiece<COLOR>
@@ -24,7 +23,8 @@ final class KingPieceImpl<COLOR extends Color>
 
     private static final Logger LOGGER = getLogger(KingPieceImpl.class);
 
-    private final CheckMateEvaluator checkMateEvaluator;
+    private final CheckedPieceState<COLOR, ? extends KingPiece<COLOR>> checkedPieceState;
+    private final CheckMatedPieceState<COLOR, ? extends KingPiece<COLOR>> checkMatedPieceState;
 
     KingPieceImpl(Board board, COLOR color, String unicode,
                   Position position, int direction) {
@@ -34,32 +34,36 @@ final class KingPieceImpl<COLOR extends Color>
                 new KingPieceImpactRule(board)
         );
 
-        this.checkMateEvaluator = new CompositeCheckMateEvaluator(board);
+        this.checkedPieceState = new KingCheckedPieceState<>(getState());
+        this.checkMatedPieceState = new KingCheckMatedPieceState<>(getState());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void setChecked(boolean isChecked) {
+        LOGGER.info("Set {} king checked='{}' state", getColor(), isChecked);
+        this.currentState = isChecked
+                ? (PieceState<COLOR,Piece<COLOR>>) this.checkedPieceState
+                : this.activeState;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void setCheckMated(boolean isCheckMated) {
+        LOGGER.info("Set {} king checkMated='{}' state", getColor(), isCheckMated);
+        this.currentState = isCheckMated
+                ? (PieceState<COLOR,Piece<COLOR>>) this.checkMatedPieceState
+                : (PieceState<COLOR,Piece<COLOR>>) this.checkedPieceState;
     }
 
     @Override
     public boolean isChecked() {
-        LOGGER.info("Verify check for '{}'", this);
-
-        var pieces = board.getPieces(getColor().invert());
-        var isChecked = pieces.stream()
-                .map(piece -> board.getImpacts(piece, Impact.Type.CHECK))
-                .flatMap(Collection::stream)
-                .map(impact -> (PieceCheckImpact<?,?,?,?>) impact)
-                .map(PieceCheckImpact::getTarget)
-                .anyMatch(piece -> Objects.equals(piece, this));
-
-        return isChecked;
+        return this.currentState instanceof CheckedPieceState<?,?>;
     }
 
     @Override
     public boolean isCheckMated() {
-        LOGGER.info("Verify checkmate for '{}'", this);
-        if (!isChecked()) {
-            return false;
-        }
-
-        return checkMateEvaluator.evaluate(this);
+        return this.currentState instanceof CheckMatedPieceState<?,?>;
     }
 
     // prevent prohibited operations
@@ -87,5 +91,52 @@ final class KingPieceImpl<COLOR extends Color>
     @Override
     public boolean isPinned() {
         throw new UnsupportedOperationException("Unable to pin KING piece");
+    }
+
+    static class KingCheckedPieceState<COLOR extends Color,
+                                       PIECE extends KingPiece<COLOR>>
+        extends AbstractPieceStateProxy<COLOR,PIECE>
+        implements CheckedPieceState<COLOR,PIECE>,
+                   CastlingablePieceState<COLOR,PIECE> {
+
+        @SuppressWarnings("unchecked")
+        KingCheckedPieceState(PieceState<COLOR,Piece<COLOR>> origin) {
+            super((AbstractCastlingablePieceState<COLOR,PIECE>) origin);
+        }
+
+        @Override
+        public void castling(PIECE piece, Position position) {
+            throw new IllegalActionException("Unable to perform castling for checked king");
+        }
+
+        @Override
+        public void uncastling(PIECE piece, Position position) {
+            ((AbstractCastlingablePieceState<COLOR,PIECE>) this.origin).uncastling(piece, position);
+        }
+    }
+
+    static class KingCheckMatedPieceState<COLOR extends Color,
+                                          PIECE extends KingPiece<COLOR>>
+            extends KingCheckedPieceState<COLOR,PIECE>
+            implements CheckMatedPieceState<COLOR,PIECE> {
+
+        KingCheckMatedPieceState(PieceState<COLOR,Piece<COLOR>> origin) {
+            super(origin);
+        }
+
+        @Override
+        public void castling(PIECE piece, Position position) {
+            throw new IllegalActionException("Unable to perform castling for check mated king");
+        }
+
+        @Override
+        public void move(PIECE piece, Position position) {
+            throw new IllegalActionException("Unable to perform move for check mated king");
+        }
+
+        @Override
+        public void capture(PIECE piece, Piece<?> targetPiece) {
+            throw new IllegalActionException("Unable to perform capture for check mated king");
+        }
     }
 }

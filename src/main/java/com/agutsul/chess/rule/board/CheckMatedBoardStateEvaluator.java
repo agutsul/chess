@@ -10,6 +10,8 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.CheckMatedBoardState;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.rule.checkmate.CheckMateEvaluator;
+import com.agutsul.chess.rule.checkmate.CompositeCheckMateEvaluator;
 
 // https://en.wikipedia.org/wiki/Checkmate_pattern
 final class CheckMatedBoardStateEvaluator
@@ -17,13 +19,16 @@ final class CheckMatedBoardStateEvaluator
 
     private static final Logger LOGGER = getLogger(CheckMatedBoardStateEvaluator.class);
 
+    private final CheckMateEvaluator checkMateEvaluator;
+
     CheckMatedBoardStateEvaluator(Board board) {
         super(board);
+        this.checkMateEvaluator = new CompositeCheckMateEvaluator(board);
     }
 
     @Override
     public Optional<BoardState> evaluate(Color color) {
-        LOGGER.info("Checking if '{}' is checkmated", color);
+        LOGGER.info("Checking if '{}' king is checkmated", color);
 
         var optional = board.getKing(color);
         if (optional.isEmpty()) {
@@ -31,7 +36,11 @@ final class CheckMatedBoardStateEvaluator
         }
 
         var king = optional.get();
-        return king.isCheckMated()
+
+        var isCheckMated = checkMateEvaluator.evaluate(king);
+        king.setCheckMated(isCheckMated);
+
+        return isCheckMated
                 ? Optional.of(new CheckMatedBoardState(board, color))
                 : Optional.empty();
     }

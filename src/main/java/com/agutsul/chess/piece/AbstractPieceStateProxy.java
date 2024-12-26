@@ -13,7 +13,7 @@ abstract class AbstractPieceStateProxy<COLOR extends Color,
                                        PIECE extends Piece<COLOR> & Movable & Capturable>
         extends AbstractPieceState<COLOR,PIECE> {
 
-    private final AbstractPieceState<COLOR,PIECE> origin;
+    protected final AbstractPieceState<COLOR,PIECE> origin;
 
     AbstractPieceStateProxy(AbstractPieceState<COLOR,PIECE> origin) {
         super(origin.getType());

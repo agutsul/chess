@@ -64,8 +64,18 @@ final class KingPieceProxy extends PieceProxy
     }
 
     @Override
+    public void setChecked(boolean checked) {
+        ((KingPiece<?>) this.origin).setChecked(checked);
+    }
+
+    @Override
     public boolean isChecked() {
         return ((Checkable) this.origin).isChecked();
+    }
+
+    @Override
+    public void setCheckMated(boolean checkMated) {
+        ((KingPiece<?>) this.origin).setCheckMated(checkMated);
     }
 
     @Override

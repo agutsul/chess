@@ -11,4 +11,6 @@ public interface KingPiece<COLOR extends Color>
         extends Piece<COLOR>, Movable, Capturable,
                 Castlingable, Checkable, Protectable {
 
+    void setChecked(boolean checked);
+    void setCheckMated(boolean checkMated);
 }
