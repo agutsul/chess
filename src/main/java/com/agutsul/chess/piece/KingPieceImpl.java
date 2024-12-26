@@ -23,8 +23,8 @@ final class KingPieceImpl<COLOR extends Color>
 
     private static final Logger LOGGER = getLogger(KingPieceImpl.class);
 
-    private final CheckedPieceState<COLOR, ? extends KingPiece<COLOR>> checkedPieceState;
-    private final CheckMatedPieceState<COLOR, ? extends KingPiece<COLOR>> checkMatedPieceState;
+    private final CheckedPieceState<COLOR,? extends KingPiece<COLOR>> checkedPieceState;
+    private final CheckMatedPieceState<COLOR,? extends KingPiece<COLOR>> checkMatedPieceState;
 
     KingPieceImpl(Board board, COLOR color, String unicode,
                   Position position, int direction) {
@@ -43,7 +43,7 @@ final class KingPieceImpl<COLOR extends Color>
     public void setChecked(boolean isChecked) {
         LOGGER.info("Set {} king checked='{}' state", getColor(), isChecked);
         this.currentState = isChecked
-                ? (PieceState<COLOR,Piece<COLOR>>) this.checkedPieceState
+                ? (PieceState<COLOR,Piece<COLOR>>) (PieceState<?,?>) this.checkedPieceState
                 : this.activeState;
     }
 
@@ -52,8 +52,8 @@ final class KingPieceImpl<COLOR extends Color>
     public void setCheckMated(boolean isCheckMated) {
         LOGGER.info("Set {} king checkMated='{}' state", getColor(), isCheckMated);
         this.currentState = isCheckMated
-                ? (PieceState<COLOR,Piece<COLOR>>) this.checkMatedPieceState
-                : (PieceState<COLOR,Piece<COLOR>>) this.checkedPieceState;
+                ? (PieceState<COLOR,Piece<COLOR>>) (PieceState<?,?>) this.checkMatedPieceState
+                : (PieceState<COLOR,Piece<COLOR>>) (PieceState<?,?>) this.checkedPieceState;
     }
 
     @Override
@@ -101,7 +101,7 @@ final class KingPieceImpl<COLOR extends Color>
 
         @SuppressWarnings("unchecked")
         KingCheckedPieceState(PieceState<COLOR,Piece<COLOR>> origin) {
-            super((AbstractCastlingablePieceState<COLOR,PIECE>) origin);
+            super((AbstractPieceStateProxy<COLOR,PIECE>) (AbstractPieceStateProxy<?,?>) origin);
         }
 
         @Override
