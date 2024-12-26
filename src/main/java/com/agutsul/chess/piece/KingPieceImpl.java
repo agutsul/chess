@@ -95,9 +95,9 @@ final class KingPieceImpl<COLOR extends Color>
 
     static class KingCheckedPieceState<COLOR extends Color,
                                        PIECE extends KingPiece<COLOR>>
-        extends AbstractPieceStateProxy<COLOR,PIECE>
-        implements CheckedPieceState<COLOR,PIECE>,
-                   CastlingablePieceState<COLOR,PIECE> {
+            extends AbstractPieceStateProxy<COLOR,PIECE>
+            implements CheckedPieceState<COLOR,PIECE>,
+                       CastlingablePieceState<COLOR,PIECE> {
 
         @SuppressWarnings("unchecked")
         KingCheckedPieceState(PieceState<COLOR,Piece<COLOR>> origin) {
@@ -115,8 +115,8 @@ final class KingPieceImpl<COLOR extends Color>
         }
     }
 
-    static class KingCheckMatedPieceState<COLOR extends Color,
-                                          PIECE extends KingPiece<COLOR>>
+    static final class KingCheckMatedPieceState<COLOR extends Color,
+                                                PIECE extends KingPiece<COLOR>>
             extends KingCheckedPieceState<COLOR,PIECE>
             implements CheckMatedPieceState<COLOR,PIECE> {
 
