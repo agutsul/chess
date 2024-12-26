@@ -5,6 +5,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.HashSet;
 
 import org.slf4j.Logger;
 
@@ -110,11 +111,9 @@ final class KingPieceImpl<COLOR extends Color>
 
         @Override
         public Collection<Action<?>> calculateActions(PIECE piece) {
-            var allActions = super.calculateActions(piece);
-            var actions = allActions.stream()
-                    .filter(action -> !Action.Type.CASTLING.equals(action.getType()))
-                    .toList();
-
+            var actions = new HashSet<Action<?>>();
+            actions.addAll(calculateActions(piece, Action.Type.MOVE));
+            actions.addAll(calculateActions(piece, Action.Type.CAPTURE));
             return actions;
         }
 
