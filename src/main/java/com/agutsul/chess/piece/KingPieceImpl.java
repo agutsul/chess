@@ -1,11 +1,15 @@
 package com.agutsul.chess.piece;
 
+import static java.util.Collections.emptyList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Instant;
+import java.util.Collection;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
@@ -105,6 +109,25 @@ final class KingPieceImpl<COLOR extends Color>
         }
 
         @Override
+        public Collection<Action<?>> calculateActions(PIECE piece) {
+            var allActions = super.calculateActions(piece);
+            var actions = allActions.stream()
+                    .filter(action -> !Action.Type.CASTLING.equals(action.getType()))
+                    .toList();
+
+            return actions;
+        }
+
+        @Override
+        public Collection<Action<?>> calculateActions(PIECE piece, Action.Type actionType) {
+            if (Action.Type.CASTLING.equals(actionType)) {
+                return emptyList();
+            }
+
+            return super.calculateActions(piece, actionType);
+        }
+
+        @Override
         public void castling(PIECE piece, Position position) {
             throw new IllegalActionException("Unable to perform castling for checked king");
         }
@@ -122,6 +145,26 @@ final class KingPieceImpl<COLOR extends Color>
 
         KingCheckMatedPieceState(PieceState<COLOR,Piece<COLOR>> origin) {
             super(origin);
+        }
+
+        @Override
+        public Collection<Action<?>> calculateActions(PIECE piece) {
+            return emptyList();
+        }
+
+        @Override
+        public Collection<Action<?>> calculateActions(PIECE piece, Action.Type actionType) {
+            return emptyList();
+        }
+
+        @Override
+        public Collection<Impact<?>> calculateImpacts(PIECE piece) {
+            return emptyList();
+        }
+
+        @Override
+        public Collection<Impact<?>> calculateImpacts(PIECE piece, Impact.Type impactType) {
+            return emptyList();
         }
 
         @Override
