@@ -108,8 +108,8 @@ final class PawnPieceImpl<COLOR extends Color>
         private final Board board;
 
         ActiveEnPassantablePieceState(Board board,
-                             Rule<Piece<?>, Collection<Action<?>>> actionRule,
-                             Rule<Piece<?>, Collection<Impact<?>>> impactRule) {
+                                      Rule<Piece<?>, Collection<Action<?>>> actionRule,
+                                      Rule<Piece<?>, Collection<Impact<?>>> impactRule) {
 
             super(new ActivePieceState<>(board, actionRule, impactRule));
 
