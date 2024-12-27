@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
@@ -33,6 +34,9 @@ final class AttackerPinCheckMateEvaluator
         // get all piece moves of the same color as king except the king itself
         var pieceMovePositions = board.getPieces(king.getColor()).stream()
                 .filter(piece -> !Piece.Type.KING.equals(piece.getType()))
+                // confirm that piece not already pinned
+                .filter(piece -> !((Pinnable) piece).isPinned())
+                // find all possible move actions
                 .map(piece -> board.getActions(piece, Action.Type.MOVE))
                 .flatMap(Collection::stream)
                 .map(action -> (PieceMoveAction<?,?>) action)

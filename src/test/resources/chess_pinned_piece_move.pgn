@@ -1,0 +1,18 @@
+[Event "Rated Bullet game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1-0"]
+[UTCDate "2014.07.01"]
+[UTCTime "04:47:42"]
+[WhiteElo "2302"]
+[BlackElo "1514"]
+[WhiteRatingDiff "+1"]
+[BlackRatingDiff "-1"]
+[WhiteTitle "FM"]
+[ECO "A13"]
+[Opening "English Opening: Agincourt Defense"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. c4 e6 2. g3 f5 3. Bg2 Nf6 4. Nf3 d5 5. O-O c6 6. cxd5 exd5 7. d3 Bd6 8. Nc3 O-O 9. e4 fxe4 10. dxe4 dxe4 11. Ng5 Bb4 12. Qb3+ Kh8 13. Qxb4 c5 14. Qb3 Qe7 15. Ncxe4 Nc6 16. Nxf6 Qxf6 17. Ne4 Qe7 18. Bg5 Qf7 19. Qxf7 Rxf7 20. Nxc5 Nd4 21. Rad1 Ne6 22. Nxe6 Bxe6 23. b3 Bg4 24. Rd4 Bh5 25. Be3 h6 26. Rc1 Kh7 27. Rdc4 Bg6 28. Rc7 Raf8 29. Rxf7 Rxf7 30. Bxa7 Rd7 31. Be3 Bh5 32. h4 Bg4 33. a3 Bf5 34. b4 Be6 35. a4 Bb3 36. a5 Rd1+ 37. Rxd1 Bxd1 38. Bxb7 Ba4 39. a6 Bb5 40. a7 Bf1 41. Kxf1 Kg6 42. a8=Q Kf5 43. Bg2 Kg4 44. Qe4+ Kh5 45. Qf5+ g5 46. Bf3# 1-0
