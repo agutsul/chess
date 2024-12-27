@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1-0"]
+[UTCDate "2014.07.01"]
+[UTCTime "03:48:33"]
+[WhiteElo "1339"]
+[BlackElo "1279"]
+[WhiteRatingDiff "+9"]
+[BlackRatingDiff "-18"]
+[ECO "D00"]
+[Opening "Queen's Pawn Game #3"]
+[TimeControl "300+0"]
+[Termination "Normal"]
+
+1. d4 d5 2. e3 Nf6 3. Nd2 e6 4. f4 Ne4 5. Nxe4 dxe4 6. g4 g6 7. g5 Bb4+ 8. c3 Bxc3+ 9. bxc3 c6 10. Ba3 Qa5 11. Qb3 h6 12. Ne2 hxg5 13. fxg5 Rh5 14. Bg2 Rxg5 15. Bxe4 f5 16. Bd3 b6 17. Nf4 Ba6 18. Qxe6+ Kd8 19. Qf6+ Kc8 20. Qxg5 Qxc3+ 21. Ke2 Bxd3+ 22. Nxd3 Qc2+ 23. Kf3 Na6 24. Qxg6 Kb7 25. Qf7+ Nc7 26. Bd6 Rc8 27. Rhg1 Qxd3 28. Rg8 Qe4+ 29. Ke2 Qc2+ 30. Kf3 Qe4+ 31. Kf2 Rxg8 32. Qxg8 Qh4+ 33. Qg3 Qd8 34. Bf4 Nb5 35. Qg7+ Ka6 36. a4 Nc3 37. d5 Qh4+ 38. Bg3 Ne4+ 39. Kg2 Qd8 40. dxc6 Qd2+ 41. Kh3 Nf2+ 42. Bxf2 Qxf2 43. c7 Qxe3+ 44. Qg3 Qh6+ 45. Kg2 Qc6+ 46. Kg1 Qxc7 47. Qxc7 b5 48. axb5+ Kxb5 49. Rb1+ Ka6 50. Qc6+ Ka5 51. Qb5# 1-0

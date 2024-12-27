@@ -65,8 +65,8 @@ final class AttackerCaptureCheckMateEvaluator
             }
         }
 
-        var isAllCapturable = !checkMakerStatus.containsValue(false);
-        return isAllCapturable;
+        var isCapturable = checkMakerStatus.containsValue(true);
+        return isCapturable;
     }
 
     private Collection<AbstractCaptureAction<?,?,?,?>> getAttackActions(Piece<?> piece) {
