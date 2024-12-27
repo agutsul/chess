@@ -255,6 +255,14 @@ public class PgnGameTest implements TestFileReader {
     }
 
     @Test
+    void testMonitoredPositionWhileStaleMatePgnGame() throws URISyntaxException, IOException {
+        var games = parseGames(readFileContent("chess_stalemate_monitored_position.pgn"), 1);
+        var game = (PgnGame) games.get(0);
+
+        assertGame(game, GameState.Type.BLACK_WIN, 136, 15);
+    }
+
+    @Test
     void testEarlyStalemateFailurePgnGame() throws URISyntaxException, IOException {
         var games = parseGames(readFileContent("chess_early_stalemate_failure.pgn"), 1);
         var game = (PgnGame) games.get(0);

@@ -32,6 +32,7 @@ import com.agutsul.chess.activity.action.function.ActionFilter;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.activity.impact.PieceControlImpact;
+import com.agutsul.chess.activity.impact.PieceMonitorImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.board.state.BoardState;
@@ -400,6 +401,46 @@ final class BoardImpl extends AbstractBoard implements Closeable {
                 .flatMap(Collection::stream)
                 .map(Impact::getPosition)
                 .anyMatch(targetPosition -> Objects.equals(targetPosition, position));
+
+        if (!isMonitored) {
+            return isMonitored;
+        }
+
+        var optionalKing = getKing(attackerColor.invert());
+        if (optionalKing.isEmpty()) {
+            return isMonitored;
+        }
+
+        var king = optionalKing.get();
+
+        // check if there is pinned piece in between monitored position
+        // and attacker monitoring that position.
+        // So, actual attack is blocked and as result position should be available for move
+        var pinnedPieces = getPieces(attackerColor.invert()).stream()
+                .filter(piece -> !Piece.Type.KING.equals(piece.getType()))
+                .filter(piece -> ((Pinnable) piece).isPinned())
+                .toList();
+
+        for (var piece : pinnedPieces) {
+            var pinImpacts = getImpacts(piece, Impact.Type.PIN);
+            var isBlocked = pinImpacts.stream()
+                    .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
+                    .map(PiecePinImpact::getTarget)
+                    .filter(checkImpact -> Objects.equals(checkImpact.getTarget(), king))
+                    .map(PieceCheckImpact::getSource)
+                    .anyMatch(attacker -> {
+                        var monitoredPositions = getImpacts(attacker, Impact.Type.MONITOR).stream()
+                                .map(impact -> (PieceMonitorImpact<?,?>) impact)
+                                .map(PieceMonitorImpact::getPosition)
+                                .toList();
+
+                        return monitoredPositions.contains(position);
+                    });
+
+            if (isBlocked) {
+                return false;
+            }
+        }
 
         return isMonitored;
     }
