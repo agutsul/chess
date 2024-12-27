@@ -303,7 +303,7 @@ public class PgnGameTest implements TestFileReader {
     }
 
     @Test
-    void testFailedPgnGame() throws URISyntaxException, IOException {
+    void testMultiPieceCheckPgnGame() throws URISyntaxException, IOException {
         var games = parseGames(readFileContent("chess_multi_piece_check.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
