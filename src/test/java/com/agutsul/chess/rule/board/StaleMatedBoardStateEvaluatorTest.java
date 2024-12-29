@@ -192,8 +192,6 @@ public class StaleMatedBoardStateEvaluatorTest {
                 .withWhitePawns("a4","b5","e4","f2","h2")
                 .build();
 
-        System.out.println(board);
-
         assertStaleMate(board, Colors.WHITE);
     }
 
