@@ -1,9 +1,13 @@
 package com.agutsul.chess.rule.board;
 
+import static java.util.Collections.max;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 
@@ -56,78 +60,145 @@ final class MovesBoardStateEvaluator
         return Optional.empty();
     }
 
-    private static boolean isBoardStateApplicable(List<ActionMemento<?,?>> actions,
-                                                  int lastMovesCount) {
+    private boolean isBoardStateApplicable(List<ActionMemento<?,?>> actions,
+                                           int lastMovesCount) {
 
-        var countCaptures = calculateCaptures(actions, lastMovesCount);
-        if (countCaptures != 0) {
-            return false;
+        var tasks = List.of(
+                new CaptureCalculationTask(actions, lastMovesCount),
+                new PawnMoveCalculationTask(actions, lastMovesCount)
+        );
+
+        try {
+            var results = new ArrayList<Integer>();
+
+            var executor = board.getExecutorService();
+            for (var future : executor.invokeAll(tasks)) {
+                results.add(future.get());
+            }
+
+            return max(results) == 0;
+        } catch (InterruptedException e) {
+            LOGGER.error("Board state evaluation interrupted", e);
+        } catch (ExecutionException e) {
+            LOGGER.error("Board state evaluation failed", e);
         }
 
-        var countPawnMoves = calculatePawnMoves(actions, lastMovesCount);
-        if (countPawnMoves != 0) {
-            return false;
-        }
-
-        return true;
+        return false;
     }
 
-    private static int calculateCaptures(List<ActionMemento<?,?>> actions, int limit) {
-        int counter = 0;
+    static abstract class CalculationTask
+            implements Callable<Integer> {
 
-        for (int i = actions.size() - 1, j = 0; i >= 0 && j < limit; i--, j++) {
-            var memento = actions.get(i);
+        protected final Logger logger;
+        protected final List<ActionMemento<?,?>> actions;
+        protected final int limit;
 
-            var actionType = memento.getActionType();
-            if (Action.Type.CAPTURE.equals(actionType)
-                    || Action.Type.EN_PASSANT.equals(actionType)) {
-
-                counter++;
-                continue;
-            }
-
-            if (Action.Type.PROMOTE.equals(actionType)) {
-                @SuppressWarnings("unchecked")
-                var promoteMemento =
-                        (ActionMemento<String,ActionMemento<String,String>>) memento;
-
-                var originAction = promoteMemento.getTarget();
-                if (Action.Type.CAPTURE.equals(originAction.getActionType())) {
-                    counter++;
-                }
-            }
+        CalculationTask(Logger logger, List<ActionMemento<?,?>> actions, int limit) {
+            this.logger = logger;
+            this.actions = actions;
+            this.limit = limit;
         }
 
-        return counter;
+        @Override
+        public Integer call() throws Exception {
+            try {
+                return calculate();
+            } catch (Exception e) {
+                logger.error("Board state calculation failed", e);
+            }
+
+            return 0;
+        }
+
+        protected abstract int calculate();
     }
 
-    private static int calculatePawnMoves(List<ActionMemento<?,?>> actions, int limit) {
-        int counter = 0;
+    private static final class CaptureCalculationTask
+            extends CalculationTask {
 
-        for (int i = actions.size() - 1, j = 0; i >= 0 && j < limit; i--, j++) {
-            var memento = actions.get(i);
-            if (!Piece.Type.PAWN.equals(memento.getPieceType())) {
-                continue;
-            }
+        private static final Logger LOGGER = getLogger(CaptureCalculationTask.class);
 
-            var actionType = memento.getActionType();
-            if (Action.Type.MOVE.equals(actionType)) {
-                counter++;
-                continue;
-            }
-
-            if (Action.Type.PROMOTE.equals(actionType)) {
-                @SuppressWarnings("unchecked")
-                var promoteMemento =
-                        (ActionMemento<String,ActionMemento<String,String>>) memento;
-
-                var originAction = promoteMemento.getTarget();
-                if (Action.Type.MOVE.equals(originAction.getActionType())) {
-                    counter++;
-                }
-            }
+        CaptureCalculationTask(List<ActionMemento<?,?>> actions, int limit) {
+            super(LOGGER, actions, limit);
         }
 
-        return counter;
+        @Override
+        protected int calculate() {
+            int counter = 0;
+
+            for (int i = actions.size() - 1, j = 0; i >= 0 && j < limit; i--, j++) {
+                var memento = actions.get(i);
+
+                var actionType = memento.getActionType();
+                if (isCapture(actionType)) {
+                    counter++;
+                    continue;
+                }
+
+                if (Action.Type.PROMOTE.equals(actionType)) {
+                    @SuppressWarnings("unchecked")
+                    var promoteMemento =
+                            (ActionMemento<String,ActionMemento<String,String>>) memento;
+
+                    var originAction = promoteMemento.getTarget();
+                    if (isCapture(originAction.getActionType())) {
+                        counter++;
+                    }
+                }
+            }
+
+            return counter;
+        }
+
+        private static boolean isCapture(Action.Type actionType) {
+            return Action.Type.CAPTURE.equals(actionType)
+                    || Action.Type.EN_PASSANT.equals(actionType);
+
+        }
+    }
+
+    private static final class PawnMoveCalculationTask
+            extends CalculationTask {
+
+        private static final Logger LOGGER = getLogger(PawnMoveCalculationTask.class);
+
+        PawnMoveCalculationTask(List<ActionMemento<?, ?>> actions, int limit) {
+            super(LOGGER, actions, limit);
+        }
+
+        @Override
+        protected int calculate() {
+            int counter = 0;
+
+            for (int i = actions.size() - 1, j = 0; i >= 0 && j < limit; i--, j++) {
+                var memento = actions.get(i);
+                if (!Piece.Type.PAWN.equals(memento.getPieceType())) {
+                    continue;
+                }
+
+                var actionType = memento.getActionType();
+                if (isMove(actionType)) {
+                    counter++;
+                    continue;
+                }
+
+                if (Action.Type.PROMOTE.equals(actionType)) {
+                    @SuppressWarnings("unchecked")
+                    var promoteMemento =
+                            (ActionMemento<String,ActionMemento<String,String>>) memento;
+
+                    var originAction = promoteMemento.getTarget();
+                    if (isMove(originAction.getActionType())) {
+                        counter++;
+                    }
+                }
+            }
+
+            return counter;
+        }
+
+        private static boolean isMove(Action.Type actionType) {
+            return Action.Type.MOVE.equals(actionType);
+        }
     }
 }

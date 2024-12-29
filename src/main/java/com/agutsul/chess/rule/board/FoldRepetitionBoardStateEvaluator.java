@@ -60,8 +60,9 @@ final class FoldRepetitionBoardStateEvaluator
     private static Map<String,Integer> calculateStatistics(Collection<ActionMemento<?,?>> actions) {
         var stats = new HashMap<String,Integer>();
         for (var action : actions) {
+            var pieceType = action.getPieceType();
             var code = String.format("%s_%s",
-                    action.getPieceType().name(),
+                    pieceType.name(),
                     String.valueOf(action.getTarget())
             );
 

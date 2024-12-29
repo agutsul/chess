@@ -69,7 +69,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         this.whitePieceFactory = new WhitePieceFactory(this);
         this.blackPieceFactory = new BlackPieceFactory(this);
 
-        this.executorService = newFixedThreadPool(5);
+        this.executorService = newFixedThreadPool(10);
 
         this.observers = new CopyOnWriteArrayList<>();
         this.observers.add(new BoardEventObserver());
