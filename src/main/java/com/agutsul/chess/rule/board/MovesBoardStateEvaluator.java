@@ -135,19 +135,23 @@ final class MovesBoardStateEvaluator
                     continue;
                 }
 
-                if (Action.Type.PROMOTE.equals(actionType)) {
-                    @SuppressWarnings("unchecked")
-                    var promoteMemento =
-                            (ActionMemento<String,ActionMemento<String,String>>) memento;
+                if (Action.Type.PROMOTE.equals(actionType)
+                        && isCapturePromotion(memento)) {
 
-                    var originAction = promoteMemento.getTarget();
-                    if (isCapture(originAction.getActionType())) {
-                        counter++;
-                    }
+                    counter++;
                 }
             }
 
             return counter;
+        }
+
+        private static boolean isCapturePromotion(ActionMemento<?,?> memento) {
+            @SuppressWarnings("unchecked")
+            var promoteMemento =
+                    (ActionMemento<String,ActionMemento<String,String>>) memento;
+
+            var originAction = promoteMemento.getTarget();
+            return isCapture(originAction.getActionType());
         }
 
         private static boolean isCapture(Action.Type actionType) {
@@ -182,19 +186,23 @@ final class MovesBoardStateEvaluator
                     continue;
                 }
 
-                if (Action.Type.PROMOTE.equals(actionType)) {
-                    @SuppressWarnings("unchecked")
-                    var promoteMemento =
-                            (ActionMemento<String,ActionMemento<String,String>>) memento;
+                if (Action.Type.PROMOTE.equals(actionType)
+                        && isMovePromotion(memento)) {
 
-                    var originAction = promoteMemento.getTarget();
-                    if (isMove(originAction.getActionType())) {
-                        counter++;
-                    }
+                    counter++;
                 }
             }
 
             return counter;
+        }
+
+        private static boolean isMovePromotion(ActionMemento<?,?> memento) {
+            @SuppressWarnings("unchecked")
+            var promoteMemento =
+                    (ActionMemento<String,ActionMemento<String,String>>) memento;
+
+            var originAction = promoteMemento.getTarget();
+            return isMove(originAction.getActionType());
         }
 
         private static boolean isMove(Action.Type actionType) {
