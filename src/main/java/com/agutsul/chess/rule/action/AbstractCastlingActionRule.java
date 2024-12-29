@@ -40,15 +40,17 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
                 var rookPosition = rook.getPosition();
                 var kingPosition = king.getPosition();
 
+                int iterations = 0;
                 for (int i = kingPosition.x() + 1; i < rookPosition.x(); i++) {
                     var optionalPosition = board.getPosition(i, rookPosition.y());
                     if (optionalPosition.isEmpty()
                             || !board.isEmpty(optionalPosition.get())) {
                         return false;
                     }
+                    iterations++;
                 }
 
-                return true;
+                return iterations == 2;
             }
 
             @Override
@@ -80,6 +82,7 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
                 var rookPosition = rook.getPosition();
                 var kingPosition = king.getPosition();
 
+                int iterations = 0;
                 for (int i = rookPosition.x() + 1; i < kingPosition.x(); i++) {
                     var optionalPosition = board.getPosition(i, rookPosition.y());
                     if (optionalPosition.isEmpty()
@@ -87,9 +90,10 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
 
                         return false;
                     }
+                    iterations++;
                 }
 
-                return true;
+                return iterations == 3;
             }
 
             @Override
