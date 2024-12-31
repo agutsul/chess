@@ -7,6 +7,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.substring;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Checkable;
@@ -35,13 +36,19 @@ public enum AlgebraicActionFormatter implements ActionFormatter {
     CAPTURE_MODE(Action.Type.CAPTURE) {
         @Override
         public String formatMemento(ActionMemento<?,?> memento) {
-            var source = Piece.Type.PAWN.equals(memento.getPieceType())
-                    ? formatPawnPosition(memento.getSource())
-                    : memento.getPieceType();
+            var code = formatCode(memento.getCode());
+
+            String source = null;
+            if (Piece.Type.PAWN.equals(memento.getPieceType())) {
+                source = formatPawnPosition(memento.getSource());
+                code = Objects.equals(source, code) ? EMPTY : code;
+            } else {
+                source = String.valueOf(memento.getPieceType());
+            }
 
             return String.format("%s%sx%s",
                     source,
-                    formatCode(memento.getCode()),
+                    code,
                     memento.getTarget()
             );
         }
@@ -49,9 +56,14 @@ public enum AlgebraicActionFormatter implements ActionFormatter {
     EN_PASSANT_MODE(Action.Type.EN_PASSANT) {
         @Override
         public String formatMemento(ActionMemento<?,?> memento) {
+            var originMemento = (ActionMemento<?,?>) memento.getSource();
+
+            var source = formatPawnPosition(originMemento.getSource());
+            var code = formatCode(memento.getCode());
+
             return String.format("%s%sx%s e.p.",
-                    formatPawnPosition(((ActionMemento<?,?>) memento.getSource()).getSource()),
-                    formatCode(memento.getCode()),
+                    source,
+                    Objects.equals(source, code) ? EMPTY : code,
                     memento.getTarget()
             );
         }
