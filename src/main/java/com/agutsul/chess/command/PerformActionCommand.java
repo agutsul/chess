@@ -164,9 +164,12 @@ public class PerformActionCommand
 
     private String createCode(Position position) {
         var sourcePosition = this.sourcePiece.getPosition();
-        return sourcePosition.x() == position.x()
-                ? String.valueOf(sourcePosition.y())
-                : Position.LABELS[sourcePosition.x()];
+        var code = Position.codeOf(sourcePosition);
+
+        return String.valueOf(sourcePosition.x() == position.x()
+                ? code.charAt(1)
+                : code.charAt(0)
+        );
     }
 
     private static final class ActionFilter
