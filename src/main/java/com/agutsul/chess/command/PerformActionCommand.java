@@ -167,8 +167,8 @@ public class PerformActionCommand
         var code = Position.codeOf(sourcePosition);
 
         return String.valueOf(sourcePosition.x() == position.x()
-                ? code.charAt(1)
-                : code.charAt(0)
+                ? code.charAt(1) // y
+                : code.charAt(0) // x
         );
     }
 
