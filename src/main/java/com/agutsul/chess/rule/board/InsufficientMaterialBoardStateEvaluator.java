@@ -34,7 +34,7 @@ final class InsufficientMaterialBoardStateEvaluator
                 new KingVersusKingEvaluationTask(board),
                 new PieceVersusKingEvaluationTask(board, Piece.Type.BISHOP),
                 new PieceVersusKingEvaluationTask(board, Piece.Type.KNIGHT),
-                new BishopPositionColorVersusBishopEvaluationTask(board),
+                new BishopPositionColorVersusKingEvaluationTask(board),
                 new DoubleKnightsVersusKingEvaluationTask(board),
                 new KingBishopVersusKingKnightEvaluationTask(board)
                 // TODO implement: No sequence of legal moves can lead to checkmate.
@@ -186,10 +186,10 @@ final class InsufficientMaterialBoardStateEvaluator
         }
     }
 
-    private static final class BishopPositionColorVersusBishopEvaluationTask
+    private static final class BishopPositionColorVersusKingEvaluationTask
             extends PieceVersusKingEvaluationTask {
 
-        public BishopPositionColorVersusBishopEvaluationTask(Board board) {
+        public BishopPositionColorVersusKingEvaluationTask(Board board) {
             super(board, Piece.Type.BISHOP, 4);
         }
 
