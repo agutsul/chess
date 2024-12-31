@@ -162,9 +162,7 @@ public class PerformActionCommand
                 var sourcePosition = this.sourcePiece.getPosition();
                 var piecePosition = piece.getPosition();
 
-                if (sourcePosition.x() == piecePosition.x()
-                        && sourcePosition.y() != piecePosition.y()) {
-
+                if (sourcePosition.x() == piecePosition.x()) {
                     code = String.valueOf(sourcePosition.y());
                 } else {
                     code = Position.LABELS[sourcePosition.x()];
