@@ -144,35 +144,30 @@ public class PerformActionCommand
             return memento;
         }
 
-        // skip actual source piece to check action availability for the other pieces of the same color/type
-        var pieces = allPieces.stream()
+        var sourcePosition = this.sourcePiece.getPosition();
+
+        var code = allPieces.stream()
                 .filter(piece -> !Objects.equals(piece, this.sourcePiece))
-                .toList();
+                .filter(piece -> {
+                    var actions = this.board.getActions(piece);
+                    var isActionFound = actions.stream()
+                            .filter(a -> !Action.Type.CASTLING.equals(a.getType()))
+                            .map(Action::getPosition)
+                            .anyMatch(position -> Objects.equals(position, this.targetPosition));
 
-        String code = null;
-        for (var piece : pieces) {
-            var actions = this.board.getActions(piece);
-
-            var isActionFound = actions.stream()
-                    .filter(pieceAction -> !Action.Type.CASTLING.equals(pieceAction.getType()))
-                    .map(Action::getPosition)
-                    .anyMatch(position -> Objects.equals(position, this.targetPosition));
-
-            if (isActionFound) {
-                var sourcePosition = this.sourcePiece.getPosition();
-                var piecePosition = piece.getPosition();
-
-                if (sourcePosition.x() == piecePosition.x()) {
-                    code = String.valueOf(sourcePosition.y());
-                } else {
-                    code = Position.LABELS[sourcePosition.x()];
-                }
-
-                break;
-            }
-        }
+                    return isActionFound;
+                })
+                .map(piece -> createCode(sourcePosition, piece.getPosition()))
+                .findFirst()
+                .orElse(null);
 
         return new ActionMementoDecorator<>(memento, code);
+    }
+
+    private static String createCode(Position sourcePosition, Position position) {
+        return sourcePosition.x() == position.x()
+                ? String.valueOf(sourcePosition.y())
+                : Position.LABELS[sourcePosition.x()];
     }
 
     private static final class ActionFilter
