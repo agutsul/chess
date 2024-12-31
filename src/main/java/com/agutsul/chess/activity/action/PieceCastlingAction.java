@@ -38,7 +38,9 @@ public class PieceCastlingAction<COLOR extends Color,
         var castlingAction = getKingCastlingAction();
 
         LOGGER.info("Executing castling '{}' by '{}'",
-                castlingAction.getTarget(), castlingAction.getSource());
+                castlingAction.getTarget(),
+                castlingAction.getSource()
+        );
 
         castlingAction.execute();
     }
