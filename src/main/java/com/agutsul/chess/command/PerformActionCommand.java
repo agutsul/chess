@@ -144,8 +144,6 @@ public class PerformActionCommand
             return memento;
         }
 
-        var sourcePosition = this.sourcePiece.getPosition();
-
         var code = allPieces.stream()
                 .filter(piece -> !Objects.equals(piece, this.sourcePiece))
                 .filter(piece -> {
@@ -157,14 +155,15 @@ public class PerformActionCommand
 
                     return isActionFound;
                 })
-                .map(piece -> createCode(sourcePosition, piece.getPosition()))
+                .map(piece -> createCode(piece.getPosition()))
                 .findFirst()
                 .orElse(null);
 
         return new ActionMementoDecorator<>(memento, code);
     }
 
-    private static String createCode(Position sourcePosition, Position position) {
+    private String createCode(Position position) {
+        var sourcePosition = this.sourcePiece.getPosition();
         return sourcePosition.x() == position.x()
                 ? String.valueOf(sourcePosition.y())
                 : Position.LABELS[sourcePosition.x()];
