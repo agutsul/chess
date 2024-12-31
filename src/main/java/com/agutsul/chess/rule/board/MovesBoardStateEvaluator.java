@@ -86,7 +86,7 @@ final class MovesBoardStateEvaluator
         return false;
     }
 
-    static abstract class CalculationTask
+    private static abstract class CalculationTask
             implements Callable<Integer> {
 
         protected final Logger logger;

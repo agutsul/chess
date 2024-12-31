@@ -60,16 +60,20 @@ final class FoldRepetitionBoardStateEvaluator
     private static Map<String,Integer> calculateStatistics(Collection<ActionMemento<?,?>> actions) {
         var stats = new HashMap<String,Integer>();
         for (var action : actions) {
-            var pieceType = action.getPieceType();
-            var code = String.format("%s_%s",
-                    pieceType.name(),
-                    String.valueOf(action.getTarget())
-            );
+            var actionCode = createActionCode(action);
 
-            var currentStat = stats.getOrDefault(code, 0);
-            stats.put(code, currentStat + 1);
+            var currentStat = stats.getOrDefault(actionCode, 0);
+            stats.put(actionCode, currentStat + 1);
         }
 
         return stats;
+    }
+
+    private static String createActionCode(ActionMemento<?,?> action) {
+        var pieceType = action.getPieceType();
+        return String.format("%s_%s",
+                pieceType.name(),
+                String.valueOf(action.getTarget())
+        );
     }
 }

@@ -22,7 +22,7 @@ public class BoardStateEvaluatorImplTest {
     @Test
     @SuppressWarnings("unchecked")
     void testBoardStateEvaluatorImpl() {
-        var executor = Executors.newSingleThreadExecutor();
+        var executor = Executors.newFixedThreadPool(10);
 
         var board = mock(AbstractBoard.class);
         when(board.getExecutorService())

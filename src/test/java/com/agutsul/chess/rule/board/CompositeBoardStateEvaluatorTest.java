@@ -76,10 +76,11 @@ public class CompositeBoardStateEvaluatorTest {
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
         var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
         var movesEvaluator = mock(MovesBoardStateEvaluator.class);
+        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
 
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
 
         var boardState = evaluator.evaluate(Colors.WHITE);
 
@@ -106,10 +107,11 @@ public class CompositeBoardStateEvaluatorTest {
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
         var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
         var movesEvaluator = mock(MovesBoardStateEvaluator.class);
+        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
 
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
 
         var boardState = evaluator.evaluate(Colors.BLACK);
 
@@ -126,6 +128,7 @@ public class CompositeBoardStateEvaluatorTest {
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
         var movesEvaluator = mock(MovesBoardStateEvaluator.class);
+        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
 
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
         when(staleMatedEvaluator.evaluate(any()))
@@ -136,7 +139,7 @@ public class CompositeBoardStateEvaluatorTest {
 
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
 
         var boardState = evaluator.evaluate(Colors.BLACK);
 
@@ -150,6 +153,7 @@ public class CompositeBoardStateEvaluatorTest {
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
         var movesEvaluator = mock(MovesBoardStateEvaluator.class);
+        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
 
         var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
         when(foldRepetitionEvaluator.evaluate(any()))
@@ -157,7 +161,7 @@ public class CompositeBoardStateEvaluatorTest {
 
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
 
         var boardState = evaluator.evaluate(Colors.WHITE);
 
@@ -171,6 +175,7 @@ public class CompositeBoardStateEvaluatorTest {
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
         var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
+        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
 
         var movesEvaluator = mock(MovesBoardStateEvaluator.class);
         when(movesEvaluator.evaluate(any()))
@@ -178,7 +183,7 @@ public class CompositeBoardStateEvaluatorTest {
 
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
 
         var boardState = evaluator.evaluate(Colors.WHITE);
 
@@ -215,10 +220,11 @@ public class CompositeBoardStateEvaluatorTest {
             });
 
         var movesEvaluator = mock(MovesBoardStateEvaluator.class);
+        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
 
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
 
         var boardState = evaluator.evaluate(Colors.WHITE);
 
@@ -248,10 +254,11 @@ public class CompositeBoardStateEvaluatorTest {
             });
 
         var movesEvaluator = mock(MovesBoardStateEvaluator.class);
+        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
 
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
 
         var boardState = evaluator.evaluate(Colors.WHITE);
 
@@ -264,6 +271,7 @@ public class CompositeBoardStateEvaluatorTest {
         var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
+        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
 
         var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
         when(foldRepetitionEvaluator.evaluate(any()))
@@ -283,7 +291,7 @@ public class CompositeBoardStateEvaluatorTest {
 
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
 
         var boardState = evaluator.evaluate(Colors.WHITE);
 
@@ -296,6 +304,7 @@ public class CompositeBoardStateEvaluatorTest {
         var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
+        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
 
         var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
         when(foldRepetitionEvaluator.evaluate(any()))
@@ -315,7 +324,7 @@ public class CompositeBoardStateEvaluatorTest {
 
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
 
         var boardState = evaluator.evaluate(Colors.WHITE);
         var types = Set.of(
@@ -339,6 +348,7 @@ public class CompositeBoardStateEvaluatorTest {
 
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
+        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
 
         var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
         when(foldRepetitionEvaluator.evaluate(any()))
@@ -358,7 +368,7 @@ public class CompositeBoardStateEvaluatorTest {
 
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
 
         var boardState = evaluator.evaluate(Colors.WHITE);
 
@@ -376,6 +386,7 @@ public class CompositeBoardStateEvaluatorTest {
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
         var movesEvaluator = mock(MovesBoardStateEvaluator.class);
+        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
 
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
         when(staleMatedEvaluator.evaluate(any()))
@@ -383,7 +394,7 @@ public class CompositeBoardStateEvaluatorTest {
 
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
 
         var boardState = evaluator.evaluate(Colors.WHITE);
 
