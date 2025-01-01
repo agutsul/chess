@@ -86,7 +86,7 @@ public enum AlgebraicActionFormatter implements ActionFormatter {
         this.type = type;
     }
 
-    Action.Type type() {
+    private Action.Type type() {
         return type;
     }
 
