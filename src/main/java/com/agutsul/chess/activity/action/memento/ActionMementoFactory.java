@@ -158,7 +158,7 @@ public enum ActionMementoFactory
         return type;
     }
 
-    private static ActionMemento<String, String> createMemento(Action.Type actionType,
+    static ActionMemento<String, String> createMemento(Action.Type actionType,
                                                        Piece<?> sourcePiece,
                                                        Position targetPosition) {
 
