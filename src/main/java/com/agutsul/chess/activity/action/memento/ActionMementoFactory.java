@@ -182,6 +182,15 @@ public enum ActionMementoFactory
         return String.valueOf(label);
     }
 
+    private static Piece<?> resolveSourcePiece(Action<?> action) {
+        if (Action.Type.PROMOTE.equals(action.getType())) {
+            var originAction = (Action<?>) action.getSource();
+            return (Piece<?>) originAction.getSource();
+        }
+
+        return (Piece<?>) action.getSource();
+    }
+
     public static ActionMemento<?,?> createMemento(Board board, Action<?> action) {
         var memento = MODES.get(action.getType()).apply(action);
         if (Action.Type.CASTLING.equals(action.getType())) {
@@ -192,11 +201,7 @@ public enum ActionMementoFactory
         // To be able to clearly identify source piece while reviewing journal additional code should be provided.
         // Code can be either the first position symbol or the last one ( if the first matches )
 
-        var source = Action.Type.PROMOTE.equals(action.getType())
-                ? ((Action<?>) action.getSource()).getSource()
-                : action.getSource();
-
-        var sourcePiece = (Piece<?>) source;
+        var sourcePiece = resolveSourcePiece(action);
 
         var allPieces = board.getPieces(sourcePiece.getColor(), sourcePiece.getType());
         if (allPieces.size() == 1) {
