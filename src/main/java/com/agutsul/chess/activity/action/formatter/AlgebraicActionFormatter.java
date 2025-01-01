@@ -90,7 +90,7 @@ public enum AlgebraicActionFormatter implements ActionFormatter {
         return type;
     }
 
-    static String formatPawn(ActionMemento<?,?> memento) {
+    private static String formatPawn(ActionMemento<?,?> memento) {
         var position = String.valueOf(memento.getSource());
         var label = String.valueOf(position.charAt(0));
 
@@ -101,7 +101,7 @@ public enum AlgebraicActionFormatter implements ActionFormatter {
         );
     }
 
-    static String formatCode(String code) {
+    private static String formatCode(String code) {
         return defaultIfNull(code, EMPTY);
     }
 
