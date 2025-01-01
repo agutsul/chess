@@ -21,7 +21,6 @@ import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.activity.action.event.ActionExecutionEvent;
 import com.agutsul.chess.activity.action.event.ActionPerformedEvent;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
-import com.agutsul.chess.activity.action.memento.ActionMementoDecorator;
 import com.agutsul.chess.activity.action.memento.ActionMementoFactory;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.event.Observable;
@@ -124,52 +123,7 @@ public class PerformActionCommand
     }
 
     private ActionMemento<?,?> createMemento(Action<?> action) {
-        var memento = ActionMementoFactory.createMemento(action);
-
-        // There are cases when multiple pieces of the same color and type can perform an action.
-        // To be able to clearly identify source piece while reviewing journal additional code should be provided.
-        // Code can be either the first position symbol or the last one ( if the first matches )
-
-        // NOTE: castling action is skipped as there is no case for mis-interpretation there
-        if (Action.Type.CASTLING.equals(action.getType())) {
-            return memento;
-        }
-
-        var allPieces = this.board.getPieces(
-                this.sourcePiece.getColor(),
-                this.sourcePiece.getType()
-        );
-
-        if (allPieces.size() == 1) {
-            return memento;
-        }
-
-        var code = allPieces.stream()
-                .filter(piece -> !Objects.equals(piece, this.sourcePiece))
-                .filter(piece -> {
-                    var actions = this.board.getActions(piece);
-                    var isActionFound = actions.stream()
-                            .filter(a -> !Action.Type.CASTLING.equals(a.getType()))
-                            .map(Action::getPosition)
-                            .anyMatch(position -> Objects.equals(position, this.targetPosition));
-
-                    return isActionFound;
-                })
-                .map(piece -> createCode(piece.getPosition()))
-                .findFirst()
-                .orElse(null);
-
-        return new ActionMementoDecorator<>(memento, code);
-    }
-
-    private String createCode(Position position) {
-        var sourcePosition = this.sourcePiece.getPosition();
-        var code = Position.codeOf(sourcePosition);
-
-        return String.valueOf(sourcePosition.x() == position.x()
-                ? code.charAt(1) // y
-                : code.charAt(0) // x
-        );
+        return ActionMementoFactory.createMemento(board, action);
     }
 
     private static final class ActionFilter

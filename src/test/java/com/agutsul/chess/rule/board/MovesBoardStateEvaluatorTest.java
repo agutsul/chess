@@ -128,7 +128,7 @@ public class MovesBoardStateEvaluatorTest {
             .thenReturn(Colors.WHITE);
 
         var position = mock(Position.class);
-        var memento = createMemento(new PieceMoveAction<>(queen, position));
+        var memento = createMemento(board, new PieceMoveAction<>(queen, position));
 
         var journal = new JournalImpl();
         for (int i = 0; i <= limit; i++) {
@@ -150,13 +150,13 @@ public class MovesBoardStateEvaluatorTest {
             .thenReturn(Colors.WHITE);
 
         var position = mock(Position.class);
-        var moveMemento = createMemento(new PieceMoveAction<>(pawn1, position));
+        var moveMemento = createMemento(board, new PieceMoveAction<>(pawn1, position));
 
         var pawn2 = mock(PawnPiece.class);
         when(pawn2.getPosition())
             .thenReturn(position);
 
-        var captureMemento = createMemento(new PieceCaptureAction<>(pawn1, pawn2));
+        var captureMemento = createMemento(board, new PieceCaptureAction<>(pawn1, pawn2));
 
         var journal = new JournalImpl();
         for (int i = 0; i <= limit; i++) {

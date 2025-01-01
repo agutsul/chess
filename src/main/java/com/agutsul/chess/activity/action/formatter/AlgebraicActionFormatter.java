@@ -4,7 +4,6 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.substring;
 
 import java.util.Map;
 import java.util.Objects;
@@ -36,34 +35,28 @@ public enum AlgebraicActionFormatter implements ActionFormatter {
     CAPTURE_MODE(Action.Type.CAPTURE) {
         @Override
         public String formatMemento(ActionMemento<?,?> memento) {
-            var code = formatCode(memento.getCode());
+            return String.format("%sx%s",
+                    formatSource(memento),
+                    memento.getTarget()
+            );
+        }
 
-            String source = null;
+        private static String formatSource(ActionMemento<?,?> memento) {
             if (Piece.Type.PAWN.equals(memento.getPieceType())) {
-                source = formatPawnPosition(memento.getSource());
-                code = Objects.equals(source, code) ? EMPTY : code;
-            } else {
-                source = String.valueOf(memento.getPieceType());
+                return formatPawn(memento);
             }
 
-            return String.format("%s%sx%s",
-                    source,
-                    code,
-                    memento.getTarget()
+            return String.format("%s%s",
+                    memento.getPieceType(),
+                    formatCode(memento.getCode())
             );
         }
     },
     EN_PASSANT_MODE(Action.Type.EN_PASSANT) {
         @Override
         public String formatMemento(ActionMemento<?,?> memento) {
-            var originMemento = (ActionMemento<?,?>) memento.getSource();
-
-            var source = formatPawnPosition(originMemento.getSource());
-            var code = formatCode(memento.getCode());
-
-            return String.format("%s%sx%s e.p.",
-                    source,
-                    Objects.equals(source, code) ? EMPTY : code,
+            return String.format("%sx%s e.p.",
+                    formatPawn((ActionMemento<?,?>) memento.getSource()),
                     memento.getTarget()
             );
         }
@@ -97,8 +90,15 @@ public enum AlgebraicActionFormatter implements ActionFormatter {
         return type;
     }
 
-    static String formatPawnPosition(Object pawnPosition) {
-        return substring(String.valueOf(pawnPosition), 0, 1);
+    static String formatPawn(ActionMemento<?,?> memento) {
+        var position = String.valueOf(memento.getSource());
+        var label = String.valueOf(position.charAt(0));
+
+        var code = formatCode(memento.getCode());
+        return String.format("%s%s",
+                label,
+                Objects.equals(label, code) ? EMPTY : code
+        );
     }
 
     static String formatCode(String code) {

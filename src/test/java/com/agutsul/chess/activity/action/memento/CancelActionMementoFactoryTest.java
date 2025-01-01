@@ -44,7 +44,7 @@ public class CancelActionMementoFactoryTest {
                 .findFirst()
                 .get();
 
-        var memento = ActionMementoFactory.createMemento(moveAction);
+        var memento = ActionMementoFactory.createMemento(board, moveAction);
 
         moveAction.execute();
 
@@ -76,7 +76,7 @@ public class CancelActionMementoFactoryTest {
                 .findFirst()
                 .get();
 
-        var memento = ActionMementoFactory.createMemento(captureAction);
+        var memento = ActionMementoFactory.createMemento(board, captureAction);
 
         captureAction.execute();
 
@@ -106,7 +106,7 @@ public class CancelActionMementoFactoryTest {
                 .findFirst()
                 .get();
 
-        var memento = ActionMementoFactory.createMemento(promoteAction);
+        var memento = ActionMementoFactory.createMemento(board, promoteAction);
 
         promoteAction.execute();
 
@@ -145,7 +145,7 @@ public class CancelActionMementoFactoryTest {
                 .findFirst()
                 .get();
 
-        var memento = ActionMementoFactory.createMemento(promoteAction);
+        var memento = ActionMementoFactory.createMemento(board, promoteAction);
 
         promoteAction.execute();
 
@@ -180,7 +180,7 @@ public class CancelActionMementoFactoryTest {
                 .findFirst()
                 .get();
 
-        var memento = ActionMementoFactory.createMemento(castlingAction);
+        var memento = ActionMementoFactory.createMemento(board, castlingAction);
 
         castlingAction.execute();
 
@@ -215,7 +215,7 @@ public class CancelActionMementoFactoryTest {
                 .findFirst()
                 .get();
 
-        var memento = ActionMementoFactory.createMemento(enPassantAction);
+        var memento = ActionMementoFactory.createMemento(board, enPassantAction);
 
         enPassantAction.execute();
 

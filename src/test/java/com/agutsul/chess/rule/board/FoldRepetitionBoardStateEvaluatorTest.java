@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.board;
 
+import static com.agutsul.chess.activity.action.memento.ActionMementoFactory.createMemento;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -12,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.action.PieceMoveAction;
-import com.agutsul.chess.activity.action.memento.ActionMementoFactory;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.board.state.BoardState;
@@ -58,17 +58,17 @@ public class FoldRepetitionBoardStateEvaluatorTest {
         var moveAction2 = new PieceMoveAction(whiteRook, board.getPosition("a1").get());
         var moveAction3 = new PieceMoveAction(whitePawn, board.getPosition("e3").get());
 
-        var memento1 = ActionMementoFactory.createMemento(moveAction1);
-        var memento2 = ActionMementoFactory.createMemento(moveAction2);
-        var memento3 = ActionMementoFactory.createMemento(moveAction3);
+        var memento1 = createMemento(board, moveAction1);
+        var memento2 = createMemento(board, moveAction2);
+        var memento3 = createMemento(board, moveAction3);
 
         var blackRook = board.getPiece("h8").get();
 
         var moveAction4 = new PieceMoveAction(blackRook, board.getPosition("h7").get());
         var moveAction5 = new PieceMoveAction(blackRook, board.getPosition("h8").get());
 
-        var memento4 = ActionMementoFactory.createMemento(moveAction4);
-        var memento5 = ActionMementoFactory.createMemento(moveAction5);
+        var memento4 = createMemento(board, moveAction4);
+        var memento5 = createMemento(board, moveAction5);
 
         var journal = new JournalImpl();
         journal.add(memento1);
@@ -104,17 +104,17 @@ public class FoldRepetitionBoardStateEvaluatorTest {
         var moveAction2 = new PieceMoveAction(whiteRook, board.getPosition("c1").get());
         var moveAction3 = new PieceMoveAction(whitePawn, board.getPosition("e3").get());
 
-        var memento1 = ActionMementoFactory.createMemento(moveAction1);
-        var memento2 = ActionMementoFactory.createMemento(moveAction2);
-        var memento3 = ActionMementoFactory.createMemento(moveAction3);
+        var memento1 = createMemento(board, moveAction1);
+        var memento2 = createMemento(board, moveAction2);
+        var memento3 = createMemento(board, moveAction3);
 
         var blackRook = board.getPiece("h8").get();
 
         var moveAction4 = new PieceMoveAction(blackRook, board.getPosition("h7").get());
         var moveAction5 = new PieceMoveAction(blackRook, board.getPosition("h6").get());
 
-        var memento4 = ActionMementoFactory.createMemento(moveAction4);
-        var memento5 = ActionMementoFactory.createMemento(moveAction5);
+        var memento4 = createMemento(board, moveAction4);
+        var memento5 = createMemento(board, moveAction5);
 
         var journal = new JournalImpl();
         journal.add(memento1);
@@ -155,17 +155,17 @@ public class FoldRepetitionBoardStateEvaluatorTest {
         var moveAction2 = new PieceMoveAction(whiteRook, board.getPosition("c1").get());
         var moveAction3 = new PieceMoveAction(whitePawn, board.getPosition("e3").get());
 
-        var memento1 = ActionMementoFactory.createMemento(moveAction1);
-        var memento2 = ActionMementoFactory.createMemento(moveAction2);
-        var memento3 = ActionMementoFactory.createMemento(moveAction3);
+        var memento1 = createMemento(board, moveAction1);
+        var memento2 = createMemento(board, moveAction2);
+        var memento3 = createMemento(board, moveAction3);
 
         var blackRook = board.getPiece("h8").get();
 
         var moveAction4 = new PieceMoveAction(blackRook, board.getPosition("h7").get());
         var moveAction5 = new PieceMoveAction(blackRook, board.getPosition("h6").get());
 
-        var memento4 = ActionMementoFactory.createMemento(moveAction4);
-        var memento5 = ActionMementoFactory.createMemento(moveAction5);
+        var memento4 = createMemento(board, moveAction4);
+        var memento5 = createMemento(board, moveAction5);
 
         var journal = new JournalImpl();
         journal.add(memento1);
