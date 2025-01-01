@@ -209,7 +209,7 @@ public enum ActionMementoFactory
         }
 
         var targetPosition = action.getPosition();
-        var code = allPieces.stream()
+        var optionalMemento = allPieces.stream()
                 .filter(piece -> !Objects.equals(piece, sourcePiece))
                 .filter(piece -> {
                     var actions = board.getActions(piece);
@@ -220,10 +220,14 @@ public enum ActionMementoFactory
 
                     return isFound;
                 })
-                .map(piece -> createCode(sourcePiece, piece.getPosition()))
-                .findFirst()
-                .orElse(null);
+                .map(piece -> new ActionMementoDecorator<>(
+                        memento,
+                        createCode(sourcePiece, piece.getPosition())
+                ))
+                .findFirst();
 
-        return new ActionMementoDecorator<>(memento, code);
+        return optionalMemento.isPresent()
+                ? optionalMemento.get()
+                : memento;
     }
 }
