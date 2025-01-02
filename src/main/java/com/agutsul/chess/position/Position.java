@@ -1,5 +1,7 @@
 package com.agutsul.chess.position;
 
+import com.agutsul.chess.color.Color;
+
 public interface Position
         extends Calculated {
 
@@ -10,6 +12,8 @@ public interface Position
 
     int x();
     int y();
+
+    Color getColor();
 
     static String codeOf(int x, int y) {
         if (x < MIN || y < MIN || x >= MAX || y >= MAX) {

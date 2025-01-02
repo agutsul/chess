@@ -15,7 +15,6 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.InsufficientMaterialBoardState;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
@@ -83,14 +82,14 @@ final class InsufficientMaterialBoardStateEvaluator
 
         @Override
         public final Optional<BoardState> evaluate(Color color) {
-            if (validate(piecesCount)) {
+            if (isNotApplicable(piecesCount)) {
                 return Optional.empty();
             }
 
             return evaluateBoard(color);
         }
 
-        protected abstract boolean validate(int piecesCount);
+        protected abstract boolean isNotApplicable(int piecesCount);
 
         protected abstract Optional<BoardState> evaluateBoard(Color color);
     }
@@ -107,7 +106,7 @@ final class InsufficientMaterialBoardStateEvaluator
         }
 
         @Override
-        protected boolean validate(int piecesCount) {
+        protected boolean isNotApplicable(int piecesCount) {
             var allPieces = board.getPieces();
             return allPieces.size() != piecesCount;
         }
@@ -194,7 +193,7 @@ final class InsufficientMaterialBoardStateEvaluator
         }
 
         @Override
-        protected boolean validate(int piecesCount) {
+        protected boolean isNotApplicable(int piecesCount) {
             var allPieces = board.getPieces();
             return allPieces.size() < piecesCount;
         }
@@ -218,16 +217,10 @@ final class InsufficientMaterialBoardStateEvaluator
             // all the pieces of pieceType are located on the positions with the same color
             var positionColors = pieces.stream()
                     .map(Piece::getPosition)
-                    .map(position -> getPositionColor(position))
+                    .map(Position::getColor)
                     .collect(toSet());
 
             return positionColors.size() == 1;
-        }
-
-        private static Color getPositionColor(Position position) {
-            return (position.x() + position.y()) % 2 == 0
-                    ? Colors.BLACK
-                    : Colors.WHITE;
         }
     }
 

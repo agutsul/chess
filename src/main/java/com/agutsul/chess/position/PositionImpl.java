@@ -2,6 +2,8 @@ package com.agutsul.chess.position;
 
 import static com.agutsul.chess.position.Position.codeOf;
 
+import com.agutsul.chess.color.Color;
+import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalPositionException;
 
 final class PositionImpl
@@ -12,6 +14,7 @@ final class PositionImpl
     private final int x;
     private final int y;
     private final String code;
+    private final Color color;
 
     PositionImpl(int x, int y) {
         var code = codeOf(x,y);
@@ -21,9 +24,12 @@ final class PositionImpl
             );
         }
 
+        this.code = code;
+
         this.x = x;
         this.y = y;
-        this.code = code;
+
+        this.color = (x + y) % 2 == 0 ? Colors.BLACK : Colors.WHITE;
     }
 
     @Override
@@ -34,6 +40,11 @@ final class PositionImpl
     @Override
     public int y() {
         return y;
+    }
+
+    @Override
+    public Color getColor() {
+        return color;
     }
 
     public String getCode() {

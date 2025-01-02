@@ -130,13 +130,8 @@ final class MovesBoardStateEvaluator
                 var memento = actions.get(i);
 
                 var actionType = memento.getActionType();
-                if (isCapture(actionType)) {
-                    counter++;
-                    continue;
-                }
-
-                if (Action.Type.PROMOTE.equals(actionType)
-                        && isCapturePromotion(memento)) {
+                if (isCapture(actionType)
+                        || (Action.Type.PROMOTE.equals(actionType) && isCapturePromotion(memento))) {
 
                     counter++;
                 }
@@ -157,7 +152,6 @@ final class MovesBoardStateEvaluator
         private static boolean isCapture(Action.Type actionType) {
             return Action.Type.CAPTURE.equals(actionType)
                     || Action.Type.EN_PASSANT.equals(actionType);
-
         }
     }
 
@@ -166,7 +160,7 @@ final class MovesBoardStateEvaluator
 
         private static final Logger LOGGER = getLogger(PawnMoveCalculationTask.class);
 
-        PawnMoveCalculationTask(List<ActionMemento<?, ?>> actions, int limit) {
+        PawnMoveCalculationTask(List<ActionMemento<?,?>> actions, int limit) {
             super(LOGGER, actions, limit);
         }
 
@@ -181,13 +175,8 @@ final class MovesBoardStateEvaluator
                 }
 
                 var actionType = memento.getActionType();
-                if (isMove(actionType)) {
-                    counter++;
-                    continue;
-                }
-
-                if (Action.Type.PROMOTE.equals(actionType)
-                        && isMovePromotion(memento)) {
+                if (isMove(actionType)
+                        || (Action.Type.PROMOTE.equals(actionType) && isMovePromotion(memento))) {
 
                     counter++;
                 }
