@@ -1,5 +1,6 @@
 package com.agutsul.chess.command;
 
+import static com.agutsul.chess.activity.action.memento.ActionMementoFactory.createMemento;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
@@ -21,7 +22,6 @@ import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.activity.action.event.ActionExecutionEvent;
 import com.agutsul.chess.activity.action.event.ActionPerformedEvent;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
-import com.agutsul.chess.activity.action.memento.ActionMementoFactory;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.CommandException;
@@ -106,7 +106,6 @@ public class PerformActionCommand
         }
 
         this.action = targetAction.get();
-        this.memento = createMemento(this.action);
     }
 
     @Override
@@ -114,16 +113,13 @@ public class PerformActionCommand
         this.observable.notifyObservers(new ActionExecutionEvent(this.action));
 
         try {
+            this.memento = createMemento(this.board, this.action);
             this.action.execute();
         } catch (Exception e) {
             throw new CommandException(e.getMessage());
         }
 
         this.observable.notifyObservers(new ActionPerformedEvent(this.memento));
-    }
-
-    private ActionMemento<?,?> createMemento(Action<?> action) {
-        return ActionMementoFactory.createMemento(board, action);
     }
 
     private static final class ActionFilter
