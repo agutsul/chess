@@ -1,6 +1,5 @@
 package com.agutsul.chess.board;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.concurrent.Executors.newFixedThreadPool;
@@ -264,7 +263,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
                                                                     String... positions) {
         var allPositions = new ArrayList<String>();
         allPositions.add(position);
-        allPositions.addAll(asList(positions));
+        allPositions.addAll(List.of(positions));
 
         LOGGER.info("Getting pieces with type of '{}' color and locations '[{}]'",
                 color,

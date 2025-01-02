@@ -30,7 +30,7 @@ public enum ActionMementoFactory
         public ActionMemento<?,?> apply(Action<?> action) {
             return createMemento(
                     (Type) action.getType(),
-                    (Piece<?>) action.getSource(),
+                    getSource(action),
                     action.getPosition()
             );
         }
@@ -41,7 +41,7 @@ public enum ActionMementoFactory
         public ActionMemento<?,?> apply(Action<?> action) {
             return createMemento(
                     (Type) action.getType(),
-                    (Piece<?>) action.getSource(),
+                    getSource(action),
                     action.getPosition()
             );
         }
@@ -66,6 +66,12 @@ public enum ActionMementoFactory
                     memento
             );
         }
+
+        @Override
+        Piece<?> getSource(Action<?> action) {
+            var promoteAction = (PiecePromoteAction<?,?>) action;
+            return super.getSource((Action<?>) promoteAction.getSource());
+        }
     },
     CASTLING_MODE(Action.Type.CASTLING) {
 
@@ -85,6 +91,12 @@ public enum ActionMementoFactory
                     createMemento(kingAction),
                     createMemento(rookAction)
             );
+        }
+
+        @Override
+        Piece<?> getSource(Action<?> action) {
+            var castlingAction = (PieceCastlingAction<?,?,?>) action;
+            return super.getSource(castlingAction.getSource());
         }
 
         private static CastlingMoveAction<?,?> filter(PieceCastlingAction<?,?,?> castlingAction,
@@ -142,6 +154,10 @@ public enum ActionMementoFactory
         return type;
     }
 
+    Piece<?> getSource(Action<?> action) {
+        return (Piece<?>) action.getSource();
+    }
+
     static ActionMemento<String,String> createMemento(Action.Type actionType,
                                                       Piece<?> sourcePiece,
                                                       Position targetPosition) {
@@ -166,17 +182,10 @@ public enum ActionMementoFactory
         return String.valueOf(label);
     }
 
-    private static Piece<?> resolveSourcePiece(Action<?> action) {
-        if (Action.Type.PROMOTE.equals(action.getType())) {
-            var originAction = (Action<?>) action.getSource();
-            return (Piece<?>) originAction.getSource();
-        }
-
-        return (Piece<?>) action.getSource();
-    }
-
     public static ActionMemento<?,?> createMemento(Board board, Action<?> action) {
-        var memento = MODES.get(action.getType()).apply(action);
+        var function = MODES.get(action.getType());
+
+        var memento = function.apply(action);
         if (Action.Type.CASTLING.equals(action.getType())) {
             return memento;
         }
@@ -185,7 +194,7 @@ public enum ActionMementoFactory
         // To be able to clearly identify source piece while reviewing journal additional code should be provided.
         // Code can be either the first position symbol or the last one ( if the first matches )
 
-        var sourcePiece = resolveSourcePiece(action);
+        var sourcePiece = function.getSource(action);
 
         var allPieces = board.getPieces(sourcePiece.getColor(), sourcePiece.getType());
         if (allPieces.size() == 1) {
