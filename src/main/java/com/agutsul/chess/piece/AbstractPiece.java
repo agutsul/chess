@@ -17,6 +17,7 @@ import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Captured;
 import com.agutsul.chess.Disposable;
 import com.agutsul.chess.Movable;
+import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.Restorable;
 import com.agutsul.chess.activity.action.Action;
@@ -250,18 +251,18 @@ abstract class AbstractPiece<COLOR extends Color>
     public final boolean isProtected() {
         LOGGER.info("Checking if piece '{}' is protected by the other piece", this);
 
-        // piece can't protect itself. only other piece with the same color
+        // piece can't protect itself. only other piece with the same color ( if it is not pinned )
         var protectors = board.getPieces(getColor()).stream()
                 .filter(piece -> !Objects.equals(piece, this))
+                .filter(piece -> Piece.Type.KING.equals(piece.getType())
+                        || !((Pinnable) piece).isPinned()
+                )
                 .toList();
 
-        var protectImpacts = protectors.stream()
+        var isProtected = protectors.stream()
                 .map(piece -> board.getImpacts(piece, Impact.Type.PROTECT))
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceProtectImpact<?,?,?>) impact)
-                .toList();
-
-        var isProtected = protectImpacts.stream()
                 .anyMatch(protector -> Objects.equals(protector.getTarget(), this));
 
         return isProtected;

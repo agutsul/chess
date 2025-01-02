@@ -4,8 +4,10 @@ import static java.util.Collections.max;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
@@ -118,6 +120,9 @@ final class MovesBoardStateEvaluator
 
         private static final Logger LOGGER = getLogger(CaptureCalculationTask.class);
 
+        private static final Set<Action.Type> CAPTURE_TYPES =
+                EnumSet.of(Action.Type.CAPTURE, Action.Type.EN_PASSANT);
+
         CaptureCalculationTask(List<ActionMemento<?,?>> actions, int limit) {
             super(LOGGER, actions, limit);
         }
@@ -150,8 +155,7 @@ final class MovesBoardStateEvaluator
         }
 
         private static boolean isCapture(Action.Type actionType) {
-            return Action.Type.CAPTURE.equals(actionType)
-                    || Action.Type.EN_PASSANT.equals(actionType);
+            return CAPTURE_TYPES.contains(actionType);
         }
     }
 

@@ -43,6 +43,7 @@ final class KingCaptureCheckMateEvaluator
             var isProtected = ((Protectable) piece).isProtected();
             if (!isProtected) {
                 positions.add(piece.getPosition());
+                break;
             }
         }
 

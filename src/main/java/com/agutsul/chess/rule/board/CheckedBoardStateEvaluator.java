@@ -15,6 +15,7 @@ import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.CheckedBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
+import com.agutsul.chess.piece.Piece;
 
 final class CheckedBoardStateEvaluator
         extends AbstractBoardStateEvaluator {
@@ -40,8 +41,11 @@ final class CheckedBoardStateEvaluator
     }
 
     private boolean isChecked(KingPiece<Color> king) {
-        var pieces = board.getPieces(king.getColor().invert());
-        var isChecked = pieces.stream()
+        var attackers = board.getPieces(king.getColor().invert()).stream()
+                .filter(piece -> !Piece.Type.KING.equals(piece.getType()))
+                .toList();
+
+        var isChecked = attackers.stream()
                 .map(piece -> board.getImpacts(piece, Impact.Type.CHECK))
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceCheckImpact<?,?,?,?>) impact)

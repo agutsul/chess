@@ -48,6 +48,10 @@ final class StaleMatedBoardStateEvaluator
             } else {
                 allActions.addAll(actions);
             }
+
+            if (!allActions.isEmpty()) {
+                break;
+            }
         }
 
         return allActions.isEmpty()

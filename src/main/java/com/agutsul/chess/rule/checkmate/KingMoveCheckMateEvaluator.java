@@ -39,6 +39,7 @@ final class KingMoveCheckMateEvaluator
                 var isMonitored = board.isMonitored(targetPosition, attackerColor);
                 if (!isMonitored) {
                     positions.add(targetPosition);
+                    break;
                 }
             }
         }
