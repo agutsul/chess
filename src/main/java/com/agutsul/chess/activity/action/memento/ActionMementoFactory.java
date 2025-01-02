@@ -12,11 +12,9 @@ import java.util.stream.Stream;
 import com.agutsul.chess.Positionable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.Action.Type;
-import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceCastlingAction;
 import com.agutsul.chess.activity.action.PieceCastlingAction.CastlingMoveAction;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
-import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.Piece;
@@ -30,13 +28,9 @@ public enum ActionMementoFactory
 
         @Override
         public ActionMemento<?,?> apply(Action<?> action) {
-            return createMemento((PieceMoveAction<?,?>) action);
-        }
-
-        private static ActionMemento<?,?> createMemento(PieceMoveAction<?,?> action) {
             return createMemento(
                     (Type) action.getType(),
-                    action.getSource(),
+                    (Piece<?>) action.getSource(),
                     action.getPosition()
             );
         }
@@ -45,13 +39,9 @@ public enum ActionMementoFactory
 
         @Override
         public ActionMemento<?,?> apply(Action<?> action) {
-            return createMemento((PieceCaptureAction<?,?,?,?>) action);
-        }
-
-        private static ActionMemento<?,?> createMemento(PieceCaptureAction<?,?,?,?> action) {
             return createMemento(
                     (Type) action.getType(),
-                    action.getSource(),
+                    (Piece<?>) action.getSource(),
                     action.getPosition()
             );
         }
@@ -60,20 +50,18 @@ public enum ActionMementoFactory
 
         @Override
         public ActionMemento<?,?> apply(Action<?> action) {
-            return createMemento((PiecePromoteAction<?,?>) action);
-        }
+            var promoteAction = (PiecePromoteAction<?,?>) action;
 
-        private static PromoteActionMemento createMemento(PiecePromoteAction<?,?> action) {
-            var originAction = action.getSource();
+            var originAction = promoteAction.getSource();
             var memento = createMemento(
                     (Type) originAction.getType(),
                     originAction.getSource(),
                     ((Positionable) originAction).getPosition()
             );
 
-            var pieceTypeInitializer = new PieceTypeLazyInitializer(action);
+            var pieceTypeInitializer = new PieceTypeLazyInitializer(promoteAction);
             return new PromoteActionMemento(
-                    (Type) action.getType(),
+                    (Type) promoteAction.getType(),
                     pieceTypeInitializer,
                     memento
             );
@@ -83,19 +71,17 @@ public enum ActionMementoFactory
 
         @Override
         public ActionMemento<?,?> apply(Action<?> action) {
-            return createMemento((PieceCastlingAction<?,?,?>) action);
-        }
+            var castlingAction = (PieceCastlingAction<?,?,?>) action;
 
-        private static CastlingActionMemento createMemento(PieceCastlingAction<?,?,?> action) {
             Predicate<CastlingMoveAction<?,?>> predicate =
-                    moveAction -> Objects.equals(action.getPosition(), moveAction.getPosition());
+                    moveAction -> Objects.equals(castlingAction.getPosition(), moveAction.getPosition());
 
-            var kingAction = filter(action, predicate);
-            var rookAction = filter(action, predicate.negate());
+            var kingAction = filter(castlingAction, predicate);
+            var rookAction = filter(castlingAction, predicate.negate());
 
             return new CastlingActionMemento(
-                    action.getCode(),
-                    (Type) action.getType(),
+                    castlingAction.getCode(),
+                    (Type) castlingAction.getType(),
                     createMemento(kingAction),
                     createMemento(rookAction)
             );
@@ -124,12 +110,10 @@ public enum ActionMementoFactory
 
         @Override
         public ActionMemento<?,?> apply(Action<?> action) {
-            return createMemento((PieceEnPassantAction<?,?,?,?>) action);
-        }
+            var enPassantAction = (PieceEnPassantAction<?,?,?,?>) action;
 
-        private static EnPassantActionMemento createMemento(PieceEnPassantAction<?,?,?,?> action) {
-            var sourcePawn = action.getSource();
-            var targetPawn = action.getTarget();
+            var sourcePawn = enPassantAction.getSource();
+            var targetPawn = enPassantAction.getTarget();
 
             var memento = createMemento(
                     Action.Type.CAPTURE,
@@ -138,9 +122,9 @@ public enum ActionMementoFactory
             );
 
             return new EnPassantActionMemento(
-                    (Type) action.getType(),
+                    (Type) enPassantAction.getType(),
                     memento,
-                    action.getPosition()
+                    enPassantAction.getPosition()
             );
         }
     };
@@ -158,9 +142,9 @@ public enum ActionMementoFactory
         return type;
     }
 
-    static ActionMemento<String, String> createMemento(Action.Type actionType,
-                                                       Piece<?> sourcePiece,
-                                                       Position targetPosition) {
+    static ActionMemento<String,String> createMemento(Action.Type actionType,
+                                                      Piece<?> sourcePiece,
+                                                      Position targetPosition) {
 
         return new ActionMementoImpl<>(
                 sourcePiece.getColor(),
@@ -173,7 +157,7 @@ public enum ActionMementoFactory
 
     private static String createCode(Piece<?> piece, Position position) {
         var sourcePosition = piece.getPosition();
-        var code = Position.codeOf(sourcePosition);
+        var code = String.valueOf(sourcePosition);
 
         var label = sourcePosition.x() == position.x()
                 ? code.charAt(1)  // y
