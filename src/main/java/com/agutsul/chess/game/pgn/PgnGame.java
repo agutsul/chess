@@ -82,18 +82,11 @@ public final class PgnGame
     private Observer createPlayerObserver(Player player, List<String> allActions,
                                           IntFunction<Boolean> filterFunction) {
 
-        var playerActions = filterActions(allActions, filterFunction);
-        return new PgnPlayerInputObserver(player, this, playerActions);
-    }
-
-    private static List<String> filterActions(List<String> allActions,
-                                              IntFunction<Boolean> function) {
-
-        var actions = range(0, allActions.size())
-                .filter(index -> function.apply(index))
+        var playerActions = range(0, allActions.size())
+                .filter(index -> filterFunction.apply(index))
                 .mapToObj(index -> allActions.get(index))
                 .toList();
 
-        return actions;
+        return new PgnPlayerInputObserver(player, this, playerActions);
     }
 }
