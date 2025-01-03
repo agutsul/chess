@@ -25,6 +25,9 @@ final class AttackerPinCheckActionEvaluator
         var actions = new HashSet<Action<?>>();
         for (var checkedAction : checkActions) {
             var attackLine = checkedAction.getAttackLine();
+            if (attackLine.isEmpty()) {
+                continue;
+            }
 
             for (var pieceMoveAction : pieceMoveActions) {
                 if (attackLine.contains(pieceMoveAction.getPosition())) {

@@ -1,6 +1,6 @@
 package com.agutsul.chess.rule.impact;
 
-import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,19 +35,14 @@ public abstract class AbstractCheckLineImpactRule<COLOR1 extends Color,
 
     @Override
     protected Collection<Calculated> calculate(ATTACKER attacker, KING king) {
-        var checkLines = new ArrayList<Calculated>();
-
         var lines = algo.calculate(attacker);
-        for (var line : lines) {
-            if (!line.contains(king.getPosition())) {
-                continue;
-            }
 
-            var positions = filterCheckPositions(line, king);
-            if (!positions.isEmpty()) {
-                checkLines.add(new Line(positions));
-            }
-        }
+        Collection<Calculated> checkLines = lines.stream()
+                .filter(line -> line.contains(king.getPosition()))
+                .map(line -> findCheckPositions(line, king))
+                .filter(positions -> !positions.isEmpty())
+                .map(Line::new)
+                .collect(toList());
 
         return checkLines;
     }
@@ -65,7 +60,7 @@ public abstract class AbstractCheckLineImpactRule<COLOR1 extends Color,
 
     protected abstract IMPACT createImpact(ATTACKER attacker, KING king, Line line);
 
-    private List<Position> filterCheckPositions(Line line, KING king) {
+    private List<Position> findCheckPositions(Line line, KING king) {
         var positions = new ArrayList<Position>();
         for (var position : line) {
             var optionalPiece = board.getPiece(position);
@@ -74,14 +69,15 @@ public abstract class AbstractCheckLineImpactRule<COLOR1 extends Color,
                 continue;
             }
 
-            if (!Objects.equals(optionalPiece.get(), king)) {
+            if (Objects.equals(optionalPiece.get(), king)) {
+                positions.add(position);
                 break;
             } else {
-                positions.add(position);
-                return positions;
+                positions.clear();
+                break;
             }
         }
 
-        return emptyList();
+        return positions;
     }
 }
