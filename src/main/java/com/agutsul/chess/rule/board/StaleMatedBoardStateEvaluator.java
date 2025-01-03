@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.board;
 
+import static java.util.Comparator.comparing;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
@@ -30,8 +31,12 @@ final class StaleMatedBoardStateEvaluator
 
         var attackerColor = color.invert();
 
+        var pieces = board.getPieces(color).stream()
+                .sorted(comparing(Piece::getType)) // make king piece the last
+                .toList();
+
         var allActions = new ArrayList<Action<?>>();
-        for (var piece : board.getPieces(color)) {
+        for (var piece : pieces) {
             var actions = board.getActions(piece);
 
             if (Piece.Type.KING.equals(piece.getType())) {

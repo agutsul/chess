@@ -41,11 +41,8 @@ final class CheckedBoardStateEvaluator
     }
 
     private boolean isChecked(KingPiece<Color> king) {
-        var attackers = board.getPieces(king.getColor().invert()).stream()
+        var isChecked = board.getPieces(king.getColor().invert()).stream()
                 .filter(piece -> !Piece.Type.KING.equals(piece.getType()))
-                .toList();
-
-        var isChecked = attackers.stream()
                 .map(piece -> board.getImpacts(piece, Impact.Type.CHECK))
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceCheckImpact<?,?,?,?>) impact)
