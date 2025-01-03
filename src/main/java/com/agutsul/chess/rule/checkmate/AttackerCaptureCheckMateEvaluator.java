@@ -3,7 +3,6 @@ package com.agutsul.chess.rule.checkmate;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Objects;
@@ -38,8 +37,8 @@ final class AttackerCaptureCheckMateEvaluator
 
         // check if there is any action to capture piece making a check
         for (var checkMaker : checkMakers) {
-            var captureActions = getAttackActions(checkMaker);
-            checkMakerStatus.put(checkMaker, !captureActions.isEmpty());
+            var isCapturable = isCheckmakerCapturable(checkMaker);
+            checkMakerStatus.put(checkMaker, isCapturable);
         }
 
         // check if it is possible to capture check maker by the king
@@ -69,23 +68,16 @@ final class AttackerCaptureCheckMateEvaluator
         return isCapturable;
     }
 
-    private Collection<AbstractCaptureAction<?,?,?,?>> getAttackActions(Piece<?> piece) {
-        var attackActions = new ArrayList<AbstractCaptureAction<?,?,?,?>>();
+    private boolean isCheckmakerCapturable(Piece<?> piece) {
+        var attackers = board.getAttackers(piece);
 
-        var attackers = board.getAttackers(piece).stream()
+        boolean isCapturable = attackers.stream()
                 .filter(attacker -> !Piece.Type.KING.equals(attacker.getType()))
-                .toList();
+                .map(attacker -> board.getActions(attacker, Action.Type.CAPTURE))
+                .flatMap(Collection::stream)
+                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
+                .anyMatch(action -> Objects.equals(action.getTarget(), piece));
 
-        for (var attacker : attackers) {
-            var actions = board.getActions(attacker, Action.Type.CAPTURE);
-
-            attackActions.addAll(actions.stream()
-                    .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                    .filter(action -> Objects.equals(action.getTarget(), piece))
-                    .toList()
-            );
-        }
-
-        return attackActions;
+        return isCapturable;
     }
 }
