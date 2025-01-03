@@ -44,7 +44,7 @@ class BoardFormatter {
     }
 
     private static String formatPiece(Optional<Piece<Color>> piece) {
-        return piece.isPresent() ? piece.get().getUnicode() : SPACE;
+        return piece.map(Piece::getUnicode).orElse(SPACE);
     }
 
     private static String formatLabelLine() {
