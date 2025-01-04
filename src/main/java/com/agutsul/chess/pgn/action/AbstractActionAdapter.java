@@ -1,5 +1,9 @@
 package com.agutsul.chess.pgn.action;
 
+import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter.BAD_MOVE_CODE;
+import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter.CHECKMATE_CODE;
+import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter.CHECK_CODE;
+import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter.GOOD_MOVE_CODE;
 import static com.agutsul.chess.position.Position.codeOf;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static org.apache.commons.lang3.StringUtils.contains;
@@ -149,7 +153,7 @@ abstract class AbstractActionAdapter
     }
 
     static String prepare(String action) {
-        var command = remove(remove(action, "+"), "#");
-        return remove(remove(command, "!"), "?");
+        var command = remove(remove(action, CHECK_CODE), CHECKMATE_CODE);
+        return remove(remove(command, GOOD_MOVE_CODE), BAD_MOVE_CODE);
     }
 }

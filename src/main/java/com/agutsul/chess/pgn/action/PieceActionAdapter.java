@@ -1,5 +1,6 @@
 package com.agutsul.chess.pgn.action;
 
+import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter.CAPTURE_CODE;
 import static com.agutsul.chess.pgn.action.KingCastlingActionAdapter.CASTLING_SIDES;
 import static org.apache.commons.lang3.StringUtils.contains;
 import static org.apache.commons.lang3.StringUtils.isAllUpperCase;
@@ -11,8 +12,6 @@ import com.agutsul.chess.exception.IllegalActionException;
 
 public final class PieceActionAdapter
         extends AbstractActionAdapter {
-
-    private static final String CAPTURE = "x";
 
     private final ActionAdapter pawnMoveActionAdapter;
     private final ActionAdapter pawnCaptureActionAdapter;
@@ -98,7 +97,7 @@ public final class PieceActionAdapter
 
     private String adaptPieceAction(String action) {
 
-        if (!contains(action, CAPTURE)) {
+        if (!contains(action, CAPTURE_CODE)) {
             return adaptPieceMoveAction(action);
         }
 

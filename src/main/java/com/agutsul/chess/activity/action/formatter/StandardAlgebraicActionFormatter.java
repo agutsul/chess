@@ -30,8 +30,8 @@ public enum StandardAlgebraicActionFormatter implements ActionFormatter {
     CASTLING_MODE(Action.Type.CASTLING) {
 
         private static final Map<Castlingable.Side,String> CODES = Map.of(
-                    Castlingable.Side.KING,  "O-O",
-                    Castlingable.Side.QUEEN, "O-O-O"
+                    Castlingable.Side.KING,  CASTLING_KING_SIDE_CODE,
+                    Castlingable.Side.QUEEN, CASTLING_QUEEN_SIDE_CODE
         );
 
         @Override
@@ -42,8 +42,9 @@ public enum StandardAlgebraicActionFormatter implements ActionFormatter {
     CAPTURE_MODE(Action.Type.CAPTURE) {
         @Override
         public String formatMemento(ActionMemento<?,?> memento) {
-            return String.format("%sx%s",
+            return String.format("%s%s%s",
                     formatSource(memento),
+                    CAPTURE_CODE,
                     memento.getTarget()
             );
         }
@@ -62,8 +63,9 @@ public enum StandardAlgebraicActionFormatter implements ActionFormatter {
     EN_PASSANT_MODE(Action.Type.EN_PASSANT) {
         @Override
         public String formatMemento(ActionMemento<?,?> memento) {
-            return String.format("%sx%s",
+            return String.format("%s%s%s",
                     formatPawn((ActionMemento<?,?>) memento.getSource()),
+                    CAPTURE_CODE,
                     memento.getTarget()
             );
         }
@@ -77,12 +79,22 @@ public enum StandardAlgebraicActionFormatter implements ActionFormatter {
                     ? format(new ActionMementoDecorator<>(originMemento, memento.getCode()))
                     : format(originMemento);
 
-            return String.format("%s=%s",
+            return String.format("%s%s%s",
                     originAction,
-                    memento.getPieceType().code()
+                    PROMOTE_CODE,
+                    memento.getPieceType()
             );
         }
     };
+
+    public static final String GOOD_MOVE_CODE = "!";
+    public static final String BAD_MOVE_CODE  = "?";
+    public static final String CAPTURE_CODE   = "x";
+    public static final String PROMOTE_CODE   = "=";
+    public static final String CHECK_CODE     = "+";
+    public static final String CHECKMATE_CODE = "#";
+    public static final String CASTLING_KING_SIDE_CODE  = "O-O";
+    public static final String CASTLING_QUEEN_SIDE_CODE = "O-O-O";
 
     private static final Map<Action.Type, StandardAlgebraicActionFormatter> MODES =
             Stream.of(values()).collect(toMap(StandardAlgebraicActionFormatter::type, identity()));
@@ -119,7 +131,10 @@ public enum StandardAlgebraicActionFormatter implements ActionFormatter {
         builder.append(formatter.formatMemento(memento));
 
         if (memento instanceof Checkable) {
-            builder.append(((Checkable) memento).isCheckMated() ? "#" : "+");
+            builder.append(((Checkable) memento).isCheckMated()
+                    ? CHECKMATE_CODE
+                    : CHECK_CODE
+            );
         }
 
         return builder.toString();
