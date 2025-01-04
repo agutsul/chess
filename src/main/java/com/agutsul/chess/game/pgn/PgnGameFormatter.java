@@ -27,19 +27,19 @@ public class PgnGameFormatter {
     private static final String DATE_PATTERN = "yyyy.MM.dd";
 
     public static String format(Game game) {
-        var gameState = formatGameState(game.getState());
+        var gameState = format(game.getState());
 
         var builder = new StringBuilder();
 
-        builder.append(formatTag(EVENT_TAG, EMPTY));
-        builder.append(formatTag(WHITE_TAG, formatPlayer(game.getWhitePlayer())));
-        builder.append(formatTag(BLACK_TAG, formatPlayer(game.getBlackPlayer())));
-        builder.append(formatTag(RESULT_TAG, gameState));
-        builder.append(formatTag(DATE_TAG, formatDate(game.getStartedAt())));
+        builder.append(format(EVENT_TAG,  EMPTY));
+        builder.append(format(WHITE_TAG,  format(game.getWhitePlayer())));
+        builder.append(format(BLACK_TAG,  format(game.getBlackPlayer())));
+        builder.append(format(RESULT_TAG, gameState));
+        builder.append(format(DATE_TAG,   format(game.getStartedAt())));
 
         builder.append(lineSeparator());
 
-        builder.append(formatJournal(game.getJournal()));
+        builder.append(format(game.getJournal()));
         builder.append(SPACE);
         builder.append(gameState);
 
@@ -47,15 +47,15 @@ public class PgnGameFormatter {
         return builder.toString();
     }
 
-    private static String formatGameState(GameState gameState) {
+    private static String format(GameState gameState) {
         return String.valueOf(gameState);
     }
 
-    private static String formatPlayer(Player player) {
+    private static String format(Player player) {
         return String.valueOf(player);
     }
 
-    private static String formatDate(LocalDateTime dateTime) {
+    private static String format(LocalDateTime dateTime) {
         if (dateTime == null) {
             return EMPTY;
         }
@@ -63,11 +63,11 @@ public class PgnGameFormatter {
         return dateTime.format(DateTimeFormatter.ofPattern(DATE_PATTERN));
     }
 
-    private static String formatJournal(Journal<ActionMemento<?,?>> journal) {
+    private static String format(Journal<ActionMemento<?,?>> journal) {
         return JournalFormatter.format(journal, Mode.SINGLE_LINE);
     }
 
-    private static String formatTag(String name, String value) {
+    private static String format(String name, String value) {
         return String.format("[%s \"%s\"]%s",
                 defaultIfNull(name, EMPTY),
                 defaultIfNull(value, EMPTY),
