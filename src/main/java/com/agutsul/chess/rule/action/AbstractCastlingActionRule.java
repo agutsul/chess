@@ -32,7 +32,7 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
 
     private enum Castling {
         // rook is located at "h1" or "h8"
-        KING_SIDE(7, 5, 6, "O-O") {
+        KING_SIDE(7, 5, 6, Castlingable.Side.KING) { // "O-O"
             @Override
             <COLOR extends Color> boolean isAllEmptyBetween(Board board,
                                                             KingPiece<COLOR> king,
@@ -74,7 +74,7 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
             }
         },
         // rook is located at "a1" or "a8"
-        QUEEN_SIDE(0, 3, 2, "O-O-O") {
+        QUEEN_SIDE(0, 3, 2, Castlingable.Side.QUEEN) { // "O-O-O"
             @Override
             <COLOR extends Color> boolean isAllEmptyBetween(Board board,
                                                             KingPiece<COLOR> king,
@@ -123,26 +123,26 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
         private int rookSource;
         private int rookTarget;
         private int kingTarget;
-        private String code;
+        private Castlingable.Side side;
 
-        Castling(int rookSource, int rookTarget, int kingTarget, String code) {
+        Castling(int rookSource, int rookTarget, int kingTarget, Castlingable.Side side) {
             this.rookSource = rookSource;
             this.rookTarget = rookTarget;
             this.kingTarget = kingTarget;
-            this.code = code;
+            this.side = side;
         }
 
         @Override
         public String toString() {
-            return code();
+            return side.name();
         }
 
         static Castling of(Position rookPosition) {
             return MAP.get(Integer.valueOf(rookPosition.x()));
         }
 
-        String code() {
-            return code;
+        Castlingable.Side side() {
+            return side;
         }
 
         int getRookSource() {
@@ -208,7 +208,7 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
         var rPosition = board.getPosition(castling.getRookTarget(), rook.getPosition().y());
 
         @SuppressWarnings("unchecked")
-        var action = new PieceCastlingAction<>(castling.code(),
+        var action = new PieceCastlingAction<>(castling.side(),
                 new CastlingMoveAction<>((KING) king, kPosition.get()),
                 new CastlingMoveAction<>((ROOK) rook, rPosition.get())
         );

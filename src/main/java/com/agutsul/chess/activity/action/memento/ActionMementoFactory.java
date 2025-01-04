@@ -86,7 +86,7 @@ public enum ActionMementoFactory
             var rookAction = filter(castlingAction, predicate.negate());
 
             return new CastlingActionMemento(
-                    castlingAction.getCode(),
+                    castlingAction.getSide(),
                     (Type) castlingAction.getType(),
                     createMemento(kingAction),
                     createMemento(rookAction)

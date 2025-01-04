@@ -22,10 +22,10 @@ public class CancelCastlingAction<COLOR extends Color,
 
     private static final Logger LOGGER = getLogger(CancelCastlingAction.class);
 
-    public CancelCastlingAction(String code,
+    public CancelCastlingAction(Castlingable.Side side,
                                 UncastlingMoveAction<COLOR,PIECE1> sourceAction,
                                 UncastlingMoveAction<COLOR,PIECE2> targetAction) {
-        super(code, sourceAction, targetAction);
+        super(side, sourceAction, targetAction);
     }
 
     @Override

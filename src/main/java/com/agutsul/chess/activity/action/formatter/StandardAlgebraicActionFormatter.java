@@ -9,13 +9,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Checkable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.activity.action.memento.ActionMementoDecorator;
 import com.agutsul.chess.piece.Piece;
 
-public enum AlgebraicActionFormatter implements ActionFormatter {
+public enum StandardAlgebraicActionFormatter implements ActionFormatter {
     MOVE_MODE(Action.Type.MOVE) {
         @Override
         public String formatMemento(ActionMemento<?,?> memento) {
@@ -27,9 +28,15 @@ public enum AlgebraicActionFormatter implements ActionFormatter {
         }
     },
     CASTLING_MODE(Action.Type.CASTLING) {
+
+        private static final Map<Castlingable.Side,String> CODES = Map.of(
+                    Castlingable.Side.KING,  "O-O",
+                    Castlingable.Side.QUEEN, "O-O-O"
+        );
+
         @Override
         public String formatMemento(ActionMemento<?,?> memento) {
-            return memento.getCode();
+            return CODES.get(Castlingable.Side.valueOf(memento.getCode()));
         }
     },
     CAPTURE_MODE(Action.Type.CAPTURE) {
@@ -55,7 +62,7 @@ public enum AlgebraicActionFormatter implements ActionFormatter {
     EN_PASSANT_MODE(Action.Type.EN_PASSANT) {
         @Override
         public String formatMemento(ActionMemento<?,?> memento) {
-            return String.format("%sx%s e.p.",
+            return String.format("%sx%s",
                     formatPawn((ActionMemento<?,?>) memento.getSource()),
                     memento.getTarget()
             );
@@ -70,19 +77,19 @@ public enum AlgebraicActionFormatter implements ActionFormatter {
                     ? format(new ActionMementoDecorator<>(originMemento, memento.getCode()))
                     : format(originMemento);
 
-            return String.format("%s%s",
+            return String.format("%s=%s",
                     originAction,
                     memento.getPieceType().code()
             );
         }
     };
 
-    private static final Map<Action.Type, AlgebraicActionFormatter> MODES =
-            Stream.of(values()).collect(toMap(AlgebraicActionFormatter::type, identity()));
+    private static final Map<Action.Type, StandardAlgebraicActionFormatter> MODES =
+            Stream.of(values()).collect(toMap(StandardAlgebraicActionFormatter::type, identity()));
 
     private Action.Type type;
 
-    AlgebraicActionFormatter(Action.Type type) {
+    StandardAlgebraicActionFormatter(Action.Type type) {
         this.type = type;
     }
 

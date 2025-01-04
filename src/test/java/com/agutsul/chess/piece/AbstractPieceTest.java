@@ -8,6 +8,8 @@ import java.util.List;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
+import com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter;
+import com.agutsul.chess.activity.action.memento.ActionMementoFactory;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 
@@ -96,7 +98,8 @@ abstract class AbstractPieceTest {
         if (!expectedCastlingPositions.isEmpty()) {
             var castlingPositions = actions.stream()
                     .filter(action -> Action.Type.CASTLING.equals(action.getType()))
-                    .map(String::valueOf)
+                    .map(action -> ActionMementoFactory.createMemento(board, action))
+                    .map(memento -> StandardAlgebraicActionFormatter.format(memento))
                     .toList();
 
             assertTrue(castlingPositions.containsAll(expectedCastlingPositions));

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.activity.action.CancelCastlingAction.UncastlingMoveAction;
 import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
@@ -38,7 +39,7 @@ public class CancelCastlingActionTest {
                 .findFirst();
 
         assertTrue(castlingAction.isPresent());
-        assertEquals("O-O", castlingAction.get().getCode());
+        assertEquals(Castlingable.Side.KING.name(), castlingAction.get().getCode());
 
         castlingAction.get().execute();
 
@@ -55,7 +56,7 @@ public class CancelCastlingActionTest {
         var kingAction = new UncastlingMoveAction(king, kingSourcePosition);
         var rookAction = new UncastlingMoveAction(rook, rookSourcePosition);
 
-        var cancelAction = new CancelCastlingAction("O-O", kingAction, rookAction);
+        var cancelAction = new CancelCastlingAction(Castlingable.Side.KING, kingAction, rookAction);
         cancelAction.execute();
 
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));

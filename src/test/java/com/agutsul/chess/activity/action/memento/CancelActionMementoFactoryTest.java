@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.CancelCaptureAction;
@@ -189,7 +190,7 @@ public class CancelActionMementoFactoryTest {
         var cancelAction = CancelActionMementoFactory.createAction(board, memento);
 
         assertEquals(Action.Type.CASTLING, cancelAction.getType());
-        assertEquals("O-O", cancelAction.getCode());
+        assertEquals(Castlingable.Side.KING.name(), cancelAction.getCode());
         assertEquals(kingPosition, cancelAction.getPosition());
 
         var action = (CancelCastlingAction<?,?,?>) cancelAction;

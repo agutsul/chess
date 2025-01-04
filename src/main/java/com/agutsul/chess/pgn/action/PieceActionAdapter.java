@@ -1,17 +1,13 @@
 package com.agutsul.chess.pgn.action;
 
-import static com.agutsul.chess.pgn.action.KingCastlingActionAdapter.CastlingSide.KING_SIDE;
-import static com.agutsul.chess.pgn.action.KingCastlingActionAdapter.CastlingSide.QUEEN_SIDE;
+import static com.agutsul.chess.pgn.action.KingCastlingActionAdapter.CASTLING_SIDES;
 import static org.apache.commons.lang3.StringUtils.contains;
 import static org.apache.commons.lang3.StringUtils.isAllUpperCase;
 import static org.apache.commons.lang3.StringUtils.substring;
 
-import java.util.Objects;
-
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
-import com.agutsul.chess.pgn.action.KingCastlingActionAdapter.CastlingSide;
 
 public final class PieceActionAdapter
         extends AbstractActionAdapter {
@@ -27,6 +23,8 @@ public final class PieceActionAdapter
     private final ActionAdapter pieceMoveActionAdapter;
     private final ActionAdapter pieceCaptureActionAdapter;
 
+    private final ActionAdapter kingCastlingActionAdapter;
+
     public PieceActionAdapter(Board board, Color color) {
         this(board, color,
                 new PawnMoveActionAdapter(board, color),
@@ -34,7 +32,8 @@ public final class PieceActionAdapter
                 new PawnPromoteMoveActionAdapter(board, color),
                 new PawnPromoteCaptureActionAdapter(board, color),
                 new PieceMoveActionAdapter(board, color),
-                new PieceCaptureActionAdapter(board, color)
+                new PieceCaptureActionAdapter(board, color),
+                new KingCastlingActionAdapter(board, color)
         );
     }
 
@@ -44,7 +43,8 @@ public final class PieceActionAdapter
                        PawnPromoteMoveActionAdapter pawnPromoteMoveActionAdapter,
                        PawnPromoteCaptureActionAdapter pawnPromoteCaptureActionAdapter,
                        PieceMoveActionAdapter pieceMoveActionAdapter,
-                       PieceCaptureActionAdapter pieceCaptureActionAdapter) {
+                       PieceCaptureActionAdapter pieceCaptureActionAdapter,
+                       KingCastlingActionAdapter kingCastlingActionAdapter) {
 
         super(board, color);
 
@@ -56,18 +56,16 @@ public final class PieceActionAdapter
 
         this.pieceMoveActionAdapter = pieceMoveActionAdapter;
         this.pieceCaptureActionAdapter = pieceCaptureActionAdapter;
+
+        this.kingCastlingActionAdapter = kingCastlingActionAdapter;
     }
 
     @Override
     public String adapt(String action) {
         var command = prepare(action);
 
-        if (Objects.equals(KING_SIDE.code(), command)) {
-            return adaptCastlingAction(command, KING_SIDE);
-        }
-
-        if (Objects.equals(QUEEN_SIDE.code(), command)) {
-            return adaptCastlingAction(command, QUEEN_SIDE);
+        if (CASTLING_SIDES.containsKey(command)) {
+            return kingCastlingActionAdapter.adapt(command);
         }
 
         switch (command.length()) {
@@ -83,11 +81,6 @@ public final class PieceActionAdapter
         default:
             throw new IllegalActionException(formatInvalidActionMessage(action));
         }
-    }
-
-    private String adaptCastlingAction(String action, CastlingSide castlingSide) {
-        var adapter = new KingCastlingActionAdapter(board, color, castlingSide);
-        return adapter.adapt(action);
     }
 
     private String adaptPieceCaptureAction(String action) {

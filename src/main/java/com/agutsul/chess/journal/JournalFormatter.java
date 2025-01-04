@@ -2,7 +2,7 @@ package com.agutsul.chess.journal;
 
 import static java.lang.System.lineSeparator;
 
-import com.agutsul.chess.activity.action.formatter.AlgebraicActionFormatter;
+import com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 
 public class JournalFormatter {
@@ -52,6 +52,6 @@ public class JournalFormatter {
     }
 
     private static String format(ActionMemento<?,?> memento) {
-        return AlgebraicActionFormatter.format(memento);
+        return StandardAlgebraicActionFormatter.format(memento);
     }
 }

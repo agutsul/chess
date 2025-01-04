@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.TestFileReader;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
@@ -179,7 +180,7 @@ public class JournalImplTest implements TestFileReader {
         when(whiteRook.getPosition())
             .thenReturn(PositionFactory.INSTANCE.create("h1"));
 
-        var whiteAction = new PieceCastlingAction<>("O-O",
+        var whiteAction = new PieceCastlingAction<>(Castlingable.Side.KING,
                 new CastlingMoveAction<>(whiteKing, PositionFactory.INSTANCE.create("g1")),
                 new CastlingMoveAction<>(whiteRook, PositionFactory.INSTANCE.create("f1"))
         );
@@ -200,7 +201,7 @@ public class JournalImplTest implements TestFileReader {
         when(blackRook.getPosition())
             .thenReturn(PositionFactory.INSTANCE.create("a8"));
 
-        var blackAction = new PieceCastlingAction<>("O-O-O",
+        var blackAction = new PieceCastlingAction<>(Castlingable.Side.QUEEN,
                 new CastlingMoveAction<>(blackKing, PositionFactory.INSTANCE.create("c8")),
                 new CastlingMoveAction<>(blackRook, PositionFactory.INSTANCE.create("d8"))
         );

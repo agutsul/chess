@@ -4,8 +4,10 @@ import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -13,12 +15,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.Castlingable;
+import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.PieceCastlingAction;
+import com.agutsul.chess.activity.action.PieceCastlingAction.CastlingMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.exception.UnknownPieceException;
-import com.agutsul.chess.pgn.action.KingCastlingActionAdapter.CastlingSide;
 import com.agutsul.chess.piece.KingPiece;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,7 +43,17 @@ public class KingCastlingActionAdapterTest {
         when(board.getKing(any()))
             .thenReturn(Optional.of(king));
 
-        var adapter = new KingCastlingActionAdapter(board, Colors.WHITE, CastlingSide.KING_SIDE);
+        when(board.getActions(eq(king), eq(Action.Type.CASTLING)))
+            .thenAnswer(inv -> {
+                var king = inv.getArgument(0, KingPiece.class);
+                return List.of(new PieceCastlingAction<>(
+                        Castlingable.Side.KING,
+                        new CastlingMoveAction<>(king, positionOf("g1")),
+                        null
+                ));
+            });
+
+        var adapter = new KingCastlingActionAdapter(board, Colors.WHITE);
         var action = adapter.adapt("O-O");
 
         assertEquals("e1 g1", action);
@@ -52,7 +67,17 @@ public class KingCastlingActionAdapterTest {
         when(board.getKing(any()))
             .thenReturn(Optional.of(king));
 
-        var adapter = new KingCastlingActionAdapter(board, Colors.WHITE, CastlingSide.QUEEN_SIDE);
+        when(board.getActions(eq(king), eq(Action.Type.CASTLING)))
+            .thenAnswer(inv -> {
+                var king = inv.getArgument(0, KingPiece.class);
+                return List.of(new PieceCastlingAction<>(
+                        Castlingable.Side.QUEEN,
+                        new CastlingMoveAction<>(king, positionOf("c1")),
+                        null
+                ));
+            });
+
+        var adapter = new KingCastlingActionAdapter(board, Colors.WHITE);
         var action = adapter.adapt("O-O-O");
 
         assertEquals("e1 c1", action);
@@ -66,7 +91,17 @@ public class KingCastlingActionAdapterTest {
         when(board.getKing(any()))
             .thenReturn(Optional.of(king));
 
-        var adapter = new KingCastlingActionAdapter(board, Colors.BLACK, CastlingSide.KING_SIDE);
+        when(board.getActions(eq(king), eq(Action.Type.CASTLING)))
+            .thenAnswer(inv -> {
+                var king = inv.getArgument(0, KingPiece.class);
+                return List.of(new PieceCastlingAction<>(
+                        Castlingable.Side.KING,
+                        new CastlingMoveAction<>(king, positionOf("g8")),
+                        null
+                ));
+            });
+
+        var adapter = new KingCastlingActionAdapter(board, Colors.BLACK);
         var action = adapter.adapt("O-O");
 
         assertEquals("e8 g8", action);
@@ -80,7 +115,17 @@ public class KingCastlingActionAdapterTest {
         when(board.getKing(any()))
             .thenReturn(Optional.of(king));
 
-        var adapter = new KingCastlingActionAdapter(board, Colors.BLACK, CastlingSide.QUEEN_SIDE);
+        when(board.getActions(eq(king), eq(Action.Type.CASTLING)))
+            .thenAnswer(inv -> {
+                var king = inv.getArgument(0, KingPiece.class);
+                return List.of(new PieceCastlingAction<>(
+                        Castlingable.Side.QUEEN,
+                        new CastlingMoveAction<>(king, positionOf("c8")),
+                        null
+                ));
+            });
+
+        var adapter = new KingCastlingActionAdapter(board, Colors.BLACK);
         var action = adapter.adapt("O-O-O");
 
         assertEquals("e8 c8", action);
@@ -88,7 +133,7 @@ public class KingCastlingActionAdapterTest {
 
     @Test
     void testAdaptWithInvalidAction() {
-        var adapter = new KingCastlingActionAdapter(board, Colors.WHITE, CastlingSide.KING_SIDE);
+        var adapter = new KingCastlingActionAdapter(board, Colors.WHITE);
 
         var thrown = assertThrows(
                 IllegalActionException.class,
@@ -103,7 +148,7 @@ public class KingCastlingActionAdapterTest {
         when(board.getKing(any()))
             .thenReturn(Optional.empty());
 
-        var adapter = new KingCastlingActionAdapter(board, Colors.BLACK, CastlingSide.QUEEN_SIDE);
+        var adapter = new KingCastlingActionAdapter(board, Colors.BLACK);
 
         var thrown = assertThrows(
                 UnknownPieceException.class,

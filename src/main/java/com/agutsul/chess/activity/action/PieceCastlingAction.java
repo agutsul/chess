@@ -22,15 +22,10 @@ public class PieceCastlingAction<COLOR extends Color,
 
     private static final Logger LOGGER = getLogger(PieceCastlingAction.class);
 
-    /**
-     * @param code - it expects either 'O-O' or 'O-O-O'
-     * @param sourceAction
-     * @param targetAction
-     */
-    public PieceCastlingAction(String code,
+    public PieceCastlingAction(Castlingable.Side side,
                                CastlingMoveAction<COLOR,PIECE1> sourceAction,
                                CastlingMoveAction<COLOR,PIECE2> targetAction) {
-        super(code, sourceAction, targetAction);
+        super(side, sourceAction, targetAction);
     }
 
     @Override

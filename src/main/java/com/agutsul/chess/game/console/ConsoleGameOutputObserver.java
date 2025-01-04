@@ -1,6 +1,6 @@
 package com.agutsul.chess.game.console;
 
-import static com.agutsul.chess.activity.action.formatter.AlgebraicActionFormatter.format;
+import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter.format;
 import static com.agutsul.chess.journal.JournalFormatter.format;
 import static java.lang.System.lineSeparator;
 import static java.time.LocalDateTime.now;

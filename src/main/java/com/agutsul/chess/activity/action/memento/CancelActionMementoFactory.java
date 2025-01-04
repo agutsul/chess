@@ -10,10 +10,10 @@ import java.util.stream.Stream;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.CancelCaptureAction;
 import com.agutsul.chess.activity.action.CancelCastlingAction;
+import com.agutsul.chess.activity.action.CancelCastlingAction.UncastlingMoveAction;
 import com.agutsul.chess.activity.action.CancelEnPassantAction;
 import com.agutsul.chess.activity.action.CancelMoveAction;
 import com.agutsul.chess.activity.action.CancelPromoteAction;
-import com.agutsul.chess.activity.action.CancelCastlingAction.UncastlingMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.PawnPiece;
@@ -87,7 +87,7 @@ public enum CancelActionMementoFactory
             var rookAction = uncastlingAction(board, castlingMemento.getTarget());
 
             return new CancelCastlingAction(
-                    castlingMemento.getCode(),
+                    castlingMemento.getSide(),
                     kingAction,
                     rookAction
             );

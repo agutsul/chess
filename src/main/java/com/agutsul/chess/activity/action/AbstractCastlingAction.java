@@ -17,20 +17,23 @@ public abstract class AbstractCastlingAction<COLOR extends Color,
         extends AbstractTargetActivity<ACTION1,ACTION2>
         implements Action<ACTION1> {
 
-    private final String code;
+    private final Castlingable.Side side;
 
-    AbstractCastlingAction(String code, ACTION1 sourceAction, ACTION2 targetAction) {
+    AbstractCastlingAction(Castlingable.Side side, ACTION1 sourceAction, ACTION2 targetAction) {
         super(Action.Type.CASTLING, sourceAction, targetAction);
-        this.code = code;
+        this.side = side;
     }
 
     @Override
     public String getCode() {
-        return code;
+        return this.side.name();
+    }
+
+    public Castlingable.Side getSide() {
+        return this.side;
     }
 
     @Override
-    // returns king's target position
     public Position getPosition() {
         return getKingCastlingAction().getPosition();
     }
