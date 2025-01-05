@@ -59,6 +59,11 @@ abstract class AbstractCheckActionMemento<SOURCE,TARGET>
     }
 
     @Override
+    public String getCode() {
+        return origin.getCode();
+    }
+
+    @Override
     public boolean isChecked() {
         return checked;
     }
