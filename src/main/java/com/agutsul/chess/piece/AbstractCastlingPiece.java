@@ -145,7 +145,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         }
 
         private static boolean isValidAction(PieceCastlingAction<?,?,?> action,
-                                               Position position) {
+                                             Position position) {
 
             var possiblePositions = Stream.of(action.getTarget(), action.getSource())
                     .map(CastlingMoveAction::getTarget)

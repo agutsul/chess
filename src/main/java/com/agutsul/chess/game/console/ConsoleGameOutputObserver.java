@@ -18,7 +18,9 @@ import com.agutsul.chess.activity.action.event.DrawExecutionEvent;
 import com.agutsul.chess.activity.action.event.DrawPerformedEvent;
 import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
 import com.agutsul.chess.activity.action.event.ExitPerformedEvent;
+import com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
+import com.agutsul.chess.activity.action.memento.ActionMementoFactory;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.game.AbstractPlayableGame;
@@ -164,12 +166,15 @@ public final class ConsoleGameOutputObserver
         var journal = game.getJournal();
         var number = (journal.size() / 2) + 1;
 
+        var memento = ActionMementoFactory.createMemento(game.getBoard(), action);
+        var formattedAction = StandardAlgebraicActionFormatter.format(memento);
+
         System.out.println(String.format("%d. %s %s: '%s': %s",
                 number,
                 player.getColor(),
                 ACTION_MESSAGE,
                 player.getName(),
-                action
+                formattedAction
         ));
     }
 
