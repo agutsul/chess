@@ -119,6 +119,8 @@ public abstract class AbstractPlayableGame
             return createWinner(this.currentPlayer);
         case EXITED_DRAW:
             return createWinner(getOpponentPlayer());
+        case AGREED_WIN:
+            return createWinner(this.currentPlayer);
         default:
             return Optional.empty();
         }

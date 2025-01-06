@@ -318,6 +318,14 @@ public class PgnGameTest implements TestFileReader {
         assertGame(game, GameState.Type.WHITE_WIN, 91, 16);
     }
 
+    @Test
+    void testSingleKingInsufficientMaterialPgnGame() throws URISyntaxException, IOException {
+        var games = parseGames(readFileContent("chess_single_king_insufficient_material.pgn"), 1);
+        var game = (PgnGame) games.get(0);
+
+        assertGame(game, GameState.Type.WHITE_WIN, 80, 15);
+    }
+
     private static void assertGame(PgnGame game, GameState.Type expectedGameState,
                                    int expectedActionsCount, int expectedTagsCount) {
 

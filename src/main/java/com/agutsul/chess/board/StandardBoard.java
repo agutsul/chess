@@ -59,6 +59,11 @@ public final class StandardBoard
     }
 
     @Override
+    public Collection<BoardState> getStates() {
+        return this.origin.getStates();
+    }
+
+    @Override
     public ExecutorService getExecutorService() {
         return this.origin.getExecutorService();
     }

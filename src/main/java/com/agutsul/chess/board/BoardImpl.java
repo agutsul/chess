@@ -1,6 +1,7 @@
 package com.agutsul.chess.board;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static java.util.concurrent.TimeUnit.MICROSECONDS;
@@ -58,9 +59,8 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     private final PieceFactory blackPieceFactory;
 
     private final List<Observer> observers;
-
-    private BoardState state;
-    private ExecutorService executorService;
+    private final List<BoardState> states;
+    private final ExecutorService executorService;
 
     private PieceCache pieceCache;
 
@@ -73,18 +73,28 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         this.observers = new CopyOnWriteArrayList<>();
         this.observers.add(new BoardEventObserver());
 
+        this.states = new ArrayList<>();
         // first move always for white side, so initial state with white color
         setState(new DefaultBoardState(this, Colors.WHITE));
     }
 
     @Override
     public void setState(BoardState state) {
-        this.state = state;
+        this.states.add(state);
     }
 
     @Override
     public BoardState getState() {
-        return this.state;
+        if (this.states.isEmpty()) {
+            return null;
+        }
+
+        return this.states.get(this.states.size() - 1);
+    }
+
+    @Override
+    public Collection<BoardState> getStates() {
+        return unmodifiableList(this.states);
     }
 
     @Override
@@ -126,7 +136,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     public Collection<Action<?>> getActions(Piece<?> piece) {
         LOGGER.info("Getting actions for '{}'", piece);
 
-        var actions = this.state.getActions(piece);
+        var actions = getState().getActions(piece);
         if (Piece.Type.KING.equals(piece.getType())
                 || !((Pinnable) piece).isPinned()) {
 
@@ -184,7 +194,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     @Override
     public Collection<Impact<?>> getImpacts(Piece<?> piece) {
         LOGGER.info("Getting impacts for '{}'", piece);
-        return this.state.getImpacts(piece);
+        return getState().getImpacts(piece);
     }
 
     @Override

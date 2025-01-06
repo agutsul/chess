@@ -15,6 +15,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.InsufficientMaterialBoardState;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
@@ -30,6 +31,7 @@ final class InsufficientMaterialBoardStateEvaluator
     InsufficientMaterialBoardStateEvaluator(Board board) {
         super(board);
         this.evaluators = List.of(
+                new SingleKingEvaluationTask(board),
                 new KingVersusKingEvaluationTask(board),
                 new PieceVersusKingEvaluationTask(board, Piece.Type.BISHOP),
                 new PieceVersusKingEvaluationTask(board, Piece.Type.KNIGHT),
@@ -92,6 +94,33 @@ final class InsufficientMaterialBoardStateEvaluator
         protected abstract boolean isNotApplicable(int piecesCount);
 
         protected abstract Optional<BoardState> evaluateBoard(Color color);
+    }
+
+    private static class SingleKingEvaluationTask
+            extends AbstractInsufficientMaterialBoardStateEvaluator {
+
+        SingleKingEvaluationTask(Board board) {
+            super(board, 1);
+        }
+
+        @Override
+        protected boolean isNotApplicable(int piecesCount) {
+            var whitePieces = board.getPieces(Colors.WHITE);
+            var blackPieces = board.getPieces(Colors.BLACK);
+
+            return whitePieces.size() > piecesCount
+                    && blackPieces.size() > piecesCount;
+        }
+
+        @Override
+        protected Optional<BoardState> evaluateBoard(Color color) {
+            var king = board.getKing(color);
+            var allPieces = board.getPieces(color);
+
+            return allPieces.size() == piecesCount && allPieces.contains(king.get())
+                    ? Optional.of(new InsufficientMaterialBoardState(board, color))
+                    : Optional.empty();
+        }
     }
 
     private static class KingVersusKingEvaluationTask

@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1-0"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:08:02"]
+[WhiteElo "1355"]
+[BlackElo "1436"]
+[WhiteRatingDiff "+15"]
+[BlackRatingDiff "-15"]
+[ECO "D00"]
+[Opening "Queen's Pawn Game"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. d4 d5 2. f4 c6 3. Nf3 Bf5 4. Nh4 Bg6 5. Nxg6 hxg6 6. e3 e6 7. Bd3 Nf6 8. Bd2 Bd6 9. Nc3 a6 10. Qe2 Nbd7 11. O-O-O c5 12. dxc5 Nxc5 13. Rhe1 b5 14. Nxd5 Nxd5 15. e4 Nb6 16. f5 Nxd3+ 17. Qxd3 e5 18. Ba5 O-O 19. Bxb6 Qxb6 20. Qxd6 Qxd6 21. Rxd6 Rfd8 22. Red1 Rxd6 23. Rxd6 gxf5 24. exf5 Re8 25. Rxa6 e4 26. Kd2 e3+ 27. Ke2 g6 28. fxg6 Kg7 29. gxf7 Kxf7 30. Ra7+ Kg6 31. Rb7 Kf5 32. Rxb5+ Kf6 33. Rb3 Ke7 34. Rxe3+ Kf7 35. Rxe8 Kxe8 36. a4 Kd8 37. h4 Kd7 38. h5 Kc7 39. h6 Kc6 40. h7 Kc5 1-0

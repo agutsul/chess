@@ -36,6 +36,7 @@ import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionEvent;
 import com.agutsul.chess.player.event.PlayerExitActionEvent;
+import com.agutsul.chess.player.event.PlayerWinActionEvent;
 import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
@@ -45,6 +46,7 @@ public abstract class AbstractPlayerInputObserver
 
     protected static final String UNDO_COMMAND = "undo";
     protected static final String DRAW_COMMAND = "draw";
+    protected static final String WIN_COMMAND  = "win";
     protected static final String EXIT_COMMAND = "exit";
 
     private static final String UNKNOWN_PROMOTION_PIECE_TYPE_MESSAGE = "Unknown promotion piece type";
@@ -120,6 +122,8 @@ public abstract class AbstractPlayerInputObserver
                 processUndoCommand(this.player);
             } else if (DRAW_COMMAND.equalsIgnoreCase(command)) {
                 processDrawCommand(this.player);
+            } else if (WIN_COMMAND.equalsIgnoreCase(command)) {
+                processWinCommand(this.player);
             } else if (EXIT_COMMAND.equalsIgnoreCase(command)) {
                 processExitCommand(this.player);
             } else if (contains(command, SPACE)) {
@@ -142,11 +146,8 @@ public abstract class AbstractPlayerInputObserver
     private Map<Class<? extends Event>, Consumer<Event>> createEventProcessors() {
         var processors = new HashMap<Class<? extends Event>, Consumer<Event>>();
 
-        processors.put(RequestPlayerActionEvent.class,
-                       event -> process((RequestPlayerActionEvent) event));
-
-        processors.put(RequestPromotionPieceTypeEvent.class,
-                       event -> process((RequestPromotionPieceTypeEvent) event));
+        processors.put(RequestPlayerActionEvent.class, e -> process((RequestPlayerActionEvent) e));
+        processors.put(RequestPromotionPieceTypeEvent.class, e -> process((RequestPromotionPieceTypeEvent) e));
 
         return unmodifiableMap(processors);
     }
@@ -157,6 +158,10 @@ public abstract class AbstractPlayerInputObserver
 
     private void processDrawCommand(Player player) {
         notifyGameEvent(new PlayerDrawActionEvent(player));
+    }
+
+    private void processWinCommand(Player player) {
+        notifyGameEvent(new PlayerWinActionEvent(player));
     }
 
     private void processExitCommand(Player player) {

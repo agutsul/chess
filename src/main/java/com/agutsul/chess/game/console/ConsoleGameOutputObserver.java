@@ -18,6 +18,8 @@ import com.agutsul.chess.activity.action.event.DrawExecutionEvent;
 import com.agutsul.chess.activity.action.event.DrawPerformedEvent;
 import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
 import com.agutsul.chess.activity.action.event.ExitPerformedEvent;
+import com.agutsul.chess.activity.action.event.WinExecutionEvent;
+import com.agutsul.chess.activity.action.event.WinPerformedEvent;
 import com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.activity.action.memento.ActionMementoFactory;
@@ -36,6 +38,7 @@ import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerExitActionExceptionEvent;
+import com.agutsul.chess.player.event.PlayerWinActionExceptionEvent;
 
 public final class ConsoleGameOutputObserver
         extends AbstractGameObserver {
@@ -156,6 +159,25 @@ public final class ConsoleGameOutputObserver
     @Override
     protected void process(PlayerExitActionExceptionEvent event) {
         displayErrorMessage(event.getMessage());
+    }
+
+    @Override
+    protected void process(PlayerWinActionExceptionEvent event) {
+        displayErrorMessage(event.getMessage());
+    }
+
+    @Override
+    protected void process(WinExecutionEvent event) {
+        var player = event.getPlayer();
+        System.out.println(String.format("%s: '%s' asked a win",
+                player.getColor(),
+                player.getName()
+        ));
+    }
+
+    @Override
+    protected void process(WinPerformedEvent event) {
+        displayBoard(((AbstractPlayableGame) this.game).getBoard());
     }
 
     // utilities

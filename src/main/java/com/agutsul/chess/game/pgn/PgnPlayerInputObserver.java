@@ -3,12 +3,15 @@ package com.agutsul.chess.game.pgn;
 import static com.agutsul.chess.game.state.GameState.Type.DRAWN_GAME;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.game.state.GameState;
+import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.game.Termination;
 import com.agutsul.chess.pgn.action.ActionAdapter;
 import com.agutsul.chess.pgn.action.PawnPromotionTypeAdapter;
 import com.agutsul.chess.pgn.action.PieceActionAdapter;
@@ -42,16 +45,11 @@ final class PgnPlayerInputObserver
     @Override
     protected String getActionCommand() {
         if (!actionIterator.hasNext()) {
-            return finalCommand(((PgnGame) this.game).getParsedGameState());
+            return finalCommand();
         }
 
         var action = actionIterator.next();
-        var adaptedAction = pieceActionAdapter.adapt(action);
-
-        // simulate a delay
-//        sleepQuietly(Duration.ofMillis(1));
-
-        return adaptedAction;
+        return pieceActionAdapter.adapt(action);
     }
 
     @Override
@@ -60,12 +58,34 @@ final class PgnPlayerInputObserver
         return promotionTypeAdapter.adapt(action);
     }
 
-    private static String finalCommand(GameState gameState) {
-        var command = DRAWN_GAME.equals(gameState.getType())
-                ? DRAW_COMMAND
-                : EXIT_COMMAND;
+    private String finalCommand() {
+        var pgnGame = (PgnGame) this.game;
 
-        return command;
+        var gameState = pgnGame.getParsedGameState();
+        if (DRAWN_GAME.equals(gameState.getType())) {
+            return DRAW_COMMAND;
+        }
+
+        var termination = pgnGame.getParsedTermination();
+        if (Termination.TIME_FORFEIT.equals(termination)) {
+            return EXIT_COMMAND;
+        }
+
+        var board = pgnGame.getBoard();
+        if (Termination.NORMAL.equals(termination)) {
+            var boardStates = new ArrayList<>(board.getStates());
+            if (boardStates.size() >= 2) {
+                var previousState = boardStates.get(boardStates.size() - 2);
+
+                if (BoardState.Type.INSUFFICIENT_MATERIAL.equals(previousState.getType())) {
+                    return Objects.equals(player.getColor(), previousState.getColor())
+                            ? EXIT_COMMAND
+                            : WIN_COMMAND;
+                }
+            }
+        }
+
+        return EXIT_COMMAND;
     }
 
     private static final class ActionIterator
