@@ -23,13 +23,13 @@ public final class AgreedWinBoardState
     }
 
     @Override
-    public final Collection<Action<?>> getActions(Piece<?> piece) {
+    public Collection<Action<?>> getActions(Piece<?> piece) {
         LOGGER.info("Getting actions for piece '{}'", piece);
         return emptyList();
     }
 
     @Override
-    public final Collection<Impact<?>> getImpacts(Piece<?> piece) {
+    public Collection<Impact<?>> getImpacts(Piece<?> piece) {
         LOGGER.info("Getting impacts for piece '{}'", piece);
         return emptyList();
     }
