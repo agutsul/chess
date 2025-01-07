@@ -6,7 +6,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import org.slf4j.Logger;
 
@@ -73,15 +72,22 @@ final class PgnPlayerInputObserver
 
         var board = pgnGame.getBoard();
         if (Termination.NORMAL.equals(termination)) {
-            var boardStates = new ArrayList<>(board.getStates());
-            if (boardStates.size() >= 2) {
-                var previousState = boardStates.get(boardStates.size() - 2);
 
-                if (BoardState.Type.INSUFFICIENT_MATERIAL.equals(previousState.getType())) {
-                    return Objects.equals(player.getColor(), previousState.getColor())
-                            ? EXIT_COMMAND
-                            : WIN_COMMAND;
-                }
+            var currentState = board.getState();
+            if (currentState.isType(BoardState.Type.CHECKED)
+                    || currentState.isType(BoardState.Type.INSUFFICIENT_MATERIAL)) {
+
+                return EXIT_COMMAND;
+            }
+
+            var boardStates = new ArrayList<>(board.getStates());
+            if (boardStates.size() < 2) {
+                return EXIT_COMMAND;
+            }
+
+            var opponentState = boardStates.get(boardStates.size() - 2);
+            if (opponentState.isType(BoardState.Type.INSUFFICIENT_MATERIAL)) {
+                return WIN_COMMAND;
             }
         }
 

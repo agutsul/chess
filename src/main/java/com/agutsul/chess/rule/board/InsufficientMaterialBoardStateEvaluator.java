@@ -11,6 +11,8 @@ import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Blockable;
+import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.InsufficientMaterialBoardState;
@@ -32,6 +34,7 @@ final class InsufficientMaterialBoardStateEvaluator
         super(board);
         this.evaluators = List.of(
                 new SingleKingEvaluationTask(board),
+                new KingWithBlockedPawnsEvaluationTask(board),
                 new KingVersusKingEvaluationTask(board),
                 new PieceVersusKingEvaluationTask(board, Piece.Type.BISHOP),
                 new PieceVersusKingEvaluationTask(board, Piece.Type.KNIGHT),
@@ -94,6 +97,49 @@ final class InsufficientMaterialBoardStateEvaluator
         protected abstract boolean isNotApplicable(int piecesCount);
 
         protected abstract Optional<BoardState> evaluateBoard(Color color);
+    }
+
+    private static class KingWithBlockedPawnsEvaluationTask
+            extends AbstractInsufficientMaterialBoardStateEvaluator {
+
+        KingWithBlockedPawnsEvaluationTask(Board board) {
+            super(board, 1);
+        }
+
+        @Override
+        protected boolean isNotApplicable(int piecesCount) {
+            var isWhiteKingAndPawnsOnly = isKingAndPawnsOnly(Colors.WHITE);
+            var isBlackKingAndPawnsOnly = isKingAndPawnsOnly(Colors.BLACK);
+
+            return !isWhiteKingAndPawnsOnly && !isBlackKingAndPawnsOnly;
+        }
+
+        @Override
+        protected Optional<BoardState> evaluateBoard(Color color) {
+            var pawns = board.getPieces(color, Piece.Type.PAWN);
+            var pawnStatuses = pawns.stream()
+                    .map(pawn -> {
+                        var isBlocked = ((Blockable) pawn).isBlocked();
+                        if (!isBlocked) {
+                            return ((Pinnable) pawn).isPinned();
+                        }
+
+                        return isBlocked;
+                    })
+                    .toList();
+
+            var isAllPawnsBlocked = !pawnStatuses.contains(Boolean.FALSE);
+            return isAllPawnsBlocked
+                    ? Optional.of(new InsufficientMaterialBoardState(board, color))
+                    : Optional.empty();
+        }
+
+        private boolean isKingAndPawnsOnly(Color color) {
+            var allPieces = board.getPieces(color);
+            var pawns = board.getPieces(color, Piece.Type.PAWN);
+
+            return allPieces.size() == pawns.size() + 1; // +1 for king piece
+        }
     }
 
     private static class SingleKingEvaluationTask

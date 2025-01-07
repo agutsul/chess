@@ -159,7 +159,7 @@ public abstract class AbstractPlayableGame
         this.board.setState(nextBoardState);
 
         var isRunning = !nextBoardState.isTerminal();
-        if (isRunning && !BoardState.Type.DEFAULT.equals(nextBoardState.getType())) {
+        if (isRunning && !nextBoardState.isType(BoardState.Type.DEFAULT)) {
             var lastMemento = this.journal.get(this.journal.size() - 1);
             notifyObservers(new BoardStateNotificationEvent(nextBoardState, lastMemento));
         }

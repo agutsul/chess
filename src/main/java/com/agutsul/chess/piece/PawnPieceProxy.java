@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Blockable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Captured;
 import com.agutsul.chess.Castlingable;
@@ -179,6 +180,11 @@ final class PawnPieceProxy extends PieceProxy
     @Override
     public boolean isProtected() {
         return ((Protectable) this.origin).isProtected();
+    }
+
+    @Override
+    public boolean isBlocked() {
+        return ((Blockable) this.origin).isBlocked();
     }
 
     @Override

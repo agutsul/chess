@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "0-1"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:10:49"]
+[WhiteElo "1643"]
+[BlackElo "1433"]
+[WhiteRatingDiff "-18"]
+[BlackRatingDiff "+17"]
+[ECO "C00"]
+[Opening "French Defense: La Bourdonnais Variation"]
+[TimeControl "420+0"]
+[Termination "Normal"]
+
+1. e4 e6 2. f4 d5 3. e5 c5 4. Nf3 h6 5. d4 c4 6. Nc3 Bb4 7. Bd2 Bxc3 8. Bxc3 b5 9. Be2 a5 10. a3 a4 11. O-O g6 12. b3 axb3 13. cxb3 Qc7 14. bxc4 bxc4 15. Bb4 Nc6 16. Bc5 Nge7 17. a4 O-O 18. Qd2 Na5 19. Nh4 Nb3 20. Qe3 Nxa1 21. Rxa1 Nf5 22. Qh3 Re8 23. Nxf5 exf5 24. Qxh6 Qc6 25. a5 Be6 26. Qh3 Reb8 27. Qc3 Rb3 28. Qc2 Qb5 29. h3 Rxa5 30. Rxa5 Qxa5 31. Kh2 Qa1 32. Be7 Rb2 33. Qd1 Qxd1 34. Bxd1 c3 35. Bb4 Rxb4 36. g4 Rb2+ 37. Kg3 c2 38. Bxc2 Rxc2 39. g5 Re2 40. h4 Re4 0-1

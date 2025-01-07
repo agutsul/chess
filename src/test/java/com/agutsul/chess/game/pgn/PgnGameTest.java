@@ -326,6 +326,38 @@ public class PgnGameTest implements TestFileReader {
         assertGame(game, GameState.Type.WHITE_WIN, 80, 15);
     }
 
+    @Test
+    void testKingWithPawnsInsufficientMaterialPgnGame() throws URISyntaxException, IOException {
+        var games = parseGames(readFileContent("chess_king_blocked_pawns_insufficient_material.pgn"), 1);
+        var game = (PgnGame) games.get(0);
+
+        assertGame(game, GameState.Type.BLACK_WIN, 65, 15);
+    }
+
+    @Test
+    void testInsufficientMaterialForWinRequestorPgnGame() throws URISyntaxException, IOException {
+        var games = parseGames(readFileContent("chess_insufficient_material_for_win_requestor.pgn"), 1);
+        var game = (PgnGame) games.get(0);
+
+        assertGame(game, GameState.Type.BLACK_WIN, 122, 15);
+    }
+
+    @Test
+    void testInssufficientMaterialForPinnedPiecePgnGame() throws URISyntaxException, IOException {
+        var games = parseGames(readFileContent("chess_insufficient_material_pinned_pawn.pgn"), 1);
+        var game = (PgnGame) games.get(0);
+
+        assertGame(game, GameState.Type.BLACK_WIN, 120, 15);
+    }
+
+    @Test
+    void testInsufficientMaterialForControlledPositionPgnGame() throws URISyntaxException, IOException {
+        var games = parseGames(readFileContent("chess_insufficient_material_control_pawn_move_position.pgn"), 1);
+        var game = (PgnGame) games.get(0);
+
+        assertGame(game, GameState.Type.BLACK_WIN, 80, 15);
+    }
+
     private static void assertGame(PgnGame game, GameState.Type expectedGameState,
                                    int expectedActionsCount, int expectedTagsCount) {
 

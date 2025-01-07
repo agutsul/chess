@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece;
 
+import com.agutsul.chess.Blockable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Captured;
 import com.agutsul.chess.Disposable;
@@ -14,6 +15,6 @@ import com.agutsul.chess.color.Color;
 public interface PawnPiece<COLOR extends Color>
         extends Piece<COLOR>, Movable, Capturable, Promotable,
                 EnPassantable, Disposable, Restorable, Captured,
-                Pinnable, Protectable {
+                Pinnable, Protectable, Blockable {
 
 }

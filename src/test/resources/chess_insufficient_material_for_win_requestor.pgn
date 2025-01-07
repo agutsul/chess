@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "0-1"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:00:37"]
+[WhiteElo "1572"]
+[BlackElo "1508"]
+[WhiteRatingDiff "-14"]
+[BlackRatingDiff "+12"]
+[ECO "C00"]
+[Opening "French Defense: Normal Variation"]
+[TimeControl "600+8"]
+[Termination "Normal"]
+
+1. e4  e6 2. d4  b6 3. Nf3  Bb7 4. e5  d5 5. Be2  f6 6. O-O  Qd7 7. c3  Nc6 8. b4  a6 9. Nh4  O-O-O 10. a4  g5 11. Nf3  Bg7 12. b5  axb5 13. axb5  Na5 14. Bd2  h5 15. c4  Nxc4 16. Bxc4  dxc4 17. Nc3  Bxf3 18. Qxf3  Qxd4 19. Ra8+  Kd7 20. Qc6+  Ke7 21. Qxc7+  Qd7 22. Qxd7+  Rxd7 23. Be3  fxe5 24. Bxb6  e4 25. Bc5+  Kf7 26. Nxe4  Rb7 27. Nxg5+  Kg6 28. Nxe6  Nf6 29. Ra5  Re8 30. Nf4+  Kg5 31. Be3  Ng4 32. b6+  Be5 33. Nh3+  Kg6 34. Bc1  Rxb6 35. f4  Bd4+ 36. Kh1  Nf2+ 37. Nxf2  Bxf2 38. h3  Bd4 39. f5+  Kf6 40. Rd5  Re4 41. Rd1  Be5 42. Rf1  Rb1 43. Bg5+  Kxg5 44. Rxb1  Kxf5 45. Rf1+  Ke6 46. Rc5  Kd6 47. Rc8  Kd5 48. Rg8  c3 49. Rg5  h4 50. Rg4  Re2 51. Rd1+  Rd2 52. Re1  c2 53. Rge4  Bd4 54. Re8  Rd1 55. Rd8+  Kc4 56. Rc8+  Kd3 57. Rxc2  Rxe1+ 58. Kh2  Kxc2 59. g3  Be5 60. Kg2  Bxg3 61. Kf3  Kd3 0-1

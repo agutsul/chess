@@ -43,7 +43,7 @@ final class PawnPieceImpl<COLOR extends Color>
         super(board, Piece.Type.PAWN, color, unicode, position, direction,
                 new ActiveEnPassantablePieceState<>(board,
                         new PawnPieceActionRule(board, direction, initialLine, promotionLine),
-                        new PawnPieceImpactRule(board, direction)
+                        new PawnPieceImpactRule(board, direction, promotionLine)
                 ),
                 new PawnActionCache(),
                 new ActivityCacheImpl<Impact.Type,Impact<?>>()
@@ -71,6 +71,11 @@ final class PawnPieceImpl<COLOR extends Color>
     public void unenpassant(PawnPiece<?> piece) {
         var state = (EnPassantablePieceState<?,?>) getState();
         ((EnPassantablePieceState<COLOR,PawnPiece<COLOR>>) state).unenpassant(this, piece);
+    }
+
+    @Override
+    public boolean isBlocked() {
+        return !getImpacts(Impact.Type.BLOCK).isEmpty();
     }
 
     private static <A extends Action<?>> Collection<Action<?>> filter(Collection<Action<?>> actions,

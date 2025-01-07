@@ -24,7 +24,7 @@ public interface BoardState
         SEVENTY_FIVE_MOVES(true),     // draw - when the last seventy five successive moves made by both players contain no capture or pawn move ( automatic ). If the last move was a checkmate, the checkmate stands.
         INSUFFICIENT_MATERIAL(false), // draw - ( dead position ) when no sequence of legal moves can lead to checkmate
         AGREED_DRAW(true),            // draw - when player agree to a draw ( player request )
-        AGREED_WIN(true),             // win  - when player agree to win ( player request )
+        AGREED_WIN(true),             // win  - when player agree to win - "winning of material" ( player request )
         EXITED_DRAW(true);            // draw - when user exited game. opponent should be a winner ( player request )
 
         private boolean terminal;
@@ -41,6 +41,7 @@ public interface BoardState
     Color getColor();
 
     Type getType();
+    boolean isType(Type type);
 
     default boolean isTerminal() {
         return getType().isTerminal();

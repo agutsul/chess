@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "0-1"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:06:03"]
+[WhiteElo "1206"]
+[BlackElo "1330"]
+[WhiteRatingDiff "-37"]
+[BlackRatingDiff "+30"]
+[ECO "A04"]
+[Opening "Zukertort Opening: Dutch Variation"]
+[TimeControl "300+0"]
+[Termination "Normal"]
+
+1. Nf3  f5 2. d4  e6 3. d5  Be7 4. dxe6  dxe6 5. Qxd8+  Bxd8 6. Ne5  Bf6 7. Bf4  Ne7 8. Nc4  b5 9. Ne5  Nbc6 10. Nxc6  Nxc6 11. c3  e5 12. Bd2  O-O 13. Na3  a6 14. Nc2  f4 15. O-O-O  Bf5 16. e3  fxe3 17. Nxe3  Bg6 18. Nd5  Rac8 19. f4  Be4 20. Nxf6+  Rxf6 21. fxe5  Nxe5 22. Be3  c5 23. b3  c4 24. b4  Nd3+ 25. Bxd3  Bxd3 26. Bd4  Rff8 27. Kb2  Ra8 28. a4  Rfe8 29. a5  Re2+ 30. Ka1  Rxg2 31. h4  Rf8 32. Rhg1  Rxg1 33. Rxg1  g6 34. h5  Rf1+ 35. Rxf1  Bxf1 36. hxg6  hxg6 37. Kb1  Kf7 38. Kc1  Ke6 39. Kd2  Kf5 40. Ke3  Bd3 41. Bb6  g5 42. Bd8  g4 43. Bc7  Bf1 44. Bg3  Bh3 45. Kd4  Bf1 46. Kc5  Ke4 47. Kb6  Kd3 48. Kxa6  Kxc3 49. Kb6  Kb3 50. Kxb5  c3+ 51. Kc5  c2 52. Bf4  g3 53. b5  g2 54. b6  g1=Q+ 55. Kc6  Qg6+ 56. Kc7  Qf7+ 57. Kc6  Qxf4 58. b7  c1=Q+ 59. Kb6  Qcc7+ 60. Ka7  Qfc4 0-1
