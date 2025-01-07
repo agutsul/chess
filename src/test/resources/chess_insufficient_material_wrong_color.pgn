@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/Q24uMTAL"]
+[White "Grant14"]
+[Black "jimmij"]
+[Result "0-1"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:07:23"]
+[WhiteElo "1395"]
+[BlackElo "1798"]
+[WhiteRatingDiff "-2"]
+[BlackRatingDiff "+2"]
+[ECO "C50"]
+[Opening "Italian Game: Schilling-Kostic Gambit"]
+[TimeControl "300+0"]
+[Termination "Normal"]
+
+1. e4  e5 2. Nf3  Nc6 3. Bc4  Nd4 4. Nxe5  Qg5 5. O-O  Qxe5 6. Nc3  Bc5 7. d3  Ne7 8. Nd5  Nxd5 9. Bxd5  c6 10. Bc4  b5 11. c3  bxc4 12. cxd4  Bxd4 13. dxc4  O-O 14. Re1  Bxb2 15. Bxb2  Qxb2 16. e5  Re8 17. f4  Ba6 18. Qxd7  Bxc4 19. Qxc6  Qd4+ 20. Kh1  Qxf4 21. Rac1  Rac8 22. Rxc4  Qxc4 23. Qd6  Qc1 24. Rd1  Qxd1+ 25. Qxd1  Rxe5 26. h3  Rec5 27. a4  Rc1 28. Qxc1  Rxc1+ 29. Kh2 0-1

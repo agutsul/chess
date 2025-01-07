@@ -16,8 +16,15 @@ public final class InsufficientMaterialBoardState
 
     private static final Logger LOGGER = getLogger(InsufficientMaterialBoardState.class);
 
-    public InsufficientMaterialBoardState(Board board, Color color) {
+    private final String source;
+
+    public InsufficientMaterialBoardState(Board board, Color color, String source) {
         super(BoardState.Type.INSUFFICIENT_MATERIAL, board, color);
+        this.source = source;
+    }
+
+    public String getSource() {
+        return source;
     }
 
     @Override

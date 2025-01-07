@@ -17,7 +17,6 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.InsufficientMaterialBoardState;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
@@ -87,16 +86,22 @@ final class InsufficientMaterialBoardStateEvaluator
 
         @Override
         public final Optional<BoardState> evaluate(Color color) {
-            if (isNotApplicable(piecesCount)) {
+            if (isNotApplicable(color)) {
                 return Optional.empty();
             }
 
-            return evaluateBoard(color);
+            var boardState = evaluateBoard(color);
+            return Optional.ofNullable(boardState);
         }
 
-        protected abstract boolean isNotApplicable(int piecesCount);
+        protected abstract boolean isNotApplicable(Color color);
 
-        protected abstract Optional<BoardState> evaluateBoard(Color color);
+        protected abstract BoardState evaluateBoard(Color color);
+
+        protected BoardState createBoardState(Board board, Color color) {
+            var source = this.getClass().getSimpleName();
+            return new InsufficientMaterialBoardState(board, color, source);
+        }
     }
 
     private static class KingWithBlockedPawnsEvaluationTask
@@ -107,15 +112,12 @@ final class InsufficientMaterialBoardStateEvaluator
         }
 
         @Override
-        protected boolean isNotApplicable(int piecesCount) {
-            var isWhiteKingAndPawnsOnly = isKingAndPawnsOnly(Colors.WHITE);
-            var isBlackKingAndPawnsOnly = isKingAndPawnsOnly(Colors.BLACK);
-
-            return !isWhiteKingAndPawnsOnly && !isBlackKingAndPawnsOnly;
+        protected boolean isNotApplicable(Color color) {
+            return !isKingAndPawnsOnly(color);
         }
 
         @Override
-        protected Optional<BoardState> evaluateBoard(Color color) {
+        protected BoardState evaluateBoard(Color color) {
             var pawns = board.getPieces(color, Piece.Type.PAWN);
             var pawnStatuses = pawns.stream()
                     .map(pawn -> {
@@ -130,8 +132,8 @@ final class InsufficientMaterialBoardStateEvaluator
 
             var isAllPawnsBlocked = !pawnStatuses.contains(Boolean.FALSE);
             return isAllPawnsBlocked
-                    ? Optional.of(new InsufficientMaterialBoardState(board, color))
-                    : Optional.empty();
+                    ? createBoardState(board, color)
+                    : null;
         }
 
         private boolean isKingAndPawnsOnly(Color color) {
@@ -150,22 +152,19 @@ final class InsufficientMaterialBoardStateEvaluator
         }
 
         @Override
-        protected boolean isNotApplicable(int piecesCount) {
-            var whitePieces = board.getPieces(Colors.WHITE);
-            var blackPieces = board.getPieces(Colors.BLACK);
-
-            return whitePieces.size() > piecesCount
-                    && blackPieces.size() > piecesCount;
+        protected boolean isNotApplicable(Color color) {
+            var pieces = board.getPieces(color);
+            return pieces.size() > piecesCount;
         }
 
         @Override
-        protected Optional<BoardState> evaluateBoard(Color color) {
+        protected BoardState evaluateBoard(Color color) {
             var king = board.getKing(color);
             var allPieces = board.getPieces(color);
 
             return allPieces.size() == piecesCount && allPieces.contains(king.get())
-                    ? Optional.of(new InsufficientMaterialBoardState(board, color))
-                    : Optional.empty();
+                    ? createBoardState(board, color)
+                    : null;
         }
     }
 
@@ -181,16 +180,16 @@ final class InsufficientMaterialBoardStateEvaluator
         }
 
         @Override
-        protected boolean isNotApplicable(int piecesCount) {
+        protected boolean isNotApplicable(Color color) {
             var allPieces = board.getPieces();
             return allPieces.size() != piecesCount;
         }
 
         @Override
-        protected Optional<BoardState> evaluateBoard(Color color) {
+        protected BoardState evaluateBoard(Color color) {
             return isKingVsKing(color)
-                    ? Optional.of(new InsufficientMaterialBoardState(board, color))
-                    : Optional.empty();
+                    ? createBoardState(board, color)
+                    : null;
         }
 
         protected boolean isKingVsKing(Color color) {
@@ -216,17 +215,17 @@ final class InsufficientMaterialBoardStateEvaluator
         }
 
         @Override
-        protected Optional<BoardState> evaluateBoard(Color color) {
+        protected BoardState evaluateBoard(Color color) {
             return isKingVsKing(color)
-                ? evaluatePiece(color)
-                : Optional.empty();
+                ? getBoardState(color)
+                : null;
         }
 
-        protected Optional<BoardState> evaluatePiece(Color color) {
+        protected BoardState getBoardState(Color color) {
             var pieces = board.getPieces(color, pieceType);
             return pieces.size() == 1
-                    ? Optional.of(new InsufficientMaterialBoardState(board, color))
-                    : Optional.empty();
+                    ? createBoardState(board, color)
+                    : null;
         }
     }
 
@@ -239,20 +238,20 @@ final class InsufficientMaterialBoardStateEvaluator
         }
 
         @Override
-        protected Optional<BoardState> evaluateBoard(Color color) {
+        protected BoardState evaluateBoard(Color color) {
             return isKingVsKing(color)
-                ? evaluatePiece(color)
-                : Optional.empty();
+                ? getBoardState(color)
+                : null;
         }
 
-        protected Optional<BoardState> evaluatePiece(Color color) {
-            var isInsufficientMaterials = evaluatePieces(color) || evaluatePieces(color.invert());
+        protected BoardState getBoardState(Color color) {
+            var isInsufficientMaterials = isInsufficientMaterial(color) || isInsufficientMaterial(color.invert());
             return isInsufficientMaterials
-                    ? Optional.of(new InsufficientMaterialBoardState(board, color))
-                    : Optional.empty();
+                    ? createBoardState(board, color)
+                    : null;
         }
 
-        private boolean evaluatePieces(Color color) {
+        private boolean isInsufficientMaterial(Color color) {
             var bishopPieces = board.getPieces(color, Piece.Type.BISHOP);
             var knightPieces = board.getPieces(color.invert(), Piece.Type.KNIGHT);
 
@@ -268,16 +267,16 @@ final class InsufficientMaterialBoardStateEvaluator
         }
 
         @Override
-        protected boolean isNotApplicable(int piecesCount) {
+        protected boolean isNotApplicable(Color color) {
             var allPieces = board.getPieces();
             return allPieces.size() < piecesCount;
         }
 
         @Override
-        protected Optional<BoardState> evaluatePiece(Color color) {
+        protected BoardState getBoardState(Color color) {
             return isPositionColorMatches(color)
-                    ? Optional.of(new InsufficientMaterialBoardState(board, color))
-                    : Optional.empty();
+                    ? createBoardState(board, color)
+                    : null;
         }
 
         private boolean isPositionColorMatches(Color color) {
@@ -308,11 +307,11 @@ final class InsufficientMaterialBoardStateEvaluator
         }
 
         @Override
-        protected Optional<BoardState> evaluatePiece(Color color) {
+        protected BoardState getBoardState(Color color) {
             var pieces = board.getPieces(color, pieceType);
             return pieces.size() == 2
-                ? Optional.of(new InsufficientMaterialBoardState(board, color))
-                : Optional.empty();
+                ? createBoardState(board, color)
+                : null;
         }
     }
 }

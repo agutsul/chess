@@ -358,6 +358,14 @@ public class PgnGameTest implements TestFileReader {
         assertGame(game, GameState.Type.BLACK_WIN, 80, 15);
     }
 
+    @Test
+    void testInsufficientMaterialForWrongColor() throws URISyntaxException, IOException {
+        var games = parseGames(readFileContent("chess_insufficient_material_wrong_color.pgn"), 1);
+        var game = (PgnGame) games.get(0);
+
+        assertGame(game, GameState.Type.BLACK_WIN, 57, 15);
+    }
+
     private static void assertGame(PgnGame game, GameState.Type expectedGameState,
                                    int expectedActionsCount, int expectedTagsCount) {
 
