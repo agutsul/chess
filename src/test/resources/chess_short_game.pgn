@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "0-1"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:11:53"]
+[WhiteElo "795"]
+[BlackElo "1314"]
+[WhiteRatingDiff "+2"]
+[BlackRatingDiff "+1"]
+[ECO "A00"]
+[Opening "Clemenz Opening"]
+[TimeControl "900+10"]
+[Termination "Normal"]
+
+1. h3 d5 0-1
