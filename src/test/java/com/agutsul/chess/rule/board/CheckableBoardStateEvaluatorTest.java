@@ -79,6 +79,6 @@ public class CheckableBoardStateEvaluatorTest {
         var boardState = evaluator.evaluate(Colors.WHITE);
 
         assertTrue(boardState.isPresent());
-        assertEquals(BoardState.Type.CHECK_MATED, boardState.get().getType());
+        assertTrue(boardState.get().isType(BoardState.Type.CHECK_MATED));
     }
 }

@@ -278,7 +278,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
         board.notifyObservers(whiteActionPerformedEvent);
 
         var boardState = boardStateEvaluator.evaluate(Colors.BLACK);
-        assertEquals(BoardState.Type.CHECK_MATED, boardState.getType());
+        assertTrue(boardState.isType(BoardState.Type.CHECK_MATED));
 
         var blackKing = (KingPiece<Color>) board.getPiece("e8").get();
 

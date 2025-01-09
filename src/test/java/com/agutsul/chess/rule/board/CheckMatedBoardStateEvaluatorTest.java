@@ -1,6 +1,5 @@
 package com.agutsul.chess.rule.board;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -548,6 +547,6 @@ public class CheckMatedBoardStateEvaluatorTest {
         var boardState = checkMateEvaluator.evaluate(color);
 
         assertTrue(boardState.isPresent());
-        assertEquals(BoardState.Type.CHECK_MATED, boardState.get().getType());
+        assertTrue(boardState.get().isType(BoardState.Type.CHECK_MATED));
     }
 }

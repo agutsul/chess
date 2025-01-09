@@ -261,12 +261,12 @@ public abstract class AbstractPlayableGame
     private BoardState evaluateBoardState(Player player) {
         var boardState = this.boardStateEvaluator.evaluate(player.getColor());
 
-        if (CHECK_MATED.equals(boardState.getType())) {
+        if (boardState.isType(CHECK_MATED)) {
             var lastMemento = this.journal.remove(this.journal.size() - 1);
             this.journal.add(new CheckMatedActionMemento<>(lastMemento));
         }
 
-        if (CHECKED.equals(boardState.getType())) {
+        if (boardState.isType(CHECKED)) {
             var lastMemento = this.journal.remove(this.journal.size() - 1);
             this.journal.add(new CheckedActionMemento<>(lastMemento));
         }
