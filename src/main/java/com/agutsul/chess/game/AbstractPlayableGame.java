@@ -1,7 +1,13 @@
 package com.agutsul.chess.game;
 
+import static com.agutsul.chess.board.state.BoardState.Type.AGREED_DEFEAT;
+import static com.agutsul.chess.board.state.BoardState.Type.AGREED_DRAW;
+import static com.agutsul.chess.board.state.BoardState.Type.AGREED_WIN;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
+import static com.agutsul.chess.board.state.BoardState.Type.FIVE_FOLD_REPETITION;
+import static com.agutsul.chess.board.state.BoardState.Type.SEVENTY_FIVE_MOVES;
+import static com.agutsul.chess.board.state.BoardState.Type.STALE_MATED;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.unmodifiableMap;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
@@ -113,17 +119,20 @@ public abstract class AbstractPlayableGame
     @Override
     public final Optional<Player> getWinner() {
         var boardState = this.board.getState();
-
-        switch (boardState.getType()) {
-        case CHECK_MATED:
-            return createWinner(this.currentPlayer);
-        case EXITED_DRAW:
+        if (boardState.isType(AGREED_DEFEAT)) {
             return createWinner(getOpponentPlayer());
-        case AGREED_WIN:
+        }
+
+        if (boardState.isAnyType(CHECK_MATED, AGREED_WIN)) {
             return createWinner(this.currentPlayer);
-        default:
+        }
+
+        if (boardState.isAnyType(AGREED_DRAW, FIVE_FOLD_REPETITION, SEVENTY_FIVE_MOVES, STALE_MATED)) {
             return Optional.empty();
         }
+
+        // TODO: confirm winner detection algo
+        return findWinner();
     }
 
     @Override
@@ -228,6 +237,25 @@ public abstract class AbstractPlayableGame
     private Optional<Player> createWinner(Player player) {
         logger.info("{} wins. Player '{}'", player.getColor(), player.getName());
         return Optional.of(player);
+    }
+
+    private Optional<Player> findWinner() {
+        var currentPlayerScore  = calculateScore(this.currentPlayer);
+        var opponentPlayerScore = calculateScore(getOpponentPlayer());
+
+        var result = Integer.compare(currentPlayerScore, opponentPlayerScore);
+        if (result == 0) {
+            return Optional.empty();
+        }
+
+        return Optional.of(result > 0
+                ? this.currentPlayer
+                : getOpponentPlayer()
+        );
+    }
+
+    private int calculateScore(Player player) {
+        return Math.abs(board.calculateValue(player.getColor()));
     }
 
     private BoardState evaluateBoardState(Player player) {

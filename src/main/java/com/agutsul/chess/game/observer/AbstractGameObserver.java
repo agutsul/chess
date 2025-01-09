@@ -10,6 +10,8 @@ import com.agutsul.chess.activity.action.event.ActionCancelledEvent;
 import com.agutsul.chess.activity.action.event.ActionCancellingEvent;
 import com.agutsul.chess.activity.action.event.ActionExecutionEvent;
 import com.agutsul.chess.activity.action.event.ActionPerformedEvent;
+import com.agutsul.chess.activity.action.event.DefeatExecutionEvent;
+import com.agutsul.chess.activity.action.event.DefeatPerformedEvent;
 import com.agutsul.chess.activity.action.event.DrawExecutionEvent;
 import com.agutsul.chess.activity.action.event.DrawPerformedEvent;
 import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
@@ -24,6 +26,7 @@ import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
+import com.agutsul.chess.player.event.PlayerDefeatActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerExitActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerWinActionExceptionEvent;
@@ -58,18 +61,21 @@ public abstract class AbstractGameObserver
         processors.put(ActionExecutionEvent.class,  event -> process((ActionExecutionEvent) event));
         processors.put(ActionCancellingEvent.class, event -> process((ActionCancellingEvent) event));
         processors.put(DrawExecutionEvent.class,    event -> process((DrawExecutionEvent) event));
+        processors.put(DefeatExecutionEvent.class,  event -> process((DefeatExecutionEvent) event));
         processors.put(WinExecutionEvent.class,     event -> process((WinExecutionEvent) event));
         processors.put(ExitExecutionEvent.class,    event -> process((ExitExecutionEvent) event));
 
         processors.put(ActionPerformedEvent.class,  event -> process((ActionPerformedEvent) event));
         processors.put(ActionCancelledEvent.class,  event -> process((ActionCancelledEvent) event));
         processors.put(DrawPerformedEvent.class,    event -> process((DrawPerformedEvent) event));
+        processors.put(DefeatPerformedEvent.class,  event -> process((DefeatPerformedEvent) event));
         processors.put(WinPerformedEvent.class,     event -> process((WinPerformedEvent) event));
         processors.put(ExitPerformedEvent.class,    event -> process((ExitPerformedEvent) event));
 
         processors.put(PlayerActionExceptionEvent.class,       event -> process((PlayerActionExceptionEvent) event));
         processors.put(PlayerCancelActionExceptionEvent.class, event -> process((PlayerCancelActionExceptionEvent) event));
         processors.put(PlayerDrawActionExceptionEvent.class,   event -> process((PlayerDrawActionExceptionEvent) event));
+        processors.put(PlayerDefeatActionExceptionEvent.class, event -> process((PlayerDefeatActionExceptionEvent) event));
         processors.put(PlayerWinActionExceptionEvent.class,    event -> process((PlayerWinActionExceptionEvent) event));
         processors.put(PlayerExitActionExceptionEvent.class,   event -> process((PlayerExitActionExceptionEvent) event));
 
@@ -96,6 +102,8 @@ public abstract class AbstractGameObserver
 
     protected abstract void process(PlayerDrawActionExceptionEvent event);
 
+    protected abstract void process(PlayerDefeatActionExceptionEvent event);
+
     protected abstract void process(PlayerWinActionExceptionEvent event);
 
     protected abstract void process(WinExecutionEvent event);
@@ -105,6 +113,10 @@ public abstract class AbstractGameObserver
     protected abstract void process(DrawExecutionEvent event);
 
     protected abstract void process(DrawPerformedEvent event);
+
+    protected abstract void process(DefeatExecutionEvent event);
+
+    protected abstract void process(DefeatPerformedEvent event);
 
     protected abstract void process(ExitExecutionEvent event);
 

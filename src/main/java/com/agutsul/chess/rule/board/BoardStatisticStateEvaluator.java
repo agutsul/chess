@@ -89,6 +89,11 @@ final class BoardStatisticStateEvaluator
         }
 
         @Override
+        public boolean isAnyType(Type type, Type... types) {
+            return this.origin.isAnyType(type, types);
+        }
+
+        @Override
         public Collection<Action<?>> getActions(Piece<?> piece) {
             return this.origin.getActions(piece);
         }

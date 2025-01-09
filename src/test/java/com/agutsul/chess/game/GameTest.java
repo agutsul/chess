@@ -38,10 +38,11 @@ import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
 import com.agutsul.chess.activity.action.event.ExitPerformedEvent;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.StandardBoard;
+import com.agutsul.chess.board.state.AgreedDefeatBoardState;
 import com.agutsul.chess.board.state.AgreedDrawBoardState;
 import com.agutsul.chess.board.state.CheckMatedBoardState;
 import com.agutsul.chess.board.state.DefaultBoardState;
-import com.agutsul.chess.board.state.ExitedDrawBoardState;
+import com.agutsul.chess.board.state.ExitedBoardState;
 import com.agutsul.chess.board.state.StaleMatedBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -126,7 +127,7 @@ public class GameTest {
     void testGetStateReturningBlackWin() {
         var board = mock(AbstractBoard.class);
         when(board.getState())
-            .thenReturn(new ExitedDrawBoardState(board, Colors.BLACK));
+            .thenReturn(new AgreedDefeatBoardState(board, Colors.BLACK));
 
         var whitePlayer = mock(Player.class);
         var blackPlayer = mock(Player.class);
@@ -215,7 +216,7 @@ public class GameTest {
     void testGetWinnerByExitedDraw() {
         var board = mock(AbstractBoard.class);
         when(board.getState())
-            .thenReturn(new ExitedDrawBoardState(board, Colors.WHITE));
+            .thenReturn(new ExitedBoardState(board, Colors.WHITE));
 
         var whitePlayer = new UserPlayer("test1", Colors.WHITE);
         var blackPlayer = new UserPlayer("test2", Colors.BLACK);
@@ -223,8 +224,7 @@ public class GameTest {
         var game = new GameMock(whitePlayer, blackPlayer, board);
         var winner = game.getWinner();
 
-        assertTrue(winner.isPresent());
-        assertEquals(blackPlayer, winner.get());
+        assertTrue(winner.isEmpty());
     }
 
     @Test
@@ -605,8 +605,8 @@ public class GameTest {
         assertEquals(1, game.getJournal().size());
 
         var winner = game.getWinner();
-        assertTrue(winner.isPresent());
-        assertEquals(whitePlayer, winner.get());
+        assertTrue(winner.isEmpty());
+//        assertEquals(whitePlayer, winner.get());
 
         verify(whitePlayer, times(1)).play();
         verify(blackPlayer, times(1)).play();
@@ -621,7 +621,7 @@ public class GameTest {
         doCallRealMethod()
             .when(board).setState(any(DefaultBoardState.class));
         doThrow(new RuntimeException("test"))
-            .when(board).setState(any(ExitedDrawBoardState.class));
+            .when(board).setState(any(ExitedBoardState.class));
 
         doCallRealMethod()
             .when(board).getState();

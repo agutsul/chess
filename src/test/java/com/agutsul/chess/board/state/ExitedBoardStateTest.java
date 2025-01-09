@@ -10,7 +10,7 @@ import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.color.Colors;
 
 @ExtendWith(MockitoExtension.class)
-public class ExitedDrawBoardStateTest {
+public class ExitedBoardStateTest {
 
     @Test
     void testGetActions() {
@@ -18,7 +18,7 @@ public class ExitedDrawBoardStateTest {
                 .withWhitePawn("a2")
                 .build();
 
-        board.setState(new ExitedDrawBoardState(board, Colors.WHITE));
+        board.setState(new ExitedBoardState(board, Colors.WHITE));
 
         var whitePawn = board.getPiece("a2").get();
         assertTrue(board.getActions(whitePawn).isEmpty());
@@ -30,7 +30,7 @@ public class ExitedDrawBoardStateTest {
                 .withWhitePawn("a2")
                 .build();
 
-        board.setState(new ExitedDrawBoardState(board, Colors.WHITE));
+        board.setState(new ExitedBoardState(board, Colors.WHITE));
 
         var whitePawn = board.getPiece("a2").get();
         assertTrue(board.getImpacts(whitePawn).isEmpty());

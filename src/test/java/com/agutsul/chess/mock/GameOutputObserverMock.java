@@ -7,6 +7,8 @@ import com.agutsul.chess.activity.action.event.ActionCancelledEvent;
 import com.agutsul.chess.activity.action.event.ActionCancellingEvent;
 import com.agutsul.chess.activity.action.event.ActionExecutionEvent;
 import com.agutsul.chess.activity.action.event.ActionPerformedEvent;
+import com.agutsul.chess.activity.action.event.DefeatExecutionEvent;
+import com.agutsul.chess.activity.action.event.DefeatPerformedEvent;
 import com.agutsul.chess.activity.action.event.DrawExecutionEvent;
 import com.agutsul.chess.activity.action.event.DrawPerformedEvent;
 import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
@@ -21,6 +23,7 @@ import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.observer.AbstractGameObserver;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
+import com.agutsul.chess.player.event.PlayerDefeatActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerExitActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerWinActionExceptionEvent;
@@ -97,6 +100,16 @@ public class GameOutputObserverMock
     }
 
     @Override
+    protected void process(DefeatExecutionEvent event) {
+        consume(event);
+    }
+
+    @Override
+    protected void process(DefeatPerformedEvent event) {
+        consume(event);
+    }
+
+    @Override
     protected void process(ExitExecutionEvent event) {
         consume(event);
     }
@@ -123,6 +136,11 @@ public class GameOutputObserverMock
 
     @Override
     protected void process(WinPerformedEvent event) {
+        consume(event);
+    }
+
+    @Override
+    protected void process(PlayerDefeatActionExceptionEvent event) {
         consume(event);
     }
 

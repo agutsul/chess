@@ -14,6 +14,8 @@ import com.agutsul.chess.activity.action.event.ActionCancelledEvent;
 import com.agutsul.chess.activity.action.event.ActionCancellingEvent;
 import com.agutsul.chess.activity.action.event.ActionExecutionEvent;
 import com.agutsul.chess.activity.action.event.ActionPerformedEvent;
+import com.agutsul.chess.activity.action.event.DefeatExecutionEvent;
+import com.agutsul.chess.activity.action.event.DefeatPerformedEvent;
 import com.agutsul.chess.activity.action.event.DrawExecutionEvent;
 import com.agutsul.chess.activity.action.event.DrawPerformedEvent;
 import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
@@ -36,6 +38,7 @@ import com.agutsul.chess.journal.JournalFormatter.Mode;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
+import com.agutsul.chess.player.event.PlayerDefeatActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerExitActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerWinActionExceptionEvent;
@@ -142,6 +145,21 @@ public final class ConsoleGameOutputObserver
         displayBoard(((AbstractPlayableGame) this.game).getBoard());
     }
 
+
+    @Override
+    protected void process(DefeatExecutionEvent event) {
+        var player = event.getPlayer();
+        System.out.println(String.format("%s: '%s' asked a defeat",
+                player.getColor(),
+                player.getName()
+        ));
+    }
+
+    @Override
+    protected void process(DefeatPerformedEvent event) {
+        displayBoard(((AbstractPlayableGame) this.game).getBoard());
+    }
+
     @Override
     protected void process(ExitExecutionEvent event) {
         var player = event.getPlayer();
@@ -167,6 +185,11 @@ public final class ConsoleGameOutputObserver
     }
 
     @Override
+    protected void process(PlayerDefeatActionExceptionEvent event) {
+        displayErrorMessage(event.getMessage());
+    }
+
+    @Override
     protected void process(WinExecutionEvent event) {
         var player = event.getPlayer();
         System.out.println(String.format("%s: '%s' asked a win",
@@ -179,6 +202,7 @@ public final class ConsoleGameOutputObserver
     protected void process(WinPerformedEvent event) {
         displayBoard(((AbstractPlayableGame) this.game).getBoard());
     }
+
 
     // utilities
 

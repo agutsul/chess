@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.command.CancelActionCommand;
+import com.agutsul.chess.command.DefeatGameCommand;
 import com.agutsul.chess.command.DrawGameCommand;
 import com.agutsul.chess.command.ExitGameCommand;
 import com.agutsul.chess.command.PerformActionCommand;
@@ -27,6 +28,8 @@ import com.agutsul.chess.player.event.PlayerActionEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
+import com.agutsul.chess.player.event.PlayerDefeatActionEvent;
+import com.agutsul.chess.player.event.PlayerDefeatActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerExitActionEvent;
@@ -62,6 +65,7 @@ public final class PlayerActionOberver
         processors.put(PlayerActionEvent.class,       event -> process((PlayerActionEvent) event));
         processors.put(PlayerCancelActionEvent.class, event -> process((PlayerCancelActionEvent) event));
         processors.put(PlayerDrawActionEvent.class,   event -> process((PlayerDrawActionEvent) event));
+        processors.put(PlayerDefeatActionEvent.class, event -> process((PlayerDefeatActionEvent) event));
         processors.put(PlayerWinActionEvent.class,    event -> process((PlayerWinActionEvent) event));
         processors.put(PlayerExitActionEvent.class,   event -> process((PlayerExitActionEvent) event));
 
@@ -112,6 +116,19 @@ public final class PlayerActionOberver
         } catch (Exception e) {
             LOGGER.error("Player draw exception", e);
             notifyGameEvent(new PlayerDrawActionExceptionEvent(e.getMessage()));
+
+            requestPlayerAction(player);
+        }
+    }
+
+    private void process(PlayerDefeatActionEvent event) {
+        var player = event.getPlayer();
+        try {
+            var defeatGameCommand = new DefeatGameCommand(this.game, player);
+            defeatGameCommand.execute();
+        } catch (Exception e) {
+            LOGGER.error("Player defeat exception", e);
+            notifyGameEvent(new PlayerDefeatActionExceptionEvent(e.getMessage()));
 
             requestPlayerAction(player);
         }

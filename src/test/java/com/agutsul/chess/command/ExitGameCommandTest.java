@@ -40,7 +40,7 @@ public class ExitGameCommandTest {
 
         var boardState = board.getState();
 
-        assertEquals(BoardState.Type.EXITED_DRAW, boardState.getType());
+        assertEquals(BoardState.Type.EXITED, boardState.getType());
         assertEquals(Colors.WHITE, boardState.getColor());
 
         verify(game, times(1)).notifyObservers(any(ExitExecutionEvent.class));

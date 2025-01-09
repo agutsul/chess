@@ -34,6 +34,7 @@ import com.agutsul.chess.player.event.AbstractRequestEvent;
 import com.agutsul.chess.player.event.PlayerActionEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionEvent;
+import com.agutsul.chess.player.event.PlayerDefeatActionEvent;
 import com.agutsul.chess.player.event.PlayerDrawActionEvent;
 import com.agutsul.chess.player.event.PlayerExitActionEvent;
 import com.agutsul.chess.player.event.PlayerWinActionEvent;
@@ -44,10 +45,11 @@ import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 public abstract class AbstractPlayerInputObserver
         implements Observer {
 
-    protected static final String UNDO_COMMAND = "undo";
-    protected static final String DRAW_COMMAND = "draw";
-    protected static final String WIN_COMMAND  = "win";
-    protected static final String EXIT_COMMAND = "exit";
+    protected static final String UNDO_COMMAND =   "undo";
+    protected static final String DRAW_COMMAND =   "draw";
+    protected static final String WIN_COMMAND  =   "win";
+    protected static final String DEFEAT_COMMAND = "defeat";
+    protected static final String EXIT_COMMAND =   "exit";
 
     private static final String UNKNOWN_PROMOTION_PIECE_TYPE_MESSAGE = "Unknown promotion piece type";
     private static final String UNABLE_TO_PROCESS_MESSAGE = "Unable to process";
@@ -122,6 +124,8 @@ public abstract class AbstractPlayerInputObserver
                 processUndoCommand(this.player);
             } else if (DRAW_COMMAND.equalsIgnoreCase(command)) {
                 processDrawCommand(this.player);
+            } else if (DEFEAT_COMMAND.equalsIgnoreCase(command)) {
+                processDefeatCommand(this.player);
             } else if (WIN_COMMAND.equalsIgnoreCase(command)) {
                 processWinCommand(this.player);
             } else if (EXIT_COMMAND.equalsIgnoreCase(command)) {
@@ -158,6 +162,10 @@ public abstract class AbstractPlayerInputObserver
 
     private void processDrawCommand(Player player) {
         notifyGameEvent(new PlayerDrawActionEvent(player));
+    }
+
+    private void processDefeatCommand(Player player) {
+        notifyGameEvent(new PlayerDefeatActionEvent(player));
     }
 
     private void processWinCommand(Player player) {

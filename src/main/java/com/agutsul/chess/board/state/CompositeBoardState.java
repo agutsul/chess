@@ -41,7 +41,14 @@ public final class CompositeBoardState
 
     @Override
     public boolean isType(Type type) {
-        return boardStates.stream().anyMatch(boardState -> boardState.isType(type));
+        return boardStates.stream()
+                .anyMatch(boardState -> boardState.isType(type));
+    }
+
+    @Override
+    public boolean isAnyType(Type type, Type... types) {
+        return boardStates.stream()
+                .anyMatch(boardState -> boardState.isAnyType(type, types));
     }
 
     @Override
@@ -60,6 +67,4 @@ public final class CompositeBoardState
                 .map(BoardState::toString)
                 .collect(joining(","));
     }
-
-
 }

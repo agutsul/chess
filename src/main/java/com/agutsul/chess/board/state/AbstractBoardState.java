@@ -3,6 +3,7 @@ package com.agutsul.chess.board.state;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -46,6 +47,11 @@ abstract class AbstractBoardState
     @Override
     public boolean isType(Type type) {
         return Objects.equals(this.type, type);
+    }
+
+    @Override
+    public boolean isAnyType(Type type, Type... additionalTypes) {
+        return isType(type) || List.of(additionalTypes).contains(this.type);
     }
 
     @Override
