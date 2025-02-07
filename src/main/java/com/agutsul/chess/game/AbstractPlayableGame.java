@@ -12,6 +12,7 @@ import static java.time.LocalDateTime.now;
 import static java.util.Collections.unmodifiableMap;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Executable;
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.event.ActionCancelledEvent;
 import com.agutsul.chess.activity.action.event.ActionPerformedEvent;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
@@ -245,13 +247,30 @@ public abstract class AbstractPlayableGame
 
         var result = Integer.compare(currentPlayerScore, opponentPlayerScore);
         if (result == 0) {
-            return Optional.empty();
+            var currentPlayerActions  = calculateActions(this.currentPlayer);
+            var opponentPlayerActions = calculateActions(getOpponentPlayer());
+
+            result = Integer.compare(currentPlayerActions, opponentPlayerActions);
+            if (result == 0) {
+                return Optional.empty();
+            }
         }
 
-        return Optional.of(result > 0
-                ? this.currentPlayer
-                : getOpponentPlayer()
-        );
+        return Optional.of(result > 0 ? this.currentPlayer : getOpponentPlayer());
+    }
+
+    private int calculateActions(Player player) {
+        var pieces = board.getPieces(player.getColor());
+
+        int result = 0;
+        for (var action : Action.Type.values()) {
+            result += pieces.stream()
+                    .map(piece -> board.getActions(piece, action))
+                    .mapToInt(Collection::size)
+                    .sum();
+        }
+
+        return result;
     }
 
     private int calculateScore(Player player) {

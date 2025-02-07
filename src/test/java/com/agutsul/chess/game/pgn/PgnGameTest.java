@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -368,12 +367,19 @@ public class PgnGameTest implements TestFileReader {
     }
 
     @Test
-    @Disabled
     void testShortPgnGame() throws URISyntaxException, IOException {
         var games = parseGames(readFileContent("chess_short_game.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
         assertGame(game, GameState.Type.BLACK_WIN, 2, 15);
+    }
+
+    @Test
+    void testActionCountComparisonPgnGame() throws URISyntaxException, IOException {
+        var games = parseGames(readFileContent("chess_action_count_comparison.pgn"), 1);
+        var game = (PgnGame) games.get(0);
+
+        assertGame(game, GameState.Type.WHITE_WIN, 7, 15);
     }
 
     private static void assertGame(PgnGame game, GameState.Type expectedGameState,

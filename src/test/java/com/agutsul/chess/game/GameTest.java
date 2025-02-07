@@ -537,7 +537,7 @@ public class GameTest {
         assertEquals(1, game.getJournal().size());
 
         var winner = game.getWinner();
-        assertTrue(winner.isEmpty());
+        assertTrue(winner.isPresent());
 
         verify(whitePlayer, times(1)).play();
         verify(blackPlayer, times(1)).play();
@@ -605,8 +605,8 @@ public class GameTest {
         assertEquals(1, game.getJournal().size());
 
         var winner = game.getWinner();
-        assertTrue(winner.isEmpty());
-//        assertEquals(whitePlayer, winner.get());
+        assertTrue(winner.isPresent());
+        assertEquals(whitePlayer, winner.get());
 
         verify(whitePlayer, times(1)).play();
         verify(blackPlayer, times(1)).play();
@@ -673,7 +673,7 @@ public class GameTest {
         assertEquals(1, game.getJournal().size());
 
         var winner = game.getWinner();
-        assertTrue(winner.isEmpty());
+        assertTrue(winner.isPresent());
 
         verify(whitePlayer, times(1)).play();
         verify(blackPlayer, times(1)).play();
