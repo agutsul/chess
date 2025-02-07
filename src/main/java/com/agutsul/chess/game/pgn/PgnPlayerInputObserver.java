@@ -88,9 +88,7 @@ final class PgnPlayerInputObserver
         if (Termination.NORMAL.equals(termination)) {
 
             var currentState = board.getState();
-            if (currentState.isType(CHECKED)
-                    || currentState.isType(INSUFFICIENT_MATERIAL)) {
-
+            if (currentState.isAnyType(CHECKED, INSUFFICIENT_MATERIAL)) {
                 return DEFEAT_COMMAND;
             }
 
