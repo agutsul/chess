@@ -1,13 +1,12 @@
 package com.agutsul.chess.game;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -18,13 +17,16 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 
 import com.agutsul.chess.activity.action.CancelMoveAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
@@ -306,21 +308,20 @@ public class GameTest {
 
         var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
 
-        var wPlayerObserver = new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4", "undo", "d2 d4");
-        var bPlayerObserver = new PlayerInputObserverInteratorMock(blackPlayer, game, "e7 e5", "d7 d5");
+        var whitePlayerInputObserver = new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4", "undo", "d2 d4");
+        var blackPlayerInputObserver = new PlayerInputObserverInteratorMock(blackPlayer, game, "e7 e5", "d7 d5");
 
-        board.addObserver(wPlayerObserver);
-        board.addObserver(bPlayerObserver);
+        board.addObserver(whitePlayerInputObserver);
+        board.addObserver(blackPlayerInputObserver);
 
         when(boardStateEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
                 if (Colors.WHITE.equals(color)) {
-                    if (wPlayerObserver.getIterator().hasNext()) {
-                        return new DefaultBoardState(board, color);
+                    var iterator = whitePlayerInputObserver.getIterator();
+                    if (!iterator.hasNext()) {
+                        return new StaleMatedBoardState(board, color);
                     }
-
-                    return new StaleMatedBoardState(board, color);
                 }
 
                 return new DefaultBoardState(board, color);
@@ -364,22 +365,21 @@ public class GameTest {
 
         var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
 
-        var playerInputObserver = new PlayerInputObserverInteratorMock(
+        var whitePlayerInputObserver = new PlayerInputObserverInteratorMock(
                 whitePlayer, game, "undo", "e2 e4"
         );
 
-        board.addObserver(playerInputObserver);
+        board.addObserver(whitePlayerInputObserver);
         board.addObserver(new PlayerInputObserverInteratorMock(blackPlayer, game, "e7 ", "e7 e5"));
 
         when(boardStateEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
                 if (Colors.WHITE.equals(color)) {
-                    if (playerInputObserver.getIterator().hasNext()) {
-                        return new DefaultBoardState(board, color);
+                    var iterator = whitePlayerInputObserver.getIterator();
+                    if (!iterator.hasNext()) {
+                        return new StaleMatedBoardState(board, color);
                     }
-
-                    return new StaleMatedBoardState(board, color);
                 }
 
                 return new DefaultBoardState(board, color);
@@ -431,21 +431,20 @@ public class GameTest {
 
         var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
 
-        var playerInputObserver =
+        var whitePlayerInputObserver =
                 new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4");
 
-        board.addObserver(playerInputObserver);
+        board.addObserver(whitePlayerInputObserver);
         board.addObserver(new PlayerInputObserverInteratorMock(blackPlayer, game, "draw"));
 
         when(boardStateEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
                 if (Colors.WHITE.equals(color)) {
-                    if (playerInputObserver.getIterator().hasNext()) {
-                        return new DefaultBoardState(board, color);
+                    var iterator = whitePlayerInputObserver.getIterator();
+                    if (!iterator.hasNext()) {
+                        return new StaleMatedBoardState(board, color);
                     }
-
-                    return new StaleMatedBoardState(board, color);
                 }
 
                 return new DefaultBoardState(board, color);
@@ -484,7 +483,7 @@ public class GameTest {
 
         doCallRealMethod()
             .when(board).setState(any(DefaultBoardState.class));
-        doThrow(new RuntimeException("test"))
+        doAnswer(new FirstExecutionExceptionAnswer<>(new RuntimeException("test")))
             .when(board).setState(any(AgreedDrawBoardState.class));
 
         doCallRealMethod()
@@ -505,21 +504,20 @@ public class GameTest {
 
         var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
 
-        var playerInputObserver =
+        var whitePlayerInputObserver =
                 new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4");
 
-        board.addObserver(playerInputObserver);
+        board.addObserver(whitePlayerInputObserver);
         board.addObserver(new PlayerInputObserverInteratorMock(blackPlayer, game, "draw"));
 
         when(boardStateEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
                 if (Colors.WHITE.equals(color)) {
-                    if (playerInputObserver.getIterator().hasNext()) {
-                        return new DefaultBoardState(board, color);
+                    var iterator = whitePlayerInputObserver.getIterator();
+                    if (!iterator.hasNext()) {
+                        return new StaleMatedBoardState(board, color);
                     }
-
-                    return new StaleMatedBoardState(board, color);
                 }
 
                 return new DefaultBoardState(board, color);
@@ -534,7 +532,7 @@ public class GameTest {
         game.addObserver(new GameOutputObserverMock(game, assertionMap));
         game.run();
 
-        assertEquals(1, game.getJournal().size());
+        assertEquals(1, journal.size());
 
         var winner = game.getWinner();
         assertTrue(winner.isPresent());
@@ -565,21 +563,20 @@ public class GameTest {
 
         var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
 
-        var playerInputObserver =
+        var whitePlayerInputObserver =
                 new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4");
 
-        board.addObserver(playerInputObserver);
+        board.addObserver(whitePlayerInputObserver);
         board.addObserver(new PlayerInputObserverInteratorMock(blackPlayer, game, "exit"));
 
         when(boardStateEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
                 if (Colors.WHITE.equals(color)) {
-                    if (playerInputObserver.getIterator().hasNext()) {
-                        return new DefaultBoardState(board, color);
+                    var iterator = whitePlayerInputObserver.getIterator();
+                    if (!iterator.hasNext()) {
+                        return new StaleMatedBoardState(board, color);
                     }
-
-                    return new StaleMatedBoardState(board, color);
                 }
 
                 return new DefaultBoardState(board, color);
@@ -613,14 +610,13 @@ public class GameTest {
     }
 
     @Test
-//    @Disabled
     @SuppressWarnings("unchecked")
     void testNegativeGameExitFlow() {
         var board = spy(new StandardBoard());
 
         doCallRealMethod()
             .when(board).setState(any(DefaultBoardState.class));
-        doThrow(new RuntimeException("test"))
+        doAnswer(new FirstExecutionExceptionAnswer<>(new RuntimeException("test")))
             .when(board).setState(any(ExitedBoardState.class));
 
         doCallRealMethod()
@@ -641,21 +637,20 @@ public class GameTest {
 
         var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
 
-        var playerInputObserver =
+        var whitePlayerInputObserver =
                 new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4");
 
-        board.addObserver(playerInputObserver);
+        board.addObserver(whitePlayerInputObserver);
         board.addObserver(new PlayerInputObserverInteratorMock(blackPlayer, game, "exit"));
 
         when(boardStateEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
                 if (Colors.WHITE.equals(color)) {
-                    if (playerInputObserver.getIterator().hasNext()) {
-                        return new DefaultBoardState(board, color);
+                    var iterator = whitePlayerInputObserver.getIterator();
+                    if (!iterator.hasNext()) {
+                        return new StaleMatedBoardState(board, color);
                     }
-
-                    return new StaleMatedBoardState(board, color);
                 }
 
                 return new DefaultBoardState(board, color);
@@ -670,7 +665,7 @@ public class GameTest {
         game.addObserver(new GameOutputObserverMock(game, assertionMap));
         game.run();
 
-        assertEquals(1, game.getJournal().size());
+        assertEquals(1, journal.size());
 
         var winner = game.getWinner();
         assertTrue(winner.isPresent());
@@ -686,7 +681,7 @@ public class GameTest {
 
         PlayerInputObserverInteratorMock(Player player, Game game, String... actions) {
             super(player, game);
-            this.actionInterator = asList(actions).iterator();
+            this.actionInterator = List.of(actions).iterator();
         }
 
         public Iterator<String> getIterator() {
@@ -696,6 +691,28 @@ public class GameTest {
         @Override
         protected String getActionCommand() {
             return actionInterator.hasNext() ? actionInterator.next() : null;
+        }
+    }
+
+    private static class FirstExecutionExceptionAnswer<T>
+            implements Answer<T> {
+
+        private final Exception exception;
+        private boolean isExecuted;
+
+        FirstExecutionExceptionAnswer(Exception exception) {
+            this.exception = exception;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public T answer(InvocationOnMock invocation) throws Throwable {
+            if (!isExecuted) {
+                isExecuted = true;
+                throw exception;
+            }
+
+            return (T) invocation.callRealMethod();
         }
     }
 }
