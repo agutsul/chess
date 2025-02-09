@@ -19,7 +19,6 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.state.CastlingablePieceState;
-import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.Rule;
 
@@ -28,8 +27,6 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         implements Castlingable {
 
     private static final Logger LOGGER = getLogger(AbstractCastlingPiece.class);
-
-    private static final PieceState<?> DISPOSED_STATE = new DisposedCastlingablePieceState<>();
 
     AbstractCastlingPiece(Board board, Type type, COLOR color,
                           String unicode, Position position, int direction,
@@ -57,14 +54,6 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
         var state = (CastlingablePieceState<?>) getState();
         ((CastlingablePieceState<AbstractCastlingPiece<COLOR>>) state).uncastling(this, position);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void dispose() {
-        super.dispose();
-
-        this.currentState = (PieceState<Piece<COLOR>>) DISPOSED_STATE;
     }
 
     private void doCastling(Position position) {
@@ -171,22 +160,6 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
         private static void doCastling(AbstractCastlingPiece<?> piece, Position position) {
             piece.doCastling(position);
-        }
-    }
-
-    static final class DisposedCastlingablePieceState<PIECE extends Piece<?> & Movable & Capturable & Castlingable>
-            extends AbstractCastlingablePieceState<PIECE> {
-
-        private static final Logger LOGGER = getLogger(DisposedCastlingablePieceState.class);
-
-        DisposedCastlingablePieceState() {
-            super(new DisposedPieceState<>());
-        }
-
-        @Override
-        public void castling(PIECE piece, Position position) {
-            LOGGER.warn("Castling by disabled '{}' to '{}'", piece, position);
-            // do nothing
         }
     }
 }
