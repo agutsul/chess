@@ -28,8 +28,8 @@ final class KingPieceImpl<COLOR extends Color>
 
     private static final Logger LOGGER = getLogger(KingPieceImpl.class);
 
-    private final CheckedPieceState<COLOR,? extends KingPiece<COLOR>> checkedPieceState;
-    private final CheckMatedPieceState<COLOR,? extends KingPiece<COLOR>> checkMatedPieceState;
+    private final CheckedPieceState<? extends KingPiece<?>> checkedPieceState;
+    private final CheckMatedPieceState<? extends KingPiece<?>> checkMatedPieceState;
 
     KingPieceImpl(Board board, COLOR color, String unicode,
                   Position position, int direction) {
@@ -48,7 +48,7 @@ final class KingPieceImpl<COLOR extends Color>
     public void setChecked(boolean isChecked) {
         LOGGER.info("Set {} king checked='{}' state", getColor(), isChecked);
         this.currentState = isChecked
-                ? (PieceState<COLOR,Piece<COLOR>>) (PieceState<?,?>) this.checkedPieceState
+                ? (PieceState<Piece<COLOR>>) (PieceState<?>) this.checkedPieceState
                 : this.activeState;
     }
 
@@ -57,18 +57,18 @@ final class KingPieceImpl<COLOR extends Color>
     public void setCheckMated(boolean isCheckMated) {
         LOGGER.info("Set {} king checkMated='{}' state", getColor(), isCheckMated);
         this.currentState = isCheckMated
-                ? (PieceState<COLOR,Piece<COLOR>>) (PieceState<?,?>) this.checkMatedPieceState
-                : (PieceState<COLOR,Piece<COLOR>>) (PieceState<?,?>) this.checkedPieceState;
+                ? (PieceState<Piece<COLOR>>) (PieceState<?>) this.checkMatedPieceState
+                : (PieceState<Piece<COLOR>>) (PieceState<?>) this.checkedPieceState;
     }
 
     @Override
     public boolean isChecked() {
-        return this.currentState instanceof CheckedPieceState<?,?>;
+        return this.currentState instanceof CheckedPieceState<?>;
     }
 
     @Override
     public boolean isCheckMated() {
-        return this.currentState instanceof CheckMatedPieceState<?,?>;
+        return this.currentState instanceof CheckMatedPieceState<?>;
     }
 
     // prevent prohibited operations
@@ -98,15 +98,14 @@ final class KingPieceImpl<COLOR extends Color>
         throw new UnsupportedOperationException("Unable to pin KING piece");
     }
 
-    static class KingCheckedPieceState<COLOR extends Color,
-                                       PIECE extends KingPiece<COLOR>>
-            extends AbstractPieceStateProxy<COLOR,PIECE>
-            implements CheckedPieceState<COLOR,PIECE>,
-                       CastlingablePieceState<COLOR,PIECE> {
+    static class KingCheckedPieceState<PIECE extends KingPiece<?>>
+            extends AbstractPieceStateProxy<PIECE>
+            implements CheckedPieceState<PIECE>,
+                       CastlingablePieceState<PIECE> {
 
         @SuppressWarnings("unchecked")
-        KingCheckedPieceState(PieceState<COLOR,Piece<COLOR>> origin) {
-            super((AbstractPieceStateProxy<COLOR,PIECE>) (AbstractPieceStateProxy<?,?>) origin);
+        KingCheckedPieceState(PieceState<? extends Piece<?>> origin) {
+            super((AbstractPieceStateProxy<PIECE>) (AbstractPieceStateProxy<?>) origin);
         }
 
         @Override
@@ -133,16 +132,15 @@ final class KingPieceImpl<COLOR extends Color>
 
         @Override
         public void uncastling(PIECE piece, Position position) {
-            ((AbstractCastlingablePieceState<COLOR,PIECE>) this.origin).uncastling(piece, position);
+            ((AbstractCastlingablePieceState<PIECE>) this.origin).uncastling(piece, position);
         }
     }
 
-    static final class KingCheckMatedPieceState<COLOR extends Color,
-                                                PIECE extends KingPiece<COLOR>>
-            extends KingCheckedPieceState<COLOR,PIECE>
-            implements CheckMatedPieceState<COLOR,PIECE> {
+    static final class KingCheckMatedPieceState<PIECE extends KingPiece<?>>
+            extends KingCheckedPieceState<PIECE>
+            implements CheckMatedPieceState<PIECE> {
 
-        KingCheckMatedPieceState(PieceState<COLOR,Piece<COLOR>> origin) {
+        KingCheckMatedPieceState(PieceState<? extends Piece<?>> origin) {
             super(origin);
         }
 

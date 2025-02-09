@@ -14,15 +14,13 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.Rule;
 
-class ActivePieceState<COLOR extends Color,
-                       PIECE extends Piece<COLOR> & Movable & Capturable>
-        extends AbstractPieceState<COLOR,PIECE> {
+class ActivePieceState<PIECE extends Piece<?> & Movable & Capturable>
+        extends AbstractPieceState<PIECE> {
 
     private static final Logger LOGGER = getLogger(ActivePieceState.class);
 

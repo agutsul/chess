@@ -23,7 +23,6 @@ import com.agutsul.chess.Disposable;
 import com.agutsul.chess.EnPassantable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.Pinnable;
-import com.agutsul.chess.Promotable;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.Restorable;
 import com.agutsul.chess.activity.action.Action;
@@ -42,19 +41,20 @@ import com.agutsul.chess.position.Position;
  * Requires extending all interfaces of promoted pieces
  * to properly proxy those newly created pieces
  */
-final class PawnPieceProxy extends PieceProxy
+final class PawnPieceProxy
+        extends PieceProxy
         implements PawnPiece<Color>, KnightPiece<Color>, BishopPiece<Color>,
                    RookPiece<Color>, QueenPiece<Color> {
 
     private static final Logger LOGGER = getLogger(PawnPieceProxy.class);
 
-    private static final PieceState<?,?> DISPOSED_STATE = new DisposedPromotablePieceState<>();
+    private static final PieceState<?> DISPOSED_STATE = new DisposedPromotablePieceState<>();
 
     private final PieceFactory pieceFactory;
     private final PawnPiece<Color> pawnPiece;
 
-    private final PieceState<?,?> activeState;
-    private PieceState<?,?> currentState;
+    private final PieceState<?> activeState;
+    private PieceState<?> currentState;
 
     PawnPieceProxy(Board board,
                    PawnPiece<Color> pawnPiece,
@@ -74,8 +74,8 @@ final class PawnPieceProxy extends PieceProxy
 
     @Override
     @SuppressWarnings("unchecked")
-    public PieceState<Color,Piece<Color>> getState() {
-        return (PieceState<Color,Piece<Color>>) (PieceState<?,?>) this.currentState;
+    public PieceState<Piece<Color>> getState() {
+        return (PieceState<Piece<Color>>) (PieceState<?>) this.currentState;
     }
 
     @Override
@@ -107,8 +107,8 @@ final class PawnPieceProxy extends PieceProxy
     public void promote(Position position, Piece.Type pieceType) {
         LOGGER.info("Promote '{}' to '{}'", this, pieceType.name());
 
-        var state = (PromotablePieceState<?,?>) getState();
-        ((PromotablePieceState<Color,PawnPiece<Color>>) state).promote(this, position, pieceType);
+        var state = (PromotablePieceState<?>) getState();
+        ((PromotablePieceState<PawnPiece<?>>) state).promote(this, position, pieceType);
     }
 
     @Override
@@ -116,8 +116,8 @@ final class PawnPieceProxy extends PieceProxy
     public void demote() {
         LOGGER.info("Demote '{}' to '{}'", this, Piece.Type.PAWN.name());
 
-        var state = (PromotablePieceState<?,?>) getState();
-        ((PromotablePieceState<Color,? extends Piece<Color>>) state).unpromote(this);
+        var state = (PromotablePieceState<?>) getState();
+        ((PromotablePieceState<? extends Piece<Color>>) state).unpromote(this);
     }
 
     @Override
@@ -269,10 +269,9 @@ final class PawnPieceProxy extends PieceProxy
         }
     }
 
-    static abstract class AbstractPromotablePieceState<COLOR extends Color,
-                                                       PIECE extends Piece<COLOR> & Promotable>
-            implements PieceState<COLOR,PIECE>,
-                       PromotablePieceState<COLOR,PIECE> {
+    static abstract class AbstractPromotablePieceState<PIECE extends PawnPiece<?>>
+            implements PieceState<PIECE>,
+                       PromotablePieceState<PIECE> {
 
         private static final Logger LOGGER = getLogger(AbstractEnPassantablePieceState.class);
 
@@ -288,7 +287,7 @@ final class PawnPieceProxy extends PieceProxy
         }
 
         @Override
-        public void unpromote(Piece<COLOR> piece) {
+        public void unpromote(Piece<?> piece) {
             LOGGER.info("Undo promote by '{}'", piece);
             ((PawnPieceProxy) piece).cancelPromote();
         }
@@ -326,9 +325,8 @@ final class PawnPieceProxy extends PieceProxy
         }
     }
 
-    static final class ActivePromotablePieceState<COLOR extends Color,
-                                                  PIECE extends PawnPiece<COLOR>>
-            extends AbstractPromotablePieceState<COLOR,PIECE> {
+    static final class ActivePromotablePieceState<PIECE extends PawnPiece<?>>
+            extends AbstractPromotablePieceState<PIECE> {
 
         private static final Logger LOGGER = getLogger(ActivePromotablePieceState.class);
 
@@ -337,7 +335,7 @@ final class PawnPieceProxy extends PieceProxy
 
         private PawnPiece<?> origin;
 
-        ActivePromotablePieceState(Board board, PawnPiece<?> piece, int promotionLine) {
+        ActivePromotablePieceState(Board board, PIECE piece, int promotionLine) {
             super(Type.ACTIVE);
 
             this.board = board;
@@ -397,9 +395,8 @@ final class PawnPieceProxy extends PieceProxy
         }
     }
 
-    static final class DisposedPromotablePieceState<COLOR extends Color,
-                                                    PIECE extends Piece<COLOR> & Promotable>
-            extends AbstractPromotablePieceState<COLOR,PIECE> {
+    static final class DisposedPromotablePieceState<PIECE extends PawnPiece<?>>
+            extends AbstractPromotablePieceState<PIECE> {
 
         private static final Logger LOGGER = getLogger(DisposedPromotablePieceState.class);
 

@@ -58,7 +58,7 @@ class PieceProxy implements Piece<Color> {
     }
 
     @Override
-    public PieceState<Color,Piece<Color>> getState() {
+    public PieceState<Piece<Color>> getState() {
         return origin.getState();
     }
 

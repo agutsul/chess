@@ -35,42 +35,50 @@ final class PawnPieceImpl<COLOR extends Color>
 
     private static final Logger LOGGER = getLogger(PawnPieceImpl.class);
 
-    private static final PieceState<?,?> DISPOSED_STATE = new DisposedEnPassantablePieceState<>();
+    private static final PieceState<?> DISPOSED_STATE = new DisposedEnPassantablePieceState<>();
 
     PawnPieceImpl(Board board, COLOR color, String unicode, Position position,
                   int direction, int promotionLine, int initialLine) {
 
-        super(board, Piece.Type.PAWN, color, unicode, position, direction,
+        this(board, color, unicode, position, direction,
                 new ActiveEnPassantablePieceState<>(board,
                         new PawnPieceActionRule(board, direction, initialLine, promotionLine),
                         new PawnPieceImpactRule(board, direction, promotionLine)
-                ),
+                )
+        );
+    }
+
+    private PawnPieceImpl(Board board, COLOR color, String unicode, Position position,
+                          int direction, PieceState<? extends PawnPiece<COLOR>> state) {
+
+        super(board, Piece.Type.PAWN, color, unicode, position, direction,
+                (AbstractPieceState<? extends Piece<COLOR>>) state,
                 new PawnActionCache(),
                 new ActivityCacheImpl<Impact.Type,Impact<?>>()
         );
     }
 
     @Override
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings("unchecked")
     public void dispose() {
         LOGGER.info("Dispose origin pawn '{}'", this);
 
         super.dispose();
-        this.currentState = (PieceState<COLOR,Piece<COLOR>>) DISPOSED_STATE;
+        this.currentState = (PieceState<Piece<COLOR>>) DISPOSED_STATE;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void enpassant(PawnPiece<?> piece, Position position) {
-        var state = (EnPassantablePieceState<?,?>) getState();
-        ((EnPassantablePieceState<COLOR,PawnPiece<COLOR>>) state).enpassant(this, piece, position);
+        var state = (EnPassantablePieceState<?>) getState();
+        ((EnPassantablePieceState<PawnPiece<COLOR>>) state).enpassant(this, piece, position);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void unenpassant(PawnPiece<?> piece) {
-        var state = (EnPassantablePieceState<?,?>) getState();
-        ((EnPassantablePieceState<COLOR,PawnPiece<COLOR>>) state).unenpassant(this, piece);
+        var state = (EnPassantablePieceState<?>) getState();
+        ((EnPassantablePieceState<PawnPiece<COLOR>>) state).unenpassant(this, piece);
     }
 
     @Override
@@ -85,14 +93,13 @@ final class PawnPieceImpl<COLOR extends Color>
                 .collect(toList());
     }
 
-    static abstract class AbstractEnPassantablePieceState<COLOR extends Color,
-                                                          PIECE extends PawnPiece<COLOR>>
-            extends AbstractPieceStateProxy<COLOR,PIECE>
-            implements EnPassantablePieceState<COLOR,PIECE> {
+    static abstract class AbstractEnPassantablePieceState<PIECE extends PawnPiece<?>>
+            extends AbstractPieceStateProxy<PIECE>
+            implements EnPassantablePieceState<PIECE> {
 
         private static final Logger LOGGER = getLogger(AbstractEnPassantablePieceState.class);
 
-        AbstractEnPassantablePieceState(AbstractPieceState<COLOR,PIECE> originState) {
+        AbstractEnPassantablePieceState(AbstractPieceState<PIECE> originState) {
             super(originState);
         }
 
@@ -103,9 +110,8 @@ final class PawnPieceImpl<COLOR extends Color>
         }
     }
 
-    static final class ActiveEnPassantablePieceState<COLOR extends Color,
-                                                     PIECE extends PawnPiece<COLOR>>
-            extends AbstractEnPassantablePieceState<COLOR,PIECE> {
+    static final class ActiveEnPassantablePieceState<PIECE extends PawnPiece<?>>
+            extends AbstractEnPassantablePieceState<PIECE> {
 
         private static final Logger LOGGER = getLogger(ActiveEnPassantablePieceState.class);
 
@@ -186,9 +192,8 @@ final class PawnPieceImpl<COLOR extends Color>
         }
     }
 
-    static final class DisposedEnPassantablePieceState<COLOR extends Color,
-                                                       PIECE extends PawnPiece<COLOR>>
-            extends AbstractEnPassantablePieceState<COLOR,PIECE> {
+    static final class DisposedEnPassantablePieceState<PIECE extends PawnPiece<?>>
+            extends AbstractEnPassantablePieceState<PIECE> {
 
         private static final Logger LOGGER = getLogger(DisposedEnPassantablePieceState.class);
 

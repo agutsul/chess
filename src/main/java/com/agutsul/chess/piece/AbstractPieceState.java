@@ -6,17 +6,15 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
-import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.state.CapturablePieceState;
 import com.agutsul.chess.piece.state.MovablePieceState;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
-abstract class AbstractPieceState<COLOR extends Color,
-                                  PIECE extends Piece<COLOR> & Movable & Capturable>
-        implements PieceState<COLOR,PIECE>,
-                   MovablePieceState<COLOR,PIECE>,
-                   CapturablePieceState<COLOR,PIECE> {
+abstract class AbstractPieceState<PIECE extends Piece<?> & Movable & Capturable>
+        implements PieceState<PIECE>,
+                   MovablePieceState<PIECE>,
+                   CapturablePieceState<PIECE> {
 
     private static final Logger LOGGER = getLogger(AbstractPieceState.class);
 

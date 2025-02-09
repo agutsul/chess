@@ -43,7 +43,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
     private static final Logger LOGGER = getLogger(AbstractPiece.class);
 
-    private static final PieceState<?,?> DISPOSED_STATE = new DisposedPieceState<>();
+    private static final PieceState<?> DISPOSED_STATE = new DisposedPieceState<>();
 
     private final List<Position> positions = new ArrayList<>();
 
@@ -57,15 +57,15 @@ abstract class AbstractPiece<COLOR extends Color>
 
     protected final AbstractBoard board;
 
-    protected final PieceState<COLOR,Piece<COLOR>> activeState;
-    protected PieceState<COLOR,Piece<COLOR>> currentState;
+    protected final PieceState<Piece<COLOR>> activeState;
+    protected PieceState<Piece<COLOR>> currentState;
 
     private Observer observer;
     private Instant capturedAt;
 
     AbstractPiece(Board board, Type type, COLOR color, String unicode,
                   Position position, int direction,
-                  AbstractPieceState<COLOR,? extends Piece<COLOR>> state) {
+                  AbstractPieceState<? extends Piece<COLOR>> state) {
 
         this(board, type, color, unicode, position, direction, state,
                 new ActivityCacheImpl<>(),
@@ -76,7 +76,7 @@ abstract class AbstractPiece<COLOR extends Color>
     @SuppressWarnings("unchecked")
     AbstractPiece(Board board, Type type, COLOR color, String unicode,
                   Position position, int direction,
-                  AbstractPieceState<COLOR,? extends Piece<COLOR>> state,
+                  AbstractPieceState<? extends Piece<COLOR>> state,
                   ActivityCache<Action.Type,Action<?>> actionCache,
                   ActivityCache<Impact.Type,Impact<?>> impactCache) {
 
@@ -90,8 +90,8 @@ abstract class AbstractPiece<COLOR extends Color>
         this.unicode = unicode;
         this.value = type.value() * direction;
 
-        this.activeState = (PieceState<COLOR,Piece<COLOR>>) state;
-        this.currentState = (PieceState<COLOR,Piece<COLOR>>) state;
+        this.activeState = (PieceState<Piece<COLOR>>) state;
+        this.currentState = (PieceState<Piece<COLOR>>) state;
 
         this.actionCache = actionCache;
         this.impactCache = impactCache;
@@ -100,7 +100,7 @@ abstract class AbstractPiece<COLOR extends Color>
     }
 
     @Override
-    public final PieceState<COLOR,Piece<COLOR>> getState() {
+    public final PieceState<Piece<COLOR>> getState() {
         return this.currentState;
     }
 
@@ -167,8 +167,8 @@ abstract class AbstractPiece<COLOR extends Color>
     public final void move(Position position) {
         LOGGER.info("'{}' moves to '{}'", this, position);
 
-        var movableState = (MovablePieceState<?,?>) getState();
-        ((MovablePieceState<COLOR,AbstractPiece<COLOR>>) movableState).move(this, position);
+        var movableState = (MovablePieceState<?>) getState();
+        ((MovablePieceState<AbstractPiece<COLOR>>) movableState).move(this, position);
     }
 
     @Override
@@ -176,8 +176,8 @@ abstract class AbstractPiece<COLOR extends Color>
     public final void unmove(Position position) {
         LOGGER.info("'{}' unmove to '{}'", this, position);
 
-        var movableState = (MovablePieceState<?,?>) getState();
-        ((MovablePieceState<COLOR,AbstractPiece<COLOR>>) movableState).unmove(this, position);
+        var movableState = (MovablePieceState<?>) getState();
+        ((MovablePieceState<AbstractPiece<COLOR>>) movableState).unmove(this, position);
     }
 
     @Override
@@ -185,8 +185,8 @@ abstract class AbstractPiece<COLOR extends Color>
     public final void capture(Piece<?> piece) {
         LOGGER.info("'{}' captures '{}'", this, piece);
 
-        var capturableState = (CapturablePieceState<?,?>) getState();
-        ((CapturablePieceState<COLOR,AbstractPiece<COLOR>>) capturableState).capture(this, piece);
+        var capturableState = (CapturablePieceState<?>) getState();
+        ((CapturablePieceState<AbstractPiece<COLOR>>) capturableState).capture(this, piece);
     }
 
     @Override
@@ -194,8 +194,8 @@ abstract class AbstractPiece<COLOR extends Color>
     public final void uncapture(Piece<?> piece) {
         LOGGER.info("'{}' uncaptures '{}'", this, piece);
 
-        var capturableState = (CapturablePieceState<?,?>) getState();
-        ((CapturablePieceState<COLOR,AbstractPiece<COLOR>>) capturableState).uncapture(this, piece);
+        var capturableState = (CapturablePieceState<?>) getState();
+        ((CapturablePieceState<AbstractPiece<COLOR>>) capturableState).uncapture(this, piece);
     }
 
     @Override
@@ -286,7 +286,7 @@ abstract class AbstractPiece<COLOR extends Color>
         clearCalculatedData();
 
         this.board.removeObserver(this.observer);
-        this.currentState = (PieceState<COLOR,Piece<COLOR>>) DISPOSED_STATE;
+        this.currentState = (PieceState<Piece<COLOR>>) DISPOSED_STATE;
     }
 
     public void restore() {

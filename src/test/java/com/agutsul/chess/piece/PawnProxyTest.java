@@ -46,7 +46,7 @@ public class PawnProxyTest {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     void testPromoteToBishop() {
         var position = mock(Position.class);
 
@@ -56,9 +56,9 @@ public class PawnProxyTest {
         when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
             .then(inv -> {
                 var piece = inv.getArgument(0, PawnPiece.class);
-                var moveAction = new PieceMoveAction<Color,PawnPiece<Color>>(piece, position);
+                var moveAction = new PieceMoveAction<>(piece, position);
 
-                return List.of(new PiecePromoteAction(moveAction, board));
+                return List.of(new PiecePromoteAction<>(moveAction, board));
             });
 
         when(pieceFactory.createBishop(eq(position)))
@@ -75,7 +75,7 @@ public class PawnProxyTest {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     void testPromoteToKnight() {
         var position = mock(Position.class);
 
@@ -85,9 +85,9 @@ public class PawnProxyTest {
         when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
             .then(inv -> {
                 var piece = inv.getArgument(0, PawnPiece.class);
-                var moveAction = new PieceMoveAction<Color,PawnPiece<Color>>(piece, position);
+                var moveAction = new PieceMoveAction<>(piece, position);
 
-                return List.of(new PiecePromoteAction(moveAction, board));
+                return List.of(new PiecePromoteAction<>(moveAction, board));
             });
 
         when(pieceFactory.createKnight(eq(position)))
@@ -104,7 +104,7 @@ public class PawnProxyTest {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     void testPromoteToQueen() {
         var position = mock(Position.class);
 
@@ -114,9 +114,9 @@ public class PawnProxyTest {
         when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
             .then(inv -> {
                 var piece = inv.getArgument(0, PawnPiece.class);
-                var moveAction = new PieceMoveAction<Color,PawnPiece<Color>>(piece, position);
+                var moveAction = new PieceMoveAction<>(piece, position);
 
-                return List.of(new PiecePromoteAction(moveAction, board));
+                return List.of(new PiecePromoteAction<>(moveAction, board));
             });
 
         when(pieceFactory.createQueen(eq(position)))
@@ -133,7 +133,7 @@ public class PawnProxyTest {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     void testPromoteToRook() {
         var position = mock(Position.class);
 
@@ -143,9 +143,9 @@ public class PawnProxyTest {
         when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
             .then(inv -> {
                 var piece = inv.getArgument(0, PawnPiece.class);
-                var moveAction = new PieceMoveAction<Color,PawnPiece<Color>>(piece, position);
+                var moveAction = new PieceMoveAction<>(piece, position);
 
-                return List.of(new PiecePromoteAction(moveAction, board));
+                return List.of(new PiecePromoteAction<>(moveAction, board));
         });
 
         when(pieceFactory.createRook(eq(position)))
@@ -162,16 +162,15 @@ public class PawnProxyTest {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     void testUnsupportedPromotionType() {
         var position = mock(Position.class);
 
         when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
             .then(inv -> {
                 var piece = inv.getArgument(0, PawnPiece.class);
-                var moveAction = new PieceMoveAction<Color,PawnPiece<Color>>(piece, position);
+                var moveAction = new PieceMoveAction<>(piece, position);
 
-                return List.of(new PiecePromoteAction(moveAction, board));
+                return List.of(new PiecePromoteAction<>(moveAction, board));
         });
 
         var thrown = assertThrows(

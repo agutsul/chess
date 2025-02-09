@@ -6,16 +6,14 @@ import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
-import com.agutsul.chess.color.Color;
 import com.agutsul.chess.position.Position;
 
-abstract class AbstractPieceStateProxy<COLOR extends Color,
-                                       PIECE extends Piece<COLOR> & Movable & Capturable>
-        extends AbstractPieceState<COLOR,PIECE> {
+abstract class AbstractPieceStateProxy<PIECE extends Piece<?> & Movable & Capturable>
+        extends AbstractPieceState<PIECE> {
 
-    protected final AbstractPieceState<COLOR,PIECE> origin;
+    protected final AbstractPieceState<PIECE> origin;
 
-    AbstractPieceStateProxy(AbstractPieceState<COLOR,PIECE> origin) {
+    AbstractPieceStateProxy(AbstractPieceState<PIECE> origin) {
         super(origin.getType());
         this.origin = origin;
     }

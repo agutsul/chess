@@ -11,12 +11,10 @@ import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
-import com.agutsul.chess.color.Color;
 import com.agutsul.chess.position.Position;
 
-class DisposedPieceState<COLOR extends Color,
-                         PIECE extends Piece<COLOR> & Movable & Capturable>
-        extends AbstractPieceState<COLOR,PIECE> {
+class DisposedPieceState<PIECE extends Piece<?> & Movable & Capturable>
+        extends AbstractPieceState<PIECE> {
 
     private static final Logger LOGGER = getLogger(DisposedPieceState.class);
 

@@ -29,7 +29,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
     private static final Logger LOGGER = getLogger(AbstractCastlingPiece.class);
 
-    private static final PieceState<?,?> DISPOSED_STATE = new DisposedCastlingablePieceState<>();
+    private static final PieceState<?> DISPOSED_STATE = new DisposedCastlingablePieceState<>();
 
     AbstractCastlingPiece(Board board, Type type, COLOR color,
                           String unicode, Position position, int direction,
@@ -46,8 +46,8 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     public final void castling(Position position) {
         LOGGER.info("'{}' caslting to '{}'", this, position);
 
-        var state = (CastlingablePieceState<?,?>) getState();
-        ((CastlingablePieceState<COLOR,AbstractCastlingPiece<COLOR>>) state).castling(this, position);
+        var state = (CastlingablePieceState<?>) getState();
+        ((CastlingablePieceState<AbstractCastlingPiece<COLOR>>) state).castling(this, position);
     }
 
     @Override
@@ -55,8 +55,8 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     public final void uncastling(Position position) {
         LOGGER.info("'{}' undo caslting to '{}'", this, position);
 
-        var state = (CastlingablePieceState<?,?>) getState();
-        ((CastlingablePieceState<COLOR,AbstractCastlingPiece<COLOR>>) state).uncastling(this, position);
+        var state = (CastlingablePieceState<?>) getState();
+        ((CastlingablePieceState<AbstractCastlingPiece<COLOR>>) state).uncastling(this, position);
     }
 
     @Override
@@ -64,7 +64,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     public void dispose() {
         super.dispose();
 
-        this.currentState = (PieceState<COLOR,Piece<COLOR>>) DISPOSED_STATE;
+        this.currentState = (PieceState<Piece<COLOR>>) DISPOSED_STATE;
     }
 
     private void doCastling(Position position) {
@@ -75,14 +75,13 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         super.cancelMove(position);
     }
 
-    static abstract class AbstractCastlingablePieceState<COLOR extends Color,
-                                                         PIECE extends Piece<COLOR> & Movable & Capturable & Castlingable>
-            extends AbstractPieceStateProxy<COLOR,PIECE>
-            implements CastlingablePieceState<COLOR,PIECE> {
+    static abstract class AbstractCastlingablePieceState<PIECE extends Piece<?> & Movable & Capturable & Castlingable>
+            extends AbstractPieceStateProxy<PIECE>
+            implements CastlingablePieceState<PIECE> {
 
         private static final Logger LOGGER = getLogger(AbstractCastlingablePieceState.class);
 
-        AbstractCastlingablePieceState(AbstractPieceState<COLOR,PIECE> originState) {
+        AbstractCastlingablePieceState(AbstractPieceState<PIECE> originState) {
             super(originState);
         }
 
@@ -106,9 +105,8 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         }
     }
 
-    static final class ActiveCastlingablePieceState<COLOR extends Color,
-                                                    PIECE extends Piece<COLOR> & Movable & Capturable & Castlingable>
-            extends AbstractCastlingablePieceState<COLOR,PIECE> {
+    static final class ActiveCastlingablePieceState<PIECE extends Piece<?> & Movable & Capturable & Castlingable>
+            extends AbstractCastlingablePieceState<PIECE> {
 
         private static final Logger LOGGER = getLogger(ActiveCastlingablePieceState.class);
 
@@ -176,9 +174,8 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         }
     }
 
-    static final class DisposedCastlingablePieceState<COLOR extends Color,
-                                                      PIECE extends Piece<COLOR> & Movable & Capturable & Castlingable>
-            extends AbstractCastlingablePieceState<COLOR,PIECE> {
+    static final class DisposedCastlingablePieceState<PIECE extends Piece<?> & Movable & Capturable & Castlingable>
+            extends AbstractCastlingablePieceState<PIECE> {
 
         private static final Logger LOGGER = getLogger(DisposedCastlingablePieceState.class);
 

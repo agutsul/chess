@@ -60,7 +60,7 @@ public interface Piece<COLOR extends Color>
     String getUnicode();
     int getValue();
 
-    PieceState<COLOR,Piece<COLOR>> getState();
+    PieceState<Piece<COLOR>> getState();
 
     List<Position> getPositions();
 

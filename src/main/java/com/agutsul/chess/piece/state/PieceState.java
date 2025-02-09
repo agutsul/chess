@@ -4,12 +4,10 @@ import java.util.Collection;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
-import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.state.State;
 
-public interface PieceState<COLOR extends Color,
-                            PIECE extends Piece<COLOR>>
+public interface PieceState<PIECE extends Piece<?>>
         extends State<PIECE> {
 
     enum Type {
