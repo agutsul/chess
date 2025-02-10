@@ -28,13 +28,13 @@ abstract class AbstractCheckImpactRule<COLOR1 extends Color,
 
     @Override
     public final Collection<IMPACT> evaluate(PIECE attacker) {
-        var optinalKing = board.getKing(attacker.getColor().invert());
-        if (optinalKing.isEmpty()) {
+        var optionalKing = board.getKing(attacker.getColor().invert());
+        if (optionalKing.isEmpty()) {
             return emptyList();
         }
 
         @SuppressWarnings("unchecked")
-        var king = (KING) optinalKing.get();
+        var king = (KING) optionalKing.get();
 
         var next = calculate(attacker, king);
         if (next.isEmpty()) {

@@ -148,15 +148,15 @@ final class BoardImpl extends AbstractBoard implements Closeable {
             return actions;
         }
 
-        var optinalPinImpact = pinImpacts.stream()
+        var optionalPinImpact = pinImpacts.stream()
                 .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
                 .findFirst();
 
-        if (optinalPinImpact.isEmpty()) {
+        if (optionalPinImpact.isEmpty()) {
             return actions;
         }
 
-        var pinImpact = optinalPinImpact.get();
+        var pinImpact = optionalPinImpact.get();
         // return actions the on pinned line
         var allowedActions = filterActions(actions, pinImpact.getTarget());
         if (!allowedActions.isEmpty()) {
