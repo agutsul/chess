@@ -71,5 +71,4 @@ public interface Piece<COLOR extends Color>
     Collection<Impact<?>> getImpacts(Impact.Type impactType);
 
     boolean isActive();
-    boolean isMoved();
 }

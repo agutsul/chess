@@ -143,6 +143,11 @@ final class PawnPieceProxy
     }
 
     @Override
+    public boolean isMoved() {
+        return ((Movable) this.origin).isMoved();
+    }
+
+    @Override
     public void capture(Piece<?> targetPiece) {
         ((Capturable) this.origin).capture(targetPiece);
     }

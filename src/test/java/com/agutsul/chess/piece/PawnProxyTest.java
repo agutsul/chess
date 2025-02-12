@@ -185,4 +185,13 @@ public class PawnProxyTest {
 
         assertEquals(expectedMessage, thrown.getMessage());
     }
+
+    @Test
+    void testIsMoved() {
+        var moved = false;
+        when(pawn.isMoved()).thenReturn(moved);
+
+        assertEquals(proxy.isMoved(), moved);
+        verify(pawn, times(1)).isMoved();
+    }
 }

@@ -67,15 +67,6 @@ public class PieceProxyTest {
     }
 
     @Test
-    void testIsMoved() {
-        var moved = false;
-        when(piece.isMoved()).thenReturn(moved);
-
-        assertEquals(proxy.isMoved(), moved);
-        verify(piece, times(1)).isMoved();
-    }
-
-    @Test
     void testIsActive() {
         var active = false;
         when(piece.isActive()).thenReturn(active);

@@ -43,11 +43,6 @@ class PieceProxy implements Piece<Color> {
     }
 
     @Override
-    public final boolean isMoved() {
-        return origin.isMoved();
-    }
-
-    @Override
     public final boolean isActive() {
         return origin.isActive();
     }
