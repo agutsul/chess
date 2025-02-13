@@ -41,7 +41,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     @Override
     @SuppressWarnings("unchecked")
     public final void castling(Position position) {
-        LOGGER.info("'{}' caslting to '{}'", this, position);
+        LOGGER.info("'{}' castling to '{}'", this, position);
 
         var state = (CastlingablePieceState<?>) getState();
         ((CastlingablePieceState<AbstractCastlingPiece<COLOR>>) state).castling(this, position);
@@ -50,7 +50,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     @Override
     @SuppressWarnings("unchecked")
     public final void uncastling(Position position) {
-        LOGGER.info("'{}' undo caslting to '{}'", this, position);
+        LOGGER.info("'{}' undo castling to '{}'", this, position);
 
         var state = (CastlingablePieceState<?>) getState();
         ((CastlingablePieceState<AbstractCastlingPiece<COLOR>>) state).uncastling(this, position);
