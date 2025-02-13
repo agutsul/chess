@@ -23,6 +23,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.pawn.PawnPieceActionRule;
 import com.agutsul.chess.piece.pawn.PawnPieceImpactRule;
+import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.piece.state.EnPassantablePieceState;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
@@ -193,12 +194,13 @@ final class PawnPieceImpl<COLOR extends Color>
     }
 
     static final class DisposedEnPassantablePieceState<PIECE extends PawnPiece<?>>
-            extends AbstractEnPassantablePieceState<PIECE> {
+            extends AbstractEnPassantablePieceState<PIECE>
+            implements DisposedPieceState<PIECE> {
 
         private static final Logger LOGGER = getLogger(DisposedEnPassantablePieceState.class);
 
         DisposedEnPassantablePieceState() {
-            super(new DisposedPieceState<>());
+            super(new DisposedPieceStateImpl<>());
         }
 
         @Override

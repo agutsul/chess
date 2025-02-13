@@ -43,7 +43,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
     private static final Logger LOGGER = getLogger(AbstractPiece.class);
 
-    private static final PieceState<?> DISPOSED_STATE = new DisposedPieceState<>();
+    private static final PieceState<?> DISPOSED_STATE = new DisposedPieceStateImpl<>();
 
     private final List<Position> positions = new ArrayList<>();
 
@@ -117,7 +117,7 @@ abstract class AbstractPiece<COLOR extends Color>
     }
 
     @Override
-    public Collection<Action<?>> getActions(Action.Type actionType) {
+    public final Collection<Action<?>> getActions(Action.Type actionType) {
         LOGGER.info("Get '{}' actions({})", this, actionType.name());
 
         var actions = this.actionCache.get(actionType);

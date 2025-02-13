@@ -19,7 +19,7 @@ import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.Rule;
 
-class ActivePieceState<PIECE extends Piece<?> & Movable & Capturable>
+final class ActivePieceState<PIECE extends Piece<?> & Movable & Capturable>
         extends AbstractPieceState<PIECE> {
 
     private static final Logger LOGGER = getLogger(ActivePieceState.class);

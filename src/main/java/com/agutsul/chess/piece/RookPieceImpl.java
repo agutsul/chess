@@ -12,6 +12,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.rook.RookPieceActionRule;
 import com.agutsul.chess.piece.rook.RookPieceImpactRule;
+import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
@@ -56,12 +57,13 @@ final class RookPieceImpl<COLOR extends Color>
     }
 
     static final class DisposedCastlingablePieceState<PIECE extends RookPiece<?>>
-            extends AbstractCastlingablePieceState<PIECE> {
+            extends AbstractCastlingablePieceState<PIECE>
+            implements DisposedPieceState<PIECE> {
 
         private static final Logger LOGGER = getLogger(DisposedCastlingablePieceState.class);
 
         DisposedCastlingablePieceState() {
-            super(new DisposedPieceState<>());
+            super(new DisposedPieceStateImpl<>());
         }
 
         @Override

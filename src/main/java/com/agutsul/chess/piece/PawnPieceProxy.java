@@ -32,6 +32,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.PawnPieceImpl.AbstractEnPassantablePieceState;
+import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.piece.state.PromotablePieceState;
 import com.agutsul.chess.position.Position;
@@ -401,7 +402,8 @@ final class PawnPieceProxy
     }
 
     static final class DisposedPromotablePieceState<PIECE extends PawnPiece<?>>
-            extends AbstractPromotablePieceState<PIECE> {
+            extends AbstractPromotablePieceState<PIECE>
+            implements DisposedPieceState<PIECE> {
 
         private static final Logger LOGGER = getLogger(DisposedPromotablePieceState.class);
 

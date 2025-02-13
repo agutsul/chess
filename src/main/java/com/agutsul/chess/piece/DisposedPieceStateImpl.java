@@ -8,17 +8,20 @@ import java.util.Collection;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Disposable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.position.Position;
 
-class DisposedPieceState<PIECE extends Piece<?> & Movable & Capturable>
-        extends AbstractPieceState<PIECE> {
+final class DisposedPieceStateImpl<PIECE extends Piece<?> & Movable & Capturable & Disposable>
+        extends AbstractPieceState<PIECE>
+        implements DisposedPieceState<PIECE> {
 
-    private static final Logger LOGGER = getLogger(DisposedPieceState.class);
+    private static final Logger LOGGER = getLogger(DisposedPieceStateImpl.class);
 
-    DisposedPieceState() {
+    DisposedPieceStateImpl() {
         super(Type.INACTIVE);
     }
 
