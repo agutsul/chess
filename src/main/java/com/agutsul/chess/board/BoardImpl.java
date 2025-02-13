@@ -11,6 +11,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -22,7 +23,6 @@ import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.Captured;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
 import com.agutsul.chess.activity.action.Action;
@@ -49,6 +49,7 @@ import com.agutsul.chess.piece.PieceFactory;
 import com.agutsul.chess.piece.WhitePieceFactory;
 import com.agutsul.chess.piece.cache.PieceCache;
 import com.agutsul.chess.piece.cache.PieceCacheImpl;
+import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.position.Position;
 
 final class BoardImpl extends AbstractBoard implements Closeable {
@@ -334,8 +335,9 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
         @SuppressWarnings("unchecked")
         var capturedPiece = capturedPieces.stream()
-                .filter(piece -> Objects.nonNull(((Captured) piece).getCapturedAt()))
-                .sorted(comparing(piece -> ((Captured) piece).getCapturedAt()).reversed())
+                .filter(piece -> !piece.isActive())
+                .filter(piece -> Objects.nonNull(capturedAt(piece)))
+                .sorted(comparing(piece -> capturedAt((Piece<?>) piece)).reversed())
                 .map(piece -> (Piece<COLOR>) piece)
                 .findFirst();
 
@@ -487,6 +489,13 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     private void refreshPieceCache() {
         this.pieceCache.refresh();
+    }
+
+    private static Instant capturedAt(Piece<?> piece) {
+        var state = piece.getState();
+        return state instanceof DisposedPieceState<?>
+            ? ((DisposedPieceState<?>) state).getDisposedAt()
+            : null;
     }
 
     private final class BoardEventObserver

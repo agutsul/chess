@@ -2,6 +2,7 @@ package com.agutsul.chess.piece;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -19,8 +20,6 @@ import com.agutsul.chess.position.Position;
 final class RookPieceImpl<COLOR extends Color>
         extends AbstractCastlingPiece<COLOR>
         implements RookPiece<COLOR> {
-
-    private static final PieceState<?> DISPOSED_STATE = new DisposedCastlingablePieceState<>();
 
     RookPieceImpl(Board board, COLOR color, String unicode,
                   Position position, int direction) {
@@ -50,10 +49,20 @@ final class RookPieceImpl<COLOR extends Color>
 
     @Override
     @SuppressWarnings("unchecked")
+    public void dispose(Instant instant) {
+        super.dispose(instant);
+
+        PieceState<?> disposedState = new DisposedCastlingablePieceState<>(instant);
+        this.currentState = (PieceState<Piece<COLOR>>) disposedState;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
     public void dispose() {
         super.dispose();
 
-        this.currentState = (PieceState<Piece<COLOR>>) DISPOSED_STATE;
+        PieceState<?> disposedState = new DisposedCastlingablePieceState<>();
+        this.currentState = (PieceState<Piece<COLOR>>) disposedState;
     }
 
     static final class DisposedCastlingablePieceState<PIECE extends RookPiece<?>>
@@ -66,10 +75,20 @@ final class RookPieceImpl<COLOR extends Color>
             super(new DisposedPieceStateImpl<>());
         }
 
+        DisposedCastlingablePieceState(Instant instant) {
+            super(new DisposedPieceStateImpl<>(instant));
+        }
+
         @Override
         public void castling(PIECE piece, Position position) {
             LOGGER.warn("Castling by disabled '{}' to '{}'", piece, position);
             // do nothing
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public Instant getDisposedAt() {
+            return ((DisposedPieceState<PIECE>) this.origin).getDisposedAt();
         }
     }
 }

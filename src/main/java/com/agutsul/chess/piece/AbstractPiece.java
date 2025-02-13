@@ -14,7 +14,6 @@ import java.util.Objects;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Capturable;
-import com.agutsul.chess.Captured;
 import com.agutsul.chess.Disposable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.Pinnable;
@@ -43,8 +42,6 @@ abstract class AbstractPiece<COLOR extends Color>
 
     private static final Logger LOGGER = getLogger(AbstractPiece.class);
 
-    private static final PieceState<?> DISPOSED_STATE = new DisposedPieceStateImpl<>();
-
     private final List<Position> positions = new ArrayList<>();
 
     private final ActivityCache<Action.Type,Action<?>> actionCache;
@@ -61,7 +58,6 @@ abstract class AbstractPiece<COLOR extends Color>
     protected PieceState<Piece<COLOR>> currentState;
 
     private Observer observer;
-    private Instant capturedAt;
 
     AbstractPiece(Board board, Type type, COLOR color, String unicode,
                   Position position, int direction,
@@ -280,13 +276,27 @@ abstract class AbstractPiece<COLOR extends Color>
     }
 
     @SuppressWarnings("unchecked")
+    public void dispose(Instant instant) {
+        LOGGER.info("Disposing '{}' at '{}'", this, instant);
+
+        clearCalculatedData();
+
+        this.board.removeObserver(this.observer);
+
+        PieceState<?> disposedState = new DisposedPieceStateImpl<>(instant);
+        this.currentState = (PieceState<Piece<COLOR>>) disposedState;
+    }
+
+    @SuppressWarnings("unchecked")
     public void dispose() {
         LOGGER.info("Disposing '{}'", this);
 
         clearCalculatedData();
 
         this.board.removeObserver(this.observer);
-        this.currentState = (PieceState<Piece<COLOR>>) DISPOSED_STATE;
+
+        PieceState<?> disposedState = new DisposedPieceStateImpl<>();
+        this.currentState = (PieceState<Piece<COLOR>>) disposedState;
     }
 
     public void restore() {
@@ -330,14 +340,6 @@ abstract class AbstractPiece<COLOR extends Color>
                 && Objects.equals(getPosition(), other.getPosition());
     }
 
-    public Instant getCapturedAt() {
-        return capturedAt;
-    }
-
-    public void setCapturedAt(Instant instant) {
-        this.capturedAt = instant;
-    }
-
     final void doMove(Position position) {
         setPosition(position);
     }
@@ -356,18 +358,14 @@ abstract class AbstractPiece<COLOR extends Color>
     }
 
     final void doCapture(Piece<?> piece) {
-        // save captured timestamp
-        ((Captured) piece).setCapturedAt(now());
-
-        ((Disposable) piece).dispose();
+        ((Disposable) piece).dispose(now());
 
         doMove(piece.getPosition());
     }
 
     final void cancelCapture(Piece<?> piece) {
         cancelMove(getPosition());
-        // clear capturedAt timestamp
-        ((Captured) piece).setCapturedAt(null);
+
         // no need to set previous position as it is already the last item in positions array
         ((Restorable) piece).restore();
     }

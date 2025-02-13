@@ -74,6 +74,11 @@ final class KingPieceImpl<COLOR extends Color>
     // prevent prohibited operations
 
     @Override
+    public void dispose(Instant instant) {
+        throw new UnsupportedOperationException("Unable to dispose KING piece at " + instant);
+    }
+
+    @Override
     public void dispose() {
         throw new UnsupportedOperationException("Unable to dispose KING piece");
     }
@@ -81,16 +86,6 @@ final class KingPieceImpl<COLOR extends Color>
     @Override
     public void restore() {
         throw new UnsupportedOperationException("Unable to restore KING piece");
-    }
-
-    @Override
-    public Instant getCapturedAt() {
-        throw new UnsupportedOperationException("Unable to get captured timestamp for a KING piece");
-    }
-
-    @Override
-    public void setCapturedAt(Instant instant) {
-        throw new UnsupportedOperationException("Unable set captured timestamp for a KING piece");
     }
 
     @Override

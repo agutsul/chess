@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.Blockable;
 import com.agutsul.chess.Capturable;
-import com.agutsul.chess.Captured;
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Disposable;
 import com.agutsul.chess.EnPassantable;
@@ -49,7 +48,7 @@ final class PawnPieceProxy
 
     private static final Logger LOGGER = getLogger(PawnPieceProxy.class);
 
-    private static final PieceState<?> DISPOSED_STATE = new DisposedPromotablePieceState<>();
+//    private static final PieceState<?> DISPOSED_STATE = new DisposedPromotablePieceState<>();
 
     private final PieceFactory pieceFactory;
     private final PawnPiece<Color> pawnPiece;
@@ -130,7 +129,13 @@ final class PawnPieceProxy
     @Override
     public void dispose() {
         ((Disposable) this.origin).dispose();
-        this.currentState = DISPOSED_STATE;
+        this.currentState = new DisposedPromotablePieceState<>();
+    }
+
+    @Override
+    public void dispose(Instant instant) {
+        ((Disposable) this.origin).dispose(instant);
+        this.currentState = new DisposedPromotablePieceState<>(instant);
     }
 
     @Override
@@ -192,7 +197,7 @@ final class PawnPieceProxy
     public boolean isBlocked() {
         return ((Blockable) this.origin).isBlocked();
     }
-
+/*
     @Override
     public Instant getCapturedAt() {
         return ((Captured) this.origin).getCapturedAt();
@@ -202,7 +207,7 @@ final class PawnPieceProxy
     public void setCapturedAt(Instant instant) {
         ((Captured) this.origin).setCapturedAt(instant);
     }
-
+*/
     // Because of the nature of proxy it should rely on origin piece.
     @Override
     public int hashCode() {
@@ -407,14 +412,31 @@ final class PawnPieceProxy
 
         private static final Logger LOGGER = getLogger(DisposedPromotablePieceState.class);
 
+        private PieceState<PIECE> origin;
+
         DisposedPromotablePieceState() {
-            super(Type.INACTIVE);
+            this(new DisposedPieceStateImpl<>());
+        }
+
+        DisposedPromotablePieceState(Instant instant) {
+            this(new DisposedPieceStateImpl<>(instant));
+        }
+
+        private DisposedPromotablePieceState(PieceState<PIECE> pieceState) {
+            super(pieceState.getType());
+            this.origin = pieceState;
         }
 
         @Override
         public void promote(PIECE piece, Position position, Piece.Type pieceType) {
             LOGGER.warn("Promoting disabled '{}' to '{}'", piece, position);
             // do nothing
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public Instant getDisposedAt() {
+            return ((DisposedPieceState<PIECE>) this.origin).getDisposedAt();
         }
     }
 }

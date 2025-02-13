@@ -4,6 +4,7 @@ import static java.time.Instant.now;
 import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -36,7 +37,7 @@ final class PawnPieceImpl<COLOR extends Color>
 
     private static final Logger LOGGER = getLogger(PawnPieceImpl.class);
 
-    private static final PieceState<?> DISPOSED_STATE = new DisposedEnPassantablePieceState<>();
+//    private static final PieceState<?> DISPOSED_STATE = new DisposedEnPassantablePieceState<>();
 
     PawnPieceImpl(Board board, COLOR color, String unicode, Position position,
                   int direction, int promotionLine, int initialLine) {
@@ -61,11 +62,22 @@ final class PawnPieceImpl<COLOR extends Color>
 
     @Override
     @SuppressWarnings("unchecked")
+    public void dispose(Instant instant) {
+        LOGGER.info("Dispose origin pawn '{}' at '{}'", this, instant);
+        super.dispose();
+
+        PieceState<?> disposedState = new DisposedEnPassantablePieceState<>(instant);
+        this.currentState = (PieceState<Piece<COLOR>>) disposedState;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
     public void dispose() {
         LOGGER.info("Dispose origin pawn '{}'", this);
-
         super.dispose();
-        this.currentState = (PieceState<Piece<COLOR>>) DISPOSED_STATE;
+
+        PieceState<?> disposeState = new DisposedEnPassantablePieceState<>();
+        this.currentState = (PieceState<Piece<COLOR>>) disposeState;
     }
 
     @Override
@@ -145,11 +157,8 @@ final class PawnPieceImpl<COLOR extends Color>
                 );
             }
 
-            // save captured timestamp
-            targetPiece.setCapturedAt(now());
-
             // remove target pawn from board
-            targetPiece.dispose();
+            targetPiece.dispose(now());
 
             // move this piece to target position
             ((AbstractPiece<?>) piece).doMove(targetPosition);
@@ -203,10 +212,20 @@ final class PawnPieceImpl<COLOR extends Color>
             super(new DisposedPieceStateImpl<>());
         }
 
+        DisposedEnPassantablePieceState(Instant instant) {
+            super(new DisposedPieceStateImpl<>(instant));
+        }
+
         @Override
         public void enpassant(PIECE piece, PawnPiece<?> targetPiece, Position targetPosition) {
             LOGGER.warn("En-passante by disabled '{}' by '{}'", targetPiece, this);
             // do nothing
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public Instant getDisposedAt() {
+            return ((DisposedPieceState<PIECE>) this.origin).getDisposedAt();
         }
     }
 

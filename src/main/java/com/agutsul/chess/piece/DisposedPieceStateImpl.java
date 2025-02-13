@@ -3,6 +3,7 @@ package com.agutsul.chess.piece;
 import static java.util.Collections.emptyList;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.time.Instant;
 import java.util.Collection;
 
 import org.slf4j.Logger;
@@ -21,8 +22,20 @@ final class DisposedPieceStateImpl<PIECE extends Piece<?> & Movable & Capturable
 
     private static final Logger LOGGER = getLogger(DisposedPieceStateImpl.class);
 
+    private Instant disposedAt;
+
     DisposedPieceStateImpl() {
         super(Type.INACTIVE);
+    }
+
+    DisposedPieceStateImpl(Instant disposedAt) {
+        this();
+        this.disposedAt = disposedAt;
+    }
+
+    @Override
+    public Instant getDisposedAt() {
+        return this.disposedAt;
     }
 
     @Override
