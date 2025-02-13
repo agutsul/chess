@@ -37,8 +37,6 @@ final class PawnPieceImpl<COLOR extends Color>
 
     private static final Logger LOGGER = getLogger(PawnPieceImpl.class);
 
-//    private static final PieceState<?> DISPOSED_STATE = new DisposedEnPassantablePieceState<>();
-
     PawnPieceImpl(Board board, COLOR color, String unicode, Position position,
                   int direction, int promotionLine, int initialLine) {
 
