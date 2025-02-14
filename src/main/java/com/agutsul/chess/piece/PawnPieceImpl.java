@@ -213,9 +213,8 @@ final class PawnPieceImpl<COLOR extends Color>
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public Instant getDisposedAt() {
-            return ((DisposedPieceState<PIECE>) this.origin).getDisposedAt();
+            return ((DisposedPieceState<?>) this.origin).getDisposedAt();
         }
     }
 

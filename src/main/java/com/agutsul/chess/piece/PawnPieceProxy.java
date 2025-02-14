@@ -427,9 +427,8 @@ final class PawnPieceProxy
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         public Instant getDisposedAt() {
-            return ((DisposedPieceState<PIECE>) this.origin).getDisposedAt();
+            return ((DisposedPieceState<?>) this.origin).getDisposedAt();
         }
     }
 }
