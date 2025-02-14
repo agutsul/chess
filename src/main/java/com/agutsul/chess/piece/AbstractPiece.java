@@ -336,12 +336,12 @@ abstract class AbstractPiece<COLOR extends Color>
     }
 
     // override specific dispose state creation
-    protected DisposedPieceState<?> createDisposedPieceState() {
+    DisposedPieceState<?> createDisposedPieceState() {
         return new DisposedPieceStateImpl<>();
     }
 
     // override specific dispose state creation
-    protected DisposedPieceState<?> createDisposedPieceState(Instant instant) {
+    DisposedPieceState<?> createDisposedPieceState(Instant instant) {
         return new DisposedPieceStateImpl<>(instant);
     }
 

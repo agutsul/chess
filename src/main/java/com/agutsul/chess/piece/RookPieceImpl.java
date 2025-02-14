@@ -47,12 +47,12 @@ final class RookPieceImpl<COLOR extends Color>
     }
 
     @Override
-    protected DisposedPieceState<?> createDisposedPieceState() {
+    final DisposedPieceState<?> createDisposedPieceState() {
         return new DisposedCastlingablePieceState<>();
     }
 
     @Override
-    protected DisposedPieceState<?> createDisposedPieceState(Instant instant) {
+    final DisposedPieceState<?> createDisposedPieceState(Instant instant) {
         return new DisposedCastlingablePieceState<>(instant);
     }
 

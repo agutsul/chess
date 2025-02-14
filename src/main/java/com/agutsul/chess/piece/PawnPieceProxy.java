@@ -48,8 +48,6 @@ final class PawnPieceProxy
 
     private static final Logger LOGGER = getLogger(PawnPieceProxy.class);
 
-//    private static final PieceState<?> DISPOSED_STATE = new DisposedPromotablePieceState<>();
-
     private final PieceFactory pieceFactory;
     private final PawnPiece<Color> pawnPiece;
 
@@ -323,6 +321,11 @@ final class PawnPieceProxy
             );
 
             return emptyList();
+        }
+
+        @Override
+        public String toString() {
+            return this.type.name();
         }
     }
 
