@@ -25,24 +25,24 @@ abstract class AbstractPieceState<PIECE extends Piece<?> & Movable & Capturable>
     }
 
     @Override
-    public void unmove(PIECE piece, Position position) {
+    public final void unmove(PIECE piece, Position position) {
         LOGGER.info("Undo move '{}' to '{}'", piece, position);
         ((AbstractPiece<?>) piece).cancelMove(position);
     }
 
     @Override
-    public void uncapture(PIECE piece, Piece<?> targetPiece) {
+    public final void uncapture(PIECE piece, Piece<?> targetPiece) {
         LOGGER.info("Undo capture '{}' by '{}'", targetPiece, piece);
         ((AbstractPiece<?>) piece).cancelCapture(targetPiece);
     }
 
     @Override
-    public PieceState.Type getType() {
+    public final PieceState.Type getType() {
         return this.type;
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return this.type.name();
     }
 }

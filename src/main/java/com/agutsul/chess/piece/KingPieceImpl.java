@@ -28,6 +28,8 @@ final class KingPieceImpl<COLOR extends Color>
 
     private static final Logger LOGGER = getLogger(KingPieceImpl.class);
 
+    private static final String DISPOSE_ERROR_MESSAGE = "Unable to dispose KING piece";
+
     private final CheckedPieceState<? extends KingPiece<?>> checkedPieceState;
     private final CheckMatedPieceState<? extends KingPiece<?>> checkMatedPieceState;
 
@@ -75,12 +77,14 @@ final class KingPieceImpl<COLOR extends Color>
 
     @Override
     public void dispose(Instant instant) {
-        throw new UnsupportedOperationException("Unable to dispose KING piece at " + instant);
+        throw new UnsupportedOperationException(
+                String.format("%s at '%s'", DISPOSE_ERROR_MESSAGE, instant)
+        );
     }
 
     @Override
     public void dispose() {
-        throw new UnsupportedOperationException("Unable to dispose KING piece");
+        throw new UnsupportedOperationException(DISPOSE_ERROR_MESSAGE);
     }
 
     @Override
