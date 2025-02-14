@@ -44,21 +44,21 @@ final class KingPieceImpl<COLOR extends Color>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void setChecked(boolean isChecked) {
         LOGGER.info("Set {} king checked='{}' state", getColor(), isChecked);
-        this.currentState = isChecked
-                ? (PieceState<Piece<COLOR>>) (PieceState<?>) this.checkedPieceState
-                : this.activeState;
+        setState(isChecked
+                ? (PieceState<?>) this.checkedPieceState
+                : this.activeState
+        );
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void setCheckMated(boolean isCheckMated) {
         LOGGER.info("Set {} king checkMated='{}' state", getColor(), isCheckMated);
-        this.currentState = isCheckMated
-                ? (PieceState<Piece<COLOR>>) (PieceState<?>) this.checkMatedPieceState
-                : (PieceState<Piece<COLOR>>) (PieceState<?>) this.checkedPieceState;
+        setState(isCheckMated
+                ? (PieceState<?>) this.checkMatedPieceState
+                : (PieceState<?>) this.checkedPieceState
+        );
     }
 
     @Override

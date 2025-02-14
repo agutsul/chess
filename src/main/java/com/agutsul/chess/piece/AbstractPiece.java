@@ -375,6 +375,11 @@ abstract class AbstractPiece<COLOR extends Color>
         ((Restorable) piece).restore();
     }
 
+    @SuppressWarnings("unchecked")
+    final void setState(PieceState<?> state) {
+        this.currentState = (PieceState<Piece<COLOR>>) state;
+    }
+
     private final void setPosition(Position position) {
         // null can be set when piece should be removed from the board
         if (position == null) {
@@ -389,11 +394,6 @@ abstract class AbstractPiece<COLOR extends Color>
         LOGGER.info("Clear '{}' cached actions/imports", this);
         this.actionCache.clear();
         this.impactCache.clear();
-    }
-
-    @SuppressWarnings("unchecked")
-    private final void setState(PieceState<?> state) {
-        this.currentState = (PieceState<Piece<COLOR>>) state;
     }
 
     private final class ActionEventObserver

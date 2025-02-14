@@ -67,7 +67,7 @@ final class PawnPieceProxy
         var state = new ActivePromotablePieceState<>(board, pawnPiece, promotionLine);
 
         this.activeState = state;
-        this.currentState = state;
+        setState(state);
     }
 
     @Override
@@ -121,19 +121,19 @@ final class PawnPieceProxy
     @Override
     public void restore() {
         ((Restorable) this.origin).restore();
-        this.currentState = this.activeState;
+        setState(this.activeState);
     }
 
     @Override
     public void dispose() {
         ((Disposable) this.origin).dispose();
-        this.currentState = new DisposedPromotablePieceState<>();
+        setState(new DisposedPromotablePieceState<>());
     }
 
     @Override
     public void dispose(Instant instant) {
         ((Disposable) this.origin).dispose(instant);
-        this.currentState = new DisposedPromotablePieceState<>(instant);
+        setState(new DisposedPromotablePieceState<>(instant));
     }
 
     @Override
@@ -207,6 +207,10 @@ final class PawnPieceProxy
     @Override
     public boolean equals(Object obj) {
         return super.equals(obj);
+    }
+
+    private void setState(PieceState<?> state) {
+        this.currentState = state;
     }
 
     private void doPromote(Position position, Piece.Type pieceType) {
