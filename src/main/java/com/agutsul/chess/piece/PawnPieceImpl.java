@@ -78,14 +78,13 @@ final class PawnPieceImpl<COLOR extends Color>
     }
 
     @Override
-    final DisposedPieceState<?> createDisposedPieceState() {
-        LOGGER.info("Dispose origin pawn '{}'", this);
-        return new DisposedEnPassantablePieceState<>();
-    }
-
-    @Override
     final DisposedPieceState<?> createDisposedPieceState(Instant instant) {
-        LOGGER.info("Dispose origin pawn '{}' at '{}'", this, instant);
+        if (instant != null) {
+            LOGGER.info("Dispose origin pawn '{}' at '{}'", this, instant);
+        } else {
+            LOGGER.info("Dispose origin pawn '{}'", this);
+        }
+
         return new DisposedEnPassantablePieceState<>(instant);
     }
 
@@ -197,10 +196,6 @@ final class PawnPieceImpl<COLOR extends Color>
             implements DisposedPieceState<PIECE> {
 
         private static final Logger LOGGER = getLogger(DisposedEnPassantablePieceState.class);
-
-        DisposedEnPassantablePieceState() {
-            super(new DisposedPieceStateImpl<>());
-        }
 
         DisposedEnPassantablePieceState(Instant instant) {
             super(new DisposedPieceStateImpl<>(instant));

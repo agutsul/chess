@@ -412,7 +412,7 @@ final class PawnPieceProxy
         private PieceState<PIECE> origin;
 
         DisposedPromotablePieceState() {
-            this(new DisposedPieceStateImpl<>());
+            this((Instant) null);
         }
 
         DisposedPromotablePieceState(Instant instant) {

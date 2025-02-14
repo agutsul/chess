@@ -277,7 +277,9 @@ abstract class AbstractPiece<COLOR extends Color>
     }
 
     public void dispose(Instant instant) {
-        LOGGER.info("Disposing '{}' at '{}'", this, instant);
+        if (instant != null) {
+            LOGGER.info("Disposing '{}' at '{}'", this, instant);
+        }
 
         clearCalculatedData();
         this.board.removeObserver(this.observer);
@@ -287,11 +289,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
     public void dispose() {
         LOGGER.info("Disposing '{}'", this);
-
-        clearCalculatedData();
-        this.board.removeObserver(this.observer);
-
-        setState((PieceState<?>) createDisposedPieceState());
+        dispose(null);
     }
 
     public void restore() {
@@ -333,11 +331,6 @@ abstract class AbstractPiece<COLOR extends Color>
         return Objects.equals(getType(), other.getType())
                 && Objects.equals(getColor(), other.getColor())
                 && Objects.equals(getPosition(), other.getPosition());
-    }
-
-    // override specific dispose state creation
-    DisposedPieceState<?> createDisposedPieceState() {
-        return new DisposedPieceStateImpl<>();
     }
 
     // override specific dispose state creation
