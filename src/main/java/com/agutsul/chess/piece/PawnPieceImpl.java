@@ -78,7 +78,7 @@ final class PawnPieceImpl<COLOR extends Color>
     }
 
     @Override
-    final DisposedPieceState<?> createDisposedPieceState(Instant instant) {
+    DisposedPieceState<?> createDisposedPieceState(Instant instant) {
         if (instant != null) {
             LOGGER.info("Dispose origin pawn '{}' at '{}'", this, instant);
         } else {

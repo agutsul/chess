@@ -373,7 +373,7 @@ abstract class AbstractPiece<COLOR extends Color>
         this.currentState = (PieceState<Piece<COLOR>>) state;
     }
 
-    private final void setPosition(Position position) {
+    private void setPosition(Position position) {
         // null can be set when piece should be removed from the board
         if (position == null) {
             dispose();
@@ -383,7 +383,7 @@ abstract class AbstractPiece<COLOR extends Color>
         this.positions.add(position);
     }
 
-    private final void clearCalculatedData() {
+    private void clearCalculatedData() {
         LOGGER.info("Clear '{}' cached actions/imports", this);
         this.actionCache.clear();
         this.impactCache.clear();
