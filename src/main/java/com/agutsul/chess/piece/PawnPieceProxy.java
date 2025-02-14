@@ -232,7 +232,7 @@ final class PawnPieceProxy
     }
 
     private Piece<Color> createPiece(Position position, Piece.Type pieceType) {
-        var factory = Factory.of(pieceType);
+        var factory = PromotionFactory.of(pieceType);
         if (factory == null) {
             throw new IllegalActionException(
                     String.format("Unsupported promotion type: %s", pieceType.name())
@@ -242,24 +242,24 @@ final class PawnPieceProxy
         return factory.createPiece(pieceFactory, position);
     }
 
-    private enum Factory {
+    private enum PromotionFactory {
         KNIGHT_MODE(Piece.Type.KNIGHT, (pieceFactory, position) -> pieceFactory.createKnight(position)),
         BISHOP_MODE(Piece.Type.BISHOP, (pieceFactory, position) -> pieceFactory.createBishop(position)),
         ROOK_MODE(Piece.Type.ROOK,     (pieceFactory, position) -> pieceFactory.createRook(position)),
         QUEEN_MODE(Piece.Type.QUEEN,   (pieceFactory, position) -> pieceFactory.createQueen(position));
 
-        private static final Map<Piece.Type,Factory> MODES =
-                Stream.of(values()).collect(toMap(Factory::type, identity()));
+        private static final Map<Piece.Type,PromotionFactory> MODES =
+                Stream.of(values()).collect(toMap(PromotionFactory::type, identity()));
 
         private Piece.Type type;
         private BiFunction<PieceFactory,Position,Piece<Color>> function;
 
-        Factory(Piece.Type type, BiFunction<PieceFactory,Position,Piece<Color>> function) {
+        PromotionFactory(Piece.Type type, BiFunction<PieceFactory,Position,Piece<Color>> function) {
             this.type = type;
             this.function = function;
         }
 
-        public static Factory of(Piece.Type type) {
+        public static PromotionFactory of(Piece.Type type) {
             return MODES.get(type);
         }
 
