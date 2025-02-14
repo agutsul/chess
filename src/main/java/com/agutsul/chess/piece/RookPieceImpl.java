@@ -14,7 +14,6 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.rook.RookPieceActionRule;
 import com.agutsul.chess.piece.rook.RookPieceImpactRule;
 import com.agutsul.chess.piece.state.DisposedPieceState;
-import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
 final class RookPieceImpl<COLOR extends Color>
@@ -48,21 +47,13 @@ final class RookPieceImpl<COLOR extends Color>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public void dispose(Instant instant) {
-        super.dispose(instant);
-
-        PieceState<?> disposedState = new DisposedCastlingablePieceState<>(instant);
-        this.currentState = (PieceState<Piece<COLOR>>) disposedState;
+    protected DisposedPieceState<?> createDisposedPieceState() {
+        return new DisposedCastlingablePieceState<>();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public void dispose() {
-        super.dispose();
-
-        PieceState<?> disposedState = new DisposedCastlingablePieceState<>();
-        this.currentState = (PieceState<Piece<COLOR>>) disposedState;
+    protected DisposedPieceState<?> createDisposedPieceState(Instant instant) {
+        return new DisposedCastlingablePieceState<>(instant);
     }
 
     static final class DisposedCastlingablePieceState<PIECE extends RookPiece<?>>

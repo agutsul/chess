@@ -60,26 +60,6 @@ final class PawnPieceImpl<COLOR extends Color>
 
     @Override
     @SuppressWarnings("unchecked")
-    public void dispose(Instant instant) {
-        LOGGER.info("Dispose origin pawn '{}' at '{}'", this, instant);
-        super.dispose();
-
-        PieceState<?> disposedState = new DisposedEnPassantablePieceState<>(instant);
-        this.currentState = (PieceState<Piece<COLOR>>) disposedState;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public void dispose() {
-        LOGGER.info("Dispose origin pawn '{}'", this);
-        super.dispose();
-
-        PieceState<?> disposeState = new DisposedEnPassantablePieceState<>();
-        this.currentState = (PieceState<Piece<COLOR>>) disposeState;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
     public void enpassant(PawnPiece<?> piece, Position position) {
         var state = (EnPassantablePieceState<?>) getState();
         ((EnPassantablePieceState<PawnPiece<COLOR>>) state).enpassant(this, piece, position);
@@ -95,6 +75,18 @@ final class PawnPieceImpl<COLOR extends Color>
     @Override
     public boolean isBlocked() {
         return !getImpacts(Impact.Type.BLOCK).isEmpty();
+    }
+
+    @Override
+    protected DisposedPieceState<?> createDisposedPieceState() {
+        LOGGER.info("Dispose origin pawn '{}'", this);
+        return new DisposedEnPassantablePieceState<>();
+    }
+
+    @Override
+    protected DisposedPieceState<?> createDisposedPieceState(Instant instant) {
+        LOGGER.info("Dispose origin pawn '{}' at '{}'", this, instant);
+        return new DisposedEnPassantablePieceState<>(instant);
     }
 
     private static <A extends Action<?>> Collection<Action<?>> filter(Collection<Action<?>> actions,

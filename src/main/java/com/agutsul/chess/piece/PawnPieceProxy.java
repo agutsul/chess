@@ -197,17 +197,7 @@ final class PawnPieceProxy
     public boolean isBlocked() {
         return ((Blockable) this.origin).isBlocked();
     }
-/*
-    @Override
-    public Instant getCapturedAt() {
-        return ((Captured) this.origin).getCapturedAt();
-    }
 
-    @Override
-    public void setCapturedAt(Instant instant) {
-        ((Captured) this.origin).setCapturedAt(instant);
-    }
-*/
     // Because of the nature of proxy it should rely on origin piece.
     @Override
     public int hashCode() {

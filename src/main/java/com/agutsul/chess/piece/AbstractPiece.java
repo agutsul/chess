@@ -33,6 +33,7 @@ import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.IllegalPositionException;
 import com.agutsul.chess.piece.state.CapturablePieceState;
+import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.piece.state.MovablePieceState;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
@@ -275,28 +276,22 @@ abstract class AbstractPiece<COLOR extends Color>
         return isPinned;
     }
 
-    @SuppressWarnings("unchecked")
     public void dispose(Instant instant) {
         LOGGER.info("Disposing '{}' at '{}'", this, instant);
 
         clearCalculatedData();
-
         this.board.removeObserver(this.observer);
 
-        PieceState<?> disposedState = new DisposedPieceStateImpl<>(instant);
-        this.currentState = (PieceState<Piece<COLOR>>) disposedState;
+        setState(createDisposedPieceState(instant));
     }
 
-    @SuppressWarnings("unchecked")
     public void dispose() {
         LOGGER.info("Disposing '{}'", this);
 
         clearCalculatedData();
-
         this.board.removeObserver(this.observer);
 
-        PieceState<?> disposedState = new DisposedPieceStateImpl<>();
-        this.currentState = (PieceState<Piece<COLOR>>) disposedState;
+        setState(createDisposedPieceState());
     }
 
     public void restore() {
@@ -340,6 +335,16 @@ abstract class AbstractPiece<COLOR extends Color>
                 && Objects.equals(getPosition(), other.getPosition());
     }
 
+    // override specific dispose state creation
+    protected DisposedPieceState<?> createDisposedPieceState() {
+        return new DisposedPieceStateImpl<>();
+    }
+
+    // override specific dispose state creation
+    protected DisposedPieceState<?> createDisposedPieceState(Instant instant) {
+        return new DisposedPieceStateImpl<>(instant);
+    }
+
     final void doMove(Position position) {
         setPosition(position);
     }
@@ -370,7 +375,7 @@ abstract class AbstractPiece<COLOR extends Color>
         ((Restorable) piece).restore();
     }
 
-    final void setPosition(Position position) {
+    private final void setPosition(Position position) {
         // null can be set when piece should be removed from the board
         if (position == null) {
             dispose();
@@ -380,10 +385,15 @@ abstract class AbstractPiece<COLOR extends Color>
         this.positions.add(position);
     }
 
-    final void clearCalculatedData() {
+    private final void clearCalculatedData() {
         LOGGER.info("Clear '{}' cached actions/imports", this);
         this.actionCache.clear();
         this.impactCache.clear();
+    }
+
+    @SuppressWarnings("unchecked")
+    private final void setState(DisposedPieceState<?> disposedState) {
+        this.currentState = (PieceState<Piece<COLOR>>) (PieceState<?>) disposedState;
     }
 
     private final class ActionEventObserver
