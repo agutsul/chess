@@ -88,7 +88,7 @@ abstract class AbstractPiece<COLOR extends Color>
         this.value = type.value() * direction;
 
         this.activeState = (PieceState<Piece<COLOR>>) state;
-        this.currentState = (PieceState<Piece<COLOR>>) state;
+        setState(state);
 
         this.actionCache = actionCache;
         this.impactCache = impactCache;
@@ -282,7 +282,7 @@ abstract class AbstractPiece<COLOR extends Color>
         clearCalculatedData();
         this.board.removeObserver(this.observer);
 
-        setState(createDisposedPieceState(instant));
+        setState((PieceState<?>) createDisposedPieceState(instant));
     }
 
     public void dispose() {
@@ -291,7 +291,7 @@ abstract class AbstractPiece<COLOR extends Color>
         clearCalculatedData();
         this.board.removeObserver(this.observer);
 
-        setState(createDisposedPieceState());
+        setState((PieceState<?>) createDisposedPieceState());
     }
 
     public void restore() {
@@ -302,7 +302,7 @@ abstract class AbstractPiece<COLOR extends Color>
         this.observer = new ActionEventObserver();
         this.board.addObserver(this.observer);
 
-        this.currentState = this.activeState;
+        setState(this.activeState);
     }
 
     @Override
@@ -392,8 +392,8 @@ abstract class AbstractPiece<COLOR extends Color>
     }
 
     @SuppressWarnings("unchecked")
-    private final void setState(DisposedPieceState<?> disposedState) {
-        this.currentState = (PieceState<Piece<COLOR>>) (PieceState<?>) disposedState;
+    private final void setState(PieceState<?> state) {
+        this.currentState = (PieceState<Piece<COLOR>>) state;
     }
 
     private final class ActionEventObserver
