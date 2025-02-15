@@ -32,6 +32,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.IllegalPositionException;
+import com.agutsul.chess.piece.state.ActivePieceState;
 import com.agutsul.chess.piece.state.CapturablePieceState;
 import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.piece.state.MovablePieceState;
@@ -55,7 +56,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
     protected final AbstractBoard board;
 
-    protected final PieceState<Piece<COLOR>> activeState;
+    protected final ActivePieceState<? extends Piece<COLOR>> activeState;
     protected PieceState<Piece<COLOR>> currentState;
 
     private Observer observer;
@@ -87,7 +88,7 @@ abstract class AbstractPiece<COLOR extends Color>
         this.unicode = unicode;
         this.value = type.value() * direction;
 
-        this.activeState = (PieceState<Piece<COLOR>>) state;
+        this.activeState = (ActivePieceState<? extends Piece<COLOR>>) state;
         setState(state);
 
         this.actionCache = actionCache;
@@ -241,7 +242,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
     @Override
     public final boolean isActive() {
-        return PieceState.Type.ACTIVE.equals(getState().getType());
+        return this.currentState instanceof ActivePieceState<?>;
     }
 
     @Override
@@ -300,7 +301,7 @@ abstract class AbstractPiece<COLOR extends Color>
         this.observer = new ActionEventObserver();
         this.board.addObserver(this.observer);
 
-        setState(this.activeState);
+        setState((PieceState<?>) this.activeState);
     }
 
     @Override

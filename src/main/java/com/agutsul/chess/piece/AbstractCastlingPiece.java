@@ -18,6 +18,7 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.piece.state.ActivePieceState;
 import com.agutsul.chess.piece.state.CastlingablePieceState;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.Rule;
@@ -95,7 +96,8 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     }
 
     static final class ActiveCastlingablePieceState<PIECE extends Piece<?> & Movable & Capturable & Castlingable>
-            extends AbstractCastlingablePieceState<PIECE> {
+            extends AbstractCastlingablePieceState<PIECE>
+            implements ActivePieceState<PIECE> {
 
         private static final Logger LOGGER = getLogger(ActiveCastlingablePieceState.class);
 
@@ -105,7 +107,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
                                      Rule<Piece<?>, Collection<Action<?>>> actionRule,
                                      Rule<Piece<?>, Collection<Impact<?>>> impactRule) {
 
-            super(new ActivePieceState<>(board, actionRule, impactRule));
+            super(new ActivePieceStateImpl<>(board, actionRule, impactRule));
             this.board = board;
         }
 

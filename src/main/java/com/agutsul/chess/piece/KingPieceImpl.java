@@ -16,6 +16,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.king.KingPieceActionRule;
 import com.agutsul.chess.piece.king.KingPieceImpactRule;
+import com.agutsul.chess.piece.state.ActivePieceState;
 import com.agutsul.chess.piece.state.CastlingablePieceState;
 import com.agutsul.chess.piece.state.CheckMatedPieceState;
 import com.agutsul.chess.piece.state.CheckedPieceState;
@@ -50,7 +51,7 @@ final class KingPieceImpl<COLOR extends Color>
         LOGGER.info("Set {} king checked='{}' state", getColor(), isChecked);
         setState(isChecked
                 ? (PieceState<?>) this.checkedPieceState
-                : this.activeState
+                : (PieceState<?>) this.activeState
         );
     }
 
@@ -100,11 +101,12 @@ final class KingPieceImpl<COLOR extends Color>
     static class KingCheckedPieceState<PIECE extends KingPiece<?>>
             extends AbstractPieceStateProxy<PIECE>
             implements CheckedPieceState<PIECE>,
-                       CastlingablePieceState<PIECE> {
+                       CastlingablePieceState<PIECE>,
+                       ActivePieceState<PIECE> {
 
         @SuppressWarnings("unchecked")
         KingCheckedPieceState(PieceState<? extends Piece<?>> origin) {
-            super((AbstractPieceStateProxy<PIECE>) (AbstractPieceStateProxy<?>) origin);
+            super((AbstractCastlingablePieceState<PIECE>) origin);
         }
 
         @Override

@@ -15,23 +15,25 @@ import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.piece.state.ActivePieceState;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.Rule;
 
-final class ActivePieceState<PIECE extends Piece<?> & Movable & Capturable>
-        extends AbstractPieceState<PIECE> {
+final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
+        extends AbstractPieceState<PIECE>
+        implements ActivePieceState<PIECE> {
 
-    private static final Logger LOGGER = getLogger(ActivePieceState.class);
+    private static final Logger LOGGER = getLogger(ActivePieceStateImpl.class);
 
     private final AbstractPieceRule<Action<?>,Action.Type> actionRule;
     private final AbstractPieceRule<Impact<?>,Impact.Type> impactRule;
 
     protected final Board board;
 
-    ActivePieceState(Board board,
-                     Rule<Piece<?>, Collection<Action<?>>> actionRule,
-                     Rule<Piece<?>, Collection<Impact<?>>> impactRule) {
+    ActivePieceStateImpl(Board board,
+                         Rule<Piece<?>, Collection<Action<?>>> actionRule,
+                         Rule<Piece<?>, Collection<Impact<?>>> impactRule) {
 
         super(Type.ACTIVE);
 

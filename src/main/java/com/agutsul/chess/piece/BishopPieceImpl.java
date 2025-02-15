@@ -14,9 +14,9 @@ final class BishopPieceImpl<COLOR extends Color>
                     Position position, int direction) {
 
         super(board, Piece.Type.BISHOP, color, unicode, position, direction,
-                new ActivePieceState<>(board,
-                                       new BishopPieceActionRule(board),
-                                       new BishopPieceImpactRule(board)
+                new ActivePieceStateImpl<>(board,
+                                           new BishopPieceActionRule(board),
+                                           new BishopPieceImpactRule(board)
                 )
         );
     }

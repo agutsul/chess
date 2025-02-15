@@ -24,6 +24,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.pawn.PawnPieceActionRule;
 import com.agutsul.chess.piece.pawn.PawnPieceImpactRule;
+import com.agutsul.chess.piece.state.ActivePieceState;
 import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.piece.state.EnPassantablePieceState;
 import com.agutsul.chess.piece.state.PieceState;
@@ -34,8 +35,6 @@ import com.agutsul.chess.rule.Rule;
 final class PawnPieceImpl<COLOR extends Color>
         extends AbstractPiece<COLOR>
         implements PawnPiece<COLOR> {
-
-    private static final Logger LOGGER = getLogger(PawnPieceImpl.class);
 
     PawnPieceImpl(Board board, COLOR color, String unicode, Position position,
                   int direction, int promotionLine, int initialLine) {
@@ -79,12 +78,6 @@ final class PawnPieceImpl<COLOR extends Color>
 
     @Override
     DisposedPieceState<?> createDisposedPieceState(Instant instant) {
-        if (instant != null) {
-            LOGGER.info("Dispose origin pawn '{}' at '{}'", this, instant);
-        } else {
-            LOGGER.info("Dispose origin pawn '{}'", this);
-        }
-
         return new DisposedEnPassantablePieceState<>(instant);
     }
 
@@ -113,7 +106,8 @@ final class PawnPieceImpl<COLOR extends Color>
     }
 
     static final class ActiveEnPassantablePieceState<PIECE extends PawnPiece<?>>
-            extends AbstractEnPassantablePieceState<PIECE> {
+            extends AbstractEnPassantablePieceState<PIECE>
+            implements ActivePieceState<PIECE> {
 
         private static final Logger LOGGER = getLogger(ActiveEnPassantablePieceState.class);
 
@@ -124,7 +118,7 @@ final class PawnPieceImpl<COLOR extends Color>
                                       Rule<Piece<?>, Collection<Action<?>>> actionRule,
                                       Rule<Piece<?>, Collection<Impact<?>>> impactRule) {
 
-            super(new ActivePieceState<>(board, actionRule, impactRule));
+            super(new ActivePieceStateImpl<>(board, actionRule, impactRule));
 
             this.board = board;
             this.actionRule = (AbstractPieceRule<Action<?>,Action.Type>) actionRule;

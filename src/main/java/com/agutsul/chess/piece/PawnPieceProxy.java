@@ -31,6 +31,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.PawnPieceImpl.AbstractEnPassantablePieceState;
+import com.agutsul.chess.piece.state.ActivePieceState;
 import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.piece.state.PromotablePieceState;
@@ -51,7 +52,7 @@ final class PawnPieceProxy
     private final PieceFactory pieceFactory;
     private final PawnPiece<Color> pawnPiece;
 
-    private final PieceState<?> activeState;
+    private final ActivePieceState<?> activeState;
     private PieceState<?> currentState;
 
     PawnPieceProxy(Board board,
@@ -121,7 +122,7 @@ final class PawnPieceProxy
     @Override
     public void restore() {
         ((Restorable) this.origin).restore();
-        setState(this.activeState);
+        setState((PieceState<?>) this.activeState);
     }
 
     @Override
@@ -334,7 +335,8 @@ final class PawnPieceProxy
     }
 
     static final class ActivePromotablePieceState<PIECE extends PawnPiece<?>>
-            extends AbstractPromotablePieceState<PIECE> {
+            extends AbstractPromotablePieceState<PIECE>
+            implements ActivePieceState<PIECE> {
 
         private static final Logger LOGGER = getLogger(ActivePromotablePieceState.class);
 
