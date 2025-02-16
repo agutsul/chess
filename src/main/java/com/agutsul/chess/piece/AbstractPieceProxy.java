@@ -12,7 +12,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
-abstract class AbstractPieceProxy<PIECE extends Piece<?>>
+abstract class AbstractPieceProxy<PIECE extends Piece<?> & Movable & Capturable & Protectable>
         implements PieceProxy<PIECE>, Movable, Capturable, Protectable {
 
     protected PIECE origin;
@@ -99,31 +99,31 @@ abstract class AbstractPieceProxy<PIECE extends Piece<?>>
 
     @Override
     public boolean isProtected() {
-        return ((Protectable) origin).isProtected();
+        return origin.isProtected();
     }
 
     @Override
     public void capture(Piece<?> targetPiece) {
-        ((Capturable) origin).capture(targetPiece);
+        origin.capture(targetPiece);
     }
 
     @Override
     public void uncapture(Piece<?> targetPiece) {
-        ((Capturable) origin).uncapture(targetPiece);
+        origin.uncapture(targetPiece);
     }
 
     @Override
     public void move(Position position) {
-        ((Movable) origin).move(position);
+        origin.move(position);
     }
 
     @Override
     public void unmove(Position position) {
-        ((Movable) origin).unmove(position);
+        origin.unmove(position);
     }
 
     @Override
     public boolean isMoved() {
-        return ((Movable) origin).isMoved();
+        return origin.isMoved();
     }
 }

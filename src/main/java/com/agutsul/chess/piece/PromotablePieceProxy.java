@@ -16,10 +16,13 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Blockable;
+import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Disposable;
 import com.agutsul.chess.EnPassantable;
+import com.agutsul.chess.Movable;
 import com.agutsul.chess.Pinnable;
+import com.agutsul.chess.Protectable;
 import com.agutsul.chess.Restorable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
@@ -38,8 +41,8 @@ import com.agutsul.chess.position.Position;
  * Requires extending all interfaces of promoted pieces
  * to properly proxy those newly created pieces
  */
-final class PromotablePieceProxy
-        extends AbstractPieceProxy<Piece<Color>>
+final class PromotablePieceProxy<PIECE extends Piece<?> & Movable & Capturable & Protectable>
+        extends AbstractPieceProxy<PIECE>
         implements PawnPiece<Color>, KnightPiece<Color>, BishopPiece<Color>,
                    RookPiece<Color>, QueenPiece<Color> {
 
@@ -51,10 +54,11 @@ final class PromotablePieceProxy
     private final ActivePieceState<?> activeState;
     private PieceState<?> currentState;
 
+    @SuppressWarnings("unchecked")
     PromotablePieceProxy(Board board, PawnPiece<Color> pawnPiece,
                          int promotionLine, PieceFactory pieceFactory) {
 
-        super(pawnPiece);
+        super((PIECE) pawnPiece);
 
         this.pawnPiece = pawnPiece;
         this.pieceFactory = pieceFactory;
@@ -165,22 +169,24 @@ final class PromotablePieceProxy
         this.currentState = state;
     }
 
+    @SuppressWarnings("unchecked")
     private void doPromote(Position position, Piece.Type pieceType) {
         // create promoted piece
         var promotedPiece = createPiece(position, pieceType);
         // dispose origin pawn to remove it from the board
         ((Disposable) this.origin).dispose();
         // replace pawn with promoted piece
-        this.origin = promotedPiece;
+        this.origin = (PIECE) promotedPiece;
     }
 
+    @SuppressWarnings("unchecked")
     private void cancelPromote() {
         // dispose promoted piece
         ((Disposable) this.origin).dispose();
         // restore pawn piece
         this.pawnPiece.restore();
         // replace promoted piece with origin pawn
-        this.origin = this.pawnPiece;
+        this.origin = (PIECE) this.pawnPiece;
     }
 
     private Piece<Color> createPiece(Position position, Piece.Type pieceType) {
@@ -244,7 +250,7 @@ final class PromotablePieceProxy
         @Override
         public void unpromote(Piece<?> piece) {
             LOGGER.info("Undo promote by '{}'", piece);
-            ((PromotablePieceProxy) piece).cancelPromote();
+            ((PromotablePieceProxy<?>) piece).cancelPromote();
         }
 
         @Override
@@ -310,7 +316,7 @@ final class PromotablePieceProxy
 
             validatePromotion(piece, position, pieceType);
 
-            ((PromotablePieceProxy) piece).doPromote(position, pieceType);
+            ((PromotablePieceProxy<?>) piece).doPromote(position, pieceType);
         }
 
         private void validatePromotion(PIECE piece, Position position, Piece.Type pieceType) {

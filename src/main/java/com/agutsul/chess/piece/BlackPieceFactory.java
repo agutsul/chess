@@ -27,8 +27,7 @@ public final class BlackPieceFactory
 
     @Override
     public KingPiece<Color> createKing(Position position) {
-        var king = super.createKing(position, KING_UNICODE);
-        return new KingPieceProxy(king);
+        return new KingPieceProxy(super.createKing(position, KING_UNICODE));
     }
 
     @Override
@@ -54,6 +53,6 @@ public final class BlackPieceFactory
     @Override
     public PawnPiece<Color> createPawn(Position position) {
         var pawn = super.createPawn(position, PAWN_UNICODE);
-        return new PromotablePieceProxy(board, pawn, promotion.line(), this);
+        return new PromotablePieceProxy<>(board, pawn, promotion.line(), this);
     }
 }
