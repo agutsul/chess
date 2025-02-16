@@ -55,10 +55,8 @@ final class PromotablePieceProxy
     private final ActivePieceState<?> activeState;
     private PieceState<?> currentState;
 
-    PromotablePieceProxy(Board board,
-                   PawnPiece<Color> pawnPiece,
-                   int promotionLine,
-                   PieceFactory pieceFactory) {
+    PromotablePieceProxy(Board board, PawnPiece<Color> pawnPiece,
+                         int promotionLine, PieceFactory pieceFactory) {
 
         super(pawnPiece);
 
