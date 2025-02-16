@@ -27,7 +27,6 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
-import com.agutsul.chess.piece.PawnPieceImpl.AbstractEnPassantablePieceState;
 import com.agutsul.chess.piece.state.ActivePieceState;
 import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.piece.state.PieceState;
@@ -229,7 +228,7 @@ final class PromotablePieceProxy
             implements PieceState<PIECE>,
                        PromotablePieceState<PIECE> {
 
-        private static final Logger LOGGER = getLogger(AbstractEnPassantablePieceState.class);
+        private static final Logger LOGGER = getLogger(AbstractPromotablePieceState.class);
 
         private final PieceState.Type type;
 
