@@ -15,9 +15,9 @@ import com.agutsul.chess.position.Position;
 abstract class AbstractPieceProxy<PIECE extends Piece<?>>
         implements PieceProxy<PIECE>, Movable, Capturable, Protectable {
 
-    protected Piece<?> origin;
+    protected PIECE origin;
 
-    AbstractPieceProxy(Piece<?> origin) {
+    AbstractPieceProxy(PIECE origin) {
         this.origin = origin;
     }
 

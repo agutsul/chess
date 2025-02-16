@@ -2,8 +2,6 @@ package com.agutsul.chess.piece;
 
 import java.util.Collection;
 
-import com.agutsul.chess.Castlingable;
-import com.agutsul.chess.Checkable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.color.Color;
@@ -42,32 +40,32 @@ final class KingPieceProxy
     }
 
     @Override
+    public void castling(Position position) {
+        this.origin.castling(position);
+    }
+
+    @Override
+    public void uncastling(Position position) {
+        this.origin.uncastling(position);
+    }
+
+    @Override
+    public boolean isChecked() {
+        return this.origin.isChecked();
+    }
+
+    @Override
+    public boolean isCheckMated() {
+        return this.origin.isCheckMated();
+    }
+
+    @Override
     public void setChecked(boolean checked) {
         ((KingPiece<?>) this.origin).setChecked(checked);
     }
 
     @Override
-    public boolean isChecked() {
-        return ((Checkable) this.origin).isChecked();
-    }
-
-    @Override
     public void setCheckMated(boolean checkMated) {
         ((KingPiece<?>) this.origin).setCheckMated(checkMated);
-    }
-
-    @Override
-    public boolean isCheckMated() {
-        return ((Checkable) this.origin).isCheckMated();
-    }
-
-    @Override
-    public void castling(Position position) {
-        ((Castlingable) this.origin).castling(position);
-    }
-
-    @Override
-    public void uncastling(Position position) {
-        ((Castlingable) this.origin).uncastling(position);
     }
 }
