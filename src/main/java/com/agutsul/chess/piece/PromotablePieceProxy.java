@@ -162,19 +162,6 @@ final class PromotablePieceProxy
         return ((Blockable) this.origin).isBlocked();
     }
 
-    // Because of the nature of proxy it should rely on origin piece.
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    // Because of the nature of proxy it shouldn't include any additional fields into equals(..).
-    // It should fully rely on origin piece equals(..)
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
-
     private void setState(PieceState<?> state) {
         this.currentState = state;
     }
