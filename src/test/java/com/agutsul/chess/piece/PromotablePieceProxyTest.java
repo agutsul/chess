@@ -29,7 +29,7 @@ import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.position.Position;
 
 @ExtendWith(MockitoExtension.class)
-public class PawnProxyTest {
+public class PromotablePieceProxyTest {
 
     @Mock
     private AbstractBoard board;

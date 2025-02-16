@@ -16,13 +16,10 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Blockable;
-import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Disposable;
 import com.agutsul.chess.EnPassantable;
-import com.agutsul.chess.Movable;
 import com.agutsul.chess.Pinnable;
-import com.agutsul.chess.Protectable;
 import com.agutsul.chess.Restorable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
@@ -43,7 +40,7 @@ import com.agutsul.chess.position.Position;
  * to properly proxy those newly created pieces
  */
 final class PromotablePieceProxy
-        extends PieceProxy
+        extends AbstractPieceProxy<Piece<Color>>
         implements PawnPiece<Color>, KnightPiece<Color>, BishopPiece<Color>,
                    RookPiece<Color>, QueenPiece<Color> {
 
@@ -136,31 +133,6 @@ final class PromotablePieceProxy
     }
 
     @Override
-    public void move(Position position) {
-        ((Movable) this.origin).move(position);
-    }
-
-    @Override
-    public void unmove(Position position) {
-        ((Movable) this.origin).unmove(position);
-    }
-
-    @Override
-    public boolean isMoved() {
-        return ((Movable) this.origin).isMoved();
-    }
-
-    @Override
-    public void capture(Piece<?> targetPiece) {
-        ((Capturable) this.origin).capture(targetPiece);
-    }
-
-    @Override
-    public void uncapture(Piece<?> targetPiece) {
-        ((Capturable) this.origin).uncapture(targetPiece);
-    }
-
-    @Override
     public void enpassant(PawnPiece<?> targetPiece, Position targetPosition) {
         ((EnPassantable) this.origin).enpassant(targetPiece, targetPosition);
     }
@@ -183,11 +155,6 @@ final class PromotablePieceProxy
     @Override
     public boolean isPinned() {
         return ((Pinnable) this.origin).isPinned();
-    }
-
-    @Override
-    public boolean isProtected() {
-        return ((Protectable) this.origin).isProtected();
     }
 
     @Override

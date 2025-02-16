@@ -3,6 +3,7 @@ package com.agutsul.chess.piece;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -19,16 +20,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
 @ExtendWith(MockitoExtension.class)
-public class PieceProxyTest {
+public class KingPieceProxyTest {
 
     @Mock
-    private Piece<Color> piece;
+    private KingPiece<Color> piece;
 
     @InjectMocks
-    private PieceProxy proxy;
+    private KingPieceProxy proxy;
 
     @Test
     void testGetType() {
@@ -76,11 +78,16 @@ public class PieceProxyTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void testGetActions() {
         Collection<Action<?>> actions = emptyList();
-        when(piece.getActions()).thenReturn(actions);
+
+        var pieceState = mock(PieceState.class);
+        when(pieceState.calculateActions(any())).thenReturn(actions);
+
+        when(piece.getState()).thenReturn(pieceState);
 
         assertEquals(proxy.getActions(), actions);
-        verify(piece, times(1)).getActions();
+        verify(pieceState, times(1)).calculateActions(any());
     }
 }

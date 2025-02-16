@@ -2,11 +2,8 @@ package com.agutsul.chess.piece;
 
 import java.util.Collection;
 
-import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Checkable;
-import com.agutsul.chess.Movable;
-import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.color.Color;
@@ -17,10 +14,10 @@ import com.agutsul.chess.position.Position;
  * received by extending AbstractPiece class
  */
 final class KingPieceProxy
-        extends PieceProxy
+        extends AbstractPieceProxy<KingPiece<?>>
         implements KingPiece<Color> {
 
-    KingPieceProxy(KingPiece<Color> origin) {
+    KingPieceProxy(KingPiece<?> origin) {
         super(origin);
     }
 
@@ -45,31 +42,6 @@ final class KingPieceProxy
     }
 
     @Override
-    public void move(Position position) {
-        ((Movable) this.origin).move(position);
-    }
-
-    @Override
-    public void unmove(Position position) {
-        ((Movable) this.origin).unmove(position);
-    }
-
-    @Override
-    public boolean isMoved() {
-        return ((Movable) this.origin).isMoved();
-    }
-
-    @Override
-    public void capture(Piece<?> targetPiece) {
-        ((Capturable) this.origin).capture(targetPiece);
-    }
-
-    @Override
-    public void uncapture(Piece<?> targetPiece) {
-        ((Capturable) this.origin).uncapture(targetPiece);
-    }
-
-    @Override
     public void setChecked(boolean checked) {
         ((KingPiece<?>) this.origin).setChecked(checked);
     }
@@ -87,11 +59,6 @@ final class KingPieceProxy
     @Override
     public boolean isCheckMated() {
         return ((Checkable) this.origin).isCheckMated();
-    }
-
-    @Override
-    public boolean isProtected() {
-        return ((Protectable) this.origin).isProtected();
     }
 
     @Override

@@ -80,13 +80,13 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
             LOGGER.info("Undo castling '{}' to '{}'", piece, position);
 
             if (piece instanceof PieceProxy) {
-                cancelCastling((PieceProxy) piece, position);
+                cancelCastling((AbstractPieceProxy<?>) piece, position);
             } else {
                 cancelCastling((AbstractCastlingPiece<?>) piece, position);
             }
         }
 
-        private static void cancelCastling(PieceProxy proxy, Position position) {
+        private static void cancelCastling(AbstractPieceProxy<?> proxy, Position position) {
             cancelCastling((AbstractCastlingPiece<?>) proxy.origin, position);
         }
 
@@ -150,13 +150,13 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
             LOGGER.info("Castling '{}' to '{}'", piece, position);
 
             if (piece instanceof PieceProxy) {
-                doCastling((PieceProxy) piece, position);
+                doCastling((AbstractPieceProxy<?>) piece, position);
             } else {
                 doCastling((AbstractCastlingPiece<?>) piece, position);
             }
         }
 
-        private static void doCastling(PieceProxy proxy, Position position) {
+        private static void doCastling(AbstractPieceProxy<?> proxy, Position position) {
             doCastling((AbstractCastlingPiece<?>) proxy.origin, position);
         }
 
