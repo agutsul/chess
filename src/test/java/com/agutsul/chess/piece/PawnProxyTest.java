@@ -38,11 +38,11 @@ public class PawnProxyTest {
     @Mock
     private PieceFactory pieceFactory;
 
-    private PawnPieceProxy proxy;
+    private PromotablePieceProxy proxy;
 
     @BeforeEach
     public void setUp() {
-        this.proxy = new PawnPieceProxy(board, pawn, 7, pieceFactory);
+        this.proxy = new PromotablePieceProxy(board, pawn, 7, pieceFactory);
     }
 
     @Test

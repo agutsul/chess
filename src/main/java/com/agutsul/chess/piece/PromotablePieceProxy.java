@@ -42,12 +42,12 @@ import com.agutsul.chess.position.Position;
  * Requires extending all interfaces of promoted pieces
  * to properly proxy those newly created pieces
  */
-final class PawnPieceProxy
+final class PromotablePieceProxy
         extends PieceProxy
         implements PawnPiece<Color>, KnightPiece<Color>, BishopPiece<Color>,
                    RookPiece<Color>, QueenPiece<Color> {
 
-    private static final Logger LOGGER = getLogger(PawnPieceProxy.class);
+    private static final Logger LOGGER = getLogger(PromotablePieceProxy.class);
 
     private final PieceFactory pieceFactory;
     private final PawnPiece<Color> pawnPiece;
@@ -55,7 +55,7 @@ final class PawnPieceProxy
     private final ActivePieceState<?> activeState;
     private PieceState<?> currentState;
 
-    PawnPieceProxy(Board board,
+    PromotablePieceProxy(Board board,
                    PawnPiece<Color> pawnPiece,
                    int promotionLine,
                    PieceFactory pieceFactory) {
@@ -293,7 +293,7 @@ final class PawnPieceProxy
         @Override
         public void unpromote(Piece<?> piece) {
             LOGGER.info("Undo promote by '{}'", piece);
-            ((PawnPieceProxy) piece).cancelPromote();
+            ((PromotablePieceProxy) piece).cancelPromote();
         }
 
         @Override
@@ -359,7 +359,7 @@ final class PawnPieceProxy
 
             validatePromotion(piece, position, pieceType);
 
-            ((PawnPieceProxy) piece).doPromote(position, pieceType);
+            ((PromotablePieceProxy) piece).doPromote(position, pieceType);
         }
 
         private void validatePromotion(PIECE piece, Position position, Piece.Type pieceType) {
