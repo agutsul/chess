@@ -266,19 +266,12 @@ abstract class AbstractPiece<COLOR extends Color>
     }
 
     public void dispose(Instant instant) {
-        if (instant != null) {
-            LOGGER.info("Disposing '{}' at '{}'", this, instant);
-        }
+        LOGGER.info("Disposing '{}' at '{}'", this, instant);
 
         clearCalculatedData();
         this.board.removeObserver(this.observer);
 
         setState((PieceState<?>) createDisposedPieceState(instant));
-    }
-
-    public void dispose() {
-        LOGGER.info("Disposing '{}'", this);
-        dispose(null);
     }
 
     public void restore() {
@@ -365,7 +358,7 @@ abstract class AbstractPiece<COLOR extends Color>
     private void setPosition(Position position) {
         // null can be set when piece should be removed from the board
         if (position == null) {
-            dispose();
+            dispose(null);
             return;
         }
 

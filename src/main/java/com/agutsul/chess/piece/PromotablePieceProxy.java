@@ -124,12 +124,6 @@ final class PromotablePieceProxy<PIECE extends Piece<?> & Movable & Capturable &
     }
 
     @Override
-    public void dispose() {
-        ((Disposable) this.origin).dispose();
-        setState(new DisposedPromotablePieceState<>());
-    }
-
-    @Override
     public void dispose(Instant instant) {
         ((Disposable) this.origin).dispose(instant);
         setState(new DisposedPromotablePieceState<>(instant));
@@ -174,7 +168,7 @@ final class PromotablePieceProxy<PIECE extends Piece<?> & Movable & Capturable &
         // create promoted piece
         var promotedPiece = createPiece(position, pieceType);
         // dispose origin pawn to remove it from the board
-        ((Disposable) this.origin).dispose();
+        ((Disposable) this.origin).dispose(null);
         // replace pawn with promoted piece
         this.origin = (PIECE) promotedPiece;
     }
@@ -182,7 +176,7 @@ final class PromotablePieceProxy<PIECE extends Piece<?> & Movable & Capturable &
     @SuppressWarnings("unchecked")
     private void cancelPromote() {
         // dispose promoted piece
-        ((Disposable) this.origin).dispose();
+        ((Disposable) this.origin).dispose(null);
         // restore pawn piece
         this.pawnPiece.restore();
         // replace promoted piece with origin pawn
@@ -286,7 +280,7 @@ final class PromotablePieceProxy<PIECE extends Piece<?> & Movable & Capturable &
         }
 
         @Override
-        public String toString() {
+        public final String toString() {
             return this.type.name();
         }
     }
@@ -368,11 +362,7 @@ final class PromotablePieceProxy<PIECE extends Piece<?> & Movable & Capturable &
 
         private static final Logger LOGGER = getLogger(DisposedPromotablePieceState.class);
 
-        private PieceState<PIECE> origin;
-
-        DisposedPromotablePieceState() {
-            this((Instant) null);
-        }
+        private final PieceState<PIECE> origin;
 
         DisposedPromotablePieceState(Instant instant) {
             this(new DisposedPieceStateImpl<>(instant));

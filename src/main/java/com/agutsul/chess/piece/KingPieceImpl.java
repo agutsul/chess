@@ -84,11 +84,6 @@ final class KingPieceImpl<COLOR extends Color>
     }
 
     @Override
-    public void dispose() {
-        throw new UnsupportedOperationException(DISPOSE_ERROR_MESSAGE);
-    }
-
-    @Override
     public void restore() {
         throw new UnsupportedOperationException("Unable to restore KING piece");
     }

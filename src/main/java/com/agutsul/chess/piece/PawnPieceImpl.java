@@ -1,7 +1,6 @@
 package com.agutsul.chess.piece;
 
 import static java.time.Instant.now;
-import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Instant;
@@ -81,11 +80,14 @@ final class PawnPieceImpl<COLOR extends Color>
         return new DisposedEnPassantablePieceState<>(instant);
     }
 
+    @SuppressWarnings("unchecked")
     private static <A extends Action<?>> Collection<Action<?>> filter(Collection<Action<?>> actions,
                                                                       Class<A> actionClass) {
+
         var filter = new ActionFilter<>(actionClass);
-        return filter.apply(actions).stream()
-                .collect(toList());
+        var filtered = (Collection<Action<?>>) filter.apply(actions);
+
+        return filtered;
     }
 
     static abstract class AbstractEnPassantablePieceState<PIECE extends PawnPiece<?>>

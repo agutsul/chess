@@ -38,11 +38,11 @@ public class PromotablePieceProxyTest {
     @Mock
     private PieceFactory pieceFactory;
 
-    private PromotablePieceProxy proxy;
+    private PromotablePieceProxy<?> proxy;
 
     @BeforeEach
     public void setUp() {
-        this.proxy = new PromotablePieceProxy(board, pawn, 7, pieceFactory);
+        this.proxy = new PromotablePieceProxy<>(board, pawn, 7, pieceFactory);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class PromotablePieceProxyTest {
         var position = mock(Position.class);
 
         doNothing()
-            .when(pawn).dispose();
+            .when(pawn).dispose(any());
 
         when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
             .then(inv -> {
@@ -68,7 +68,7 @@ public class PromotablePieceProxyTest {
 
         proxy.promote(position, Piece.Type.BISHOP);
 
-        verify(origin, times(1)).dispose();
+        verify(origin, times(1)).dispose(any());
         verify(origin, never()).promote(any(), any());
 
         assertNotEquals(proxy.origin, origin);
@@ -80,7 +80,7 @@ public class PromotablePieceProxyTest {
         var position = mock(Position.class);
 
         doNothing()
-            .when(pawn).dispose();
+            .when(pawn).dispose(any());
 
         when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
             .then(inv -> {
@@ -97,7 +97,7 @@ public class PromotablePieceProxyTest {
 
         proxy.promote(position, Piece.Type.KNIGHT);
 
-        verify(origin, times(1)).dispose();
+        verify(origin, times(1)).dispose(any());
         verify(origin, never()).promote(any(), any());
 
         assertNotEquals(proxy.origin, origin);
@@ -109,7 +109,7 @@ public class PromotablePieceProxyTest {
         var position = mock(Position.class);
 
         doNothing()
-            .when(pawn).dispose();
+            .when(pawn).dispose(any());
 
         when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
             .then(inv -> {
@@ -126,7 +126,7 @@ public class PromotablePieceProxyTest {
 
         proxy.promote(position, Piece.Type.QUEEN);
 
-        verify(origin, times(1)).dispose();
+        verify(origin, times(1)).dispose(any());
         verify(origin, never()).promote(any(), any());
 
         assertNotEquals(proxy.origin, origin);
@@ -138,7 +138,7 @@ public class PromotablePieceProxyTest {
         var position = mock(Position.class);
 
         doNothing()
-            .when(pawn).dispose();
+            .when(pawn).dispose(any());
 
         when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
             .then(inv -> {
@@ -155,7 +155,7 @@ public class PromotablePieceProxyTest {
 
         proxy.promote(position, Piece.Type.ROOK);
 
-        verify(origin, times(1)).dispose();
+        verify(origin, times(1)).dispose(any());
         verify(origin, never()).promote(any(), any());
 
         assertNotEquals(proxy.origin, origin);

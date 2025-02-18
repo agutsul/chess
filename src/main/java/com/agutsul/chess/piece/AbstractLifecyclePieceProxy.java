@@ -20,11 +20,6 @@ abstract class AbstractLifecyclePieceProxy<PIECE extends Piece<?>
     }
 
     @Override
-    public void dispose() {
-        origin.dispose();
-    }
-
-    @Override
     public void dispose(Instant instant) {
         origin.dispose(instant);
     }

@@ -376,7 +376,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertFalse(board1.getActions(whitePawn).isEmpty());
         assertFalse(board1.getImpacts(whitePawn).isEmpty());
 
-        ((PawnPiece<Color>) whitePawn).dispose();
+        ((PawnPiece<Color>) whitePawn).dispose(null);
 
         assertTrue(board1.getActions(whitePawn).isEmpty());
         assertTrue(board1.getImpacts(whitePawn).isEmpty());
@@ -389,7 +389,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertFalse(board2.getActions(blackPawn).isEmpty());
         assertFalse(board2.getImpacts(blackPawn).isEmpty());
 
-        ((PawnPiece<Color>) blackPawn).dispose();
+        ((PawnPiece<Color>) blackPawn).dispose(null);
 
         assertTrue(board2.getActions(blackPawn).isEmpty());
         assertTrue(board2.getImpacts(blackPawn).isEmpty());

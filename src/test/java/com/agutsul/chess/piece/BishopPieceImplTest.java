@@ -103,7 +103,7 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         assertFalse(board1.getActions(whiteBishop).isEmpty());
         assertFalse(board1.getImpacts(whiteBishop).isEmpty());
 
-        ((BishopPiece<Color>) whiteBishop).dispose();
+        ((BishopPiece<Color>) whiteBishop).dispose(null);
 
         assertTrue(board1.getActions(whiteBishop).isEmpty());
         assertTrue(board1.getImpacts(whiteBishop).isEmpty());
@@ -117,7 +117,7 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         assertFalse(board2.getActions(blackBishop).isEmpty());
         assertFalse(board2.getImpacts(blackBishop).isEmpty());
 
-        ((BishopPiece<Color>) blackBishop).dispose();
+        ((BishopPiece<Color>) blackBishop).dispose(null);
 
         assertTrue(board2.getActions(blackBishop).isEmpty());
         assertTrue(board2.getImpacts(blackBishop).isEmpty());

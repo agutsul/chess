@@ -210,7 +210,7 @@ public class RookPieceImplTest extends AbstractPieceTest {
         assertFalse(board1.getActions(whiteRook).isEmpty());
         assertFalse(board1.getImpacts(whiteRook).isEmpty());
 
-        ((RookPiece<Color>) whiteRook).dispose();
+        ((RookPiece<Color>) whiteRook).dispose(null);
 
         assertTrue(board1.getActions(whiteRook).isEmpty());
         assertTrue(board1.getImpacts(whiteRook).isEmpty());
@@ -224,7 +224,7 @@ public class RookPieceImplTest extends AbstractPieceTest {
         assertFalse(board2.getActions(blackRook).isEmpty());
         assertFalse(board2.getImpacts(blackRook).isEmpty());
 
-        ((RookPiece<Color>) blackRook).dispose();
+        ((RookPiece<Color>) blackRook).dispose(null);
 
         assertTrue(board2.getActions(blackRook).isEmpty());
         assertTrue(board2.getImpacts(blackRook).isEmpty());
