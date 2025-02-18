@@ -56,7 +56,7 @@ public class CancelPromoteActionTest {
 
         var cancelAction = new CancelPromoteAction(
                 new CancelMoveAction(promotedPiece, pawnSourcePosition)
-            );
+        );
 
         cancelAction.execute();
 

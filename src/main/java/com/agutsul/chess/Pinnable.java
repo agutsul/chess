@@ -1,5 +1,8 @@
 package com.agutsul.chess;
 
 public interface Pinnable {
-    boolean isPinned();
+
+    default boolean isPinned() {
+        return false;
+    }
 }

@@ -32,27 +32,29 @@ public final class WhitePieceFactory
 
     @Override
     public QueenPiece<Color> createQueen(Position position) {
-        return super.createQueen(position, QUEEN_UNICODE);
+        return new PinnableQueenPieceProxy<>(board, super.createQueen(position, QUEEN_UNICODE));
     }
 
     @Override
     public RookPiece<Color> createRook(Position position) {
-        return super.createRook(position, ROOK_UNICODE);
+        return new PinnableRookPieceProxy<>(board, super.createRook(position, ROOK_UNICODE));
     }
 
     @Override
     public BishopPiece<Color> createBishop(Position position) {
-        return super.createBishop(position, BISHOP_UNICODE);
+        return new PinnableBishopPieceProxy<>(board, super.createBishop(position, BISHOP_UNICODE));
     }
 
     @Override
     public KnightPiece<Color> createKnight(Position position) {
-        return super.createKnight(position, KNIGHT_UNICODE);
+        return new PinnableKnightPieceProxy<>(board, super.createKnight(position, KNIGHT_UNICODE));
     }
 
     @Override
     public PawnPiece<Color> createPawn(Position position) {
         var pawn = super.createPawn(position, PAWN_UNICODE);
-        return new PromotablePieceProxy<>(board, pawn, promotion.line(), this);
+        var proxy = new PromotablePieceProxy<>(board, pawn, promotion.line(), this);
+
+        return new PinnablePawnPieceProxy<>(board, proxy);
     }
 }

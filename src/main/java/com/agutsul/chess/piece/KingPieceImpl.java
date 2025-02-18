@@ -93,11 +93,6 @@ final class KingPieceImpl<COLOR extends Color>
         throw new UnsupportedOperationException("Unable to restore KING piece");
     }
 
-    @Override
-    public boolean isPinned() {
-        throw new UnsupportedOperationException("Unable to pin KING piece");
-    }
-
     static class KingCheckedPieceState<PIECE extends KingPiece<?>>
             extends AbstractPieceStateProxy<PIECE>
             implements CheckedPieceState<PIECE>,

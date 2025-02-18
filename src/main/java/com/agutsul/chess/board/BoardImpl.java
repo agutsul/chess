@@ -1,6 +1,5 @@
 package com.agutsul.chess.board;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
 import static java.util.concurrent.Executors.newFixedThreadPool;
@@ -14,7 +13,6 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,9 +24,6 @@ import org.slf4j.Logger;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
 import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.action.PieceCaptureAction;
-import com.agutsul.chess.activity.action.PieceEnPassantAction;
-import com.agutsul.chess.activity.action.function.ActionFilter;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.activity.impact.PieceControlImpact;
@@ -136,50 +131,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     @Override
     public Collection<Action<?>> getActions(Piece<?> piece) {
         LOGGER.info("Getting actions for '{}'", piece);
-
-        var actions = getState().getActions(piece);
-        if (Piece.Type.KING.equals(piece.getType())
-                || !((Pinnable) piece).isPinned()) {
-
-            return actions;
-        }
-
-        var pinImpacts = getImpacts(piece, Impact.Type.PIN);
-        if (pinImpacts.isEmpty()) {
-            return actions;
-        }
-
-        var optionalPinImpact = pinImpacts.stream()
-                .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
-                .findFirst();
-
-        if (optionalPinImpact.isEmpty()) {
-            return actions;
-        }
-
-        var pinImpact = optionalPinImpact.get();
-        // return actions the on pinned line
-        var allowedActions = filterActions(actions, pinImpact.getTarget());
-        if (!allowedActions.isEmpty()) {
-            return allowedActions;
-        }
-
-        var optionalKing = getKing(piece.getColor().invert());
-        if (optionalKing.isEmpty()) {
-            return actions;
-        }
-
-        var king = optionalKing.get();
-
-        Collection<Action<?>> checkActions = new HashSet<>();
-
-        var captureFilter = new ActionFilter<>(PieceCaptureAction.class);
-        checkActions.addAll(filterCheckActions(actions, captureFilter, king));
-
-        var enPassantFilter = new ActionFilter<>(PieceEnPassantAction.class);
-        checkActions.addAll(filterCheckActions(actions, enPassantFilter, king));
-
-        return checkActions;
+        return getState().getActions(piece);
     }
 
     @Override
@@ -515,31 +467,5 @@ final class BoardImpl extends AbstractBoard implements Closeable {
                 }
             }
         }
-    }
-
-    // utility methods
-
-    private static Collection<Action<?>> filterActions(Collection<Action<?>> actions,
-                                                       PieceCheckImpact<?,?,?,?> impact) {
-
-        var pinnedLine = impact.getAttackLine();
-        if (pinnedLine.isEmpty()) {
-            return emptyList();
-        }
-
-        var line = pinnedLine.get();
-        return actions.stream()
-                .filter(action -> line.contains(action.getPosition()))
-                .toList();
-    }
-
-    private static Collection<Action<?>> filterCheckActions(Collection<Action<?>> actions,
-                                                            ActionFilter<?> filter,
-                                                            KingPiece<?> king) {
-        var filterActions = filter.apply(actions);
-        return filterActions.stream()
-                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                .filter(action -> Objects.equals(action.getTarget(), king))
-                .collect(toSet());
     }
 }

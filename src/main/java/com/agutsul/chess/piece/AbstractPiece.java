@@ -23,7 +23,6 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.cache.ActivityCache;
 import com.agutsul.chess.activity.cache.ActivityCacheImpl;
 import com.agutsul.chess.activity.impact.Impact;
-import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.Board;
@@ -264,17 +263,6 @@ abstract class AbstractPiece<COLOR extends Color>
                 .anyMatch(protector -> Objects.equals(protector.getTarget(), this));
 
         return isProtected;
-    }
-
-    public boolean isPinned() {
-        LOGGER.info("Checking if piece '{}' is pinned", this);
-
-        var impacts = board.getImpacts(this, Impact.Type.PIN);
-        var isPinned = impacts.stream()
-                .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
-                .anyMatch(impact -> Objects.equals(impact.getSource(), this));
-
-        return isPinned;
     }
 
     public void dispose(Instant instant) {

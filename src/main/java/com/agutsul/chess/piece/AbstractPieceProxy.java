@@ -47,13 +47,23 @@ abstract class AbstractPieceProxy<PIECE extends Piece<?> & Movable & Capturable 
     }
 
     @Override
+    public final List<Position> getPositions() {
+        return origin.getPositions();
+    }
+
+    @Override
     public final boolean isActive() {
         return origin.isActive();
     }
 
     @Override
-    public final List<Position> getPositions() {
-        return origin.getPositions();
+    public boolean isMoved() {
+        return origin.isMoved();
+    }
+
+    @Override
+    public boolean isProtected() {
+        return origin.isProtected();
     }
 
     @Override
@@ -83,26 +93,6 @@ abstract class AbstractPieceProxy<PIECE extends Piece<?> & Movable & Capturable 
     }
 
     @Override
-    public String toString() {
-        return origin.toString();
-    }
-
-    @Override
-    public int hashCode() {
-        return origin.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return origin.equals(obj);
-    }
-
-    @Override
-    public boolean isProtected() {
-        return origin.isProtected();
-    }
-
-    @Override
     public void capture(Piece<?> targetPiece) {
         origin.capture(targetPiece);
     }
@@ -123,7 +113,17 @@ abstract class AbstractPieceProxy<PIECE extends Piece<?> & Movable & Capturable 
     }
 
     @Override
-    public boolean isMoved() {
-        return origin.isMoved();
+    public final int hashCode() {
+        return origin.hashCode();
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+        return origin.equals(obj);
+    }
+
+    @Override
+    public final String toString() {
+        return origin.toString();
     }
 }
