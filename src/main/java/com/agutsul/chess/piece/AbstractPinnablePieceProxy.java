@@ -43,14 +43,14 @@ abstract class AbstractPinnablePieceProxy<PIECE extends Piece<?>
 
     @Override
     public final Collection<Action<?>> getActions() {
-        logger.info("Get actions");
+        logger.info("Get actions for piece '{}'", this);
 
         var actions = super.getActions();
         if (!isPinned()) {
             return actions;
         }
 
-        logger.info("Filter pinned actions");
+        logger.info("Filter pinned actions for piece '{}'", this);
         // filter actions for pinned piece
         var pinImpacts = super.getImpacts(Impact.Type.PIN);
         if (pinImpacts.isEmpty()) {
@@ -65,7 +65,7 @@ abstract class AbstractPinnablePieceProxy<PIECE extends Piece<?>
             return actions;
         }
 
-        logger.info("Filter pinned line actions");
+        logger.info("Filter pinned line actions for piece '{}'", this);
 
         var pinImpact = optionalPinImpact.get();
         // return actions the on pinned line
@@ -74,7 +74,7 @@ abstract class AbstractPinnablePieceProxy<PIECE extends Piece<?>
             return allowedActions;
         }
 
-        logger.info("Filter pinned check actions");
+        logger.info("Filter pinned check actions for piece '{}'", this);
 
         var optionalKing = board.getKing(getColor().invert());
         if (optionalKing.isEmpty()) {
@@ -131,7 +131,7 @@ abstract class AbstractPinnablePieceProxy<PIECE extends Piece<?>
         var filterActions = filter.apply(actions);
 
         return filterActions.stream()
-                .map(action -> (AbstractCaptureAction<?, ?, ?, ?>) action)
+                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), king))
                 .collect(toSet());
     }
