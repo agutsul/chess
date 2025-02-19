@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.position.Position;
@@ -34,7 +35,7 @@ enum PinnablePieceProxyFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <PIECE extends Piece<?>> PIECE pinnableProxy(Board board, PIECE piece) {
+    public static <PIECE extends Piece<?> & Pinnable> PIECE pinnableProxy(Board board, PIECE piece) {
         return (PIECE) MODES.get(piece.getType()).apply(board, piece);
     }
 
