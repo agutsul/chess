@@ -72,7 +72,8 @@ final class PawnPieceImpl<COLOR extends Color>
 
     @Override
     public boolean isBlocked() {
-        return !getImpacts(Impact.Type.BLOCK).isEmpty();
+        var blocks = getImpacts(Impact.Type.BLOCK);
+        return !blocks.isEmpty();
     }
 
     @Override
