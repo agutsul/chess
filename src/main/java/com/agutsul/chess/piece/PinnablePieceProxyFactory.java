@@ -14,11 +14,11 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.position.Position;
 
 enum PinnablePieceProxyFactory {
-    QUEEN_MODE(Piece.Type.QUEEN,   (board, piece) -> new PinnableQueenPieceProxy<>(board,  (QueenPiece<?>) piece)),
-    BISHOP_MODE(Piece.Type.BISHOP, (board, piece) -> new PinnableBishopPieceProxy<>(board, (BishopPiece<?>) piece)),
-    KNIGHT_MODE(Piece.Type.KNIGHT, (board, piece) -> new PinnableKnightPieceProxy<>(board, (KnightPiece<?>) piece)),
-    ROOK_MODE(Piece.Type.ROOK,     (board, piece) -> new PinnableRookPieceProxy<>(board,   (RookPiece<?>) piece)),
-    PAWN_MODE(Piece.Type.PAWN,     (board, piece) -> new PinnablePawnPieceProxy<>(board,   (PawnPiece<?>) piece));
+    BISHOP_MODE(Piece.Type.BISHOP, (board,piece) -> new PinnableBishopPieceProxy<>(board, (BishopPiece<?>) piece)),
+    KNIGHT_MODE(Piece.Type.KNIGHT, (board,piece) -> new PinnableKnightPieceProxy<>(board, (KnightPiece<?>) piece)),
+    QUEEN_MODE(Piece.Type.QUEEN,   (board,piece) -> new PinnableQueenPieceProxy<>(board,  (QueenPiece<?>) piece)),
+    ROOK_MODE(Piece.Type.ROOK,     (board,piece) -> new PinnableRookPieceProxy<>(board,   (RookPiece<?>) piece)),
+    PAWN_MODE(Piece.Type.PAWN,     (board,piece) -> new PinnablePawnPieceProxy<>(board,   (PawnPiece<?>) piece));
 
     private static final Map<Piece.Type,BiFunction<Board,Piece<?>,AbstractPinnablePieceProxy<?>>> MODES =
             Stream.of(values()).collect(toMap(PinnablePieceProxyFactory::type, PinnablePieceProxyFactory::function));
