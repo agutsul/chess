@@ -20,17 +20,17 @@ abstract class AbstractLifecyclePieceProxy<PIECE extends Piece<?>
     }
 
     @Override
-    public void dispose(Instant instant) {
+    public final void dispose(Instant instant) {
         origin.dispose(instant);
     }
 
     @Override
-    public void restore() {
+    public final void restore() {
         origin.restore();
     }
 
     @Override
-    public void demote() {
+    public final void demote() {
         ((Demotable) origin).demote();
     }
 }
