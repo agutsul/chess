@@ -34,7 +34,7 @@ public interface BoardState
             this.terminal = terminal;
         }
 
-        public boolean isTerminal() {
+        boolean isTerminal() {
             return terminal;
         }
     }

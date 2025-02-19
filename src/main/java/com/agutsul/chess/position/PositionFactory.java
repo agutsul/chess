@@ -3,6 +3,7 @@ package com.agutsul.chess.position;
 import static com.agutsul.chess.position.Position.MAX;
 import static com.agutsul.chess.position.Position.MIN;
 import static com.agutsul.chess.position.Position.codeOf;
+import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +36,6 @@ public enum PositionFactory {
     }
 
     public static Position positionOf(String code) {
-        return INSTANCE.create(code);
+        return INSTANCE.create(lowerCase(code));
     }
 }

@@ -115,21 +115,21 @@ abstract class AbstractPinnablePieceProxy<PIECE extends Piece<?>
     private static Collection<Action<?>> filterActions(Collection<Action<?>> actions,
                                                        KingPiece<?> king) {
 
-        Collection<Action<?>> checkActions = new HashSet<>();
+        Collection<Action<?>> filteredActions = new HashSet<>();
 
-        checkActions.addAll(filterActions(actions, king, PieceCaptureAction.class));
-        checkActions.addAll(filterActions(actions, king, PieceEnPassantAction.class));
+        filteredActions.addAll(filterActions(actions, king, PieceCaptureAction.class));
+        filteredActions.addAll(filterActions(actions, king, PieceEnPassantAction.class));
 
-        return checkActions;
+        return filteredActions;
     }
 
     private static <A extends AbstractCaptureAction<?,?,?,?>> Collection<Action<?>> filterActions(Collection<Action<?>> actions,
                                                                                                   KingPiece<?> king,
                                                                                                   Class<A> actionClass) {
         var filter = new ActionFilter<>(actionClass);
-        var filterActions = filter.apply(actions);
+        var filteredActions = filter.apply(actions);
 
-        return filterActions.stream()
+        return filteredActions.stream()
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), king))
                 .collect(toSet());
