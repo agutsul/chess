@@ -31,8 +31,8 @@ abstract class AbstractPinnablePieceProxy<PIECE extends Piece<?>
         extends AbstractLifecyclePieceProxy<PIECE>
         implements Pinnable {
 
-    private final Logger logger;
-    private final Board board;
+    protected final Logger logger;
+    protected final Board board;
 
     AbstractPinnablePieceProxy(Logger logger, Board board, PIECE origin) {
         super(origin);
@@ -69,7 +69,7 @@ abstract class AbstractPinnablePieceProxy<PIECE extends Piece<?>
 
         var pinImpact = optionalPinImpact.get();
         // return actions the on pinned line
-        var allowedActions = filterLineActions(actions, pinImpact.getTarget());
+        var allowedActions = filterActions(actions, pinImpact.getTarget());
         if (!allowedActions.isEmpty()) {
             return allowedActions;
         }
@@ -81,7 +81,7 @@ abstract class AbstractPinnablePieceProxy<PIECE extends Piece<?>
             return actions;
         }
         // return actions to capture king's attacker
-        return filterCheckActions(actions, optionalKing.get());
+        return filterActions(actions, optionalKing.get());
     }
 
     @Override
@@ -98,8 +98,8 @@ abstract class AbstractPinnablePieceProxy<PIECE extends Piece<?>
 
     // utility methods
 
-    private static Collection<Action<?>> filterLineActions(Collection<Action<?>> actions,
-                                                           PieceCheckImpact<?,?,?,?> impact) {
+    private static Collection<Action<?>> filterActions(Collection<Action<?>> actions,
+                                                       PieceCheckImpact<?,?,?,?> impact) {
 
         var pinnedLine = impact.getAttackLine();
         if (pinnedLine.isEmpty()) {
@@ -112,21 +112,20 @@ abstract class AbstractPinnablePieceProxy<PIECE extends Piece<?>
                 .toList();
     }
 
-    private static Collection<Action<?>> filterCheckActions(Collection<Action<?>> actions,
-                                                            KingPiece<?> king) {
+    private static Collection<Action<?>> filterActions(Collection<Action<?>> actions,
+                                                       KingPiece<?> king) {
 
         Collection<Action<?>> checkActions = new HashSet<>();
 
-        checkActions.addAll(filterCheckActions(actions, PieceCaptureAction.class, king));
-        checkActions.addAll(filterCheckActions(actions, PieceEnPassantAction.class, king));
+        checkActions.addAll(filterActions(actions, king, PieceCaptureAction.class));
+        checkActions.addAll(filterActions(actions, king, PieceEnPassantAction.class));
 
         return checkActions;
     }
 
-    private static <A extends AbstractCaptureAction<?,?,?,?>> Collection<Action<?>> filterCheckActions(Collection<Action<?>> actions,
-                                                                                                       Class<A> actionClass,
-                                                                                                       KingPiece<?> king) {
-
+    private static <A extends AbstractCaptureAction<?,?,?,?>> Collection<Action<?>> filterActions(Collection<Action<?>> actions,
+                                                                                                  KingPiece<?> king,
+                                                                                                  Class<A> actionClass) {
         var filter = new ActionFilter<>(actionClass);
         var filterActions = filter.apply(actions);
 

@@ -26,8 +26,8 @@ public interface Piece<COLOR extends Color>
         QUEEN("Q",  9),
         KING("K", 400);
 
-        private static final Map<String,Type> TYPES = Stream.of(values())
-                .collect(toMap(Type::code, identity()));
+        private static final Map<String,Type> TYPES =
+                Stream.of(values()).collect(toMap(Type::code, identity()));
 
         private String code;
         private int value;

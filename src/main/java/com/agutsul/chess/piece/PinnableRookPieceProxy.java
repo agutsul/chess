@@ -20,11 +20,13 @@ final class PinnableRookPieceProxy<PIECE extends RookPiece<?>>
 
     @Override
     public void castling(Position position) {
+        logger.info("Castling for piece '{}'", this);
         origin.castling(position);
     }
 
     @Override
     public void uncastling(Position position) {
+        logger.info("Cancel castling for piece '{}'", this);
         origin.uncastling(position);
     }
 }
