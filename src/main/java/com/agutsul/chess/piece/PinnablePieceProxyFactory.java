@@ -35,8 +35,17 @@ enum PinnablePieceProxyFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <PIECE extends Piece<?> & Pinnable> PIECE pinnableProxy(Board board, PIECE piece) {
-        return (PIECE) MODES.get(piece.getType()).apply(board, piece);
+    static <PIECE extends Piece<?> & Pinnable> PIECE pinnableProxy(Board board, PIECE piece) {
+        if (board == null || piece == null) {
+            return null;
+        }
+
+        var factory = MODES.get(piece.getType());
+        if (factory == null) {
+            return null;
+        }
+
+        return (PIECE) factory.apply(board, piece);
     }
 
     private BiFunction<Board,Piece<?>,AbstractPinnablePieceProxy<?>> function() {
@@ -49,7 +58,7 @@ enum PinnablePieceProxyFactory {
 
     // actual pinnable proxy implementations
 
-    static final class PinnableBishopPieceProxy<PIECE extends BishopPiece<?>>
+    private static final class PinnableBishopPieceProxy<PIECE extends BishopPiece<?>>
             extends AbstractPinnablePieceProxy<PIECE>
             implements BishopPiece<Color> {
 
@@ -60,7 +69,7 @@ enum PinnablePieceProxyFactory {
         }
     }
 
-    static final class PinnableKnightPieceProxy<PIECE extends KnightPiece<?>>
+    private static final class PinnableKnightPieceProxy<PIECE extends KnightPiece<?>>
             extends AbstractPinnablePieceProxy<PIECE>
             implements KnightPiece<Color> {
 
@@ -71,7 +80,7 @@ enum PinnablePieceProxyFactory {
         }
     }
 
-    static final class PinnableQueenPieceProxy<PIECE extends QueenPiece<?>>
+    private static final class PinnableQueenPieceProxy<PIECE extends QueenPiece<?>>
             extends AbstractPinnablePieceProxy<PIECE>
             implements QueenPiece<Color> {
 
@@ -82,7 +91,7 @@ enum PinnablePieceProxyFactory {
         }
     }
 
-    static final class PinnableRookPieceProxy<PIECE extends RookPiece<?>>
+    private static final class PinnableRookPieceProxy<PIECE extends RookPiece<?>>
             extends AbstractPinnablePieceProxy<PIECE>
             implements RookPiece<Color> {
 
@@ -105,7 +114,7 @@ enum PinnablePieceProxyFactory {
         }
     }
 
-    static final class PinnablePawnPieceProxy<PIECE extends PawnPiece<?>>
+    private static final class PinnablePawnPieceProxy<PIECE extends PawnPiece<?>>
             extends AbstractPinnablePieceProxy<PIECE>
             implements PawnPiece<Color> {
 
