@@ -10,7 +10,7 @@ import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.color.Colors;
 
 @ExtendWith(MockitoExtension.class)
-public class AgreedDrawBoardStateTest {
+public class AgreedBoardStateTest {
 
     @Test
     void testGetActions() {

@@ -20,17 +20,17 @@ public abstract class BoardStateFactory {
     // terminal states
 
     @SuppressWarnings("unchecked")
-    public static <STATE extends BoardState & AgreedDefeatBoardState> STATE agreedDefeatBoardState(Board board, Color color) {
+    public static <STATE extends BoardState & AgreedBoardState> STATE agreedDefeatBoardState(Board board, Color color) {
         return (STATE) new AgreedDefeatBoardStateImpl(board, color);
     }
 
     @SuppressWarnings("unchecked")
-    public static <STATE extends BoardState & AgreedDrawBoardState> STATE agreedDrawBoardState(Board board, Color color) {
+    public static <STATE extends BoardState & AgreedBoardState> STATE agreedDrawBoardState(Board board, Color color) {
         return (STATE) new AgreedDrawBoardStateImpl(board, color);
     }
 
     @SuppressWarnings("unchecked")
-    public static <STATE extends BoardState & AgreedWinBoardState> STATE agreedWinBoardState(Board board, Color color) {
+    public static <STATE extends BoardState & AgreedBoardState> STATE agreedWinBoardState(Board board, Color color) {
         return (STATE) new AgreedWinBoardStateImpl(board, color);
     }
 
@@ -90,9 +90,9 @@ public abstract class BoardStateFactory {
 
     private static final class AgreedDefeatBoardStateImpl
             extends AbstractTerminalBoardState
-            implements AgreedDefeatBoardState {
+            implements AgreedBoardState {
 
-        private static final Logger LOGGER = getLogger(AgreedDefeatBoardState.class);
+        private static final Logger LOGGER = getLogger(AgreedDefeatBoardStateImpl.class);
 
         AgreedDefeatBoardStateImpl(Board board, Color color) {
             super(LOGGER, BoardState.Type.AGREED_DEFEAT, board, color);
@@ -101,9 +101,9 @@ public abstract class BoardStateFactory {
 
     private static final class AgreedDrawBoardStateImpl
             extends AbstractTerminalBoardState
-            implements AgreedDrawBoardState {
+            implements AgreedBoardState {
 
-        private static final Logger LOGGER = getLogger(AgreedDrawBoardState.class);
+        private static final Logger LOGGER = getLogger(AgreedDrawBoardStateImpl.class);
 
         AgreedDrawBoardStateImpl(Board board, Color color) {
             super(LOGGER, BoardState.Type.AGREED_DRAW, board, color);
@@ -112,9 +112,9 @@ public abstract class BoardStateFactory {
 
     private static final class AgreedWinBoardStateImpl
             extends AbstractTerminalBoardState
-            implements AgreedWinBoardState {
+            implements AgreedBoardState {
 
-        private static final Logger LOGGER = getLogger(AgreedWinBoardState.class);
+        private static final Logger LOGGER = getLogger(AgreedWinBoardStateImpl.class);
 
         AgreedWinBoardStateImpl(Board board, Color color) {
             super(LOGGER, BoardState.Type.AGREED_WIN, board, color);

@@ -45,7 +45,7 @@ import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
 import com.agutsul.chess.activity.action.event.ExitPerformedEvent;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.StandardBoard;
-import com.agutsul.chess.board.state.AgreedDrawBoardState;
+import com.agutsul.chess.board.state.AgreedBoardState;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.DefaultBoardState;
 import com.agutsul.chess.board.state.ExitedBoardState;
@@ -487,7 +487,7 @@ public class GameTest {
         doCallRealMethod()
             .when(board).setState((BoardState) any(DefaultBoardState.class));
         doAnswer(new FirstExecutionExceptionAnswer<>(new RuntimeException("test")))
-            .when(board).setState((BoardState) any(AgreedDrawBoardState.class));
+            .when(board).setState((BoardState) any(AgreedBoardState.class));
 
         doCallRealMethod()
             .when(board).getState();
