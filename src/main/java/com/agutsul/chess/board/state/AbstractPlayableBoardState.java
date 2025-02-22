@@ -13,11 +13,8 @@ abstract class AbstractPlayableBoardState
         extends AbstractBoardState
         implements PlayableBoardState {
 
-    private final Logger logger;
-
     AbstractPlayableBoardState(Logger logger, Type type, Board board, Color color) {
-        super(type, board, color);
-        this.logger = logger;
+        super(logger, type, board, color);
     }
 
     @Override

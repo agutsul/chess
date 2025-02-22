@@ -16,11 +16,8 @@ abstract class AbstractTerminalBoardState
         extends AbstractBoardState
         implements TerminalBoardState {
 
-    private final Logger logger;
-
     AbstractTerminalBoardState(Logger logger, Type type, Board board, Color color) {
-        super(type, board, color);
-        this.logger = logger;
+        super(logger, type, board, color);
     }
 
     @Override

@@ -1,7 +1,5 @@
 package com.agutsul.chess.board.state;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -16,13 +14,13 @@ import com.agutsul.chess.piece.Piece;
 abstract class AbstractBoardState
         implements BoardState {
 
-    private static final Logger LOGGER = getLogger(AbstractBoardState.class);
-
+    protected final Logger logger;
     protected final Type type;
     protected final Board board;
     protected final Color color;
 
-    AbstractBoardState(Type type, Board board, Color color) {
+    AbstractBoardState(Logger logger, Type type, Board board, Color color) {
+        this.logger = logger;
         this.type = type;
         this.board = board;
         this.color = color;
@@ -30,7 +28,7 @@ abstract class AbstractBoardState
 
     @Override
     public Collection<Impact<?>> getImpacts(Piece<?> piece) {
-        LOGGER.info("Getting impacts for piece '{}'", piece);
+        logger.info("Getting impacts for piece '{}'", piece);
         return piece.getImpacts();
     }
 
