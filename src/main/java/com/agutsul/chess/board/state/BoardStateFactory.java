@@ -77,10 +77,8 @@ public abstract class BoardStateFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <STATE extends BoardState & InsufficientMaterialBoardState> STATE insufficientMaterialBoardState(Board board,
-                                                                                                                   Color color,
-                                                                                                                   String source) {
-        return (STATE) new InsufficientMaterialBoardStateImpl(board, color, source);
+    public static <STATE extends BoardState & InsufficientMaterialBoardState> STATE insufficientMaterialBoardState(Board board, Color color) {
+        return (STATE) new InsufficientMaterialBoardStateImpl(board, color);
     }
 
     @SuppressWarnings("unchecked")
@@ -90,7 +88,7 @@ public abstract class BoardStateFactory {
 
     // actual terminal state classes
 
-    static final class AgreedDefeatBoardStateImpl
+    private static final class AgreedDefeatBoardStateImpl
             extends AbstractTerminalBoardState
             implements AgreedDefeatBoardState {
 
@@ -101,7 +99,7 @@ public abstract class BoardStateFactory {
         }
     }
 
-    static final class AgreedDrawBoardStateImpl
+    private static final class AgreedDrawBoardStateImpl
             extends AbstractTerminalBoardState
             implements AgreedDrawBoardState {
 
@@ -112,7 +110,7 @@ public abstract class BoardStateFactory {
         }
     }
 
-    static final class AgreedWinBoardStateImpl
+    private static final class AgreedWinBoardStateImpl
             extends AbstractTerminalBoardState
             implements AgreedWinBoardState {
 
@@ -123,7 +121,7 @@ public abstract class BoardStateFactory {
         }
     }
 
-    static final class CheckMatedBoardStateImpl
+    private static final class CheckMatedBoardStateImpl
             extends AbstractTerminalBoardState
             implements CheckMatedBoardState {
 
@@ -134,7 +132,7 @@ public abstract class BoardStateFactory {
         }
     }
 
-    static final class ExitedBoardStateImpl
+    private static final class ExitedBoardStateImpl
             extends AbstractTerminalBoardState
             implements ExitedBoardState {
 
@@ -145,7 +143,7 @@ public abstract class BoardStateFactory {
         }
     }
 
-    static final class FiveFoldRepetitionBoardStateImpl
+    private static final class FiveFoldRepetitionBoardStateImpl
             extends AbstractTerminalBoardState
             implements FiveFoldRepetitionBoardState {
 
@@ -156,7 +154,7 @@ public abstract class BoardStateFactory {
         }
     }
 
-    static final class SeventyFiveMovesBoardStateImpl
+    private static final class SeventyFiveMovesBoardStateImpl
             extends AbstractTerminalBoardState
             implements SeventyFiveMovesBoardState {
 
@@ -168,7 +166,7 @@ public abstract class BoardStateFactory {
         }
     }
 
-    static final class StaleMatedBoardStateImpl
+    private static final class StaleMatedBoardStateImpl
             extends AbstractTerminalBoardState
             implements StaleMatedBoardState {
 
@@ -182,7 +180,7 @@ public abstract class BoardStateFactory {
 
     // actual playable state classes
 
-    static final class CheckedBoardStateImpl
+    private static final class CheckedBoardStateImpl
             extends AbstractPlayableBoardState
             implements CheckedBoardState {
 
@@ -215,7 +213,7 @@ public abstract class BoardStateFactory {
         }
     }
 
-    static final class DefaultBoardStateImpl
+    private static final class DefaultBoardStateImpl
             extends AbstractPlayableBoardState
             implements DefaultBoardState {
 
@@ -226,7 +224,7 @@ public abstract class BoardStateFactory {
         }
     }
 
-    static final class FiftyMovesBoardStateImpl
+    private static final class FiftyMovesBoardStateImpl
             extends AbstractPlayableBoardState
             implements FiftyMovesBoardState {
 
@@ -238,25 +236,18 @@ public abstract class BoardStateFactory {
         }
     }
 
-    static final class InsufficientMaterialBoardStateImpl
+    private static final class InsufficientMaterialBoardStateImpl
             extends AbstractPlayableBoardState
             implements InsufficientMaterialBoardState {
 
         private static final Logger LOGGER = getLogger(InsufficientMaterialBoardState.class);
 
-        private final String source;
-
-        InsufficientMaterialBoardStateImpl(Board board, Color color, String source) {
+        InsufficientMaterialBoardStateImpl(Board board, Color color) {
             super(LOGGER, BoardState.Type.INSUFFICIENT_MATERIAL, board, color);
-            this.source = source;
-        }
-
-        public String getSource() {
-            return source;
         }
     }
 
-    static final class ThreeFoldRepetitionBoardStateImpl
+    private static final class ThreeFoldRepetitionBoardStateImpl
             extends AbstractPlayableBoardState
             implements ThreeFoldRepetitionBoardState {
 

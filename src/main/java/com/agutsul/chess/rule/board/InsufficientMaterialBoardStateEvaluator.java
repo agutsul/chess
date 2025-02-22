@@ -98,8 +98,7 @@ final class InsufficientMaterialBoardStateEvaluator
         protected abstract BoardState evaluateBoard(Color color);
 
         protected BoardState createBoardState(Board board, Color color) {
-            var source = this.getClass().getSimpleName();
-            return insufficientMaterialBoardState(board, color, source);
+            return insufficientMaterialBoardState(board, color);
         }
     }
 

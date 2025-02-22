@@ -18,7 +18,7 @@ public class InsufficientMaterialBoardStateTest {
                 .withWhitePawn("a2")
                 .build();
 
-        board.setState(insufficientMaterialBoardState(board, Colors.WHITE, ""));
+        board.setState(insufficientMaterialBoardState(board, Colors.WHITE));
 
         var whitePawn = board.getPiece("a2").get();
         assertFalse(board.getActions(whitePawn).isEmpty());
@@ -30,7 +30,7 @@ public class InsufficientMaterialBoardStateTest {
                 .withWhitePawn("a2")
                 .build();
 
-        board.setState(insufficientMaterialBoardState(board, Colors.WHITE, ""));
+        board.setState(insufficientMaterialBoardState(board, Colors.WHITE));
 
         var whitePawn = board.getPiece("a2").get();
         assertFalse(board.getImpacts(whitePawn).isEmpty());
