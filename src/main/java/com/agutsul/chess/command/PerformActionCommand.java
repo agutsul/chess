@@ -31,7 +31,7 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.position.Position;
 
-public class PerformActionCommand
+public final class PerformActionCommand
         extends AbstractCommand {
 
     private static final Logger LOGGER = getLogger(PerformActionCommand.class);

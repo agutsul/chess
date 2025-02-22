@@ -11,68 +11,69 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.event.WinExecutionEvent;
 import com.agutsul.chess.activity.action.event.WinPerformedEvent;
-import com.agutsul.chess.event.Observable;
-import com.agutsul.chess.exception.CommandException;
+import com.agutsul.chess.board.Board;
+import com.agutsul.chess.event.Event;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 
-public class WinGameCommand
-        extends AbstractCommand {
+public final class WinGameCommand
+        extends AbstractUpdateBoardStateCommand {
 
     private static final Logger LOGGER = getLogger(WinGameCommand.class);
 
-    private final Game game;
-    private final Player player;
-
     public WinGameCommand(Game game, Player player) {
-        super(LOGGER);
-        this.game = game;
-        this.player = player;
+        super(LOGGER, game, player);
     }
 
     @Override
-    protected void executeInternal() throws CommandException {
-        ((Observable) this.game).notifyObservers(new WinExecutionEvent(this.player));
+    protected void updateBoardState() {
+        var board = ((AbstractPlayableGame) this.game).getBoard();
 
-        try {
-            var board = ((AbstractPlayableGame) this.game).getBoard();
+        validate(board);
 
-            var currentState = board.getState();
-            if (currentState.isAnyType(CHECKED, INSUFFICIENT_MATERIAL)
-                    || currentState.isTerminal()) {
+        board.setState(agreedWinBoardState(board, player.getColor()));
+    }
 
-                throw new IllegalActionException(String.format(
-                        "%s: Unable to win while being in '%s' state",
-                        player.getColor(),
-                        currentState
-                ));
-            }
+    @Override
+    protected Event createPreExecutionEvent() {
+        return new WinExecutionEvent(this.player);
+    }
 
-            var boardStates = new ArrayList<>(board.getStates());
-            if (boardStates.size() < 2) {
-                throw new IllegalActionException(String.format(
-                        "%s: Unable to win with unknown opponent's state",
-                        player.getColor()
-                ));
-            }
+    @Override
+    protected Event createPostExecutionEvent() {
+        return new WinPerformedEvent(this.player);
+    }
 
-            // check if opponent is unable to checkmate by insufficient material
-            var opponentState = boardStates.get(boardStates.size() - 2);
-            if (!opponentState.isType(INSUFFICIENT_MATERIAL)) {
-                throw new IllegalActionException(String.format(
-                        "%s: Unable to win with '%s' opponent's state",
-                        player.getColor(),
-                        opponentState
-                ));
-            }
+    private void validate(Board board) {
+        var currentState = board.getState();
+        if (currentState.isAnyType(CHECKED, INSUFFICIENT_MATERIAL)
+                || currentState.isTerminal()) {
 
-            board.setState(agreedWinBoardState(board, player.getColor()));
-        } catch (Exception e) {
-            throw new CommandException(e.getMessage());
+            throw new IllegalActionException(String.format(
+                    "%s: Unable to win while being in '%s' state",
+                    player.getColor(),
+                    currentState
+            ));
         }
 
-        ((Observable) this.game).notifyObservers(new WinPerformedEvent(this.player));
+        var boardStates = new ArrayList<>(board.getStates());
+        if (boardStates.size() < 2) {
+            throw new IllegalActionException(String.format(
+                    "%s: Unable to win with unknown opponent's state",
+                    player.getColor()
+            ));
+        }
+
+        // check if opponent is unable to checkmate by insufficient material
+        var opponentState = boardStates.get(boardStates.size() - 2);
+        if (!opponentState.isType(INSUFFICIENT_MATERIAL)) {
+            throw new IllegalActionException(String.format(
+                    "%s: Unable to win with '%s' opponent's state",
+                    player.getColor(),
+                    opponentState
+            ));
+        }
     }
 }

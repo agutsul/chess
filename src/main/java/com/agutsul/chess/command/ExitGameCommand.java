@@ -7,37 +7,33 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
 import com.agutsul.chess.activity.action.event.ExitPerformedEvent;
-import com.agutsul.chess.event.Observable;
-import com.agutsul.chess.exception.CommandException;
+import com.agutsul.chess.event.Event;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 
-public class ExitGameCommand
-        extends AbstractCommand {
+public final class ExitGameCommand
+        extends AbstractUpdateBoardStateCommand {
 
     private static final Logger LOGGER = getLogger(ExitGameCommand.class);
 
-    private final Game game;
-    private final Player player;
-
     public ExitGameCommand(Game game, Player player) {
-        super(LOGGER);
-        this.game = game;
-        this.player = player;
+        super(LOGGER, game, player);
     }
 
     @Override
-    protected void executeInternal() throws CommandException {
-        ((Observable) this.game).notifyObservers(new ExitExecutionEvent(this.player));
+    protected void updateBoardState() {
+        var board = ((AbstractPlayableGame) this.game).getBoard();
+        board.setState(exitedBoardState(board, player.getColor()));
+    }
 
-        try {
-            var board = ((AbstractPlayableGame) this.game).getBoard();
-            board.setState(exitedBoardState(board, player.getColor()));
-        } catch (Exception e) {
-            throw new CommandException(e.getMessage());
-        }
+    @Override
+    protected Event createPreExecutionEvent() {
+        return new ExitExecutionEvent(this.player);
+    }
 
-        ((Observable) this.game).notifyObservers(new ExitPerformedEvent(this.player));
+    @Override
+    protected Event createPostExecutionEvent() {
+        return new ExitPerformedEvent(this.player);
     }
 }

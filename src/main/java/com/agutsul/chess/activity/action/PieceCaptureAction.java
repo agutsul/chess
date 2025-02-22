@@ -30,7 +30,7 @@ public class PieceCaptureAction<COLOR1 extends Color,
         this(Action.Type.CAPTURE, predator, victim, attackLine);
     }
 
-    PieceCaptureAction(Action.Type type, PIECE1 predator, PIECE2 victim, Line attackLine) {
+    private PieceCaptureAction(Action.Type type, PIECE1 predator, PIECE2 victim, Line attackLine) {
         super(type, predator, victim);
         this.attackLine = attackLine;
     }

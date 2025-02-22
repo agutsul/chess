@@ -18,7 +18,7 @@ import com.agutsul.chess.exception.CommandException;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
 
-public class CancelActionCommand
+public final class CancelActionCommand
         extends AbstractCommand {
 
     private static final Logger LOGGER = getLogger(CancelActionCommand.class);
