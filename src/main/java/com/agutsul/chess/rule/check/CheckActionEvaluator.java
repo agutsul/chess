@@ -9,4 +9,8 @@ import com.agutsul.chess.rule.Rule;
 public interface CheckActionEvaluator
         extends Rule<KingPiece<?>,Collection<Action<?>>> {
 
+    enum Type {
+        KING,
+        PIECE
+    }
 }

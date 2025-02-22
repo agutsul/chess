@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 
-
 final class BoardStateEvaluationTask
         implements Callable<Optional<BoardState>> {
 
