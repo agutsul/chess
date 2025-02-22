@@ -27,7 +27,7 @@ public final class CheckActionEvaluatorImpl
     private final CheckActionEvaluator evaluator;
 
     public CheckActionEvaluatorImpl(Type type, Board board, Collection<Action<?>> actions) {
-        this(MODES.get(type).apply(board, actions));
+        this(createEvaluator(type, board, actions));
     }
 
     CheckActionEvaluatorImpl(CheckActionEvaluator evaluator) {
@@ -38,6 +38,11 @@ public final class CheckActionEvaluatorImpl
     public Collection<Action<?>> evaluate(KingPiece<?> piece) {
         LOGGER.info("Evaluate actions for '{}'", piece);
         return evaluator.evaluate(piece);
+    }
+
+    private static CheckActionEvaluator createEvaluator(Type type, Board board,
+                                                        Collection<Action<?>> actions) {
+        return MODES.get(type).apply(board, actions);
     }
 
     private static CheckActionEvaluator createKingEvaluator(Board board, Collection<Action<?>> actions) {
