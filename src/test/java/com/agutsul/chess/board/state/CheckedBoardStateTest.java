@@ -1,5 +1,5 @@
 package com.agutsul.chess.board.state;
-
+import static com.agutsul.chess.board.state.BoardStateFactory.checkedBoardState;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.state.BoardStateFactory.CheckedBoardState;
 import com.agutsul.chess.color.Colors;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,7 +25,7 @@ public class CheckedBoardStateTest {
                 .withWhiteKing("e3")
                 .build();
 
-        board.setState(new CheckedBoardState(board, Colors.BLACK));
+        board.setState(checkedBoardState(board, Colors.BLACK));
 
         var blackPawn = board.getPiece("a7").get();
         assertTrue(board.getActions(blackPawn).isEmpty());

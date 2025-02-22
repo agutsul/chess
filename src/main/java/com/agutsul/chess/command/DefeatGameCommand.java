@@ -1,12 +1,12 @@
 package com.agutsul.chess.command;
 
+import static com.agutsul.chess.board.state.BoardStateFactory.agreedDefeatBoardState;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.event.DefeatExecutionEvent;
 import com.agutsul.chess.activity.action.event.DefeatPerformedEvent;
-import com.agutsul.chess.board.state.AgreedDefeatBoardState;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.CommandException;
 import com.agutsul.chess.game.AbstractPlayableGame;
@@ -33,7 +33,7 @@ public class DefeatGameCommand
 
         try {
             var board = ((AbstractPlayableGame) this.game).getBoard();
-            board.setState(new AgreedDefeatBoardState(board, player.getColor()));
+            board.setState(agreedDefeatBoardState(board, player.getColor()));
         } catch (Exception e) {
             throw new CommandException(e.getMessage());
         }

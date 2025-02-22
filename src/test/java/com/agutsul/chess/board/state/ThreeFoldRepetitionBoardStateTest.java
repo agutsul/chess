@@ -1,5 +1,5 @@
 package com.agutsul.chess.board.state;
-
+import static com.agutsul.chess.board.state.BoardStateFactory.threeFoldRepetitionBoardState;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ public class ThreeFoldRepetitionBoardStateTest {
                 .withWhitePawn("a2")
                 .build();
 
-        board.setState(new ThreeFoldRepetitionBoardState(board, Colors.WHITE));
+        board.setState(threeFoldRepetitionBoardState(board, Colors.WHITE));
 
         var whitePawn = board.getPiece("a2").get();
         assertFalse(board.getActions(whitePawn).isEmpty());
@@ -30,7 +30,7 @@ public class ThreeFoldRepetitionBoardStateTest {
                 .withWhitePawn("a2")
                 .build();
 
-        board.setState(new ThreeFoldRepetitionBoardState(board, Colors.WHITE));
+        board.setState(threeFoldRepetitionBoardState(board, Colors.WHITE));
 
         var whitePawn = board.getPiece("a2").get();
         assertFalse(board.getImpacts(whitePawn).isEmpty());

@@ -1,5 +1,5 @@
 package com.agutsul.chess.rule.board;
-
+import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
-import com.agutsul.chess.board.state.DefaultBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 
@@ -54,7 +53,7 @@ public class BoardStatisticStateEvaluatorTest {
                 var color = inv.getArgument(0, Color.class);
                 return Objects.equals(Colors.WHITE, color)
                         ? Optional.empty()
-                        : Optional.of(new DefaultBoardState(mock(Board.class), color));
+                        : Optional.of(defaultBoardState(mock(Board.class), color));
             });
 
         var evaluator = new BoardStatisticStateEvaluator(eval);

@@ -1,5 +1,5 @@
 package com.agutsul.chess.rule.board;
-
+import static com.agutsul.chess.board.state.BoardStateFactory.insufficientMaterialBoardState;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -15,7 +15,6 @@ import com.agutsul.chess.Blockable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
-import com.agutsul.chess.board.state.InsufficientMaterialBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
@@ -100,7 +99,7 @@ final class InsufficientMaterialBoardStateEvaluator
 
         protected BoardState createBoardState(Board board, Color color) {
             var source = this.getClass().getSimpleName();
-            return new InsufficientMaterialBoardState(board, color, source);
+            return insufficientMaterialBoardState(board, color, source);
         }
     }
 

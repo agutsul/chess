@@ -1,5 +1,11 @@
 package com.agutsul.chess.rule.board;
-
+import static com.agutsul.chess.board.state.BoardStateFactory.checkMatedBoardState;
+import static com.agutsul.chess.board.state.BoardStateFactory.checkedBoardState;
+import static com.agutsul.chess.board.state.BoardStateFactory.fiftyMovesBoardState;
+import static com.agutsul.chess.board.state.BoardStateFactory.fiveFoldRepetitionBoardState;
+import static com.agutsul.chess.board.state.BoardStateFactory.seventyFiveMovesBoardState;
+import static com.agutsul.chess.board.state.BoardStateFactory.staleMatedBoardState;
+import static com.agutsul.chess.board.state.BoardStateFactory.threeFoldRepetitionBoardState;
 import static java.util.concurrent.TimeUnit.MICROSECONDS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -21,15 +27,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
-import com.agutsul.chess.board.state.CheckMatedBoardState;
-import com.agutsul.chess.board.state.CheckedBoardState;
+import com.agutsul.chess.board.state.BoardStateFactory.CheckMatedBoardState;
+import com.agutsul.chess.board.state.BoardStateFactory.CheckedBoardState;
+import com.agutsul.chess.board.state.BoardStateFactory.DefaultBoardState;
+import com.agutsul.chess.board.state.BoardStateFactory.FiftyMovesBoardState;
+import com.agutsul.chess.board.state.BoardStateFactory.StaleMatedBoardState;
+import com.agutsul.chess.board.state.BoardStateFactory.ThreeFoldRepetitionBoardState;
 import com.agutsul.chess.board.state.CompositeBoardState;
-import com.agutsul.chess.board.state.DefaultBoardState;
-import com.agutsul.chess.board.state.FiftyMovesBoardState;
-import com.agutsul.chess.board.state.FiveFoldRepetitionBoardState;
-import com.agutsul.chess.board.state.SeventyFiveMovesBoardState;
-import com.agutsul.chess.board.state.StaleMatedBoardState;
-import com.agutsul.chess.board.state.ThreeFoldRepetitionBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 
@@ -66,7 +70,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                return Optional.of(new CheckedBoardState(board, color));
+                return Optional.of(checkedBoardState(board, color));
             });
 
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
@@ -94,14 +98,14 @@ public class CompositeBoardStateEvaluatorTest {
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                return Optional.of(new CheckedBoardState(board, color));
+                return Optional.of(checkedBoardState(board, color));
             });
 
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         when(checkMatedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                return Optional.of(new CheckMatedBoardState(board, color));
+                return Optional.of(checkMatedBoardState(board, color));
             });
 
         var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
@@ -134,7 +138,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(staleMatedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                return Optional.of(new StaleMatedBoardState(board, color));
+                return Optional.of(staleMatedBoardState(board, color));
             });
 
         var evaluator = new CompositeBoardStateEvaluator(board,
@@ -157,7 +161,7 @@ public class CompositeBoardStateEvaluatorTest {
 
         var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
         when(foldRepetitionEvaluator.evaluate(any()))
-            .thenReturn(Optional.of(new ThreeFoldRepetitionBoardState(board, Colors.WHITE)));
+            .thenReturn(Optional.of(threeFoldRepetitionBoardState(board, Colors.WHITE)));
 
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
@@ -179,7 +183,7 @@ public class CompositeBoardStateEvaluatorTest {
 
         var movesEvaluator = mock(MovesBoardStateEvaluator.class);
         when(movesEvaluator.evaluate(any()))
-            .thenReturn(Optional.of(new FiftyMovesBoardState(board, Colors.WHITE)));
+            .thenReturn(Optional.of(fiftyMovesBoardState(board, Colors.WHITE)));
 
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
@@ -197,7 +201,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = new CheckedBoardState(board, color);
+                var state = checkedBoardState(board, color);
                 return Optional.of(state);
             });
 
@@ -205,7 +209,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(checkMatedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = new CheckMatedBoardState(board, color);
+                var state = checkMatedBoardState(board, color);
                 return Optional.of(state);
             });
 
@@ -215,7 +219,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(foldRepetitionEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = new ThreeFoldRepetitionBoardState(board, color);
+                var state = threeFoldRepetitionBoardState(board, color);
                 return Optional.of(state);
             });
 
@@ -238,7 +242,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = new CheckedBoardState(board, color);
+                var state = checkedBoardState(board, color);
                 return Optional.of(state);
             });
 
@@ -249,7 +253,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(foldRepetitionEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = new ThreeFoldRepetitionBoardState(board, color);
+                var state = threeFoldRepetitionBoardState(board, color);
                 return Optional.of(state);
             });
 
@@ -277,7 +281,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(foldRepetitionEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = new ThreeFoldRepetitionBoardState(board, color);
+                var state = threeFoldRepetitionBoardState(board, color);
                 return Optional.of(state);
             });
 
@@ -285,7 +289,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(movesEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = new FiftyMovesBoardState(board, color);
+                var state = fiftyMovesBoardState(board, color);
                 return Optional.of(state);
             });
 
@@ -310,7 +314,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(foldRepetitionEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = new FiveFoldRepetitionBoardState(board, color);
+                var state = fiveFoldRepetitionBoardState(board, color);
                 return Optional.of(state);
             });
 
@@ -318,7 +322,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(movesEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = new SeventyFiveMovesBoardState(board, color);
+                var state = seventyFiveMovesBoardState(board, color);
                 return Optional.of(state);
             });
 
@@ -342,7 +346,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = new CheckedBoardState(board, color);
+                var state = checkedBoardState(board, color);
                 return Optional.of(state);
             });
 
@@ -354,7 +358,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(foldRepetitionEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = new FiveFoldRepetitionBoardState(board, color);
+                var state = fiveFoldRepetitionBoardState(board, color);
                 return Optional.of(state);
             });
 
@@ -362,7 +366,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(movesEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = new SeventyFiveMovesBoardState(board, color);
+                var state = seventyFiveMovesBoardState(board, color);
                 return Optional.of(state);
             });
 

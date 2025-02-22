@@ -1,5 +1,5 @@
 package com.agutsul.chess.rule.board;
-
+import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.function.Function.identity;
@@ -18,7 +18,6 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.CompositeBoardState;
-import com.agutsul.chess.board.state.DefaultBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 
@@ -69,7 +68,7 @@ final class CompositeBoardStateEvaluator
                 .collect(toMap(BoardState::getType, identity()));
 
         if (boardStates.isEmpty()) {
-            return new DefaultBoardState(board, playerColor);
+            return defaultBoardState(board, playerColor);
         }
 
         if (boardStates.size() == 1) {
@@ -95,7 +94,7 @@ final class CompositeBoardStateEvaluator
         var states = new ArrayList<BoardState>();
 
         if (!boardStates.containsKey(BoardState.Type.CHECKED)) {
-            states.add(new DefaultBoardState(board, playerColor));
+            states.add(defaultBoardState(board, playerColor));
         }
 
         states.addAll(boardStates.values().stream()

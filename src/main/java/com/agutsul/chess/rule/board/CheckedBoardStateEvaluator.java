@@ -1,5 +1,5 @@
 package com.agutsul.chess.rule.board;
-
+import static com.agutsul.chess.board.state.BoardStateFactory.checkedBoardState;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
@@ -12,7 +12,6 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
-import com.agutsul.chess.board.state.CheckedBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
@@ -36,7 +35,7 @@ final class CheckedBoardStateEvaluator
         }
 
         return isChecked(optionalKing.get())
-                ? Optional.of(new CheckedBoardState(board, color))
+                ? Optional.of(checkedBoardState(board, color))
                 : Optional.empty();
     }
 

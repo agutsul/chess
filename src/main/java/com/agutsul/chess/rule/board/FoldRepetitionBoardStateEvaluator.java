@@ -1,5 +1,7 @@
 package com.agutsul.chess.rule.board;
 
+import static com.agutsul.chess.board.state.BoardStateFactory.fiveFoldRepetitionBoardState;
+import static com.agutsul.chess.board.state.BoardStateFactory.threeFoldRepetitionBoardState;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
@@ -13,8 +15,6 @@ import org.slf4j.Logger;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
-import com.agutsul.chess.board.state.FiveFoldRepetitionBoardState;
-import com.agutsul.chess.board.state.ThreeFoldRepetitionBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 
@@ -47,11 +47,11 @@ final class FoldRepetitionBoardStateEvaluator
                 .orElse(0);
 
         if (maxRepetitions >= FIVE_REPETITIONS) {
-            return Optional.of(new FiveFoldRepetitionBoardState(board, color));
+            return Optional.of(fiveFoldRepetitionBoardState(board, color));
         }
 
         if (maxRepetitions >= THREE_REPETITIONS) {
-            return Optional.of(new ThreeFoldRepetitionBoardState(board, color));
+            return Optional.of(threeFoldRepetitionBoardState(board, color));
         }
 
         return Optional.empty();

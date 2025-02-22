@@ -1,5 +1,5 @@
 package com.agutsul.chess.board.state;
-
+import static com.agutsul.chess.board.state.BoardStateFactory.fiftyMovesBoardState;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ public class FiftyMovesBoardStateTest {
                 .withWhitePawn("a2")
                 .build();
 
-        board.setState(new FiftyMovesBoardState(board, Colors.WHITE));
+        board.setState(fiftyMovesBoardState(board, Colors.WHITE));
 
         var whitePawn = board.getPiece("a2").get();
         assertFalse(board.getActions(whitePawn).isEmpty());
@@ -30,7 +30,7 @@ public class FiftyMovesBoardStateTest {
                 .withWhitePawn("a2")
                 .build();
 
-        board.setState(new FiftyMovesBoardState(board, Colors.WHITE));
+        board.setState(fiftyMovesBoardState(board, Colors.WHITE));
 
         var whitePawn = board.getPiece("a2").get();
         assertFalse(board.getImpacts(whitePawn).isEmpty());

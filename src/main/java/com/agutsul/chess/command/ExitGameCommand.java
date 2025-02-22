@@ -1,12 +1,12 @@
 package com.agutsul.chess.command;
 
+import static com.agutsul.chess.board.state.BoardStateFactory.exitedBoardState;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
 import com.agutsul.chess.activity.action.event.ExitPerformedEvent;
-import com.agutsul.chess.board.state.ExitedBoardState;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.CommandException;
 import com.agutsul.chess.game.AbstractPlayableGame;
@@ -33,7 +33,7 @@ public class ExitGameCommand
 
         try {
             var board = ((AbstractPlayableGame) this.game).getBoard();
-            board.setState(new ExitedBoardState(board, player.getColor()));
+            board.setState(exitedBoardState(board, player.getColor()));
         } catch (Exception e) {
             throw new CommandException(e.getMessage());
         }

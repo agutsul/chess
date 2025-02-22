@@ -1,5 +1,7 @@
 package com.agutsul.chess.rule.board;
 
+import static com.agutsul.chess.board.state.BoardStateFactory.fiftyMovesBoardState;
+import static com.agutsul.chess.board.state.BoardStateFactory.seventyFiveMovesBoardState;
 import static java.util.Collections.max;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -17,8 +19,6 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
-import com.agutsul.chess.board.state.FiftyMovesBoardState;
-import com.agutsul.chess.board.state.SeventyFiveMovesBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.piece.Piece;
@@ -50,13 +50,13 @@ final class MovesBoardStateEvaluator
         if (performedActions >= SEVENTY_FIVE_MOVES
                 && isBoardStateApplicable(actions, SEVENTY_FIVE_MOVES)) {
 
-            return Optional.of(new SeventyFiveMovesBoardState(board, color));
+            return Optional.of(seventyFiveMovesBoardState(board, color));
         }
 
         if (performedActions >= FIFTY_MOVES
                 && isBoardStateApplicable(actions, FIFTY_MOVES)) {
 
-            return Optional.of(new FiftyMovesBoardState(board, color));
+            return Optional.of(fiftyMovesBoardState(board, color));
         }
 
         return Optional.empty();

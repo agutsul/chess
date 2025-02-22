@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.board;
 
+import static com.agutsul.chess.board.state.BoardStateFactory.checkMatedBoardState;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Optional;
@@ -8,7 +9,6 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
-import com.agutsul.chess.board.state.CheckMatedBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.rule.checkmate.CheckMateEvaluator;
@@ -37,7 +37,7 @@ final class CheckMatedBoardStateEvaluator
         }
 
         return isCheckMated(optionalKing.get())
-                ? Optional.of(new CheckMatedBoardState(board, color))
+                ? Optional.of(checkMatedBoardState(board, color))
                 : Optional.empty();
     }
 

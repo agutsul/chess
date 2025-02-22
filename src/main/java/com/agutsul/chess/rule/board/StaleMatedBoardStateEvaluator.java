@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.board;
 
+import static com.agutsul.chess.board.state.BoardStateFactory.staleMatedBoardState;
 import static java.util.Comparator.comparing;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -11,7 +12,6 @@ import org.slf4j.Logger;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
-import com.agutsul.chess.board.state.StaleMatedBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
@@ -60,7 +60,7 @@ final class StaleMatedBoardStateEvaluator
         }
 
         return allActions.isEmpty()
-                ? Optional.of(new StaleMatedBoardState(board, color))
+                ? Optional.of(staleMatedBoardState(board, color))
                 : Optional.empty();
     }
 }

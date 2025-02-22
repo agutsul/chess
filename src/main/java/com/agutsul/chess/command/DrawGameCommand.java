@@ -1,12 +1,12 @@
 package com.agutsul.chess.command;
 
+import static com.agutsul.chess.board.state.BoardStateFactory.agreedDrawBoardState;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.event.DrawExecutionEvent;
 import com.agutsul.chess.activity.action.event.DrawPerformedEvent;
-import com.agutsul.chess.board.state.AgreedDrawBoardState;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.CommandException;
 import com.agutsul.chess.game.AbstractPlayableGame;
@@ -33,7 +33,7 @@ public class DrawGameCommand
 
         try {
             var board = ((AbstractPlayableGame) this.game).getBoard();
-            board.setState(new AgreedDrawBoardState(board, player.getColor()));
+            board.setState(agreedDrawBoardState(board, player.getColor()));
         } catch (Exception e) {
             throw new CommandException(e.getMessage());
         }

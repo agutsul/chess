@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.board;
-
+import static com.agutsul.chess.board.state.BoardStateFactory.checkMatedBoardState;
+import static com.agutsul.chess.board.state.BoardStateFactory.checkedBoardState;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -14,8 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
-import com.agutsul.chess.board.state.CheckMatedBoardState;
-import com.agutsul.chess.board.state.CheckedBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 
@@ -44,7 +43,7 @@ public class CheckableBoardStateEvaluatorTest {
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                return Optional.of(new CheckedBoardState(board, color));
+                return Optional.of(checkedBoardState(board, color));
             });
 
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
@@ -64,14 +63,14 @@ public class CheckableBoardStateEvaluatorTest {
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                return Optional.of(new CheckedBoardState(board, color));
+                return Optional.of(checkedBoardState(board, color));
             });
 
         var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         when(checkMatedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                return Optional.of(new CheckMatedBoardState(board, color));
+                return Optional.of(checkMatedBoardState(board, color));
             });
 
 

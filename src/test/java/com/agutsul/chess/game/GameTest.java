@@ -1,5 +1,10 @@
 package com.agutsul.chess.game;
-
+import static com.agutsul.chess.board.state.BoardStateFactory.agreedDefeatBoardState;
+import static com.agutsul.chess.board.state.BoardStateFactory.agreedDrawBoardState;
+import static com.agutsul.chess.board.state.BoardStateFactory.checkMatedBoardState;
+import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
+import static com.agutsul.chess.board.state.BoardStateFactory.exitedBoardState;
+import static com.agutsul.chess.board.state.BoardStateFactory.staleMatedBoardState;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -40,12 +45,9 @@ import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
 import com.agutsul.chess.activity.action.event.ExitPerformedEvent;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.StandardBoard;
-import com.agutsul.chess.board.state.AgreedDefeatBoardState;
-import com.agutsul.chess.board.state.AgreedDrawBoardState;
-import com.agutsul.chess.board.state.CheckMatedBoardState;
-import com.agutsul.chess.board.state.DefaultBoardState;
-import com.agutsul.chess.board.state.ExitedBoardState;
-import com.agutsul.chess.board.state.StaleMatedBoardState;
+import com.agutsul.chess.board.state.BoardStateFactory.AgreedDrawBoardState;
+import com.agutsul.chess.board.state.BoardStateFactory.DefaultBoardState;
+import com.agutsul.chess.board.state.BoardStateFactory.ExitedBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
@@ -93,7 +95,7 @@ public class GameTest {
     void testGetStateReturningDrawn() {
         var board = mock(AbstractBoard.class);
         when(board.getState())
-            .thenReturn(new DefaultBoardState(board, Colors.WHITE));
+            .thenReturn(defaultBoardState(board, Colors.WHITE));
 
         var whitePlayer = mock(Player.class);
         var blackPlayer = mock(Player.class);
@@ -111,7 +113,7 @@ public class GameTest {
     void testGetStateReturningWhiteWin() {
         var board = mock(AbstractBoard.class);
         when(board.getState())
-            .thenReturn(new CheckMatedBoardState(board, Colors.WHITE));
+            .thenReturn(checkMatedBoardState(board, Colors.WHITE));
 
         var whitePlayer = mock(Player.class);
         var blackPlayer = mock(Player.class);
@@ -129,7 +131,7 @@ public class GameTest {
     void testGetStateReturningBlackWin() {
         var board = mock(AbstractBoard.class);
         when(board.getState())
-            .thenReturn(new AgreedDefeatBoardState(board, Colors.BLACK));
+            .thenReturn(agreedDefeatBoardState(board, Colors.BLACK));
 
         var whitePlayer = mock(Player.class);
         var blackPlayer = mock(Player.class);
@@ -152,7 +154,7 @@ public class GameTest {
 
         var board = mock(AbstractBoard.class);
         when(board.getState())
-            .thenReturn(new DefaultBoardState(board, Colors.WHITE));
+            .thenReturn(defaultBoardState(board, Colors.WHITE));
 
         when(board.getKing(any()))
             .thenReturn(Optional.of(king));
@@ -170,10 +172,10 @@ public class GameTest {
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
                 if (Colors.WHITE.equals(color)) {
-                    return new DefaultBoardState(board, color);
+                    return defaultBoardState(board, color);
                 }
 
-                return new CheckMatedBoardState(board, color);
+                return checkMatedBoardState(board, color);
             });
 
         var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
@@ -187,7 +189,7 @@ public class GameTest {
     void testGetWinnerByCheckMate() {
         var board = mock(AbstractBoard.class);
         when(board.getState())
-            .thenReturn(new CheckMatedBoardState(board, Colors.WHITE));
+            .thenReturn(checkMatedBoardState(board, Colors.WHITE));
 
         var whitePlayer = new UserPlayer("test1", Colors.WHITE);
         var blackPlayer = new UserPlayer("test2", Colors.BLACK);
@@ -203,7 +205,7 @@ public class GameTest {
     void testGetWinnerByAgreedDraw() {
         var board = mock(AbstractBoard.class);
         when(board.getState())
-            .thenReturn(new AgreedDrawBoardState(board, Colors.WHITE));
+            .thenReturn(agreedDrawBoardState(board, Colors.WHITE));
 
         var whitePlayer = new UserPlayer("test1", Colors.WHITE);
         var blackPlayer = new UserPlayer("test2", Colors.BLACK);
@@ -218,7 +220,7 @@ public class GameTest {
     void testGetWinnerByExitedDraw() {
         var board = mock(AbstractBoard.class);
         when(board.getState())
-            .thenReturn(new ExitedBoardState(board, Colors.WHITE));
+            .thenReturn(exitedBoardState(board, Colors.WHITE));
 
         var whitePlayer = new UserPlayer("test1", Colors.WHITE);
         var blackPlayer = new UserPlayer("test2", Colors.BLACK);
@@ -242,10 +244,10 @@ public class GameTest {
             .then(inv -> {
                 var color = inv.getArgument(0, Color.class);
                 if (journal.size() < 2) {
-                    return new DefaultBoardState(board, color);
+                    return defaultBoardState(board, color);
                 }
 
-                return new StaleMatedBoardState(board, color);
+                return staleMatedBoardState(board, color);
             });
 
         var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
@@ -320,11 +322,11 @@ public class GameTest {
                 if (Colors.WHITE.equals(color)) {
                     var iterator = whitePlayerInputObserver.getIterator();
                     if (!iterator.hasNext()) {
-                        return new StaleMatedBoardState(board, color);
+                        return staleMatedBoardState(board, color);
                     }
                 }
 
-                return new DefaultBoardState(board, color);
+                return defaultBoardState(board, color);
             });
 
         Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
@@ -378,11 +380,11 @@ public class GameTest {
                 if (Colors.WHITE.equals(color)) {
                     var iterator = whitePlayerInputObserver.getIterator();
                     if (!iterator.hasNext()) {
-                        return new StaleMatedBoardState(board, color);
+                        return staleMatedBoardState(board, color);
                     }
                 }
 
-                return new DefaultBoardState(board, color);
+                return defaultBoardState(board, color);
             });
 
         Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
@@ -443,11 +445,11 @@ public class GameTest {
                 if (Colors.WHITE.equals(color)) {
                     var iterator = whitePlayerInputObserver.getIterator();
                     if (!iterator.hasNext()) {
-                        return new StaleMatedBoardState(board, color);
+                        return staleMatedBoardState(board, color);
                     }
                 }
 
-                return new DefaultBoardState(board, color);
+                return defaultBoardState(board, color);
             });
 
         Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
@@ -516,11 +518,11 @@ public class GameTest {
                 if (Colors.WHITE.equals(color)) {
                     var iterator = whitePlayerInputObserver.getIterator();
                     if (!iterator.hasNext()) {
-                        return new StaleMatedBoardState(board, color);
+                        return staleMatedBoardState(board, color);
                     }
                 }
 
-                return new DefaultBoardState(board, color);
+                return defaultBoardState(board, color);
             });
 
         Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
@@ -575,11 +577,11 @@ public class GameTest {
                 if (Colors.WHITE.equals(color)) {
                     var iterator = whitePlayerInputObserver.getIterator();
                     if (!iterator.hasNext()) {
-                        return new StaleMatedBoardState(board, color);
+                        return staleMatedBoardState(board, color);
                     }
                 }
 
-                return new DefaultBoardState(board, color);
+                return defaultBoardState(board, color);
             });
 
         Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
@@ -649,11 +651,11 @@ public class GameTest {
                 if (Colors.WHITE.equals(color)) {
                     var iterator = whitePlayerInputObserver.getIterator();
                     if (!iterator.hasNext()) {
-                        return new StaleMatedBoardState(board, color);
+                        return staleMatedBoardState(board, color);
                     }
                 }
 
-                return new DefaultBoardState(board, color);
+                return defaultBoardState(board, color);
             });
 
         Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();

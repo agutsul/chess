@@ -1,5 +1,5 @@
 package com.agutsul.chess.board;
-
+import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
 import static java.util.concurrent.Executors.newFixedThreadPool;
@@ -31,7 +31,6 @@ import com.agutsul.chess.activity.impact.PieceMonitorImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.board.state.BoardState;
-import com.agutsul.chess.board.state.DefaultBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
@@ -71,7 +70,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
         this.states = new ArrayList<>();
         // first move always for white side, so initial state with white color
-        setState(new DefaultBoardState(this, Colors.WHITE));
+        setState(defaultBoardState(this, Colors.WHITE));
     }
 
     @Override
