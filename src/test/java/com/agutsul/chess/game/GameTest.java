@@ -45,9 +45,10 @@ import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
 import com.agutsul.chess.activity.action.event.ExitPerformedEvent;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.StandardBoard;
-import com.agutsul.chess.board.state.BoardStateFactory.AgreedDrawBoardState;
-import com.agutsul.chess.board.state.BoardStateFactory.DefaultBoardState;
-import com.agutsul.chess.board.state.BoardStateFactory.ExitedBoardState;
+import com.agutsul.chess.board.state.AgreedDrawBoardState;
+import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.board.state.DefaultBoardState;
+import com.agutsul.chess.board.state.ExitedBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
@@ -484,9 +485,9 @@ public class GameTest {
         var board = spy(new StandardBoard());
 
         doCallRealMethod()
-            .when(board).setState(any(DefaultBoardState.class));
+            .when(board).setState((BoardState) any(DefaultBoardState.class));
         doAnswer(new FirstExecutionExceptionAnswer<>(new RuntimeException("test")))
-            .when(board).setState(any(AgreedDrawBoardState.class));
+            .when(board).setState((BoardState) any(AgreedDrawBoardState.class));
 
         doCallRealMethod()
             .when(board).getState();
@@ -617,9 +618,9 @@ public class GameTest {
         var board = spy(new StandardBoard());
 
         doCallRealMethod()
-            .when(board).setState(any(DefaultBoardState.class));
+            .when(board).setState((BoardState) any(DefaultBoardState.class));
         doAnswer(new FirstExecutionExceptionAnswer<>(new RuntimeException("test")))
-            .when(board).setState(any(ExitedBoardState.class));
+            .when(board).setState((BoardState) any(ExitedBoardState.class));
 
         doCallRealMethod()
             .when(board).getState();

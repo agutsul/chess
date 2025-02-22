@@ -9,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.BoardBuilder;
-import com.agutsul.chess.board.state.BoardStateFactory.CheckedBoardState;
 import com.agutsul.chess.color.Colors;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,7 +44,7 @@ public class CheckedBoardStateTest {
                 .withWhiteKing("e3")
                 .build();
 
-        board.setState(new CheckedBoardState(board, Colors.BLACK));
+        board.setState(checkedBoardState(board, Colors.BLACK));
 
         var blackPawn = board.getPiece("h7").get();
         assertTrue(board.getActions(blackPawn).isEmpty());
@@ -64,7 +63,7 @@ public class CheckedBoardStateTest {
                 .withBlackKing("a8")
                 .build();
 
-        board.setState(new CheckedBoardState(board, Colors.BLACK));
+        board.setState(checkedBoardState(board, Colors.BLACK));
 
         var blackKing = board.getKing(Colors.BLACK).get();
         assertFalse(board.getActions(blackKing).isEmpty());

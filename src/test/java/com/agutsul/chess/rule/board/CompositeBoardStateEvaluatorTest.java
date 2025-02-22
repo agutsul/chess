@@ -27,13 +27,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
-import com.agutsul.chess.board.state.BoardStateFactory.CheckMatedBoardState;
-import com.agutsul.chess.board.state.BoardStateFactory.CheckedBoardState;
-import com.agutsul.chess.board.state.BoardStateFactory.DefaultBoardState;
-import com.agutsul.chess.board.state.BoardStateFactory.FiftyMovesBoardState;
-import com.agutsul.chess.board.state.BoardStateFactory.StaleMatedBoardState;
-import com.agutsul.chess.board.state.BoardStateFactory.ThreeFoldRepetitionBoardState;
+import com.agutsul.chess.board.state.CheckMatedBoardState;
+import com.agutsul.chess.board.state.CheckedBoardState;
 import com.agutsul.chess.board.state.CompositeBoardState;
+import com.agutsul.chess.board.state.DefaultBoardState;
+import com.agutsul.chess.board.state.FiftyMovesBoardState;
+import com.agutsul.chess.board.state.StaleMatedBoardState;
+import com.agutsul.chess.board.state.ThreeFoldRepetitionBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 

@@ -17,152 +17,178 @@ import com.agutsul.chess.rule.check.CheckActionEvaluatorImpl;
 
 public abstract class BoardStateFactory {
 
-    public static AgreedDefeatBoardState agreedDefeatBoardState(Board board, Color color) {
-        return new AgreedDefeatBoardState(board, color);
-    }
-
-    public static AgreedDrawBoardState agreedDrawBoardState(Board board, Color color) {
-        return new AgreedDrawBoardState(board, color);
-    }
-
-    public static AgreedWinBoardState agreedWinBoardState(Board board, Color color) {
-        return new AgreedWinBoardState(board, color);
-    }
-
-    public static CheckMatedBoardState checkMatedBoardState(Board board, Color color) {
-        return new CheckMatedBoardState(board, color);
-    }
-
-    public static ExitedBoardState exitedBoardState(Board board, Color color) {
-        return new ExitedBoardState(board, color);
-    }
-
-    public static FiveFoldRepetitionBoardState fiveFoldRepetitionBoardState(Board board, Color color) {
-        return new FiveFoldRepetitionBoardState(board, color);
-    }
-
-    public static SeventyFiveMovesBoardState seventyFiveMovesBoardState(Board board, Color color) {
-        return new SeventyFiveMovesBoardState(board, color);
-    }
-
-    public static StaleMatedBoardState staleMatedBoardState(Board board, Color color) {
-        return new StaleMatedBoardState(board, color);
-    }
-
-    //
-    public static CheckedBoardState checkedBoardState(Board board, Color color) {
-        return new CheckedBoardState(board, color);
-    }
-
-    public static DefaultBoardState defaultBoardState(Board board, Color color) {
-        return new DefaultBoardState(board, color);
-    }
-
-    public static FiftyMovesBoardState fiftyMovesBoardState(Board board, Color color) {
-        return new FiftyMovesBoardState(board, color);
-    }
-
-    public static InsufficientMaterialBoardState insufficientMaterialBoardState(Board board,
-                                                                                Color color,
-                                                                                String source) {
-        return new InsufficientMaterialBoardState(board, color, source);
-    }
-
-    public static ThreeFoldRepetitionBoardState threeFoldRepetitionBoardState(Board board, Color color) {
-        return new ThreeFoldRepetitionBoardState(board, color);
-    }
-
     // terminal states
 
-    public static final class AgreedDefeatBoardState
-            extends AbstractTerminalBoardState {
+    @SuppressWarnings("unchecked")
+    public static <STATE extends BoardState & AgreedDefeatBoardState> STATE agreedDefeatBoardState(Board board, Color color) {
+        return (STATE) new AgreedDefeatBoardStateImpl(board, color);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <STATE extends BoardState & AgreedDrawBoardState> STATE agreedDrawBoardState(Board board, Color color) {
+        return (STATE) new AgreedDrawBoardStateImpl(board, color);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <STATE extends BoardState & AgreedWinBoardState> STATE agreedWinBoardState(Board board, Color color) {
+        return (STATE) new AgreedWinBoardStateImpl(board, color);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <STATE extends BoardState & CheckMatedBoardState> STATE checkMatedBoardState(Board board, Color color) {
+        return (STATE) new CheckMatedBoardStateImpl(board, color);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <STATE extends BoardState & ExitedBoardState> STATE exitedBoardState(Board board, Color color) {
+        return (STATE) new ExitedBoardStateImpl(board, color);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <STATE extends BoardState & FiveFoldRepetitionBoardState> STATE fiveFoldRepetitionBoardState(Board board, Color color) {
+        return (STATE) new FiveFoldRepetitionBoardStateImpl(board, color);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <STATE extends BoardState & SeventyFiveMovesBoardState> STATE seventyFiveMovesBoardState(Board board, Color color) {
+        return (STATE) new SeventyFiveMovesBoardStateImpl(board, color);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <STATE extends BoardState & StaleMatedBoardState> STATE staleMatedBoardState(Board board, Color color) {
+        return (STATE) new StaleMatedBoardStateImpl(board, color);
+    }
+
+    // playable states
+
+    @SuppressWarnings("unchecked")
+    public static <STATE extends BoardState & CheckedBoardState> STATE checkedBoardState(Board board, Color color) {
+        return (STATE) new CheckedBoardStateImpl(board, color);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <STATE extends BoardState & DefaultBoardState> STATE defaultBoardState(Board board, Color color) {
+        return  (STATE) new DefaultBoardStateImpl(board, color);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <STATE extends BoardState & FiftyMovesBoardState> STATE fiftyMovesBoardState(Board board, Color color) {
+        return (STATE) new FiftyMovesBoardStateImpl(board, color);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <STATE extends BoardState & InsufficientMaterialBoardState> STATE insufficientMaterialBoardState(Board board,
+                                                                                                                   Color color,
+                                                                                                                   String source) {
+        return (STATE) new InsufficientMaterialBoardStateImpl(board, color, source);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <STATE extends BoardState & ThreeFoldRepetitionBoardState> STATE threeFoldRepetitionBoardState(Board board, Color color) {
+        return (STATE) new ThreeFoldRepetitionBoardStateImpl(board, color);
+    }
+
+    // actual terminal state classes
+
+    static final class AgreedDefeatBoardStateImpl
+            extends AbstractTerminalBoardState
+            implements AgreedDefeatBoardState {
 
         private static final Logger LOGGER = getLogger(AgreedDefeatBoardState.class);
 
-        AgreedDefeatBoardState(Board board, Color color) {
+        AgreedDefeatBoardStateImpl(Board board, Color color) {
             super(LOGGER, BoardState.Type.AGREED_DEFEAT, board, color);
         }
     }
 
-    public static final class AgreedDrawBoardState
-            extends AbstractTerminalBoardState {
+    static final class AgreedDrawBoardStateImpl
+            extends AbstractTerminalBoardState
+            implements AgreedDrawBoardState {
 
         private static final Logger LOGGER = getLogger(AgreedDrawBoardState.class);
 
-        AgreedDrawBoardState(Board board, Color color) {
+        AgreedDrawBoardStateImpl(Board board, Color color) {
             super(LOGGER, BoardState.Type.AGREED_DRAW, board, color);
         }
     }
 
-    public static final class AgreedWinBoardState
-            extends AbstractTerminalBoardState {
+    static final class AgreedWinBoardStateImpl
+            extends AbstractTerminalBoardState
+            implements AgreedWinBoardState {
 
         private static final Logger LOGGER = getLogger(AgreedWinBoardState.class);
 
-        AgreedWinBoardState(Board board, Color color) {
+        AgreedWinBoardStateImpl(Board board, Color color) {
             super(LOGGER, BoardState.Type.AGREED_WIN, board, color);
         }
     }
 
-    public static final class CheckMatedBoardState
-            extends AbstractTerminalBoardState {
+    static final class CheckMatedBoardStateImpl
+            extends AbstractTerminalBoardState
+            implements CheckMatedBoardState {
 
         private static final Logger LOGGER = getLogger(CheckMatedBoardState.class);
 
-        CheckMatedBoardState(Board board, Color checkMatedColor) {
+        CheckMatedBoardStateImpl(Board board, Color checkMatedColor) {
             super(LOGGER, BoardState.Type.CHECK_MATED, board, checkMatedColor);
         }
     }
 
-    public static final class ExitedBoardState
-            extends AbstractTerminalBoardState {
+    static final class ExitedBoardStateImpl
+            extends AbstractTerminalBoardState
+            implements ExitedBoardState {
 
         private static final Logger LOGGER = getLogger(ExitedBoardState.class);
 
-        ExitedBoardState(Board board, Color color) {
+        ExitedBoardStateImpl(Board board, Color color) {
             super(LOGGER, BoardState.Type.EXITED, board, color);
         }
     }
 
-    public static final class FiveFoldRepetitionBoardState
-            extends AbstractTerminalBoardState {
+    static final class FiveFoldRepetitionBoardStateImpl
+            extends AbstractTerminalBoardState
+            implements FiveFoldRepetitionBoardState {
 
         private static final Logger LOGGER = getLogger(FiveFoldRepetitionBoardState.class);
 
-        FiveFoldRepetitionBoardState(Board board, Color color) {
+        FiveFoldRepetitionBoardStateImpl(Board board, Color color) {
             super(LOGGER, BoardState.Type.FIVE_FOLD_REPETITION, board, color);
         }
     }
 
-    public static final class SeventyFiveMovesBoardState
-            extends AbstractTerminalBoardState {
+    static final class SeventyFiveMovesBoardStateImpl
+            extends AbstractTerminalBoardState
+            implements SeventyFiveMovesBoardState {
 
         private static final Logger LOGGER = getLogger(FiveFoldRepetitionBoardState.class);
 
         // draw
-        SeventyFiveMovesBoardState(Board board, Color color) {
+        SeventyFiveMovesBoardStateImpl(Board board, Color color) {
             super(LOGGER, Type.SEVENTY_FIVE_MOVES, board, color);
         }
     }
 
-    public static final class StaleMatedBoardState
-            extends AbstractTerminalBoardState {
+    static final class StaleMatedBoardStateImpl
+            extends AbstractTerminalBoardState
+            implements StaleMatedBoardState {
 
         private static final Logger LOGGER = getLogger(StaleMatedBoardState.class);
 
         // draw
-        StaleMatedBoardState(Board board, Color checkMatedColor) {
+        StaleMatedBoardStateImpl(Board board, Color checkMatedColor) {
             super(LOGGER, BoardState.Type.STALE_MATED, board, checkMatedColor);
         }
     }
 
-    // playable states
-    public static final class CheckedBoardState
-            extends AbstractPlayableBoardState {
+    // actual playable state classes
+
+    static final class CheckedBoardStateImpl
+            extends AbstractPlayableBoardState
+            implements CheckedBoardState {
 
         private static final Logger LOGGER = getLogger(CheckedBoardState.class);
 
-        CheckedBoardState(Board board, Color checkedColor) {
+        CheckedBoardStateImpl(Board board, Color checkedColor) {
             super(LOGGER, BoardState.Type.CHECKED, board, checkedColor);
         }
 
@@ -189,35 +215,38 @@ public abstract class BoardStateFactory {
         }
     }
 
-    public static final class DefaultBoardState
-            extends AbstractPlayableBoardState {
+    static final class DefaultBoardStateImpl
+            extends AbstractPlayableBoardState
+            implements DefaultBoardState {
 
         private static final Logger LOGGER = getLogger(DefaultBoardState.class);
 
-        DefaultBoardState(Board board, Color color) {
+        DefaultBoardStateImpl(Board board, Color color) {
             super(LOGGER, BoardState.Type.DEFAULT, board, color);
         }
     }
 
-    public static final class FiftyMovesBoardState
-            extends AbstractPlayableBoardState {
+    static final class FiftyMovesBoardStateImpl
+            extends AbstractPlayableBoardState
+            implements FiftyMovesBoardState {
 
         private static final Logger LOGGER = getLogger(FiftyMovesBoardState.class);
 
         // draw
-        FiftyMovesBoardState(Board board, Color color) {
+        FiftyMovesBoardStateImpl(Board board, Color color) {
             super(LOGGER, Type.FIFTY_MOVES, board, color);
         }
     }
 
-    public static final class InsufficientMaterialBoardState
-            extends AbstractPlayableBoardState {
+    static final class InsufficientMaterialBoardStateImpl
+            extends AbstractPlayableBoardState
+            implements InsufficientMaterialBoardState {
 
         private static final Logger LOGGER = getLogger(InsufficientMaterialBoardState.class);
 
         private final String source;
 
-        InsufficientMaterialBoardState(Board board, Color color, String source) {
+        InsufficientMaterialBoardStateImpl(Board board, Color color, String source) {
             super(LOGGER, BoardState.Type.INSUFFICIENT_MATERIAL, board, color);
             this.source = source;
         }
@@ -227,12 +256,13 @@ public abstract class BoardStateFactory {
         }
     }
 
-    public static final class ThreeFoldRepetitionBoardState
-            extends AbstractPlayableBoardState {
+    static final class ThreeFoldRepetitionBoardStateImpl
+            extends AbstractPlayableBoardState
+            implements ThreeFoldRepetitionBoardState {
 
         private static final Logger LOGGER = getLogger(ThreeFoldRepetitionBoardState.class);
 
-        ThreeFoldRepetitionBoardState(Board board, Color color) {
+        ThreeFoldRepetitionBoardStateImpl(Board board, Color color) {
             super(LOGGER, BoardState.Type.THREE_FOLD_REPETITION, board, color);
         }
     }
