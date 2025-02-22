@@ -8,7 +8,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 
 public final class AgreedDrawBoardState
-        extends AbstractDrawBoardState {
+        extends AbstractTerminalBoardState {
 
     private static final Logger LOGGER = getLogger(AgreedDrawBoardState.class);
 

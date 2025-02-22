@@ -13,7 +13,8 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
 abstract class AbstractTerminalBoardState
-        extends AbstractBoardState {
+        extends AbstractBoardState
+        implements TerminalBoardState {
 
     private final Logger logger;
 

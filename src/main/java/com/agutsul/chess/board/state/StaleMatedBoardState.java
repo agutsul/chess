@@ -8,10 +8,11 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 
 public final class StaleMatedBoardState
-        extends AbstractDrawBoardState {
+        extends AbstractTerminalBoardState {
 
     private static final Logger LOGGER = getLogger(StaleMatedBoardState.class);
 
+    // draw
     public StaleMatedBoardState(Board board, Color checkMatedColor) {
         super(LOGGER, BoardState.Type.STALE_MATED, board, checkMatedColor);
     }

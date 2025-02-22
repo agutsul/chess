@@ -2,27 +2,18 @@ package com.agutsul.chess.board.state;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.util.Collection;
-
 import org.slf4j.Logger;
 
-import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.piece.Piece;
 
 public final class FiftyMovesBoardState
-        extends AbstractBoardState {
+        extends AbstractPlayableBoardState {
 
     private static final Logger LOGGER = getLogger(FiftyMovesBoardState.class);
 
+    // draw
     public FiftyMovesBoardState(Board board, Color color) {
-        super(Type.FIFTY_MOVES, board, color);
-    }
-
-    @Override
-    public Collection<Action<?>> getActions(Piece<?> piece) {
-        LOGGER.info("Getting actions for piece '{}'", piece);
-        return piece.getActions();
+        super(LOGGER, Type.FIFTY_MOVES, board, color);
     }
 }

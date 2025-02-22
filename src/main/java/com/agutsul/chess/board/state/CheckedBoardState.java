@@ -16,19 +16,17 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.check.CheckActionEvaluatorImpl;
 
 public final class CheckedBoardState
-        extends AbstractBoardState {
+        extends AbstractPlayableBoardState {
 
     private static final Logger LOGGER = getLogger(CheckedBoardState.class);
 
     public CheckedBoardState(Board board, Color checkedColor) {
-        super(BoardState.Type.CHECKED, board, checkedColor);
+        super(LOGGER, BoardState.Type.CHECKED, board, checkedColor);
     }
 
     @Override
     public Collection<Action<?>> getActions(Piece<?> piece) {
-        LOGGER.info("Getting actions for piece '{}'", piece);
-
-        var actions = piece.getActions();
+        var actions = super.getActions(piece);
         if (!Objects.equals(piece.getColor(), color)) {
             return actions;
         }
