@@ -230,7 +230,6 @@ public abstract class BoardStateFactory {
 
         private static final Logger LOGGER = getLogger(FiftyMovesBoardState.class);
 
-        // draw
         FiftyMovesBoardStateImpl(Board board, Color color) {
             super(LOGGER, Type.FIFTY_MOVES, board, color);
         }

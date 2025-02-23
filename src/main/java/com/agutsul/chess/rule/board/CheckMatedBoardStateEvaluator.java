@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.rule.checkmate.CheckMateEvaluator;
 import com.agutsul.chess.rule.checkmate.CompositeCheckMateEvaluator;
 
@@ -36,15 +35,13 @@ final class CheckMatedBoardStateEvaluator
             return Optional.empty();
         }
 
-        return isCheckMated(optionalKing.get())
-                ? Optional.of(checkMatedBoardState(board, color))
-                : Optional.empty();
-    }
+        var king = optionalKing.get();
 
-    private boolean isCheckMated(KingPiece<Color> king) {
         var isCheckMated = checkMateEvaluator.evaluate(king);
         king.setCheckMated(isCheckMated);
 
-        return isCheckMated;
+        return isCheckMated
+                ? Optional.of(checkMatedBoardState(board, color))
+                : Optional.empty();
     }
 }

@@ -35,7 +35,12 @@ final class CheckedBoardStateEvaluator
             return Optional.empty();
         }
 
-        return isChecked(optionalKing.get())
+        var king = optionalKing.get();
+
+        var isChecked = isChecked(king);
+        king.setChecked(isChecked);
+
+        return isChecked
                 ? Optional.of(checkedBoardState(board, color))
                 : Optional.empty();
     }
@@ -49,7 +54,6 @@ final class CheckedBoardStateEvaluator
                 .map(PieceCheckImpact::getTarget)
                 .anyMatch(piece -> Objects.equals(piece, king));
 
-        king.setChecked(isChecked);
         return isChecked;
     }
 }
