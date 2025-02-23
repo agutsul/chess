@@ -180,39 +180,6 @@ public abstract class BoardStateFactory {
 
     // actual playable state classes
 
-    private static final class CheckedBoardStateImpl
-            extends AbstractPlayableBoardState
-            implements CheckedBoardState {
-
-        private static final Logger LOGGER = getLogger(CheckedBoardState.class);
-
-        CheckedBoardStateImpl(Board board, Color checkedColor) {
-            super(LOGGER, BoardState.Type.CHECKED, board, checkedColor);
-        }
-
-        @Override
-        public Collection<Action<?>> getActions(Piece<?> piece) {
-            var actions = super.getActions(piece);
-            if (!Objects.equals(piece.getColor(), color)) {
-                return actions;
-            }
-
-            var optionalKing = board.getKing(color);
-            if (optionalKing.isEmpty()) {
-                return actions;
-            }
-
-            var king = optionalKing.get();
-            var evaluator = new CheckActionEvaluatorImpl(
-                    Objects.equals(piece, king) ? KING : PIECE,
-                    board,
-                    actions
-            );
-
-            return evaluator.evaluate(king);
-        }
-    }
-
     private static final class DefaultBoardStateImpl
             extends AbstractPlayableBoardState
             implements DefaultBoardState {
@@ -254,6 +221,39 @@ public abstract class BoardStateFactory {
 
         ThreeFoldRepetitionBoardStateImpl(Board board, Color color) {
             super(LOGGER, BoardState.Type.THREE_FOLD_REPETITION, board, color);
+        }
+    }
+
+    private static final class CheckedBoardStateImpl
+            extends AbstractPlayableBoardState
+            implements CheckedBoardState {
+
+        private static final Logger LOGGER = getLogger(CheckedBoardState.class);
+
+        CheckedBoardStateImpl(Board board, Color checkedColor) {
+            super(LOGGER, BoardState.Type.CHECKED, board, checkedColor);
+        }
+
+        @Override
+        public Collection<Action<?>> getActions(Piece<?> piece) {
+            var actions = super.getActions(piece);
+            if (!Objects.equals(piece.getColor(), color)) {
+                return actions;
+            }
+
+            var optionalKing = board.getKing(color);
+            if (optionalKing.isEmpty()) {
+                return actions;
+            }
+
+            var king = optionalKing.get();
+            var evaluator = new CheckActionEvaluatorImpl(
+                    Objects.equals(piece, king) ? KING : PIECE,
+                    board,
+                    actions
+            );
+
+            return evaluator.evaluate(king);
         }
     }
 }
