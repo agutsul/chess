@@ -1,4 +1,5 @@
 package com.agutsul.chess.board.state;
+
 import static com.agutsul.chess.board.state.BoardStateFactory.fiftyMovesBoardState;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 

@@ -13,6 +13,7 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.activity.action.memento.CancelActionMementoFactory;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.CommandException;
 import com.agutsul.chess.game.AbstractPlayableGame;
@@ -57,7 +58,7 @@ public final class CancelActionCommand
 
     @Override
     protected void executeInternal() throws CommandException {
-        ((Observable) this.game).notifyObservers(new ActionCancellingEvent(this.action));
+        notifyGameObservers(new ActionCancellingEvent(this.action));
 
         try {
             this.action.execute();
@@ -65,7 +66,11 @@ public final class CancelActionCommand
             throw new CommandException(e.getMessage());
         }
 
-        ((Observable) this.game).notifyObservers(new ActionCancelledEvent(this.color));
+        notifyGameObservers(new ActionCancelledEvent(this.color));
+    }
+
+    private void notifyGameObservers(Event event) {
+        ((Observable) this.game).notifyObservers(event);
     }
 
     private static Action<?> createAction(Board board, ActionMemento<?,?> memento) {

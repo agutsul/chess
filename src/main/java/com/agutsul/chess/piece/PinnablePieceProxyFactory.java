@@ -35,7 +35,8 @@ enum PinnablePieceProxyFactory {
     }
 
     @SuppressWarnings("unchecked")
-    static <PIECE extends Piece<?> & Pinnable> PIECE pinnableProxy(Board board, PIECE piece) {
+    static <PIECE extends Piece<?> & Pinnable,PROXY extends PieceProxy<PIECE> & Pinnable> PROXY pinnableProxy(Board board, PIECE piece) {
+
         if (board == null || piece == null) {
             return null;
         }
@@ -45,7 +46,7 @@ enum PinnablePieceProxyFactory {
             return null;
         }
 
-        return (PIECE) factory.apply(board, piece);
+        return (PROXY) factory.apply(board, piece);
     }
 
     private BiFunction<Board,Piece<?>,AbstractPinnablePieceProxy<?>> function() {

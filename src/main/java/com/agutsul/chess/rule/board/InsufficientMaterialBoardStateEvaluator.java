@@ -1,4 +1,5 @@
 package com.agutsul.chess.rule.board;
+
 import static com.agutsul.chess.board.state.BoardStateFactory.insufficientMaterialBoardState;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;

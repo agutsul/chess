@@ -1,4 +1,5 @@
 package com.agutsul.chess.game;
+
 import static com.agutsul.chess.board.state.BoardStateFactory.agreedDefeatBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.agreedDrawBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.checkMatedBoardState;

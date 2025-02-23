@@ -1,4 +1,5 @@
 package com.agutsul.chess.rule.board;
+
 import static com.agutsul.chess.board.state.BoardStateFactory.checkMatedBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.checkedBoardState;
 import static org.junit.jupiter.api.Assertions.assertEquals;

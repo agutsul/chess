@@ -1,4 +1,5 @@
 package com.agutsul.chess.board;
+
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
@@ -427,7 +428,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     void setPieces(Collection<Piece<?>> pieces) {
         this.pieceCache = new PieceCacheImpl(pieces, this.executorService);
-        refreshPieceCache();
+        refresh();
     }
 
     PieceFactory getWhitePieceFactory() {
@@ -438,7 +439,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         return blackPieceFactory;
     }
 
-    private void refreshPieceCache() {
+    private void refresh() {
         this.pieceCache.refresh();
     }
 
@@ -457,7 +458,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         @Override
         public void observe(Event event) {
             if (event instanceof ClearPieceDataEvent) {
-                refreshPieceCache();
+                refresh();
             } else if (event instanceof GameOverEvent) {
                 try {
                     close();

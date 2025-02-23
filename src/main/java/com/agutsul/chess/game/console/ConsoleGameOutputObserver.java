@@ -145,7 +145,6 @@ public final class ConsoleGameOutputObserver
         displayBoard(((AbstractPlayableGame) this.game).getBoard());
     }
 
-
     @Override
     protected void process(DefeatExecutionEvent event) {
         var player = event.getPlayer();

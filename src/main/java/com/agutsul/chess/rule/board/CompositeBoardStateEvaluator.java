@@ -1,4 +1,5 @@
 package com.agutsul.chess.rule.board;
+
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;

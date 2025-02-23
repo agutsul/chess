@@ -268,7 +268,7 @@ abstract class AbstractPiece<COLOR extends Color>
     public void dispose(Instant instant) {
         LOGGER.info("Disposing '{}' at '{}'", this, instant);
 
-        clearCalculatedData();
+        clear();
         this.board.removeObserver(this.observer);
 
         setState((PieceState<?>) createDisposedPieceState(instant));
@@ -277,7 +277,7 @@ abstract class AbstractPiece<COLOR extends Color>
     public void restore() {
         LOGGER.info("Restoring '{}'", this);
 
-        clearCalculatedData();
+        clear();
 
         this.observer = new ActionEventObserver();
         this.board.addObserver(this.observer);
@@ -365,8 +365,8 @@ abstract class AbstractPiece<COLOR extends Color>
         this.positions.add(position);
     }
 
-    private void clearCalculatedData() {
-        LOGGER.info("Clear '{}' cached actions/imports", this);
+    private void clear() {
+        LOGGER.info("Clear '{}' cached actions/impacts", this);
         this.actionCache.clear();
         this.impactCache.clear();
     }
@@ -383,7 +383,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
         private void process(ClearPieceDataEvent event) {
             if (Objects.equals(getColor(), event.getColor())) {
-                clearCalculatedData();
+                clear();
             }
         }
     }
