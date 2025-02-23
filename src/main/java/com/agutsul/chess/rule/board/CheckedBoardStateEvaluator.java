@@ -14,7 +14,6 @@ import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 
 final class CheckedBoardStateEvaluator
@@ -36,16 +35,6 @@ final class CheckedBoardStateEvaluator
         }
 
         var king = optionalKing.get();
-
-        var isChecked = isChecked(king);
-        king.setChecked(isChecked);
-
-        return isChecked
-                ? Optional.of(checkedBoardState(board, color))
-                : Optional.empty();
-    }
-
-    private boolean isChecked(KingPiece<Color> king) {
         var isChecked = board.getPieces(king.getColor().invert()).stream()
                 .filter(piece -> !Piece.Type.KING.equals(piece.getType()))
                 .map(piece -> board.getImpacts(piece, Impact.Type.CHECK))
@@ -54,6 +43,10 @@ final class CheckedBoardStateEvaluator
                 .map(PieceCheckImpact::getTarget)
                 .anyMatch(piece -> Objects.equals(piece, king));
 
-        return isChecked;
+        king.setChecked(isChecked);
+
+        return isChecked
+                ? Optional.of(checkedBoardState(board, color))
+                : Optional.empty();
     }
 }
