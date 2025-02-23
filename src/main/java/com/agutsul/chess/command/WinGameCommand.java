@@ -52,7 +52,7 @@ public final class WinGameCommand
                 || currentState.isTerminal()) {
 
             throw new IllegalActionException(String.format(
-                    "%s: Unable to win while being in '%s' state",
+                    "%s: Unable to win while being in '%s' board state",
                     player.getColor(),
                     currentState
             ));
@@ -61,7 +61,7 @@ public final class WinGameCommand
         var boardStates = new ArrayList<>(board.getStates());
         if (boardStates.size() < 2) {
             throw new IllegalActionException(String.format(
-                    "%s: Unable to win with unknown opponent's state",
+                    "%s: Unable to win with unknown opponent's board state",
                     player.getColor()
             ));
         }
@@ -70,7 +70,7 @@ public final class WinGameCommand
         var opponentState = boardStates.get(boardStates.size() - 2);
         if (!opponentState.isType(INSUFFICIENT_MATERIAL)) {
             throw new IllegalActionException(String.format(
-                    "%s: Unable to win with '%s' opponent's state",
+                    "%s: Unable to win with '%s' opponent's board state",
                     player.getColor(),
                     opponentState
             ));
