@@ -1,6 +1,7 @@
 package com.agutsul.chess.command;
 
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
+import static com.agutsul.chess.board.state.BoardStateFactory.fiveFoldRepetitionBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.insufficientMaterialBoardState;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -100,6 +101,30 @@ public class WinGameCommandTest {
 
         assertEquals(
                 "WHITE: Unable to win while being in 'INSUFFICIENT_MATERIAL' board state",
+                thrown.getMessage()
+        );
+
+        verify(game, times(1)).notifyObservers(any(WinExecutionEvent.class));
+    }
+
+    @Test
+    void testWinGameCommandDuringTerminalBoardStateException() {
+        var board = mock(Board.class);
+        when(board.getState())
+            .thenReturn(fiveFoldRepetitionBoardState(board, Colors.WHITE));
+
+        var game = mock(AbstractPlayableGame.class);
+        when(game.getBoard())
+            .thenReturn(board);
+
+        var command = new WinGameCommand(game, new UserPlayer("test", Colors.WHITE));
+        var thrown = assertThrows(
+                IllegalActionException.class,
+                () -> command.execute()
+        );
+
+        assertEquals(
+                "WHITE: Unable to win while being in 'FIVE_FOLD_REPETITION' board state",
                 thrown.getMessage()
         );
 
