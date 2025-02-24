@@ -10,6 +10,7 @@ import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.ArrayUtils.getLength;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.apache.commons.lang3.StringUtils.contains;
+import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.apache.commons.lang3.StringUtils.split;
 import static org.apache.commons.lang3.ThreadUtils.sleepQuietly;
 
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -120,16 +122,9 @@ public abstract class AbstractPlayerInputObserver
         );
 
         try {
-            if (UNDO_COMMAND.equalsIgnoreCase(command)) {
-                processUndoCommand(this.player);
-            } else if (DRAW_COMMAND.equalsIgnoreCase(command)) {
-                processDrawCommand(this.player);
-            } else if (DEFEAT_COMMAND.equalsIgnoreCase(command)) {
-                processDefeatCommand(this.player);
-            } else if (WIN_COMMAND.equalsIgnoreCase(command)) {
-                processWinCommand(this.player);
-            } else if (EXIT_COMMAND.equalsIgnoreCase(command)) {
-                processExitCommand(this.player);
+            var eventFactory = PlayerActionEventFactory.of(command);
+            if (eventFactory != null) {
+                notifyGameEvent(eventFactory.create(this.player));
             } else if (contains(command, SPACE)) {
                 processActionCommand(this.player, command);
             } else {
@@ -156,26 +151,6 @@ public abstract class AbstractPlayerInputObserver
         return unmodifiableMap(processors);
     }
 
-    private void processUndoCommand(Player player) {
-        notifyGameEvent(new PlayerCancelActionEvent(player));
-    }
-
-    private void processDrawCommand(Player player) {
-        notifyGameEvent(new PlayerDrawActionEvent(player));
-    }
-
-    private void processDefeatCommand(Player player) {
-        notifyGameEvent(new PlayerDefeatActionEvent(player));
-    }
-
-    private void processWinCommand(Player player) {
-        notifyGameEvent(new PlayerWinActionEvent(player));
-    }
-
-    private void processExitCommand(Player player) {
-        notifyGameEvent(new PlayerExitActionEvent(player));
-    }
-
     private void processActionCommand(Player player, String command) {
         var positions = split(command, SPACE);
         if (getLength(positions) != 2) {
@@ -200,5 +175,36 @@ public abstract class AbstractPlayerInputObserver
         // display error message to player
         notifyGameEvent(new PlayerActionExceptionEvent(message));
         sleepQuietly(Duration.ofMillis(1));
+    }
+
+    private enum PlayerActionEventFactory {
+        UNDO_MODE(UNDO_COMMAND,     player -> new PlayerCancelActionEvent(player)),
+        DRAW_MODE(DRAW_COMMAND,     player -> new PlayerDrawActionEvent(player)),
+        WIN_MODE(WIN_COMMAND,       player -> new PlayerWinActionEvent(player)),
+        DEFEAT_MODE(DEFEAT_COMMAND, player -> new PlayerDefeatActionEvent(player)),
+        EXIT_MODE(EXIT_COMMAND,     player -> new PlayerExitActionEvent(player));
+
+        private static final Map<String,PlayerActionEventFactory> MODES =
+                Stream.of(values()).collect(toMap(PlayerActionEventFactory::command, identity()));
+
+        private String command;
+        private Function<Player,Event> function;
+
+        PlayerActionEventFactory(String command, Function<Player,Event> function) {
+            this.command = command;
+            this.function = function;
+        }
+
+        public static PlayerActionEventFactory of(String command) {
+            return MODES.get(lowerCase(command));
+        }
+
+        public Event create(Player player) {
+            return function.apply(player);
+        }
+
+        private String command() {
+            return command;
+        }
     }
 }
