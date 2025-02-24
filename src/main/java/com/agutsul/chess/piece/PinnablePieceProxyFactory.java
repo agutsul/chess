@@ -41,12 +41,12 @@ enum PinnablePieceProxyFactory {
             return null;
         }
 
-        var factory = MODES.get(piece.getType());
-        if (factory == null) {
+        var function = MODES.get(piece.getType());
+        if (function == null) {
             return null;
         }
 
-        return (PROXY) factory.apply(board, piece);
+        return (PROXY) function.apply(board, piece);
     }
 
     private BiFunction<Board,Piece<?>,AbstractPinnablePieceProxy<?>> function() {
