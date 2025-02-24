@@ -12,6 +12,7 @@ import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.apache.commons.lang3.StringUtils.contains;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.apache.commons.lang3.StringUtils.split;
+import static org.apache.commons.lang3.StringUtils.strip;
 import static org.apache.commons.lang3.ThreadUtils.sleepQuietly;
 
 import java.time.Duration;
@@ -114,7 +115,7 @@ public abstract class AbstractPlayerInputObserver
     }
 
     protected void process(RequestPlayerActionEvent event) {
-        var command = getActionCommand();
+        var command = strip(getActionCommand());
 
         logger.debug("Processing player '{}' command '{}'",
                 this.player.getName(),
