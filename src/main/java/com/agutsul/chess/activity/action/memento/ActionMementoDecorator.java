@@ -2,8 +2,9 @@ package com.agutsul.chess.activity.action.memento;
 
 import java.time.LocalDateTime;
 
-import com.agutsul.chess.activity.action.Action.Type;
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.piece.Piece;
 
 public final class ActionMementoDecorator<SOURCE,TARGET>
         implements ActionMemento<SOURCE,TARGET> {
@@ -32,12 +33,12 @@ public final class ActionMementoDecorator<SOURCE,TARGET>
     }
 
     @Override
-    public Type getActionType() {
+    public Action.Type getActionType() {
         return origin.getActionType();
     }
 
     @Override
-    public com.agutsul.chess.piece.Piece.Type getPieceType() {
+    public Piece.Type getPieceType() {
         return origin.getPieceType();
     }
 
