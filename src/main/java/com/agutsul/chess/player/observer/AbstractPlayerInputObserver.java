@@ -13,6 +13,7 @@ import static org.apache.commons.lang3.StringUtils.contains;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.apache.commons.lang3.StringUtils.split;
 import static org.apache.commons.lang3.StringUtils.strip;
+import static org.apache.commons.lang3.StringUtils.upperCase;
 import static org.apache.commons.lang3.ThreadUtils.sleepQuietly;
 
 import java.time.Duration;
@@ -98,7 +99,7 @@ public abstract class AbstractPlayerInputObserver
     protected abstract String getPromotionPieceType();
 
     protected void process(RequestPromotionPieceTypeEvent event) {
-        var selectedType = getPromotionPieceType();
+        var selectedType = upperCase(strip(getPromotionPieceType()));
 
         logger.debug("Processing selected pawn promotion type '{}'", selectedType);
 
@@ -135,7 +136,6 @@ public abstract class AbstractPlayerInputObserver
             }
         } catch (Exception e) {
             logger.error("Processing player action failed", e);
-
             notifyExceptionEvent(e.getMessage());
 
             // re-ask player action
