@@ -116,7 +116,7 @@ public abstract class AbstractPlayerInputObserver
     }
 
     protected void process(RequestPlayerActionEvent event) {
-        var command = strip(getActionCommand());
+        var command = getActionCommand();
 
         logger.debug("Processing player '{}' command '{}'",
                 this.player.getName(),
@@ -128,7 +128,7 @@ public abstract class AbstractPlayerInputObserver
             if (eventFactory != null) {
                 notifyGameEvent(eventFactory.create(this.player));
             } else if (contains(command, SPACE)) {
-                processActionCommand(this.player, command);
+                processActionCommand(command);
             } else {
                 throw new IllegalActionException(
                         String.format("%s: '%s'", UNABLE_TO_PROCESS_MESSAGE, command)
@@ -152,15 +152,19 @@ public abstract class AbstractPlayerInputObserver
         return unmodifiableMap(processors);
     }
 
-    private void processActionCommand(Player player, String command) {
-        var positions = split(command, SPACE);
+    private void processActionCommand(String command) {
+        var positions = split(lowerCase(command), SPACE);
         if (getLength(positions) != 2) {
             throw new IllegalActionException(
                     String.format("%s: '%s'", INVALID_ACTION_FORMAT_MESSAGE, command)
             );
         }
 
-        notifyGameEvent(new PlayerActionEvent(player, positions[0], positions[1]));
+        notifyGameEvent(new PlayerActionEvent(
+                player,
+                strip(positions[0]),
+                strip(positions[1])
+        ));
     }
 
     private void notifyBoardEvent(Event event) {
@@ -197,7 +201,7 @@ public abstract class AbstractPlayerInputObserver
         }
 
         public static PlayerActionEventFactory of(String command) {
-            return MODES.get(lowerCase(command));
+            return MODES.get(strip(lowerCase(command)));
         }
 
         public Event create(Player player) {
