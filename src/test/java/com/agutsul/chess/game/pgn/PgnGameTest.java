@@ -28,7 +28,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_white.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 157, 10);
+        assertGame(game, GameState.Type.WHITE_WIN, 157, 5);
     }
 
     @Test
@@ -36,7 +36,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_black.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.BLACK_WIN, 90, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 90, 10);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_drawn.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.DRAWN_GAME, 121, 11);
+        assertGame(game, GameState.Type.DRAWN_GAME, 121, 6);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_promote_mate.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 95, 15);
+        assertGame(game, GameState.Type.WHITE_WIN, 95, 10);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_monitored_position.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 53, 15);
+        assertGame(game, GameState.Type.WHITE_WIN, 53, 10);
     }
 
     @Test
@@ -91,7 +91,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_unprotected_attacker_check.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 23, 15);
+        assertGame(game, GameState.Type.WHITE_WIN, 23, 10);
     }
 
     @Test
@@ -99,7 +99,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_protected_attacker_check.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 115, 15);
+        assertGame(game, GameState.Type.WHITE_WIN, 115, 10);
     }
 
     @Test
@@ -107,7 +107,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_cyclic_castling_evaluation.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.BLACK_WIN, 122, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 122, 10);
     }
 
     @Test
@@ -115,7 +115,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_capture_non_attacker_while_checked.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 97, 15);
+        assertGame(game, GameState.Type.WHITE_WIN, 97, 10);
     }
 
     @Test
@@ -123,7 +123,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_monitoring_empty_position.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 65, 15);
+        assertGame(game, GameState.Type.WHITE_WIN, 65, 10);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_move_inside_pinned_line.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.BLACK_WIN, 72, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 72, 10);
     }
 
     @Test
@@ -139,7 +139,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_anderssen_defense.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 57, 15);
+        assertGame(game, GameState.Type.WHITE_WIN, 57, 10);
     }
 
     @Test
@@ -147,7 +147,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_monitored_by_non_check_piece.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 57, 15);
+        assertGame(game, GameState.Type.WHITE_WIN, 57, 10);
     }
 
     @Test
@@ -155,7 +155,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_complex_action_format_with_promotion.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.BLACK_WIN, 106, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 106, 10);
     }
 
     @Test
@@ -163,7 +163,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_complex_action_format_with_capture_promotion.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.BLACK_WIN, 86, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 86, 10);
     }
 
     @Test
@@ -171,7 +171,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_checkmate_failure.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.BLACK_WIN, 100, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 100, 10);
     }
 
     @Test
@@ -179,7 +179,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_pinned_piece_selection.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 47, 15);
+        assertGame(game, GameState.Type.WHITE_WIN, 47, 10);
     }
 
     @Test
@@ -187,7 +187,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_protected_piece.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 75, 15);
+        assertGame(game, GameState.Type.WHITE_WIN, 75, 10);
     }
 
     @Test
@@ -197,7 +197,7 @@ public class PgnGameTest implements TestFileReader {
 
         assertEquals(140, game.getParsedActions().size());
         assertEquals(GameState.Type.BLACK_WIN, game.getParsedGameState().getType());
-        assertEquals(15, game.getParsedTags().size());
+        assertEquals(10, game.getParsedTags().size());
 
         game.run();
 
@@ -215,7 +215,7 @@ public class PgnGameTest implements TestFileReader {
 
         assertEquals(255, game.getParsedActions().size());
         assertEquals(GameState.Type.DRAWN_GAME, game.getParsedGameState().getType());
-        assertEquals(15, game.getParsedTags().size());
+        assertEquals(10, game.getParsedTags().size());
 
         game.run();
 
@@ -235,7 +235,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_wrong_castling_selection.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.BLACK_WIN, 54, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 54, 10);
     }
 
     @Test
@@ -243,7 +243,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_checkmaker_attack_eval.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 51, 15);
+        assertGame(game, GameState.Type.WHITE_WIN, 51, 10);
     }
 
     @Test
@@ -251,7 +251,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_unavailable_position.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.BLACK_WIN, 66, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 66, 10);
     }
 
     @Test
@@ -259,7 +259,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_stalemate_monitored_position.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.BLACK_WIN, 136, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 136, 10);
     }
 
     @Test
@@ -267,7 +267,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_early_stalemate_failure.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 105, 15);
+        assertGame(game, GameState.Type.WHITE_WIN, 105, 10);
     }
 
     @Test
@@ -275,7 +275,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_king_capture_non_attacker.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 69, 15);
+        assertGame(game, GameState.Type.WHITE_WIN, 69, 10);
     }
 
     @Test
@@ -283,7 +283,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_king_capture_checker.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.BLACK_WIN, 92, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 92, 10);
     }
 
     @Test
@@ -291,7 +291,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_checkmaker_capture_by_enpassante.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 89, 15);
+        assertGame(game, GameState.Type.WHITE_WIN, 89, 10);
     }
 
     @Test
@@ -299,7 +299,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_multirook_action_selection.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.BLACK_WIN, 52, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 52, 10);
     }
 
     @Test
@@ -307,7 +307,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_multi_piece_check.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 101, 15);
+        assertGame(game, GameState.Type.WHITE_WIN, 101, 10);
     }
 
     @Test
@@ -315,7 +315,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_pinned_piece_move.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 91, 16);
+        assertGame(game, GameState.Type.WHITE_WIN, 91, 11);
     }
 
     @Test
@@ -323,7 +323,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_single_king_insufficient_material.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 80, 15);
+        assertGame(game, GameState.Type.WHITE_WIN, 80, 10);
     }
 
     @Test
@@ -331,7 +331,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_king_blocked_pawns_insufficient_material.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.BLACK_WIN, 65, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 65, 10);
     }
 
     @Test
@@ -339,7 +339,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_insufficient_material_for_win_requestor.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.BLACK_WIN, 122, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 122, 10);
     }
 
     @Test
@@ -347,7 +347,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_insufficient_material_pinned_pawn.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.BLACK_WIN, 120, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 120, 10);
     }
 
     @Test
@@ -355,7 +355,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_insufficient_material_control_pawn_move_position.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.BLACK_WIN, 80, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 80, 10);
     }
 
     @Test
@@ -363,7 +363,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_insufficient_material_wrong_color.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.BLACK_WIN, 57, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 57, 10);
     }
 
     @Test
@@ -371,7 +371,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_short_game.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.BLACK_WIN, 2, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 2, 10);
     }
 
     @Test
@@ -379,7 +379,7 @@ public class PgnGameTest implements TestFileReader {
         var games = parseGames(readFileContent("chess_action_count_comparison.pgn"), 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 7, 15);
+        assertGame(game, GameState.Type.WHITE_WIN, 7, 10);
     }
 
     private static void assertGame(PgnGame game, GameState.Type expectedGameState,

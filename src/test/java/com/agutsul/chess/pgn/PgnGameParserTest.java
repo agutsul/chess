@@ -24,7 +24,7 @@ public class PgnGameParserTest implements TestFileReader {
         var games = parseGames("chess_white.pgn", 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.WHITE_WIN, 157, 10);
+        assertGame(game, GameState.Type.WHITE_WIN, 157, 5);
     }
 
     @Test
@@ -32,7 +32,7 @@ public class PgnGameParserTest implements TestFileReader {
         var games = parseGames("chess_black.pgn", 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.BLACK_WIN, 90, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 90, 10);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class PgnGameParserTest implements TestFileReader {
         var games = parseGames("chess_drawn.pgn", 1);
         var game = (PgnGame) games.get(0);
 
-        assertGame(game, GameState.Type.DRAWN_GAME, 121, 11);
+        assertGame(game, GameState.Type.DRAWN_GAME, 121, 6);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class PgnGameParserTest implements TestFileReader {
         assertEquals(1, games.size());
 
         var game = (PgnGame) games.get(0);
-        assertGame(game, GameState.Type.BLACK_WIN, 26, 15);
+        assertGame(game, GameState.Type.BLACK_WIN, 26, 10);
     }
 
     private static void assertGame(PgnGame game, GameState.Type expectedGameState,

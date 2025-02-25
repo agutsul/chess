@@ -65,9 +65,9 @@ final class PgnAntlrListener
             this.gameBuilder.withBlackPlayer(tagValue); break;
         case TERMINATION_TAG:
             this.gameBuilder.withGameTermination(tagValue); break;
+        default:
+            this.gameBuilder.addTag(tagName, tagValue);
         }
-
-        this.gameBuilder.addTag(tagName, tagValue);
     }
 
     @Override
