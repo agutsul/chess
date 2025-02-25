@@ -15,25 +15,32 @@ public final class PawnPieceActionRule
 
     public PawnPieceActionRule(Board board, int step, int initialLine, int promotionLine) {
         this(board, promotionLine,
-                new PawnMoveAlgo<>(board, step, initialLine),
+                new PawnMoveAlgo<>(board, step),
+                new PawnBigMoveAlgo<>(board, step, initialLine),
                 new PawnCaptureAlgo<>(board, step)
         );
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private PawnPieceActionRule(Board board, int promotionLine,
                                 PawnMoveAlgo<?,?> moveAlgo,
+                                PawnBigMoveAlgo<?,?> bigMoveAlgo,
                                 PawnCaptureAlgo<?,?> captureAlgo) {
 
-        super(createRule(board, promotionLine, moveAlgo, captureAlgo));
+        super(createRule(board,
+                new PawnPromoteAlgo(board, promotionLine, moveAlgo, captureAlgo),
+                moveAlgo,
+                bigMoveAlgo,
+                captureAlgo
+        ));
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private static CompositePieceRule<Action<?>,Action.Type> createRule(Board board,
-                                                                        int promotionLine,
+                                                                        PawnPromoteAlgo promoteAlgo,
                                                                         PawnMoveAlgo moveAlgo,
+                                                                        PawnBigMoveAlgo bigMoveAlgo,
                                                                         PawnCaptureAlgo captureAlgo) {
-
-        var promoteAlgo = new PawnPromoteAlgo<>(board, promotionLine, moveAlgo, captureAlgo);
 
         var moveActionRule = new PawnMoveActionRule<>(board, moveAlgo);
         var captureActionRule = new PawnCaptureActionRule<>(board, captureAlgo);
@@ -43,7 +50,8 @@ public final class PawnPieceActionRule
                 new PawnPromoteActionRule<>(board, promoteAlgo, captureActionRule),
                 new PawnPromoteActionRule<>(board, promoteAlgo, moveActionRule),
                 captureActionRule,
-                moveActionRule
+                moveActionRule,
+                new PawnBigMoveActionRule<>(board, moveAlgo, bigMoveAlgo)
         );
     }
 

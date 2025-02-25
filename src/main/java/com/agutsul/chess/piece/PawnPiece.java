@@ -16,4 +16,5 @@ public interface PawnPiece<COLOR extends Color>
                 EnPassantable, Disposable, Restorable,
                 Pinnable, Protectable, Blockable {
 
+    int BIG_STEP_MOVE = 2;
 }

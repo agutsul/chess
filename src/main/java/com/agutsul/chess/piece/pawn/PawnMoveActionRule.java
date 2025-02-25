@@ -24,6 +24,18 @@ class PawnMoveActionRule<COLOR extends Color,
 
     @Override
     protected Collection<Calculated> calculate(PAWN piece) {
+        return calculate(algo, piece);
+    }
+
+    @Override
+    protected PieceMoveAction<COLOR,PAWN> createAction(PAWN pawn,
+                                                       Position position) {
+        return new PieceMoveAction<>(pawn, position);
+    }
+
+    protected Collection<Calculated> calculate(MovePieceAlgo<COLOR,PAWN,Calculated> algo,
+                                               PAWN piece) {
+
         var calculatedPositions = algo.calculate(piece);
 
         var positions = new ArrayList<Calculated>();
@@ -35,11 +47,5 @@ class PawnMoveActionRule<COLOR extends Color,
         }
 
         return positions;
-    }
-
-    @Override
-    protected PieceMoveAction<COLOR,PAWN> createAction(PAWN pawn,
-                                                       Position position) {
-        return new PieceMoveAction<>(pawn, position);
     }
 }
