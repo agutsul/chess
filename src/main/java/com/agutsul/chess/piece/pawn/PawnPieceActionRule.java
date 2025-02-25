@@ -5,42 +5,49 @@ import java.util.LinkedHashMap;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
+import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 
-public final class PawnPieceActionRule
+public final class PawnPieceActionRule<COLOR extends Color,PAWN extends PawnPiece<COLOR>>
         extends AbstractPieceRule<Action<?>,Action.Type> {
 
     public PawnPieceActionRule(Board board, int step, int initialLine, int promotionLine) {
         this(board, promotionLine,
-                new PawnMoveAlgo<>(board, step),
-                new PawnBigMoveAlgo<>(board, step, initialLine),
-                new PawnCaptureAlgo<>(board, step)
+                new PawnMoveAlgo<COLOR,PAWN>(board, step),
+                new PawnBigMoveAlgo<COLOR,PAWN>(board, step, initialLine),
+                new PawnCaptureAlgo<COLOR,PAWN>(board, step)
         );
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     private PawnPieceActionRule(Board board, int promotionLine,
-                                PawnMoveAlgo<?,?> moveAlgo,
-                                PawnBigMoveAlgo<?,?> bigMoveAlgo,
-                                PawnCaptureAlgo<?,?> captureAlgo) {
+                                PawnMoveAlgo<COLOR,PAWN> moveAlgo,
+                                PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
+                                PawnCaptureAlgo<COLOR,PAWN> captureAlgo) {
 
-        super(createRule(board,
-                new PawnPromoteAlgo(board, promotionLine, moveAlgo, captureAlgo),
-                moveAlgo,
-                bigMoveAlgo,
-                captureAlgo
-        ));
+        this(board, moveAlgo, bigMoveAlgo, captureAlgo,
+                new PawnPromoteAlgo<COLOR,PAWN>(board, promotionLine, moveAlgo, captureAlgo)
+        );
+    }
+
+    private PawnPieceActionRule(Board board,
+                                PawnMoveAlgo<COLOR,PAWN> moveAlgo,
+                                PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
+                                PawnCaptureAlgo<COLOR,PAWN> captureAlgo,
+                                PawnPromoteAlgo<COLOR,PAWN> promoteAlgo) {
+
+        super(createRule(board, moveAlgo, bigMoveAlgo, captureAlgo, promoteAlgo));
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private static CompositePieceRule<Action<?>,Action.Type> createRule(Board board,
-                                                                        PawnPromoteAlgo promoteAlgo,
                                                                         PawnMoveAlgo moveAlgo,
                                                                         PawnBigMoveAlgo bigMoveAlgo,
-                                                                        PawnCaptureAlgo captureAlgo) {
+                                                                        PawnCaptureAlgo captureAlgo,
+                                                                        PawnPromoteAlgo promoteAlgo) {
 
         var moveActionRule = new PawnMoveActionRule<>(board, moveAlgo);
         var captureActionRule = new PawnCaptureActionRule<>(board, captureAlgo);

@@ -40,8 +40,8 @@ final class PawnPieceImpl<COLOR extends Color>
 
         this(board, color, unicode, position, direction,
                 new ActiveEnPassantablePieceState<>(board,
-                        new PawnPieceActionRule(board, direction, initialLine, promotionLine),
-                        new PawnPieceImpactRule(board, direction, promotionLine)
+                        new PawnPieceActionRule<>(board, direction, initialLine, promotionLine),
+                        new PawnPieceImpactRule<>(board, direction, promotionLine)
                 )
         );
     }
