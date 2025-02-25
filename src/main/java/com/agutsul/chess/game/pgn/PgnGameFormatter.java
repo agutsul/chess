@@ -17,12 +17,14 @@ import com.agutsul.chess.journal.JournalFormatter.Mode;
 import com.agutsul.chess.player.Player;
 
 public class PgnGameFormatter {
-
+    // Seven Tag Roster - STR
     private static final String EVENT_TAG = "Event";
+    private static final String SITE_TAGE = "Site";
+    private static final String DATE_TAG  = "Date";
+    private static final String ROUND_TAG = "Round";
     private static final String WHITE_TAG = "White";
     private static final String BLACK_TAG = "Black";
     private static final String RESULT_TAG = "Result";
-    private static final String DATE_TAG = "Date";
 
     private static final String DATE_PATTERN = "yyyy.MM.dd";
 
@@ -31,11 +33,13 @@ public class PgnGameFormatter {
 
         var builder = new StringBuilder();
 
-        builder.append(format(EVENT_TAG,  EMPTY));
+        builder.append(format(EVENT_TAG,  game.getEvent()));
+        builder.append(format(SITE_TAGE,  game.getSite()));
+        builder.append(format(DATE_TAG,   format(game.getStartedAt())));
+        builder.append(format(ROUND_TAG,  game.getRound()));
         builder.append(format(WHITE_TAG,  format(game.getWhitePlayer())));
         builder.append(format(BLACK_TAG,  format(game.getBlackPlayer())));
         builder.append(format(RESULT_TAG, gameState));
-        builder.append(format(DATE_TAG,   format(game.getStartedAt())));
 
         builder.append(lineSeparator());
 

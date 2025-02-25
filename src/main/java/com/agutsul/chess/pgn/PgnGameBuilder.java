@@ -22,6 +22,9 @@ final class PgnGameBuilder
     private final List<String> actions = new ArrayList<>();
     private final Map<String,String> tags = new HashMap<>();
 
+    private String event;
+    private String site;
+    private String round;
     private String whitePlayer;
     private String blackPlayer;
     private String gameState;
@@ -34,10 +37,32 @@ final class PgnGameBuilder
 
         var game = new PgnGame(player1, player2, tags, actions);
 
+        game.setEvent(event);
+        game.setSite(site);
+        game.setRound(round);
+
         game.setParsedGameState(resolveState(gameState));
         game.setParsedTermination(Termination.codeOf(terminationType));
 
         return game;
+    }
+
+    @Override
+    public GameBuilderDecorator withEvent(String event) {
+        this.event = event;
+        return this;
+    }
+
+    @Override
+    public GameBuilderDecorator withSite(String site) {
+        this.site = site;
+        return this;
+    }
+
+    @Override
+    public GameBuilderDecorator withRound(String round) {
+        this.round = round;
+        return this;
     }
 
     @Override

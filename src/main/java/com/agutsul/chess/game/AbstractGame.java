@@ -20,6 +20,10 @@ abstract class AbstractGame
     protected final Player whitePlayer;
     protected final Player blackPlayer;
 
+    protected String event;
+    protected String site;
+    protected String round;
+
     protected LocalDateTime startedAt;
     protected LocalDateTime finishedAt;
 
@@ -27,6 +31,21 @@ abstract class AbstractGame
         this.logger = logger;
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
+    }
+
+    @Override
+    public final String getEvent() {
+        return event;
+    }
+
+    @Override
+    public final String getSite() {
+        return site;
+    }
+
+    @Override
+    public final String getRound() {
+        return round;
     }
 
     @Override

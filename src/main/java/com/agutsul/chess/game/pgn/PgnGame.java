@@ -50,6 +50,18 @@ public final class PgnGame
 //        addObserver(new ConsoleGameOutputObserver(this));
     }
 
+    public void setEvent(String parsedEvent) {
+        this.event = parsedEvent;
+    }
+
+    public void setSite(String parsedSite) {
+        this.site = parsedSite;
+    }
+
+    public void setRound(String parsedRound) {
+        this.round = parsedRound;
+    }
+
     public GameState getParsedGameState() {
         return this.parsedGameState;
     }

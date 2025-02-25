@@ -8,6 +8,10 @@ import org.apache.commons.lang3.builder.Builder;
 public interface GameBuilderDecorator
         extends Builder<Game> {
 
+    GameBuilderDecorator withEvent(String event);
+    GameBuilderDecorator withSite(String site);
+    GameBuilderDecorator withRound(String round);
+
     GameBuilderDecorator withWhitePlayer(String playerName);
     GameBuilderDecorator withBlackPlayer(String playerName);
 

@@ -9,6 +9,9 @@ import com.agutsul.chess.game.Game;
 final class PgnAntlrListener
         extends PGNBaseListener {
 
+    private static final String EVENT_TAG = "Event";
+    private static final String SITE_TAG = "Site";
+    private static final String ROUND_TAG = "Round";
     private static final String TERMINATION_TAG = "Termination";
 
     private final List<Game> games = new ArrayList<>();
@@ -47,6 +50,18 @@ final class PgnAntlrListener
 
         // STRING tokens starts and ends with " (a quote character)
         var tagValue = tagValueRaw.substring(1, tagValueRaw.length() - 1);
+
+        if (EVENT_TAG.equalsIgnoreCase(tagName)) {
+            this.gameBuilder.withEvent(tagValue);
+        }
+
+        if (SITE_TAG.equalsIgnoreCase(tagName)) {
+            this.gameBuilder.withSite(tagValue);
+        }
+
+        if (ROUND_TAG.equalsIgnoreCase(tagName)) {
+            this.gameBuilder.withRound(tagValue);
+        }
 
         if (Colors.WHITE.name().equalsIgnoreCase(tagName)) {
             this.gameBuilder.withWhitePlayer(tagValue);
