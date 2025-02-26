@@ -42,12 +42,13 @@ public final class PawnPieceActionRule<COLOR extends Color,PAWN extends PawnPiec
         super(createRule(board, moveAlgo, bigMoveAlgo, captureAlgo, promoteAlgo));
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static CompositePieceRule<Action<?>,Action.Type> createRule(Board board,
-                                                                        PawnMoveAlgo moveAlgo,
-                                                                        PawnBigMoveAlgo bigMoveAlgo,
-                                                                        PawnCaptureAlgo captureAlgo,
-                                                                        PawnPromoteAlgo promoteAlgo) {
+    @SuppressWarnings("unchecked")
+    private static <COLOR extends Color,PAWN extends PawnPiece<COLOR>>
+            CompositePieceRule<Action<?>,Action.Type> createRule(Board board,
+                                                                 PawnMoveAlgo<COLOR,PAWN> moveAlgo,
+                                                                 PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
+                                                                 PawnCaptureAlgo<COLOR,PAWN> captureAlgo,
+                                                                 PawnPromoteAlgo<COLOR,PAWN> promoteAlgo) {
 
         var moveActionRule = new PawnMoveActionRule<>(board, moveAlgo);
         var captureActionRule = new PawnCaptureActionRule<>(board, captureAlgo);
