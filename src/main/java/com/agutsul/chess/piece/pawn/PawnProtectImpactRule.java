@@ -6,7 +6,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
-import com.agutsul.chess.position.Calculated;
+import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.AbstractProtectPositionImpactRule;
 
 class PawnProtectImpactRule<COLOR extends Color,
@@ -16,7 +16,7 @@ class PawnProtectImpactRule<COLOR extends Color,
                                                   PieceProtectImpact<COLOR,PAWN,PIECE>> {
 
     PawnProtectImpactRule(Board board,
-                          CapturePieceAlgo<COLOR,PAWN,Calculated> algo) {
+                          CapturePieceAlgo<COLOR,PAWN,Position> algo) {
         super(board, algo);
     }
 

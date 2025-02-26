@@ -6,7 +6,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.KnightPiece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
-import com.agutsul.chess.position.Calculated;
+import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.AbstractCheckPositionImpactRule;
 
 class KnightCheckImpactRule<COLOR1 extends Color,
@@ -16,7 +16,8 @@ class KnightCheckImpactRule<COLOR1 extends Color,
         extends AbstractCheckPositionImpactRule<COLOR1,COLOR2,KNIGHT,KING,
                                                 PieceCheckImpact<COLOR1,COLOR2,KNIGHT,KING>> {
 
-    KnightCheckImpactRule(Board board, CapturePieceAlgo<COLOR1,KNIGHT,Calculated> algo) {
+    KnightCheckImpactRule(Board board,
+                          CapturePieceAlgo<COLOR1,KNIGHT,Position> algo) {
         super(board, algo);
     }
 

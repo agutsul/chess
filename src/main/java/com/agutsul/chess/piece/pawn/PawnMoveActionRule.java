@@ -18,7 +18,7 @@ class PawnMoveActionRule<COLOR extends Color,
                                                PieceMoveAction<COLOR,PAWN>> {
 
     PawnMoveActionRule(Board board,
-                       MovePieceAlgo<COLOR,PAWN,Calculated> algo) {
+                       MovePieceAlgo<COLOR,PAWN,Position> algo) {
         super(board, algo);
     }
 
@@ -33,14 +33,14 @@ class PawnMoveActionRule<COLOR extends Color,
         return new PieceMoveAction<>(pawn, position);
     }
 
-    protected Collection<Calculated> calculate(MovePieceAlgo<COLOR,PAWN,Calculated> algo,
+    protected Collection<Calculated> calculate(MovePieceAlgo<COLOR,PAWN,Position> algo,
                                                PAWN piece) {
 
         var calculatedPositions = algo.calculate(piece);
 
         var positions = new ArrayList<Calculated>();
         for (var position : calculatedPositions) {
-            if (!board.isEmpty((Position) position)) {
+            if (!board.isEmpty(position)) {
                 break;
             }
             positions.add(position);

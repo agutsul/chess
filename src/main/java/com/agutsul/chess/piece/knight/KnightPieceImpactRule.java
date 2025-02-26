@@ -12,11 +12,11 @@ public final class KnightPieceImpactRule<COLOR extends Color,PIECE extends Knigh
         extends AbstractPieceRule<Impact<?>,Impact.Type> {
 
     public KnightPieceImpactRule(Board board) {
-        this(board, new KnightPieceAlgo<COLOR,PIECE>(board));
+        this(board, new KnightPieceAlgo<>(board));
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private KnightPieceImpactRule(Board board, KnightPieceAlgo algo) {
+    @SuppressWarnings("unchecked")
+    private KnightPieceImpactRule(Board board, KnightPieceAlgo<COLOR,PIECE> algo) {
         super(new CompositePieceRule<>(
                 new KnightCheckImpactRule<>(board, algo),
                 new KnightProtectImpactRule<>(board, algo),

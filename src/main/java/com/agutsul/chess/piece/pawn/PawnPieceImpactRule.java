@@ -12,11 +12,11 @@ public final class PawnPieceImpactRule<COLOR extends Color,PAWN extends PawnPiec
         extends AbstractPieceRule<Impact<?>,Impact.Type> {
 
     public PawnPieceImpactRule(Board board, int step, int promotionLine) {
-        this(board, new PawnCaptureAlgo<COLOR,PAWN>(board, step), promotionLine);
+        this(board, new PawnCaptureAlgo<>(board, step), promotionLine);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private PawnPieceImpactRule(Board board, PawnCaptureAlgo captureAlgo, int promotionLine) {
+    @SuppressWarnings("unchecked")
+    private PawnPieceImpactRule(Board board, PawnCaptureAlgo<COLOR,PAWN> captureAlgo, int promotionLine) {
         super(new CompositePieceRule<>(
                 new PawnCheckImpactRule<>(board, captureAlgo),
                 new PawnProtectImpactRule<>(board, captureAlgo),

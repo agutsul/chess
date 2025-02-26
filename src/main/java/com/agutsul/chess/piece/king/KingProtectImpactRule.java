@@ -6,7 +6,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
-import com.agutsul.chess.position.Calculated;
+import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.AbstractProtectPositionImpactRule;
 
 class KingProtectImpactRule<COLOR extends Color,
@@ -16,7 +16,7 @@ class KingProtectImpactRule<COLOR extends Color,
                                                   PieceProtectImpact<COLOR,KING,PIECE>> {
 
     KingProtectImpactRule(Board board,
-                          CapturePieceAlgo<COLOR,KING,Calculated> algo) {
+                          CapturePieceAlgo<COLOR,KING,Position> algo) {
         super(board, algo);
     }
 

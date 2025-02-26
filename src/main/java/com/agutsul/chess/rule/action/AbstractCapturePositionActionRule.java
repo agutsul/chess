@@ -1,5 +1,7 @@
 package com.agutsul.chess.rule.action;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -19,17 +21,17 @@ public abstract class AbstractCapturePositionActionRule<COLOR1 extends Color,
                                                         ACTION extends PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>>
         extends AbstractCaptureActionRule<COLOR1,COLOR2,PIECE1,PIECE2,ACTION> {
 
-    protected final CapturePieceAlgo<COLOR1,PIECE1,Calculated> algo;
+    protected final CapturePieceAlgo<COLOR1,PIECE1,Position> algo;
 
     protected AbstractCapturePositionActionRule(Board board,
-                                                CapturePieceAlgo<COLOR1,PIECE1,Calculated> algo) {
+                                                CapturePieceAlgo<COLOR1,PIECE1,Position> algo) {
         super(board);
         this.algo = algo;
     }
 
     @Override
     protected Collection<Calculated> calculate(PIECE1 piece) {
-        return algo.calculate(piece);
+        return algo.calculate(piece).stream().collect(toList());
     }
 
     @Override

@@ -17,11 +17,11 @@ final class PawnBigMoveActionRule<COLOR extends Color,
                                   PAWN extends PawnPiece<COLOR>>
         extends PawnMoveActionRule<COLOR,PAWN> {
 
-    private final MovePieceAlgo<COLOR,PAWN,Calculated> bigMoveAlgo;
+    private final MovePieceAlgo<COLOR,PAWN,Position> bigMoveAlgo;
 
     PawnBigMoveActionRule(Board board,
-                          MovePieceAlgo<COLOR,PAWN,Calculated> moveAlgo,
-                          MovePieceAlgo<COLOR,PAWN,Calculated> bigMoveAlgo) {
+                          MovePieceAlgo<COLOR,PAWN,Position> moveAlgo,
+                          MovePieceAlgo<COLOR,PAWN,Position> bigMoveAlgo) {
 
         super(board, moveAlgo);
         this.bigMoveAlgo = bigMoveAlgo;

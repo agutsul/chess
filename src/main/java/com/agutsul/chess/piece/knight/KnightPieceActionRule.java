@@ -11,11 +11,11 @@ public final class KnightPieceActionRule<COLOR extends Color,PIECE extends Knigh
         extends AbstractPieceRule<Action<?>,Action.Type> {
 
     public KnightPieceActionRule(Board board) {
-        this(board, new KnightPieceAlgo<COLOR,PIECE>(board));
+        this(board, new KnightPieceAlgo<>(board));
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private KnightPieceActionRule(Board board, KnightPieceAlgo algo) {
+    @SuppressWarnings("unchecked")
+    private KnightPieceActionRule(Board board, KnightPieceAlgo<COLOR,PIECE> algo) {
         super(new CompositePieceRule<>(
                 new KnightCaptureActionRule<>(board, algo),
                 new KnightMoveActionRule<>(board, algo)

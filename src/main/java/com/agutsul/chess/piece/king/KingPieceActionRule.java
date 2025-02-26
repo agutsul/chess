@@ -11,11 +11,11 @@ public final class KingPieceActionRule<COLOR extends Color,PIECE extends KingPie
         extends AbstractPieceRule<Action<?>,Action.Type> {
 
     public KingPieceActionRule(Board board) {
-        this(board, new KingPieceAlgo<COLOR,PIECE>(board));
+        this(board, new KingPieceAlgo<>(board));
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private KingPieceActionRule(Board board, KingPieceAlgo algo) {
+    @SuppressWarnings("unchecked")
+    private KingPieceActionRule(Board board, KingPieceAlgo<COLOR,PIECE> algo) {
         super(new CompositePieceRule<>(
                 new KingCastlingActionRule<>(board),
                 new KingCaptureActionRule<>(board, algo),

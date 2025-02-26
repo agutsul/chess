@@ -1,5 +1,7 @@
 package com.agutsul.chess.rule.impact;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -17,17 +19,17 @@ public abstract class AbstractControlPositionImpactRule<COLOR extends Color,
                                                         IMPACT extends PieceControlImpact<COLOR,PIECE>>
         extends AbstractControlImpactRule<COLOR,PIECE,IMPACT> {
 
-    protected final CapturePieceAlgo<COLOR,PIECE,Calculated> algo;
+    protected final CapturePieceAlgo<COLOR,PIECE,Position> algo;
 
     protected AbstractControlPositionImpactRule(Board board,
-                                                CapturePieceAlgo<COLOR,PIECE,Calculated> algo) {
+                                                CapturePieceAlgo<COLOR,PIECE,Position> algo) {
         super(board);
         this.algo = algo;
     }
 
     @Override
     protected Collection<Calculated> calculate(PIECE piece) {
-        return algo.calculate(piece);
+        return algo.calculate(piece).stream().collect(toList());
     }
 
     @Override

@@ -11,11 +11,11 @@ public final class KingPieceImpactRule<COLOR extends Color,PIECE extends KingPie
         extends AbstractPieceRule<Impact<?>,Impact.Type> {
 
     public KingPieceImpactRule(Board board) {
-        this(board, new KingPieceAlgo<COLOR,PIECE>(board));
+        this(board, new KingPieceAlgo<>(board));
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private KingPieceImpactRule(Board board, KingPieceAlgo algo) {
+    @SuppressWarnings("unchecked")
+    private KingPieceImpactRule(Board board, KingPieceAlgo<COLOR,PIECE> algo) {
         super(new CompositePieceRule<>(
                 new KingProtectImpactRule<>(board, algo),
 //                new KingMonitorImpactRule<>(board, algo),
