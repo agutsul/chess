@@ -20,11 +20,10 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.game.Game;
-import com.agutsul.chess.game.pgn.PgnGame;
 
 public final class PgnGameParser {
 
-    private static final Logger LOGGER = getLogger(PgnGame.class);
+    private static final Logger LOGGER = getLogger(PgnGameParser.class);
 
     public static List<Game> parse(String string) {
         return parse(string.split(lineSeparator()));
