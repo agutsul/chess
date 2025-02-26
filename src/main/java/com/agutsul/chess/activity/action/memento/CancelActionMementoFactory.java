@@ -42,7 +42,8 @@ public enum CancelActionMementoFactory
         }
 
         @SuppressWarnings("unchecked")
-        private static <COLOR extends Color,PIECE extends Piece<COLOR> & Movable>
+        private static <COLOR extends Color,
+                        PIECE extends Piece<COLOR> & Movable>
                 CancelMoveAction<COLOR,PIECE> create(Piece<Color> piece, Position position) {
 
             return new CancelMoveAction<>((PIECE) piece, position);
@@ -65,9 +66,12 @@ public enum CancelActionMementoFactory
         }
 
         @SuppressWarnings("unchecked")
-        private static <COLOR1 extends Color,COLOR2 extends Color,
-                        PIECE1 extends Piece<COLOR1> & Capturable,PIECE2 extends Piece<COLOR2>>
-                CancelCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2> create(Piece<Color> predator, Piece<Color> victim) {
+        private static <COLOR1 extends Color,
+                        COLOR2 extends Color,
+                        PIECE1 extends Piece<COLOR1> & Capturable,
+                        PIECE2 extends Piece<COLOR2>>
+                CancelCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2> create(Piece<Color> predator,
+                                                                        Piece<Color> victim) {
 
             return new CancelCaptureAction<>((PIECE1) predator, (PIECE2) victim);
         }
@@ -112,7 +116,9 @@ public enum CancelActionMementoFactory
                         PIECE2 extends Piece<COLOR2>>
                 CancelPromoteAction<COLOR1,PIECE1> create(CancelCaptureAction<?,?,?,?> action) {
 
-            return new CancelPromoteAction<>((CancelCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>) action);
+            return new CancelPromoteAction<>(
+                    (CancelCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>) action
+            );
         }
     },
     CASTLING_MODE(Action.Type.CASTLING) {
@@ -136,7 +142,8 @@ public enum CancelActionMementoFactory
         }
 
         @SuppressWarnings("unchecked")
-        private static <COLOR extends Color,PIECE extends Piece<COLOR> & Castlingable & Movable>
+        private static <COLOR extends Color,
+                        PIECE extends Piece<COLOR> & Castlingable & Movable>
                 UncastlingMoveAction<COLOR,PIECE> create(Piece<Color> piece, Position position) {
 
             return new UncastlingMoveAction<>((PIECE) piece, position);
@@ -174,9 +181,12 @@ public enum CancelActionMementoFactory
         }
 
         @SuppressWarnings("unchecked")
-        private static <COLOR1 extends Color,COLOR2 extends Color,
-                        PAWN1 extends PawnPiece<COLOR1>,PAWN2 extends PawnPiece<COLOR2>>
-                CancelEnPassantAction<COLOR1,COLOR2,PAWN1,PAWN2> create(Piece<Color> predator, Piece<Color> victim) {
+        private static <COLOR1 extends Color,
+                        COLOR2 extends Color,
+                        PAWN1 extends PawnPiece<COLOR1>,
+                        PAWN2 extends PawnPiece<COLOR2>>
+                CancelEnPassantAction<COLOR1,COLOR2,PAWN1,PAWN2> create(Piece<Color> predator,
+                                                                        Piece<Color> victim) {
 
             return new CancelEnPassantAction<>((PAWN1) predator, (PAWN2) victim);
         }
