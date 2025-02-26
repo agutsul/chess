@@ -2,15 +2,17 @@ package com.agutsul.chess.piece.knight;
 
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
+import com.agutsul.chess.piece.KnightPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.impact.PiecePinImpactRule;
 
-public final class KnightPieceImpactRule
+public final class KnightPieceImpactRule<COLOR extends Color,PIECE extends KnightPiece<COLOR>>
         extends AbstractPieceRule<Impact<?>,Impact.Type> {
 
     public KnightPieceImpactRule(Board board) {
-        this(board, new KnightPieceAlgo<>(board));
+        this(board, new KnightPieceAlgo<COLOR,PIECE>(board));
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

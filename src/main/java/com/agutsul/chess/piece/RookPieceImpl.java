@@ -24,8 +24,8 @@ final class RookPieceImpl<COLOR extends Color>
                   Position position, int direction) {
 
         super(board, Piece.Type.ROOK, color, unicode, position, direction,
-                new RookPieceActionRule(board),
-                new RookPieceImpactRule(board)
+                new RookPieceActionRule<>(board),
+                new RookPieceImpactRule<>(board)
         );
     }
 

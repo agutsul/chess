@@ -38,8 +38,8 @@ final class KingPieceImpl<COLOR extends Color>
                   Position position, int direction) {
 
         super(board, Piece.Type.KING, color, unicode, position, direction,
-                new KingPieceActionRule(board),
-                new KingPieceImpactRule(board)
+                new KingPieceActionRule<>(board),
+                new KingPieceImpactRule<>(board)
         );
 
         this.checkedPieceState = new KingCheckedPieceState<>(getState());
