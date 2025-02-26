@@ -45,7 +45,7 @@ public class PiecePinImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     protected Collection<PiecePinImpact<COLOR1,COLOR2,PIECE,KING,ATTACKER>> createImpacts(PIECE piece,
                                                                                           Collection<Line> lines) {
         var optionalKing = board.getKing(piece.getColor());
@@ -53,7 +53,7 @@ public class PiecePinImpactRule<COLOR1 extends Color,
             return emptyList();
         }
 
-        var king = optionalKing.get();
+        var king = (KING) optionalKing.get();
         var kingLines = lines.stream()
                 .filter(line -> line.contains(king.getPosition()))
                 .toList();
@@ -111,9 +111,9 @@ public class PiecePinImpactRule<COLOR1 extends Color,
                 continue;
             }
 
-            var attacker = optionalAttacker.get();
+            var attacker = (ATTACKER) optionalAttacker.get();
 //            if (!attackedPieces.contains(attacker)) {
-                impacts.add(new PiecePinImpact(piece, king, attacker, line));
+                impacts.add(new PiecePinImpact<>(piece, king, attacker, line));
 //            }
         }
 
