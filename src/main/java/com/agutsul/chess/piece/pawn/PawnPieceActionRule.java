@@ -17,9 +17,9 @@ public final class PawnPieceActionRule<COLOR extends Color,PAWN extends PawnPiec
 
     public PawnPieceActionRule(Board board, int step, int initialLine, int promotionLine) {
         this(board, promotionLine,
-                new PawnMoveAlgo<COLOR,PAWN>(board, step),
-                new PawnBigMoveAlgo<COLOR,PAWN>(board, step, initialLine),
-                new PawnCaptureAlgo<COLOR,PAWN>(board, step)
+                new PawnMoveAlgo<>(board, step),
+                new PawnBigMoveAlgo<>(board, step, initialLine),
+                new PawnCaptureAlgo<>(board, step)
         );
     }
 
@@ -29,7 +29,7 @@ public final class PawnPieceActionRule<COLOR extends Color,PAWN extends PawnPiec
                                 PawnCaptureAlgo<COLOR,PAWN> captureAlgo) {
 
         this(board, moveAlgo, bigMoveAlgo, captureAlgo,
-                new PawnPromoteAlgo<COLOR,PAWN>(board, promotionLine, moveAlgo, captureAlgo)
+                new PawnPromoteAlgo<>(board, promotionLine, moveAlgo, captureAlgo)
         );
     }
 
