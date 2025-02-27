@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.memento.ActionMementoMock;
-import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.StringBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
@@ -91,7 +91,7 @@ public class CancelActionCommandTest {
         when(game.getJournal())
             .thenReturn(journal);
 
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withWhitePawn("e4")
                 .build();
 
@@ -129,7 +129,7 @@ public class CancelActionCommandTest {
         when(game.getJournal())
             .thenReturn(journal);
 
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withWhitePawn("e2")
                 .build();
 

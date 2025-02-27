@@ -8,14 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.StringBoardBuilder;
 
 @ExtendWith(MockitoExtension.class)
 public class DefaultBoardStateTest {
 
     @Test
     void testGetActions() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withWhitePawn("a2")
                 .build();
 

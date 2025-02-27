@@ -18,7 +18,7 @@ import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.Piece.Type;
-import com.agutsul.chess.piece.PieceFactory;
+import com.agutsul.chess.piece.factory.PieceFactory;
 import com.agutsul.chess.position.Position;
 
 /*

@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.StringBoardBuilder;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.exception.UnknownPieceException;
@@ -57,7 +57,7 @@ public class PawnPromoteMoveActionAdapterTest {
 
     @Test
     void testAdaptPiecePromoteMoveAction() {
-        var promotionBoard = new BoardBuilder().withWhitePawn("e7").build();
+        var promotionBoard = new StringBoardBuilder().withWhitePawn("e7").build();
 
         var adapter = new PawnPromoteMoveActionAdapter(promotionBoard, Colors.WHITE);
         var action = adapter.adapt("e8Q");

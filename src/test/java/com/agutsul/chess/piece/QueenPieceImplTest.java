@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
+import com.agutsul.chess.board.StringBoardBuilder;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.piece.Piece.Type;
 
@@ -40,7 +40,7 @@ public class QueenPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testDefaultQueenActionsOnEmptyBoard() {
-        var board1 = new BoardBuilder().withWhiteQueen("d1").build();
+        var board1 = new StringBoardBuilder().withWhiteQueen("d1").build();
         assertPieceActions(board1, Colors.WHITE, QUEEN_TYPE, "d1", List.of(
                         "d2", "d3", "d4", "d5", "d6", "d7", "d8",
                         "a1", "b1", "c1", "e1", "f1", "g1", "h1",
@@ -49,7 +49,7 @@ public class QueenPieceImplTest extends AbstractPieceTest {
                         )
                 );
 
-        var board2 = new BoardBuilder().withBlackQueen("d8").build();
+        var board2 = new StringBoardBuilder().withBlackQueen("d8").build();
         assertPieceActions(board2, Colors.BLACK, QUEEN_TYPE, "d8", List.of(
                         "a8", "b8", "c8", "e8", "f8", "g8", "h8",
                         "d1", "d2", "d3", "d4", "d5", "d6", "d7",
@@ -61,7 +61,7 @@ public class QueenPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testRandomQueenActionsOnEmptyBoard() {
-        var board1 = new BoardBuilder().withWhiteQueen("e4").build();
+        var board1 = new StringBoardBuilder().withWhiteQueen("e4").build();
         assertPieceActions(board1, Colors.WHITE, QUEEN_TYPE, "e4", List.of(
                 "e3", "e2", "e1",
                 "e5", "e6", "e7", "e8",
@@ -73,7 +73,7 @@ public class QueenPieceImplTest extends AbstractPieceTest {
                 "f3", "g2", "h1"
             ));
 
-        var board2 = new BoardBuilder().withBlackQueen("d5").build();
+        var board2 = new StringBoardBuilder().withBlackQueen("d5").build();
         assertPieceActions(board2, Colors.BLACK, QUEEN_TYPE, "d5", List.of(
                 "d1", "d2", "d3", "d4", "d6", "d7", "d8",
                 "a5", "b5", "c5", "e5", "f5", "g5", "h5",
@@ -86,7 +86,7 @@ public class QueenPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testQueenCaptureActionOnEmptyBoard() {
-        var board1 = new BoardBuilder()
+        var board1 = new StringBoardBuilder()
                 .withBlackPawn("a3")
                 .withWhiteQueen("c1")
                 .build();
@@ -96,7 +96,7 @@ public class QueenPieceImplTest extends AbstractPieceTest {
                         "c5", "c6", "c7", "c8", "a1", "b1", "d1", "e1", "f1", "h1"),
                 List.of("a3"));
 
-        var board2 = new BoardBuilder()
+        var board2 = new StringBoardBuilder()
                 .withWhitePawn("h6")
                 .withBlackQueen("f8")
                 .build();

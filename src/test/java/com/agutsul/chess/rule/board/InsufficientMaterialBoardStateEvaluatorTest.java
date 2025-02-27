@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.StringBoardBuilder;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -19,7 +19,7 @@ public class InsufficientMaterialBoardStateEvaluatorTest {
     @Test
     // https://en.wikipedia.org/wiki/Draw_(chess)
     void testVidmarVsMaroczy1932() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withWhiteKing("g4")
                 .withBlackKing("f7")
                 .withBlackBishop("c7")
@@ -32,7 +32,7 @@ public class InsufficientMaterialBoardStateEvaluatorTest {
 
     @Test
     void testKingVsKing() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withWhiteKing("e3")
                 .withBlackKing("e5")
                 .build();
@@ -42,7 +42,7 @@ public class InsufficientMaterialBoardStateEvaluatorTest {
 
     @Test
     void testKingAndBishopVsKing() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("f7")
                 .withWhiteKing("e5")
                 .withWhiteBishop("c3")
@@ -53,7 +53,7 @@ public class InsufficientMaterialBoardStateEvaluatorTest {
 
     @Test
     void testKingAndKnightVsKing() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("f7")
                 .withWhiteKing("e5")
                 .withWhiteKnight("c3")
@@ -64,7 +64,7 @@ public class InsufficientMaterialBoardStateEvaluatorTest {
 
     @Test
     void testKingAndBishopsVsKing() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withWhiteKing("f6")
                 .withBlackKing("c3")
                 .withBlackBishops("c2","c4")
@@ -75,7 +75,7 @@ public class InsufficientMaterialBoardStateEvaluatorTest {
 
     @Test
     void testKingAndBishopVsKingAndBishop() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withWhiteKing("g1")
                 .withWhiteBishop("h2")
                 .withBlackKing("f3")
@@ -89,7 +89,7 @@ public class InsufficientMaterialBoardStateEvaluatorTest {
 
     @Test
     void testKingAndBishopVsKingAndKnight() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withWhiteKing("d6")
                 .withWhiteKnight("c5")
                 .withBlackKing("b6")
@@ -101,7 +101,7 @@ public class InsufficientMaterialBoardStateEvaluatorTest {
 
     @Test
     void testKingAndDoubleKnightsVsKing() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withWhiteKing("g3")
                 .withWhiteKnights("f4","f5")
                 .withBlackKing("c1")

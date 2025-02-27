@@ -143,7 +143,7 @@ public class BoardImplTest {
 
     @Test
     void testGetCapturedPiece() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withWhitePawn("a2")
                 .withBlackPawn("b3")
                 .build();

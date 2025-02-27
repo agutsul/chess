@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.StringBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
@@ -19,7 +19,7 @@ public class PiecePromoteActionTest {
 
     @Test
     void testWhitePawnPromotionBasedOnMove() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withWhitePawn("a7")
                 .build();
 
@@ -52,7 +52,7 @@ public class PiecePromoteActionTest {
 
     @Test
     void testBlackPawnPromotionBasedOnCapture() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackPawn("a2")
                 .withWhiteRook("b1")
                 .build();

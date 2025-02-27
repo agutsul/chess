@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.StringBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
@@ -18,7 +18,7 @@ public class CancelMoveActionTest {
 
     @Test
     void testCancelMoveAction() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withWhitePawn("e2")
                 .build();
 

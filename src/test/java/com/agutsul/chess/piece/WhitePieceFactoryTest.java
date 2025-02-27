@@ -4,14 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.StringBoardBuilder;
 import com.agutsul.chess.color.Colors;
 
 @ExtendWith(MockitoExtension.class)
 public class WhitePieceFactoryTest extends AbstractsPieceFactoryTest {
 
     public WhitePieceFactoryTest() {
-        super(new WhitePieceFactory(new BoardBuilder().build()));
+        super(new WhitePieceFactory(new StringBoardBuilder().build()));
     }
 
     @Test

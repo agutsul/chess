@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
+import com.agutsul.chess.board.StringBoardBuilder;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.piece.Piece.Type;
 
@@ -43,40 +43,40 @@ public class KnightPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testDefaultKnightActionsOnEmptyBoard() {
-        var board1 = new BoardBuilder().withWhiteKnight("b1").build();
+        var board1 = new StringBoardBuilder().withWhiteKnight("b1").build();
         assertPieceActions(board1, Colors.WHITE, KNIGHT_TYPE, "b1", List.of("a3", "c3", "d2"));
 
-        var board2 = new BoardBuilder().withWhiteKnight("g1").build();
+        var board2 = new StringBoardBuilder().withWhiteKnight("g1").build();
         assertPieceActions(board2, Colors.WHITE, KNIGHT_TYPE, "g1", List.of("f3", "h3", "e2"));
 
-        var board3 = new BoardBuilder().withBlackKnight("b8").build();
+        var board3 = new StringBoardBuilder().withBlackKnight("b8").build();
         assertPieceActions(board3, Colors.BLACK, KNIGHT_TYPE, "b8", List.of("a6", "c6", "d7"));
 
-        var board4 = new BoardBuilder().withBlackKnight("g8").build();
+        var board4 = new StringBoardBuilder().withBlackKnight("g8").build();
         assertPieceActions(board4, Colors.BLACK, KNIGHT_TYPE, "g8", List.of("f6", "h6", "e7"));
     }
 
     @Test
     void testRandomKnightActionsOnEmptyBoard() {
-        var board1 = new BoardBuilder().withWhiteKnight("d5").build();
+        var board1 = new StringBoardBuilder().withWhiteKnight("d5").build();
         assertPieceActions(board1, Colors.WHITE, KNIGHT_TYPE, "d5",
                 List.of("b6", "c7", "e7", "f6", "e3", "f4", "c3", "b4"));
 
-        var board2 = new BoardBuilder().withBlackKnight("e4").build();
+        var board2 = new StringBoardBuilder().withBlackKnight("e4").build();
         assertPieceActions(board2, Colors.BLACK, KNIGHT_TYPE, "e4",
                 List.of("d2", "c3", "c5", "d6", "f6", "g5", "g3", "f2"));
     }
 
     @Test
     void testKnightCaptureActionOnEmptyBoard() {
-        var board1 = new BoardBuilder()
+        var board1 = new StringBoardBuilder()
                 .withBlackPawn("a3")
                 .withWhiteKnight("b1")
                 .build();
 
         assertPieceActions(board1, Colors.WHITE, KNIGHT_TYPE, "b1", List.of("c3", "d2"), List.of("a3"));
 
-        var board2 = new BoardBuilder()
+        var board2 = new StringBoardBuilder()
                 .withWhitePawn("h6")
                 .withBlackKnight("g8")
                 .build();

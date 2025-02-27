@@ -12,11 +12,11 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.piece.Piece;
 
 @ExtendWith(MockitoExtension.class)
-public class BoardBuilderTest {
+public class StringBoardBuilderTest {
 
     @Test
     void testBoardBuilderPieceCreation() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackBishops("c8", "f8")
                 .withBlackKnights("b8", "g8")
                 .build();

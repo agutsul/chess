@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.StringBoardBuilder;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -18,7 +18,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testIsCheckMated() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("h8")
                 .withBlackBishop("g8")
                 .withWhiteBishop("e5")
@@ -30,7 +30,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testAnastasiaMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("h7")
                 .withBlackPawn("g7")
                 .withWhiteKnight("e7")
@@ -42,7 +42,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testAnderssenMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("g8")
                 .withWhiteRook("h8")
                 .withWhitePawn("g7")
@@ -54,7 +54,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testArabianMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("h8")
                 .withWhiteRook("h7")
                 .withWhiteKnight("f6")
@@ -65,7 +65,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testBackRankMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("g8")
                 .withBlackPawns("f7", "g7", "h7")
                 .withWhiteRook("d8")
@@ -76,7 +76,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testBalestraMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("g8")
                 .withWhiteQueen("h6")
                 .withWhiteBishop("e6")
@@ -87,7 +87,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testBishopAndKnightMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("h8")
                 .withWhiteKnight("h6")
                 .withWhiteBishop("f6")
@@ -99,7 +99,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testBlackburneMate1() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("g8")
                 .withBlackRook("f8")
                 .withWhiteBishops("h7", "b2")
@@ -111,7 +111,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testBlackburneMate2() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("h8")
                 .withWhiteBishops("f7", "b2")
                 .withWhiteKnight("g5")
@@ -122,7 +122,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testBlindSwineMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("g8")
                 .withBlackRook("f8")
                 .withWhiteRooks("g7", "h7")
@@ -133,7 +133,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testBodenMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("c8")
                 .withBlackRook("d8")
                 .withBlackPawn("d7")
@@ -145,7 +145,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testCornerMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("h8")
                 .withBlackPawn("h7")
                 .withWhiteKnight("f7")
@@ -157,7 +157,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testDamianoBishopMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("f8")
                 .withWhiteQueen("f7")
                 .withWhiteBishop("g6")
@@ -168,7 +168,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testDamianoMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("g8")
                 .withBlackRook("f8")
                 .withBlackPawn("g7")
@@ -181,7 +181,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testDoubleBishopMate1() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("h8")
                 .withBlackPawn("h7")
                 .withWhiteBishops("c3", "d5")
@@ -192,7 +192,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testDoubleBishopMate2() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("e5")
                 .withBlackPawn("f6")
                 .withWhiteBishops("c7", "e4")
@@ -205,7 +205,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testDoubleKnightMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("a8")
                 .withBlackPawns("a7", "b7")
                 .withBlackKnight("c8")
@@ -217,7 +217,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testDovetailMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("g3")
                 .withBlackPawn("g4")
                 .withBlackQueen("f3")
@@ -230,7 +230,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testEpauletteMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("g8")
                 .withBlackRooks("h8", "f8")
                 .withWhiteQueen("g6")
@@ -241,7 +241,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testGrecoMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("h8")
                 .withBlackPawn("g7")
                 .withWhiteQueen("h5")
@@ -253,7 +253,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testHookMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("e7")
                 .withBlackPawn("f7")
                 .withWhiteRook("e8")
@@ -266,7 +266,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testKillBoxMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("a5")
                 .withWhiteRook("a6")
                 .withWhiteQueen("c4")
@@ -277,7 +277,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testKingWithTwoBishopsMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("h8")
                 .withWhiteKing("h6")
                 .withWhiteBishops("f6", "e6")
@@ -288,7 +288,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testKingWithTwoKnightsMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("h8")
                 .withWhiteKing("h6")
                 .withWhiteKnights("f6", "g6")
@@ -299,7 +299,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testLadderMate1() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("g8")
                 .withWhiteRooks("a8", "b7")
                 .build();
@@ -309,7 +309,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testLadderMate2() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("g8")
                 .withWhiteQueen("a8")
                 .withWhiteRook("b7")
@@ -320,7 +320,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testLegalMate1() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("e7")
                 .withBlackQueen("d8")
                 .withBlackBishop("f8")
@@ -334,7 +334,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testLegalMate2() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("e7")
                 .withBlackQueen("d8")
                 .withBlackBishop("f8")
@@ -348,7 +348,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testLolliMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("g8")
                 .withBlackPawns("f7", "g6")
                 .withWhitePawn("f6")
@@ -360,7 +360,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testMaxLangeMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("h7")
                 .withBlackPawns("h6", "g7")
                 .withWhiteBishop("f7")
@@ -372,7 +372,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testMayetMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("g8")
                 .withBlackPawn("f7")
                 .withWhiteBishop("b2")
@@ -384,7 +384,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testMorphyMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("h8")
                 .withBlackPawn("h7")
                 .withWhiteBishop("f6")
@@ -396,7 +396,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testOperaMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("e8")
                 .withBlackPawn("f7")
                 .withWhiteBishop("g5")
@@ -408,7 +408,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testPawnMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("b4")
                 .withBlackPawns("a4", "c4")
                 .withBlackKnight("b3")
@@ -421,7 +421,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testPillsburyMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("g8")
                 .withBlackRook("f8")
                 .withBlackPawns("f7", "h7")
@@ -434,7 +434,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testQueenMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("d8")
                 .withWhiteQueen("d7")
                 .withWhiteKing("d6")
@@ -445,7 +445,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testRetiMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("c7")
                 .withBlackPawns("c6", "b7")
                 .withBlackBishop("c8")
@@ -459,7 +459,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testRookMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("d8")
                 .withWhiteRook("a8")
                 .withWhiteKing("d6")
@@ -470,7 +470,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testSmotheredMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("h8")
                 .withBlackRook("g8")
                 .withBlackPawns("h7", "g7")
@@ -482,7 +482,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testSuffocationMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("g8")
                 .withBlackRook("f8")
                 .withBlackPawns("h7", "f7")
@@ -495,7 +495,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testSwallowTailMate1() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("e7")
                 .withBlackRooks("d8", "f8")
                 .withWhiteRook("a6")
@@ -507,7 +507,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testSwallowTailMate2() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("c7")
                 .withBlackQueen("d8")
                 .withBlackBishop("b8")
@@ -520,7 +520,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testTriangleMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("e7")
                 .withBlackPawn("f7")
                 .withWhiteRook("d8")
@@ -532,7 +532,7 @@ public class CheckMatedBoardStateEvaluatorTest {
 
     @Test
     void testVukovicMate() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("e8")
                 .withWhiteRook("e7")
                 .withWhiteKnight("e6")

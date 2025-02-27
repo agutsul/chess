@@ -1,6 +1,12 @@
-package com.agutsul.chess.piece;
+package com.agutsul.chess.piece.factory;
 
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.piece.BishopPiece;
+import com.agutsul.chess.piece.KingPiece;
+import com.agutsul.chess.piece.KnightPiece;
+import com.agutsul.chess.piece.PawnPiece;
+import com.agutsul.chess.piece.QueenPiece;
+import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.position.Position;
 
 public interface PieceFactory {

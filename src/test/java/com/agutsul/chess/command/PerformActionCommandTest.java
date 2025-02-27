@@ -24,8 +24,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.board.BoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
+import com.agutsul.chess.board.StringBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
@@ -45,7 +45,7 @@ public class PerformActionCommandTest {
     void testValidationOfMissedSourcePiece() {
         var player = mock(Player.class);
 
-        var board = new BoardBuilder().build();
+        var board = new StringBoardBuilder().build();
         var command = new PerformActionCommand(player, board, observable);
 
         var thrown = assertThrows(
@@ -60,7 +60,7 @@ public class PerformActionCommandTest {
     void testValidationOfSourcePosition() {
         var player = mock(Player.class);
 
-        var board = new BoardBuilder().build();
+        var board = new StringBoardBuilder().build();
         var command = new PerformActionCommand(player, board, observable);
 
         var thrown = assertThrows(
@@ -75,7 +75,7 @@ public class PerformActionCommandTest {
     void testValidationOfTargetPosition() {
         var player = mock(Player.class);
 
-        var board = new BoardBuilder().build();
+        var board = new StringBoardBuilder().build();
         var command = new PerformActionCommand(player, board, observable);
 
         var thrown = assertThrows(
@@ -92,7 +92,7 @@ public class PerformActionCommandTest {
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withWhitePawn("e2")
                 .build();
 

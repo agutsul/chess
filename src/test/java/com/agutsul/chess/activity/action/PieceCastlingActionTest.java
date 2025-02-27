@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.Castlingable;
-import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.StringBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
@@ -18,7 +18,7 @@ public class PieceCastlingActionTest {
 
     @Test
     void testWhiteKingSideCastlingAction() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withWhiteKing("e1")
                 .withWhiteRook("h1")
                 .build();
@@ -54,7 +54,7 @@ public class PieceCastlingActionTest {
 
     @Test
     void testBlackQueenSideCastlingAction() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackKing("e8")
                 .withBlackRook("a8")
                 .build();

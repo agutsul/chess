@@ -18,7 +18,7 @@ import com.agutsul.chess.activity.action.CancelCastlingAction;
 import com.agutsul.chess.activity.action.CancelEnPassantAction;
 import com.agutsul.chess.activity.action.CancelMoveAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
-import com.agutsul.chess.board.BoardBuilder;
+import com.agutsul.chess.board.StringBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -31,7 +31,7 @@ public class CancelActionMementoFactoryTest {
 
     @Test
     void testCancelMoveActionCreation() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withWhitePawn("e2")
                 .build();
 
@@ -60,7 +60,7 @@ public class CancelActionMementoFactoryTest {
 
     @Test
     void testCancelCaptureActionCreation() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackPawn("d3")
                 .withWhitePawn("e2")
                 .build();
@@ -92,7 +92,7 @@ public class CancelActionMementoFactoryTest {
 
     @Test
     void testCancelPromoteActionBasedOnMove() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withWhitePawn("e7")
                 .build();
 
@@ -128,7 +128,7 @@ public class CancelActionMementoFactoryTest {
 
     @Test
     void testCancelPromoteActionBasedOnCapture() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withWhitePawn("e7")
                 .withBlackRook("d8")
                 .build();
@@ -169,7 +169,7 @@ public class CancelActionMementoFactoryTest {
 
     @Test
     void testCancelCastlingAction() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withWhiteKing("e1")
                 .withWhiteRook("h1")
                 .build();
@@ -200,7 +200,7 @@ public class CancelActionMementoFactoryTest {
 
     @Test
     void testCancelEnPassantAction() {
-        var board = new BoardBuilder()
+        var board = new StringBoardBuilder()
                 .withBlackPawn("a7")
                 .withWhitePawn("b5")
                 .build();

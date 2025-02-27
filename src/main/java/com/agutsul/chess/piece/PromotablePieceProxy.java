@@ -30,6 +30,7 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.piece.factory.PieceFactory;
 import com.agutsul.chess.piece.state.ActivePieceState;
 import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.piece.state.PieceState;
