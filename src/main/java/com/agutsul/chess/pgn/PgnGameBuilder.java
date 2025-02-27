@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.agutsul.chess.color.Colors;
-import com.agutsul.chess.game.GameBuilderDecorator;
+import com.agutsul.chess.game.GameBuilder;
 import com.agutsul.chess.game.Termination;
 import com.agutsul.chess.game.pgn.PgnGame;
 import com.agutsul.chess.game.state.BlackWinGameState;
@@ -17,7 +17,7 @@ import com.agutsul.chess.game.state.WhiteWinGameState;
 import com.agutsul.chess.player.UserPlayer;
 
 final class PgnGameBuilder
-        implements GameBuilderDecorator {
+        implements GameBuilder {
 
     private final List<String> actions = new ArrayList<>();
     private final Map<String,String> tags = new HashMap<>();
@@ -48,67 +48,67 @@ final class PgnGameBuilder
     }
 
     @Override
-    public GameBuilderDecorator withEvent(String event) {
+    public GameBuilder withEvent(String event) {
         this.event = event;
         return this;
     }
 
     @Override
-    public GameBuilderDecorator withSite(String site) {
+    public GameBuilder withSite(String site) {
         this.site = site;
         return this;
     }
 
     @Override
-    public GameBuilderDecorator withRound(String round) {
+    public GameBuilder withRound(String round) {
         this.round = round;
         return this;
     }
 
     @Override
-    public GameBuilderDecorator withWhitePlayer(String playerName) {
+    public GameBuilder withWhitePlayer(String playerName) {
         this.whitePlayer = playerName;
         return this;
     }
 
     @Override
-    public GameBuilderDecorator withBlackPlayer(String playerName) {
+    public GameBuilder withBlackPlayer(String playerName) {
         this.blackPlayer = playerName;
         return this;
     }
 
     @Override
-    public GameBuilderDecorator withGameState(String state) {
+    public GameBuilder withGameState(String state) {
         this.gameState = state;
         return this;
     }
 
     @Override
-    public GameBuilderDecorator withGameTermination(String terminationType) {
+    public GameBuilder withGameTermination(String terminationType) {
         this.terminationType = terminationType;
         return this;
     }
 
     @Override
-    public GameBuilderDecorator withActions(List<String> actions) {
+    public GameBuilder withActions(List<String> actions) {
         this.actions.addAll(actions);
         return this;
     }
 
     @Override
-    public GameBuilderDecorator addAction(String action) {
+    public GameBuilder addAction(String action) {
         this.actions.add(action);
         return this;
     }
 
     @Override
-    public GameBuilderDecorator withTags(Map<String,String> tags) {
+    public GameBuilder withTags(Map<String,String> tags) {
         this.tags.putAll(tags);
         return this;
     }
 
     @Override
-    public GameBuilderDecorator addTag(String name, String value) {
+    public GameBuilder addTag(String name, String value) {
         this.tags.put(name, value);
         return this;
     }
