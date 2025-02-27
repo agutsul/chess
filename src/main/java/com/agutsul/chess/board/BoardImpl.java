@@ -37,13 +37,13 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.game.event.GameOverEvent;
-import com.agutsul.chess.piece.BlackPieceFactory;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.WhitePieceFactory;
 import com.agutsul.chess.piece.cache.PieceCache;
 import com.agutsul.chess.piece.cache.PieceCacheImpl;
 import com.agutsul.chess.piece.factory.PieceFactory;
+import com.agutsul.chess.piece.impl.BlackPieceFactory;
+import com.agutsul.chess.piece.impl.WhitePieceFactory;
 import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.position.Position;
 

@@ -174,9 +174,9 @@ abstract class AbstractBoardBuilder<T>
     }
 
     private BoardBuilder<T> withPawns(BoardContext<T> context,
-                                               T position1,
-                                               T position2,
-                                               @SuppressWarnings("unchecked") T... positions) {
+                                      T position1,
+                                      T position2,
+                                      @SuppressWarnings("unchecked") T... positions) {
 
         var pawnPositions = new ArrayList<T>();
 
