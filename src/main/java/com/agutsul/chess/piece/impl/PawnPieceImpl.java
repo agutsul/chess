@@ -23,7 +23,6 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.Piece.Type;
 import com.agutsul.chess.piece.pawn.PawnPieceActionRule;
 import com.agutsul.chess.piece.pawn.PawnPieceImpactRule;
 import com.agutsul.chess.piece.state.ActivePieceState;

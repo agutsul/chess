@@ -4,7 +4,6 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.QueenPiece;
-import com.agutsul.chess.piece.Piece.Type;
 import com.agutsul.chess.piece.queen.QueenPieceActionRule;
 import com.agutsul.chess.piece.queen.QueenPieceImpactRule;
 import com.agutsul.chess.position.Position;

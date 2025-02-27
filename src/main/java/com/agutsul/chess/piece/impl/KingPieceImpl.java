@@ -16,7 +16,6 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.Piece.Type;
 import com.agutsul.chess.piece.king.KingPieceActionRule;
 import com.agutsul.chess.piece.king.KingPieceImpactRule;
 import com.agutsul.chess.piece.state.ActivePieceState;

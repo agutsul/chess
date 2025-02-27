@@ -13,7 +13,6 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.RookPiece;
-import com.agutsul.chess.piece.Piece.Type;
 import com.agutsul.chess.piece.rook.RookPieceActionRule;
 import com.agutsul.chess.piece.rook.RookPieceImpactRule;
 import com.agutsul.chess.piece.state.DisposedPieceState;
