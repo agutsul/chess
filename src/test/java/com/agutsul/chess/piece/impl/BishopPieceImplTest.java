@@ -17,7 +17,6 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.piece.BishopPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.Piece.Type;
-import com.agutsul.chess.piece.impl.AbstractPieceTest;
 
 @ExtendWith(MockitoExtension.class)
 public class BishopPieceImplTest extends AbstractPieceTest {

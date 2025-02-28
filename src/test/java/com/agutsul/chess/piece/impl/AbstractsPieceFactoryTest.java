@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.Piece.Type;
 import com.agutsul.chess.piece.factory.PieceFactory;
 
 abstract class AbstractsPieceFactoryTest {

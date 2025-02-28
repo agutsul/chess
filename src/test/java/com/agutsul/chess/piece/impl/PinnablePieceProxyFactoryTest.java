@@ -23,7 +23,6 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.PieceProxy;
 import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.piece.RookPiece;
-import com.agutsul.chess.piece.Piece.Type;
 
 @ExtendWith(MockitoExtension.class)
 public class PinnablePieceProxyFactoryTest {
