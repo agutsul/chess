@@ -9,8 +9,8 @@
 
   <Match>
     <Or>
-      <Class name="com.agutsul.chess.board.BoardBuilder$PieceBuilderTask" />
-      <Class name="com.agutsul.chess.board.BoardBuilder$PieceBuilderSubTask" />
+      <Class name="com.agutsul.chess.board.AbstractBoardBuilder$PieceBuilderTask" />
+      <Class name="com.agutsul.chess.board.AbstractBoardBuilder$PieceBuilderSubTask" />
     </Or>
     <Bug code="Se" />
   </Match>
@@ -33,6 +33,10 @@
     <Or>
         <Class name="com.agutsul.chess.pgn.PGNLexer" />
         <Class name="com.agutsul.chess.pgn.PGNParser" />
+        <Class name="com.agutsul.chess.fen.fenLexer" />
+        <Class name="com.agutsul.chess.fen.fenParser" />
+        <Class name="com.agutsul.chess.fen.fenBaseListener" />
+        <Class name="com.agutsul.chess.fen.fenBaseVisitor" />
     </Or>
   <Not>
     <Bug code="IJU" />

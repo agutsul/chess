@@ -2,8 +2,16 @@ package com.agutsul.chess.board;
 
 import org.apache.commons.lang3.builder.Builder;
 
+import com.agutsul.chess.color.Color;
+import com.agutsul.chess.piece.Piece;
+
 public interface BoardBuilder<T>
         extends Builder<Board> {
+
+    BoardBuilder<T> withPiece(Piece.Type pieceType, Color color, T position);
+
+    BoardBuilder<T> withWhitePiece(Piece.Type pieceType, T position);
+    BoardBuilder<T> withBlackPiece(Piece.Type pieceType, T position);
 
     BoardBuilder<T> withWhiteKing(T position);
     BoardBuilder<T> withWhiteQueen(T position);

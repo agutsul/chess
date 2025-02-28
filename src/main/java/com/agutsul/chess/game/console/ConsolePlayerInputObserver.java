@@ -17,7 +17,7 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
 
-final class ConsolePlayerInputObserver
+public final class ConsolePlayerInputObserver
         extends AbstractPlayerInputObserver {
 
     private static final Logger LOGGER = getLogger(ConsolePlayerInputObserver.class);
@@ -28,7 +28,7 @@ final class ConsolePlayerInputObserver
     private static final String PROMPT_PROMOTION_PIECE_TYPE_MESSAGE =
             createPromptPromotionPieceTypeMessage();
 
-    ConsolePlayerInputObserver(Player player, Game game) {
+    public ConsolePlayerInputObserver(Player player, Game game) {
         super(LOGGER, player, game);
     }
 

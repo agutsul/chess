@@ -67,7 +67,7 @@ public abstract class AbstractPlayableGame
 
     private final List<Observer> observers;
 
-    private Player currentPlayer;
+    protected Player currentPlayer;
 
     public AbstractPlayableGame(Logger logger,
                                 Player whitePlayer,
@@ -277,7 +277,7 @@ public abstract class AbstractPlayableGame
         return Math.abs(board.calculateValue(player.getColor()));
     }
 
-    private BoardState evaluateBoardState(Player player) {
+    protected BoardState evaluateBoardState(Player player) {
         var boardState = this.boardStateEvaluator.evaluate(player.getColor());
 
         if (boardState.isType(CHECK_MATED)) {

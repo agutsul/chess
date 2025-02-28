@@ -9,6 +9,8 @@ import com.agutsul.chess.exception.IllegalPositionException;
 final class PositionImpl
         implements Position {
 
+    private static final long serialVersionUID = 4419962722407474005L;
+
     private static final String INVALID_POSITION_MESSAGE = "Invalid position";
 
     private final int x;

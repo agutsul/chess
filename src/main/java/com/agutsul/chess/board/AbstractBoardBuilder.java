@@ -6,6 +6,7 @@ import static java.util.concurrent.TimeUnit.MICROSECONDS;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.collections4.ListUtils.partition;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,11 +17,12 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.factory.PieceFactory;
 import com.agutsul.chess.piece.factory.PieceFactoryAdapter;
 
-abstract class AbstractBoardBuilder<T>
+abstract class AbstractBoardBuilder<T extends Serializable>
         implements BoardBuilder<T> {
 
     protected final Logger logger;
@@ -53,6 +55,25 @@ abstract class AbstractBoardBuilder<T>
                 executor.shutdownNow();
             }
         }
+    }
+
+    @Override
+    public BoardBuilder<T> withPiece(Piece.Type pieceType, Color color, T position) {
+        return Colors.WHITE.equals(color)
+                ? withWhitePiece(pieceType, position)
+                : withBlackPiece(pieceType, position);
+    }
+
+    @Override
+    public BoardBuilder<T> withWhitePiece(Piece.Type pieceType, T position) {
+        addPiecePosition(pieceType, whitePieceContext, position);
+        return this;
+    }
+
+    @Override
+    public BoardBuilder<T> withBlackPiece(Piece.Type pieceType, T position) {
+        addPiecePosition(pieceType, blackPieceContext, position);
+        return this;
     }
 
     @Override
@@ -188,6 +209,29 @@ abstract class AbstractBoardBuilder<T>
         return this;
     }
 
+    private void addPiecePosition(Piece.Type pieceType, BoardContext<T> context, T position) {
+        switch(pieceType) {
+        case PAWN:
+            context.addPawnPosition(position);
+            break;
+        case KNIGHT:
+            context.addKnightPosition(position);
+            break;
+        case BISHOP:
+            context.addBishopPosition(position);
+            break;
+        case ROOK:
+            context.addRookPosition(position);
+            break;
+        case QUEEN:
+            context.addQueenPosition(position);
+            break;
+        case KING:
+            context.addKingPosition(position);
+            break;
+        }
+    }
+
     private Board createBoard(ForkJoinPool executor) {
         var board = new BoardImpl();
         var tasks = List.of(
@@ -216,7 +260,7 @@ abstract class AbstractBoardBuilder<T>
         return new PieceBuilderTask<>(pieceFactoryAdapter, context);
     }
 
-    private static class PieceBuilderTask<T>
+    private static class PieceBuilderTask<T extends Serializable>
             extends RecursiveTask<List<Piece<Color>>> {
 
         private static final long serialVersionUID = 1L;

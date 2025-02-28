@@ -47,68 +47,57 @@ final class PgnGameBuilder
         return game;
     }
 
-    @Override
-    public GameBuilder withEvent(String event) {
+    GameBuilder withEvent(String event) {
         this.event = event;
         return this;
     }
 
-    @Override
-    public GameBuilder withSite(String site) {
+    GameBuilder withSite(String site) {
         this.site = site;
         return this;
     }
 
-    @Override
-    public GameBuilder withRound(String round) {
+    GameBuilder withRound(String round) {
         this.round = round;
         return this;
     }
 
-    @Override
-    public GameBuilder withWhitePlayer(String playerName) {
+    GameBuilder withWhitePlayer(String playerName) {
         this.whitePlayer = playerName;
         return this;
     }
 
-    @Override
-    public GameBuilder withBlackPlayer(String playerName) {
+    GameBuilder withBlackPlayer(String playerName) {
         this.blackPlayer = playerName;
         return this;
     }
 
-    @Override
-    public GameBuilder withGameState(String state) {
+    GameBuilder withGameState(String state) {
         this.gameState = state;
         return this;
     }
 
-    @Override
-    public GameBuilder withGameTermination(String terminationType) {
+    GameBuilder withGameTermination(String terminationType) {
         this.terminationType = terminationType;
         return this;
     }
 
-    @Override
-    public GameBuilder withActions(List<String> actions) {
+    GameBuilder withActions(List<String> actions) {
         this.actions.addAll(actions);
         return this;
     }
 
-    @Override
-    public GameBuilder addAction(String action) {
+    GameBuilder addAction(String action) {
         this.actions.add(action);
         return this;
     }
 
-    @Override
-    public GameBuilder withTags(Map<String,String> tags) {
+    GameBuilder withTags(Map<String,String> tags) {
         this.tags.putAll(tags);
         return this;
     }
 
-    @Override
-    public GameBuilder addTag(String name, String value) {
+    GameBuilder addTag(String name, String value) {
         this.tags.put(name, value);
         return this;
     }

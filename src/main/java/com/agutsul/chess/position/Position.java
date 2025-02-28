@@ -1,9 +1,11 @@
 package com.agutsul.chess.position;
 
+import java.io.Serializable;
+
 import com.agutsul.chess.color.Color;
 
 public interface Position
-        extends Calculated {
+        extends Calculated, Serializable {
 
     String[] LABELS = { "a", "b", "c", "d", "e", "f", "g", "h" };
 

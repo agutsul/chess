@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.factory;
 
+import java.io.Serializable;
+
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.BishopPiece;
 import com.agutsul.chess.piece.KingPiece;
@@ -8,7 +10,7 @@ import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.piece.RookPiece;
 
-public interface PieceFactoryAdapter<POSITION> {
+public interface PieceFactoryAdapter<POSITION extends Serializable> {
 
     KingPiece<Color> createKing(POSITION position);
 

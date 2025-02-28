@@ -21,7 +21,13 @@ public final class PositionBoardBuilder
     private static final Logger LOGGER = getLogger(PositionBoardBuilder.class);
 
     public PositionBoardBuilder() {
-        super(LOGGER, new BoardContext<Position>(), new BoardContext<Position>());
+        this(new BoardContext<Position>(), new BoardContext<Position>());
+    }
+
+    PositionBoardBuilder(BoardContext<Position> whiteContext,
+                         BoardContext<Position> blackContext) {
+
+        super(LOGGER, whiteContext, blackContext);
     }
 
     @Override

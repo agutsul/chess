@@ -20,7 +20,13 @@ public final class StringBoardBuilder
     private static final Logger LOGGER = getLogger(StringBoardBuilder.class);
 
     public StringBoardBuilder() {
-        super(LOGGER, new BoardContext<String>(), new BoardContext<String>());
+        this(new BoardContext<String>(), new BoardContext<String>());
+    }
+
+    StringBoardBuilder(BoardContext<String> whiteContext,
+                              BoardContext<String> blackContext) {
+
+        super(LOGGER, whiteContext, blackContext);
     }
 
     @Override
