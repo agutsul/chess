@@ -93,7 +93,11 @@
 
         <!-- ANTLR v4 -->
         <!-- see https://github.com/antlr/antlr4 -->
-        <!-- chess grammar file https://github.com/antlr/grammars-v4/blob/master/pgn/PGN.g4-->
+        <!-- 
+            chess grammar files:
+            https://github.com/antlr/grammars-v4/blob/master/pgn/PGN.g4
+            https://github.com/antlr/grammars-v4/blob/master/fen/fen.g4
+        -->
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
@@ -276,6 +280,10 @@
                         <!-- antlr generated classes -->
                         <exclude>com/agutsul/chess/pgn/PGNParser.java</exclude>
                         <exclude>com/agutsul/chess/pgn/PGNLexer.java</exclude>
+                        <exclude>com/agutsul/chess/fen/fenParser.java</exclude>
+                        <exclude>com/agutsul/chess/fen/fenLexer.java</exclude>
+                        <exclude>com/agutsul/chess/fen/fenBaseListener.java</exclude>
+                        <exclude>com/agutsul/chess/fen/fenBaseVisitor.java</exclude>
                     </excludes>
                     <rulesets>
                         <ruleset>${project.basedir}/src/conf/pmd/ruleset.xml</ruleset>
