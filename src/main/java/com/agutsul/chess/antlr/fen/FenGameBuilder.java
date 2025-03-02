@@ -69,8 +69,13 @@ final class FenGameBuilder
         );
 
         if (activeCastling != null) {
-            // toggle available castling sides
-            resolveCastling(board, activeCastling);
+            if (!DISABLE_ALL_SYMBOL.equals(activeCastling)) {
+                disableAllCastlings(board);
+                // toggle available castling sides
+                enableCastlings(board, activeCastling);
+            } else {
+                disableAllCastlings(board);
+            }
             // save string of enabled castling sides
             game.setParsedCastling(activeCastling);
         }
@@ -182,16 +187,12 @@ final class FenGameBuilder
         }
     }
 
-    private static void resolveCastling(Board board, String castling) {
-        disableAllCastlings(board);
+    private static void enableCastlings(Board board, String castling) {
+        for (int i = 0; i < castling.length(); i++) {
+            var code = String.valueOf(castling.charAt(i));
+            var color = isAllUpperCase(code) ? Colors.WHITE : Colors.BLACK;
 
-        if (!DISABLE_ALL_SYMBOL.equals(castling)) {
-            for (int i = 0; i < castling.length(); i++) {
-                var code = String.valueOf(castling.charAt(i));
-                var color = isAllUpperCase(code) ? Colors.WHITE : Colors.BLACK;
-
-                toggleCastling(board, color, Castling.of(code).side(), true);
-            }
+            toggleCastling(board, color, Castling.of(code).side(), true);
         }
     }
 
