@@ -18,6 +18,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.slf4j.Logger;
 
+import com.agutsul.chess.antlr.AntlrErrorListener;
 import com.agutsul.chess.fen.fenLexer;
 import com.agutsul.chess.fen.fenParser;
 import com.agutsul.chess.game.Game;
@@ -53,7 +54,7 @@ public class FenGameParser {
 
             parser.removeErrorListeners();
 
-            var errorListener = new FenAntlrErrorListener();
+            var errorListener = new AntlrErrorListener();
             parser.addErrorListener(errorListener);
 
             var fenListener = new FenAntlrListener();
