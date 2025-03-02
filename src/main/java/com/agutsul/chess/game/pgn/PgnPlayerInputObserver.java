@@ -13,11 +13,11 @@ import java.util.List;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.antlr.pgn.action.ActionAdapter;
+import com.agutsul.chess.antlr.pgn.action.PawnPromotionTypeAdapter;
+import com.agutsul.chess.antlr.pgn.action.PieceActionAdapter;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.Termination;
-import com.agutsul.chess.pgn.action.ActionAdapter;
-import com.agutsul.chess.pgn.action.PawnPromotionTypeAdapter;
-import com.agutsul.chess.pgn.action.PieceActionAdapter;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
 

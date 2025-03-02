@@ -1,6 +1,6 @@
 package com.agutsul.chess.game.observer;
 
-import static com.agutsul.chess.pgn.PgnGameParser.parse;
+import static com.agutsul.chess.antlr.pgn.PgnGameParser.parse;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.isDirectory;
 import static java.nio.file.Files.list;

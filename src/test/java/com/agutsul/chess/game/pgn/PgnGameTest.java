@@ -14,11 +14,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.TestFileReader;
+import com.agutsul.chess.antlr.pgn.PgnGameParser;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.CompositeBoardState;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.state.GameState;
-import com.agutsul.chess.pgn.PgnGameParser;
 
 @ExtendWith(MockitoExtension.class)
 public class PgnGameTest implements TestFileReader {
