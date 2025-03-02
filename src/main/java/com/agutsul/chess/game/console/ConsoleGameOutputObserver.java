@@ -9,8 +9,6 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import java.time.Duration;
 import java.util.Optional;
 
-import org.apache.commons.lang3.ObjectUtils;
-
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.event.ActionCancelledEvent;
 import com.agutsul.chess.activity.action.event.ActionCancellingEvent;
@@ -208,7 +206,7 @@ public final class ConsoleGameOutputObserver
     // utilities
 
     private static void displayAction(AbstractPlayableGame game, Player player, Action<?> action) {
-        var actionPlayer = ObjectUtils.defaultIfNull(player, game.getCurrentPlayer());
+        var actionPlayer = defaultIfNull(player, game.getCurrentPlayer());
 
         var journal = game.getJournal();
         var number = (journal.size() / 2) + 1;

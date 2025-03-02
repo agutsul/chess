@@ -10,8 +10,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import com.agutsul.chess.fen.fenBaseListener;
-import com.agutsul.chess.fen.fenParser;
+import com.agutsul.chess.antlr.gen.fen.fenBaseListener;
+import com.agutsul.chess.antlr.gen.fen.fenParser;
 import com.agutsul.chess.game.Game;
 
 final class FenAntlrListener

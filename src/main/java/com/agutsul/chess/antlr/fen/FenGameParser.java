@@ -19,8 +19,8 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.antlr.AntlrErrorListener;
-import com.agutsul.chess.fen.fenLexer;
-import com.agutsul.chess.fen.fenParser;
+import com.agutsul.chess.antlr.gen.fen.fenLexer;
+import com.agutsul.chess.antlr.gen.fen.fenParser;
 import com.agutsul.chess.game.Game;
 
 public class FenGameParser {

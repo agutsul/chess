@@ -275,15 +275,14 @@
                     <targetJdk>${project.java.version}</targetJdk>
                     <inputEncoding>${project.reporting.outputEncoding}</inputEncoding>
                     <excludes>
-                        <exclude>com/agutsul/chess/piece/*PieceFactory.java</exclude>
                         <exclude>com/agutsul/chess/rule/action/AbstractCastlingActionRule.java</exclude>
                         <!-- antlr generated classes -->
-                        <exclude>com/agutsul/chess/pgn/PGNParser.java</exclude>
-                        <exclude>com/agutsul/chess/pgn/PGNLexer.java</exclude>
-                        <exclude>com/agutsul/chess/fen/fenParser.java</exclude>
-                        <exclude>com/agutsul/chess/fen/fenLexer.java</exclude>
-                        <exclude>com/agutsul/chess/fen/fenBaseListener.java</exclude>
-                        <exclude>com/agutsul/chess/fen/fenBaseVisitor.java</exclude>
+                        <exclude>com/agutsul/chess/antlr/gen/pgn/PGNParser.java</exclude>
+                        <exclude>com/agutsul/chess/antlr/gen/pgn/PGNLexer.java</exclude>
+                        <exclude>com/agutsul/chess/antlr/gen/fen/fenParser.java</exclude>
+                        <exclude>com/agutsul/chess/antlr/gen/fen/fenLexer.java</exclude>
+                        <exclude>com/agutsul/chess/antlr/gen/fen/fenBaseListener.java</exclude>
+                        <exclude>com/agutsul/chess/antlr/gen/fen/fenBaseVisitor.java</exclude>
                     </excludes>
                     <rulesets>
                         <ruleset>${project.basedir}/src/conf/pmd/ruleset.xml</ruleset>

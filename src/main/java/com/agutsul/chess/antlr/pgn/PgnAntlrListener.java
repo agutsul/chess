@@ -3,9 +3,9 @@ package com.agutsul.chess.antlr.pgn;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.agutsul.chess.antlr.gen.pgn.PGNBaseListener;
+import com.agutsul.chess.antlr.gen.pgn.PGNParser;
 import com.agutsul.chess.game.Game;
-import com.agutsul.chess.pgn.PGNBaseListener;
-import com.agutsul.chess.pgn.PGNParser;
 
 final class PgnAntlrListener
         extends PGNBaseListener {

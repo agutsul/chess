@@ -33,23 +33,9 @@ public final class WhitePieceFactory
     }
 
     @Override
-    public KingPiece<Color> createKing(Position position) {
-        return new KingPieceProxy(super.createKing(position, KING_UNICODE));
-    }
-
-    @Override
-    public QueenPiece<Color> createQueen(Position position) {
-        return pinnableProxy(board, super.createQueen(position, QUEEN_UNICODE));
-    }
-
-    @Override
-    public RookPiece<Color> createRook(Position position) {
-        return pinnableProxy(board, super.createRook(position, ROOK_UNICODE));
-    }
-
-    @Override
-    public BishopPiece<Color> createBishop(Position position) {
-        return pinnableProxy(board, super.createBishop(position, BISHOP_UNICODE));
+    public PawnPiece<Color> createPawn(Position position) {
+        var piece = super.createPawn(position, PAWN_UNICODE);
+        return pinnableProxy(board, new PromotablePieceProxy<>(board, piece, promotion.line(), this));
     }
 
     @Override
@@ -58,8 +44,22 @@ public final class WhitePieceFactory
     }
 
     @Override
-    public PawnPiece<Color> createPawn(Position position) {
-        var piece = super.createPawn(position, PAWN_UNICODE);
-        return pinnableProxy(board, new PromotablePieceProxy<>(board, piece, promotion.line(), this));
+    public BishopPiece<Color> createBishop(Position position) {
+        return pinnableProxy(board, super.createBishop(position, BISHOP_UNICODE));
+    }
+
+    @Override
+    public RookPiece<Color> createRook(Position position) {
+        return pinnableProxy(board, super.createRook(position, ROOK_UNICODE));
+    }
+
+    @Override
+    public QueenPiece<Color> createQueen(Position position) {
+        return pinnableProxy(board, super.createQueen(position, QUEEN_UNICODE));
+    }
+
+    @Override
+    public KingPiece<Color> createKing(Position position) {
+        return new KingPieceProxy(super.createKing(position, KING_UNICODE));
     }
 }

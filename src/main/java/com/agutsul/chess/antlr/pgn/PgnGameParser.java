@@ -20,9 +20,9 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.antlr.AntlrErrorListener;
+import com.agutsul.chess.antlr.gen.pgn.PGNLexer;
+import com.agutsul.chess.antlr.gen.pgn.PGNParser;
 import com.agutsul.chess.game.Game;
-import com.agutsul.chess.pgn.PGNLexer;
-import com.agutsul.chess.pgn.PGNParser;
 
 public final class PgnGameParser {
 
