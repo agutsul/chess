@@ -8,7 +8,6 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.game.AbstractPlayableGame;
-import com.agutsul.chess.game.console.ConsoleGameOutputObserver;
 import com.agutsul.chess.game.console.ConsolePlayerInputObserver;
 import com.agutsul.chess.player.Player;
 
@@ -28,11 +27,11 @@ public final class FenGame
 
         super(LOGGER, whitePlayer, blackPlayer, board);
 
-        // set active player
-        this.currentPlayer = getPlayer(color);
-
         this.parsedHalfMoves = halfMoves;
         this.parsedFullMoves = fullMoves;
+
+        // set active player
+        this.currentPlayer = getPlayer(color);
 
         // re-evaluate board state
         evaluateBoardState(getCurrentPlayer());
@@ -40,7 +39,8 @@ public final class FenGame
         ((Observable) board).addObserver(new ConsolePlayerInputObserver(whitePlayer, this));
         ((Observable) board).addObserver(new ConsolePlayerInputObserver(blackPlayer, this));
 
-        addObserver(new ConsoleGameOutputObserver(this));
+        // uncomment below for local debug of pgn file
+//        addObserver(new ConsoleGameOutputObserver(this));
     }
 
     public String getParsedCastling() {
