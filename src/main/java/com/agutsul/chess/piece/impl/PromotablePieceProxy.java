@@ -24,6 +24,7 @@ import com.agutsul.chess.Movable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.Restorable;
+import com.agutsul.chess.Settable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.activity.impact.Impact;
@@ -164,6 +165,12 @@ final class PromotablePieceProxy<PIECE extends Piece<?> & Movable & Capturable &
     @Override
     public boolean isBlocked() {
         return ((Blockable) this.origin).isBlocked();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void set(Castlingable.Side side, Boolean enabled) {
+        ((Settable<Castlingable.Side,Boolean>) this.origin).set(side, enabled);
     }
 
     private void setState(PieceState<?> state) {

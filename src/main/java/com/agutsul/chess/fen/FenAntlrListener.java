@@ -16,7 +16,6 @@ final class FenAntlrListener
         extends fenBaseListener {
 
     private static final String FEN_LINE_PATTERN = "([p,P,n,N,b,B,r,R,q,Q,k,K,1-8]){1,8}";
-    private static final String SKIP_SYMBOL = "-";
 
     private final List<Game> games = new ArrayList<>();
     private final Pattern linePattern;
@@ -48,9 +47,7 @@ final class FenAntlrListener
 
     @Override
     public void enterCastling(fenParser.CastlingContext ctx) {
-        if (!SKIP_SYMBOL.equals(ctx.getText())) {
-            this.gameBuilder.withCastling(ctx.getText());
-        }
+        this.gameBuilder.withCastling(ctx.getText());
     }
 
     @Override
@@ -61,23 +58,17 @@ final class FenAntlrListener
 
     @Override
     public void enterPosition(fenParser.PositionContext ctx) {
-        if (!SKIP_SYMBOL.equals(ctx.getText())) {
-            this.gameBuilder.withEnPassant(ctx.getText());
-        }
+        this.gameBuilder.withEnPassant(ctx.getText());
     }
 
     @Override
     public void enterHalfmoveclock(fenParser.HalfmoveclockContext ctx) {
-        if (!SKIP_SYMBOL.equals(ctx.getText())) {
-            this.gameBuilder.withHalfMoves(toInt(ctx.getText()));
-        }
+        this.gameBuilder.withHalfMoves(toInt(ctx.getText()));
     }
 
     @Override
     public void enterFullmoveclock(fenParser.FullmoveclockContext ctx) {
-        if (!SKIP_SYMBOL.equals(ctx.getText())) {
-            this.gameBuilder.withFullMoves(toInt(ctx.getText()));
-        }
+        this.gameBuilder.withFullMoves(toInt(ctx.getText()));
     }
 
     @Override

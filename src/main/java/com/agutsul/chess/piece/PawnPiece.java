@@ -12,9 +12,10 @@ import com.agutsul.chess.Restorable;
 import com.agutsul.chess.color.Color;
 
 public interface PawnPiece<COLOR extends Color>
-        extends Piece<COLOR>, Movable, Capturable, Promotable,
-                EnPassantable, Disposable, Restorable,
-                Pinnable, Protectable, Blockable {
+        extends Piece<COLOR>, Movable, Capturable,
+                Promotable, Protectable, EnPassantable,
+                Disposable, Restorable, Pinnable,
+                Blockable {
 
     int BIG_STEP_MOVE = 2;
 }

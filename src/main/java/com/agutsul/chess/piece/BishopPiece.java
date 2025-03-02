@@ -10,7 +10,8 @@ import com.agutsul.chess.Restorable;
 import com.agutsul.chess.color.Color;
 
 public interface BishopPiece<COLOR extends Color>
-        extends Piece<COLOR>, Movable, Capturable, Demotable,
-                Disposable, Restorable, Pinnable, Protectable {
+        extends Piece<COLOR>, Movable, Capturable,
+                Demotable, Disposable, Restorable,
+                Pinnable, Protectable {
 
 }

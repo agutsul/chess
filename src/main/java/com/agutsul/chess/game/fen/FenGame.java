@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.console.ConsoleGameOutputObserver;
@@ -29,10 +28,8 @@ public final class FenGame
 
         super(LOGGER, whitePlayer, blackPlayer, board);
 
-        // by default WHITE is active player
-        if (Colors.BLACK.equals(color)) {
-            this.currentPlayer = next();
-        }
+        // set active player
+        this.currentPlayer = getPlayer(color);
 
         // re-evaluate board state
         evaluateBoardState(getCurrentPlayer());

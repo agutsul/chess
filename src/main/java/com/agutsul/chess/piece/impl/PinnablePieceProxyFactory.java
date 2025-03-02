@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -119,6 +120,11 @@ enum PinnablePieceProxyFactory {
         public void uncastling(Position position) {
             logger.info("Cancel castling for piece '{}'", this);
             origin.uncastling(position);
+        }
+
+        @Override
+        public void set(Castlingable.Side side, Boolean value) {
+            origin.set(side, value);
         }
     }
 

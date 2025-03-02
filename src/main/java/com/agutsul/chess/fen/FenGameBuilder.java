@@ -8,8 +8,12 @@ import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.apache.commons.lang3.math.NumberUtils.toInt;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
+import com.agutsul.chess.Castlingable;
+import com.agutsul.chess.Settable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.PositionBoardBuilder;
 import com.agutsul.chess.color.Color;
@@ -21,9 +25,12 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.UserPlayer;
 import com.agutsul.chess.position.Position;
+import com.agutsul.chess.rule.action.AbstractCastlingActionRule.Castling;
 
 final class FenGameBuilder
         implements GameBuilder {
+
+    private static final String DISABLE_ALL_CASTLINGS_SYMBOL = "-";
 
     private List<String> parsedBoardLines = new ArrayList<>();
 
@@ -46,7 +53,15 @@ final class FenGameBuilder
                 resolveColor(activeColor)
         );
 
-        game.setParsedCastling(activeCastling);
+        // toggle available castling sides
+        resolveCastling(board, activeCastling);
+
+        // save string of enabled castling sides
+        game.setParsedCastling(!DISABLE_ALL_CASTLINGS_SYMBOL.equals(activeCastling)
+                ? activeCastling
+                : null
+        );
+
         game.setParsedEnPassant(enPassantPosition);
         game.setParsedHalfMoves(halfMoveClock);
         game.setParsedFullMoves(fullMoveClock);
@@ -146,5 +161,38 @@ final class FenGameBuilder
                     "Unsupported player color: '%s'", colorCode
             ));
         }
+    }
+
+    private static void resolveCastling(Board board, String castling) {
+        disableAllCastlings(board);
+
+        if (!DISABLE_ALL_CASTLINGS_SYMBOL.equals(castling)) {
+            for (int i = 0; i < castling.length(); i++) {
+                var code = String.valueOf(castling.charAt(i));
+                var color = isAllUpperCase(code) ? Colors.WHITE : Colors.BLACK;
+
+                toggleCastling(board, color, Castling.of(code).side(), true);
+            }
+        }
+    }
+
+    private static void disableAllCastlings(Board board) {
+        for (var color : Colors.values()) {
+            for (var side : Castlingable.Side.values()) {
+                toggleCastling(board, color, side, false);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void toggleCastling(Board board, Color color,
+                                       Castlingable.Side side, Boolean enabled) {
+
+        Stream.of(Piece.Type.KING, Piece.Type.ROOK)
+                .map(pieceType -> board.getPieces(color, pieceType))
+                .flatMap(Collection::stream)
+                .filter(piece -> piece instanceof Castlingable && piece instanceof Settable)
+                .map(piece -> (Settable<Castlingable.Side,Boolean>) piece)
+                .forEach(piece -> piece.set(side, enabled));
     }
 }

@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -32,6 +33,7 @@ final class KingPieceImpl<COLOR extends Color>
     private static final Logger LOGGER = getLogger(KingPieceImpl.class);
 
     private static final String DISPOSE_ERROR_MESSAGE = "Unable to dispose KING piece";
+    private static final String RESTORE_ERROR_MESSAGE = "Unable to restore KING piece";
 
     private final CheckedPieceState<? extends KingPiece<?>> checkedPieceState;
     private final CheckMatedPieceState<? extends KingPiece<?>> checkMatedPieceState;
@@ -41,7 +43,8 @@ final class KingPieceImpl<COLOR extends Color>
 
         super(board, Piece.Type.KING, color, unicode, position, direction,
                 new KingPieceActionRule<>(board),
-                new KingPieceImpactRule<>(board)
+                new KingPieceImpactRule<>(board),
+                asList(Side.values())
         );
 
         this.checkedPieceState = new KingCheckedPieceState<>(getState());
@@ -87,7 +90,7 @@ final class KingPieceImpl<COLOR extends Color>
 
     @Override
     public void restore() {
-        throw new UnsupportedOperationException("Unable to restore KING piece");
+        throw new UnsupportedOperationException(RESTORE_ERROR_MESSAGE);
     }
 
     static class KingCheckedPieceState<PIECE extends KingPiece<?>>

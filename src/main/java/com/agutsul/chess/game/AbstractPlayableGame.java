@@ -102,8 +102,8 @@ public abstract class AbstractPlayableGame
         this.activeState = new ActivePlayerState((Observable) board);
         this.lockedState = new LockedPlayerState();
 
-        this.whitePlayer.setState(activeState);
-        this.blackPlayer.setState(lockedState);
+        getWhitePlayer().setState(activeState);
+        getBlackPlayer().setState(lockedState);
 
         this.currentPlayer = whitePlayer;
 
@@ -310,9 +310,9 @@ public abstract class AbstractPlayableGame
     }
 
     private Player getOpponentPlayer() {
-        return Objects.equals(this.currentPlayer, this.whitePlayer)
-                ? this.blackPlayer
-                : this.whitePlayer;
+        return Objects.equals(this.currentPlayer, getWhitePlayer())
+                ? getBlackPlayer()
+                : getWhitePlayer();
     }
 
     private void clearPieceData(Color color) {

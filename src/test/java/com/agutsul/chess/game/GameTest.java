@@ -6,7 +6,6 @@ import static com.agutsul.chess.board.state.BoardStateFactory.checkMatedBoardSta
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.exitedBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.staleMatedBoardState;
-import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -25,7 +24,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import org.junit.jupiter.api.Test;
@@ -84,7 +82,12 @@ public class GameTest {
         var board = mock(AbstractBoard.class);
 
         var whitePlayer = mock(Player.class);
+        when(whitePlayer.getColor())
+            .thenReturn(Colors.WHITE);
+
         var blackPlayer = mock(Player.class);
+        when(blackPlayer.getColor())
+            .thenReturn(Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer, board);
         var state = game.getState();
@@ -100,7 +103,12 @@ public class GameTest {
             .thenReturn(defaultBoardState(board, Colors.WHITE));
 
         var whitePlayer = mock(Player.class);
+        when(whitePlayer.getColor())
+            .thenReturn(Colors.WHITE);
+
         var blackPlayer = mock(Player.class);
+        when(blackPlayer.getColor())
+            .thenReturn(Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer, board);
         game.setFinishedAt(LocalDateTime.now());
@@ -118,7 +126,12 @@ public class GameTest {
             .thenReturn(checkMatedBoardState(board, Colors.WHITE));
 
         var whitePlayer = mock(Player.class);
+        when(whitePlayer.getColor())
+            .thenReturn(Colors.WHITE);
+
         var blackPlayer = mock(Player.class);
+        when(blackPlayer.getColor())
+            .thenReturn(Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer, board);
         game.setFinishedAt(LocalDateTime.now());
@@ -136,7 +149,12 @@ public class GameTest {
             .thenReturn(agreedDefeatBoardState(board, Colors.BLACK));
 
         var whitePlayer = mock(Player.class);
+        when(whitePlayer.getColor())
+            .thenReturn(Colors.WHITE);
+
         var blackPlayer = mock(Player.class);
+        when(blackPlayer.getColor())
+            .thenReturn(Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer, board);
         game.setFinishedAt(LocalDateTime.now());
@@ -151,21 +169,26 @@ public class GameTest {
     @SuppressWarnings("unchecked")
     void testPlayerAskedAction() {
         var king = mock(KingPiece.class);
-        when(king.isChecked())
-            .thenReturn(false);
+//        when(king.isChecked())
+//            .thenReturn(false);
 
         var board = mock(AbstractBoard.class);
         when(board.getState())
             .thenReturn(defaultBoardState(board, Colors.WHITE));
 
-        when(board.getKing(any()))
-            .thenReturn(Optional.of(king));
+//        when(board.getKing(any()))
+//            .thenReturn(Optional.of(king));
 
-        when(board.getPieces(any(Color.class)))
-            .thenReturn(emptyList());
+//        when(board.getPieces(any(Color.class)))
+//            .thenReturn(emptyList());
 
         var whitePlayer = mock(Player.class);
+        when(whitePlayer.getColor())
+            .thenReturn(Colors.WHITE);
+
         var blackPlayer = mock(Player.class);
+        when(blackPlayer.getColor())
+            .thenReturn(Colors.BLACK);
 
         var journal = mock(Journal.class);
 

@@ -1,10 +1,12 @@
 package com.agutsul.chess.piece.impl;
 
+import static java.util.Collections.emptyList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.slf4j.Logger;
 
@@ -17,6 +19,7 @@ import com.agutsul.chess.piece.rook.RookPieceActionRule;
 import com.agutsul.chess.piece.rook.RookPieceImpactRule;
 import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.position.Position;
+import com.agutsul.chess.rule.action.AbstractCastlingActionRule.Castling;
 
 final class RookPieceImpl<COLOR extends Color>
         extends AbstractCastlingPiece<COLOR>
@@ -25,9 +28,16 @@ final class RookPieceImpl<COLOR extends Color>
     RookPieceImpl(Board board, COLOR color, String unicode,
                   Position position, int direction) {
 
+        this(board, color, unicode, position, direction, Castling.of(position));
+    }
+
+    private RookPieceImpl(Board board, COLOR color, String unicode,
+                          Position position, int direction, Castling castling) {
+
         super(board, Piece.Type.ROOK, color, unicode, position, direction,
                 new RookPieceActionRule<>(board),
-                new RookPieceImpactRule<>(board)
+                new RookPieceImpactRule<>(board),
+                castling != null ? List.of(castling.side()) : emptyList()
         );
     }
 

@@ -1,10 +1,17 @@
 package com.agutsul.chess.game;
 
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.color.Color;
+import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.state.BlackWinGameState;
 import com.agutsul.chess.game.state.DefaultGameState;
 import com.agutsul.chess.game.state.DrawnGameState;
@@ -17,8 +24,7 @@ abstract class AbstractGame
 
     protected final Logger logger;
 
-    protected final Player whitePlayer;
-    protected final Player blackPlayer;
+    private final Map<Color,Player> players;
 
     protected String event;
     protected String site;
@@ -29,8 +35,8 @@ abstract class AbstractGame
 
     AbstractGame(Logger logger, Player whitePlayer, Player blackPlayer) {
         this.logger = logger;
-        this.whitePlayer = whitePlayer;
-        this.blackPlayer = blackPlayer;
+        this.players = Stream.of(whitePlayer, blackPlayer)
+                .collect(toMap(Player::getColor, identity()));
     }
 
     @Override
@@ -50,12 +56,17 @@ abstract class AbstractGame
 
     @Override
     public final Player getWhitePlayer() {
-        return whitePlayer;
+        return getPlayer(Colors.WHITE);
     }
 
     @Override
     public final Player getBlackPlayer() {
-        return blackPlayer;
+        return getPlayer(Colors.BLACK);
+    }
+
+    @Override
+    public final Player getPlayer(Color color) {
+        return players.get(color);
     }
 
     @Override
