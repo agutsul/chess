@@ -183,13 +183,11 @@ final class FenGameBuilder
     private static void resolveCastling(Board board, String castling) {
         disableAllCastlings(board);
 
-        if (!DISABLE_ALL_SYMBOL.equals(castling)) {
-            for (int i = 0; i < castling.length(); i++) {
-                var code = String.valueOf(castling.charAt(i));
-                var color = isAllUpperCase(code) ? Colors.WHITE : Colors.BLACK;
+        for (int i = 0; i < castling.length(); i++) {
+            var code = String.valueOf(castling.charAt(i));
+            var color = isAllUpperCase(code) ? Colors.WHITE : Colors.BLACK;
 
-                toggleCastling(board, color, Castling.of(code).side(), true);
-            }
+            toggleCastling(board, color, Castling.of(code).side(), true);
         }
     }
 
