@@ -68,17 +68,19 @@ final class FenGameBuilder
                 fullMoveClock
         );
 
-        if (!DISABLE_ALL_SYMBOL.equals(activeCastling) && activeCastling != null) {
+        if (activeCastling != null) {
             // toggle available castling sides
             resolveCastling(board, activeCastling);
             // save string of enabled castling sides
             game.setParsedCastling(activeCastling);
         }
 
-        if (!DISABLE_ALL_SYMBOL.equals(enPassantPosition) && enPassantPosition != null) {
-            // reset piece position and perform piece 'big move' action
-            // to fill journal properly because en-passant action is based on journal
-            resolveEnPassant(game, playerColor.invert(), enPassantPosition);
+        if (enPassantPosition != null) {
+            if (!DISABLE_ALL_SYMBOL.equals(enPassantPosition)) {
+                // reset piece position and perform piece 'big move' action
+                // to fill journal properly because en-passant action is based on journal
+                resolveEnPassant(game, playerColor.invert(), enPassantPosition);
+            }
             // save "en-passant" position
             game.setParsedEnPassant(enPassantPosition);
         }
@@ -183,11 +185,13 @@ final class FenGameBuilder
     private static void resolveCastling(Board board, String castling) {
         disableAllCastlings(board);
 
-        for (int i = 0; i < castling.length(); i++) {
-            var code = String.valueOf(castling.charAt(i));
-            var color = isAllUpperCase(code) ? Colors.WHITE : Colors.BLACK;
+        if (!DISABLE_ALL_SYMBOL.equals(castling)) {
+            for (int i = 0; i < castling.length(); i++) {
+                var code = String.valueOf(castling.charAt(i));
+                var color = isAllUpperCase(code) ? Colors.WHITE : Colors.BLACK;
 
-            toggleCastling(board, color, Castling.of(code).side(), true);
+                toggleCastling(board, color, Castling.of(code).side(), true);
+            }
         }
     }
 
