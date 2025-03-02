@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.time.Instant.now;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -8,8 +9,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Settable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
@@ -79,8 +82,33 @@ final class PawnPieceImpl<COLOR extends Color>
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public void set(Settable.Type type, Object value) {
+        set((Action.Type) type, (Pair<String,String>) value);
+    }
+
+    @Override
     DisposedPieceState<?> createDisposedPieceState(Instant instant) {
         return new DisposedEnPassantablePieceState<>(instant);
+    }
+
+    private void set(Action.Type actionType, Pair<String,String> pair) {
+        set(actionType, pair.getLeft(), pair.getRight());
+    }
+
+    private void set(Action.Type actionType, String sourcePosition, String targetPosition) {
+        if (!Action.Type.EN_PASSANT.equals(actionType)) {
+            throw new IllegalStateException(String.format(
+                    "Unable to set position '%s' for action '%s'",
+                    targetPosition,
+                    String.valueOf(actionType)
+            ));
+        }
+
+        // cancel move to target position
+        cancelMove(positionOf(targetPosition));
+        // move piece back to source position
+        doMove(positionOf(sourcePosition));
     }
 
     @SuppressWarnings("unchecked")

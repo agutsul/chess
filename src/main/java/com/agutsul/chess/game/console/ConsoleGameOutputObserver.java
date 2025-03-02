@@ -9,6 +9,8 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import java.time.Duration;
 import java.util.Optional;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.event.ActionCancelledEvent;
 import com.agutsul.chess.activity.action.event.ActionCancellingEvent;
@@ -103,7 +105,7 @@ public final class ConsoleGameOutputObserver
 
     @Override
     protected void process(ActionExecutionEvent event) {
-        displayAction((AbstractPlayableGame) this.game, event.getAction());
+        displayAction((AbstractPlayableGame) this.game, event.getPlayer(), event.getAction());
     }
 
     @Override
@@ -113,7 +115,7 @@ public final class ConsoleGameOutputObserver
 
     @Override
     protected void process(ActionCancellingEvent event) {
-        displayAction((AbstractPlayableGame) this.game, event.getAction());
+        displayAction((AbstractPlayableGame) this.game, null, event.getAction());
     }
 
     @Override
@@ -205,8 +207,8 @@ public final class ConsoleGameOutputObserver
 
     // utilities
 
-    private static void displayAction(AbstractPlayableGame game, Action<?> action) {
-        var player = game.getCurrentPlayer();
+    private static void displayAction(AbstractPlayableGame game, Player player, Action<?> action) {
+        var actionPlayer = ObjectUtils.defaultIfNull(player, game.getCurrentPlayer());
 
         var journal = game.getJournal();
         var number = (journal.size() / 2) + 1;
@@ -221,9 +223,9 @@ public final class ConsoleGameOutputObserver
 
         System.out.println(String.format("%d. %s %s: '%s': %s",
                 number,
-                player.getColor(),
+                actionPlayer.getColor(),
                 ACTION_MESSAGE,
-                player.getName(),
+                actionPlayer.getName(),
                 formattedAction
         ));
     }

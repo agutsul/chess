@@ -1,8 +1,8 @@
 package com.agutsul.chess;
 
-public interface Settable<PROPERTY extends Settable.Type,VALUE> {
+public interface Settable {
 
     interface Type {}
 
-    void set(PROPERTY property, VALUE value);
+    void set(Settable.Type property, Object value);
 }

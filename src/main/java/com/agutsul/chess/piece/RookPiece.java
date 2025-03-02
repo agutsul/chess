@@ -15,6 +15,6 @@ public interface RookPiece<COLOR extends Color>
         extends Piece<COLOR>, Movable, Capturable,
                 Castlingable, Protectable, Demotable,
                 Disposable, Restorable, Pinnable,
-                Settable<Castlingable.Side,Boolean> {
+                Settable {
 
 }

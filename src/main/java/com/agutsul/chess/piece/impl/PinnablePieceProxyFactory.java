@@ -9,8 +9,8 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Pinnable;
+import com.agutsul.chess.Settable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.BishopPiece;
@@ -123,8 +123,8 @@ enum PinnablePieceProxyFactory {
         }
 
         @Override
-        public void set(Castlingable.Side side, Boolean value) {
-            origin.set(side, value);
+        public void set(Settable.Type type, Object value) {
+            origin.set(type, value);
         }
     }
 
@@ -163,6 +163,12 @@ enum PinnablePieceProxyFactory {
         public boolean isBlocked() {
             logger.info("Check if piece '{}' is blocked", this);
             return origin.isBlocked();
+        }
+
+        @Override
+        public void set(Settable.Type type, Object value) {
+            logger.info("Set piece '{}' en-passant position '{}'", this, value);
+            origin.set(type, value);
         }
     }
 }

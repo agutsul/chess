@@ -44,6 +44,11 @@ abstract class AbstractPieceProxy<PIECE extends Piece<?> & Movable & Capturable 
     }
 
     @Override
+    public int getDirection() {
+        return this.origin.getDirection();
+    }
+
+    @Override
     public final Position getPosition() {
         return origin.getPosition();
     }

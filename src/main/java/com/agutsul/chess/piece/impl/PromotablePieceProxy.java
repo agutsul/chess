@@ -168,9 +168,8 @@ final class PromotablePieceProxy<PIECE extends Piece<?> & Movable & Capturable &
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public void set(Castlingable.Side side, Boolean enabled) {
-        ((Settable<Castlingable.Side,Boolean>) this.origin).set(side, enabled);
+    public void set(Settable.Type type, Object value) {
+        ((Settable) this.origin).set(type, value);
     }
 
     private void setState(PieceState<?> state) {

@@ -2,7 +2,7 @@ package com.agutsul.chess.piece.impl;
 
 import java.util.Collection;
 
-import com.agutsul.chess.Castlingable;
+import com.agutsul.chess.Settable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.color.Color;
@@ -72,7 +72,7 @@ final class KingPieceProxy
     }
 
     @Override
-    public void set(Castlingable.Side side, Boolean value) {
-        this.origin.set(side, value);
+    public void set(Settable.Type type, Object value) {
+        this.origin.set(type, value);
     }
 }

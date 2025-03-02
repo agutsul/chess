@@ -58,6 +58,7 @@ public interface Piece<COLOR extends Color>
     Type getType();
     COLOR getColor();
     String getUnicode();
+    int getDirection();
     int getValue();
 
     PieceState<Piece<COLOR>> getState();

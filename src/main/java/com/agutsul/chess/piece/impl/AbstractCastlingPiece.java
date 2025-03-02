@@ -33,7 +33,7 @@ import com.agutsul.chess.rule.Rule;
 
 abstract class AbstractCastlingPiece<COLOR extends Color>
         extends AbstractPiece<COLOR>
-        implements Castlingable, Settable<Castlingable.Side,Boolean> {
+        implements Castlingable, Settable {
 
     private static final Logger LOGGER = getLogger(AbstractCastlingPiece.class);
 
@@ -87,7 +87,11 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     }
 
     @Override
-    public final void set(Castlingable.Side side, Boolean enabled) {
+    public final void set(Settable.Type type, Object value) {
+        set((Castlingable.Side) type, (Boolean) value);
+    }
+
+    private void set(Castlingable.Side side, Boolean enabled) {
         if (this.sides.containsKey(side)) {
             this.sides.put(side, enabled);
         }

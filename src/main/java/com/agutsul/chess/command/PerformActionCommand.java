@@ -110,7 +110,9 @@ public final class PerformActionCommand
 
     @Override
     protected void executeInternal() throws CommandException {
-        this.observable.notifyObservers(new ActionExecutionEvent(this.action));
+        this.observable.notifyObservers(
+                new ActionExecutionEvent(this.player, this.action)
+        );
 
         try {
             this.memento = createMemento(this.board, this.action);
@@ -119,7 +121,9 @@ public final class PerformActionCommand
             throw new CommandException(e.getMessage());
         }
 
-        this.observable.notifyObservers(new ActionPerformedEvent(this.memento));
+        this.observable.notifyObservers(
+                new ActionPerformedEvent(this.player, this.memento)
+        );
     }
 
     private static final class ActionFilter

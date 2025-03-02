@@ -55,6 +55,7 @@ abstract class AbstractPiece<COLOR extends Color>
     private final int value;
 
     protected final AbstractBoard board;
+    protected final int direction;
 
     protected final ActivePieceState<? extends Piece<COLOR>> activeState;
     protected PieceState<Piece<COLOR>> currentState;
@@ -86,6 +87,7 @@ abstract class AbstractPiece<COLOR extends Color>
         this.type = type;
         this.color = color;
         this.unicode = unicode;
+        this.direction = direction;
         this.value = type.value() * direction;
 
         this.activeState = (ActivePieceState<? extends Piece<COLOR>>) state;
@@ -95,6 +97,11 @@ abstract class AbstractPiece<COLOR extends Color>
         this.impactCache = impactCache;
 
         setPosition(position);
+    }
+
+    @Override
+    public final int getDirection() {
+        return this.direction;
     }
 
     @Override

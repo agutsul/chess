@@ -11,7 +11,7 @@ import com.agutsul.chess.color.Color;
 public interface KingPiece<COLOR extends Color>
         extends Piece<COLOR>, Movable, Capturable,
                 Castlingable, Checkable, Protectable,
-                Settable<Castlingable.Side,Boolean> {
+                Settable {
 
     void setChecked(boolean checked);
     void setCheckMated(boolean checkMated);

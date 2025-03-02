@@ -23,6 +23,7 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.mock.GameOutputObserverMock;
+import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 
@@ -66,7 +67,9 @@ public class GameObserverTest {
     @Test
     void testObserveActionPerformedEvent() {
         var memento = mock(ActionMemento.class);
-        var event = new ActionPerformedEvent(memento);
+        var player = mock(Player.class);
+
+        var event = new ActionPerformedEvent(player, memento);
 
         var game = mock(Game.class);
         var observer = new GameOutputObserverMock(game,
@@ -83,7 +86,9 @@ public class GameObserverTest {
     @Test
     void testObserveActionExecutionEvent() {
         var action = mock(Action.class);
-        var event = new ActionExecutionEvent(action);
+        var player = mock(Player.class);
+
+        var event = new ActionExecutionEvent(player, action);
 
         var game = mock(Game.class);
         var observer = new GameOutputObserverMock(game,

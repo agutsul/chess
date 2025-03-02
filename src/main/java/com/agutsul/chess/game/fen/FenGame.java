@@ -24,12 +24,15 @@ public final class FenGame
     private int parsedFullMoves;
 
     public FenGame(Player whitePlayer, Player blackPlayer,
-                   Board board, Color color) {
+                   Board board, Color color, int halfMoves, int fullMoves) {
 
         super(LOGGER, whitePlayer, blackPlayer, board);
 
         // set active player
         this.currentPlayer = getPlayer(color);
+
+        this.parsedHalfMoves = halfMoves;
+        this.parsedFullMoves = fullMoves;
 
         // re-evaluate board state
         evaluateBoardState(getCurrentPlayer());
@@ -60,15 +63,7 @@ public final class FenGame
         return parsedHalfMoves;
     }
 
-    public void setParsedHalfMoves(int parsedHalfMoves) {
-        this.parsedHalfMoves = parsedHalfMoves;
-    }
-
     public int getParsedFullMoves() {
         return parsedFullMoves;
-    }
-
-    public void setParsedFullMoves(int parsedFullMoves) {
-        this.parsedFullMoves = parsedFullMoves;
     }
 }
