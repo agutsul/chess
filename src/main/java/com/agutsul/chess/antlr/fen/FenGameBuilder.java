@@ -218,8 +218,9 @@ final class FenGameBuilder
     private static void resolveEnPassant(AbstractPlayableGame game,
                                          Color color, String positionCode) {
         var board = game.getBoard();
-
+        // en-passant selected position
         var position = positionOf(positionCode);
+        // find piece in the same column
         var pawnPiece = board.getPieces(color, Piece.Type.PAWN).stream()
                 .filter(pawn -> Objects.equals(pawn.getPosition().x(), position.x()))
                 .findFirst()
@@ -234,6 +235,7 @@ final class FenGameBuilder
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(color));
 
         // perform piece 'big move' action to fill journal properly
+        // so, during en-passant calculation 'big move' can be resolved in journal
         try {
             var command = new PerformActionCommand(game.getPlayer(color), board, game);
             command.setSource(sourcePosition);
