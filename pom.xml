@@ -277,12 +277,12 @@
                     <excludes>
                         <exclude>com/agutsul/chess/rule/action/AbstractCastlingActionRule.java</exclude>
                         <!-- antlr generated classes -->
-                        <exclude>com/agutsul/chess/antlr/gen/pgn/PGNParser.java</exclude>
-                        <exclude>com/agutsul/chess/antlr/gen/pgn/PGNLexer.java</exclude>
-                        <exclude>com/agutsul/chess/antlr/gen/fen/fenParser.java</exclude>
-                        <exclude>com/agutsul/chess/antlr/gen/fen/fenLexer.java</exclude>
-                        <exclude>com/agutsul/chess/antlr/gen/fen/fenBaseListener.java</exclude>
-                        <exclude>com/agutsul/chess/antlr/gen/fen/fenBaseVisitor.java</exclude>
+                        <exclude>com/agutsul/chess/antlr/grammar/PGNParser.java</exclude>
+                        <exclude>com/agutsul/chess/antlr/grammar/PGNLexer.java</exclude>
+                        <exclude>com/agutsul/chess/antlr/grammar/fenParser.java</exclude>
+                        <exclude>com/agutsul/chess/antlr/grammar/fenLexer.java</exclude>
+                        <exclude>com/agutsul/chess/antlr/grammar/fenBaseListener.java</exclude>
+                        <exclude>com/agutsul/chess/antlr/grammar/fenBaseVisitor.java</exclude>
                     </excludes>
                     <rulesets>
                         <ruleset>${project.basedir}/src/conf/pmd/ruleset.xml</ruleset>

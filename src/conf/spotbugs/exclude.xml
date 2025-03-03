@@ -31,12 +31,12 @@
   <!-- All bugs in generated ANTLR classes-->
   <Match>
     <Or>
-        <Class name="com.agutsul.chess.antlr.gen.pgn.PGNLexer" />
-        <Class name="com.agutsul.chess.antlr.gen.pgn.PGNParser" />
-        <Class name="com.agutsul.chess.antlr.gen.fen.fenLexer" />
-        <Class name="com.agutsul.chess.antlr.gen.fen.fenParser" />
-        <Class name="com.agutsul.chess.antlr.gen.fen.fenBaseListener" />
-        <Class name="com.agutsul.chess.antlr.gen.fen.fenBaseVisitor" />
+        <Class name="com.agutsul.chess.antlr.grammar.PGNLexer" />
+        <Class name="com.agutsul.chess.antlr.grammar.PGNParser" />
+        <Class name="com.agutsul.chess.antlr.grammar.fenLexer" />
+        <Class name="com.agutsul.chess.antlr.grammar.fenParser" />
+        <Class name="com.agutsul.chess.antlr.grammar.fenBaseListener" />
+        <Class name="com.agutsul.chess.antlr.grammar.fenBaseVisitor" />
     </Or>
   <Not>
     <Bug code="IJU" />

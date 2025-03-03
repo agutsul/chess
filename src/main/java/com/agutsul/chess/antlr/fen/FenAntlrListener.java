@@ -10,12 +10,11 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import com.agutsul.chess.antlr.gen.fen.fenBaseListener;
-import com.agutsul.chess.antlr.gen.fen.fenParser;
+import com.agutsul.chess.antlr.grammar.fenParser;
 import com.agutsul.chess.game.Game;
 
 final class FenAntlrListener
-        extends fenBaseListener {
+        extends com.agutsul.chess.antlr.grammar.fenBaseListener {
 
     private static final String FEN_LINE_PATTERN = "([p,P,n,N,b,B,r,R,q,Q,k,K,1-8]){1,8}";
 

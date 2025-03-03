@@ -17,7 +17,7 @@
         </File>
     </Appenders>
     <Loggers>
-        <Root level="debug">
+        <Root level="info">
 <!-- temporary commented while GUI is under development -->
 <!-- 
             <AppenderRef ref="Console"/>
