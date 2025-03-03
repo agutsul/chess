@@ -23,7 +23,11 @@ public final class PgnFileParser
     private final AntlrParser<PgnGame,String> parser;
 
     public PgnFileParser() {
-        this.parser = new PgnGameParser();
+        this(new PgnGameParser());
+    }
+
+    PgnFileParser(PgnGameParser parser) {
+        this.parser = parser;
     }
 
     @Override
@@ -49,5 +53,4 @@ public final class PgnFileParser
 
         return games;
     }
-
 }
