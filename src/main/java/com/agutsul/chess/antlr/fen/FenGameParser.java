@@ -72,7 +72,7 @@ public class FenGameParser {
 
             return fenListener.getGames();
         } catch (IOException e) {
-            var message = String.format("Exception parsing PGN: '%s'", gameString);
+            var message = String.format("Exception parsing FEN: '%s'", gameString);
             LOGGER.error(message, e);
         }
 
