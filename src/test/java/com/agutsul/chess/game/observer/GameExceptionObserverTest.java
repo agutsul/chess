@@ -1,6 +1,5 @@
 package com.agutsul.chess.game.observer;
 
-import static com.agutsul.chess.antlr.pgn.PgnGameParser.parse;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.isDirectory;
 import static java.nio.file.Files.list;
@@ -28,8 +27,8 @@ import org.junit.jupiter.api.io.TempDir;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.TestFileReader;
+import com.agutsul.chess.antlr.pgn.PgnGameParser;
 import com.agutsul.chess.game.event.GameExceptionEvent;
-import com.agutsul.chess.game.pgn.PgnGame;
 import com.agutsul.chess.player.Player;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,8 +46,10 @@ public class GameExceptionObserverTest implements TestFileReader {
     void testProcessingGameExceptionEventForUnknownErrorFolder()
             throws URISyntaxException, IOException {
 
-        var games = parse(readFileContent("scholar_mate.pgn"));
-        var game = (PgnGame) games.get(0);
+        var parser = new PgnGameParser();
+
+        var games = parser.parse(readFileContent("scholar_mate.pgn"));
+        var game = games.get(0);
 
         assertTrue(listFileNames(tempDir).isEmpty());
 
@@ -65,8 +66,10 @@ public class GameExceptionObserverTest implements TestFileReader {
     void testProcessingGameExceptionEvent()
             throws URISyntaxException, IOException {
 
-        var games = parse(readFileContent("scholar_mate.pgn"));
-        var game = (PgnGame) games.get(0);
+        var parser = new PgnGameParser();
+
+        var games = parser.parse(readFileContent("scholar_mate.pgn"));
+        var game = games.get(0);
 
         assertTrue(listFileNames(tempDir).isEmpty());
 

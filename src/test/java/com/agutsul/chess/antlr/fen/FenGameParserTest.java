@@ -15,8 +15,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.TestFileReader;
+import com.agutsul.chess.antlr.AntlrFileParser;
 import com.agutsul.chess.color.Colors;
-import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.fen.FenGame;
 import com.agutsul.chess.piece.Piece;
 
@@ -26,7 +26,7 @@ public class FenGameParserTest implements TestFileReader {
     @Test
     void testParsingStandardBoardFenGameFile() throws URISyntaxException, IOException {
         var games = parseGames("chess_move_0.fen", 1);
-        var game = (FenGame) games.get(0);
+        var game = games.get(0);
 
         var board = game.getBoard();
         var standardBoard = readFileContent("standard_board.txt");
@@ -45,7 +45,7 @@ public class FenGameParserTest implements TestFileReader {
     //  e2 -> e4
     void testParsingWhitePawnMoveFenGameFile() throws URISyntaxException, IOException {
         var games = parseGames("chess_move_1.fen", 1);
-        var game = (FenGame) games.get(0);
+        var game = games.get(0);
 
         var board = game.getBoard();
         assertFalse(board.getPiece("e2").isPresent());
@@ -70,7 +70,7 @@ public class FenGameParserTest implements TestFileReader {
     // c7 -> c5
     void testParsingBlackPawnMoveFenGameFile() throws URISyntaxException, IOException {
         var games = parseGames("chess_move_2.fen", 1);
-        var game = (FenGame) games.get(0);
+        var game = games.get(0);
 
         var board = game.getBoard();
         assertFalse(board.getPiece("c7").isPresent());
@@ -95,7 +95,7 @@ public class FenGameParserTest implements TestFileReader {
     // g1 -> f3
     void testParsingWhiteKnightMoveFenGemFile() throws URISyntaxException, IOException {
         var games = parseGames("chess_move_3.fen", 1);
-        var game = (FenGame) games.get(0);
+        var game = games.get(0);
 
         var board = game.getBoard();
         assertFalse(board.getPiece("g1").isPresent());
@@ -116,10 +116,11 @@ public class FenGameParserTest implements TestFileReader {
         assertEquals(2, game.getParsedFullMoves());
     }
 
-    private List<Game> parseGames(String fileName, int expectedGames)
+    private List<FenGame> parseGames(String fileName, int expectedGames)
             throws URISyntaxException, IOException {
 
-        var games = FenGameParser.parse(readFileContent(fileName));
+        var parser = new AntlrFileParser<FenGame>(new FenGameParser());
+        var games = parser.parse(readFile(fileName));
 
         assertNotNull(games);
         assertFalse(games.isEmpty());

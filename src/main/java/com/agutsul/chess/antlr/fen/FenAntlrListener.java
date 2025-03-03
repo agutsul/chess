@@ -10,15 +10,18 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import com.agutsul.chess.antlr.AntlrGameListener;
+import com.agutsul.chess.antlr.grammar.fenBaseListener;
 import com.agutsul.chess.antlr.grammar.fenParser;
-import com.agutsul.chess.game.Game;
+import com.agutsul.chess.game.fen.FenGame;
 
 final class FenAntlrListener
-        extends com.agutsul.chess.antlr.grammar.fenBaseListener {
+        extends fenBaseListener
+        implements AntlrGameListener<FenGame> {
 
     private static final String FEN_LINE_PATTERN = "([p,P,n,N,b,B,r,R,q,Q,k,K,1-8]){1,8}";
 
-    private final List<Game> games = new ArrayList<>();
+    private final List<FenGame> games = new ArrayList<>();
     private final Pattern linePattern;
 
     private FenGameBuilder gameBuilder;
@@ -27,7 +30,8 @@ final class FenAntlrListener
         this.linePattern = Pattern.compile(FEN_LINE_PATTERN);
     }
 
-    public List<Game> getGames() {
+    @Override
+    public List<FenGame> getGames() {
         return this.games;
     }
 

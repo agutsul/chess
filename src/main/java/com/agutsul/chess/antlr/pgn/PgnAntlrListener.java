@@ -3,12 +3,14 @@ package com.agutsul.chess.antlr.pgn;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.agutsul.chess.antlr.AntlrGameListener;
 import com.agutsul.chess.antlr.grammar.PGNBaseListener;
 import com.agutsul.chess.antlr.grammar.PGNParser;
-import com.agutsul.chess.game.Game;
+import com.agutsul.chess.game.pgn.PgnGame;
 
 final class PgnAntlrListener
-        extends PGNBaseListener {
+        extends PGNBaseListener
+        implements AntlrGameListener<PgnGame> {
 
     private static final String EVENT_TAG = "Event";
     private static final String SITE_TAG  = "Site";
@@ -17,12 +19,13 @@ final class PgnAntlrListener
     private static final String BLACK_TAG = "Black";
     private static final String TERMINATION_TAG = "Termination";
 
-    private final List<Game> games = new ArrayList<>();
+    private final List<PgnGame> games = new ArrayList<>();
     private PgnGameBuilder gameBuilder;
 
     private int variationDepth;
 
-    public List<Game> getGames() {
+    @Override
+    public List<PgnGame> getGames() {
         return this.games;
     }
 
@@ -37,7 +40,6 @@ final class PgnAntlrListener
 
     @Override
     public void enterPgn_game(PGNParser.Pgn_gameContext ctx) {
-//        System.out.println(ctx.getText());
         this.gameBuilder = new PgnGameBuilder();
     }
 

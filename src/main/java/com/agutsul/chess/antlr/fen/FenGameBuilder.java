@@ -28,7 +28,6 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.command.PerformActionCommand;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.game.AbstractPlayableGame;
-import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.GameBuilder;
 import com.agutsul.chess.game.fen.FenGame;
 import com.agutsul.chess.piece.Piece;
@@ -38,7 +37,7 @@ import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.action.AbstractCastlingActionRule.Castling;
 
 final class FenGameBuilder
-        implements GameBuilder {
+        implements GameBuilder<FenGame> {
 
     private static final Logger LOGGER = getLogger(FenGameBuilder.class);
 
@@ -54,7 +53,7 @@ final class FenGameBuilder
     private int fullMoveClock;
 
     @Override
-    public Game build() {
+    public FenGame build() {
         // reverse parsed lines to process board from position(0,0) and up to position(7,7)
         var board = createBoard(parsedBoardLines.reversed());
         var playerColor = resolveColor(activeColor);
@@ -93,32 +92,32 @@ final class FenGameBuilder
         return game;
     }
 
-    GameBuilder addBoardLine(String line) {
+    GameBuilder<FenGame> addBoardLine(String line) {
         this.parsedBoardLines.add(line);
         return this;
     }
 
-    GameBuilder withActiveColor(String color) {
+    GameBuilder<FenGame> withActiveColor(String color) {
         this.activeColor = color;
         return this;
     }
 
-    GameBuilder withCastling(String castling) {
+    GameBuilder<FenGame> withCastling(String castling) {
         this.activeCastling = castling;
         return this;
     }
 
-    GameBuilder withEnPassant(String enpassant) {
+    GameBuilder<FenGame> withEnPassant(String enpassant) {
         this.enPassantPosition = enpassant;
         return this;
     }
 
-    GameBuilder withHalfMoves(int halfMoves) {
+    GameBuilder<FenGame> withHalfMoves(int halfMoves) {
         this.halfMoveClock = halfMoves;
         return this;
     }
 
-    GameBuilder withFullMoves(int fullMoves) {
+    GameBuilder<FenGame> withFullMoves(int fullMoves) {
         this.fullMoveClock = fullMoves;
         return this;
     }

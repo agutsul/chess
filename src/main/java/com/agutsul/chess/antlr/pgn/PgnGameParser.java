@@ -1,103 +1,67 @@
 package com.agutsul.chess.antlr.pgn;
 
 import static java.lang.System.lineSeparator;
-import static java.util.Collections.emptyList;
-import static org.antlr.v4.runtime.CharStreams.fromReader;
-import static org.apache.commons.io.FileUtils.lineIterator;
 import static org.apache.commons.lang3.StringUtils.join;
-import static org.apache.commons.lang3.StringUtils.trim;
-import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
+import static org.apache.commons.lang3.StringUtils.strip;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.Lexer;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.TokenStream;
 import org.slf4j.Logger;
 
-import com.agutsul.chess.antlr.AntlrErrorListener;
+import com.agutsul.chess.antlr.AbstractAntlrGameParser;
 import com.agutsul.chess.antlr.grammar.PGNLexer;
 import com.agutsul.chess.antlr.grammar.PGNParser;
-import com.agutsul.chess.game.Game;
+import com.agutsul.chess.game.pgn.PgnGame;
 
-public final class PgnGameParser {
+public final class PgnGameParser
+        extends AbstractAntlrGameParser<PgnGame,PGNParser,PgnAntlrListener> {
 
     private static final Logger LOGGER = getLogger(PgnGameParser.class);
 
-    public static List<Game> parse(String string) {
-        return parse(string.split(lineSeparator()));
+    public PgnGameParser() {
+        super(LOGGER);
     }
 
-    public static List<Game> parse(File file) {
-        var games = new ArrayList<Game>();
+    @Override
+    public List<PgnGame> parse(String string) {
+        var gameStrings = new ArrayList<String>();
 
         var builder = new PgnStringBuilder();
-        try (var iterator = lineIterator(file)) {
-            while (iterator.hasNext()) {
-                builder.append(trim(iterator.next()));
-
-                if (builder.isReady()) {
-                    games.addAll(parse(builder.build()));
-                    builder.reset();
-                }
-            }
-
-        } catch (IOException e) {
-            LOGGER.error("Exception reading file '{}': {}",
-                    file.getAbsolutePath(),
-                    getStackTrace(e)
-            );
-        }
-
-        return games;
-    }
-
-    private static List<Game> parse(String[] lines) {
-        var games = new ArrayList<String>();
-
-        var builder = new PgnStringBuilder();
-        for (var line : lines) {
-            builder.append(trim(line));
+        for (var line : string.split(lineSeparator())) {
+            builder.append(strip(line));
 
             if (builder.isReady()) {
-                games.add(builder.build());
+                gameStrings.add(builder.build());
                 builder.reset();
             }
         }
 
-        var gameString = join(games, lineSeparator());
-        try (var reader = new StringReader(gameString)) {
-            var lexer = new PGNLexer(fromReader(reader));
-            var parser = new PGNParser(new CommonTokenStream(lexer));
+        return super.parse(join(gameStrings, lineSeparator()));
+    }
 
-            parser.removeErrorListeners();
+    @Override
+    protected Lexer createLexer(CharStream input) {
+        return new PGNLexer(input);
+    }
 
-            var errorListener = new AntlrErrorListener();
-            parser.addErrorListener(errorListener);
+    @Override
+    protected PGNParser createParser(TokenStream input) {
+        return new PGNParser(input);
+    }
 
-            var pgnListener = new PgnAntlrListener();
+    @Override
+    protected PgnAntlrListener createListener() {
+        return new PgnAntlrListener();
+    }
 
-            ParseTreeWalker.DEFAULT.walk(pgnListener, parser.parse());
-
-            if (errorListener.hasAnyErrors()) {
-                var message = String.format("Parsing: '%s'. Errors: %s",
-                        gameString,
-                        errorListener.getErrors()
-                );
-                LOGGER.error(message);
-                return emptyList();
-            }
-
-            return pgnListener.getGames();
-        } catch (IOException e) {
-            var message = String.format("Exception parsing PGN: '%s'", gameString);
-            LOGGER.error(message, e);
-        }
-
-        return emptyList();
+    @Override
+    protected ParserRuleContext createContext(PGNParser parser) {
+        return parser.parse();
     }
 }

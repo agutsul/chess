@@ -12,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.TestFileReader;
-import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.pgn.PgnGame;
 import com.agutsul.chess.game.state.GameState;
 
@@ -22,7 +21,7 @@ public class PgnGameParserTest implements TestFileReader {
     @Test
     void testParsingWhiteWinsGameFile() throws URISyntaxException, IOException {
         var games = parseGames("chess_white.pgn", 1);
-        var game = (PgnGame) games.get(0);
+        var game = games.get(0);
 
         assertGame(game, GameState.Type.WHITE_WIN, 157, 5);
     }
@@ -30,7 +29,7 @@ public class PgnGameParserTest implements TestFileReader {
     @Test
     void testParsingBlackWinsGameFile() throws URISyntaxException, IOException {
         var games = parseGames("chess_black.pgn", 1);
-        var game = (PgnGame) games.get(0);
+        var game = games.get(0);
 
         assertGame(game, GameState.Type.BLACK_WIN, 90, 10);
     }
@@ -38,19 +37,20 @@ public class PgnGameParserTest implements TestFileReader {
     @Test
     void testParsingDrawnGameFile() throws URISyntaxException, IOException {
         var games = parseGames("chess_drawn.pgn", 1);
-        var game = (PgnGame) games.get(0);
+        var game = games.get(0);
 
         assertGame(game, GameState.Type.DRAWN_GAME, 121, 6);
     }
 
     @Test
     void testParsingEvalFormatGameFile() throws URISyntaxException, IOException {
-        var games = PgnGameParser.parse(readFile("chess_eval_format.pgn"));
+        var parser = new PgnFileParser();
+        var games = parser.parse(readFile("chess_eval_format.pgn"));
 
         assertFalse(games.isEmpty());
         assertEquals(1, games.size());
 
-        var game = (PgnGame) games.get(0);
+        var game = games.get(0);
         assertGame(game, GameState.Type.BLACK_WIN, 26, 10);
     }
 
@@ -62,10 +62,11 @@ public class PgnGameParserTest implements TestFileReader {
         assertEquals(expectedTagsCount, game.getParsedTags().size());
     }
 
-    private List<Game> parseGames(String fileName, int expectedGames)
+    private List<PgnGame> parseGames(String fileName, int expectedGames)
             throws URISyntaxException, IOException {
 
-        var games = PgnGameParser.parse(readFileContent(fileName));
+        var parser = new PgnGameParser();
+        var games = parser.parse(readFileContent(fileName));
 
         assertFalse(games.isEmpty());
         assertEquals(expectedGames, games.size());

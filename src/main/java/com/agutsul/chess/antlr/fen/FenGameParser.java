@@ -1,81 +1,44 @@
 package com.agutsul.chess.antlr.fen;
 
-import static java.util.Collections.emptyList;
-import static org.antlr.v4.runtime.CharStreams.fromReader;
-import static org.apache.commons.io.FileUtils.lineIterator;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.commons.lang3.StringUtils.strip;
-import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.Lexer;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.TokenStream;
 import org.slf4j.Logger;
 
-import com.agutsul.chess.antlr.AntlrErrorListener;
+import com.agutsul.chess.antlr.AbstractAntlrGameParser;
 import com.agutsul.chess.antlr.grammar.fenLexer;
 import com.agutsul.chess.antlr.grammar.fenParser;
-import com.agutsul.chess.game.Game;
+import com.agutsul.chess.game.fen.FenGame;
 
-public class FenGameParser {
+public final class FenGameParser
+        extends AbstractAntlrGameParser<FenGame,fenParser,FenAntlrListener> {
 
     private static final Logger LOGGER = getLogger(FenGameParser.class);
 
-    public static List<Game> parse(File file) {
-        var games = new ArrayList<Game>();
-
-        try (var iterator = lineIterator(file)) {
-            while (iterator.hasNext()) {
-                var line = strip(iterator.next());
-                if (isNotBlank(line)) {
-                    games.addAll(parse(line));
-                }
-            }
-        } catch (IOException e) {
-            LOGGER.error("Exception reading file '{}': {}",
-                    file.getAbsolutePath(),
-                    getStackTrace(e)
-            );
-        }
-
-        return games;
+    public FenGameParser() {
+        super(LOGGER);
     }
 
-    public static List<Game> parse(String gameString) {
-        try (var reader = new StringReader(gameString)) {
-            var lexer = new fenLexer(fromReader(reader));
-            var parser = new fenParser(new CommonTokenStream(lexer));
+    @Override
+    protected Lexer createLexer(CharStream input) {
+        return new fenLexer(input);
+    }
 
-            parser.removeErrorListeners();
+    @Override
+    protected fenParser createParser(TokenStream input) {
+        return new fenParser(input);
+    }
 
-            var errorListener = new AntlrErrorListener();
-            parser.addErrorListener(errorListener);
+    @Override
+    protected FenAntlrListener createListener() {
+        return new FenAntlrListener();
+    }
 
-            var fenListener = new FenAntlrListener();
-
-            ParseTreeWalker.DEFAULT.walk(fenListener, parser.fen());
-
-            if (errorListener.hasAnyErrors()) {
-                var message = String.format("Parsing: '%s'. Errors: %s",
-                        gameString,
-                        errorListener.getErrors()
-                );
-                LOGGER.error(message);
-                return emptyList();
-            }
-
-            return fenListener.getGames();
-        } catch (IOException e) {
-            var message = String.format("Exception parsing FEN: '%s'", gameString);
-            LOGGER.error(message, e);
-        }
-
-        return emptyList();
+    @Override
+    protected ParserRuleContext createContext(fenParser parser) {
+        return parser.fen();
     }
 }

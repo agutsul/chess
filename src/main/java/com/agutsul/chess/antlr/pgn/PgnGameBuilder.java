@@ -17,7 +17,7 @@ import com.agutsul.chess.game.state.WhiteWinGameState;
 import com.agutsul.chess.player.UserPlayer;
 
 final class PgnGameBuilder
-        implements GameBuilder {
+        implements GameBuilder<PgnGame> {
 
     private final List<String> actions = new ArrayList<>();
     private final Map<String,String> tags = new HashMap<>();
@@ -47,57 +47,57 @@ final class PgnGameBuilder
         return game;
     }
 
-    GameBuilder withEvent(String event) {
+    GameBuilder<PgnGame> withEvent(String event) {
         this.event = event;
         return this;
     }
 
-    GameBuilder withSite(String site) {
+    GameBuilder<PgnGame> withSite(String site) {
         this.site = site;
         return this;
     }
 
-    GameBuilder withRound(String round) {
+    GameBuilder<PgnGame> withRound(String round) {
         this.round = round;
         return this;
     }
 
-    GameBuilder withWhitePlayer(String playerName) {
+    GameBuilder<PgnGame> withWhitePlayer(String playerName) {
         this.whitePlayer = playerName;
         return this;
     }
 
-    GameBuilder withBlackPlayer(String playerName) {
+    GameBuilder<PgnGame> withBlackPlayer(String playerName) {
         this.blackPlayer = playerName;
         return this;
     }
 
-    GameBuilder withGameState(String state) {
+    GameBuilder<PgnGame> withGameState(String state) {
         this.gameState = state;
         return this;
     }
 
-    GameBuilder withGameTermination(String terminationType) {
+    GameBuilder<PgnGame> withGameTermination(String terminationType) {
         this.terminationType = terminationType;
         return this;
     }
 
-    GameBuilder withActions(List<String> actions) {
+    GameBuilder<PgnGame> withActions(List<String> actions) {
         this.actions.addAll(actions);
         return this;
     }
 
-    GameBuilder addAction(String action) {
+    GameBuilder<PgnGame> addAction(String action) {
         this.actions.add(action);
         return this;
     }
 
-    GameBuilder withTags(Map<String,String> tags) {
+    GameBuilder<PgnGame> withTags(Map<String,String> tags) {
         this.tags.putAll(tags);
         return this;
     }
 
-    GameBuilder addTag(String name, String value) {
+    GameBuilder<PgnGame> addTag(String name, String value) {
         this.tags.put(name, value);
         return this;
     }
