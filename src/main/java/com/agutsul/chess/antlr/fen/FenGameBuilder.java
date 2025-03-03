@@ -215,21 +215,22 @@ final class FenGameBuilder
                 .forEach(piece -> piece.set(side, enabled));
     }
 
-    private static void resolveEnPassant(AbstractPlayableGame game, Color color, String positionCode) {
+    private static void resolveEnPassant(AbstractPlayableGame game,
+                                         Color color, String positionCode) {
         var board = game.getBoard();
 
         var position = positionOf(positionCode);
-        var piece = board.getPieces(color, Piece.Type.PAWN).stream()
+        var pawnPiece = board.getPieces(color, Piece.Type.PAWN).stream()
                 .filter(pawn -> Objects.equals(pawn.getPosition().x(), position.x()))
                 .findFirst()
                 .get();
 
-        var targetPosition = Position.codeOf(piece.getPosition());
-        var sourcePosition = Position.codeOf(position.x(), position.y() - piece.getDirection());
+        var targetPosition = Position.codeOf(pawnPiece.getPosition());
+        var sourcePosition = Position.codeOf(position.x(), position.y() - pawnPiece.getDirection());
 
         // reset piece position back to source to be able to perform action
-        ((Settable) piece).set(Action.Type.EN_PASSANT, Pair.of(sourcePosition, targetPosition));
-        // clear calculated piece positions
+        ((Settable) pawnPiece).set(Action.Type.EN_PASSANT, Pair.of(sourcePosition, targetPosition));
+        // clear early calculated piece positions to be able to find pawn on source position
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(color));
 
         // perform piece 'big move' action to fill journal properly
