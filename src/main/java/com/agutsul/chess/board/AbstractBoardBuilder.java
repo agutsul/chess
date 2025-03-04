@@ -18,9 +18,14 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.piece.BishopPiece;
+import com.agutsul.chess.piece.KingPiece;
+import com.agutsul.chess.piece.KnightPiece;
+import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.QueenPiece;
+import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.piece.factory.PieceFactory;
-import com.agutsul.chess.piece.factory.PieceFactoryAdapter;
 
 abstract class AbstractBoardBuilder<T extends Serializable>
         implements BoardBuilder<T> {
@@ -36,6 +41,21 @@ abstract class AbstractBoardBuilder<T extends Serializable>
         this.logger = logger;
         this.whitePieceContext = whitePieceContext;
         this.blackPieceContext = blackPieceContext;
+    }
+
+    interface PieceFactoryAdapter<POSITION extends Serializable> {
+
+        KingPiece<Color> createKing(POSITION position);
+
+        QueenPiece<Color> createQueen(POSITION position);
+
+        RookPiece<Color> createRook(POSITION position);
+
+        BishopPiece<Color> createBishop(POSITION position);
+
+        KnightPiece<Color> createKnight(POSITION position);
+
+        PawnPiece<Color> createPawn(POSITION position);
     }
 
     abstract PieceFactoryAdapter<T> createPieceFactoryAdapter(PieceFactory pieceFactory);

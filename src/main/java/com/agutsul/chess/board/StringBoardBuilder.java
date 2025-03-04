@@ -12,7 +12,6 @@ import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.piece.factory.PieceFactory;
-import com.agutsul.chess.piece.factory.PieceFactoryAdapter;
 
 public final class StringBoardBuilder
         extends AbstractBoardBuilder<String> {
