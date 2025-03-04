@@ -79,7 +79,7 @@ public enum ActionMementoFactory
 
             private final PiecePromoteAction<?,?> action;
 
-            public PieceTypeLazyInitializer(PiecePromoteAction<?,?> action) {
+            PieceTypeLazyInitializer(PiecePromoteAction<?,?> action) {
                 this.action = action;
             }
 
