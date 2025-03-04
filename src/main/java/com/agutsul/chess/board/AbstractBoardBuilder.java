@@ -46,17 +46,17 @@ abstract class AbstractBoardBuilder<T extends Serializable>
 
     interface PieceFactoryAdapter<POSITION extends Serializable> {
 
-        KingPiece<Color> createKing(POSITION position);
+        KingPiece<Color>   createKing(POSITION position);
 
-        QueenPiece<Color> createQueen(POSITION position);
+        QueenPiece<Color>  createQueen(POSITION position);
 
-        RookPiece<Color> createRook(POSITION position);
+        RookPiece<Color>   createRook(POSITION position);
 
         BishopPiece<Color> createBishop(POSITION position);
 
         KnightPiece<Color> createKnight(POSITION position);
 
-        PawnPiece<Color> createPawn(POSITION position);
+        PawnPiece<Color>   createPawn(POSITION position);
     }
 
     abstract PieceFactoryAdapter<T> createPieceFactoryAdapter(PieceFactory pieceFactory);
@@ -158,7 +158,9 @@ abstract class AbstractBoardBuilder<T extends Serializable>
     }
 
     @Override
-    public BoardBuilder<T> withWhitePawns(T position1, T position2, @SuppressWarnings("unchecked") T... positions) {
+    public BoardBuilder<T> withWhitePawns(T position1, T position2,
+                                          @SuppressWarnings("unchecked") T... positions) {
+
         return withPawns(whitePieceContext, position1, position2, positions);
     }
 
@@ -223,13 +225,14 @@ abstract class AbstractBoardBuilder<T extends Serializable>
     }
 
     @Override
-    public BoardBuilder<T> withBlackPawns(T position1, T position2, @SuppressWarnings("unchecked") T... positions) {
+    public BoardBuilder<T> withBlackPawns(T position1, T position2,
+                                          @SuppressWarnings("unchecked") T... positions) {
+
         return withPawns(blackPieceContext, position1, position2, positions);
     }
 
     private BoardBuilder<T> withPawns(BoardContext<T> context,
-                                      T position1,
-                                      T position2,
+                                      T position1, T position2,
                                       @SuppressWarnings("unchecked") T... positions) {
 
         var pawnPositions = new ArrayList<T>();
@@ -344,7 +347,7 @@ abstract class AbstractBoardBuilder<T extends Serializable>
         }
 
         private static <T> Optional<PieceBuilderSubTask<T>> createTask(List<T> positions,
-                                                                       Function<T, Piece<Color>> function) {
+                                                                       Function<T,Piece<Color>> function) {
             if (isEmpty(positions)) {
                 return Optional.empty();
             }
@@ -359,7 +362,7 @@ abstract class AbstractBoardBuilder<T extends Serializable>
         private static final long serialVersionUID = 1L;
 
         private final List<T> positions;
-        private final Function<T, Piece<Color>> function;
+        private final Function<T,Piece<Color>> function;
 
         public PieceBuilderSubTask(List<T> positions,
                                    Function<T,Piece<Color>> function) {
