@@ -8,6 +8,7 @@ import static org.apache.commons.collections4.ListUtils.partition;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,14 +34,14 @@ import com.agutsul.chess.piece.factory.PieceFactory;
 abstract class AbstractBoardBuilder<T extends Serializable>
         implements BoardBuilder<T> {
 
-    private final Map<Piece.Type,BiConsumer<BoardContext<T>,T>> piecePositionSetters = Map.of(
+    private final Map<Piece.Type,BiConsumer<BoardContext<T>,T>> piecePositionSetters = new EnumMap<>(Map.of(
             Piece.Type.PAWN,   (context,position) -> context.addPawnPosition(position),
             Piece.Type.KNIGHT, (context,position) -> context.addKnightPosition(position),
             Piece.Type.BISHOP, (context,position) -> context.addBishopPosition(position),
             Piece.Type.ROOK,   (context,position) -> context.addRookPosition(position),
             Piece.Type.QUEEN,  (context,position) -> context.addQueenPosition(position),
             Piece.Type.KING,   (context,position) -> context.addKingPosition(position)
-    );
+    ));
 
     protected final Logger logger;
     protected final BoardContext<T> whitePieceContext;

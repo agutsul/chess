@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -29,10 +30,10 @@ public enum StandardAlgebraicActionFormatter implements ActionFormatter {
     },
     CASTLING_MODE(Action.Type.CASTLING) {
 
-        private static final Map<Castlingable.Side,String> CODES = Map.of(
+        private static final Map<Castlingable.Side,String> CODES = new EnumMap<>(Map.of(
                     Castlingable.Side.KING,  CASTLING_KING_SIDE_CODE,
                     Castlingable.Side.QUEEN, CASTLING_QUEEN_SIDE_CODE
-        );
+        ));
 
         @Override
         public String formatMemento(ActionMemento<?,?> memento) {

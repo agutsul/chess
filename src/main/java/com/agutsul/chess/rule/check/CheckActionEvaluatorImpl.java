@@ -3,6 +3,7 @@ package com.agutsul.chess.rule.check;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -19,10 +20,10 @@ public final class CheckActionEvaluatorImpl
     private static final Logger LOGGER = getLogger(CheckActionEvaluatorImpl.class);
 
     private static final Map<Type,BiFunction<Board,Collection<Action<?>>,CheckActionEvaluator>> MODES =
-            Map.of(
-                    Type.KING,  (board, actions) -> createKingEvaluator(board,  actions),
-                    Type.PIECE, (board, actions) -> createPieceEvaluator(board, actions)
-            );
+            new EnumMap<>(Map.of(
+                    Type.KING,  (board,actions) -> createKingEvaluator(board,  actions),
+                    Type.PIECE, (board,actions) -> createPieceEvaluator(board, actions)
+            ));
 
     private final CheckActionEvaluator evaluator;
 
