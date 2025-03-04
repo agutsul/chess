@@ -39,7 +39,7 @@ public final class FenGame
         ((Observable) board).addObserver(new ConsolePlayerInputObserver(whitePlayer, this));
         ((Observable) board).addObserver(new ConsolePlayerInputObserver(blackPlayer, this));
 
-        // uncomment below for local debug of pgn file
+        // uncomment below for local debug of fen file
 //        addObserver(new ConsoleGameOutputObserver(this));
     }
 
