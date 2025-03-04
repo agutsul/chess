@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -98,55 +99,61 @@ abstract class AbstractBoardBuilder<T extends Serializable>
 
     @Override
     public BoardBuilder<T> withWhiteKing(T position) {
-        whitePieceContext.setKingPositions(List.of(position));
+        withWhitePiece(Piece.Type.KING, position);
         return this;
     }
 
     @Override
     public BoardBuilder<T> withWhiteQueen(T position) {
-        whitePieceContext.setQueenPositions(List.of(position));
+        withWhitePiece(Piece.Type.QUEEN, position);
         return this;
     }
 
     @Override
     public BoardBuilder<T> withWhiteBishop(T position) {
-        whitePieceContext.setBishopPositions(List.of(position));
+        withWhitePiece(Piece.Type.BISHOP, position);
         return this;
     }
 
     @Override
     public BoardBuilder<T> withWhiteBishops(T position1, T position2) {
-        whitePieceContext.setBishopPositions(List.of(position1, position2));
+        Stream.of(position1,position2)
+            .forEach(position -> withWhiteBishop(position));
+
         return this;
     }
 
     @Override
     public BoardBuilder<T> withWhiteKnight(T position) {
-        whitePieceContext.setKnightPositions(List.of(position));
+        withWhitePiece(Piece.Type.KNIGHT, position);
         return this;
     }
 
     @Override
     public BoardBuilder<T> withWhiteKnights(T position1, T position2) {
-        whitePieceContext.setKnightPositions(List.of(position1, position2));
+        Stream.of(position1,position2)
+            .forEach(position -> withWhiteKnight(position));
+
         return this;
     }
 
     @Override
     public BoardBuilder<T> withWhiteRook(T position) {
-        whitePieceContext.setRookPositions(List.of(position));
+        withWhitePiece(Piece.Type.ROOK, position);
         return this;
     }
 
     @Override
     public BoardBuilder<T> withWhiteRooks(T position1, T position2) {
-        whitePieceContext.setRookPositions(List.of(position1, position2));
+        Stream.of(position1,position2)
+            .forEach(position -> withWhiteRook(position));
+
         return this;
     }
 
     @Override
     public BoardBuilder<T> withWhitePawn(T position) {
-        whitePieceContext.setPawnPositions(List.of(position));
+        withWhitePiece(Piece.Type.PAWN, position);
         return this;
     }
 
@@ -157,55 +164,61 @@ abstract class AbstractBoardBuilder<T extends Serializable>
 
     @Override
     public BoardBuilder<T> withBlackKing(T position) {
-        blackPieceContext.setKingPositions(List.of(position));
+        withBlackPiece(Piece.Type.KING, position);
         return this;
     }
 
     @Override
     public BoardBuilder<T> withBlackQueen(T position) {
-        blackPieceContext.setQueenPositions(List.of(position));
+        withBlackPiece(Piece.Type.QUEEN, position);
         return this;
     }
 
     @Override
     public BoardBuilder<T> withBlackBishop(T position) {
-        blackPieceContext.setBishopPositions(List.of(position));
+        withBlackPiece(Piece.Type.BISHOP, position);
         return this;
     }
 
     @Override
     public BoardBuilder<T> withBlackBishops(T position1, T position2) {
-        blackPieceContext.setBishopPositions(List.of(position1, position2));
+        Stream.of(position1,position2)
+            .forEach(position -> withBlackBishop(position));
+
         return this;
     }
 
     @Override
     public BoardBuilder<T> withBlackKnight(T position) {
-        blackPieceContext.setKnightPositions(List.of(position));
+        withBlackPiece(Piece.Type.KNIGHT, position);
         return this;
     }
 
     @Override
     public BoardBuilder<T> withBlackKnights(T position1, T position2) {
-        blackPieceContext.setKnightPositions(List.of(position1, position2));
+        Stream.of(position1,position2)
+            .forEach(position -> withBlackKnight(position));
+
         return this;
     }
 
     @Override
     public BoardBuilder<T> withBlackRook(T position) {
-        blackPieceContext.setRookPositions(List.of(position));
+        withBlackPiece(Piece.Type.ROOK, position);
         return this;
     }
 
     @Override
     public BoardBuilder<T> withBlackRooks(T position1, T position2) {
-        blackPieceContext.setRookPositions(List.of(position1, position2));
+        Stream.of(position1,position2)
+            .forEach(position -> withBlackRook(position));
+
         return this;
     }
 
     @Override
     public BoardBuilder<T> withBlackPawn(T position) {
-        blackPieceContext.setPawnPositions(List.of(position));
+        withBlackPiece(Piece.Type.PAWN, position);
         return this;
     }
 
@@ -225,7 +238,10 @@ abstract class AbstractBoardBuilder<T extends Serializable>
         pawnPositions.add(position2);
         pawnPositions.addAll(List.of(positions));
 
-        context.setPawnPositions(pawnPositions);
+        pawnPositions.forEach(position ->
+            addPiecePosition(Piece.Type.PAWN, context, position)
+        );
+
         return this;
     }
 
