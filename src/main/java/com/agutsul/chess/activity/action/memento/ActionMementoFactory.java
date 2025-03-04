@@ -9,6 +9,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.concurrent.LazyInitializer;
+
 import com.agutsul.chess.Positionable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.Action.Type;
@@ -18,7 +20,6 @@ import com.agutsul.chess.activity.action.PieceEnPassantAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.PieceTypeLazyInitializer;
 import com.agutsul.chess.position.Position;
 
 public enum ActionMementoFactory
@@ -71,6 +72,21 @@ public enum ActionMementoFactory
         Piece<?> getSource(Action<?> action) {
             var promoteAction = (PiecePromoteAction<?,?>) action;
             return super.getSource((Action<?>) promoteAction.getSource());
+        }
+
+        static final class PieceTypeLazyInitializer
+                extends LazyInitializer<Piece.Type> {
+
+            private final PiecePromoteAction<?,?> action;
+
+            public PieceTypeLazyInitializer(PiecePromoteAction<?,?> action) {
+                this.action = action;
+            }
+
+            @Override
+            protected Piece.Type initialize() {
+                return action.getPieceType();
+            }
         }
     },
     CASTLING_MODE(Action.Type.CASTLING) {
