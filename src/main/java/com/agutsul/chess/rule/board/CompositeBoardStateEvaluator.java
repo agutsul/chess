@@ -15,12 +15,10 @@ import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.CompositeBoardState;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.journal.Journal;
 
 final class CompositeBoardStateEvaluator
         implements BoardStateEvaluator<BoardState> {
@@ -29,18 +27,6 @@ final class CompositeBoardStateEvaluator
 
     private final Board board;
     private final List<BoardStateEvaluator<Optional<BoardState>>> evaluators;
-
-    CompositeBoardStateEvaluator(Board board,
-                                 Journal<ActionMemento<?,?>> journal) {
-        this(board,
-                new CheckedBoardStateEvaluator(board),
-                new CheckMatedBoardStateEvaluator(board),
-                new StaleMatedBoardStateEvaluator(board),
-                new FoldRepetitionBoardStateEvaluator(board, journal),
-                new MovesBoardStateEvaluator(board, journal),
-                new InsufficientMaterialBoardStateEvaluator(board)
-        );
-    }
 
     CompositeBoardStateEvaluator(Board board,
                                  CheckedBoardStateEvaluator checkedEvaluator,

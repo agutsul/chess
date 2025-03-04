@@ -19,7 +19,15 @@ public final class BoardStateEvaluatorImpl
 
     public BoardStateEvaluatorImpl(Board board,
                                    Journal<ActionMemento<?,?>> journal) {
-        this.evaluator = new CompositeBoardStateEvaluator(board, journal);
+
+        this.evaluator = new CompositeBoardStateEvaluator(board,
+                new CheckedBoardStateEvaluator(board),
+                new CheckMatedBoardStateEvaluator(board),
+                new StaleMatedBoardStateEvaluator(board),
+                new FoldRepetitionBoardStateEvaluator(board, journal),
+                new MovesBoardStateEvaluator(board, journal),
+                new InsufficientMaterialBoardStateEvaluator(board)
+        );
     }
 
     @Override
