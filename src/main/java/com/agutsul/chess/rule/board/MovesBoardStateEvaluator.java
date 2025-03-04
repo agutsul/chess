@@ -66,7 +66,7 @@ final class MovesBoardStateEvaluator
                                            int lastMovesCount) {
 
         var tasks = List.of(
-                new CaptureCalculationTask(actions, lastMovesCount),
+                new CaptureCalculationTask(actions,  lastMovesCount),
                 new PawnMoveCalculationTask(actions, lastMovesCount)
         );
 
@@ -88,14 +88,14 @@ final class MovesBoardStateEvaluator
         return false;
     }
 
-    private static abstract class CalculationTask
+    private static abstract class AbstractCalculationTask
             implements Callable<Integer> {
 
         protected final Logger logger;
         protected final List<ActionMemento<?,?>> actions;
         protected final int limit;
 
-        CalculationTask(Logger logger, List<ActionMemento<?,?>> actions, int limit) {
+        AbstractCalculationTask(Logger logger, List<ActionMemento<?,?>> actions, int limit) {
             this.logger = logger;
             this.actions = actions;
             this.limit = limit;
@@ -116,7 +116,7 @@ final class MovesBoardStateEvaluator
     }
 
     private static final class CaptureCalculationTask
-            extends CalculationTask {
+            extends AbstractCalculationTask {
 
         private static final Logger LOGGER = getLogger(CaptureCalculationTask.class);
 
@@ -136,7 +136,7 @@ final class MovesBoardStateEvaluator
 
                 var actionType = memento.getActionType();
                 if (isCapture(actionType)
-                        || (Action.Type.PROMOTE.equals(actionType) && isCapturePromotion(memento))) {
+                        || (Action.Type.PROMOTE.equals(actionType) && isCapture(memento))) {
 
                     counter++;
                 }
@@ -145,7 +145,7 @@ final class MovesBoardStateEvaluator
             return counter;
         }
 
-        private static boolean isCapturePromotion(ActionMemento<?,?> memento) {
+        private static boolean isCapture(ActionMemento<?,?> memento) {
             @SuppressWarnings("unchecked")
             var promoteMemento =
                     (ActionMemento<String,ActionMemento<String,String>>) memento;
@@ -160,7 +160,7 @@ final class MovesBoardStateEvaluator
     }
 
     private static final class PawnMoveCalculationTask
-            extends CalculationTask {
+            extends AbstractCalculationTask {
 
         private static final Logger LOGGER = getLogger(PawnMoveCalculationTask.class);
 
@@ -180,7 +180,7 @@ final class MovesBoardStateEvaluator
 
                 var actionType = memento.getActionType();
                 if (isMove(actionType)
-                        || (Action.Type.PROMOTE.equals(actionType) && isMovePromotion(memento))) {
+                        || (Action.Type.PROMOTE.equals(actionType) && isMove(memento))) {
 
                     counter++;
                 }
@@ -189,7 +189,7 @@ final class MovesBoardStateEvaluator
             return counter;
         }
 
-        private static boolean isMovePromotion(ActionMemento<?,?> memento) {
+        private static boolean isMove(ActionMemento<?,?> memento) {
             @SuppressWarnings("unchecked")
             var promoteMemento =
                     (ActionMemento<String,ActionMemento<String,String>>) memento;
