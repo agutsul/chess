@@ -273,12 +273,12 @@ abstract class AbstractBoardBuilder<T extends Serializable>
 
     private Board createBoard(ForkJoinPool executor) {
         var board = new BoardImpl();
-        var tasks = List.of(
-                createPieceBuilderTask(board.getWhitePieceFactory(), whitePieceContext),
-                createPieceBuilderTask(board.getBlackPieceFactory(), blackPieceContext)
-        );
-
         try {
+            var tasks = List.of(
+                    createPieceBuilderTask(board.getWhitePieceFactory(), whitePieceContext),
+                    createPieceBuilderTask(board.getBlackPieceFactory(), blackPieceContext)
+            );
+
             var pieces = new ArrayList<Piece<?>>();
             for (var task : tasks) {
                 pieces.addAll(executor.invoke(task));
