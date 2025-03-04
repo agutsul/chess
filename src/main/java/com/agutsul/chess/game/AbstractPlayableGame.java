@@ -5,6 +5,7 @@ import static com.agutsul.chess.board.state.BoardState.Type.AGREED_DRAW;
 import static com.agutsul.chess.board.state.BoardState.Type.AGREED_WIN;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
+import static com.agutsul.chess.board.state.BoardState.Type.DEFAULT;
 import static com.agutsul.chess.board.state.BoardState.Type.FIVE_FOLD_REPETITION;
 import static com.agutsul.chess.board.state.BoardState.Type.SEVENTY_FIVE_MOVES;
 import static com.agutsul.chess.board.state.BoardState.Type.STALE_MATED;
@@ -170,7 +171,7 @@ public abstract class AbstractPlayableGame
         this.board.setState(nextBoardState);
 
         var isRunning = !nextBoardState.isTerminal();
-        if (isRunning && !nextBoardState.isType(BoardState.Type.DEFAULT)) {
+        if (isRunning && !nextBoardState.isType(DEFAULT)) {
             var lastMemento = this.journal.get(this.journal.size() - 1);
             notifyObservers(new BoardStateNotificationEvent(nextBoardState, lastMemento));
         }
