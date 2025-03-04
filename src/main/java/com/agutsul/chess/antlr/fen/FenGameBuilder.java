@@ -47,6 +47,7 @@ final class FenGameBuilder
 
     private String activeColor;
     private String activeCastling;
+    private String activeEnPassant;
     private String enPassantPosition;
 
     private int halfMoveClock;
@@ -72,19 +73,17 @@ final class FenGameBuilder
                 disableAllCastlings(board);
                 // toggle available castling sides
                 enableCastlings(board, activeCastling);
+                // save string of enabled castling sides
+                game.setParsedCastling(activeCastling);
             } else {
                 disableAllCastlings(board);
             }
-            // save string of enabled castling sides
-            game.setParsedCastling(activeCastling);
         }
 
-        if (enPassantPosition != null) {
-            if (!DISABLE_ALL_SYMBOL.equals(enPassantPosition)) {
-                // reset piece position and perform piece 'big move' action
-                // to fill journal properly because en-passant action is based on journal
-                resolveEnPassant(game, playerColor.invert(), enPassantPosition);
-            }
+        if (activeEnPassant != null && !DISABLE_ALL_SYMBOL.equals(activeEnPassant)) {
+            // reset piece position and perform piece 'big move' action
+            // to fill journal properly because en-passant action is based on journal
+            resolveEnPassant(game, playerColor.invert(), enPassantPosition);
             // save "en-passant" position
             game.setParsedEnPassant(enPassantPosition);
         }
@@ -107,8 +106,13 @@ final class FenGameBuilder
         return this;
     }
 
-    GameBuilder<FenGame> withEnPassant(String enpassant) {
-        this.enPassantPosition = enpassant;
+    GameBuilder<FenGame> withEnPassant(String enPassant) {
+        this.activeEnPassant = enPassant;
+        return this;
+    }
+
+    GameBuilder<FenGame> withEnPassantPosition(String enPassantPosition) {
+        this.enPassantPosition = enPassantPosition;
         return this;
     }
 

@@ -57,13 +57,12 @@ final class FenAntlrListener
 
     @Override
     public void enterEnpassant(fenParser.EnpassantContext ctx) {
-//        log("enterEnpassant", ctx.getText());   // enpassant
-//        this.gameBuilder.withEnPassant(ctx.getText());
+        this.gameBuilder.withEnPassant(ctx.getText());
     }
 
     @Override
     public void enterPosition(fenParser.PositionContext ctx) {
-        this.gameBuilder.withEnPassant(ctx.getText());
+        this.gameBuilder.withEnPassantPosition(ctx.getText());
     }
 
     @Override
