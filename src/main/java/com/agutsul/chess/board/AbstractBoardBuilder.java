@@ -9,9 +9,11 @@ import static org.apache.commons.collections4.ListUtils.partition;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -30,6 +32,15 @@ import com.agutsul.chess.piece.factory.PieceFactory;
 
 abstract class AbstractBoardBuilder<T extends Serializable>
         implements BoardBuilder<T> {
+
+    private final Map<Piece.Type,BiConsumer<BoardContext<T>,T>> piecePositionSetters = Map.of(
+            Piece.Type.PAWN,   (context,position) -> context.addPawnPosition(position),
+            Piece.Type.KNIGHT, (context,position) -> context.addKnightPosition(position),
+            Piece.Type.BISHOP, (context,position) -> context.addBishopPosition(position),
+            Piece.Type.ROOK,   (context,position) -> context.addRookPosition(position),
+            Piece.Type.QUEEN,  (context,position) -> context.addQueenPosition(position),
+            Piece.Type.KING,   (context,position) -> context.addKingPosition(position)
+    );
 
     protected final Logger logger;
     protected final BoardContext<T> whitePieceContext;
@@ -249,26 +260,7 @@ abstract class AbstractBoardBuilder<T extends Serializable>
     }
 
     private void addPiecePosition(Piece.Type pieceType, BoardContext<T> context, T position) {
-        switch(pieceType) {
-        case PAWN:
-            context.addPawnPosition(position);
-            break;
-        case KNIGHT:
-            context.addKnightPosition(position);
-            break;
-        case BISHOP:
-            context.addBishopPosition(position);
-            break;
-        case ROOK:
-            context.addRookPosition(position);
-            break;
-        case QUEEN:
-            context.addQueenPosition(position);
-            break;
-        case KING:
-            context.addKingPosition(position);
-            break;
-        }
+        piecePositionSetters.get(pieceType).accept(context, position);
     }
 
     private Board createBoard(ForkJoinPool executor) {
