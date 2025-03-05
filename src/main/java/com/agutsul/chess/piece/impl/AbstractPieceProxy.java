@@ -24,56 +24,6 @@ abstract class AbstractPieceProxy<PIECE extends Piece<?> & Movable & Capturable 
     }
 
     @Override
-    public final Type getType() {
-        return origin.getType();
-    }
-
-    @Override
-    public final Color getColor() {
-        return origin.getColor();
-    }
-
-    @Override
-    public final String getUnicode() {
-        return origin.getUnicode();
-    }
-
-    @Override
-    public final int getValue() {
-        return origin.getValue();
-    }
-
-    @Override
-    public int getDirection() {
-        return this.origin.getDirection();
-    }
-
-    @Override
-    public final Position getPosition() {
-        return origin.getPosition();
-    }
-
-    @Override
-    public final List<Position> getPositions() {
-        return origin.getPositions();
-    }
-
-    @Override
-    public final boolean isActive() {
-        return origin.isActive();
-    }
-
-    @Override
-    public boolean isMoved() {
-        return origin.isMoved();
-    }
-
-    @Override
-    public boolean isProtected() {
-        return origin.isProtected();
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public PieceState<Piece<Color>> getState() {
         return (PieceState<Piece<Color>>) (PieceState<?>) origin.getState();
@@ -100,22 +50,72 @@ abstract class AbstractPieceProxy<PIECE extends Piece<?> & Movable & Capturable 
     }
 
     @Override
-    public void capture(Piece<?> targetPiece) {
+    public final Type getType() {
+        return origin.getType();
+    }
+
+    @Override
+    public final Color getColor() {
+        return origin.getColor();
+    }
+
+    @Override
+    public final String getUnicode() {
+        return origin.getUnicode();
+    }
+
+    @Override
+    public final int getValue() {
+        return origin.getValue();
+    }
+
+    @Override
+    public final int getDirection() {
+        return this.origin.getDirection();
+    }
+
+    @Override
+    public final Position getPosition() {
+        return origin.getPosition();
+    }
+
+    @Override
+    public final List<Position> getPositions() {
+        return origin.getPositions();
+    }
+
+    @Override
+    public final boolean isActive() {
+        return origin.isActive();
+    }
+
+    @Override
+    public final boolean isMoved() {
+        return origin.isMoved();
+    }
+
+    @Override
+    public final boolean isProtected() {
+        return origin.isProtected();
+    }
+
+    @Override
+    public final void capture(Piece<?> targetPiece) {
         origin.capture(targetPiece);
     }
 
     @Override
-    public void uncapture(Piece<?> targetPiece) {
+    public final void uncapture(Piece<?> targetPiece) {
         origin.uncapture(targetPiece);
     }
 
     @Override
-    public void move(Position position) {
+    public final void move(Position position) {
         origin.move(position);
     }
 
     @Override
-    public void unmove(Position position) {
+    public final void unmove(Position position) {
         origin.unmove(position);
     }
 
