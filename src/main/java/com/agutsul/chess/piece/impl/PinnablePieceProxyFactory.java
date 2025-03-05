@@ -68,7 +68,7 @@ enum PinnablePieceProxyFactory {
     // actual pinnable proxy implementations
 
     private static final class PinnableBishopPieceProxy<PIECE extends BishopPiece<?>>
-            extends AbstractPinnablePieceProxy<PIECE>
+            extends AbstractDemotablePieceProxy<PIECE>
             implements BishopPiece<Color> {
 
         private static final Logger LOGGER = getLogger(PinnableBishopPieceProxy.class);
@@ -79,7 +79,7 @@ enum PinnablePieceProxyFactory {
     }
 
     private static final class PinnableKnightPieceProxy<PIECE extends KnightPiece<?>>
-            extends AbstractPinnablePieceProxy<PIECE>
+            extends AbstractDemotablePieceProxy<PIECE>
             implements KnightPiece<Color> {
 
         private static final Logger LOGGER = getLogger(PinnableKnightPieceProxy.class);
@@ -90,7 +90,7 @@ enum PinnablePieceProxyFactory {
     }
 
     private static final class PinnableQueenPieceProxy<PIECE extends QueenPiece<?>>
-            extends AbstractPinnablePieceProxy<PIECE>
+            extends AbstractDemotablePieceProxy<PIECE>
             implements QueenPiece<Color> {
 
         private static final Logger LOGGER = getLogger(PinnableQueenPieceProxy.class);
@@ -101,7 +101,7 @@ enum PinnablePieceProxyFactory {
     }
 
     private static final class PinnableRookPieceProxy<PIECE extends RookPiece<?>>
-            extends AbstractPinnablePieceProxy<PIECE>
+            extends AbstractDemotablePieceProxy<PIECE>
             implements RookPiece<Color> {
 
         private static final Logger LOGGER = getLogger(PinnableRookPieceProxy.class);

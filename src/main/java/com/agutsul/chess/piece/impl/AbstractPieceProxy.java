@@ -24,6 +24,11 @@ abstract class AbstractPieceProxy<PIECE extends Piece<?> & Movable & Capturable 
     }
 
     @Override
+    public final PIECE getOrigin() {
+        return origin;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public PieceState<Piece<Color>> getState() {
         return (PieceState<Piece<Color>>) (PieceState<?>) origin.getState();

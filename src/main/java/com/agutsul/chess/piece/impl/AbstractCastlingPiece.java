@@ -145,7 +145,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         }
 
         private static void cancelCastling(AbstractPieceProxy<?> proxy, Position position) {
-            cancelCastling((AbstractCastlingPiece<?>) proxy.origin, position);
+            cancelCastling((AbstractCastlingPiece<?>) proxy.getOrigin(), position);
         }
 
         private static void cancelCastling(AbstractCastlingPiece<?> piece, Position position) {
@@ -215,7 +215,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         }
 
         private static void doCastling(AbstractPieceProxy<?> proxy, Position position) {
-            doCastling((AbstractCastlingPiece<?>) proxy.origin, position);
+            doCastling((AbstractCastlingPiece<?>) proxy.getOrigin(), position);
         }
 
         private static void doCastling(AbstractCastlingPiece<?> piece, Position position) {
