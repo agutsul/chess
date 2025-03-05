@@ -277,12 +277,7 @@
                     <excludes>
                         <exclude>com/agutsul/chess/rule/action/AbstractCastlingActionRule.java</exclude>
                         <!-- antlr generated classes -->
-                        <exclude>com/agutsul/chess/antlr/grammar/PGNParser.java</exclude>
-                        <exclude>com/agutsul/chess/antlr/grammar/PGNLexer.java</exclude>
-                        <exclude>com/agutsul/chess/antlr/grammar/fenParser.java</exclude>
-                        <exclude>com/agutsul/chess/antlr/grammar/fenLexer.java</exclude>
-                        <exclude>com/agutsul/chess/antlr/grammar/fenBaseListener.java</exclude>
-                        <exclude>com/agutsul/chess/antlr/grammar/fenBaseVisitor.java</exclude>
+                        <exclude>com/agutsul/chess/antlr/grammar/*</exclude>
                     </excludes>
                     <rulesets>
                         <ruleset>${project.basedir}/src/conf/pmd/ruleset.xml</ruleset>
@@ -293,6 +288,12 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${maven.jacoco.plugin.version}</version>
+                <configuration>
+                    <excludes>
+                        <!-- antlr generated classes -->
+                        <exclude>com/agutsul/chess/antlr/grammar/*</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
