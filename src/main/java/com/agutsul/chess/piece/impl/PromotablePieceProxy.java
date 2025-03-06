@@ -69,7 +69,7 @@ final class PromotablePieceProxy<PIECE extends Piece<?>
 
     @SuppressWarnings("unchecked")
     PromotablePieceProxy(Board board, PawnPiece<Color> pawnPiece,
-                        int promotionLine, PieceFactory pieceFactory) {
+                         int promotionLine, PieceFactory pieceFactory) {
 
         super((PIECE) pawnPiece);
 
