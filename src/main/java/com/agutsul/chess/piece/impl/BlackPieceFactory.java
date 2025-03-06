@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.piece.impl.DemotablePieceProxyFactory.demotableProxy;
 import static com.agutsul.chess.piece.impl.PinnablePieceProxyFactory.pinnableProxy;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -39,27 +40,32 @@ public final class BlackPieceFactory
 
     @Override
     public QueenPiece<Color> createQueen(Position position) {
-        return pinnableProxy(board, super.createQueen(position, QUEEN_UNICODE));
+        return demotableProxy(pinnableProxy(board, super.createQueen(position, QUEEN_UNICODE)));
     }
 
     @Override
     public RookPiece<Color> createRook(Position position) {
-        return pinnableProxy(board, super.createRook(position, ROOK_UNICODE));
+        return demotableProxy(pinnableProxy(board, super.createRook(position, ROOK_UNICODE)));
     }
 
     @Override
     public BishopPiece<Color> createBishop(Position position) {
-        return pinnableProxy(board, super.createBishop(position, BISHOP_UNICODE));
+        return demotableProxy(pinnableProxy(board, super.createBishop(position, BISHOP_UNICODE)));
     }
 
     @Override
     public KnightPiece<Color> createKnight(Position position) {
-        return pinnableProxy(board, super.createKnight(position, KNIGHT_UNICODE));
+        return demotableProxy(pinnableProxy(board, super.createKnight(position, KNIGHT_UNICODE)));
     }
 
     @Override
     public PawnPiece<Color> createPawn(Position position) {
-        var piece = super.createPawn(position, PAWN_UNICODE);
-        return pinnableProxy(board, new PromotablePieceProxy<>(board, piece, promotion.line(), this));
+        var pawn = new PromotablePawnProxy<>(board,
+                super.createPawn(position, PAWN_UNICODE),
+                promotion.line(),
+                this
+        );
+
+        return new PieceProxyAdapter<>(pinnableProxy(board, pawn));
     }
 }

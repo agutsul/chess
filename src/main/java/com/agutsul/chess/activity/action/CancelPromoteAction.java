@@ -13,7 +13,6 @@ import com.agutsul.chess.Executable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.PieceProxy;
 
 public class CancelPromoteAction<COLOR1 extends Color,
                                  PIECE1 extends Piece<COLOR1> & Movable & Capturable & Demotable>
@@ -48,9 +47,7 @@ public class CancelPromoteAction<COLOR1 extends Color,
         LOGGER.info("Cancel promote by '{}'", promoted);
 
         // cancel promotion back to pawn
-        var piece = ((PieceProxy<?>) promoted).getOrigin();
-        ((Demotable) piece).demote();
-
+        promoted.demote();
         // cancel origin action
         ((Executable) action).execute();
     }

@@ -68,7 +68,7 @@ enum PinnablePieceProxyFactory {
     // actual pinnable proxy implementations
 
     private static final class PinnableBishopPieceProxy<PIECE extends BishopPiece<?>>
-            extends AbstractDemotablePieceProxy<PIECE>
+            extends AbstractPinnablePieceProxy<PIECE>
             implements BishopPiece<Color> {
 
         private static final Logger LOGGER = getLogger(PinnableBishopPieceProxy.class);
@@ -79,7 +79,7 @@ enum PinnablePieceProxyFactory {
     }
 
     private static final class PinnableKnightPieceProxy<PIECE extends KnightPiece<?>>
-            extends AbstractDemotablePieceProxy<PIECE>
+            extends AbstractPinnablePieceProxy<PIECE>
             implements KnightPiece<Color> {
 
         private static final Logger LOGGER = getLogger(PinnableKnightPieceProxy.class);
@@ -90,7 +90,7 @@ enum PinnablePieceProxyFactory {
     }
 
     private static final class PinnableQueenPieceProxy<PIECE extends QueenPiece<?>>
-            extends AbstractDemotablePieceProxy<PIECE>
+            extends AbstractPinnablePieceProxy<PIECE>
             implements QueenPiece<Color> {
 
         private static final Logger LOGGER = getLogger(PinnableQueenPieceProxy.class);
@@ -101,7 +101,7 @@ enum PinnablePieceProxyFactory {
     }
 
     private static final class PinnableRookPieceProxy<PIECE extends RookPiece<?>>
-            extends AbstractDemotablePieceProxy<PIECE>
+            extends AbstractPinnablePieceProxy<PIECE>
             implements RookPiece<Color> {
 
         private static final Logger LOGGER = getLogger(PinnableRookPieceProxy.class);
@@ -113,18 +113,18 @@ enum PinnablePieceProxyFactory {
         @Override
         public void castling(Position position) {
             logger.info("Castling for piece '{}'", this);
-            origin.castling(position);
+            this.origin.castling(position);
         }
 
         @Override
         public void uncastling(Position position) {
             logger.info("Cancel castling for piece '{}'", this);
-            origin.uncastling(position);
+            this.origin.uncastling(position);
         }
 
         @Override
         public void set(Settable.Type type, Object value) {
-            origin.set(type, value);
+            this.origin.set(type, value);
         }
     }
 
@@ -141,7 +141,7 @@ enum PinnablePieceProxyFactory {
         @Override
         public void promote(Position position, Piece.Type pieceType) {
             logger.info("Promote piece '{}' to '{}'", this, pieceType.name());
-            origin.promote(position, pieceType);
+            this.origin.promote(position, pieceType);
         }
 
         @Override
@@ -150,25 +150,25 @@ enum PinnablePieceProxyFactory {
                     targetPiece, this, targetPosition
             );
 
-            origin.enpassant(targetPiece, targetPosition);
+            this.origin.enpassant(targetPiece, targetPosition);
         }
 
         @Override
         public void unenpassant(PawnPiece<?> targetPiece) {
             logger.info("Cancel en-passant actions for piece '{}'", this);
-            origin.unenpassant(targetPiece);
+            this.origin.unenpassant(targetPiece);
         }
 
         @Override
         public boolean isBlocked() {
             logger.info("Check if piece '{}' is blocked", this);
-            return origin.isBlocked();
+            return this.origin.isBlocked();
         }
 
         @Override
         public void set(Settable.Type type, Object value) {
             logger.info("Set piece '{}' en-passant position '{}'", this, value);
-            origin.set(type, value);
+            this.origin.set(type, value);
         }
     }
 }

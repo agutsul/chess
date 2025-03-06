@@ -1,13 +1,16 @@
 package com.agutsul.chess.piece.impl;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -49,14 +52,14 @@ import com.agutsul.chess.position.Position;
  * Requires extending all interfaces of promoted pieces
  * to properly proxy those newly created pieces
  */
-final class PromotablePieceProxy<PIECE extends Piece<?>
+final class PromotablePawnProxy<PIECE extends Piece<?>
                                         & Movable & Capturable & Protectable
-                                        & Restorable & Disposable>
+                                        & Restorable & Disposable & Pinnable>
         extends AbstractLifecyclePieceProxy<PIECE>
         implements PawnPiece<Color>, KnightPiece<Color>, BishopPiece<Color>,
                    RookPiece<Color>, QueenPiece<Color> {
 
-    private static final Logger LOGGER = getLogger(PromotablePieceProxy.class);
+    private static final Logger LOGGER = getLogger(PromotablePawnProxy.class);
 
     private final PieceFactory pieceFactory;
     private final PawnPiece<Color> pawnPiece;
@@ -65,8 +68,8 @@ final class PromotablePieceProxy<PIECE extends Piece<?>
     private PieceState<?> currentState;
 
     @SuppressWarnings("unchecked")
-    PromotablePieceProxy(Board board, PawnPiece<Color> pawnPiece,
-                         int promotionLine, PieceFactory pieceFactory) {
+    PromotablePawnProxy(Board board, PawnPiece<Color> pawnPiece,
+                        int promotionLine, PieceFactory pieceFactory) {
 
         super((PIECE) pawnPiece);
 
@@ -77,6 +80,23 @@ final class PromotablePieceProxy<PIECE extends Piece<?>
 
         this.activeState = state;
         setState(state);
+    }
+
+    @Override
+    public List<Position> getPositions() {
+        var originPositions = super.getPositions();
+        // when no promotion happened return pawn positions
+        if (Objects.equals(pawnPiece, origin)) {
+            return originPositions;
+        }
+
+        // after promotion returns combined list of positions for pawn and promoted piece
+        var positions = new ArrayList<Position>();
+
+        positions.addAll(pawnPiece.getPositions());
+        positions.addAll(originPositions);
+
+        return unmodifiableList(positions);
     }
 
     @Override
@@ -161,7 +181,7 @@ final class PromotablePieceProxy<PIECE extends Piece<?>
 
     @Override
     public boolean isPinned() {
-        return ((Pinnable) this.origin).isPinned();
+        return this.origin.isPinned();
     }
 
     @Override
@@ -221,7 +241,9 @@ final class PromotablePieceProxy<PIECE extends Piece<?>
         private Piece.Type type;
         private BiFunction<PieceFactory,Position,Piece<Color>> function;
 
-        PromotionFactory(Piece.Type type, BiFunction<PieceFactory,Position,Piece<Color>> function) {
+        PromotionFactory(Piece.Type type,
+                         BiFunction<PieceFactory,Position,Piece<Color>> function) {
+
             this.type = type;
             this.function = function;
         }
@@ -259,7 +281,7 @@ final class PromotablePieceProxy<PIECE extends Piece<?>
         @Override
         public void unpromote(Piece<?> piece) {
             LOGGER.info("Undo promote by '{}'", piece);
-            ((PromotablePieceProxy<?>) piece).cancelPromote();
+            ((PromotablePawnProxy<?>) piece).cancelPromote();
         }
 
         @Override
@@ -325,7 +347,7 @@ final class PromotablePieceProxy<PIECE extends Piece<?>
 
             validatePromotion(piece, position, pieceType);
 
-            ((PromotablePieceProxy<?>) piece).doPromote(position, pieceType);
+            ((PromotablePawnProxy<?>) piece).doPromote(position, pieceType);
         }
 
         private void validatePromotion(PIECE piece, Position position, Piece.Type pieceType) {

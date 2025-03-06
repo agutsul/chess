@@ -162,8 +162,8 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         private final Board board;
 
         ActiveCastlingablePieceState(Board board,
-                                     Rule<Piece<?>, Collection<Action<?>>> actionRule,
-                                     Rule<Piece<?>, Collection<Impact<?>>> impactRule) {
+                                     Rule<Piece<?>,Collection<Action<?>>> actionRule,
+                                     Rule<Piece<?>,Collection<Impact<?>>> impactRule) {
 
             super(new ActivePieceStateImpl<>(board, actionRule, impactRule));
             this.board = board;
@@ -201,24 +201,29 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
             return possiblePositions.contains(position);
         }
 
-        private static void doCastling(CastlingMoveAction<?,?> action) {
+        @SuppressWarnings("unchecked")
+        private void doCastling(CastlingMoveAction<?,?> action) {
             var piece = action.getSource();
             var position = action.getPosition();
 
             LOGGER.info("Castling '{}' to '{}'", piece, position);
+            doCastling((PIECE) piece, position);
+        }
 
-            if (piece instanceof PieceProxy) {
-                doCastling((AbstractPieceProxy<?>) piece, position);
-            } else {
+        private void doCastling(PIECE piece, Position position) {
+            if (piece instanceof AbstractCastlingPiece) {
                 doCastling((AbstractCastlingPiece<?>) piece, position);
+            } else {
+                doCastling((PieceProxy<?>) piece, position);
             }
         }
 
-        private static void doCastling(AbstractPieceProxy<?> proxy, Position position) {
-            doCastling((AbstractCastlingPiece<?>) proxy.getOrigin(), position);
+        @SuppressWarnings("unchecked")
+        private void doCastling(PieceProxy<?> proxy, Position position) {
+            doCastling((PIECE) proxy.getOrigin(), position);
         }
 
-        private static void doCastling(AbstractCastlingPiece<?> piece, Position position) {
+        private void doCastling(AbstractCastlingPiece<?> piece, Position position) {
             piece.doCastling(position);
         }
     }

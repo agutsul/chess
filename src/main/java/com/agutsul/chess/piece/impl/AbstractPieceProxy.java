@@ -85,7 +85,7 @@ abstract class AbstractPieceProxy<PIECE extends Piece<?> & Movable & Capturable 
     }
 
     @Override
-    public final List<Position> getPositions() {
+    public List<Position> getPositions() {
         return origin.getPositions();
     }
 
