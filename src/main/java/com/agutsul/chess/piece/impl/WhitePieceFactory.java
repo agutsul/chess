@@ -1,7 +1,5 @@
 package com.agutsul.chess.piece.impl;
 
-import static com.agutsul.chess.piece.impl.DemotablePieceProxyFactory.demotableProxy;
-import static com.agutsul.chess.piece.impl.PinnablePieceProxyFactory.pinnableProxy;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import org.slf4j.Logger;
@@ -41,27 +39,27 @@ public final class WhitePieceFactory
                 this
         );
 
-        return new PieceProxyAdapter<>(pinnableProxy(board, pawn));
+        return new PieceProxyAdapter<>(pinnableProxy(pawn));
     }
 
     @Override
     public KnightPiece<Color> createKnight(Position position) {
-        return demotableProxy(pinnableProxy(board, super.createKnight(position, KNIGHT_UNICODE)));
+        return demotableProxy(pinnableProxy(super.createKnight(position, KNIGHT_UNICODE)));
     }
 
     @Override
     public BishopPiece<Color> createBishop(Position position) {
-        return demotableProxy(pinnableProxy(board, super.createBishop(position, BISHOP_UNICODE)));
+        return demotableProxy(pinnableProxy(super.createBishop(position, BISHOP_UNICODE)));
     }
 
     @Override
     public RookPiece<Color> createRook(Position position) {
-        return demotableProxy(pinnableProxy(board, super.createRook(position, ROOK_UNICODE)));
+        return demotableProxy(pinnableProxy(super.createRook(position, ROOK_UNICODE)));
     }
 
     @Override
     public QueenPiece<Color> createQueen(Position position) {
-        return demotableProxy(pinnableProxy(board, super.createQueen(position, QUEEN_UNICODE)));
+        return demotableProxy(pinnableProxy(super.createQueen(position, QUEEN_UNICODE)));
     }
 
     @Override
