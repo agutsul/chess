@@ -184,7 +184,7 @@ abstract class AbstractPieceFactory<COLOR extends Color>
         return PinnablePieceProxyFactory.pinnableProxy(board, piece);
     }
 
-    enum DemotablePieceProxyFactory {
+    private enum DemotablePieceProxyFactory {
         BISHOP_MODE(Piece.Type.BISHOP, piece -> new DemotableBishopPieceProxy<>((BishopPiece<?>) piece)),
         KNIGHT_MODE(Piece.Type.KNIGHT, piece -> new DemotableKnightPieceProxy<>((KnightPiece<?>) piece)),
         QUEEN_MODE(Piece.Type.QUEEN,   piece -> new DemotableQueenPieceProxy<>((QueenPiece<?>) piece)),
@@ -309,7 +309,7 @@ abstract class AbstractPieceFactory<COLOR extends Color>
         }
     }
 
-    enum PinnablePieceProxyFactory {
+    private enum PinnablePieceProxyFactory {
         BISHOP_MODE(Piece.Type.BISHOP, (board,piece) -> new PinnableBishopPieceProxy<>(board, (BishopPiece<?>) piece)),
         KNIGHT_MODE(Piece.Type.KNIGHT, (board,piece) -> new PinnableKnightPieceProxy<>(board, (KnightPiece<?>) piece)),
         QUEEN_MODE(Piece.Type.QUEEN,   (board,piece) -> new PinnableQueenPieceProxy<>(board,  (QueenPiece<?>) piece)),
