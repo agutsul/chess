@@ -22,14 +22,14 @@ import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.position.Position;
 
-final class PieceProxyAdapter<PIECE extends Piece<?>
+final class PromotablePieceProxyAdapter<PIECE extends Piece<?>
                                         & Movable & Capturable & Protectable
                                         & Restorable & Disposable & Pinnable>
         extends AbstractLifecyclePieceProxy<PIECE>
         implements PawnPiece<Color>, KnightPiece<Color>, BishopPiece<Color>,
                    RookPiece<Color>, QueenPiece<Color> {
 
-    PieceProxyAdapter(PIECE piece) {
+    PromotablePieceProxyAdapter(PIECE piece) {
         super(piece);
     }
 

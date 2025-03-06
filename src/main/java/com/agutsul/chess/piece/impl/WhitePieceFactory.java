@@ -39,7 +39,7 @@ public final class WhitePieceFactory
                 this
         );
 
-        return new PieceProxyAdapter<>(pinnableProxy(pawn));
+        return new PromotablePieceProxyAdapter<>(pinnableProxy(pawn));
     }
 
     @Override
