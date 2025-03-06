@@ -25,23 +25,23 @@ abstract class AbstractPieceProxy<PIECE extends Piece<?> & Movable & Capturable 
 
     @Override
     public final PIECE getOrigin() {
-        return origin;
+        return this.origin;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public PieceState<Piece<Color>> getState() {
-        return (PieceState<Piece<Color>>) (PieceState<?>) origin.getState();
+        return (PieceState<Piece<Color>>) (PieceState<?>) this.origin.getState();
     }
 
     @Override
     public Collection<Action<?>> getActions() {
-        return origin.getActions();
+        return this.origin.getActions();
     }
 
     @Override
     public Collection<Action<?>> getActions(Action.Type actionType) {
-        return origin.getActions(actionType);
+        return this.origin.getActions(actionType);
     }
 
     @Override
@@ -51,27 +51,27 @@ abstract class AbstractPieceProxy<PIECE extends Piece<?> & Movable & Capturable 
 
     @Override
     public Collection<Impact<?>> getImpacts(Impact.Type impactType) {
-        return origin.getImpacts(impactType);
+        return this.origin.getImpacts(impactType);
     }
 
     @Override
     public final Type getType() {
-        return origin.getType();
+        return this.origin.getType();
     }
 
     @Override
     public final Color getColor() {
-        return origin.getColor();
+        return this.origin.getColor();
     }
 
     @Override
     public final String getUnicode() {
-        return origin.getUnicode();
+        return this.origin.getUnicode();
     }
 
     @Override
     public final int getValue() {
-        return origin.getValue();
+        return this.origin.getValue();
     }
 
     @Override
@@ -81,61 +81,61 @@ abstract class AbstractPieceProxy<PIECE extends Piece<?> & Movable & Capturable 
 
     @Override
     public final Position getPosition() {
-        return origin.getPosition();
+        return this.origin.getPosition();
     }
 
     @Override
     public List<Position> getPositions() {
-        return origin.getPositions();
+        return this.origin.getPositions();
     }
 
     @Override
     public final boolean isActive() {
-        return origin.isActive();
+        return this.origin.isActive();
     }
 
     @Override
     public final boolean isMoved() {
-        return origin.isMoved();
+        return this.origin.isMoved();
     }
 
     @Override
     public final boolean isProtected() {
-        return origin.isProtected();
+        return this.origin.isProtected();
     }
 
     @Override
     public final void capture(Piece<?> targetPiece) {
-        origin.capture(targetPiece);
+        this.origin.capture(targetPiece);
     }
 
     @Override
     public final void uncapture(Piece<?> targetPiece) {
-        origin.uncapture(targetPiece);
+        this.origin.uncapture(targetPiece);
     }
 
     @Override
     public final void move(Position position) {
-        origin.move(position);
+        this.origin.move(position);
     }
 
     @Override
     public final void unmove(Position position) {
-        origin.unmove(position);
+        this.origin.unmove(position);
     }
 
     @Override
     public final int hashCode() {
-        return origin.hashCode();
+        return this.origin.hashCode();
     }
 
     @Override
     public final boolean equals(Object obj) {
-        return origin.equals(obj);
+        return this.origin.equals(obj);
     }
 
     @Override
     public final String toString() {
-        return origin.toString();
+        return this.origin.toString();
     }
 }

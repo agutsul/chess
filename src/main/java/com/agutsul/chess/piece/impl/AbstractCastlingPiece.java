@@ -41,8 +41,8 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
     AbstractCastlingPiece(Board board, Piece.Type type, COLOR color,
                           String unicode, Position position, int direction,
-                          Rule<Piece<?>, Collection<Action<?>>> actionRule,
-                          Rule<Piece<?>, Collection<Impact<?>>> impactRule,
+                          Rule<Piece<?>,Collection<Action<?>>> actionRule,
+                          Rule<Piece<?>,Collection<Impact<?>>> impactRule,
                           Collection<Side> sides) {
 
         super(board, type, color, unicode, position, direction,
@@ -137,10 +137,10 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         public void uncastling(PIECE piece, Position position) {
             LOGGER.info("Undo castling '{}' to '{}'", piece, position);
 
-            if (piece instanceof PieceProxy) {
-                cancelCastling((AbstractPieceProxy<?>) piece, position);
-            } else {
+            if (piece instanceof AbstractCastlingPiece) {
                 cancelCastling((AbstractCastlingPiece<?>) piece, position);
+            } else {
+                cancelCastling((AbstractPieceProxy<?>) piece, position);
             }
         }
 

@@ -173,15 +173,15 @@ abstract class AbstractPieceFactory<COLOR extends Color>
     }
 
     <PIECE extends Piece<COLOR> & Demotable,PROXY extends PieceProxy<PIECE> & Demotable>
-        PROXY demotableProxy(PIECE piece) {
+            PROXY demotableProxy(PIECE piece) {
 
-        return DemotablePieceProxyFactory.demotableProxy(piece);
+        return DemotablePieceProxyFactory.createProxy(piece);
     }
 
     <PIECE extends Piece<COLOR> & Pinnable,PROXY extends PieceProxy<PIECE> & Pinnable>
-        PROXY pinnableProxy(PIECE piece) {
+            PROXY pinnableProxy(PIECE piece) {
 
-        return PinnablePieceProxyFactory.pinnableProxy(board, piece);
+        return PinnablePieceProxyFactory.createProxy(board, piece);
     }
 
     private enum DemotablePieceProxyFactory {
@@ -205,7 +205,7 @@ abstract class AbstractPieceFactory<COLOR extends Color>
 
         @SuppressWarnings("unchecked")
         static <PIECE extends Piece<?> & Demotable,PROXY extends PieceProxy<PIECE> & Demotable>
-                PROXY demotableProxy(PIECE piece) {
+                PROXY createProxy(PIECE piece) {
 
             if (piece == null) {
                 return null;
@@ -331,7 +331,7 @@ abstract class AbstractPieceFactory<COLOR extends Color>
 
         @SuppressWarnings("unchecked")
         static <PIECE extends Piece<?> & Pinnable,PROXY extends PieceProxy<PIECE> & Pinnable>
-                PROXY pinnableProxy(Board board, PIECE piece) {
+                PROXY createProxy(Board board, PIECE piece) {
 
             if (board == null || piece == null) {
                 return null;
