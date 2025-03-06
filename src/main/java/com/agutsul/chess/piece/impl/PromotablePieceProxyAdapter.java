@@ -24,7 +24,8 @@ import com.agutsul.chess.position.Position;
 
 final class PromotablePieceProxyAdapter<PIECE extends Piece<?>
                                         & Movable & Capturable & Protectable
-                                        & Restorable & Disposable & Pinnable>
+                                        & Restorable & Disposable & Pinnable
+                                        & Promotable>
         extends AbstractLifecyclePieceProxy<PIECE>
         implements PawnPiece<Color>, KnightPiece<Color>, BishopPiece<Color>,
                    RookPiece<Color>, QueenPiece<Color> {
@@ -35,7 +36,7 @@ final class PromotablePieceProxyAdapter<PIECE extends Piece<?>
 
     @Override
     public void promote(Position position, Piece.Type pieceType) {
-        ((Promotable) this.origin).promote(position, pieceType);
+        this.origin.promote(position, pieceType);
     }
 
     @Override
