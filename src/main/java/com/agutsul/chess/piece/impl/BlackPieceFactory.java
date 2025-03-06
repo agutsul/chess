@@ -60,7 +60,7 @@ public final class BlackPieceFactory
 
     @Override
     public PawnPiece<Color> createPawn(Position position) {
-        var pawn = new PromotablePawnProxy<>(board,
+        var pawn = new PromotablePieceProxy<>(board,
                 super.createPawn(position, PAWN_UNICODE),
                 promotion.line(),
                 this

@@ -52,14 +52,14 @@ import com.agutsul.chess.position.Position;
  * Requires extending all interfaces of promoted pieces
  * to properly proxy those newly created pieces
  */
-final class PromotablePawnProxy<PIECE extends Piece<?>
+final class PromotablePieceProxy<PIECE extends Piece<?>
                                         & Movable & Capturable & Protectable
                                         & Restorable & Disposable & Pinnable>
         extends AbstractLifecyclePieceProxy<PIECE>
         implements PawnPiece<Color>, KnightPiece<Color>, BishopPiece<Color>,
                    RookPiece<Color>, QueenPiece<Color> {
 
-    private static final Logger LOGGER = getLogger(PromotablePawnProxy.class);
+    private static final Logger LOGGER = getLogger(PromotablePieceProxy.class);
 
     private final PieceFactory pieceFactory;
     private final PawnPiece<Color> pawnPiece;
@@ -68,7 +68,7 @@ final class PromotablePawnProxy<PIECE extends Piece<?>
     private PieceState<?> currentState;
 
     @SuppressWarnings("unchecked")
-    PromotablePawnProxy(Board board, PawnPiece<Color> pawnPiece,
+    PromotablePieceProxy(Board board, PawnPiece<Color> pawnPiece,
                         int promotionLine, PieceFactory pieceFactory) {
 
         super((PIECE) pawnPiece);
@@ -281,7 +281,7 @@ final class PromotablePawnProxy<PIECE extends Piece<?>
         @Override
         public void unpromote(Piece<?> piece) {
             LOGGER.info("Undo promote by '{}'", piece);
-            ((PromotablePawnProxy<?>) piece).cancelPromote();
+            ((PromotablePieceProxy<?>) piece).cancelPromote();
         }
 
         @Override
@@ -347,7 +347,7 @@ final class PromotablePawnProxy<PIECE extends Piece<?>
 
             validatePromotion(piece, position, pieceType);
 
-            ((PromotablePawnProxy<?>) piece).doPromote(position, pieceType);
+            ((PromotablePieceProxy<?>) piece).doPromote(position, pieceType);
         }
 
         private void validatePromotion(PIECE piece, Position position, Piece.Type pieceType) {
