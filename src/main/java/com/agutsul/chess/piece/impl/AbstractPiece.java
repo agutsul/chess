@@ -53,14 +53,14 @@ abstract class AbstractPiece<COLOR extends Color>
     private final COLOR color;
     private final String unicode;
     private final int value;
+    private final int direction;
+
+    private Observer observer;
 
     protected final AbstractBoard board;
-    protected final int direction;
 
     protected final ActivePieceState<? extends Piece<COLOR>> activeState;
     protected PieceState<Piece<COLOR>> currentState;
-
-    private Observer observer;
 
     AbstractPiece(Board board, Type type, COLOR color, String unicode,
                   Position position, int direction,
