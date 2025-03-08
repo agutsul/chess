@@ -64,6 +64,6 @@ public final class BlackPieceFactory
                 this
         );
 
-        return new PromotablePieceProxyAdapter<>(pinnableProxy(pawn));
+        return new TransformablePieceAdapter<>(pinnableProxy(pawn));
     }
 }

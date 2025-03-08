@@ -33,12 +33,8 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
-import com.agutsul.chess.piece.BishopPiece;
-import com.agutsul.chess.piece.KnightPiece;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.QueenPiece;
-import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.piece.factory.PieceFactory;
 import com.agutsul.chess.piece.state.ActivePieceState;
 import com.agutsul.chess.piece.state.DisposedPieceState;
@@ -55,8 +51,7 @@ final class PromotablePieceProxy<PIECE extends Piece<?>
                                         & Movable & Capturable & Protectable
                                         & Restorable & Disposable & Pinnable>
         extends AbstractLifecyclePieceProxy<PIECE>
-        implements PawnPiece<Color>, KnightPiece<Color>, BishopPiece<Color>,
-                   RookPiece<Color>, QueenPiece<Color> {
+        implements TransformablePieceProxy {
 
     private static final Logger LOGGER = getLogger(PromotablePieceProxy.class);
 

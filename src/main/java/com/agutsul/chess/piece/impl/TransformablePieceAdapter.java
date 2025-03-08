@@ -11,25 +11,19 @@ import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.Promotable;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.Restorable;
-import com.agutsul.chess.color.Color;
-import com.agutsul.chess.piece.BishopPiece;
-import com.agutsul.chess.piece.KnightPiece;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.PieceProxy;
-import com.agutsul.chess.piece.QueenPiece;
-import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.position.Position;
 
-final class PromotablePieceProxyAdapter<PIECE extends Piece<?>
-                                        & Movable & Capturable & Protectable
-                                        & Restorable & Disposable & Pinnable
-                                        & Promotable>
+final class TransformablePieceAdapter<PIECE extends Piece<?>
+                                            & Movable & Capturable & Protectable
+                                            & Restorable & Disposable & Pinnable
+                                            & Promotable>
         extends AbstractLifecyclePieceProxy<PIECE>
-        implements PawnPiece<Color>, KnightPiece<Color>, BishopPiece<Color>,
-                   RookPiece<Color>, QueenPiece<Color> {
+        implements TransformablePieceProxy {
 
-    PromotablePieceProxyAdapter(PIECE piece) {
+    TransformablePieceAdapter(PIECE piece) {
         super(piece);
     }
 
