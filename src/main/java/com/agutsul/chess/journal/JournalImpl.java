@@ -45,6 +45,11 @@ public final class JournalImpl
     }
 
     @Override
+    public int size(Color color) {
+        return get(color).size();
+    }
+
+    @Override
     public int size() {
         return this.list.size();
     }

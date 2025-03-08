@@ -6,10 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ErrorNode;
-import org.antlr.v4.runtime.tree.TerminalNode;
-
 import com.agutsul.chess.antlr.AntlrGameListener;
 import com.agutsul.chess.antlr.grammar.fenBaseListener;
 import com.agutsul.chess.antlr.grammar.fenParser;
@@ -89,38 +85,4 @@ final class FenAntlrListener
 
         this.gameBuilder.addBoardLine(line);
     }
-
-    @Override
-    public void enterPiece(fenParser.PieceContext ctx) {
-//        log("enterPiece", ctx.getText());
-    }
-
-    @Override
-    public void exitPiece(fenParser.PieceContext ctx) {
-//        log("exitPiece", ctx.getText());
-    }
-
-    @Override
-    public void enterEveryRule(ParserRuleContext ctx) {
-//        log("enterEveryRule", ctx.getText());
-    }
-
-    @Override
-    public void exitEveryRule(ParserRuleContext ctx) {
-//        log("exitEveryRule", ctx.getText());
-    }
-
-    @Override
-    public void visitTerminal(TerminalNode node) {
-//        log("visitTerminal", node.getText());
-    }
-
-    @Override
-    public void visitErrorNode(ErrorNode node) {
-//        log("visitErrorNode", node.getText());
-    }
-
-//    private static void log(String tagName, String tagValue) {
-//        System.out.println(String.format("<%s>%s</%s>", tagName, tagValue, tagName));
-//    }
 }

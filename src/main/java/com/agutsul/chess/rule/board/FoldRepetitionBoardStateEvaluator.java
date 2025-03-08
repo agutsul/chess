@@ -35,12 +35,11 @@ final class FoldRepetitionBoardStateEvaluator
     public Optional<BoardState> evaluate(Color color) {
         LOGGER.info("Checking if '{}' piece action repetitions", color);
 
-        var actions = journal.get(color);
-        if (actions.size() < THREE_REPETITIONS) {
+        if (journal.size(color) < THREE_REPETITIONS) {
             return Optional.empty();
         }
 
-        var stats = calculateStatistics(actions);
+        var stats = calculateStatistics(journal.get(color));
         var maxRepetitions = stats.entrySet().stream()
                 .mapToInt(Entry::getValue)
                 .max()

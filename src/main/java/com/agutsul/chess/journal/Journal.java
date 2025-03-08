@@ -15,5 +15,7 @@ public interface Journal<MEMENTO extends Memento> {
 
     int size();
 
+    int size(Color color);
+
     boolean isEmpty();
 }

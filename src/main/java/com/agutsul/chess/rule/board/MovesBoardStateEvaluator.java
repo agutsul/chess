@@ -42,7 +42,7 @@ final class MovesBoardStateEvaluator
 
         var actions = journal.get(color);
 
-        var performedActions = actions.size();
+        var performedActions = journal.size(color);
         if (performedActions < FIFTY_MOVES) {
             return Optional.empty();
         }

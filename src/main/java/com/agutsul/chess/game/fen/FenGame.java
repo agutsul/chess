@@ -2,13 +2,21 @@ package com.agutsul.chess.game.fen;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 
+import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.console.ConsolePlayerInputObserver;
+import com.agutsul.chess.journal.Journal;
+import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
 
 public final class FenGame
@@ -25,7 +33,13 @@ public final class FenGame
     public FenGame(Player whitePlayer, Player blackPlayer,
                    Board board, Color color, int halfMoves, int fullMoves) {
 
-        super(LOGGER, whitePlayer, blackPlayer, board);
+        super(LOGGER, whitePlayer, blackPlayer, board, new FenJournal(Map.of(
+                // 'full move' means 'completed turn' and is calculated only after black piece move.
+                // At that time white pieces already moved but counter not yet increased
+                // So, increment by one for white color
+                Colors.WHITE, Colors.WHITE.equals(color) ? fullMoves : fullMoves + 1,
+                Colors.BLACK, fullMoves
+        )));
 
         this.parsedHalfMoves = halfMoves;
         this.parsedFullMoves = fullMoves;
@@ -55,15 +69,75 @@ public final class FenGame
         return parsedEnPassant;
     }
 
-    public void setParsedEnPassant(String parsedEnPassant) {
-        this.parsedEnPassant = parsedEnPassant;
-    }
-
     public int getParsedHalfMoves() {
         return parsedHalfMoves;
     }
 
     public int getParsedFullMoves() {
         return parsedFullMoves;
+    }
+
+    public void setParsedEnPassant(String parsedEnPassant) {
+        this.parsedEnPassant = parsedEnPassant;
+
+        // adjust full moves counter for the specified color
+        // because while allowing en-passant action one memento was inserted into journal
+        // so, that's why for that color full moves counter should be decremented by 1
+        var color = getCurrentPlayer().getColor().invert();
+
+        var journal = (FenJournal) getJournal();
+        journal.set(color, Math.max(journal.size(color) - 1, 0));
+    }
+
+    static final class FenJournal
+            implements Journal<ActionMemento<?,?>> {
+
+        private final Journal<ActionMemento<?,?>> origin;
+        private final Map<Color,Integer> movesCounter;
+
+        FenJournal(Map<Color,Integer> movesCounter) {
+            this.origin = new JournalImpl();
+            this.movesCounter = new HashMap<>(movesCounter);
+        }
+
+        public void set(Color color, int movesCounter) {
+            this.movesCounter.put(color, movesCounter);
+        }
+
+        @Override
+        public void add(ActionMemento<?,?> memento) {
+            this.origin.add(memento);
+        }
+
+        @Override
+        public ActionMemento<?,?> remove(int index) {
+            return this.origin.remove(index);
+        }
+
+        @Override
+        public ActionMemento<?,?> get(int index) {
+            return this.origin.get(index);
+        }
+
+        @Override
+        public List<ActionMemento<?,?>> get(Color color) {
+            return this.origin.get(color);
+        }
+
+        @Override
+        public int size() {
+            return this.origin.size();
+        }
+
+        @Override
+        public int size(Color color) {
+            var counter = this.movesCounter.getOrDefault(color, 0);
+            return counter + this.origin.size(color);
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return this.origin.isEmpty();
+        }
     }
 }
