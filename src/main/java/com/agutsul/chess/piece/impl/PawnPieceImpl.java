@@ -51,9 +51,6 @@ final class PawnPieceImpl<COLOR extends Color>
                         new PawnPieceImpactRule<>(board, direction, promotionLine)
                 )
         );
-
-        this.resetPawnMoveEventObserver = new ResetPawnMoveEventObserver();
-        this.board.addObserver(this.resetPawnMoveEventObserver);
     }
 
     private PawnPieceImpl(Board board, COLOR color, String unicode, Position position,
@@ -64,6 +61,9 @@ final class PawnPieceImpl<COLOR extends Color>
                 new PawnActionCache(),
                 new ActivityCacheImpl<Impact.Type,Impact<?>>()
         );
+
+        this.resetPawnMoveEventObserver = new ResetPawnMoveEventObserver();
+        this.board.addObserver(this.resetPawnMoveEventObserver);
     }
 
     @Override
