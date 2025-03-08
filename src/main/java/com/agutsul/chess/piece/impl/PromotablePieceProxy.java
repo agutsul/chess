@@ -27,7 +27,6 @@ import com.agutsul.chess.Movable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.Restorable;
-import com.agutsul.chess.Settable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.activity.impact.Impact;
@@ -187,11 +186,6 @@ final class PromotablePieceProxy<PIECE extends Piece<?>
     @Override
     public boolean isBlocked() {
         return ((Blockable) this.origin).isBlocked();
-    }
-
-    @Override
-    public void set(Settable.Type type, Object value) {
-        ((Settable) this.origin).set(type, value);
     }
 
     private void setState(PieceState<?> state) {

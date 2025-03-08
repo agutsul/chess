@@ -1,6 +1,5 @@
 package com.agutsul.chess.piece.impl;
 
-import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.time.Instant.now;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -9,10 +8,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 
-import com.agutsul.chess.Settable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
@@ -22,7 +19,10 @@ import com.agutsul.chess.activity.action.function.ActionFilter;
 import com.agutsul.chess.activity.cache.ActivityCacheImpl;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.board.event.ResetPawnMoveActionEvent;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.event.Event;
+import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
@@ -40,6 +40,8 @@ final class PawnPieceImpl<COLOR extends Color>
         extends AbstractPiece<COLOR>
         implements PawnPiece<COLOR> {
 
+    private ResetPawnMoveEventObserver resetPawnMoveEventObserver;
+
     PawnPieceImpl(Board board, COLOR color, String unicode, Position position,
                   int direction, int promotionLine, int initialLine) {
 
@@ -49,6 +51,9 @@ final class PawnPieceImpl<COLOR extends Color>
                         new PawnPieceImpactRule<>(board, direction, promotionLine)
                 )
         );
+
+        this.resetPawnMoveEventObserver = new ResetPawnMoveEventObserver();
+        this.board.addObserver(this.resetPawnMoveEventObserver);
     }
 
     private PawnPieceImpl(Board board, COLOR color, String unicode, Position position,
@@ -82,9 +87,18 @@ final class PawnPieceImpl<COLOR extends Color>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public void set(Settable.Type type, Object value) {
-        set((Action.Type) type, (Pair<String,String>) value);
+    public void dispose(Instant instant) {
+        super.dispose(instant);
+
+        this.board.removeObserver(this.resetPawnMoveEventObserver);
+    }
+
+    @Override
+    public void restore() {
+        super.restore();
+
+        this.resetPawnMoveEventObserver = new ResetPawnMoveEventObserver();
+        this.board.addObserver(this.resetPawnMoveEventObserver);
     }
 
     @Override
@@ -92,23 +106,26 @@ final class PawnPieceImpl<COLOR extends Color>
         return new DisposedEnPassantablePieceState<>(instant);
     }
 
-    private void set(Action.Type actionType, Pair<String,String> pair) {
-        set(actionType, pair.getLeft(), pair.getRight());
-    }
+    private final class ResetPawnMoveEventObserver
+            implements Observer {
 
-    private void set(Action.Type actionType, String sourcePosition, String targetPosition) {
-        if (!Action.Type.EN_PASSANT.equals(actionType)) {
-            throw new IllegalStateException(String.format(
-                    "Unable to set position '%s' for action '%s'",
-                    targetPosition,
-                    String.valueOf(actionType)
-            ));
+        @Override
+        public void observe(Event event) {
+            if (event instanceof ResetPawnMoveActionEvent) {
+                process((ResetPawnMoveActionEvent) event);
+            }
         }
 
-        // cancel move to target position
-        cancelMove(positionOf(targetPosition));
-        // move piece back to source position
-        doMove(positionOf(sourcePosition));
+        private void process(ResetPawnMoveActionEvent event) {
+            var pawn = event.getPawnPiece();
+
+            if (Objects.equals(getPosition(), pawn.getPosition())) {
+                // cancel move to position
+                cancelMove(pawn.getPosition());
+                // move piece back to source position
+                doMove(event.getPosition());
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")

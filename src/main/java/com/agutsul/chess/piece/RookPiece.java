@@ -8,13 +8,11 @@ import com.agutsul.chess.Movable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.Restorable;
-import com.agutsul.chess.Settable;
 import com.agutsul.chess.color.Color;
 
 public interface RookPiece<COLOR extends Color>
         extends Piece<COLOR>, Movable, Capturable,
                 Castlingable, Protectable, Demotable,
-                Disposable, Restorable, Pinnable,
-                Settable {
+                Disposable, Restorable, Pinnable {
 
 }

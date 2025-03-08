@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.Demotable;
 import com.agutsul.chess.Pinnable;
-import com.agutsul.chess.Settable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.BishopPiece;
@@ -298,11 +297,6 @@ abstract class AbstractPieceFactory<COLOR extends Color>
             }
 
             @Override
-            public void set(Settable.Type type, Object value) {
-                this.origin.set(type, value);
-            }
-
-            @Override
             public boolean isPinned() {
                 return this.origin.isPinned();
             }
@@ -409,11 +403,6 @@ abstract class AbstractPieceFactory<COLOR extends Color>
                 logger.info("Cancel castling for piece '{}'", this);
                 this.origin.uncastling(position);
             }
-
-            @Override
-            public void set(Settable.Type type, Object value) {
-                this.origin.set(type, value);
-            }
         }
 
         private static final class PinnablePawnPieceProxy<PIECE extends PawnPiece<?>>
@@ -451,12 +440,6 @@ abstract class AbstractPieceFactory<COLOR extends Color>
             public boolean isBlocked() {
                 logger.info("Check if piece '{}' is blocked", this);
                 return this.origin.isBlocked();
-            }
-
-            @Override
-            public void set(Settable.Type type, Object value) {
-                logger.info("Set piece '{}' en-passant position '{}'", this, value);
-                this.origin.set(type, value);
             }
         }
     }

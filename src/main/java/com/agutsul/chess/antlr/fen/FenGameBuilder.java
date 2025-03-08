@@ -9,20 +9,17 @@ import static org.apache.commons.lang3.math.NumberUtils.toInt;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Castlingable;
-import com.agutsul.chess.Settable;
-import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.PositionBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.board.event.ResetPawnMoveActionEvent;
+import com.agutsul.chess.board.event.SetCastlingableSideEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.command.PerformActionCommand;
@@ -30,6 +27,7 @@ import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.GameBuilder;
 import com.agutsul.chess.game.fen.FenGame;
+import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.UserPlayer;
@@ -208,14 +206,9 @@ final class FenGameBuilder
     }
 
     private static void toggleCastling(Board board, Color color,
-                                       Castlingable.Side side, Boolean enabled) {
+                                       Castlingable.Side side, boolean enabled) {
 
-        Stream.of(Piece.Type.KING, Piece.Type.ROOK)
-                .map(pieceType -> board.getPieces(color, pieceType))
-                .flatMap(Collection::stream)
-                .filter(piece -> piece instanceof Settable)
-                .map(piece -> (Settable) piece)
-                .forEach(piece -> piece.set(side, enabled));
+        ((Observable) board).notifyObservers(new SetCastlingableSideEvent(color, side, enabled));
     }
 
     private static void resolveEnPassant(AbstractPlayableGame game,
@@ -227,13 +220,15 @@ final class FenGameBuilder
         var pawnPiece = board.getPieces(color, Piece.Type.PAWN).stream()
                 .filter(pawn -> Objects.equals(pawn.getPosition().x(), position.x()))
                 .findFirst()
+                .map(piece -> (PawnPiece<Color>) piece)
                 .get();
 
         var targetPosition = Position.codeOf(pawnPiece.getPosition());
         var sourcePosition = Position.codeOf(position.x(), position.y() - pawnPiece.getDirection());
 
         // reset piece position back to source to be able to perform action
-        ((Settable) pawnPiece).set(Action.Type.EN_PASSANT, Pair.of(sourcePosition, targetPosition));
+        ((Observable) board).notifyObservers(new ResetPawnMoveActionEvent(pawnPiece, sourcePosition));
+
         // clear early calculated piece positions to be able to find pawn on source position
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(color));
 

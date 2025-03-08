@@ -11,7 +11,6 @@ import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.Promotable;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.Restorable;
-import com.agutsul.chess.Settable;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.BishopPiece;
 import com.agutsul.chess.piece.KnightPiece;
@@ -62,11 +61,6 @@ final class PromotablePieceProxyAdapter<PIECE extends Piece<?>
     @Override
     public boolean isBlocked() {
         return ((Blockable) this.origin).isBlocked();
-    }
-
-    @Override
-    public void set(Settable.Type property, Object value) {
-        ((Settable) this.origin).set(property, value);
     }
 
     @Override

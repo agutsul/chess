@@ -6,9 +6,11 @@ import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -16,13 +18,15 @@ import org.slf4j.Logger;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Movable;
-import com.agutsul.chess.Settable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCastlingAction;
 import com.agutsul.chess.activity.action.PieceCastlingAction.CastlingMoveAction;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.board.event.SetCastlingableSideEvent;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.event.Event;
+import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.PieceProxy;
@@ -33,11 +37,13 @@ import com.agutsul.chess.rule.Rule;
 
 abstract class AbstractCastlingPiece<COLOR extends Color>
         extends AbstractPiece<COLOR>
-        implements Castlingable, Settable {
+        implements Castlingable {
 
     private static final Logger LOGGER = getLogger(AbstractCastlingPiece.class);
 
-    private final Map<Settable.Type,Boolean> sides;
+    private final Map<Castlingable.Side,Boolean> sides;
+
+    private CastlingableSideObserver castlingableSideObserver;
 
     AbstractCastlingPiece(Board board, Piece.Type type, COLOR color,
                           String unicode, Position position, int direction,
@@ -49,8 +55,26 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
                 new ActiveCastlingablePieceState<>(board, actionRule, impactRule)
         );
 
+        this.castlingableSideObserver = new CastlingableSideObserver();
+        this.board.addObserver(this.castlingableSideObserver);
+
         // be default enable castling
         this.sides = sides.stream().collect(toMap(identity(), entry -> true));
+    }
+
+    @Override
+    public void dispose(Instant instant) {
+        super.dispose(instant);
+
+        this.board.removeObserver(this.castlingableSideObserver);
+    }
+
+    @Override
+    public void restore() {
+        super.restore();
+
+        this.castlingableSideObserver = new CastlingableSideObserver();
+        this.board.addObserver(this.castlingableSideObserver);
     }
 
     @Override
@@ -84,11 +108,6 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
         var state = (CastlingablePieceState<?>) getState();
         ((CastlingablePieceState<AbstractCastlingPiece<COLOR>>) state).uncastling(this, position);
-    }
-
-    @Override
-    public final void set(Settable.Type type, Object value) {
-        set((Castlingable.Side) type, (Boolean) value);
     }
 
     private void set(Castlingable.Side side, Boolean enabled) {
@@ -225,6 +244,23 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
         private void doCastling(AbstractCastlingPiece<?> piece, Position position) {
             piece.doCastling(position);
+        }
+    }
+
+    private final class CastlingableSideObserver
+            implements Observer {
+
+        @Override
+        public void observe(Event event) {
+            if (event instanceof SetCastlingableSideEvent) {
+                process((SetCastlingableSideEvent) event);
+            }
+        }
+
+        private void process(SetCastlingableSideEvent event) {
+            if (Objects.equals(getColor(), event.getColor())) {
+                set(event.getSide(), event.isEnabled());
+            }
         }
     }
 }

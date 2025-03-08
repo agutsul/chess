@@ -3,7 +3,7 @@ package com.agutsul.chess;
 import com.agutsul.chess.position.Position;
 
 public interface Castlingable {
-    enum Side implements Settable.Type {
+    enum Side {
         KING,
         QUEEN
     }
