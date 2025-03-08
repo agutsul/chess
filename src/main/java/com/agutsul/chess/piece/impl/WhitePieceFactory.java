@@ -33,10 +33,9 @@ public final class WhitePieceFactory
 
     @Override
     public PawnPiece<Color> createPawn(Position position) {
-        var pawn = new PromotablePieceProxy<>(board,
+        var pawn = new PromotablePieceProxy<>(board, this,
                 super.createPawn(position, PAWN_UNICODE),
-                promotion.line(),
-                this
+                promotion.line()
         );
 
         return new TransformablePieceAdapter<>(pinnableProxy(pawn));

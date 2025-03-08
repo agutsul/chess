@@ -49,7 +49,7 @@ public class PromotablePieceProxyTest {
 
     @BeforeEach
     public void setUp() {
-        this.proxy = new PromotablePieceProxy<>(board, pawn, 7, pieceFactory);
+        this.proxy = new PromotablePieceProxy<>(board, pieceFactory, pawn, 7);
     }
 
     @Test

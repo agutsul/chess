@@ -62,8 +62,8 @@ final class PromotablePieceProxy<PIECE extends Piece<?>
     private PieceState<?> currentState;
 
     @SuppressWarnings("unchecked")
-    PromotablePieceProxy(Board board, PawnPiece<Color> pawnPiece,
-                         int promotionLine, PieceFactory pieceFactory) {
+    PromotablePieceProxy(Board board, PieceFactory pieceFactory,
+                         PawnPiece<Color> pawnPiece, int promotionLine) {
 
         super((PIECE) pawnPiece);
 
