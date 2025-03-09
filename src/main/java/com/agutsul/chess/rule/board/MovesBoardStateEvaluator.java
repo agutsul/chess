@@ -44,7 +44,7 @@ final class MovesBoardStateEvaluator
 
         setActionCountMatcher(new JournalActionCountMatcher(board, journal));
 
-        ((Observable) board).addObserver(new ActionCounterObserver());
+        ((Observable) board).addObserver(new ActionCounterChangeObserver());
     }
 
     @Override
@@ -75,7 +75,7 @@ final class MovesBoardStateEvaluator
         this.actionCountMatcher = matcher;
     }
 
-    private final class ActionCounterObserver
+    private final class ActionCounterChangeObserver
             implements Observer {
 
         @Override
