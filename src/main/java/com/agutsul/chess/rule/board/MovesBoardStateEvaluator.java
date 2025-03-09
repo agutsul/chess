@@ -130,13 +130,7 @@ final class MovesBoardStateEvaluator
                         new PawnMoveCalculationTask(actions, limit)
                 );
 
-                var results = new ArrayList<Integer>();
-
-                var executor = board.getExecutorService();
-                for (var future : executor.invokeAll(tasks)) {
-                    results.add(future.get());
-                }
-
+                var results = calculate(tasks);
                 return max(results) == 0;
             } catch (InterruptedException e) {
                 LOGGER.error("Board state evaluation interrupted", e);
@@ -145,6 +139,19 @@ final class MovesBoardStateEvaluator
             }
 
             return false;
+        }
+
+        private List<Integer> calculate(List<? extends Callable<Integer>> tasks)
+                throws InterruptedException, ExecutionException {
+
+            var results = new ArrayList<Integer>();
+
+            var executor = board.getExecutorService();
+            for (var future : executor.invokeAll(tasks)) {
+                results.add(future.get());
+            }
+
+            return results;
         }
     }
 
