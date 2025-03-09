@@ -68,19 +68,16 @@ public final class RandomActionInputObserver
     }
 
     private static String adaptAction(Action<?> action) {
-        if (Action.Type.PROMOTE.equals(action.getType())) {
+        switch (action.getType()) {
+        case Action.Type.PROMOTE:
             return adaptAction((Action<?>) action.getSource());
+        case Action.Type.CASTLING:
+            return adaptAction(((PieceCastlingAction<?,?,?>) action).getSource());
+        default:
+            return String.format("%s %s",
+                    ((Positionable) action.getSource()).getPosition(), // source position
+                    action.getPosition()                               // target position
+            );
         }
-
-        if (Action.Type.CASTLING.equals(action.getType())) {
-            var castlingAction = (PieceCastlingAction<?,?,?>) action;
-            return adaptAction(castlingAction.getSource());
-        }
-
-        var piece = (Positionable) action.getSource();
-        return String.format("%s %s",
-                piece.getPosition(),
-                action.getPosition()
-        );
     }
 }
