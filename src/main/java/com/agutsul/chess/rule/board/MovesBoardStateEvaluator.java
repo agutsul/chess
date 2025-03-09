@@ -18,8 +18,12 @@ import org.slf4j.Logger;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.board.event.SetActionCounterEvent;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.event.Event;
+import com.agutsul.chess.event.Observable;
+import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.piece.Piece;
 
@@ -31,16 +35,21 @@ final class MovesBoardStateEvaluator
     static final int FIFTY_MOVES = 50;
     static final int SEVENTY_FIVE_MOVES = 75;
 
+    private ActionCountMatcher actionCountMatcher;
+
     MovesBoardStateEvaluator(Board board,
                              Journal<ActionMemento<?,?>> journal) {
+
         super(board, journal);
+
+        setActionCountMatcher(new JournalActionCountMatcher(board, journal));
+
+        ((Observable) board).addObserver(new ActionCounterObserver());
     }
 
     @Override
     public Optional<BoardState> evaluate(Color color) {
         LOGGER.info("Checking if '{}' missed any capture or pawn moves", color);
-
-        var actions = journal.get(color);
 
         var performedActions = journal.size(color);
         if (performedActions < FIFTY_MOVES) {
@@ -48,13 +57,13 @@ final class MovesBoardStateEvaluator
         }
 
         if (performedActions >= SEVENTY_FIVE_MOVES
-                && isBoardStateApplicable(actions, SEVENTY_FIVE_MOVES)) {
+                && actionCountMatcher.match(color, SEVENTY_FIVE_MOVES)) {
 
             return Optional.of(seventyFiveMovesBoardState(board, color));
         }
 
         if (performedActions >= FIFTY_MOVES
-                && isBoardStateApplicable(actions, FIFTY_MOVES)) {
+                && actionCountMatcher.match(color, FIFTY_MOVES)) {
 
             return Optional.of(fiftyMovesBoardState(board, color));
         }
@@ -62,30 +71,81 @@ final class MovesBoardStateEvaluator
         return Optional.empty();
     }
 
-    private boolean isBoardStateApplicable(List<ActionMemento<?,?>> actions,
-                                           int lastMovesCount) {
+    private void setActionCountMatcher(ActionCountMatcher matcher) {
+        this.actionCountMatcher = matcher;
+    }
 
-        var tasks = List.of(
-                new CaptureCalculationTask(actions,  lastMovesCount),
-                new PawnMoveCalculationTask(actions, lastMovesCount)
-        );
+    private final class ActionCounterObserver
+            implements Observer {
 
-        try {
-            var results = new ArrayList<Integer>();
-
-            var executor = board.getExecutorService();
-            for (var future : executor.invokeAll(tasks)) {
-                results.add(future.get());
+        @Override
+        public void observe(Event event) {
+            if (event instanceof SetActionCounterEvent) {
+                process((SetActionCounterEvent) event);
             }
-
-            return max(results) == 0;
-        } catch (InterruptedException e) {
-            LOGGER.error("Board state evaluation interrupted", e);
-        } catch (ExecutionException e) {
-            LOGGER.error("Board state evaluation failed", e);
         }
 
-        return false;
+        private void process(SetActionCounterEvent event) {
+            setActionCountMatcher(new HalfMoveActionCountMatcher(event.getCounter()));
+        }
+    }
+
+    private interface ActionCountMatcher {
+        boolean match(Color color, int limit);
+    }
+
+    private static final class HalfMoveActionCountMatcher
+            implements ActionCountMatcher {
+
+        private final int halfMoveCounter;
+
+        HalfMoveActionCountMatcher(int halfMoveCounter) {
+            this.halfMoveCounter = halfMoveCounter;
+        }
+
+        @Override
+        public boolean match(Color color, int limit) {
+            return this.halfMoveCounter >= limit;
+        }
+    }
+
+    private static final class JournalActionCountMatcher
+            implements ActionCountMatcher {
+
+        private final Board board;
+        private final Journal<ActionMemento<?,?>> journal;
+
+        JournalActionCountMatcher(Board board, Journal<ActionMemento<?,?>> journal) {
+            this.board = board;
+            this.journal = journal;
+        }
+
+        @Override
+        public boolean match(Color color, int limit) {
+            var actions = journal.get(color);
+
+            try {
+                var tasks = List.of(
+                        new CaptureCalculationTask(actions,  limit),
+                        new PawnMoveCalculationTask(actions, limit)
+                );
+
+                var results = new ArrayList<Integer>();
+
+                var executor = board.getExecutorService();
+                for (var future : executor.invokeAll(tasks)) {
+                    results.add(future.get());
+                }
+
+                return max(results) == 0;
+            } catch (InterruptedException e) {
+                LOGGER.error("Board state evaluation interrupted", e);
+            } catch (ExecutionException e) {
+                LOGGER.error("Board state evaluation failed", e);
+            }
+
+            return false;
+        }
     }
 
     private static abstract class AbstractCalculationTask

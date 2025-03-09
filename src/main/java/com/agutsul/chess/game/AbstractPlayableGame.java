@@ -320,7 +320,7 @@ public abstract class AbstractPlayableGame
         notifyBoardObservers(new ClearPieceDataEvent(color));
     }
 
-    private void notifyBoardObservers(Event event) {
+    protected void notifyBoardObservers(Event event) {
         ((Observable) this.board).notifyObservers(event);
     }
 

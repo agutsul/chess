@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.board.event.SetActionCounterEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
@@ -41,8 +42,8 @@ public final class FenGame
                 Colors.BLACK, fullMoves
         )));
 
-        this.parsedHalfMoves = halfMoves;
-        this.parsedFullMoves = fullMoves;
+        setParsedHalfMoves(halfMoves);
+        setParsedFullMoves(fullMoves);
 
         // set active player
         this.currentPlayer = getPlayer(color);
@@ -83,10 +84,23 @@ public final class FenGame
         // adjust full moves counter for the specified color
         // because while allowing en-passant action one memento was inserted into journal
         // so, that's why for that color full moves counter should be decremented by 1
-        var color = getCurrentPlayer().getColor().invert();
+        var color = getCurrentPlayer().getColor();
+        updateMovesCounter(color.invert());
+    }
 
+    private void updateMovesCounter(Color color) {
         var journal = (FenJournal) getJournal();
         journal.set(color, Math.max(journal.size(color) - 1, 0));
+    }
+
+    private void setParsedHalfMoves(int parsedHalfMoves) {
+        this.parsedHalfMoves = parsedHalfMoves;
+
+        notifyBoardObservers(new SetActionCounterEvent(parsedHalfMoves));
+    }
+
+    private void setParsedFullMoves(int parsedFullMoves) {
+        this.parsedFullMoves = parsedFullMoves;
     }
 
     static final class FenJournal
