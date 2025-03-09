@@ -125,12 +125,11 @@ final class MovesBoardStateEvaluator
             var actions = journal.get(color);
 
             try {
-                var tasks = List.of(
+                var results = calculate(List.of(
                         new CaptureCalculationTask(actions,  limit),
                         new PawnMoveCalculationTask(actions, limit)
-                );
+                ));
 
-                var results = calculate(tasks);
                 return max(results) == 0;
             } catch (InterruptedException e) {
                 LOGGER.error("Board state evaluation interrupted", e);
