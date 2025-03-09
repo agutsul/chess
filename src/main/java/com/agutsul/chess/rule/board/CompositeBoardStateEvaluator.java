@@ -28,21 +28,18 @@ final class CompositeBoardStateEvaluator
     private final Board board;
     private final List<BoardStateEvaluator<Optional<BoardState>>> evaluators;
 
+    @SuppressWarnings("unchecked")
     CompositeBoardStateEvaluator(Board board,
-                                 CheckedBoardStateEvaluator checkedEvaluator,
-                                 CheckMatedBoardStateEvaluator checkMatedEvaluator,
-                                 StaleMatedBoardStateEvaluator staleMatedEvaluator,
-                                 FoldRepetitionBoardStateEvaluator foldRepetitionEvaluator,
-                                 MovesBoardStateEvaluator movesBoardStateEvaluator,
-                                 InsufficientMaterialBoardStateEvaluator insufficientMaterialBoardStateEvaluator) {
+                                 BoardStateEvaluator<Optional<BoardState>> evaluator,
+                                 BoardStateEvaluator<Optional<BoardState>>... evaluators) {
+
         this.board = board;
-        this.evaluators = List.of(
-                new BoardStatisticStateEvaluator(movesBoardStateEvaluator),
-                new BoardStatisticStateEvaluator(foldRepetitionEvaluator),
-                new CheckableBoardStateEvaluator(checkedEvaluator, checkMatedEvaluator),
-                staleMatedEvaluator,
-                insufficientMaterialBoardStateEvaluator
-        );
+
+        var list = new ArrayList<BoardStateEvaluator<Optional<BoardState>>>();
+        list.add(evaluator);
+        list.addAll(List.of(evaluators));
+
+        this.evaluators = list;
     }
 
     @Override
