@@ -1,5 +1,6 @@
 package com.agutsul.chess.antlr.fen;
 
+import static com.agutsul.chess.position.Position.codeOf;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static org.apache.commons.lang3.StringUtils.isAllLowerCase;
 import static org.apache.commons.lang3.StringUtils.isAllUpperCase;
@@ -81,7 +82,7 @@ final class FenGameBuilder
         if (activeEnPassant != null && !DISABLE_ALL_SYMBOL.equals(activeEnPassant)) {
             // reset piece position and perform piece 'big move' action
             // to fill journal properly because en-passant action is based on journal
-            resolveEnPassant(game, playerColor.invert(), enPassantPosition);
+            enableEnPassant(game, playerColor.invert(), enPassantPosition);
             // save "en-passant" position
             game.setParsedEnPassant(enPassantPosition);
         }
@@ -211,8 +212,8 @@ final class FenGameBuilder
         ((Observable) board).notifyObservers(new SetCastlingableSideEvent(color, side, enabled));
     }
 
-    private static void resolveEnPassant(AbstractPlayableGame game,
-                                         Color color, String positionCode) {
+    private static void enableEnPassant(AbstractPlayableGame game,
+                                        Color color, String positionCode) {
         var board = game.getBoard();
         // en-passant selected position
         var position = positionOf(positionCode);
@@ -223,8 +224,8 @@ final class FenGameBuilder
                 .map(piece -> (PawnPiece<Color>) piece)
                 .get();
 
-        var targetPosition = Position.codeOf(pawnPiece.getPosition());
-        var sourcePosition = Position.codeOf(position.x(), position.y() - pawnPiece.getDirection());
+        var targetPosition = codeOf(pawnPiece.getPosition());
+        var sourcePosition = codeOf(position.x(), position.y() - pawnPiece.getDirection());
 
         // reset piece position back to source to be able to perform action
         ((Observable) board).notifyObservers(new ResetPawnMoveActionEvent(pawnPiece, sourcePosition));
