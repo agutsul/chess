@@ -2,6 +2,7 @@ package com.agutsul.chess.rule.board;
 
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
@@ -33,13 +34,14 @@ final class CompositeBoardStateEvaluator
                                  BoardStateEvaluator<Optional<BoardState>> evaluator,
                                  BoardStateEvaluator<Optional<BoardState>>... evaluators) {
 
+        this(board, compose(evaluator, evaluators));
+
+    }
+
+    private CompositeBoardStateEvaluator(Board board,
+                                         List<BoardStateEvaluator<Optional<BoardState>>> evaluators) {
         this.board = board;
-
-        var list = new ArrayList<BoardStateEvaluator<Optional<BoardState>>>();
-        list.add(evaluator);
-        list.addAll(List.of(evaluators));
-
-        this.evaluators = list;
+        this.evaluators = evaluators;
     }
 
     @Override
@@ -119,5 +121,17 @@ final class CompositeBoardStateEvaluator
         }
 
         return tasks;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<BoardStateEvaluator<Optional<BoardState>>> compose(BoardStateEvaluator<Optional<BoardState>> evaluator,
+                                                                           BoardStateEvaluator<Optional<BoardState>>... evaluators) {
+
+        var list = new ArrayList<BoardStateEvaluator<Optional<BoardState>>>();
+
+        list.add(evaluator);
+        list.addAll(List.of(evaluators));
+
+        return unmodifiableList(list);
     }
 }
