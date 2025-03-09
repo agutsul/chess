@@ -25,6 +25,8 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.exception.UnknownPieceException;
 import com.agutsul.chess.piece.KingPiece;
+import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.RookPiece;
 
 @ExtendWith(MockitoExtension.class)
 public class KingCastlingActionAdapterTest {
@@ -35,10 +37,15 @@ public class KingCastlingActionAdapterTest {
     @Mock
     KingPiece<Color> king;
 
+    @Mock
+    RookPiece<Color> rook;
+
     @Test
     void testAdaptWhiteKingKingSideCastling() {
         when(king.getPosition())
             .thenReturn(positionOf("e1"));
+        when(king.getType())
+            .thenReturn(Piece.Type.KING);
 
         when(board.getKing(any()))
             .thenReturn(Optional.of(king));
@@ -46,11 +53,13 @@ public class KingCastlingActionAdapterTest {
         when(board.getActions(eq(king), eq(Action.Type.CASTLING)))
             .thenAnswer(inv -> {
                 var king = inv.getArgument(0, KingPiece.class);
-                return List.of(new PieceCastlingAction<>(
+                var action = new PieceCastlingAction<>(
                         Castlingable.Side.KING,
                         new CastlingMoveAction<>(king, positionOf("g1")),
-                        null
-                ));
+                        new CastlingMoveAction<>(rook, positionOf("f1"))
+                );
+
+                return List.of(action);
             });
 
         var adapter = new KingCastlingActionAdapter(board, Colors.WHITE);
@@ -63,6 +72,8 @@ public class KingCastlingActionAdapterTest {
     void testAdaptWhiteKingQueenSideCastling() {
         when(king.getPosition())
             .thenReturn(positionOf("e1"));
+        when(king.getType())
+            .thenReturn(Piece.Type.KING);
 
         when(board.getKing(any()))
             .thenReturn(Optional.of(king));
@@ -73,7 +84,7 @@ public class KingCastlingActionAdapterTest {
                 return List.of(new PieceCastlingAction<>(
                         Castlingable.Side.QUEEN,
                         new CastlingMoveAction<>(king, positionOf("c1")),
-                        null
+                        new CastlingMoveAction<>(rook, positionOf("d1"))
                 ));
             });
 
@@ -87,6 +98,8 @@ public class KingCastlingActionAdapterTest {
     void testAdaptBlackKingKingSideCastling() {
         when(king.getPosition())
             .thenReturn(positionOf("e8"));
+        when(king.getType())
+            .thenReturn(Piece.Type.KING);
 
         when(board.getKing(any()))
             .thenReturn(Optional.of(king));
@@ -97,7 +110,7 @@ public class KingCastlingActionAdapterTest {
                 return List.of(new PieceCastlingAction<>(
                         Castlingable.Side.KING,
                         new CastlingMoveAction<>(king, positionOf("g8")),
-                        null
+                        new CastlingMoveAction<>(rook, positionOf("f8"))
                 ));
             });
 
@@ -111,6 +124,8 @@ public class KingCastlingActionAdapterTest {
     void testAdaptBlackKingQueenSideCastling() {
         when(king.getPosition())
             .thenReturn(positionOf("e8"));
+        when(king.getType())
+            .thenReturn(Piece.Type.KING);
 
         when(board.getKing(any()))
             .thenReturn(Optional.of(king));
@@ -121,7 +136,7 @@ public class KingCastlingActionAdapterTest {
                 return List.of(new PieceCastlingAction<>(
                         Castlingable.Side.QUEEN,
                         new CastlingMoveAction<>(king, positionOf("c8")),
-                        null
+                        new CastlingMoveAction<>(rook, positionOf("d8"))
                 ));
             });
 

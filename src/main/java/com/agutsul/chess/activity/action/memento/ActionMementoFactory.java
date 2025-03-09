@@ -6,7 +6,6 @@ import static java.util.stream.Collectors.toMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.concurrent.LazyInitializer;
@@ -95,11 +94,8 @@ public enum ActionMementoFactory
         public ActionMemento<?,?> apply(Action<?> action) {
             var castlingAction = (PieceCastlingAction<?,?,?>) action;
 
-            Predicate<CastlingMoveAction<?,?>> predicate =
-                    moveAction -> Objects.equals(castlingAction.getPosition(), moveAction.getPosition());
-
-            var kingAction = filter(castlingAction, predicate);
-            var rookAction = filter(castlingAction, predicate.negate());
+            var kingAction = castlingAction.getSource();
+            var rookAction = castlingAction.getTarget();
 
             return new CastlingActionMemento(
                     castlingAction.getSide(),
@@ -113,17 +109,6 @@ public enum ActionMementoFactory
         Piece<?> getSource(Action<?> action) {
             var castlingAction = (PieceCastlingAction<?,?,?>) action;
             return super.getSource(castlingAction.getSource());
-        }
-
-        private static CastlingMoveAction<?,?> filter(PieceCastlingAction<?,?,?> castlingAction,
-                                                      Predicate<CastlingMoveAction<?,?>> predicate) {
-
-            var action = Stream.of(castlingAction.getSource(), castlingAction.getTarget())
-                    .filter(moveAction -> predicate.test(moveAction))
-                    .findFirst()
-                    .get();
-
-            return action;
         }
 
         private static ActionMemento<String,String> createMemento(CastlingMoveAction<?,?> action) {

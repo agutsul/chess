@@ -30,7 +30,7 @@ public class PieceCastlingAction<COLOR extends Color,
 
     @Override
     public void execute() {
-        var castlingAction = getKingCastlingAction();
+        var castlingAction = getSource();
 
         LOGGER.info("Executing castling '{}' by '{}'",
                 castlingAction.getTarget(),

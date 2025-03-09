@@ -24,6 +24,31 @@ public abstract class AbstractCastlingAction<COLOR extends Color,
         this.side = side;
     }
 
+    // returns king related part of castling action
+    // potentially king can be in both source and target sub-actions
+    // king related part allows to identify what kind of castling it is
+    @Override
+    @SuppressWarnings("unchecked")
+    public ACTION1 getSource() {
+        var moveAction = Stream.of(super.getSource(), super.getTarget())
+                .filter(action -> Piece.Type.KING.equals(action.getSource().getType()))
+                .findFirst()
+                .get();
+
+        return (ACTION1) moveAction;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public ACTION2 getTarget() {
+        var moveAction = Stream.of(super.getSource(), super.getTarget())
+                .filter(action -> !Piece.Type.KING.equals(action.getSource().getType()))
+                .findFirst()
+                .get();
+
+        return (ACTION2) moveAction;
+    }
+
     @Override
     public String getCode() {
         return this.side.name();
@@ -35,21 +60,11 @@ public abstract class AbstractCastlingAction<COLOR extends Color,
 
     @Override
     public Position getPosition() {
-        return getKingCastlingAction().getPosition();
+        return getSource().getPosition();
     }
 
     @Override
     public String toString() {
         return getCode();
-    }
-
-    // returns king related part of castling action
-    // potentially king can be in both source and target sub-actions
-    // king related part allows to identify what kind of castling it is
-    AbstractMoveAction<?,?> getKingCastlingAction() {
-        return Stream.of(getSource(), getTarget())
-                .filter(action -> Piece.Type.KING.equals(action.getSource().getType()))
-                .findFirst()
-                .get();
     }
 }
