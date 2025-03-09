@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.Positionable;
 import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.action.PieceCastlingAction;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.piece.Piece;
@@ -72,7 +71,7 @@ public final class RandomActionInputObserver
         case Action.Type.PROMOTE:
             return adaptAction((Action<?>) action.getSource());
         case Action.Type.CASTLING:
-            return adaptAction(((PieceCastlingAction<?,?,?>) action).getSource());
+            return adaptAction((Action<?>) action.getSource());
         default:
             return String.format("%s %s",
                     ((Positionable) action.getSource()).getPosition(), // source position
