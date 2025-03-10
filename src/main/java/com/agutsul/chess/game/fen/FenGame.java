@@ -15,7 +15,6 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.game.AbstractPlayableGame;
-import com.agutsul.chess.game.console.ConsoleGameOutputObserver;
 import com.agutsul.chess.game.console.ConsolePlayerInputObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
@@ -56,7 +55,7 @@ public final class FenGame
         ((Observable) board).addObserver(new ConsolePlayerInputObserver(blackPlayer, this));
 
         // uncomment below for local debug of fen file
-        addObserver(new ConsoleGameOutputObserver(this));
+//        addObserver(new ConsoleGameOutputObserver(this));
     }
 
     public String getParsedCastling() {

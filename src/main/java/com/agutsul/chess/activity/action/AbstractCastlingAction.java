@@ -1,5 +1,6 @@
 package com.agutsul.chess.activity.action;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Castlingable;
@@ -24,29 +25,16 @@ public abstract class AbstractCastlingAction<COLOR extends Color,
         this.side = side;
     }
 
-    // returns king related part of castling action
-    // potentially king can be in both source and target sub-actions
-    // king related part allows to identify what kind of castling it is
     @Override
     @SuppressWarnings("unchecked")
     public ACTION1 getSource() {
-        var moveAction = Stream.of(super.getSource(), super.getTarget())
-                .filter(action -> Piece.Type.KING.equals(action.getSource().getType()))
-                .findFirst()
-                .get();
-
-        return (ACTION1) moveAction;
+        return (ACTION1) getAction(Piece.Type.KING);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public ACTION2 getTarget() {
-        var moveAction = Stream.of(super.getSource(), super.getTarget())
-                .filter(action -> !Piece.Type.KING.equals(action.getSource().getType()))
-                .findFirst()
-                .get();
-
-        return (ACTION2) moveAction;
+        return (ACTION2) getAction(Piece.Type.ROOK);
     }
 
     @Override
@@ -66,5 +54,12 @@ public abstract class AbstractCastlingAction<COLOR extends Color,
     @Override
     public String toString() {
         return getCode();
+    }
+
+    private AbstractMoveAction<?,?> getAction(Piece.Type pieceType) {
+        return Stream.of(super.getSource(), super.getTarget())
+                .filter(action -> Objects.equals(action.getSource().getType(), pieceType))
+                .findFirst()
+                .get();
     }
 }
