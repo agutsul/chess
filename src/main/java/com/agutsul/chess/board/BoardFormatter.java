@@ -10,7 +10,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
-class BoardFormatter {
+final class BoardFormatter {
 
     private static final String ROW_SEPARATOR = "--+---+---+---+---+---+---+---+---+--";
     private static final String COLUMN_SEPARATOR = "|";

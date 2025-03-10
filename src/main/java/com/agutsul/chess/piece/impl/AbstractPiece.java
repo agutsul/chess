@@ -328,6 +328,12 @@ abstract class AbstractPiece<COLOR extends Color>
         return new DisposedPieceStateImpl<>(instant);
     }
 
+    void process(Event event) {
+        if (event instanceof ClearPieceDataEvent) {
+            process((ClearPieceDataEvent) event);
+        }
+    }
+
     final void doMove(Position position) {
         setPosition(position);
     }
@@ -373,6 +379,12 @@ abstract class AbstractPiece<COLOR extends Color>
         this.positions.add(position);
     }
 
+    private void process(ClearPieceDataEvent event) {
+        if (Objects.equals(getColor(), event.getColor())) {
+            clear();
+        }
+    }
+
     private void clear() {
         LOGGER.info("Clear '{}' cached actions/impacts", this);
         this.actionCache.clear();
@@ -384,15 +396,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
         @Override
         public void observe(Event event) {
-            if (event instanceof ClearPieceDataEvent) {
-                process((ClearPieceDataEvent) event);
-            }
-        }
-
-        private void process(ClearPieceDataEvent event) {
-            if (Objects.equals(getColor(), event.getColor())) {
-                clear();
-            }
+            process(event);
         }
     }
 }

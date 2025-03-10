@@ -6,7 +6,6 @@ import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -26,7 +25,6 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.event.SetCastlingableSideEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
-import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.PieceProxy;
@@ -43,8 +41,6 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
     private final Map<Castlingable.Side,Boolean> sides;
 
-    private CastlingableSideObserver castlingableSideObserver;
-
     AbstractCastlingPiece(Board board, Piece.Type type, COLOR color,
                           String unicode, Position position, int direction,
                           Rule<Piece<?>,Collection<Action<?>>> actionRule,
@@ -55,26 +51,8 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
                 new ActiveCastlingablePieceState<>(board, actionRule, impactRule)
         );
 
-        this.castlingableSideObserver = new CastlingableSideObserver();
-        this.board.addObserver(this.castlingableSideObserver);
-
-        // be default enable castling
+        // by default enable castling
         this.sides = sides.stream().collect(toMap(identity(), entry -> true));
-    }
-
-    @Override
-    public void dispose(Instant instant) {
-        super.dispose(instant);
-
-        this.board.removeObserver(this.castlingableSideObserver);
-    }
-
-    @Override
-    public void restore() {
-        super.restore();
-
-        this.castlingableSideObserver = new CastlingableSideObserver();
-        this.board.addObserver(this.castlingableSideObserver);
     }
 
     @Override
@@ -108,6 +86,22 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
         var state = (CastlingablePieceState<?>) getState();
         ((CastlingablePieceState<AbstractCastlingPiece<COLOR>>) state).uncastling(this, position);
+    }
+
+    @Override
+    void process(Event event) {
+        // give a chance for parent processor to handle event
+        super.process(event);
+
+        if (event instanceof SetCastlingableSideEvent) {
+            process((SetCastlingableSideEvent) event);
+        }
+    }
+
+    private void process(SetCastlingableSideEvent event) {
+        if (Objects.equals(getColor(), event.getColor())) {
+            set(event.getSide(), event.isEnabled());
+        }
     }
 
     private void set(Castlingable.Side side, Boolean enabled) {
@@ -159,11 +153,11 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
             if (piece instanceof AbstractCastlingPiece) {
                 cancelCastling((AbstractCastlingPiece<?>) piece, position);
             } else {
-                cancelCastling((AbstractPieceProxy<?>) piece, position);
+                cancelCastling((PieceProxy<?>) piece, position);
             }
         }
 
-        private static void cancelCastling(AbstractPieceProxy<?> proxy, Position position) {
+        private static void cancelCastling(PieceProxy<?> proxy, Position position) {
             cancelCastling((AbstractCastlingPiece<?>) proxy.getOrigin(), position);
         }
 
@@ -244,23 +238,6 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
         private void doCastling(AbstractCastlingPiece<?> piece, Position position) {
             piece.doCastling(position);
-        }
-    }
-
-    private final class CastlingableSideObserver
-            implements Observer {
-
-        @Override
-        public void observe(Event event) {
-            if (event instanceof SetCastlingableSideEvent) {
-                process((SetCastlingableSideEvent) event);
-            }
-        }
-
-        private void process(SetCastlingableSideEvent event) {
-            if (Objects.equals(getColor(), event.getColor())) {
-                set(event.getSide(), event.isEnabled());
-            }
         }
     }
 }

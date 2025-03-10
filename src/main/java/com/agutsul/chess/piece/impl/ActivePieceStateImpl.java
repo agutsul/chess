@@ -32,6 +32,7 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
 
     protected final Board board;
 
+    @SuppressWarnings("unchecked")
     ActivePieceStateImpl(Board board,
                          Rule<Piece<?>, Collection<Action<?>>> actionRule,
                          Rule<Piece<?>, Collection<Impact<?>>> impactRule) {

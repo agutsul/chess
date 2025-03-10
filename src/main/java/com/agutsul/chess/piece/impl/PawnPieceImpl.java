@@ -22,7 +22,6 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.event.ResetPawnMoveActionEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
-import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
@@ -39,8 +38,6 @@ import com.agutsul.chess.rule.Rule;
 final class PawnPieceImpl<COLOR extends Color>
         extends AbstractPiece<COLOR>
         implements PawnPiece<COLOR> {
-
-    private ResetPawnMoveEventObserver resetPawnMoveEventObserver;
 
     PawnPieceImpl(Board board, COLOR color, String unicode, Position position,
                   int direction, int promotionLine, int initialLine) {
@@ -61,9 +58,6 @@ final class PawnPieceImpl<COLOR extends Color>
                 new PawnActionCache(),
                 new ActivityCacheImpl<Impact.Type,Impact<?>>()
         );
-
-        this.resetPawnMoveEventObserver = new ResetPawnMoveEventObserver();
-        this.board.addObserver(this.resetPawnMoveEventObserver);
     }
 
     @Override
@@ -87,44 +81,26 @@ final class PawnPieceImpl<COLOR extends Color>
     }
 
     @Override
-    public void dispose(Instant instant) {
-        super.dispose(instant);
-
-        this.board.removeObserver(this.resetPawnMoveEventObserver);
-    }
-
-    @Override
-    public void restore() {
-        super.restore();
-
-        this.resetPawnMoveEventObserver = new ResetPawnMoveEventObserver();
-        this.board.addObserver(this.resetPawnMoveEventObserver);
-    }
-
-    @Override
     DisposedPieceState<?> createDisposedPieceState(Instant instant) {
         return new DisposedEnPassantablePieceState<>(instant);
     }
 
-    private final class ResetPawnMoveEventObserver
-            implements Observer {
+    @Override
+    void process(Event event) {
+        // give a chance for parent processor to handle event
+        super.process(event);
 
-        @Override
-        public void observe(Event event) {
-            if (event instanceof ResetPawnMoveActionEvent) {
-                process((ResetPawnMoveActionEvent) event);
-            }
+        if (event instanceof ResetPawnMoveActionEvent) {
+            process((ResetPawnMoveActionEvent) event);
         }
+    }
 
-        private void process(ResetPawnMoveActionEvent event) {
-            var pawn = event.getPawnPiece();
-
-            if (Objects.equals(getPosition(), pawn.getPosition())) {
-                // cancel move to position
-                cancelMove(pawn.getPosition());
-                // move piece back to source position
-                doMove(event.getPosition());
-            }
+    private void process(ResetPawnMoveActionEvent event) {
+        if (Objects.equals(this, event.getPawnPiece())) {
+            // cancel move to position
+            cancelMove(getPosition());
+            // move piece back to source position
+            doMove(event.getPosition());
         }
     }
 
@@ -164,6 +140,7 @@ final class PawnPieceImpl<COLOR extends Color>
         private final AbstractPieceRule<Action<?>,Action.Type> actionRule;
         private final Board board;
 
+        @SuppressWarnings("unchecked")
         ActiveEnPassantablePieceState(Board board,
                                       Rule<Piece<?>, Collection<Action<?>>> actionRule,
                                       Rule<Piece<?>, Collection<Impact<?>>> impactRule) {
