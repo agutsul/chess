@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.player.Player;
 
-public class LockedPlayerState
+public final class LockedPlayerState
         extends AbstractPlayerState {
 
     private static final Logger LOGGER = getLogger(LockedPlayerState.class);

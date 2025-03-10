@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import com.agutsul.chess.activity.Activity;
 import com.agutsul.chess.piece.Piece;
 
-public class CompositePieceRule<RESULT extends Activity<?>,
+public final class CompositePieceRule<RESULT extends Activity<?>,
                                 TYPE extends Enum<TYPE> & Activity.Type>
         implements Rule<Piece<?>, Collection<RESULT>> {
 

@@ -11,7 +11,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
-public final class PieceCastlingAction<COLOR extends Color,
+public class PieceCastlingAction<COLOR extends Color,
                                  PIECE1 extends Piece<COLOR> & Castlingable & Movable,
                                  PIECE2 extends Piece<COLOR> & Castlingable & Movable>
         extends AbstractCastlingAction<COLOR,
@@ -29,7 +29,7 @@ public final class PieceCastlingAction<COLOR extends Color,
     }
 
     @Override
-    public void execute() {
+    public final void execute() {
         var castlingAction = getSource();
 
         LOGGER.info("Executing castling '{}' by '{}'",

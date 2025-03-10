@@ -15,8 +15,8 @@ import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 
 public abstract class AbstractControlLineImpactRule<COLOR extends Color,
-                                                   PIECE extends Piece<COLOR> & Capturable,
-                                                   IMPACT extends PieceControlImpact<COLOR,PIECE>>
+                                                    PIECE extends Piece<COLOR> & Capturable,
+                                                    IMPACT extends PieceControlImpact<COLOR,PIECE>>
         extends AbstractControlImpactRule<COLOR,PIECE,IMPACT> {
 
     protected final CapturePieceAlgo<COLOR,PIECE,Line> algo;

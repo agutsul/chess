@@ -22,7 +22,7 @@ public abstract class AbstractPieceRule<RESULT extends Positionable & Activity<?
     }
 
     @SuppressWarnings("unchecked")
-    public Collection<RESULT> evaluate(Piece<?> piece, TYPE type, TYPE... additionalTypes) {
+    public final Collection<RESULT> evaluate(Piece<?> piece, TYPE type, TYPE... additionalTypes) {
         return compositeRule.evaluate(piece, type, additionalTypes);
     }
 }

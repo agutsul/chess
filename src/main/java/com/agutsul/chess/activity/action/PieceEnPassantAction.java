@@ -8,7 +8,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.position.Position;
 
-public final class PieceEnPassantAction<COLOR1 extends Color,
+public class PieceEnPassantAction<COLOR1 extends Color,
                                   COLOR2 extends Color,
                                   PAWN1 extends PawnPiece<COLOR1>,
                                   PAWN2 extends PawnPiece<COLOR2>>
@@ -24,12 +24,12 @@ public final class PieceEnPassantAction<COLOR1 extends Color,
     }
 
     @Override
-    public Position getPosition() {
+    public final Position getPosition() {
         return this.position;
     }
 
     @Override
-    public void execute() {
+    public final void execute() {
         LOGGER.info("Executing en-passante '{}' by '{}'", getTarget(), getSource());
         getSource().enpassant(getTarget(), getPosition());
     }

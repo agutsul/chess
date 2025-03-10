@@ -19,7 +19,7 @@ public abstract class AbstractRule<SOURCE extends Positionable,
         this.type = type;
     }
 
-    public TYPE getType() {
+    public final TYPE getType() {
         return type;
     }
 }

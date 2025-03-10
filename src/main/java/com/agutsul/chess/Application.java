@@ -22,6 +22,11 @@ public class Application
 
     private static final Configuration CONFIGURATION = loadConfiguration(PROPERTY_FILE_NAME);
 
+    enum Mode {
+        INTERACTIVE,
+        FILE
+    }
+
     public static void main(String[] args) {
         new Application().execute();
     }

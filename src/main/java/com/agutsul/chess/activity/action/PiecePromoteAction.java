@@ -14,8 +14,8 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 
-public final class PiecePromoteAction<COLOR1 extends Color,
-                                      PIECE1 extends PawnPiece<COLOR1>>
+public class PiecePromoteAction<COLOR1 extends Color,
+                                PIECE1 extends PawnPiece<COLOR1>>
         extends AbstractPromoteAction<COLOR1,PIECE1>
         implements Observer {
 
@@ -40,7 +40,7 @@ public final class PiecePromoteAction<COLOR1 extends Color,
     }
 
     @Override
-    public void execute() {
+    public final void execute() {
         var piece = getSource().getSource();
 
         LOGGER.info("Executing promote by '{}'", piece);
@@ -50,13 +50,13 @@ public final class PiecePromoteAction<COLOR1 extends Color,
     }
 
     @Override
-    public void observe(Event event) {
+    public final void observe(Event event) {
         if (event instanceof PromotionPieceTypeEvent) {
             process((PromotionPieceTypeEvent) event);
         }
     }
 
-    public Piece.Type getPieceType() {
+    public final Piece.Type getPieceType() {
         return pieceType;
     }
 
