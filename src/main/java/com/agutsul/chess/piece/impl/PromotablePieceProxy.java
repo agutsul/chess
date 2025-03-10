@@ -51,7 +51,7 @@ final class PromotablePieceProxy<PIECE extends Piece<?>
                                         & Movable & Capturable & Protectable
                                         & Restorable & Disposable & Pinnable>
         extends AbstractLifecyclePieceProxy<PIECE>
-        implements TransformablePieceProxy {
+        implements TransformablePieceProxy<PIECE> {
 
     private static final Logger LOGGER = getLogger(PromotablePieceProxy.class);
 

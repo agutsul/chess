@@ -21,7 +21,7 @@ final class TransformablePieceAdapter<PIECE extends Piece<?>
                                             & Restorable & Disposable & Pinnable
                                             & Promotable>
         extends AbstractLifecyclePieceProxy<PIECE>
-        implements TransformablePieceProxy {
+        implements TransformablePieceProxy<PIECE> {
 
     TransformablePieceAdapter(PIECE piece) {
         super(piece);
