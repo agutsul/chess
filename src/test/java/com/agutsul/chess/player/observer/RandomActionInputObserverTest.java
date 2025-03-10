@@ -24,6 +24,7 @@ import com.agutsul.chess.board.StringBoardBuilder;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.piece.PawnPiece;
+import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
 
 @ExtendWith(MockitoExtension.class)
@@ -142,5 +143,53 @@ public class RandomActionInputObserverTest {
 
         var command = inputObserver.getActionCommand();
         assertEquals("e1 g1", command);
+    }
+
+    @Test
+    void testDefeatAction() {
+        when(game.getBoard())
+            .thenReturn(new StringBoardBuilder().build());
+
+        when(player.getColor())
+            .thenReturn(Colors.WHITE);
+
+        var command = inputObserver.getActionCommand();
+        assertEquals(AbstractPlayerInputObserver.DEFEAT_COMMAND, command);
+    }
+
+    @Test
+    void testGetRookPromotionType() {
+        when(random.nextDouble())
+            .thenReturn(0.0);
+
+        var command = inputObserver.getPromotionPieceType();
+        assertEquals(Piece.Type.ROOK.code(), command);
+    }
+
+    @Test
+    void testGetKnightPromotionType() {
+        when(random.nextDouble())
+            .thenReturn(0.3);
+
+        var command = inputObserver.getPromotionPieceType();
+        assertEquals(Piece.Type.KNIGHT.code(), command);
+    }
+
+    @Test
+    void testGetBishopPromotionType() {
+        when(random.nextDouble())
+            .thenReturn(0.6);
+
+        var command = inputObserver.getPromotionPieceType();
+        assertEquals(Piece.Type.BISHOP.code(), command);
+    }
+
+    @Test
+    void testGetQueenPromotionType() {
+        when(random.nextDouble())
+            .thenReturn(0.8);
+
+        var command = inputObserver.getPromotionPieceType();
+        assertEquals(Piece.Type.QUEEN.code(), command);
     }
 }
