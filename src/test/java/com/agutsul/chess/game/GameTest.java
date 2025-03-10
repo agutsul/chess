@@ -63,7 +63,6 @@ import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.mock.GameMock;
 import com.agutsul.chess.mock.GameOutputObserverMock;
 import com.agutsul.chess.mock.PlayerInputObserverMock;
-import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.UserPlayer;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
@@ -168,19 +167,9 @@ public class GameTest {
     @Test
     @SuppressWarnings("unchecked")
     void testPlayerAskedAction() {
-        var king = mock(KingPiece.class);
-//        when(king.isChecked())
-//            .thenReturn(false);
-
         var board = mock(AbstractBoard.class);
         when(board.getState())
             .thenReturn(defaultBoardState(board, Colors.WHITE));
-
-//        when(board.getKing(any()))
-//            .thenReturn(Optional.of(king));
-
-//        when(board.getPieces(any(Color.class)))
-//            .thenReturn(emptyList());
 
         var whitePlayer = mock(Player.class);
         when(whitePlayer.getColor())

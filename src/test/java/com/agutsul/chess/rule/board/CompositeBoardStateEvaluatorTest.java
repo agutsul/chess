@@ -83,6 +83,7 @@ public class CompositeBoardStateEvaluatorTest {
         var movesEvaluator = mock(MovesBoardStateEvaluator.class);
         var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
 
+        @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
                 foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
@@ -114,6 +115,7 @@ public class CompositeBoardStateEvaluatorTest {
         var movesEvaluator = mock(MovesBoardStateEvaluator.class);
         var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
 
+        @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
                 foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
@@ -142,6 +144,7 @@ public class CompositeBoardStateEvaluatorTest {
                 return Optional.of(staleMatedBoardState(board, color));
             });
 
+        @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
                 foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
@@ -164,6 +167,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(foldRepetitionEvaluator.evaluate(any()))
             .thenReturn(Optional.of(threeFoldRepetitionBoardState(board, Colors.WHITE)));
 
+        @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
                 foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
@@ -186,6 +190,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(movesEvaluator.evaluate(any()))
             .thenReturn(Optional.of(fiftyMovesBoardState(board, Colors.WHITE)));
 
+        @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
                 foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
@@ -227,6 +232,7 @@ public class CompositeBoardStateEvaluatorTest {
         var movesEvaluator = mock(MovesBoardStateEvaluator.class);
         var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
 
+        @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
                 foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
@@ -261,6 +267,7 @@ public class CompositeBoardStateEvaluatorTest {
         var movesEvaluator = mock(MovesBoardStateEvaluator.class);
         var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
 
+        @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
                 foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
@@ -294,6 +301,7 @@ public class CompositeBoardStateEvaluatorTest {
                 return Optional.of(state);
             });
 
+        @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
                 foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
@@ -327,6 +335,7 @@ public class CompositeBoardStateEvaluatorTest {
                 return Optional.of(state);
             });
 
+        @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
                 foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
@@ -371,6 +380,7 @@ public class CompositeBoardStateEvaluatorTest {
                 return Optional.of(state);
             });
 
+        @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
                 foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
@@ -397,6 +407,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(staleMatedEvaluator.evaluate(any()))
             .thenReturn(Optional.empty());
 
+        @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
                 foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
