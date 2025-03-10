@@ -14,8 +14,8 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 
-public class PiecePromoteAction<COLOR1 extends Color,
-                                PIECE1 extends PawnPiece<COLOR1>>
+public final class PiecePromoteAction<COLOR1 extends Color,
+                                      PIECE1 extends PawnPiece<COLOR1>>
         extends AbstractPromoteAction<COLOR1,PIECE1>
         implements Observer {
 

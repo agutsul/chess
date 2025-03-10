@@ -19,17 +19,17 @@ public abstract class AbstractPromoteAction<COLOR extends Color,
     }
 
     @Override
-    public String getCode() {
+    public final String getCode() {
         return String.format("%s?", getSource());
     }
 
     @Override
-    public Position getPosition() {
+    public final Position getPosition() {
         return ((Positionable) getSource()).getPosition();
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return getCode();
     }
 }

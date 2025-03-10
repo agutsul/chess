@@ -27,32 +27,32 @@ public abstract class AbstractCastlingAction<COLOR extends Color,
 
     @Override
     @SuppressWarnings("unchecked")
-    public ACTION1 getSource() {
+    public final ACTION1 getSource() {
         return (ACTION1) getAction(Piece.Type.KING);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ACTION2 getTarget() {
+    public final ACTION2 getTarget() {
         return (ACTION2) getAction(Piece.Type.ROOK);
     }
 
     @Override
-    public String getCode() {
+    public final String getCode() {
         return this.side.name();
     }
 
-    public Castlingable.Side getSide() {
+    public final Castlingable.Side getSide() {
         return this.side;
     }
 
     @Override
-    public Position getPosition() {
+    public final Position getPosition() {
         return getSource().getPosition();
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return getCode();
     }
 

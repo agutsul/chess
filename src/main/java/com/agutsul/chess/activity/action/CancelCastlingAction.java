@@ -11,9 +11,9 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
-public class CancelCastlingAction<COLOR extends Color,
-                                  PIECE1 extends Piece<COLOR> & Castlingable & Movable,
-                                  PIECE2 extends Piece<COLOR> & Castlingable & Movable>
+public final class CancelCastlingAction<COLOR extends Color,
+                                        PIECE1 extends Piece<COLOR> & Castlingable & Movable,
+                                        PIECE2 extends Piece<COLOR> & Castlingable & Movable>
         extends AbstractCastlingAction<COLOR,
                                        PIECE1,
                                        PIECE2,

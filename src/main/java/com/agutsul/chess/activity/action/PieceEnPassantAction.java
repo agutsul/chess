@@ -8,7 +8,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.position.Position;
 
-public class PieceEnPassantAction<COLOR1 extends Color,
+public final class PieceEnPassantAction<COLOR1 extends Color,
                                   COLOR2 extends Color,
                                   PAWN1 extends PawnPiece<COLOR1>,
                                   PAWN2 extends PawnPiece<COLOR2>>

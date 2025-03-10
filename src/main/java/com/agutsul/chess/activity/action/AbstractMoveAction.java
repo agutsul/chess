@@ -16,17 +16,17 @@ public abstract class AbstractMoveAction<COLOR extends Color,
     }
 
     @Override
-    public String getCode() {
+    public final String getCode() {
         return String.format("%s->%s", getSource(), getPosition());
     }
 
     @Override
-    public Position getPosition() {
+    public final Position getPosition() {
         return getTarget();
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return getCode();
     }
 }

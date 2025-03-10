@@ -18,17 +18,17 @@ public abstract class AbstractCaptureAction<COLOR1 extends Color,
     }
 
     @Override
-    public String getCode() {
-        return String.format("%sx%s", getSource(), createTargetLabel(getTarget()));
-    }
-
-    @Override
     public Position getPosition() {
         return getTarget().getPosition();
     }
 
     @Override
-    public String toString() {
+    public final String getCode() {
+        return String.format("%sx%s", getSource(), createTargetLabel(getTarget()));
+    }
+
+    @Override
+    public final String toString() {
         return getCode();
     }
 

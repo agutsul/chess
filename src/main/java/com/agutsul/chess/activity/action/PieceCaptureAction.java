@@ -10,10 +10,10 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Line;
 
-public class PieceCaptureAction<COLOR1 extends Color,
-                                COLOR2 extends Color,
-                                PIECE1 extends Piece<COLOR1> & Capturable,
-                                PIECE2 extends Piece<COLOR2>>
+public final class PieceCaptureAction<COLOR1 extends Color,
+                                      COLOR2 extends Color,
+                                      PIECE1 extends Piece<COLOR1> & Capturable,
+                                      PIECE2 extends Piece<COLOR2>>
         extends AbstractCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2> {
 
     private static final Logger LOGGER = getLogger(PieceCaptureAction.class);

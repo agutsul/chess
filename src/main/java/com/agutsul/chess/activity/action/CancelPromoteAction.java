@@ -14,8 +14,8 @@ import com.agutsul.chess.Movable;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
-public class CancelPromoteAction<COLOR1 extends Color,
-                                 PIECE1 extends Piece<COLOR1> & Movable & Capturable & Demotable>
+public final class CancelPromoteAction<COLOR1 extends Color,
+                                       PIECE1 extends Piece<COLOR1> & Movable & Capturable & Demotable>
         extends AbstractPromoteAction<COLOR1,PIECE1> {
 
     private static final Logger LOGGER = getLogger(CancelPromoteAction.class);
