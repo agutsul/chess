@@ -19,12 +19,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.Castlingable;
+import com.agutsul.chess.activity.action.PieceCastlingAction;
+import com.agutsul.chess.activity.action.PieceCastlingAction.CastlingMoveAction;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
 import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.player.Player;
 
 @ExtendWith(MockitoExtension.class)
@@ -132,14 +137,28 @@ public class RandomActionInputObserverTest {
                 .withWhiteRook("h1")
                 .build();
 
+        var whiteKing = board.getKing(Colors.WHITE).get();
+        var whiteRook = (RookPiece<Color>) board.getPiece("h1").get();
+
+        var action = new PieceCastlingAction<>(
+                Castlingable.Side.KING,
+                new CastlingMoveAction<>(whiteKing, positionOf("g1")),
+                new CastlingMoveAction<>(whiteRook, positionOf("f1"))
+        );
+
+        var boardMock = spy(board);
+
+        doReturn(List.of(whiteKing))
+            .when(boardMock).getPieces(any(Color.class));
+
+        doReturn(List.of(action))
+            .when(boardMock).getActions(any());
+
         when(game.getBoard())
-            .thenReturn(board);
+            .thenReturn(boardMock);
 
         when(player.getColor())
             .thenReturn(Colors.WHITE);
-
-        when(random.nextInt(anyInt(), anyInt()))
-            .thenReturn(0);
 
         var command = inputObserver.getActionCommand();
         assertEquals("e1 g1", command);
