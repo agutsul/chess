@@ -6,11 +6,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.PieceCaptureAction;
+import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.StringBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
@@ -155,7 +159,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
         assertEquals(BoardState.Type.CHECKED, boardState1.getType());
 
         assertPieceActions(board1, Colors.WHITE, KING_TYPE, "e1",
-                List.of("e2", "d2", "f2", "f1", "d1")
+                List.of("e2", "f2", "f1", "d1")
         );
 
         var board2 = new StringBoardBuilder()
@@ -169,7 +173,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
         assertEquals(BoardState.Type.CHECKED, boardState2.getType());
 
         assertPieceActions(board2, Colors.BLACK, KING_TYPE, "e8",
-                List.of("e7", "d7", "f7", "f8", "d8")
+                List.of("e7", "d7", "f8", "d8")
         );
     }
 
@@ -200,7 +204,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
         boardStateEvaluator2.evaluate(Colors.BLACK);
 
         assertPieceActions(board2, Colors.BLACK, KING_TYPE, "e8",
-                List.of("e7", "d7", "f7", "f8", "d8"),
+                List.of("f8"),
                 List.of(),
                 List.of("O-O")
         );
@@ -218,7 +222,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
         boardStateEvaluator1.evaluate(Colors.WHITE);
 
         assertPieceActions(board1, Colors.WHITE, KING_TYPE, "e1",
-                List.of("e2", "d2", "f2", "f1", "d1"),
+                List.of("e2", "d2", "d1"),
                 List.of(),
                 List.of("O-O-O")
         );
@@ -233,7 +237,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
         boardStateEvaluator2.evaluate(Colors.BLACK);
 
         assertPieceActions(board2, Colors.BLACK, KING_TYPE, "e8",
-                List.of("e7", "d7", "f7", "f8", "d8"),
+                List.of("e7", "d7", "d8"),
                 List.of(),
                 List.of("O-O-O")
         );
@@ -363,5 +367,68 @@ public class KingPieceImplTest extends AbstractPieceTest {
         );
 
         assertEquals(thrown.getMessage(), "Ke1 invalid castling to f2");
+    }
+
+    @Test
+    void testKingCaptureProtectedPiece() {
+        var board = new StringBoardBuilder()
+                .withWhiteKing("e1")
+                .withBlackPawns("d2","c3")
+                .build();
+
+        var pawn = board.getPiece("d2").get();
+
+        var king = (KingPiece<Color>) board.getPiece("e1").get();
+        var actions = board.getActions(king, Action.Type.CAPTURE);
+
+        var captureAction = actions.stream()
+                .map(action -> (PieceCaptureAction<?,?,?,?>) action)
+                .filter(action -> Objects.equals(action.getTarget(), pawn))
+                .findFirst();
+
+        assertTrue(captureAction.isEmpty());
+    }
+
+    @Test
+    void testKingMoveOnAttackedPosition() {
+        var board = new StringBoardBuilder()
+                .withWhiteKing("e1")
+                .withBlackRook("d8")
+                .build();
+
+        var illegalPositions = List.of(
+                board.getPosition("d1").get(),
+                board.getPosition("d2").get()
+        );
+
+        var king = (KingPiece<Color>) board.getPiece("e1").get();
+        var actions = board.getActions(king, Action.Type.MOVE);
+
+        var illegalMovePositions = actions.stream()
+                .map(action -> (PieceMoveAction<?,?>) action)
+                .filter(action -> illegalPositions.contains(action.getPosition()))
+                .toList();
+
+        assertTrue(illegalMovePositions.isEmpty());
+    }
+
+    @Test
+    void testKingMoveOnMonitoredPosition() {
+        var board = new StringBoardBuilder()
+                .withWhiteKing("b1")
+                .withBlackRook("d1")
+                .build();
+
+        var illegalPositions = List.of(board.getPosition("a1").get());
+
+        var king = (KingPiece<Color>) board.getPiece("b1").get();
+        var actions = board.getActions(king, Action.Type.MOVE);
+
+        var illegalMovePositions = actions.stream()
+                .map(action -> (PieceMoveAction<?,?>) action)
+                .filter(action -> illegalPositions.contains(action.getPosition()))
+                .toList();
+
+        assertTrue(illegalMovePositions.isEmpty());
     }
 }
