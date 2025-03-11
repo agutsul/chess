@@ -37,7 +37,8 @@ class PawnBlockImpactRule<COLOR extends Color,
 
         var possibleMovePositions = IntStream.rangeClosed(
                     min(pawnPosition.y(), promotionLine),
-                    max(pawnPosition.y(), promotionLine))
+                    max(pawnPosition.y(), promotionLine)
+                )
                 .mapToObj(y -> positionOf(pawnPosition.x(), y))
                 .toList();
 

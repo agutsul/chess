@@ -8,7 +8,8 @@ import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.impact.PiecePinImpactRule;
 
-public final class KnightPieceImpactRule<COLOR extends Color,PIECE extends KnightPiece<COLOR>>
+public final class KnightPieceImpactRule<COLOR extends Color,
+                                         PIECE extends KnightPiece<COLOR>>
         extends AbstractPieceRule<Impact<?>,Impact.Type> {
 
     public KnightPieceImpactRule(Board board) {

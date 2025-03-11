@@ -11,7 +11,7 @@ import com.agutsul.chess.activity.Activity;
 import com.agutsul.chess.piece.Piece;
 
 public final class CompositePieceRule<RESULT extends Activity<?>,
-                                TYPE extends Enum<TYPE> & Activity.Type>
+                                      TYPE extends Enum<TYPE> & Activity.Type>
         implements Rule<Piece<?>, Collection<RESULT>> {
 
     private final List<AbstractRule<Piece<?>,?,TYPE>> rules = new ArrayList<>();

@@ -8,7 +8,8 @@ import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.impact.PiecePinImpactRule;
 
-public final class BishopPieceImpactRule<COLOR extends Color,PIECE extends BishopPiece<COLOR>>
+public final class BishopPieceImpactRule<COLOR extends Color,
+                                         PIECE extends BishopPiece<COLOR>>
         extends AbstractPieceRule<Impact<?>,Impact.Type> {
 
     public BishopPieceImpactRule(Board board) {

@@ -7,7 +7,8 @@ import com.agutsul.chess.piece.BishopPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 
-public final class BishopPieceActionRule<COLOR extends Color,PIECE extends BishopPiece<COLOR>>
+public final class BishopPieceActionRule<COLOR extends Color,
+                                         PIECE extends BishopPiece<COLOR>>
         extends AbstractPieceRule<Action<?>,Action.Type> {
 
     public BishopPieceActionRule(Board board) {
