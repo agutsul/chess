@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 
+import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
@@ -18,14 +19,16 @@ final class KingCapturePieceActionEvaluator
     private final Collection<Action<?>> pieceActions;
 
     KingCapturePieceActionEvaluator(Board board,
-                                     Collection<Action<?>> pieceActions) {
+                                    Collection<Action<?>> pieceActions) {
         this.board = board;
         this.pieceActions = pieceActions;
     }
 
     @Override
     public Collection<Action<?>> evaluate(KingPiece<?> king) {
-        var pieces = board.getPieces(king.getColor().invert());
+        var pieces = board.getPieces(king.getColor().invert()).stream()
+                .filter(piece -> !((Protectable) piece).isProtected())
+                .toList();
 
         var filteredActions = new HashSet<>();
 
@@ -37,7 +40,9 @@ final class KingCapturePieceActionEvaluator
             for (var action : filteredActions) {
                 var captureAction = (AbstractCaptureAction<?,?,?,?>) action;
 
-                if (Objects.equals(captureAction.getTarget(), piece)) {
+                if (Objects.equals(captureAction.getTarget(), piece)
+                        && !((Protectable) piece).isProtected()) {
+
                     actions.add(captureAction);
                 }
             }
