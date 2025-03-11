@@ -26,9 +26,7 @@ final class KingCapturePieceActionEvaluator
 
     @Override
     public Collection<Action<?>> evaluate(KingPiece<?> king) {
-        var pieces = board.getPieces(king.getColor().invert()).stream()
-                .filter(piece -> !((Protectable) piece).isProtected())
-                .toList();
+        var pieces = board.getPieces(king.getColor().invert());
 
         var filteredActions = new HashSet<>();
 
