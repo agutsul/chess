@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.action.adapter.ActionAdapter;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
@@ -45,7 +44,7 @@ final class PawnCaptureActionAdapter
             throw new UnknownPieceException(formatUnknownPieceMessage(action));
         }
 
-        return ActionAdapter.adapt(foundPiece.get(), position);
+        return adapt(foundPiece.get(), position);
     }
 
     @Override

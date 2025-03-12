@@ -2,19 +2,11 @@ package com.agutsul.chess.activity.action.adapter;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.position.Position;
 
-public enum ActionAdapter {
-    INSTANCE;
+public interface ActionAdapter {
 
-    private String format(String source, String target) {
-        return String.format("%s %s", source, target);
-    }
-
-    public static final String adapt(Piece<?> piece, String target) {
-        return INSTANCE.format(String.valueOf(piece.getPosition()), target);
-    }
-
-    public static String adapt(Action<?> action) {
+    public default String adapt(Action<?> action) {
         switch (action.getType()) {
         case Action.Type.PROMOTE:
             return adapt((Action<?>) action.getSource());
@@ -23,8 +15,20 @@ public enum ActionAdapter {
         default:
             return adapt(
                     ((Piece<?>) action.getSource()),     // source piece
-                    String.valueOf(action.getPosition()) // target position
+                    action.getPosition()                 // target position
             );
         }
+    }
+
+    public default String adapt(Piece<?> piece, Position target) {
+        return adapt(piece, String.valueOf(target));
+    }
+
+    public default String adapt(Piece<?> piece, String target) {
+        return format(String.valueOf(piece.getPosition()), target);
+    }
+
+    private String format(String sourcePosition, String targetPosition) {
+        return String.format("%s %s", sourcePosition, targetPosition);
     }
 }

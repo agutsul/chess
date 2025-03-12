@@ -2,7 +2,6 @@ package com.agutsul.chess.antlr.pgn.action;
 
 import static java.util.regex.Pattern.compile;
 
-import com.agutsul.chess.activity.action.adapter.ActionAdapter;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
@@ -34,6 +33,6 @@ final class PawnMoveActionAdapter
             throw new UnknownPieceException(formatUnknownPieceMessage(action));
         }
 
-        return ActionAdapter.adapt(foundPiece.get(), position);
+        return adapt(foundPiece.get(), position);
     }
 }

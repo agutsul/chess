@@ -1,6 +1,5 @@
 package com.agutsul.chess.player.observer;
 
-import static com.agutsul.chess.activity.action.adapter.ActionAdapter.adapt;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
@@ -8,13 +7,15 @@ import java.util.Random;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.activity.action.adapter.ActionAdapter;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
 
 public final class RandomActionInputObserver
-        extends AbstractPlayerInputObserver {
+        extends AbstractPlayerInputObserver
+        implements ActionAdapter {
 
     private static final Logger LOGGER = getLogger(RandomActionInputObserver.class);
 
