@@ -1,7 +1,7 @@
 package com.agutsul.chess.activity.action.adapter;
 
-import com.agutsul.chess.Positionable;
 import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.piece.Piece;
 
 public enum ActionAdapter {
     INSTANCE;
@@ -10,7 +10,7 @@ public enum ActionAdapter {
         return String.format("%s %s", source, target);
     }
 
-    public static final String adapt(Positionable piece, String target) {
+    public static final String adapt(Piece<?> piece, String target) {
         return INSTANCE.format(String.valueOf(piece.getPosition()), target);
     }
 
@@ -22,7 +22,7 @@ public enum ActionAdapter {
             return adapt((Action<?>) action.getSource());
         default:
             return adapt(
-                    ((Positionable) action.getSource()), // source position
+                    ((Piece<?>) action.getSource()),     // source piece
                     String.valueOf(action.getPosition()) // target position
             );
         }
