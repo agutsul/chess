@@ -14,7 +14,7 @@ public interface ActionAdapter {
             return adapt((Action<?>) action.getSource());
         default:
             return adapt(
-                    ((Piece<?>) action.getSource()),     // source piece
+                    (Piece<?>) action.getSource(),       // source piece
                     action.getPosition()                 // target position
             );
         }
