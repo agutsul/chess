@@ -24,13 +24,13 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
-abstract class AbstractActionAdapter
-        implements ActionAdapter {
+abstract class AbstractPgnActionAdapter
+        implements PgnActionAdapter {
 
     final Board board;
     final Color color;
 
-    AbstractActionAdapter(Board board, Color color) {
+    AbstractPgnActionAdapter(Board board, Color color) {
         this.board = board;
         this.color = color;
     }

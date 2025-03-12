@@ -9,7 +9,7 @@ import com.agutsul.chess.exception.UnknownPieceException;
 import com.agutsul.chess.piece.Piece;
 
 final class PieceCaptureActionAdapter
-        extends AbstractActionAdapter {
+        extends AbstractPgnActionAdapter {
 
     private static final String CAPTURE_PATTERN =
             "([N,B,R,Q,K]){1}([a-h,1-8]){0,1}[x]{1}([a-h]{1}[1-8]{1}){1}";

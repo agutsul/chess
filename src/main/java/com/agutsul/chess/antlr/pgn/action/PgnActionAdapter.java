@@ -1,5 +1,5 @@
 package com.agutsul.chess.antlr.pgn.action;
 
-public interface ActionAdapter {
+public interface PgnActionAdapter {
     String adapt(String action);
 }

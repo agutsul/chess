@@ -9,7 +9,7 @@ import com.agutsul.chess.exception.UnknownPieceException;
 import com.agutsul.chess.piece.Piece;
 
 final class PawnPromoteMoveActionAdapter
-        extends AbstractActionAdapter {
+        extends AbstractPgnActionAdapter {
 
     private static final String PROMOTE_MOVE_PATTERN =
             "([a-h]{1}[1,8]{1}){1}[=]{0,1}([N,B,R,Q]){1}";

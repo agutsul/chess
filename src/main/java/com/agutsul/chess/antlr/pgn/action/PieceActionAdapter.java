@@ -11,18 +11,18 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
 
 public final class PieceActionAdapter
-        extends AbstractActionAdapter {
+        extends AbstractPgnActionAdapter {
 
-    private final ActionAdapter pawnMoveActionAdapter;
-    private final ActionAdapter pawnCaptureActionAdapter;
+    private final PgnActionAdapter pawnMoveActionAdapter;
+    private final PgnActionAdapter pawnCaptureActionAdapter;
 
-    private final ActionAdapter pawnPromoteMoveActionAdapter;
-    private final ActionAdapter pawnPromoteCaptureActionAdapter;
+    private final PgnActionAdapter pawnPromoteMoveActionAdapter;
+    private final PgnActionAdapter pawnPromoteCaptureActionAdapter;
 
-    private final ActionAdapter pieceMoveActionAdapter;
-    private final ActionAdapter pieceCaptureActionAdapter;
+    private final PgnActionAdapter pieceMoveActionAdapter;
+    private final PgnActionAdapter pieceCaptureActionAdapter;
 
-    private final ActionAdapter kingCastlingActionAdapter;
+    private final PgnActionAdapter kingCastlingActionAdapter;
 
     public PieceActionAdapter(Board board, Color color) {
         this(board, color,

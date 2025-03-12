@@ -13,7 +13,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.antlr.pgn.action.ActionAdapter;
+import com.agutsul.chess.antlr.pgn.action.PgnActionAdapter;
 import com.agutsul.chess.antlr.pgn.action.PawnPromotionTypeAdapter;
 import com.agutsul.chess.antlr.pgn.action.PieceActionAdapter;
 import com.agutsul.chess.color.Colors;
@@ -28,8 +28,8 @@ final class PgnPlayerInputObserver
 
     private final ActionIterator actionIterator;
 
-    private final ActionAdapter pieceActionAdapter;
-    private final ActionAdapter promotionTypeAdapter;
+    private final PgnActionAdapter pieceActionAdapter;
+    private final PgnActionAdapter promotionTypeAdapter;
 
     PgnPlayerInputObserver(Player player, PgnGame game, List<String> actions) {
         super(LOGGER, player, game);

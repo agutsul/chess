@@ -17,7 +17,7 @@ import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.exception.UnknownPieceException;
 
 final class KingCastlingActionAdapter
-        extends AbstractActionAdapter {
+        extends AbstractPgnActionAdapter {
 
     static final Map<String,Castlingable.Side> CASTLING_SIDES = Map.of(
             CASTLING_KING_SIDE_CODE,  Castlingable.Side.KING,
