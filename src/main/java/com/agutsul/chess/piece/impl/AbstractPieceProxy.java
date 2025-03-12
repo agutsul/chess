@@ -10,7 +10,6 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.PieceProxy;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 

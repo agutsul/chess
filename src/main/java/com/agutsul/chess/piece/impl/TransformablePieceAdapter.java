@@ -13,7 +13,6 @@ import com.agutsul.chess.Protectable;
 import com.agutsul.chess.Restorable;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.PieceProxy;
 import com.agutsul.chess.position.Position;
 
 final class TransformablePieceAdapter<PIECE extends Piece<?>
