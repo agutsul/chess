@@ -49,7 +49,6 @@ final class KingCastlingActionAdapter
                 .map(moveAction -> (PieceMoveAction<?,?>) moveAction)
                 .filter(kingMoveAction -> Objects.equals(king, kingMoveAction.getSource()))
                 .map(PieceMoveAction::getTarget)
-                .map(String::valueOf)
                 .findFirst();
 
         if (targetPosition.isEmpty()) {
