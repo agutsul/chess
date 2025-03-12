@@ -1,5 +1,6 @@
 package com.agutsul.chess.journal;
 
+import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -39,7 +40,6 @@ import com.agutsul.chess.piece.KnightPiece;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.RookPiece;
-import com.agutsul.chess.position.PositionFactory;
 
 @ExtendWith(MockitoExtension.class)
 public class JournalImplTest implements TestFileReader {
@@ -101,9 +101,9 @@ public class JournalImplTest implements TestFileReader {
         when(pawn.getType())
             .thenReturn(Piece.Type.PAWN);
         when(pawn.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.create("e2"));
+            .thenReturn(positionOf("e2"));
 
-        var position = PositionFactory.INSTANCE.create("e4");
+        var position = positionOf("e4");
         var action = new PieceMoveAction<>(pawn, position);
 
         var journal = new JournalImpl();
@@ -117,7 +117,7 @@ public class JournalImplTest implements TestFileReader {
     void testCaptureToString() throws IOException, URISyntaxException {
         var pawn = mock(PawnPiece.class);
         when(pawn.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.create("e5"));
+            .thenReturn(positionOf("e5"));
 
         var knight = mock(KnightPiece.class);
         when(knight.getColor())
@@ -125,7 +125,7 @@ public class JournalImplTest implements TestFileReader {
         when(knight.getType())
             .thenReturn(Piece.Type.KNIGHT);
         when(knight.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.create("c6"));
+            .thenReturn(positionOf("c6"));
 
         var action = new PieceCaptureAction<>(knight, pawn);
         var journal = new JournalImpl();
@@ -143,9 +143,9 @@ public class JournalImplTest implements TestFileReader {
         when(pawn.getType())
             .thenReturn(Piece.Type.PAWN);
         when(pawn.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.create("e7"));
+            .thenReturn(positionOf("e7"));
 
-        var position = PositionFactory.INSTANCE.create("e8");
+        var position = positionOf("e8");
         var action = new PiecePromoteAction<>(
                 new PieceMoveAction<>(pawn, position),
                 mock(Observable.class)
@@ -170,7 +170,7 @@ public class JournalImplTest implements TestFileReader {
         when(whiteKing.getType())
             .thenReturn(Piece.Type.KING);
         when(whiteKing.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.create("e1"));
+            .thenReturn(positionOf("e1"));
 
         var whiteRook = mock(RookPiece.class);
         when(whiteRook.getColor())
@@ -178,11 +178,11 @@ public class JournalImplTest implements TestFileReader {
         when(whiteRook.getType())
             .thenReturn(Piece.Type.ROOK);
         when(whiteRook.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.create("h1"));
+            .thenReturn(positionOf("h1"));
 
         var whiteAction = new PieceCastlingAction<>(Castlingable.Side.KING,
-                new CastlingMoveAction<>(whiteKing, PositionFactory.INSTANCE.create("g1")),
-                new CastlingMoveAction<>(whiteRook, PositionFactory.INSTANCE.create("f1"))
+                new CastlingMoveAction<>(whiteKing, positionOf("g1")),
+                new CastlingMoveAction<>(whiteRook, positionOf("f1"))
         );
 
         var blackKing = mock(KingPiece.class);
@@ -191,7 +191,7 @@ public class JournalImplTest implements TestFileReader {
         when(blackKing.getType())
             .thenReturn(Piece.Type.KING);
         when(blackKing.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.create("e8"));
+            .thenReturn(positionOf("e8"));
 
         var blackRook = mock(RookPiece.class);
         when(blackRook.getColor())
@@ -199,11 +199,11 @@ public class JournalImplTest implements TestFileReader {
         when(blackRook.getType())
             .thenReturn(Piece.Type.ROOK);
         when(blackRook.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.create("a8"));
+            .thenReturn(positionOf("a8"));
 
         var blackAction = new PieceCastlingAction<>(Castlingable.Side.QUEEN,
-                new CastlingMoveAction<>(blackKing, PositionFactory.INSTANCE.create("c8")),
-                new CastlingMoveAction<>(blackRook, PositionFactory.INSTANCE.create("d8"))
+                new CastlingMoveAction<>(blackKing, positionOf("c8")),
+                new CastlingMoveAction<>(blackRook, positionOf("d8"))
         );
 
         var journal = new JournalImpl();
@@ -222,13 +222,13 @@ public class JournalImplTest implements TestFileReader {
         when(whitePawn.getType())
             .thenReturn(Piece.Type.PAWN);
         when(whitePawn.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.create("b5"));
+            .thenReturn(positionOf("b5"));
 
         var blackPawn = mock(PawnPiece.class);
         when(blackPawn.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.create("a7"));
+            .thenReturn(positionOf("a7"));
 
-        var position = PositionFactory.INSTANCE.create("a6");
+        var position = positionOf("a6");
         var action = new PieceEnPassantAction<>(whitePawn, blackPawn, position);
 
         var journal = new JournalImpl();
@@ -244,9 +244,9 @@ public class JournalImplTest implements TestFileReader {
         when(pawn.getType())
             .thenReturn(Piece.Type.PAWN);
         when(pawn.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.create("e2"));
+            .thenReturn(positionOf("e2"));
 
-        var position = PositionFactory.INSTANCE.create("e4");
+        var position = positionOf("e4");
         var action = new PieceMoveAction<>(pawn, position);
 
         var journal = new JournalImpl();
@@ -262,9 +262,9 @@ public class JournalImplTest implements TestFileReader {
         when(pawn.getType())
             .thenReturn(Piece.Type.PAWN);
         when(pawn.getPosition())
-            .thenReturn(PositionFactory.INSTANCE.create("e2"));
+            .thenReturn(positionOf("e2"));
 
-        var position = PositionFactory.INSTANCE.create("e4");
+        var position = positionOf("e4");
         var action = new PieceMoveAction<>(pawn, position);
 
         var journal = new JournalImpl();
