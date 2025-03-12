@@ -10,6 +10,7 @@ import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCastlingAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
+import com.agutsul.chess.activity.action.adapter.ActionAdapter;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
@@ -56,6 +57,6 @@ final class KingCastlingActionAdapter
             throw new IllegalActionException(formatInvalidActionMessage(action));
         }
 
-        return adapt(king, targetPosition.get());
+        return ActionAdapter.adapt(king, targetPosition.get());
     }
 }

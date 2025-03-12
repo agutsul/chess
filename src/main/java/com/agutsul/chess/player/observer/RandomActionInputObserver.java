@@ -1,5 +1,6 @@
 package com.agutsul.chess.player.observer;
 
+import static com.agutsul.chess.activity.action.adapter.ActionAdapter.adapt;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
@@ -7,8 +8,6 @@ import java.util.Random;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.Positionable;
-import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.piece.Piece;
@@ -45,11 +44,11 @@ public final class RandomActionInputObserver
         }
 
         if (actions.size() == 1) {
-            return adaptAction(actions.get(0));
+            return adapt(actions.get(0));
         }
 
         var index = this.random.nextInt(0, actions.size());
-        return adaptAction(actions.get(index));
+        return adapt(actions.get(index));
     }
 
     @Override
@@ -63,20 +62,6 @@ public final class RandomActionInputObserver
             return Piece.Type.BISHOP.code();
         } else {
             return Piece.Type.QUEEN.code();
-        }
-    }
-
-    private static String adaptAction(Action<?> action) {
-        switch (action.getType()) {
-        case Action.Type.PROMOTE:
-            return adaptAction((Action<?>) action.getSource());
-        case Action.Type.CASTLING:
-            return adaptAction((Action<?>) action.getSource());
-        default:
-            return String.format("%s %s",
-                    ((Positionable) action.getSource()).getPosition(), // source position
-                    action.getPosition()                               // target position
-            );
         }
     }
 }

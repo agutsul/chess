@@ -139,11 +139,6 @@ abstract class AbstractActionAdapter
         return isCapturable;
     }
 
-    static final String adapt(Piece<Color> piece, String target) {
-        var source = String.valueOf(piece.getPosition());
-        return String.format("%s %s", source, target);
-    }
-
     static String formatInvalidActionMessage(String action) {
         return String.format("Invalid action format: '%s'", action);
     }
