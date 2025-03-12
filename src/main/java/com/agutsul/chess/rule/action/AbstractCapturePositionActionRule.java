@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
@@ -37,23 +38,29 @@ public abstract class AbstractCapturePositionActionRule<COLOR1 extends Color,
     @Override
     protected Collection<ACTION> createActions(PIECE1 piece1,
                                                Collection<Calculated> next) {
+
         var actions = new ArrayList<ACTION>();
         for (var position : next) {
-            var optionalPiece = board.getPiece((Position) position);
-            if (optionalPiece.isEmpty()) {
-                continue;
+            var optionalPiece = getCapturePiece(piece1, (Position) position);
+            if (optionalPiece.isPresent()) {
+                actions.add(createAction(piece1, optionalPiece.get()));
             }
-
-            @SuppressWarnings("unchecked")
-            var piece2 = (PIECE2) optionalPiece.get();
-            if (piece2.getColor() == piece1.getColor()) {
-                continue;
-            }
-
-            actions.add(createAction(piece1, piece2));
         }
 
         return actions;
+    }
+
+    protected Optional<PIECE2> getCapturePiece(PIECE1 attacker, Position position) {
+        var optionalPiece = board.getPiece(position);
+        if (optionalPiece.isEmpty()) {
+            return Optional.empty();
+        }
+
+        @SuppressWarnings("unchecked")
+        var piece = (PIECE2) optionalPiece.get();
+        var isSameColor = piece.getColor() == attacker.getColor();
+
+        return Optional.ofNullable(isSameColor ? null : piece);
     }
 
     protected abstract ACTION createAction(PIECE1 piece1, PIECE2 piece2);

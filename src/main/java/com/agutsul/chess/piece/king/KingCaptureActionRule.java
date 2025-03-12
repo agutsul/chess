@@ -1,7 +1,6 @@
 package com.agutsul.chess.piece.king;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Optional;
 
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
@@ -10,7 +9,6 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
-import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.action.AbstractCapturePositionActionRule;
 
@@ -27,30 +25,17 @@ class KingCaptureActionRule<COLOR1 extends Color,
     }
 
     @Override
-    protected Collection<PieceCaptureAction<COLOR1,COLOR2,KING,PIECE>>
-            createActions(KING king, Collection<Calculated> next) {
+    protected Optional<PIECE> getCapturePiece(KING attacker, Position position) {
+        var optionalPiece = super.getCapturePiece(attacker, position);
 
-        var actions = new ArrayList<PieceCaptureAction<COLOR1,COLOR2,KING,PIECE>>();
-        for (var position : next) {
-            var optionalPiece = board.getPiece((Position) position);
-            if (optionalPiece.isEmpty()) {
-                continue;
-            }
-
-            @SuppressWarnings("unchecked")
-            var piece = (PIECE) optionalPiece.get();
-            if (king.getColor() == piece.getColor()) {
-                continue;
-            }
-
+        if (optionalPiece.isPresent()) {
+            var piece = optionalPiece.get();
             if (((Protectable) piece).isProtected()) {
-                continue;
+                return Optional.empty();
             }
-
-            actions.add(createAction(king, piece));
         }
 
-        return actions;
+        return optionalPiece;
     }
 
     @Override
