@@ -6,7 +6,7 @@ import com.agutsul.chess.position.Position;
 
 public interface ActionAdapter {
 
-    public default String adapt(Action<?> action) {
+    default String adapt(Action<?> action) {
         switch (action.getType()) {
         case Action.Type.PROMOTE:
             return adapt((Action<?>) action.getSource());
@@ -20,11 +20,11 @@ public interface ActionAdapter {
         }
     }
 
-    public default String adapt(Piece<?> piece, Position target) {
+    default String adapt(Piece<?> piece, Position target) {
         return adapt(piece, String.valueOf(target));
     }
 
-    public default String adapt(Piece<?> piece, String target) {
+    default String adapt(Piece<?> piece, String target) {
         return format(String.valueOf(piece.getPosition()), target);
     }
 
