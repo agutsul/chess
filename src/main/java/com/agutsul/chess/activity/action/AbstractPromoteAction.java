@@ -11,10 +11,10 @@ import com.agutsul.chess.position.Position;
 
 public abstract class AbstractPromoteAction<COLOR extends Color,
                                             PIECE extends Piece<COLOR> & Movable & Capturable>
-        extends AbstractSourceActivity<AbstractTargetActivity<PIECE,?>>
-        implements Action<AbstractTargetActivity<PIECE,?>> {
+        extends AbstractSourceActivity<Action.Type,AbstractTargetActivity<Action.Type,PIECE,?>>
+        implements Action<AbstractTargetActivity<Action.Type,PIECE,?>> {
 
-    AbstractPromoteAction(AbstractTargetActivity<PIECE,?> source) {
+    AbstractPromoteAction(AbstractTargetActivity<Action.Type,PIECE,?> source) {
         super(Action.Type.PROMOTE, source);
     }
 

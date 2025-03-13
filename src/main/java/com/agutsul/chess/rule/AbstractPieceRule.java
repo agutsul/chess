@@ -6,7 +6,7 @@ import com.agutsul.chess.Positionable;
 import com.agutsul.chess.activity.Activity;
 import com.agutsul.chess.piece.Piece;
 
-public abstract class AbstractPieceRule<RESULT extends Positionable & Activity<?>,
+public abstract class AbstractPieceRule<RESULT extends Positionable & Activity<TYPE,?>,
                                         TYPE extends Enum<TYPE> & Activity.Type>
         implements Rule<Piece<?>,Collection<RESULT>> {
 

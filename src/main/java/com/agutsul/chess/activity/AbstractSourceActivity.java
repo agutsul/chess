@@ -2,20 +2,20 @@ package com.agutsul.chess.activity;
 
 import java.util.Objects;
 
-public abstract class AbstractSourceActivity<SOURCE>
-        implements Activity<SOURCE> {
+public abstract class AbstractSourceActivity<TYPE extends Activity.Type,SOURCE>
+        implements Activity<TYPE,SOURCE> {
 
-    private final Activity.Type type;
+    private final TYPE type;
     private final SOURCE source;
 
-    protected AbstractSourceActivity(Activity.Type type,
+    protected AbstractSourceActivity(TYPE type,
                                      SOURCE source) {
         this.type = type;
         this.source = source;
     }
 
     @Override
-    public Activity.Type getType() {
+    public TYPE getType() {
         return type;
     }
 
@@ -43,7 +43,7 @@ public abstract class AbstractSourceActivity<SOURCE>
             return false;
         }
 
-        var other = (AbstractSourceActivity<?>) obj;
+        var other = (AbstractSourceActivity<?,?>) obj;
         return Objects.equals(getSource(), other.getSource())
                 && Objects.equals(getType(), other.getType());
     }

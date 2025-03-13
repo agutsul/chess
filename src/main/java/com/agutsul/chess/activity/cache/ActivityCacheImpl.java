@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 import com.agutsul.chess.activity.Activity;
 
 public class ActivityCacheImpl<TYPE extends Enum<TYPE> & Activity.Type,
-                               ACTIVITY extends Activity<?>>
+                               ACTIVITY extends Activity<TYPE,?>>
         implements ActivityCache<TYPE,ACTIVITY> {
 
     private final ActivityMap<TYPE,ACTIVITY> cache;
@@ -21,11 +21,10 @@ public class ActivityCacheImpl<TYPE extends Enum<TYPE> & Activity.Type,
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void putAll(Collection<ACTIVITY> activities) {
         Stream.ofNullable(activities)
             .flatMap(Collection::stream)
-            .forEach(activity -> put((TYPE) activity.getType(), activity));
+            .forEach(activity -> put(activity.getType(), activity));
     }
 
     @Override

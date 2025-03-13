@@ -11,7 +11,7 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import com.agutsul.chess.activity.Activity;
 
 class ActivityMultiMap<KEY extends Enum<KEY> & Activity.Type,
-                       VALUE extends Activity<?>>
+                       VALUE extends Activity<KEY,?>>
         implements ActivityMap<KEY,VALUE> {
 
     private final MultiValuedMap<KEY,VALUE> map;

@@ -8,7 +8,7 @@ import com.agutsul.chess.position.Position;
 
 public abstract class AbstractMoveAction<COLOR extends Color,
                                          PIECE extends Piece<COLOR> & Movable>
-        extends AbstractTargetActivity<PIECE,Position>
+        extends AbstractTargetActivity<Action.Type,PIECE,Position>
         implements Action<PIECE> {
 
     AbstractMoveAction(PIECE source, Position target) {

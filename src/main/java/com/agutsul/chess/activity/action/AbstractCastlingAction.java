@@ -15,7 +15,7 @@ public abstract class AbstractCastlingAction<COLOR extends Color,
                                              PIECE2 extends Piece<COLOR> & Castlingable & Movable,
                                              ACTION1 extends AbstractMoveAction<COLOR,PIECE1>,
                                              ACTION2 extends AbstractMoveAction<COLOR,PIECE2>>
-        extends AbstractTargetActivity<ACTION1,ACTION2>
+        extends AbstractTargetActivity<Action.Type,ACTION1,ACTION2>
         implements Action<ACTION1> {
 
     private final Castlingable.Side side;

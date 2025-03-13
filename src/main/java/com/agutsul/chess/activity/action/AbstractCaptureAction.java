@@ -10,7 +10,7 @@ public abstract class AbstractCaptureAction<COLOR1 extends Color,
                                             COLOR2 extends Color,
                                             PIECE1 extends Piece<COLOR1> & Capturable,
                                             PIECE2 extends Piece<COLOR2>>
-        extends AbstractTargetActivity<PIECE1,PIECE2>
+        extends AbstractTargetActivity<Action.Type,PIECE1,PIECE2>
         implements Action<PIECE1> {
 
     AbstractCaptureAction(Action.Type type, PIECE1 piece1, PIECE2 piece2) {

@@ -23,7 +23,7 @@ public abstract class AbstractPromoteActionRule<COLOR1 extends Color,
                                                 PAWN extends PawnPiece<COLOR1>,
                                                 PIECE extends Piece<COLOR2>,
                                                 ACTION extends PiecePromoteAction<COLOR1,PAWN>,
-                                                SOURCE_ACTION extends AbstractTargetActivity<PAWN,?>>
+                                                SOURCE_ACTION extends AbstractTargetActivity<Action.Type,PAWN,?>>
         extends AbstractRule<PAWN,ACTION,Action.Type>
         implements PromoteActionRule<COLOR1,PAWN,ACTION> {
 

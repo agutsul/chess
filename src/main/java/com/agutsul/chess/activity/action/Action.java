@@ -5,7 +5,7 @@ import com.agutsul.chess.Positionable;
 import com.agutsul.chess.activity.Activity;
 
 public interface Action<SOURCE>
-        extends Executable, Positionable, Activity<SOURCE> {
+        extends Executable, Positionable, Activity<Action.Type,SOURCE> {
 
     enum Type implements Activity.Type {
         CAPTURE,

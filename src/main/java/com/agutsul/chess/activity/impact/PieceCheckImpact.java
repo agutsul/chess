@@ -14,7 +14,7 @@ public class PieceCheckImpact<COLOR1 extends Color,
                               COLOR2 extends Color,
                               ATTACKER extends Piece<COLOR1> & Capturable,
                               KING extends Piece<COLOR2> & Checkable>
-        extends AbstractTargetActivity<ATTACKER,KING>
+        extends AbstractTargetActivity<Impact.Type,ATTACKER,KING>
         implements Impact<ATTACKER> {
 
     private Line attackLine;

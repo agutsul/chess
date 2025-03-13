@@ -13,7 +13,7 @@ public class PiecePinImpact<COLOR1 extends Color,
                             PIECE extends Piece<COLOR1>,
                             KING extends KingPiece<COLOR1>,
                             ATTACKER extends Piece<COLOR2> & Capturable>
-        extends AbstractTargetActivity<PIECE,PieceCheckImpact<COLOR2,COLOR1,ATTACKER,KING>>
+        extends AbstractTargetActivity<Impact.Type,PIECE,PieceCheckImpact<COLOR2,COLOR1,ATTACKER,KING>>
         implements Impact<PIECE> {
 
     public PiecePinImpact(PIECE piece, KING king, ATTACKER attacker, Line line) {

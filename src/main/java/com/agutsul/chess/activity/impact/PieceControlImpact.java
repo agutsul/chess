@@ -8,7 +8,7 @@ import com.agutsul.chess.position.Position;
 
 public class PieceControlImpact<COLOR extends Color,
                                 PIECE extends Piece<COLOR> & Capturable>
-        extends AbstractTargetActivity<PIECE,Position>
+        extends AbstractTargetActivity<Impact.Type,PIECE,Position>
         implements Impact<PIECE> {
 
     public PieceControlImpact(PIECE piece, Position position) {

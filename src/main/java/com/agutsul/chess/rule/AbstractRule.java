@@ -7,7 +7,7 @@ import com.agutsul.chess.activity.Activity;
 import com.agutsul.chess.board.Board;
 
 public abstract class AbstractRule<SOURCE extends Positionable,
-                                   RESULT extends Activity<?>,
+                                   RESULT extends Activity<TYPE,?>,
                                    TYPE extends Enum<TYPE> & Activity.Type>
         implements Rule<SOURCE,Collection<RESULT>> {
 
