@@ -16,11 +16,6 @@ public class ActivityCacheImpl<TYPE extends Enum<TYPE> & Activity.Type,
     }
 
     @Override
-    public void clear() {
-        this.cache.clear();
-    }
-
-    @Override
     public void putAll(Collection<ACTIVITY> activities) {
         Stream.ofNullable(activities)
             .flatMap(Collection::stream)
@@ -28,29 +23,34 @@ public class ActivityCacheImpl<TYPE extends Enum<TYPE> & Activity.Type,
     }
 
     @Override
-    public void put(TYPE type, Collection<ACTIVITY> activities) {
+    public final void put(TYPE type, Collection<ACTIVITY> activities) {
         this.cache.put(type, activities);
     }
 
     @Override
-    public void put(TYPE type, ACTIVITY activity) {
+    public final void put(TYPE type, ACTIVITY activity) {
         this.cache.put(type, activity);
     }
 
     @Override
-    public Collection<ACTIVITY> getAll() {
+    public final Collection<ACTIVITY> getAll() {
         return this.cache.values().stream()
                 .flatMap(Collection::stream)
                 .toList();
     }
 
     @Override
-    public Collection<ACTIVITY> get(TYPE type) {
+    public final Collection<ACTIVITY> get(TYPE type) {
         return this.cache.get(type);
     }
 
     @Override
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return this.cache.isEmpty();
+    }
+
+    @Override
+    public final void clear() {
+        this.cache.clear();
     }
 }
