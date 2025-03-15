@@ -20,23 +20,19 @@ public class PieceCaptureAction<COLOR1 extends Color,
 
     private static final Line EMPTY_LINE = new Line(emptyList());
 
-    private final Line attackLine;
+    private final Line line;
 
     public PieceCaptureAction(PIECE1 predator, PIECE2 victim) {
-        this(Action.Type.CAPTURE, predator, victim, EMPTY_LINE);
+        this(predator, victim, EMPTY_LINE);
     }
 
     public PieceCaptureAction(PIECE1 predator, PIECE2 victim, Line attackLine) {
-        this(Action.Type.CAPTURE, predator, victim, attackLine);
+        super(Action.Type.CAPTURE, predator, victim);
+        this.line = attackLine;
     }
 
-    private PieceCaptureAction(Action.Type type, PIECE1 predator, PIECE2 victim, Line attackLine) {
-        super(type, predator, victim);
-        this.attackLine = attackLine;
-    }
-
-    public final Line getAttackLine() {
-        return this.attackLine;
+    public final Line getLine() {
+        return this.line;
     }
 
     @Override

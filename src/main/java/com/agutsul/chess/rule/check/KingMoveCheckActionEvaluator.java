@@ -30,7 +30,7 @@ final class KingMoveCheckActionEvaluator
 
         var actions = new HashSet<Action<?>>();
         for (var checkedAction : checkActions) {
-            var attackLine = checkedAction.getAttackLine();
+            var attackLine = checkedAction.getLine();
 
             var checkerMonitoredPositions = getMonitoredPositions(checkedAction.getSource());
 

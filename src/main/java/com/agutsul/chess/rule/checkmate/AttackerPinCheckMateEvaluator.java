@@ -54,7 +54,7 @@ final class AttackerPinCheckMateEvaluator
                 .filter(action -> Action.Type.CAPTURE.equals(action.getType()))
                 .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), king))
-                .map(PieceCaptureAction::getAttackLine)
+                .map(PieceCaptureAction::getLine)
                 .flatMap(Line::stream)
                 .anyMatch(position -> pieceMovePositions.contains(position));
 
