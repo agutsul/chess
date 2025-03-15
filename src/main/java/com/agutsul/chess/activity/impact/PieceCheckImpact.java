@@ -17,7 +17,7 @@ public class PieceCheckImpact<COLOR1 extends Color,
         extends AbstractTargetActivity<Impact.Type,ATTACKER,KING>
         implements Impact<ATTACKER> {
 
-    private Line attackLine;
+    private Line line;
 
     public PieceCheckImpact(ATTACKER attacker, KING king) {
         super(Impact.Type.CHECK, attacker, king);
@@ -25,11 +25,11 @@ public class PieceCheckImpact<COLOR1 extends Color,
 
     public PieceCheckImpact(ATTACKER attacker, KING king, Line line) {
         this(attacker, king);
-        this.attackLine = line;
+        this.line = line;
     }
 
-    public Optional<Line> getAttackLine() {
-        return Optional.ofNullable(this.attackLine);
+    public Optional<Line> getLine() {
+        return Optional.ofNullable(this.line);
     }
 
     @Override

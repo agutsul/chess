@@ -7,9 +7,7 @@ public abstract class AbstractTargetActivity<TYPE extends Activity.Type,SOURCE,T
 
     private final TARGET target;
 
-    protected AbstractTargetActivity(TYPE type,
-                                     SOURCE source,
-                                     TARGET target) {
+    protected AbstractTargetActivity(TYPE type, SOURCE source, TARGET target) {
         super(type, source);
         this.target = target;
     }

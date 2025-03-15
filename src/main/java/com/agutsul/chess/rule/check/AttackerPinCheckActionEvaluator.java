@@ -30,7 +30,7 @@ final class AttackerPinCheckActionEvaluator
             }
 
             for (var pieceMoveAction : pieceMoveActions) {
-                if (attackLine.contains(pieceMoveAction.getPosition())) {
+                if (attackLine.get().contains(pieceMoveAction.getPosition())) {
                     actions.add(pieceMoveAction);
                 }
             }

@@ -120,7 +120,7 @@ abstract class AbstractPgnActionAdapter
                 .findFirst()
                 .get();
 
-        var checkLine = checkImpact.getAttackLine();
+        var checkLine = checkImpact.getLine();
         if (checkLine.isPresent()) {
             var line = checkLine.get();
             return line.contains(positionOf(position));

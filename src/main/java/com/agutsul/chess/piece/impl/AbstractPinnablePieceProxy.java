@@ -103,7 +103,7 @@ abstract class AbstractPinnablePieceProxy<PIECE extends Piece<?>
     private static Collection<Action<?>> filterActions(Collection<Action<?>> actions,
                                                        PieceCheckImpact<?,?,?,?> impact) {
 
-        var pinnedLine = impact.getAttackLine();
+        var pinnedLine = impact.getLine();
         if (pinnedLine.isEmpty()) {
             return emptyList();
         }

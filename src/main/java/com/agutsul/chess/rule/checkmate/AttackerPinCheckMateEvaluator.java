@@ -5,6 +5,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 
@@ -55,6 +56,8 @@ final class AttackerPinCheckMateEvaluator
                 .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), king))
                 .map(PieceCaptureAction::getLine)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .flatMap(Line::stream)
                 .anyMatch(position -> pieceMovePositions.contains(position));
 

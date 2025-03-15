@@ -1,7 +1,8 @@
 package com.agutsul.chess.activity.action;
 
-import static java.util.Collections.emptyList;
 import static org.slf4j.LoggerFactory.getLogger;
+
+import java.util.Optional;
 
 import org.slf4j.Logger;
 
@@ -18,12 +19,10 @@ public class PieceCaptureAction<COLOR1 extends Color,
 
     private static final Logger LOGGER = getLogger(PieceCaptureAction.class);
 
-    private static final Line EMPTY_LINE = new Line(emptyList());
-
-    private final Line line;
+    private Line line;
 
     public PieceCaptureAction(PIECE1 predator, PIECE2 victim) {
-        this(predator, victim, EMPTY_LINE);
+        this(predator, victim, null);
     }
 
     public PieceCaptureAction(PIECE1 predator, PIECE2 victim, Line attackLine) {
@@ -31,8 +30,8 @@ public class PieceCaptureAction<COLOR1 extends Color,
         this.line = attackLine;
     }
 
-    public final Line getLine() {
-        return this.line;
+    public final Optional<Line> getLine() {
+        return Optional.ofNullable(this.line);
     }
 
     @Override

@@ -38,7 +38,7 @@ final class KingMoveCheckActionEvaluator
                 var targetPosition = pieceMoveAction.getPosition();
 
                 // skip moves on positions inside attack line
-                if (attackLine.contains(targetPosition)) {
+                if (attackLine.isPresent() && attackLine.get().contains(targetPosition)) {
                     continue;
                 }
 
