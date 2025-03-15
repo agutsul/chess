@@ -22,11 +22,11 @@ public class PieceCaptureAction<COLOR1 extends Color,
     private Line line;
 
     public PieceCaptureAction(PIECE1 predator, PIECE2 victim) {
-        this(predator, victim, null);
+        super(Action.Type.CAPTURE, predator, victim);
     }
 
     public PieceCaptureAction(PIECE1 predator, PIECE2 victim, Line attackLine) {
-        super(Action.Type.CAPTURE, predator, victim);
+        this(predator, victim);
         this.line = attackLine;
     }
 

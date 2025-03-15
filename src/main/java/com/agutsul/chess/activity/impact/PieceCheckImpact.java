@@ -28,17 +28,17 @@ public class PieceCheckImpact<COLOR1 extends Color,
         this.line = line;
     }
 
-    public Optional<Line> getLine() {
+    public final Optional<Line> getLine() {
         return Optional.ofNullable(this.line);
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return String.format("%sx%s!", getSource(), getTarget());
     }
 
     @Override
-    public Position getPosition() {
+    public final Position getPosition() {
         return getSource().getPosition();
     }
 }
