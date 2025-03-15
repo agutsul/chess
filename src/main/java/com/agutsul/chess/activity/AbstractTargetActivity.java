@@ -19,7 +19,7 @@ public abstract class AbstractTargetActivity<TYPE extends Activity.Type,SOURCE,T
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result + Objects.hash(target);
@@ -27,7 +27,7 @@ public abstract class AbstractTargetActivity<TYPE extends Activity.Type,SOURCE,T
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
