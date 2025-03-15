@@ -32,11 +32,11 @@ public abstract class AbstractCaptureAction<COLOR1 extends Color,
         return getCode();
     }
 
-    String createTargetLabel(Piece<?> targetPiece) {
-        return createTargetLabel(targetPiece.getPosition());
-    }
-
     String createTargetLabel(Position position) {
         return String.valueOf(position);
+    }
+
+    private final String createTargetLabel(Piece<?> targetPiece) {
+        return createTargetLabel(targetPiece.getPosition());
     }
 }

@@ -15,7 +15,7 @@ public abstract class AbstractEnPassantAction<COLOR1 extends Color,
     }
 
     @Override
-    String createTargetLabel(Position position) {
+    final String createTargetLabel(Position position) {
         return String.format("%s e.p.", getPosition());
     }
 }

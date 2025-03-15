@@ -32,21 +32,21 @@ public class PiecePromoteAction<COLOR1 extends Color,
         this.observable = observable;
     }
 
-    public <COLOR2 extends Color,PIECE2 extends Piece<COLOR2>> PiecePromoteAction(
-                              PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2> action,
-                              Observable observable) {
+    public <COLOR2 extends Color,PIECE2 extends Piece<COLOR2>>
+            PiecePromoteAction(PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2> action,
+                               Observable observable) {
         super(action);
         this.observable = observable;
     }
 
     @Override
     public final void execute() {
-        var piece = getSource().getSource();
-
-        LOGGER.info("Executing promote by '{}'", piece);
+        var pawn = getSource().getSource();
+        LOGGER.info("Executing promote by '{}'", pawn);
         // prompt player about piece type to create during promotion
-        var event = new RequestPromotionPieceTypeEvent(piece.getColor(), this);
-        observable.notifyObservers(event);
+        observable.notifyObservers(
+                new RequestPromotionPieceTypeEvent(pawn.getColor(), this)
+        );
     }
 
     @Override
