@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Positionable;
+import com.agutsul.chess.Rankable;
+import com.agutsul.chess.Valuable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.color.Color;
@@ -16,9 +18,9 @@ import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
 public interface Piece<COLOR extends Color>
-        extends Positionable {
+        extends Positionable, Valuable {
 
-    enum Type {
+    enum Type implements Rankable {
         PAWN("",    1),
         KNIGHT("N", 3),
         BISHOP("B", 3),
@@ -30,19 +32,20 @@ public interface Piece<COLOR extends Color>
                 Stream.of(values()).collect(toMap(Type::code, identity()));
 
         private String code;
-        private int value;
+        private int rank;
 
-        Type(String code, int value) {
+        Type(String code, int rank) {
             this.code = code;
-            this.value = value;
+            this.rank = rank;
         }
 
         public String code() {
             return code;
         }
 
-        public int value() {
-            return value;
+        @Override
+        public int rank() {
+            return rank;
         }
 
         @Override
@@ -59,7 +62,6 @@ public interface Piece<COLOR extends Color>
     COLOR getColor();
     String getUnicode();
     int getDirection();
-    int getValue();
 
     PieceState<Piece<COLOR>> getState();
 

@@ -88,7 +88,7 @@ abstract class AbstractPiece<COLOR extends Color>
         this.color = color;
         this.unicode = unicode;
         this.direction = direction;
-        this.value = type.value() * direction;
+        this.value = type.rank() * direction;
 
         this.activeState = (ActivePieceState<? extends Piece<COLOR>>) state;
         setState(state);
