@@ -113,7 +113,8 @@ public final class ConsoleGameOutputObserver
 
     @Override
     protected void process(ActionCancellingEvent event) {
-        displayAction((AbstractPlayableGame) this.game, null, event.getAction());
+        var game = (AbstractPlayableGame) this.game;
+        displayAction(game, game.getPlayer(event.getColor()), event.getAction());
     }
 
     @Override

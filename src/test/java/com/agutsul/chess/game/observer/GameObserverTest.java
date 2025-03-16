@@ -120,7 +120,7 @@ public class GameObserverTest {
     @Test
     void testObserveActionCancellingEvent() {
         var action = mock(Action.class);
-        var event = new ActionCancellingEvent(action);
+        var event = new ActionCancellingEvent(Colors.WHITE, action);
 
         var game = mock(Game.class);
         var observer = new GameOutputObserverMock(game,

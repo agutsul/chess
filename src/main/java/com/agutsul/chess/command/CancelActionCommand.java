@@ -58,7 +58,7 @@ public final class CancelActionCommand
 
     @Override
     protected void executeInternal() throws CommandException {
-        notifyGameObservers(new ActionCancellingEvent(this.action));
+        notifyGameObservers(new ActionCancellingEvent(this.color, this.action));
 
         try {
             this.action.execute();
