@@ -1,8 +1,6 @@
 package com.agutsul.chess.board;
 
 import static java.util.Collections.emptyList;
-import static java.util.concurrent.ForkJoinPool.commonPool;
-import static java.util.concurrent.TimeUnit.MICROSECONDS;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.apache.commons.collections4.ListUtils.partition;
 
@@ -75,18 +73,8 @@ abstract class AbstractBoardBuilder<T extends Serializable>
 
     @Override
     public final Board build() {
-        var executor = commonPool();
-        try {
+        try (var executor = new ForkJoinPool()) {
             return createBoard(executor);
-        } finally {
-            try {
-                executor.shutdown();
-                if (!executor.awaitTermination(1, MICROSECONDS)) {
-                    executor.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                executor.shutdownNow();
-            }
         }
     }
 
