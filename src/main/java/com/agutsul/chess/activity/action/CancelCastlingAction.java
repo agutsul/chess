@@ -46,7 +46,7 @@ public final class CancelCastlingAction<COLOR extends Color,
 
         @Override
         public void execute() {
-            getSource().uncastling(getPosition());
+            getPiece().uncastling(getPosition());
         }
     }
 }

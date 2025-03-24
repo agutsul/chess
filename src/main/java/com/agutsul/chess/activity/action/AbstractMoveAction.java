@@ -17,11 +17,12 @@ public abstract class AbstractMoveAction<COLOR extends Color,
 
     @Override
     public final String getCode() {
-        return String.format("%s->%s", getSource(), getPosition());
+        return String.format("%s->%s", getPiece(), getPosition());
     }
 
     @Override
-    public final Piece<?> getPiece() {
+    @SuppressWarnings("unchecked")
+    public final PIECE getPiece() {
         return getSource();
     }
 

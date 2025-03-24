@@ -22,7 +22,7 @@ public final class CancelCaptureAction<COLOR1 extends Color,
 
     @Override
     public void execute() {
-        LOGGER.info("Cancel capturing '{}' by '{}'", getTarget(), getSource());
-        getSource().uncapture(getTarget());
+        LOGGER.info("Cancel capturing '{}' by '{}'", getTarget(), getPiece());
+        getPiece().uncapture(getTarget());
     }
 }

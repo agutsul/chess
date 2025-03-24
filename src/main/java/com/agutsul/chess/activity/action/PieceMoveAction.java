@@ -27,8 +27,8 @@ public class PieceMoveAction<COLOR extends Color,
 
     @Override
     public void execute() {
-        LOGGER.info("Executing move to '{}' by '{}'", getTarget(), getSource());
-        getSource().move(getPosition());
+        LOGGER.info("Executing move to '{}' by '{}'", getPosition(), getPiece());
+        getPiece().move(getPosition());
     }
 
     @Override

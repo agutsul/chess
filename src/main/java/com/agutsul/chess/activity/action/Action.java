@@ -5,6 +5,7 @@ import com.agutsul.chess.Positionable;
 import com.agutsul.chess.Rankable;
 import com.agutsul.chess.Valuable;
 import com.agutsul.chess.activity.Activity;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
 public interface Action<SOURCE>
@@ -25,7 +26,8 @@ public interface Action<SOURCE>
     }
 
     String getCode();
-    Piece<?> getPiece();
+
+    <COLOR extends Color,PIECE extends Piece<COLOR>> PIECE getPiece();
 
     @Override
     default int compareTo(Action<?> action) {

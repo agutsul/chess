@@ -21,7 +21,7 @@ public class CancelMoveAction<COLOR extends Color,
 
     @Override
     public void execute() {
-        LOGGER.info("Cancel move to '{}' by '{}'", getTarget(), getSource());
-        getSource().unmove(getPosition());
+        LOGGER.info("Cancel move to '{}' by '{}'", getPosition(), getPiece());
+        getPiece().unmove(getPosition());
     }
 }

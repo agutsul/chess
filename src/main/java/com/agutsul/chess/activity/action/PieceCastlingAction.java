@@ -34,8 +34,8 @@ public class PieceCastlingAction<COLOR extends Color,
         var castlingAction = getSource();
 
         LOGGER.info("Executing castling '{}' by '{}'",
-                castlingAction.getTarget(),
-                castlingAction.getSource()
+                castlingAction.getPosition(),
+                castlingAction.getPiece()
         );
 
         castlingAction.execute();
@@ -76,7 +76,7 @@ public class PieceCastlingAction<COLOR extends Color,
 
         @Override
         public void execute() {
-            getSource().castling(getPosition());
+            getPiece().castling(getPosition());
         }
     }
 }

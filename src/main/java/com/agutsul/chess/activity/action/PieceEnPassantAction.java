@@ -35,8 +35,8 @@ public class PieceEnPassantAction<COLOR1 extends Color,
 
     @Override
     public final void execute() {
-        LOGGER.info("Executing en-passante '{}' by '{}'", getTarget(), getSource());
-        getSource().enpassant(getTarget(), getPosition());
+        LOGGER.info("Executing en-passante '{}' by '{}'", getTarget(), getPiece());
+        getPiece().enpassant(getTarget(), getPosition());
     }
 
     @Override

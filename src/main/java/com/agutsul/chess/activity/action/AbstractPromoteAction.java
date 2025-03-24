@@ -19,7 +19,8 @@ public abstract class AbstractPromoteAction<COLOR extends Color,
     }
 
     @Override
-    public final Piece<?> getPiece() {
+    @SuppressWarnings("unchecked")
+    public final PIECE getPiece() {
         return getSource().getSource();
     }
 

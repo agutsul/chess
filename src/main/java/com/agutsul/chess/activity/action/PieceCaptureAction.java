@@ -36,8 +36,8 @@ public class PieceCaptureAction<COLOR1 extends Color,
 
     @Override
     public final void execute() {
-        LOGGER.info("Executing capturing '{}' by '{}'", getTarget(), getSource());
-        getSource().capture(getTarget());
+        LOGGER.info("Executing capturing '{}' by '{}'", getTarget(), getPiece());
+        getPiece().capture(getTarget());
     }
 
     @Override

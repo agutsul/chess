@@ -26,7 +26,8 @@ public abstract class AbstractCastlingAction<COLOR extends Color,
     }
 
     @Override
-    public final Piece<?> getPiece() {
+    @SuppressWarnings("unchecked")
+    public final PIECE1 getPiece() {
         return getSource().getPiece();
     }
 
@@ -63,7 +64,7 @@ public abstract class AbstractCastlingAction<COLOR extends Color,
 
     private AbstractMoveAction<?,?> getAction(Piece.Type pieceType) {
         return Stream.of(super.getSource(), super.getTarget())
-                .filter(action -> Objects.equals(action.getSource().getType(), pieceType))
+                .filter(action -> Objects.equals(action.getPiece().getType(), pieceType))
                 .findFirst()
                 .get();
     }

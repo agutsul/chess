@@ -21,7 +21,7 @@ public final class CancelEnPassantAction<COLOR1 extends Color,
 
     @Override
     public void execute() {
-        LOGGER.info("Cancel en-passante '{}' by '{}'", getTarget(), getSource());
-        getSource().unenpassant(getTarget());
+        LOGGER.info("Cancel en-passante '{}' by '{}'", getTarget(), getPiece());
+        getPiece().unenpassant(getTarget());
     }
 }

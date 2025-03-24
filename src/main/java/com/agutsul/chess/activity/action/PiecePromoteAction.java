@@ -83,18 +83,15 @@ public class PiecePromoteAction<COLOR1 extends Color,
         // store selected piece type for using in journal
         setPieceType(event.getPieceType());
 
-        // source action can be either MOVE or CAPTURE
-        var originAction = getSource();
-        var pawn = originAction.getSource();
-
         LOGGER.info("Executing promote by '{}' to '{}'",
-                pawn,
+                getPiece(),
                 getPieceType()
         );
 
-        ((Executable) originAction).execute();
+        // source action can be either MOVE or CAPTURE
+        ((Executable) getSource()).execute();
 
         // transform pawn into selected piece type
-        pawn.promote(getPosition(), getPieceType());
+        getPiece().promote(getPosition(), getPieceType());
     }
 }

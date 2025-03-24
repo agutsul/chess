@@ -18,7 +18,8 @@ public abstract class AbstractCaptureAction<COLOR1 extends Color,
     }
 
     @Override
-    public final Piece<?> getPiece() {
+    @SuppressWarnings("unchecked")
+    public final PIECE1 getPiece() {
         return getSource();
     }
 
