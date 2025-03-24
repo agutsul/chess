@@ -18,6 +18,11 @@ public abstract class AbstractCaptureAction<COLOR1 extends Color,
     }
 
     @Override
+    public final Piece<?> getPiece() {
+        return getSource();
+    }
+
+    @Override
     public Position getPosition() {
         return getTarget().getPosition();
     }

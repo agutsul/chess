@@ -3,10 +3,13 @@ package com.agutsul.chess.piece.impl;
 import static java.util.Collections.emptyList;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 
@@ -24,6 +27,8 @@ import com.agutsul.chess.rule.action.AbstractCastlingActionRule.Castling;
 final class RookPieceImpl<COLOR extends Color>
         extends AbstractCastlingPiece<COLOR>
         implements RookPiece<COLOR> {
+
+    private static final Comparator<Action<?>> ROOK_COMPARATOR = new RookActionComparator();
 
     RookPieceImpl(Board board, COLOR color, String unicode,
                   Position position, int direction) {
@@ -48,12 +53,7 @@ final class RookPieceImpl<COLOR extends Color>
         // and as result be the last in the result collection.
         // Action order influences action auto-detection used by PerformActionCommand.
         var actions = new ArrayList<>(super.getActions());
-        actions.sort((action1, action2) -> {
-            var type1 = action1.getType();
-            var type2 = action2.getType();
-            // expected order: capture, move, castling
-            return type1.compareTo(type2);
-        });
+        actions.sort(ROOK_COMPARATOR);
 
         return actions;
     }
@@ -61,6 +61,25 @@ final class RookPieceImpl<COLOR extends Color>
     @Override
     DisposedPieceState<?> createDisposedPieceState(Instant instant) {
         return new DisposedCastlingablePieceState<>(instant);
+    }
+
+    static final class RookActionComparator
+            implements Comparator<Action<?>>, Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public int compare(Action<?> action1, Action<?> action2) {
+            var type1 = action1.getType();
+            var type2 = action2.getType();
+
+            // expected order: capture, move, castling
+            if (Objects.equals(type1, type2)) {
+                return 0;
+            }
+
+            return (type1.ordinal() + type2.ordinal()) % 2 == 0 ? -1 : 1;
+        }
     }
 
     static final class DisposedCastlingablePieceState<PIECE extends RookPiece<?>>

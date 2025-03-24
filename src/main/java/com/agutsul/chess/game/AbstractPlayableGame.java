@@ -62,11 +62,10 @@ public abstract class AbstractPlayableGame
     private final Journal<ActionMemento<?,?>> journal;
 
     private final BoardStateEvaluator<BoardState> boardStateEvaluator;
-
-    private final PlayerState activeState;
-    private final PlayerState lockedState;
-
     private final List<Observer> observers;
+
+    protected final PlayerState activeState;
+    protected final PlayerState lockedState;
 
     protected Player currentPlayer;
 
@@ -74,6 +73,7 @@ public abstract class AbstractPlayableGame
                                 Player whitePlayer,
                                 Player blackPlayer,
                                 Board board) {
+
         this(logger, whitePlayer, blackPlayer, board, new JournalImpl());
     }
 
@@ -84,7 +84,8 @@ public abstract class AbstractPlayableGame
                                    Journal<ActionMemento<?,?>> journal) {
 
         this(logger, whitePlayer, blackPlayer,
-                board, journal, new BoardStateEvaluatorImpl(board, journal));
+                board, journal, new BoardStateEvaluatorImpl(board, journal)
+        );
     }
 
     protected AbstractPlayableGame(Logger logger,
@@ -186,7 +187,7 @@ public abstract class AbstractPlayableGame
     }
 
     @Override
-    public final void run() {
+    public void run() {
         this.startedAt = now();
 
         notifyObservers(new GameStartedEvent(this));
@@ -229,12 +230,45 @@ public abstract class AbstractPlayableGame
         }
     }
 
+    @Override
     public final Player getCurrentPlayer() {
         return this.currentPlayer;
     }
 
+    @Override
+    public final Player getOpponentPlayer() {
+        return Objects.equals(getCurrentPlayer(), getWhitePlayer())
+                ? getBlackPlayer()
+                : getWhitePlayer();
+    }
+
+    @Override
     public final Board getBoard() {
         return this.board;
+    }
+
+    protected final BoardState evaluateBoardState(Player player) {
+        var boardState = this.boardStateEvaluator.evaluate(player.getColor());
+
+        if (boardState.isType(CHECK_MATED)) {
+            var lastMemento = this.journal.remove(this.journal.size() - 1);
+            this.journal.add(new CheckMatedActionMemento<>(lastMemento));
+        }
+
+        if (boardState.isType(CHECKED)) {
+            var lastMemento = this.journal.remove(this.journal.size() - 1);
+            this.journal.add(new CheckedActionMemento<>(lastMemento));
+        }
+
+        return boardState;
+    }
+
+    protected final void clearPieceData(Color color) {
+        notifyBoardObservers(new ClearPieceDataEvent(color));
+    }
+
+    protected final void notifyBoardObservers(Event event) {
+        ((Observable) this.board).notifyObservers(event);
     }
 
     private Optional<Player> createWinner(Player player) {
@@ -278,22 +312,6 @@ public abstract class AbstractPlayableGame
         return Math.abs(board.calculateValue(player.getColor()));
     }
 
-    protected BoardState evaluateBoardState(Player player) {
-        var boardState = this.boardStateEvaluator.evaluate(player.getColor());
-
-        if (boardState.isType(CHECK_MATED)) {
-            var lastMemento = this.journal.remove(this.journal.size() - 1);
-            this.journal.add(new CheckMatedActionMemento<>(lastMemento));
-        }
-
-        if (boardState.isType(CHECKED)) {
-            var lastMemento = this.journal.remove(this.journal.size() - 1);
-            this.journal.add(new CheckedActionMemento<>(lastMemento));
-        }
-
-        return boardState;
-    }
-
     private Player switchPlayers() {
         var player = getOpponentPlayer();
 
@@ -308,20 +326,6 @@ public abstract class AbstractPlayableGame
         );
 
         return player;
-    }
-
-    private Player getOpponentPlayer() {
-        return Objects.equals(this.currentPlayer, getWhitePlayer())
-                ? getBlackPlayer()
-                : getWhitePlayer();
-    }
-
-    private void clearPieceData(Color color) {
-        notifyBoardObservers(new ClearPieceDataEvent(color));
-    }
-
-    protected void notifyBoardObservers(Event event) {
-        ((Observable) this.board).notifyObservers(event);
     }
 
     private final class ActionEventObserver

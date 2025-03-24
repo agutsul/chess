@@ -276,6 +276,20 @@ public class JournalImplTest implements TestFileReader {
         assertEquals(fileJournalContent, journalStr);
     }
 
+    @Test
+    void testGetAll() {
+        var memento = createMemento();
+
+        var journal = new JournalImpl();
+        journal.add(memento);
+
+        var journal2 = new JournalImpl(journal);
+        assertEquals(journal.size(), journal2.getAll().size());
+
+        var memento2 = journal.get(0);
+        assertEquals(memento, memento2);
+    }
+
     private static ActionMemento<?,?> createMemento() {
         var board = new StringBoardBuilder()
                 .withWhitePawn("a2")

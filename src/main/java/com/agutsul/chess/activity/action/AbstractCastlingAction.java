@@ -26,6 +26,11 @@ public abstract class AbstractCastlingAction<COLOR extends Color,
     }
 
     @Override
+    public final Piece<?> getPiece() {
+        return getSource().getPiece();
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public final ACTION1 getSource() {
         return (ACTION1) getAction(Piece.Type.KING);

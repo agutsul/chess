@@ -49,7 +49,7 @@ public final class FenGame
         this.currentPlayer = getPlayer(color);
 
         // re-evaluate board state
-        evaluateBoardState(getCurrentPlayer());
+        getBoard().setState(evaluateBoardState(getCurrentPlayer()));
 
         ((Observable) board).addObserver(new ConsolePlayerInputObserver(whitePlayer, this));
         ((Observable) board).addObserver(new ConsolePlayerInputObserver(blackPlayer, this));
@@ -136,6 +136,11 @@ public final class FenGame
         @Override
         public List<ActionMemento<?,?>> get(Color color) {
             return this.origin.get(color);
+        }
+
+        @Override
+        public List<ActionMemento<?,?>> getAll() {
+            return this.origin.getAll();
         }
 
         @Override

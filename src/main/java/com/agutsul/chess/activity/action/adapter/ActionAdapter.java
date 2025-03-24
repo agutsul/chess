@@ -7,17 +7,7 @@ import com.agutsul.chess.position.Position;
 public interface ActionAdapter {
 
     default String adapt(Action<?> action) {
-        switch (action.getType()) {
-        case Action.Type.PROMOTE:
-            return adapt((Action<?>) action.getSource());
-        case Action.Type.CASTLING:
-            return adapt((Action<?>) action.getSource());
-        default:
-            return adapt(
-                    (Piece<?>) action.getSource(),       // source piece
-                    action.getPosition()                 // target position
-            );
-        }
+        return adapt(action.getPiece(), action.getPosition());
     }
 
     default String adapt(Piece<?> piece, Position target) {

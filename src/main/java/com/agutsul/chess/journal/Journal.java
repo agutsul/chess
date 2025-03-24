@@ -13,6 +13,8 @@ public interface Journal<MEMENTO extends Memento> {
 
     List<MEMENTO> get(Color color);
 
+    List<MEMENTO> getAll();
+
     int size();
 
     int size(Color color);

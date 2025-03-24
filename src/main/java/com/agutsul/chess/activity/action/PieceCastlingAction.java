@@ -2,6 +2,7 @@ package com.agutsul.chess.activity.action;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Castlingable;
@@ -38,6 +39,31 @@ public class PieceCastlingAction<COLOR extends Color,
         );
 
         castlingAction.execute();
+    }
+
+    @Override
+    public final int compareTo(Action<?> action) {
+        int compared = super.compareTo(action);
+        if (compared != 0) {
+            return compared;
+        }
+
+        var castlingAction = (PieceCastlingAction<?,?,?>) action;
+        var sourceComparison = ObjectUtils.compare(
+                (Action<?>) castlingAction.getSource(),
+                (Action<?>) getSource()
+        );
+
+        if (sourceComparison != 0) {
+            return sourceComparison;
+        }
+
+        var targetComparison = ObjectUtils.compare(
+                (Action<?>) castlingAction.getTarget(),
+                (Action<?>) getTarget()
+        );
+
+        return targetComparison;
     }
 
     public static final class CastlingMoveAction<COLOR extends Color,

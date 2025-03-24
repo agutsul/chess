@@ -1,5 +1,6 @@
 package com.agutsul.chess.journal;
 
+import static java.util.Collections.unmodifiableList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
@@ -16,7 +17,19 @@ public final class JournalImpl
 
     private static final Logger LOGGER = getLogger(JournalImpl.class);
 
-    private final List<ActionMemento<?,?>> list = new ArrayList<>();
+    private final List<ActionMemento<?,?>> list;
+
+    public JournalImpl() {
+        this(new ArrayList<>());
+    }
+
+    public JournalImpl(Journal<ActionMemento<?,?>> journal) {
+        this(new ArrayList<>(journal.getAll()));
+    }
+
+    private JournalImpl(List<ActionMemento<?,?>> list) {
+        this.list = list;
+    }
 
     @Override
     public void add(ActionMemento<?,?> memento) {
@@ -42,6 +55,11 @@ public final class JournalImpl
         return this.list.stream()
                 .filter(am -> Objects.equals(color, am.getColor()))
                 .toList();
+    }
+
+    @Override
+    public List<ActionMemento<?,?>> getAll() {
+        return unmodifiableList(this.list);
     }
 
     @Override

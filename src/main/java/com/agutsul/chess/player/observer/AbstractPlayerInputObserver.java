@@ -30,7 +30,6 @@ import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.IllegalActionException;
-import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
@@ -168,7 +167,7 @@ public abstract class AbstractPlayerInputObserver
     }
 
     private void notifyBoardEvent(Event event) {
-        var board = ((AbstractPlayableGame) this.game).getBoard();
+        var board = this.game.getBoard();
         ((Observable) board).notifyObservers(event);
     }
 

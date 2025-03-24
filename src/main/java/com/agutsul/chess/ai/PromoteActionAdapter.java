@@ -1,0 +1,51 @@
+package com.agutsul.chess.ai;
+
+import static com.agutsul.chess.piece.Piece.Type.BISHOP;
+import static com.agutsul.chess.piece.Piece.Type.KNIGHT;
+import static com.agutsul.chess.piece.Piece.Type.QUEEN;
+import static com.agutsul.chess.piece.Piece.Type.ROOK;
+import static java.util.stream.Collectors.toList;
+
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Set;
+
+import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.PieceCaptureAction;
+import com.agutsul.chess.activity.action.PieceMoveAction;
+import com.agutsul.chess.activity.action.PiecePromoteAction;
+import com.agutsul.chess.event.Observable;
+import com.agutsul.chess.piece.Piece;
+
+final class PromoteActionAdapter {
+
+    private static final Set<Piece.Type> PROMOTION_TYPES = EnumSet.of(BISHOP, KNIGHT, ROOK, QUEEN);
+
+    public Collection<Action<?>> adapt(PiecePromoteAction<?,?> action) {
+        Collection<Action<?>> actions = PROMOTION_TYPES.stream()
+                .map(pieceType -> create(action, pieceType))
+                .collect(toList());
+
+        return actions;
+    }
+
+    private static PiecePromoteAction<?,?> create(PiecePromoteAction<?,?> action, Piece.Type pieceType) {
+        return create((Action<?>) action.getSource(), action.getObservable(), pieceType);
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private static PiecePromoteAction<?,?> create(Action<?> action, Observable observable,
+                                                  Piece.Type pieceType) {
+        switch (action.getType()) {
+        case Action.Type.MOVE:
+            return new SimulatedPiecePromoteAction((PieceMoveAction<?,?>) action, observable, pieceType);
+        case Action.Type.CAPTURE:
+            return new SimulatedPiecePromoteAction((PieceCaptureAction<?,?,?,?>) action, observable, pieceType);
+        default:
+            throw new IllegalStateException(String.format(
+                    "Unsupported promotion action source: %s",
+                    action.getType()
+            ));
+        }
+    }
+}

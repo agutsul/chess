@@ -21,7 +21,6 @@ import com.agutsul.chess.command.WinGameCommand;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
-import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionEvent;
@@ -73,7 +72,7 @@ public final class PlayerActionOberver
     }
 
     private void process(PlayerActionEvent event) {
-        var board = ((AbstractPlayableGame) this.game).getBoard();
+        var board = this.game.getBoard();
         try {
             var command = new PerformActionCommand(event.getPlayer(), board, (Observable) this.game);
             command.setSource(event.getSource());
@@ -167,8 +166,7 @@ public final class PlayerActionOberver
     }
 
     private void requestPlayerAction(Player player) {
-        var agame = (AbstractPlayableGame) this.game;
-        requestPlayerAction(agame.getBoard(), player);
+        requestPlayerAction(game.getBoard(), player);
     }
 
     private static void requestPlayerAction(Board board, Player player) {

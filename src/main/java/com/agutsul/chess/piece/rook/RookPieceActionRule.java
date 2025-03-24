@@ -17,9 +17,9 @@ public final class RookPieceActionRule<COLOR extends Color,PIECE extends RookPie
     @SuppressWarnings("unchecked")
     private RookPieceActionRule(Board board, RookPieceAlgo<COLOR,PIECE> algo) {
         super(new CompositePieceRule<>(
-                new RookCastlingActionRule<>(board),
                 new RookCaptureActionRule<>(board, algo),
-                new RookMoveActionRule<>(board, algo)
+                new RookMoveActionRule<>(board, algo),
+                new RookCastlingActionRule<>(board)
             )
         );
     }

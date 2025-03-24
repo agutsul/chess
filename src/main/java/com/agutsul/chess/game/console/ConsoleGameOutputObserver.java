@@ -27,7 +27,6 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.activity.action.memento.ActionMementoFactory;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
-import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.event.BoardStateNotificationEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
@@ -64,12 +63,12 @@ public final class ConsoleGameOutputObserver
         System.out.println(ENTER_ACTION_MESSAGE);
         System.out.println(ENTER_ACTION_EXAMPLE_MESSAGE);
 
-        displayBoard(((AbstractPlayableGame) event.getGame()).getBoard());
+        displayBoard(event.getGame().getBoard());
     }
 
     @Override
     protected void process(GameOverEvent event) {
-        var game = (AbstractPlayableGame) event.getGame();
+        var game = event.getGame();
 
         var board = game.getBoard();
         displayBoardState(board.getState());
@@ -98,23 +97,22 @@ public final class ConsoleGameOutputObserver
 
     @Override
     protected void process(ActionPerformedEvent ignoredEvent) {
-        displayBoard(((AbstractPlayableGame) this.game).getBoard());
+        displayBoard(this.game.getBoard());
     }
 
     @Override
     protected void process(ActionExecutionEvent event) {
-        displayAction((AbstractPlayableGame) this.game, event.getPlayer(), event.getAction());
+        displayAction(this.game, event.getPlayer(), event.getAction());
     }
 
     @Override
     protected void process(ActionCancelledEvent ignoredEvent) {
-        displayBoard(((AbstractPlayableGame) this.game).getBoard());
+        displayBoard(this.game.getBoard());
     }
 
     @Override
     protected void process(ActionCancellingEvent event) {
-        var game = (AbstractPlayableGame) this.game;
-        displayAction(game, game.getPlayer(event.getColor()), event.getAction());
+        displayAction(this.game, this.game.getPlayer(event.getColor()), event.getAction());
     }
 
     @Override
@@ -143,7 +141,7 @@ public final class ConsoleGameOutputObserver
 
     @Override
     protected void process(DrawPerformedEvent ignoredEvent) {
-        displayBoard(((AbstractPlayableGame) this.game).getBoard());
+        displayBoard(this.game.getBoard());
     }
 
     @Override
@@ -157,7 +155,7 @@ public final class ConsoleGameOutputObserver
 
     @Override
     protected void process(DefeatPerformedEvent event) {
-        displayBoard(((AbstractPlayableGame) this.game).getBoard());
+        displayBoard(this.game.getBoard());
     }
 
     @Override
@@ -171,7 +169,7 @@ public final class ConsoleGameOutputObserver
 
     @Override
     protected void process(ExitPerformedEvent ignoredEvent) {
-//        displayBoard(((AbstractPlayableGame) this.game).getBoard());
+//        displayBoard(this.game.getBoard());
     }
 
     @Override
@@ -200,13 +198,13 @@ public final class ConsoleGameOutputObserver
 
     @Override
     protected void process(WinPerformedEvent event) {
-        displayBoard(((AbstractPlayableGame) this.game).getBoard());
+        displayBoard(this.game.getBoard());
     }
 
 
     // utilities
 
-    private static void displayAction(AbstractPlayableGame game, Player player, Action<?> action) {
+    private static void displayAction(Game game, Player player, Action<?> action) {
         var actionPlayer = defaultIfNull(player, game.getCurrentPlayer());
 
         var journal = game.getJournal();

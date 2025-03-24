@@ -2,6 +2,7 @@ package com.agutsul.chess.board.state;
 
 import java.util.Collection;
 
+import com.agutsul.chess.Rankable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
@@ -13,20 +14,20 @@ public interface BoardState
         extends State<Board> {
 
     // https://en.wikipedia.org/wiki/Draw_(chess)
-    enum Type {
+    enum Type implements Rankable {
         EXITED(true),
-        DEFAULT(false),
-        CHECKED(false),
         CHECK_MATED(true),
-        STALE_MATED(true),            // draw - when the player to move is not in check but has no legal move ( automatic )
-        THREE_FOLD_REPETITION(false), // draw - when the same position occurs three times with the same player to move ( claims arbiter )
-        FIVE_FOLD_REPETITION(true),   // draw - when the same position occurs five times with the same player to move  ( automatic )
-        FIFTY_MOVES(false),           // draw - when the last fifty successive moves made by both players contain no capture or pawn move ( claims arbiter )
-        SEVENTY_FIVE_MOVES(true),     // draw - when the last seventy five successive moves made by both players contain no capture or pawn move ( automatic ). If the last move was a checkmate, the checkmate stands.
-        INSUFFICIENT_MATERIAL(false), // draw - ( dead position ) when no sequence of legal moves can lead to checkmate
-        AGREED_DRAW(true),            // draw - when player agree to a draw ( player request )
         AGREED_WIN(true),             // win  - when player agree to win - "winning of material" ( player request )
-        AGREED_DEFEAT(true);
+        AGREED_DRAW(true),            // draw - when player agree to a draw ( player request )
+        STALE_MATED(true),            // draw - when the player to move is not in check but has no legal move ( automatic )
+        FIVE_FOLD_REPETITION(true),   // draw - when the same position occurs five times with the same player to move  ( automatic )
+        SEVENTY_FIVE_MOVES(true),     // draw - when the last seventy five successive moves made by both players contain no capture or pawn move ( automatic ). If the last move was a checkmate, the checkmate stands.
+        AGREED_DEFEAT(true),
+        CHECKED(false),
+        FIFTY_MOVES(false),           // draw - when the last fifty successive moves made by both players contain no capture or pawn move ( claims arbiter )
+        THREE_FOLD_REPETITION(false), // draw - when the same position occurs three times with the same player to move ( claims arbiter )
+        INSUFFICIENT_MATERIAL(false), // draw - ( dead position ) when no sequence of legal moves can lead to checkmate
+        DEFAULT(false);
 
         private boolean terminal;
 
@@ -36,6 +37,11 @@ public interface BoardState
 
         boolean isTerminal() {
             return terminal;
+        }
+
+        @Override
+        public int rank() {
+            return values().length - ordinal();
         }
     }
 

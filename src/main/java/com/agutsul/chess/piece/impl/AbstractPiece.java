@@ -3,6 +3,7 @@ package com.agutsul.chess.piece.impl;
 import static java.time.Instant.now;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
+import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Instant;
@@ -11,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Capturable;
@@ -40,7 +42,8 @@ import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
 abstract class AbstractPiece<COLOR extends Color>
-        implements Piece<COLOR>, Movable, Capturable, Protectable {
+        implements Piece<COLOR>, Movable, Capturable, Protectable,
+                   Comparable<Piece<COLOR>> {
 
     private static final Logger LOGGER = getLogger(AbstractPiece.class);
 
@@ -323,6 +326,15 @@ abstract class AbstractPiece<COLOR extends Color>
                 && Objects.equals(getPosition(), other.getPosition());
     }
 
+    @Override
+    public final int compareTo(Piece<COLOR> other) {
+        return new CompareToBuilder()
+                .append(getType(), other.getType())
+                .append(getColor(), other.getColor())
+                .append(getPosition(), other.getPosition())
+                .build();
+    }
+
     // override specific dispose state creation
     DisposedPieceState<?> createDisposedPieceState(Instant instant) {
         return new DisposedPieceStateImpl<>(instant);
@@ -369,7 +381,7 @@ abstract class AbstractPiece<COLOR extends Color>
         this.currentState = (PieceState<Piece<COLOR>>) state;
     }
 
-    private void setPosition(Position position) {
+    final void setPosition(Position position) {
         // null can be set when piece should be removed from the board
         if (position == null) {
             dispose(null);
@@ -377,6 +389,15 @@ abstract class AbstractPiece<COLOR extends Color>
         }
 
         this.positions.add(position);
+    }
+
+    final void setPositions(List<Position> positions) {
+        if (isEmpty(positions)) {
+            return;
+        }
+
+        this.positions.clear();
+        this.positions.addAll(positions);
     }
 
     private void process(ClearPieceDataEvent event) {

@@ -19,6 +19,11 @@ public abstract class AbstractPromoteAction<COLOR extends Color,
     }
 
     @Override
+    public final Piece<?> getPiece() {
+        return getSource().getSource();
+    }
+
+    @Override
     public final String getCode() {
         return String.format("%s?", getSource());
     }

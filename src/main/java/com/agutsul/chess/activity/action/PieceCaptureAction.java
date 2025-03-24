@@ -39,4 +39,24 @@ public class PieceCaptureAction<COLOR1 extends Color,
         LOGGER.info("Executing capturing '{}' by '{}'", getTarget(), getSource());
         getSource().capture(getTarget());
     }
+
+    @Override
+    public final int compareTo(Action<?> action) {
+        int compared = super.compareTo(action);
+        if (compared != 0) {
+            return compared;
+        }
+
+        // return action attacking 'the strongest' piece first
+        return Integer.compare(getTargetRank(this), getTargetRank(action));
+    }
+
+    private static int getTargetRank(Action<?> action) {
+        var captureAction = (PieceCaptureAction<?,?,?,?>) action;
+
+        var targetPiece = captureAction.getTarget();
+        var pieceType = targetPiece.getType();
+
+        return pieceType.rank();
+    }
 }

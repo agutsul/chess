@@ -21,6 +21,11 @@ public abstract class AbstractMoveAction<COLOR extends Color,
     }
 
     @Override
+    public final Piece<?> getPiece() {
+        return getSource();
+    }
+
+    @Override
     public final Position getPosition() {
         return getTarget();
     }

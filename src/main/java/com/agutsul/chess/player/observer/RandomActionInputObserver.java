@@ -8,7 +8,6 @@ import java.util.Random;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.adapter.ActionAdapter;
-import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
@@ -32,7 +31,7 @@ public final class RandomActionInputObserver
 
     @Override
     protected String getActionCommand() {
-        var board = ((AbstractPlayableGame) this.game).getBoard();
+        var board = this.game.getBoard();
 
         var pieces  = board.getPieces(player.getColor());
         var actions = pieces.stream()

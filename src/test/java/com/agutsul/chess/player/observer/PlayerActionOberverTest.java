@@ -27,7 +27,6 @@ import com.agutsul.chess.activity.action.event.DrawPerformedEvent;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.activity.action.memento.ActionMementoMock;
 import com.agutsul.chess.board.AbstractBoard;
-import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -63,6 +62,9 @@ public class PlayerActionOberverTest {
     @SuppressWarnings("unchecked")
     void testPlayerActionEvent() {
         var piece = mock(PawnPiece.class);
+        when(piece.getType())
+            .thenReturn(Piece.Type.PAWN);
+
         var position = mock(Position.class);
 
         var action = mock(PieceMoveAction.class);
@@ -73,7 +75,7 @@ public class PlayerActionOberverTest {
         when(action.getPosition())
             .thenReturn(position);
 
-        var board = mock(Board.class);
+        var board = mock(AbstractBoard.class);
         when(board.getPiece(anyString()))
             .thenReturn(Optional.of(piece));
         when(board.getPosition(anyString()))

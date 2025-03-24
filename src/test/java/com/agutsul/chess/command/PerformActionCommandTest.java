@@ -108,7 +108,6 @@ public class PerformActionCommandTest {
         assertEquals("Invalid action for pawn at 'e2' and position 'c3'", thrown.getMessage());
     }
 
-
     @Test
     @SuppressWarnings("unchecked")
     void testActionCommandException() {

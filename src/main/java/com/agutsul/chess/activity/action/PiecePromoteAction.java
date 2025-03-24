@@ -2,6 +2,7 @@ package com.agutsul.chess.activity.action;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Executable;
@@ -41,11 +42,10 @@ public class PiecePromoteAction<COLOR1 extends Color,
 
     @Override
     public final void execute() {
-        var pawn = getSource().getSource();
-        LOGGER.info("Executing promote by '{}'", pawn);
+        LOGGER.info("Executing promote by '{}'", getPiece());
         // prompt player about piece type to create during promotion
         observable.notifyObservers(
-                new RequestPromotionPieceTypeEvent(pawn.getColor(), this)
+                new RequestPromotionPieceTypeEvent(getPiece().getColor(), this)
         );
     }
 
@@ -56,11 +56,25 @@ public class PiecePromoteAction<COLOR1 extends Color,
         }
     }
 
-    public final Piece.Type getPieceType() {
-        return pieceType;
+    @Override
+    public final int compareTo(Action<?> action) {
+        int compared = super.compareTo(action);
+        if (compared != 0) {
+            return compared;
+        }
+
+        return ObjectUtils.compare((Action<?>) action.getSource(), (Action<?>) getSource());
     }
 
-    private void setPieceType(Piece.Type pieceType) {
+    public final Observable getObservable() {
+        return this.observable;
+    }
+
+    public final Piece.Type getPieceType() {
+        return this.pieceType;
+    }
+
+    protected final void setPieceType(Piece.Type pieceType) {
         this.pieceType = pieceType;
     }
 

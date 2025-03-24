@@ -25,8 +25,12 @@ public final class ConsoleGame
 
         ((Observable) board).addObserver(new ConsolePlayerInputObserver(whitePlayer, this));
         ((Observable) board).addObserver(new RandomActionInputObserver(blackPlayer, this));
+
         // uncomment to manually enter player actions
         //((Observable) board).addObserver(new ConsolePlayerInputObserver(blackPlayer, this));
+
+        // uncomment to try minmax algo
+        //((Observable) board).addObserver(new BotActionInputObserver(blackPlayer, this));
 
         addObserver(new ConsoleGameOutputObserver(this));
     }
