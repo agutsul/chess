@@ -3,14 +3,13 @@ package com.agutsul.chess.activity.action;
 import com.agutsul.chess.Executable;
 import com.agutsul.chess.Positionable;
 import com.agutsul.chess.Rankable;
+import com.agutsul.chess.Valuable;
 import com.agutsul.chess.activity.Activity;
 import com.agutsul.chess.piece.Piece;
 
 public interface Action<SOURCE>
-        extends Executable,
-                Positionable,
-                Comparable<Action<?>>,
-                Activity<Action.Type,SOURCE> {
+        extends Executable, Positionable, Valuable,
+                Comparable<Action<?>>, Activity<Action.Type,SOURCE> {
 
     enum Type implements Activity.Type, Rankable {
         PROMOTE,
@@ -34,5 +33,10 @@ public interface Action<SOURCE>
         var rank2 = action.getType().rank();
 
         return Integer.compare(rank2, rank1);
+    }
+
+    @Override
+    default int getValue() {
+        return getType().rank() * getPiece().getDirection();
     }
 }

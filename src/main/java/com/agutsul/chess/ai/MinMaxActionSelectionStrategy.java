@@ -134,9 +134,7 @@ public final class MinMaxActionSelectionStrategy
             }
 
             var selectionFunction = ActionSelectionFunction.of(this.color);
-            var action = selectionFunction.apply(actionValues);
-
-            return action;
+            return selectionFunction.apply(actionValues);
         }
 
         private Integer simulate(Action<?> action) {
@@ -180,16 +178,13 @@ public final class MinMaxActionSelectionStrategy
 
         private int calculateValue(Board board, Action<?> action) {
             var sourcePiece = action.getPiece();
-            var actionRank = action.getType().rank();
-            var direction  = sourcePiece.getDirection();
-
-            var boardValue = (actionRank * direction)                  // action type influence
-                    + ((this.limit + 1)  * direction)                  // depth influence
+            var boardValue = action.getValue()                         // action type influence
+                    + ((this.limit + 1)  * sourcePiece.getDirection()) // depth influence
                     + board.calculateValue(this.color)                 // current board pieces
                     + this.value;                                      // previous board pieces
 
-            var boardState = board.getState().getType();
-            return boardState.rank() * boardValue;
+            var boardState = board.getState();
+            return boardState.getType().rank() * boardValue;
         }
 
         private static List<Action<?>> getActions(Board board, Color color) {
@@ -259,6 +254,7 @@ public final class MinMaxActionSelectionStrategy
                 return compared;
             }
 
+            // compare actions
             return ObjectUtils.compare(pair2.getKey(), pair1.getKey());
         }
     }
