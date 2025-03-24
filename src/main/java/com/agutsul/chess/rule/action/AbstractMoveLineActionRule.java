@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.agutsul.chess.Movable;
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -23,7 +24,7 @@ public abstract class AbstractMoveLineActionRule<COLOR extends Color,
 
     protected AbstractMoveLineActionRule(Board board,
                                          MovePieceAlgo<COLOR,PIECE,Line> algo) {
-        super(board);
+        super(Action.Type.MOVE, board);
         this.algo = algo;
     }
 

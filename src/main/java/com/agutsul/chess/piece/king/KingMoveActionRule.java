@@ -3,6 +3,7 @@ package com.agutsul.chess.piece.king;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -18,7 +19,7 @@ class KingMoveActionRule<COLOR extends Color,
 
     KingMoveActionRule(Board board,
                        MovePieceAlgo<COLOR,KING,Position> algo) {
-        super(board, algo);
+        super(Action.Type.MOVE, board, algo);
     }
 
     @Override

@@ -64,11 +64,12 @@ public final class MinMaxActionSelectionStrategy
         }
 
         var startTimepoint = now();
-        try (var executor = new ForkJoinPool()) {
+        try (var executor = new ForkJoinPool(10)) {
             var result = executor.invoke(new ActionSelectionTask(
                     board, this.game.getJournal(), color, this.limit
             ));
 
+            // return action
             return Optional.of(result.getKey());
         } finally {
             var duration = Duration.between(startTimepoint, now());
@@ -229,8 +230,8 @@ public final class MinMaxActionSelectionStrategy
         }
 
         @Override
-        public Pair<Action<?>,Integer> apply(TreeSet<Pair<Action<?>,Integer>> treeSet) {
-            return function.apply(treeSet);
+        public Pair<Action<?>,Integer> apply(TreeSet<Pair<Action<?>,Integer>> actionValues) {
+            return function.apply(actionValues);
         }
 
         private Color color() {

@@ -3,6 +3,7 @@ package com.agutsul.chess.piece.impl;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.slf4j.Logger;
@@ -72,7 +73,11 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
     public void move(PIECE piece, Position position) {
         LOGGER.info("Move '{}' to '{}'", piece, position);
 
-        var actions = board.getActions(piece, Action.Type.MOVE);
+        var actions = new ArrayList<Action<?>>();
+
+        actions.addAll(board.getActions(piece, Action.Type.MOVE));
+        actions.addAll(board.getActions(piece, Action.Type.BIG_MOVE));
+
         var possiblePositions = actions.stream()
                 .map(action -> (PieceMoveAction<?,?>) action)
                 .map(PieceMoveAction::getTarget)

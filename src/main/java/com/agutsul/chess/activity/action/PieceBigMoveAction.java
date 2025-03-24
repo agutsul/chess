@@ -9,6 +9,6 @@ public class PieceBigMoveAction<COLOR extends Color,
         extends PieceMoveAction<COLOR,PIECE> {
 
     public PieceBigMoveAction(PIECE piece, Position position) {
-        super(piece, position);
+        super(Action.Type.BIG_MOVE, piece, position);
     }
 }

@@ -3,6 +3,7 @@ package com.agutsul.chess.rule.checkmate;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,7 +39,16 @@ final class AttackerPinCheckMateEvaluator
                 // confirm that piece not already pinned
                 .filter(piece -> !((Pinnable) piece).isPinned())
                 // find all possible move actions
-                .map(piece -> board.getActions(piece, Action.Type.MOVE))
+                .map(piece -> {
+                    var actions = new ArrayList<Action<?>>();
+                    actions.addAll(board.getActions(piece, Action.Type.MOVE));
+
+                    if (Piece.Type.PAWN.equals(piece.getType())) {
+                        actions.addAll(board.getActions(piece, Action.Type.BIG_MOVE));
+                    }
+
+                    return actions;
+                })
                 .flatMap(Collection::stream)
                 .map(action -> (PieceMoveAction<?,?>) action)
                 .map(PieceMoveAction::getPosition)

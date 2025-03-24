@@ -15,8 +15,8 @@ public class CancelMoveAction<COLOR extends Color,
 
     private static final Logger LOGGER = getLogger(CancelMoveAction.class);
 
-    public CancelMoveAction(PIECE piece, Position position) {
-        super(piece, position);
+    public CancelMoveAction(Action.Type type, PIECE piece, Position position) {
+        super(type, piece, position);
     }
 
     @Override

@@ -12,7 +12,6 @@ import org.apache.commons.lang3.concurrent.LazyInitializer;
 
 import com.agutsul.chess.Positionable;
 import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.action.Action.Type;
 import com.agutsul.chess.activity.action.PieceCastlingAction;
 import com.agutsul.chess.activity.action.PieceCastlingAction.CastlingMoveAction;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
@@ -29,7 +28,18 @@ public enum ActionMementoFactory
         @Override
         public ActionMemento<?,?> apply(Action<?> action) {
             return createMemento(
-                    (Type) action.getType(),
+                    action.getType(),
+                    getSource(action),
+                    action.getPosition()
+            );
+        }
+    },
+    BIG_MOVE_MODE(Action.Type.BIG_MOVE) {
+
+        @Override
+        public ActionMemento<?,?> apply(Action<?> action) {
+            return createMemento(
+                    action.getType(),
                     getSource(action),
                     action.getPosition()
             );
@@ -40,7 +50,7 @@ public enum ActionMementoFactory
         @Override
         public ActionMemento<?,?> apply(Action<?> action) {
             return createMemento(
-                    (Type) action.getType(),
+                    action.getType(),
                     getSource(action),
                     action.getPosition()
             );
@@ -54,14 +64,14 @@ public enum ActionMementoFactory
 
             var originAction = promoteAction.getSource();
             var memento = createMemento(
-                    (Type) originAction.getType(),
+                    originAction.getType(),
                     originAction.getSource(),
                     ((Positionable) originAction).getPosition()
             );
 
             var pieceTypeInitializer = new PieceTypeLazyInitializer(promoteAction);
             return new PromoteActionMemento(
-                    (Type) promoteAction.getType(),
+                    promoteAction.getType(),
                     pieceTypeInitializer,
                     memento
             );
@@ -99,7 +109,7 @@ public enum ActionMementoFactory
 
             return new CastlingActionMemento(
                     castlingAction.getSide(),
-                    (Type) castlingAction.getType(),
+                    castlingAction.getType(),
                     createMemento(kingAction),
                     createMemento(rookAction)
             );
@@ -113,7 +123,7 @@ public enum ActionMementoFactory
 
         private static ActionMemento<String,String> createMemento(CastlingMoveAction<?,?> action) {
             return createMemento(
-                    (Type) action.getType(),
+                    action.getType(),
                     action.getSource(),
                     action.getPosition()
             );
@@ -135,7 +145,7 @@ public enum ActionMementoFactory
             );
 
             return new EnPassantActionMemento(
-                    (Type) enPassantAction.getType(),
+                    enPassantAction.getType(),
                     memento,
                     enPassantAction.getPosition()
             );

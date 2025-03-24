@@ -4,6 +4,7 @@ import static java.util.Collections.emptyList;
 
 import java.util.Collection;
 
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceBigMoveAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
@@ -23,7 +24,7 @@ final class PawnBigMoveActionRule<COLOR extends Color,
                           MovePieceAlgo<COLOR,PAWN,Position> moveAlgo,
                           MovePieceAlgo<COLOR,PAWN,Position> bigMoveAlgo) {
 
-        super(board, moveAlgo);
+        super(Action.Type.BIG_MOVE, board, moveAlgo);
         this.bigMoveAlgo = bigMoveAlgo;
     }
 

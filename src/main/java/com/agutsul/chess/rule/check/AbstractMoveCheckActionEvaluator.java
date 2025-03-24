@@ -3,10 +3,12 @@ package com.agutsul.chess.rule.check;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
 import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.PieceBigMoveAction;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.function.ActionFilter;
@@ -27,7 +29,7 @@ abstract class AbstractMoveCheckActionEvaluator
 
     @Override
     public Collection<Action<?>> evaluate(KingPiece<?> king) {
-        var attackers = board.getAttackers(king);
+        var attackers = this.board.getAttackers(king);
 
         Collection<PieceCaptureAction<?,?,?,?>> checkActions = attackers.stream()
                 .map(attacker -> board.getActions(attacker, Action.Type.CAPTURE))
@@ -37,10 +39,21 @@ abstract class AbstractMoveCheckActionEvaluator
                 .filter(action -> Objects.equals(king, action.getTarget()))
                 .collect(toSet());
 
-        var actionFilter = new ActionFilter<>(PieceMoveAction.class);
-        var actions = actionFilter.apply(this.pieceActions);
+        var filteredActions = new ArrayList<>();
 
-        Collection<PieceMoveAction<?,?>> pieceMoveActions = actions.stream()
+        var moveActionFilter = new ActionFilter<>(PieceMoveAction.class);
+        filteredActions.addAll(moveActionFilter.apply(this.pieceActions));
+
+        var hasBigMove = this.pieceActions.stream()
+                .map(Action::getType)
+                .anyMatch(actionType -> Action.Type.BIG_MOVE.equals(actionType));
+
+        if (hasBigMove) {
+            var bigMoveActionFilter = new ActionFilter<>(PieceBigMoveAction.class);
+            filteredActions.addAll(bigMoveActionFilter.apply(this.pieceActions));
+        }
+
+        Collection<PieceMoveAction<?,?>> pieceMoveActions = filteredActions.stream()
                 .map(action -> (PieceMoveAction<?,?>) action)
                 .collect(toList());
 

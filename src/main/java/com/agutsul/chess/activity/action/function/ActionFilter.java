@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.PieceBigMoveAction;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceCastlingAction;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
@@ -57,11 +58,12 @@ public final class ActionFilter<ACTION extends Action<?>>
     }
 
     private enum ActionFunctionMapper {
-        MOVE(PieceMoveAction.class,            new MoveActionFunction()),
-        CAPTURE(PieceCaptureAction.class,      new CaptureActionFunction()),
-        EN_PASSANT(PieceEnPassantAction.class, new EnPassantActionFunction()),
-        CASTLING(PieceCastlingAction.class,    new CastlingActionFunction()),
-        PROMOTE(PiecePromoteAction.class,      new PromoteActionFunction());
+        MOVE_MODE(PieceMoveAction.class,            new MoveActionFunction()),
+        BIG_MOVE_MODE(PieceBigMoveAction.class,     new BigMoveActionFunction()),
+        CAPTURE_MODE(PieceCaptureAction.class,      new CaptureActionFunction()),
+        EN_PASSANT_MODE(PieceEnPassantAction.class, new EnPassantActionFunction()),
+        CASTLING_MODE(PieceCastlingAction.class,    new CastlingActionFunction()),
+        PROMOTE_MODE(PiecePromoteAction.class,      new PromoteActionFunction());
 
         private final static Map<Class<Action<?>>, Function<Action<?>,?>> MAPPER = Stream.of(values())
                 .collect(toMap(ActionFunctionMapper::actionClass, ActionFunctionMapper::function));

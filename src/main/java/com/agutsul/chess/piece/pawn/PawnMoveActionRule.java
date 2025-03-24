@@ -3,6 +3,7 @@ package com.agutsul.chess.piece.pawn;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -19,7 +20,14 @@ class PawnMoveActionRule<COLOR extends Color,
 
     PawnMoveActionRule(Board board,
                        MovePieceAlgo<COLOR,PAWN,Position> algo) {
-        super(board, algo);
+
+        this(Action.Type.MOVE, board, algo);
+    }
+
+    PawnMoveActionRule(Action.Type type, Board board,
+                       MovePieceAlgo<COLOR,PAWN,Position> algo) {
+
+        super(type, board, algo);
     }
 
     @Override

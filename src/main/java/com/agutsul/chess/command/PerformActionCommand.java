@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.PieceBigMoveAction;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceCastlingAction;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
@@ -147,6 +148,14 @@ public final class PerformActionCommand
                 @Override
                 boolean equals(Action<?> action, Piece<?> piece, Position position) {
                     var moveAction = (PieceMoveAction<?,?>) action;
+                    return Objects.equals(moveAction.getSource(), piece)
+                            && Objects.equals(moveAction.getPosition(), position);
+                }
+            },
+            BIG_MOVE_MODE(Action.Type.BIG_MOVE) {
+                @Override
+                boolean equals(Action<?> action, Piece<?> piece, Position position) {
+                    var moveAction = (PieceBigMoveAction<?,?>) action;
                     return Objects.equals(moveAction.getSource(), piece)
                             && Objects.equals(moveAction.getPosition(), position);
                 }

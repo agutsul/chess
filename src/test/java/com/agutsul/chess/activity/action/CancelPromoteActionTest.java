@@ -55,7 +55,7 @@ public class CancelPromoteActionTest {
         assertEquals(Piece.Type.QUEEN, promotedPiece.getType());
 
         var cancelAction = new CancelPromoteAction(
-                new CancelMoveAction(promotedPiece, pawnSourcePosition)
+                new CancelMoveAction(Action.Type.MOVE, promotedPiece, pawnSourcePosition)
         );
 
         cancelAction.execute();

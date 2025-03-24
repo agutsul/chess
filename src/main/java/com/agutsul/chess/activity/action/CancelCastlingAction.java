@@ -41,7 +41,7 @@ public final class CancelCastlingAction<COLOR extends Color,
             extends CancelMoveAction<COLOR,PIECE> {
 
         public UncastlingMoveAction(PIECE piece, Position position) {
-            super(piece, position);
+            super(Action.Type.MOVE, piece, position);
         }
 
         @Override

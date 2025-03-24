@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.knight;
 
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -15,7 +16,7 @@ class KnightMoveActionRule<COLOR extends Color,
 
     KnightMoveActionRule(Board board,
                          MovePieceAlgo<COLOR,KNIGHT,Position> algo) {
-        super(board, algo);
+        super(Action.Type.MOVE, board, algo);
     }
 
     @Override

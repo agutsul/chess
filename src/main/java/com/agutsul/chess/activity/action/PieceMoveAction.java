@@ -22,7 +22,11 @@ public class PieceMoveAction<COLOR extends Color,
     private static final Comparator<Position> POSITION_COMPARATOR = new PositionComparator();
 
     public PieceMoveAction(PIECE piece, Position position) {
-        super(piece, position);
+        this(Action.Type.MOVE, piece, position);
+    }
+
+    PieceMoveAction(Action.Type type, PIECE piece, Position position) {
+        super(type, piece, position);
     }
 
     @Override

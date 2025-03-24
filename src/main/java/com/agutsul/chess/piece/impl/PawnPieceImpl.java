@@ -11,6 +11,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.PieceBigMoveAction;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
@@ -197,13 +198,13 @@ final class PawnPieceImpl<COLOR extends Color>
         }
 
         private Collection<Action<?>> calculateMoveActions(PIECE piece) {
-            var actions = this.actionRule.evaluate(
+            var calculatedActions = this.actionRule.evaluate(
                     piece,
                     Action.Type.MOVE,
                     Action.Type.PROMOTE
             );
 
-            return filter(actions, PieceMoveAction.class);
+            return filter(calculatedActions, PieceMoveAction.class);
         }
 
         private Collection<Action<?>> calculateCaptureActions(PIECE piece) {
@@ -252,6 +253,7 @@ final class PawnPieceImpl<COLOR extends Color>
             super.put(Action.Type.CAPTURE,    filter(actions, PieceCaptureAction.class));
             super.put(Action.Type.EN_PASSANT, filter(actions, PieceEnPassantAction.class));
             super.put(Action.Type.MOVE,       filter(actions, PieceMoveAction.class));
+            super.put(Action.Type.BIG_MOVE,   filter(actions, PieceBigMoveAction.class));
             super.put(Action.Type.PROMOTE,    filter(actions, PiecePromoteAction.class));
         }
     }

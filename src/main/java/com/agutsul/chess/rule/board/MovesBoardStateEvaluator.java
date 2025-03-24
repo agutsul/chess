@@ -230,6 +230,9 @@ final class MovesBoardStateEvaluator
 
         private static final Logger LOGGER = getLogger(PawnMoveCalculationTask.class);
 
+        private static final Set<Action.Type> MOVE_TYPES =
+                EnumSet.of(Action.Type.MOVE, Action.Type.BIG_MOVE);
+
         PawnMoveCalculationTask(List<ActionMemento<?,?>> actions, int limit) {
             super(LOGGER, actions, limit);
         }
@@ -265,7 +268,7 @@ final class MovesBoardStateEvaluator
         }
 
         private static boolean isMove(Action.Type actionType) {
-            return Action.Type.MOVE.equals(actionType);
+            return MOVE_TYPES.contains(actionType);
         }
     }
 }

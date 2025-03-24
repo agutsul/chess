@@ -33,7 +33,7 @@ final class AttackerCaptureCheckActionEvaluator
         var captureFilter = new ActionFilter<>(PieceCaptureAction.class);
         filteredActions.addAll(captureFilter.apply(this.pieceActions));
 
-        var hasEnPassante = pieceActions.stream()
+        var hasEnPassante = this.pieceActions.stream()
                 .map(Action::getType)
                 .anyMatch(actionType -> Action.Type.EN_PASSANT.equals(actionType));
 

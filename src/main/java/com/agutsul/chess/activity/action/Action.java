@@ -17,6 +17,7 @@ public interface Action<SOURCE>
         EN_PASSANT,
         CAPTURE,
         CASTLING,
+        BIG_MOVE,
         MOVE;
 
         @Override

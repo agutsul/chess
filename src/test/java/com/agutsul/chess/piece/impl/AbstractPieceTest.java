@@ -74,8 +74,9 @@ abstract class AbstractPieceTest {
                 + expectedCastlingPositions.size());
 
         if (!expectedMovePositions.isEmpty()) {
+            var moveTypes = List.of(Action.Type.MOVE, Action.Type.BIG_MOVE);
             var movePositions = actions.stream()
-                    .filter(action -> Action.Type.MOVE.equals(action.getType()))
+                    .filter(action -> moveTypes.contains(action.getType()))
                     .map(action -> (PieceMoveAction<?,?>) action)
                     .map(PieceMoveAction::getTarget)
                     .map(String::valueOf)

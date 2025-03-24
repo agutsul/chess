@@ -78,7 +78,23 @@ final class RookPieceImpl<COLOR extends Color>
                 return 0;
             }
 
-            return (type1.ordinal() + type2.ordinal()) % 2 == 0 ? -1 : 1;
+            var isHigherPriority = (isCapture(type1) && isMove(type2))
+                    || (isCapture(type1) && isCastling(type2))
+                    || (isMove(type1) && isCastling(type2));
+
+            return isHigherPriority ? -1 : 1;
+        }
+
+        private static boolean isCastling(Action.Type type) {
+            return Action.Type.CASTLING.equals(type);
+        }
+
+        private static boolean isCapture(Action.Type type) {
+            return Action.Type.CAPTURE.equals(type);
+        }
+
+        private static boolean isMove(Action.Type type) {
+            return Action.Type.MOVE.equals(type);
         }
     }
 

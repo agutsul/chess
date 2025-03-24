@@ -29,7 +29,7 @@ public class CancelMoveActionTest {
         var targetPosition = board.getPosition("e4").get();
 
         var moveAction = actions.stream()
-                .filter(action -> Action.Type.MOVE.equals(action.getType()))
+                .filter(action -> Action.Type.BIG_MOVE.equals(action.getType()))
                 .filter(action -> Objects.equals(action.getPosition(), targetPosition))
                 .findFirst();
 
@@ -38,7 +38,7 @@ public class CancelMoveActionTest {
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
         @SuppressWarnings({ "rawtypes", "unchecked" })
-        var cancelAction = new CancelMoveAction(whitePawn, sourcePosition);
+        var cancelAction = new CancelMoveAction(Action.Type.MOVE, whitePawn, sourcePosition);
         cancelAction.execute();
 
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));

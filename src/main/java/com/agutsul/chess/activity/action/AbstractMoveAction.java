@@ -11,8 +11,8 @@ public abstract class AbstractMoveAction<COLOR extends Color,
         extends AbstractTargetActivity<Action.Type,PIECE,Position>
         implements Action<PIECE> {
 
-    AbstractMoveAction(PIECE source, Position target) {
-        super(Action.Type.MOVE, source, target);
+    AbstractMoveAction(Action.Type type, PIECE source, Position target) {
+        super(type, source, target);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class PieceBigMoveActionTest {
         var targetPosition = board.getPosition("e4").get();
 
         var moveAction = actions.stream()
-                .filter(action -> Action.Type.MOVE.equals(action.getType()))
+                .filter(action -> Action.Type.BIG_MOVE.equals(action.getType()))
                 .filter(action -> Objects.equals(action.getPosition(), targetPosition))
                 .findFirst();
 

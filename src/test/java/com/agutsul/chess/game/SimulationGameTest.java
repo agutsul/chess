@@ -57,7 +57,7 @@ public class SimulationGameTest {
 
             var simulatedActionMemento = simulatedJournal.get(0);
 
-            assertEquals(Action.Type.MOVE, simulatedActionMemento.getActionType());
+            assertEquals(Action.Type.BIG_MOVE, simulatedActionMemento.getActionType());
             assertEquals(Colors.WHITE, simulatedActionMemento.getColor());
             assertEquals("e2", String.valueOf(simulatedActionMemento.getSource()));
             assertEquals("e4", String.valueOf(simulatedActionMemento.getTarget()));

@@ -21,11 +21,13 @@ public enum StandardAlgebraicActionFormatter implements ActionFormatter {
     MOVE_MODE(Action.Type.MOVE) {
         @Override
         public String formatMemento(ActionMemento<?,?> memento) {
-            return String.format("%s%s%s",
-                    memento.getPieceType(),
-                    formatCode(memento.getCode()),
-                    memento.getTarget()
-            );
+            return formatMoveMemento(memento);
+        }
+    },
+    BIG_MOVE_MODE(Action.Type.BIG_MOVE) {
+        @Override
+        public String formatMemento(ActionMemento<?,?> memento) {
+            return formatMoveMemento(memento);
         }
     },
     CASTLING_MODE(Action.Type.CASTLING) {
@@ -108,6 +110,14 @@ public enum StandardAlgebraicActionFormatter implements ActionFormatter {
 
     private Action.Type type() {
         return type;
+    }
+
+    private static String formatMoveMemento(ActionMemento<?,?> memento) {
+        return String.format("%s%s%s",
+                memento.getPieceType(),
+                formatCode(memento.getCode()),
+                memento.getTarget()
+        );
     }
 
     private static String formatPawn(ActionMemento<?,?> memento) {
