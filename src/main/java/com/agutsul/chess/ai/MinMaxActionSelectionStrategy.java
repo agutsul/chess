@@ -12,7 +12,6 @@ import java.io.Serializable;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -129,19 +128,13 @@ public final class MinMaxActionSelectionStrategy
                 subTask.fork();
             }
 
-            var actionValues = new HashMap<Action<?>,Integer>();
+            var actionValues = new TreeSet<Pair<Action<?>,Integer>>(ACTION_VALUE_COMPARATOR);
             for (var subTask : subTasks) {
-                var result = subTask.join();
-                actionValues.put(result.getKey(), result.getValue());
-            }
-
-            var values = new TreeSet<Pair<Action<?>,Integer>>(ACTION_VALUE_COMPARATOR);
-            for (var av : actionValues.entrySet()) {
-                values.add(Pair.of(av.getKey(), av.getValue()));
+                actionValues.add(subTask.join());
             }
 
             var selectionFunction = ActionSelectionFunction.of(this.color);
-            var action = selectionFunction.apply(values);
+            var action = selectionFunction.apply(actionValues);
 
             return action;
         }
