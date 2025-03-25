@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.board.PositionBoardBuilder;
+import com.agutsul.chess.board.PositionedBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.board.event.ResetPawnMoveActionEvent;
 import com.agutsul.chess.board.event.SetCastlingableSideEvent;
@@ -133,7 +133,7 @@ final class FenGameBuilder
     }
 
     private static Board createBoard(List<String> lines) {
-        var boardBuilder = new PositionBoardBuilder();
+        var boardBuilder = new PositionedBoardBuilder();
         for (int i = 0; i < lines.size(); i++) {
             var line = lines.get(i);
 

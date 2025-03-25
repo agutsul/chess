@@ -15,11 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.color.Colors;
 
 @ExtendWith(MockitoExtension.class)
-public class PositionBoardBuilderTest {
+public class PositionedBoardBuilderTest {
 
     @Test
     void testBoardBuilderPieceCreation() {
-        var board = new PositionBoardBuilder()
+        var board = new PositionedBoardBuilder()
                 .withBlackBishops(positionOf(2,7), positionOf(5,7))
                 .withBlackKnights(positionOf(1,7), positionOf(6,7))
                 .build();

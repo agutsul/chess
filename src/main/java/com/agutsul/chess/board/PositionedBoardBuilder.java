@@ -14,17 +14,17 @@ import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.piece.factory.PieceFactory;
 import com.agutsul.chess.position.Position;
 
-public final class PositionBoardBuilder
+public final class PositionedBoardBuilder
         extends AbstractBoardBuilder<Position> {
 
-    private static final Logger LOGGER = getLogger(PositionBoardBuilder.class);
+    private static final Logger LOGGER = getLogger(PositionedBoardBuilder.class);
 
-    public PositionBoardBuilder() {
+    public PositionedBoardBuilder() {
         this(new BoardContext<Position>(), new BoardContext<Position>());
     }
 
-    PositionBoardBuilder(BoardContext<Position> whiteContext,
-                         BoardContext<Position> blackContext) {
+    PositionedBoardBuilder(BoardContext<Position> whiteContext,
+                           BoardContext<Position> blackContext) {
 
         super(LOGGER, whiteContext, blackContext);
     }

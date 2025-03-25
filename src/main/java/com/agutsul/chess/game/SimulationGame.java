@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.board.PositionBoardBuilder;
+import com.agutsul.chess.board.PositionedBoardBuilder;
 import com.agutsul.chess.board.event.CopyVisitedPositionsEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -95,7 +95,7 @@ public final class SimulationGame
     }
 
     private static Board copyBoard(Board origin) {
-        var boardBuilder = new PositionBoardBuilder();
+        var boardBuilder = new PositionedBoardBuilder();
         // copy board pieces
         for (var piece : origin.getPieces()) {
             boardBuilder.withPiece(piece.getType(), piece.getColor(), piece.getPosition());

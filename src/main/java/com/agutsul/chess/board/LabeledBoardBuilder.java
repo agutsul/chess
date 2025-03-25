@@ -23,7 +23,7 @@ public final class LabeledBoardBuilder
     }
 
     LabeledBoardBuilder(BoardContext<String> whiteContext,
-                       BoardContext<String> blackContext) {
+                        BoardContext<String> blackContext) {
 
         super(LOGGER, whiteContext, blackContext);
     }
