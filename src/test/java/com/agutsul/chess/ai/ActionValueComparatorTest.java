@@ -5,11 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeSet;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -41,17 +38,17 @@ public class ActionValueComparatorTest {
                 .withWhiteKing("e1")
                 .build();
 
-        var pawn = board.getPiece("e2").get();
+        var pawn = (PawnPiece<?>) board.getPiece("e2").get();
 
         var action1 = new PieceMoveAction(pawn, positionOf("e3"));
-        var action2 = new PieceMoveAction(pawn, positionOf("e4"));
+        var action2 = new PieceBigMoveAction(pawn, positionOf("e4"));
 
-        var actionValues = Map.of(action1, 1, action2, 1);
+        var values = new ArrayList<Pair<Action<?>,Integer>>();
 
-        var values = new TreeSet<Pair<Action<?>,Integer>>(new ActionValueComparator());
-        for (var av : actionValues.entrySet()) {
-            values.add(Pair.of(av.getKey(), av.getValue()));
-        }
+        values.add(Pair.of(action1, 1));
+        values.add(Pair.of(action2, 1));
+
+        values.sort(new ActionValueComparator());
 
         assertEquals(2, values.size());
         assertEquals(action2, values.getFirst().getKey());
@@ -78,12 +75,12 @@ public class ActionValueComparatorTest {
         var action1 = new PieceCaptureAction(pawn1, pawn);
         var action2 = new PieceCaptureAction(pawn2, knight);
 
-        var actionValues = Map.of(action1, 1, action2, 1);
+        var values = new ArrayList<Pair<Action<?>,Integer>>();
 
-        var values = new TreeSet<Pair<Action<?>,Integer>>(new ActionValueComparator());
-        for (var av : actionValues.entrySet()) {
-            values.add(Pair.of(av.getKey(), av.getValue()));
-        }
+        values.add(Pair.of(action1, 1));
+        values.add(Pair.of(action2, 1));
+
+        values.sort(new ActionValueComparator());
 
         assertEquals(2, values.size());
         assertEquals(action2, values.getFirst().getKey());
@@ -112,10 +109,12 @@ public class ActionValueComparatorTest {
         var promoteAction1 = new PiecePromoteAction(moveAction, observable);
         var promoteAction2 = new PiecePromoteAction(captureAction, observable);
 
-        var values = new TreeSet<Pair<Action<?>,Integer>>(new ActionValueComparator());
+        var values = new ArrayList<Pair<Action<?>,Integer>>();
 
         values.add(Pair.of(promoteAction1, 1));
         values.add(Pair.of(promoteAction2, 1));
+
+        values.sort(new ActionValueComparator());
 
         assertEquals(2, values.size());
         assertEquals(promoteAction2, values.getFirst().getKey());
@@ -147,12 +146,12 @@ public class ActionValueComparatorTest {
                 new CastlingMoveAction(king,  positionOf("c1"))
         );
 
-        var actionValues = Map.of(castlingAction1, 1, castlingAction2, 1);
+        var values = new ArrayList<Pair<Action<?>,Integer>>();
 
-        var values = new TreeSet<Pair<Action<?>,Integer>>(new ActionValueComparator());
-        for (var av : actionValues.entrySet()) {
-            values.add(Pair.of(av.getKey(), av.getValue()));
-        }
+        values.add(Pair.of(castlingAction1, 1));
+        values.add(Pair.of(castlingAction2, 1));
+
+        values.sort(new ActionValueComparator());
 
         assertEquals(2, values.size());
         assertEquals(castlingAction2, values.getFirst().getKey());
@@ -185,12 +184,12 @@ public class ActionValueComparatorTest {
         var enpassantAction1 = new ArrayList<>(board.getActions(blackPawn1, Type.EN_PASSANT));
         var enpassantAction2 = new ArrayList<>(board.getActions(blackPawn2, Type.EN_PASSANT));
 
-        var actionValues = Map.of(enpassantAction1.get(0), 1, enpassantAction2.get(0), 1);
+        var values = new ArrayList<Pair<Action<?>,Integer>>();
 
-        var values = new TreeSet<Pair<Action<?>,Integer>>(new ActionValueComparator());
-        for (var av : actionValues.entrySet()) {
-            values.add(Pair.of(av.getKey(), av.getValue()));
-        }
+        values.add(Pair.of(enpassantAction1.get(0), 1));
+        values.add(Pair.of(enpassantAction2.get(0), 1));
+
+        values.sort(new ActionValueComparator());
 
         assertEquals(2, values.size());
         assertEquals(enpassantAction2.get(0), values.getFirst().getKey());
@@ -198,7 +197,6 @@ public class ActionValueComparatorTest {
     }
 
     @Test
-    @Disabled
     @SuppressWarnings({ "unchecked", "rawtypes" })
     void testActionValueSorting() {
         var board = new StringBoardBuilder()
@@ -213,10 +211,12 @@ public class ActionValueComparatorTest {
         Action<?> action1 = new PieceMoveAction(whitePawn, positionOf("e6"));
         Action<?> action2 = new PieceCaptureAction(whitePawn, blackPawn);
 
-        var values = new TreeSet<Pair<Action<?>,Integer>>(new ActionValueComparator());
+        var values = new ArrayList<Pair<Action<?>,Integer>>();
 
         values.add(Pair.of(action1, 1));
         values.add(Pair.of(action2, 1));
+
+        values.sort(new ActionValueComparator());
 
         assertEquals(2, values.size());
         assertEquals(action2, values.getFirst().getKey());

@@ -48,22 +48,7 @@ public class PieceCastlingAction<COLOR extends Color,
             return compared;
         }
 
-        var castlingAction = (PieceCastlingAction<?,?,?>) action;
-        var sourceComparison = ObjectUtils.compare(
-                (Action<?>) castlingAction.getSource(),
-                (Action<?>) getSource()
-        );
-
-        if (sourceComparison != 0) {
-            return sourceComparison;
-        }
-
-        var targetComparison = ObjectUtils.compare(
-                (Action<?>) castlingAction.getTarget(),
-                (Action<?>) getTarget()
-        );
-
-        return targetComparison;
+        return ObjectUtils.compare(getSide(), ((PieceCastlingAction<?,?,?>) action).getSide());
     }
 
     public static final class CastlingMoveAction<COLOR extends Color,

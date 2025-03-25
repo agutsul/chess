@@ -10,12 +10,12 @@ import static org.slf4j.LoggerFactory.getLogger;
 import java.io.IOException;
 import java.io.Serializable;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TreeSet;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 import java.util.function.Function;
@@ -129,10 +129,12 @@ public final class MinMaxActionSelectionStrategy
                 subTask.fork();
             }
 
-            var actionValues = new TreeSet<Pair<Action<?>,Integer>>(ACTION_VALUE_COMPARATOR);
+            var actionValues = new ArrayList<Pair<Action<?>,Integer>>();
             for (var subTask : subTasks) {
                 actionValues.add(subTask.join());
             }
+
+            actionValues.sort(ACTION_VALUE_COMPARATOR);
 
             var selectionFunction = ActionSelectionFunction.of(this.color);
             return selectionFunction.apply(actionValues);
@@ -211,7 +213,7 @@ public final class MinMaxActionSelectionStrategy
     }
 
     enum ActionSelectionFunction
-            implements Function<TreeSet<Pair<Action<?>,Integer>>,Pair<Action<?>,Integer>> {
+            implements Function<List<Pair<Action<?>,Integer>>,Pair<Action<?>,Integer>> {
 
         WHITE_MODE(Colors.WHITE, actionValues -> actionValues.getLast()),   // max
         BLACK_MODE(Colors.BLACK, actionValues -> actionValues.getFirst());  // min
@@ -220,17 +222,17 @@ public final class MinMaxActionSelectionStrategy
                 Stream.of(values()).collect(toMap(ActionSelectionFunction::color, identity()));
 
         private Color color;
-        private Function<TreeSet<Pair<Action<?>,Integer>>,Pair<Action<?>,Integer>> function;
+        private Function<List<Pair<Action<?>,Integer>>,Pair<Action<?>,Integer>> function;
 
         ActionSelectionFunction(Color color,
-                                Function<TreeSet<Pair<Action<?>,Integer>>,Pair<Action<?>,Integer>> function) {
+                                Function<List<Pair<Action<?>,Integer>>,Pair<Action<?>,Integer>> function) {
 
             this.color = color;
             this.function = function;
         }
 
         @Override
-        public Pair<Action<?>,Integer> apply(TreeSet<Pair<Action<?>,Integer>> actionValues) {
+        public Pair<Action<?>,Integer> apply(List<Pair<Action<?>,Integer>> actionValues) {
             return function.apply(actionValues);
         }
 

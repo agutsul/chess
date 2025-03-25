@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.action;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import com.agutsul.chess.Executable;
 import com.agutsul.chess.Positionable;
 import com.agutsul.chess.Rankable;
@@ -32,10 +34,7 @@ public interface Action<SOURCE>
 
     @Override
     default int compareTo(Action<?> action) {
-        var rank1 = getType().rank();
-        var rank2 = action.getType().rank();
-
-        return Integer.compare(rank2, rank1);
+        return ObjectUtils.compare(getType(), action.getType());
     }
 
     @Override
