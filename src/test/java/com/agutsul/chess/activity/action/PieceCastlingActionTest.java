@@ -33,7 +33,7 @@ public class PieceCastlingActionTest {
         assertEquals(6, actions.size());
 
         var castlingAction = actions.stream()
-                .filter(action -> Action.Type.CASTLING.equals(action.getType()))
+                .filter(Action::isCastling)
                 .findFirst();
 
         assertTrue(castlingAction.isPresent());
@@ -69,7 +69,7 @@ public class PieceCastlingActionTest {
         assertEquals(6, actions.size());
 
         var castlingAction = actions.stream()
-                .filter(action -> Action.Type.CASTLING.equals(action.getType()))
+                .filter(Action::isCastling)
                 .findFirst();
 
         assertTrue(castlingAction.isPresent());

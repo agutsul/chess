@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.action;
 
+import static com.agutsul.chess.activity.action.Action.isCapture;
+import static com.agutsul.chess.activity.action.Action.isMove;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,7 +35,8 @@ public class PiecePromoteActionTest {
         assertFalse(actions.isEmpty());
 
         var promotionAction = actions.stream()
-                .filter(action -> Action.Type.PROMOTE.equals(action.getType()))
+                .filter(Action::isPromote)
+                .filter(action -> isMove((Action<?>) action.getSource()))
                 .findFirst();
 
         assertTrue(promotionAction.isPresent());
@@ -70,11 +73,8 @@ public class PiecePromoteActionTest {
         assertFalse(actions.isEmpty());
 
         var promotionAction = actions.stream()
-                .filter(action -> Action.Type.PROMOTE.equals(action.getType()))
-                .filter(action -> {
-                    var sourceAction = ((PiecePromoteAction<?,?>) action).getSource();
-                    return Action.Type.CAPTURE.equals(sourceAction.getType());
-                })
+                .filter(Action::isPromote)
+                .filter(action -> isCapture((Action<?>) action.getSource()))
                 .findFirst();
 
         assertTrue(promotionAction.isPresent());

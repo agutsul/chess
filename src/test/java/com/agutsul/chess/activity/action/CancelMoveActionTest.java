@@ -26,10 +26,10 @@ public class CancelMoveActionTest {
         var actions = board.getActions(whitePawn);
 
         var sourcePosition = whitePawn.getPosition();
-        var targetPosition = board.getPosition("e4").get();
+        var targetPosition = board.getPosition("e3").get();
 
         var moveAction = actions.stream()
-                .filter(action -> Action.Type.BIG_MOVE.equals(action.getType()))
+                .filter(Action::isMove)
                 .filter(action -> Objects.equals(action.getPosition(), targetPosition))
                 .findFirst();
 

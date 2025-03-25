@@ -301,7 +301,7 @@ public class JournalImplTest implements TestFileReader {
 
         var targetPosition = board.getPosition("a3").get();
         var moveAction = actions.stream()
-                .filter(action -> Action.Type.MOVE.equals(action.getType()))
+                .filter(Action::isMove)
                 .filter(action -> Objects.equals(action.getPosition(), targetPosition))
                 .findFirst();
 

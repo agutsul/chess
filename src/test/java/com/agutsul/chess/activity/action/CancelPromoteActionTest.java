@@ -35,7 +35,7 @@ public class CancelPromoteActionTest {
         assertFalse(actions.isEmpty());
 
         var promotionAction = actions.stream()
-                .filter(action -> Action.Type.PROMOTE.equals(action.getType()))
+                .filter(Action::isPromote)
                 .findFirst();
 
         assertTrue(promotionAction.isPresent());

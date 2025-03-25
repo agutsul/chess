@@ -1,7 +1,6 @@
 package com.agutsul.chess.activity.action;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Objects;
 
@@ -15,34 +14,35 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
 
 @ExtendWith(MockitoExtension.class)
-public class PieceBigMoveActionTest {
+public class CancelBigMoveActionTest {
 
     @Test
-    void testWhitePawnBigMoveAction() {
+    void testCancelBigMoveAction() {
         var board = new StringBoardBuilder()
                 .withWhitePawn("e2")
                 .build();
 
         var whitePawn = board.getPiece("e2").get();
         var actions = board.getActions(whitePawn);
-        assertEquals(2, actions.size());
 
         var sourcePosition = whitePawn.getPosition();
         var targetPosition = board.getPosition("e4").get();
 
-        var moveAction = actions.stream()
+        var bigMoveAction = actions.stream()
                 .filter(Action::isBigMove)
                 .filter(action -> Objects.equals(action.getPosition(), targetPosition))
                 .findFirst();
 
-        assertTrue(moveAction.isPresent());
-        assertEquals("e2->e4", moveAction.get().getCode());
-
-        moveAction.get().execute();
+        bigMoveAction.get().execute();
 
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
-        assertEquals(targetPosition, whitePawn.getPosition());
-        assertTrue(board.isEmpty(sourcePosition));
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        var cancelAction = new CancelBigMoveAction(whitePawn, sourcePosition);
+        cancelAction.execute();
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+
+        assertEquals(sourcePosition, whitePawn.getPosition());
     }
 }

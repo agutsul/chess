@@ -420,7 +420,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
         if (!expectedMovePositions.isEmpty()) {
             var movePositions = actions.stream()
-                    .filter(action -> Action.Type.MOVE.equals(action.getType()))
+                    .filter(Action::isMove)
                     .map(action -> (PieceMoveAction<?,?>) action)
                     .map(PieceMoveAction::getTarget)
                     .map(String::valueOf)
@@ -431,7 +431,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
         if (!expectedEnPassantPositions.isEmpty()) {
             var enPassantPositions = actions.stream()
-                    .filter(action -> Action.Type.EN_PASSANT.equals(action.getType()))
+                    .filter(Action::isEnPassant)
                     .map(action -> (PieceEnPassantAction<?,?,?,?>) action)
                     .map(PieceEnPassantAction::getPosition)
                     .map(String::valueOf)
@@ -465,11 +465,11 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         if (!expectedMovePromotePositions.isEmpty()) {
             @SuppressWarnings("rawtypes")
             var promotePositions = actions.stream()
-                    .filter(action -> Action.Type.PROMOTE.equals(action.getType()))
+                    .filter(Action::isPromote)
                     .map(action -> (PiecePromoteAction) action)
                     .map(PiecePromoteAction::getSource)
                     .map(action -> (Action) action)
-                    .filter(action -> Action.Type.MOVE.equals(action.getType()))
+                    .filter(Action::isMove)
                     .map(action -> (PieceMoveAction) action)
                     .map(PieceMoveAction::getTarget)
                     .map(String::valueOf)
@@ -481,11 +481,11 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         if (!expectedCapturePromotePositions.isEmpty()) {
             @SuppressWarnings("rawtypes")
             var promotePositions = actions.stream()
-                    .filter(action -> Action.Type.PROMOTE.equals(action.getType()))
+                    .filter(Action::isPromote)
                     .map(action -> (PiecePromoteAction) action)
                     .map(PiecePromoteAction::getSource)
                     .map(action -> (Action) action)
-                    .filter(action -> Action.Type.CAPTURE.equals(action.getType()))
+                    .filter(Action::isCapture)
                     .map(action -> (PieceCaptureAction) action)
                     .map(PieceCaptureAction::getTarget)
                     .map(enemyPiece -> (Piece) enemyPiece)

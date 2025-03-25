@@ -31,7 +31,7 @@ public class PieceMoveActionTest {
         var targetPosition = board.getPosition("c6").get();
 
         var moveAction = actions.stream()
-                .filter(action -> Action.Type.MOVE.equals(action.getType()))
+                .filter(Action::isMove)
                 .filter(action -> Objects.equals(action.getPosition(), targetPosition))
                 .findFirst();
 

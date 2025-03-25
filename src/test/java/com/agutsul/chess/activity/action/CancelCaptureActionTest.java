@@ -30,7 +30,7 @@ public class CancelCaptureActionTest {
         var targetPosition = blackPawn.getPosition();
 
         var captureAction = board.getActions(whiteBishop).stream()
-                .filter(action -> Action.Type.CAPTURE.equals(action.getType()))
+                .filter(Action::isCapture)
                 .findFirst();
 
         assertTrue(captureAction.isPresent());

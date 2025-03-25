@@ -38,7 +38,7 @@ public class PieceEnPassantActionTest {
         assertFalse(actions.isEmpty());
 
         var enPassantAction = actions.stream()
-                .filter(action -> Action.Type.EN_PASSANT.equals(action.getType()))
+                .filter(Action::isEnPassant)
                 .findFirst();
 
         assertTrue(enPassantAction.isPresent());
@@ -72,7 +72,7 @@ public class PieceEnPassantActionTest {
         assertFalse(actions.isEmpty());
 
         var enPassantAction = actions.stream()
-                .filter(action -> Action.Type.EN_PASSANT.equals(action.getType()))
+                .filter(Action::isEnPassant)
                 .findFirst();
 
         assertTrue(enPassantAction.isPresent());

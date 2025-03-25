@@ -1,5 +1,10 @@
 package com.agutsul.chess.activity.action.memento;
 
+import static com.agutsul.chess.activity.action.Action.isCapture;
+import static com.agutsul.chess.activity.action.Action.isCastling;
+import static com.agutsul.chess.activity.action.Action.isEnPassant;
+import static com.agutsul.chess.activity.action.Action.isMove;
+import static com.agutsul.chess.activity.action.Action.isPromote;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -53,7 +58,7 @@ public class CancelActionMementoFactoryTest {
 
         var cancelAction = CancelActionMementoFactory.createAction(board, memento);
 
-        assertEquals(Action.Type.MOVE, cancelAction.getType());
+        assertTrue(isMove(cancelAction));
         assertEquals(sourcePosition, cancelAction.getPosition());
         assertEquals(targetPosition, ((PawnPiece<?>) cancelAction.getSource()).getPosition());
     }
@@ -85,7 +90,7 @@ public class CancelActionMementoFactoryTest {
 
         var cancelAction = CancelActionMementoFactory.createAction(board, memento);
 
-        assertEquals(Action.Type.CAPTURE, cancelAction.getType());
+        assertTrue(isCapture(cancelAction));
         assertEquals(targetPosition, cancelAction.getPosition());
         assertEquals(targetPosition, ((PawnPiece<?>) cancelAction.getSource()).getPosition());
     }
@@ -117,9 +122,9 @@ public class CancelActionMementoFactoryTest {
 
         var cancelAction = CancelActionMementoFactory.createAction(board, memento);
 
-        assertEquals(Action.Type.PROMOTE, cancelAction.getType());
+        assertTrue(isPromote(cancelAction));
         assertEquals(sourcePosition, cancelAction.getPosition());
-        assertEquals(Action.Type.MOVE, ((Action<?>) cancelAction.getSource()).getType());
+        assertTrue(isMove((Action<?>) cancelAction.getSource()));
 
         var originAction = (CancelMoveAction<?,?>) cancelAction.getSource();
         assertEquals(queen, originAction.getSource());
@@ -159,8 +164,8 @@ public class CancelActionMementoFactoryTest {
 
         var cancelAction = CancelActionMementoFactory.createAction(board, memento);
 
-        assertEquals(Action.Type.PROMOTE, cancelAction.getType());
-        assertEquals(Action.Type.CAPTURE, ((Action<?>) cancelAction.getSource()).getType());
+        assertTrue(isPromote(cancelAction));
+        assertTrue(isCapture((Action<?>) cancelAction.getSource()));
 
         var originAction = (CancelCaptureAction<?,?,?,?>) cancelAction.getSource();
         assertEquals(queen, originAction.getSource());
@@ -189,7 +194,7 @@ public class CancelActionMementoFactoryTest {
 
         var cancelAction = CancelActionMementoFactory.createAction(board, memento);
 
-        assertEquals(Action.Type.CASTLING, cancelAction.getType());
+        assertTrue(isCastling(cancelAction));
         assertEquals(Castlingable.Side.KING.name(), cancelAction.getCode());
         assertEquals(kingPosition, cancelAction.getPosition());
 
@@ -224,7 +229,7 @@ public class CancelActionMementoFactoryTest {
 
         var cancelAction = CancelActionMementoFactory.createAction(board, memento);
 
-        assertEquals(Action.Type.EN_PASSANT, cancelAction.getType());
+        assertTrue(isEnPassant(cancelAction));
 
         var action = (CancelEnPassantAction<?,?,?,?>) cancelAction;
         assertEquals(whitePawn, action.getSource());

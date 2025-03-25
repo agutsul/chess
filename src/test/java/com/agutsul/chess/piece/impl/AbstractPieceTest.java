@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.activity.action.memento.ActionMementoFactory.createMemento;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -9,7 +10,6 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter;
-import com.agutsul.chess.activity.action.memento.ActionMementoFactory;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
@@ -87,7 +87,7 @@ abstract class AbstractPieceTest {
 
         if (!expectedCapturePositions.isEmpty()) {
             var capturePositions = actions.stream()
-                    .filter(action -> Action.Type.CAPTURE.equals(action.getType()))
+                    .filter(Action::isCapture)
                     .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                     .map(PieceCaptureAction::getTarget)
                     .map(Piece::getPosition)
@@ -99,8 +99,8 @@ abstract class AbstractPieceTest {
 
         if (!expectedCastlingPositions.isEmpty()) {
             var castlingPositions = actions.stream()
-                    .filter(action -> Action.Type.CASTLING.equals(action.getType()))
-                    .map(action -> ActionMementoFactory.createMemento(board, action))
+                    .filter(Action::isCastling)
+                    .map(action -> createMemento(board, action))
                     .map(memento -> StandardAlgebraicActionFormatter.format(memento))
                     .toList();
 

@@ -30,7 +30,7 @@ public class PieceCaptureActionTest {
         assertEquals(2, actions.size());
 
         var captureAction = actions.stream()
-                .filter(action -> Action.Type.CAPTURE.equals(action.getType()))
+                .filter(Action::isCapture)
                 .findFirst();
 
         assertTrue(captureAction.isPresent());
@@ -63,7 +63,7 @@ public class PieceCaptureActionTest {
         assertEquals(2, actions.size());
 
         var captureAction = actions.stream()
-                .filter(action -> Action.Type.CAPTURE.equals(action.getType()))
+                .filter(Action::isCapture)
                 .findFirst();
 
         assertTrue(captureAction.isPresent());

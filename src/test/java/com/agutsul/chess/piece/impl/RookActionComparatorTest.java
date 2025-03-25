@@ -1,7 +1,11 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.activity.action.Action.isCapture;
+import static com.agutsul.chess.activity.action.Action.isCastling;
+import static com.agutsul.chess.activity.action.Action.isMove;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 
@@ -9,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.StringBoardBuilder;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,8 +32,8 @@ public class RookActionComparatorTest {
         assertFalse(actions.isEmpty());
         assertEquals(7, actions.size());
 
-        assertEquals(Action.Type.CAPTURE,  actions.get(0).getType());
-        assertEquals(Action.Type.CASTLING, actions.get(actions.size() - 1).getType());
-        assertEquals(Action.Type.MOVE,     actions.get(1).getType());
+        assertTrue(isCapture(actions.getFirst()));
+        assertTrue(isCastling(actions.getLast()));
+        assertTrue(isMove(actions.get(1)));
     }
 }
