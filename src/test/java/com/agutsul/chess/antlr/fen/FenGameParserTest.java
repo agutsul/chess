@@ -1,5 +1,7 @@
 package com.agutsul.chess.antlr.fen;
 
+import static com.agutsul.chess.piece.Piece.isKnight;
+import static com.agutsul.chess.piece.Piece.isPawn;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,7 +20,6 @@ import com.agutsul.chess.TestFileReader;
 import com.agutsul.chess.antlr.AntlrFileParser;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.fen.FenGame;
-import com.agutsul.chess.piece.Piece;
 
 @ExtendWith(MockitoExtension.class)
 public class FenGameParserTest implements TestFileReader {
@@ -54,7 +55,7 @@ public class FenGameParserTest implements TestFileReader {
         assertTrue(piece.isPresent());
 
         var pawn = piece.get();
-        assertEquals(Piece.Type.PAWN, pawn.getType());
+        assertTrue(isPawn(pawn));
         assertEquals(Colors.WHITE, pawn.getColor());
 
         assertEquals(Colors.BLACK, game.getCurrentPlayer().getColor());
@@ -79,7 +80,7 @@ public class FenGameParserTest implements TestFileReader {
         assertTrue(piece.isPresent());
 
         var pawn = piece.get();
-        assertEquals(Piece.Type.PAWN, pawn.getType());
+        assertTrue(isPawn(pawn));
         assertEquals(Colors.BLACK, pawn.getColor());
 
         assertEquals(Colors.WHITE, game.getCurrentPlayer().getColor());
@@ -104,7 +105,7 @@ public class FenGameParserTest implements TestFileReader {
         assertTrue(piece.isPresent());
 
         var knight = piece.get();
-        assertEquals(Piece.Type.KNIGHT, knight.getType());
+        assertTrue(isKnight(knight));
         assertEquals(Colors.WHITE, knight.getColor());
 
         assertEquals(Colors.BLACK, game.getCurrentPlayer().getColor());

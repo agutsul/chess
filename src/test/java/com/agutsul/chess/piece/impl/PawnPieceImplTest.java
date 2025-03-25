@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.piece.Piece.isPawn;
+import static com.agutsul.chess.piece.Piece.isQueen;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -318,17 +320,17 @@ public class PawnPieceImplTest extends AbstractPieceTest {
                 .build();
 
         var whitePawn = (PawnPiece<Color>) board.getPiece("e7").get();
-        assertEquals(whitePawn.getType(), Piece.Type.PAWN);
+        assertTrue(isPawn(whitePawn));
 
         var blackKnight = board.getPiece("d8").get();
 
         var position = board.getPosition("d8").get();
-        assertEquals(blackKnight.getPosition(), position);
+        assertEquals(position, blackKnight.getPosition());
 
         whitePawn.promote(position, Piece.Type.QUEEN);
 
-        assertEquals(whitePawn.getPosition(), position);
-        assertEquals(whitePawn.getType(), Piece.Type.QUEEN);
+        assertEquals(position, whitePawn.getPosition());
+        assertTrue(isQueen(whitePawn));
     }
 
     @Test
@@ -338,14 +340,14 @@ public class PawnPieceImplTest extends AbstractPieceTest {
                 .build();
 
         var whitePawn = (PawnPiece<Color>) board.getPiece("e7").get();
-        assertEquals(whitePawn.getType(), Piece.Type.PAWN);
+        assertTrue(isPawn(whitePawn));
 
         var position = board.getPosition("e8").get();
 
         whitePawn.promote(position, Piece.Type.QUEEN);
 
-        assertEquals(whitePawn.getPosition(), position);
-        assertEquals(whitePawn.getType(), Piece.Type.QUEEN);
+        assertEquals(position, whitePawn.getPosition());
+        assertTrue(isQueen(whitePawn));
     }
 
     @Test
@@ -355,7 +357,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
                 .build();
 
         var whitePawn = (PawnPiece<Color>) board.getPiece("e6").get();
-        assertEquals(whitePawn.getType(), Piece.Type.PAWN);
+        assertTrue(isPawn(whitePawn));
 
         var position = board.getPosition("e8").get();
 
@@ -365,7 +367,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         );
 
         assertEquals(thrown.getMessage(), "PAWN invalid promotion to QUEEN at 'e8'");
-        assertEquals(whitePawn.getType(), Piece.Type.PAWN);
+        assertTrue(isPawn(whitePawn));
     }
 
     @Test

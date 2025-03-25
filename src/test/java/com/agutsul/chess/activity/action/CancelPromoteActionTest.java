@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.action;
 
+import static com.agutsul.chess.piece.Piece.isPawn;
+import static com.agutsul.chess.piece.Piece.isQueen;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -13,7 +15,6 @@ import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.mock.PieceTypeRequestObserverMock;
-import com.agutsul.chess.piece.Piece;
 
 @ExtendWith(MockitoExtension.class)
 public class CancelPromoteActionTest {
@@ -52,7 +53,7 @@ public class CancelPromoteActionTest {
         assertTrue(board.isEmpty(pawnSourcePosition));
 
         var promotedPiece = board.getPiece(targetPosition).get();
-        assertEquals(Piece.Type.QUEEN, promotedPiece.getType());
+        assertTrue(isQueen(promotedPiece));
 
         var cancelAction = new CancelPromoteAction(
                 new CancelMoveAction(promotedPiece, pawnSourcePosition)
@@ -63,7 +64,7 @@ public class CancelPromoteActionTest {
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
         var piece = board.getPiece("a7").get();
-        assertEquals(Piece.Type.PAWN, piece.getType());
+        assertTrue(isPawn(piece));
         assertEquals(pawn, piece);
     }
 }
