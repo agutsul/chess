@@ -52,7 +52,7 @@ public class JournalImplTest implements TestFileReader {
         var memento = createMemento();
 
         var journal = new JournalImpl();
-        assertTrue(journal.size() == 0);
+        assertTrue(journal.isEmpty());
 
         journal.add(memento);
 
@@ -70,7 +70,7 @@ public class JournalImplTest implements TestFileReader {
 
         journal.remove(journal.size() - 1);
 
-        assertTrue(journal.size() == 0);
+        assertTrue(journal.isEmpty());
     }
 
     @Test
@@ -80,7 +80,7 @@ public class JournalImplTest implements TestFileReader {
         var journal = new JournalImpl();
         journal.add(memento);
 
-        assertEquals(memento, journal.get(0));
+        assertEquals(memento, journal.getFirst());
     }
 
     @Test
@@ -286,7 +286,7 @@ public class JournalImplTest implements TestFileReader {
         var journal2 = new JournalImpl(journal);
         assertEquals(journal.size(), journal2.getAll().size());
 
-        var memento2 = journal.get(0);
+        var memento2 = journal.getFirst();
         assertEquals(memento, memento2);
     }
 

@@ -50,6 +50,18 @@ public final class JournalImpl
     }
 
     @Override
+    public ActionMemento<?,?> getFirst() {
+        LOGGER.debug("Journal get fisrt memento");
+        return this.list.getFirst();
+    }
+
+    @Override
+    public ActionMemento<?,?> getLast() {
+        LOGGER.debug("Journal get last memento");
+        return this.list.getLast();
+    }
+
+    @Override
     public List<ActionMemento<?,?>> get(Color color) {
         LOGGER.debug("Journal get memento '{}'", color);
         return this.list.stream()

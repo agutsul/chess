@@ -48,7 +48,7 @@ public final class CancelActionCommand
         }
 
         // get last executed action from journal
-        var actionMemento = journal.get(journal.size() - 1);
+        var actionMemento = journal.getLast();
         if (!Objects.equals(this.color, actionMemento.getColor())) {
             throw new CommandException(UNEXPECTED_ACTION_MESSAGE);
         }

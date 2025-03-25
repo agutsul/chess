@@ -96,7 +96,7 @@ public enum CancelActionMementoFactory
 
         @Override
         @SuppressWarnings("unchecked")
-        <COLOR extends Color, PIECE extends Piece<COLOR> & Movable>
+        <COLOR extends Color,PIECE extends Piece<COLOR> & Movable>
                 CancelMoveAction<COLOR, PIECE> create(Piece<Color> piece, Position position) {
 
             return new CancelBigMoveAction<>((PIECE) piece, position);
@@ -232,12 +232,12 @@ public enum CancelActionMementoFactory
             var actionMemento = (EnPassantActionMemento) memento;
             var captureMemento = actionMemento.getSource();
 
-            var predator = board.getPiece(actionMemento.getTarget());
             var victim = board.getCapturedPiece(
                     captureMemento.getTarget(),
                     actionMemento.getColor().invert()
             );
 
+            var predator = board.getPiece(actionMemento.getTarget());
             return create(predator.get(), victim.get());
         }
 

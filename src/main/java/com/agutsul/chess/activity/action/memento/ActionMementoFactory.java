@@ -2,6 +2,7 @@ package com.agutsul.chess.activity.action.memento;
 
 import static com.agutsul.chess.activity.action.Action.isCastling;
 import static java.util.function.Function.identity;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.Map;
@@ -219,7 +220,7 @@ public enum ActionMementoFactory
                 .filter(piece -> {
                     var actions = board.getActions(piece);
                     var isFound = actions.stream()
-                            .filter(act -> !isCastling(act))
+                            .filter(not(Action::isCastling))
                             .map(Action::getPosition)
                             .anyMatch(position -> Objects.equals(position, targetPosition));
 

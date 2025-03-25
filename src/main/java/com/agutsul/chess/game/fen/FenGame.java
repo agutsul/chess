@@ -158,5 +158,15 @@ public final class FenGame
         public boolean isEmpty() {
             return this.origin.isEmpty();
         }
+
+        @Override
+        public ActionMemento<?,?> getFirst() {
+            return this.origin.getFirst();
+        }
+
+        @Override
+        public ActionMemento<?,?> getLast() {
+            return this.origin.getLast();
+        }
     }
 }

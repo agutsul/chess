@@ -11,6 +11,10 @@ public interface Journal<MEMENTO extends Memento> {
 
     MEMENTO get(int index);
 
+    MEMENTO getFirst();
+
+    MEMENTO getLast();
+
     List<MEMENTO> get(Color color);
 
     List<MEMENTO> getAll();
