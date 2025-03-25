@@ -11,8 +11,8 @@ import org.slf4j.Logger;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
+import com.agutsul.chess.activity.action.AbstractMoveAction;
 import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.exception.IllegalActionException;
@@ -73,14 +73,14 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
     public void move(PIECE piece, Position position) {
         LOGGER.info("Move '{}' to '{}'", piece, position);
 
-        var actions = new ArrayList<Action<?>>();
-
-        actions.addAll(board.getActions(piece, Action.Type.MOVE));
-        actions.addAll(board.getActions(piece, Action.Type.BIG_MOVE));
+        var actions = new ArrayList<Action<?>>(board.getActions(piece, Action.Type.MOVE));
+        if (Piece.Type.PAWN.equals(piece.getType())) {
+            actions.addAll(board.getActions(piece, Action.Type.BIG_MOVE));
+        }
 
         var possiblePositions = actions.stream()
-                .map(action -> (PieceMoveAction<?,?>) action)
-                .map(PieceMoveAction::getTarget)
+                .map(action -> (AbstractMoveAction<?,?>) action)
+                .map(AbstractMoveAction::getTarget)
                 .collect(toSet());
 
         if (!possiblePositions.contains(position)) {

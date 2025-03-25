@@ -40,9 +40,7 @@ final class AttackerPinCheckMateEvaluator
                 .filter(piece -> !((Pinnable) piece).isPinned())
                 // find all possible move actions
                 .map(piece -> {
-                    var actions = new ArrayList<Action<?>>();
-                    actions.addAll(board.getActions(piece, Action.Type.MOVE));
-
+                    var actions = new ArrayList<Action<?>>(board.getActions(piece, Action.Type.MOVE));
                     if (Piece.Type.PAWN.equals(piece.getType())) {
                         actions.addAll(board.getActions(piece, Action.Type.BIG_MOVE));
                     }
