@@ -3,6 +3,7 @@ package com.agutsul.chess.ai;
 import static com.agutsul.chess.activity.action.Action.isPromote;
 import static java.time.LocalDateTime.now;
 import static java.util.function.Function.identity;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.collections4.ListUtils.partition;
@@ -57,7 +58,7 @@ public final class MinMaxActionSelectionStrategy
         var board = this.game.getBoard();
         var isAnyAction = board.getPieces(color).stream()
                 .map(piece -> board.getActions(piece))
-                .anyMatch(actions -> !actions.isEmpty());
+                .anyMatch(not(Collection::isEmpty));
 
         if (!isAnyAction) {
             LOGGER.info("Select '{}' action: No action found", color);
@@ -114,7 +115,7 @@ public final class MinMaxActionSelectionStrategy
         @Override
         protected Pair<Action<?>,Integer> compute() {
             if (this.actions.size() == 1) {
-                var action = this.actions.get(0);
+                var action = this.actions.getFirst();
                 return Pair.of(action, simulate(action));
             }
 
@@ -195,17 +196,14 @@ public final class MinMaxActionSelectionStrategy
             List<Action<?>> actions = board.getPieces(color).stream()
                     .map(piece -> board.getActions(piece))
                     .flatMap(Collection::stream)
-                    .map(action -> {
-                        if (!isPromote(action)) {
-                            return List.of(action);
-                        }
-
-                        // replace origin promote action with pre-generated ones
-                        // containing promoted piece type because action selection
-                        // should be evaluated with all possible piece types:
-                        // BISHOP, ROOK, KNIGHT, QUEEN
-                        return PROMOTE_ADAPTER.adapt((PiecePromoteAction<?,?>) action);
-                    })
+                    .map(action -> isPromote(action)
+                            // replace origin promote action with pre-generated ones
+                            // containing promoted piece type because action selection
+                            // should be evaluated with all possible piece types:
+                            // BISHOP, ROOK, KNIGHT, QUEEN
+                            ? PROMOTE_ADAPTER.adapt((PiecePromoteAction<?,?>) action)
+                            : List.of(action)
+                    )
                     .flatMap(Collection::stream)
                     .collect(toList());
 

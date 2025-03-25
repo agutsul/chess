@@ -1,5 +1,6 @@
 package com.agutsul.chess.journal;
 
+import static com.agutsul.chess.activity.action.memento.ActionMementoFactory.createMemento;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -28,7 +29,6 @@ import com.agutsul.chess.activity.action.PieceEnPassantAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
-import com.agutsul.chess.activity.action.memento.ActionMementoFactory;
 import com.agutsul.chess.activity.action.memento.CheckMatedActionMemento;
 import com.agutsul.chess.activity.action.memento.CheckedActionMemento;
 import com.agutsul.chess.board.Board;
@@ -49,7 +49,7 @@ public class JournalImplTest implements TestFileReader {
 
     @Test
     void testAddMemento() {
-        var memento = createMemento();
+        var memento = mockMemento();
 
         var journal = new JournalImpl();
         assertTrue(journal.isEmpty());
@@ -61,7 +61,7 @@ public class JournalImplTest implements TestFileReader {
 
     @Test
     void testRemoveMemento() {
-        var memento = createMemento();
+        var memento = mockMemento();
 
         var journal = new JournalImpl();
         journal.add(memento);
@@ -75,7 +75,7 @@ public class JournalImplTest implements TestFileReader {
 
     @Test
     void testGetMemento() {
-        var memento = createMemento();
+        var memento = mockMemento();
 
         var journal = new JournalImpl();
         journal.add(memento);
@@ -107,7 +107,7 @@ public class JournalImplTest implements TestFileReader {
         var action = new PieceMoveAction<>(pawn, position);
 
         var journal = new JournalImpl();
-        journal.add(ActionMementoFactory.createMemento(board, action));
+        journal.add(createMemento(board, action));
 
         var fileJournalContent = readFileContent("journal_move_ply.txt");
         assertEquals(fileJournalContent, journal.toString());
@@ -129,7 +129,7 @@ public class JournalImplTest implements TestFileReader {
 
         var action = new PieceCaptureAction<>(knight, pawn);
         var journal = new JournalImpl();
-        journal.add(ActionMementoFactory.createMemento(board, action));
+        journal.add(createMemento(board, action));
 
         var fileJournalContent = readFileContent("journal_capture_ply.txt");
         assertEquals(fileJournalContent, journal.toString());
@@ -151,7 +151,7 @@ public class JournalImplTest implements TestFileReader {
                 mock(Observable.class)
         );
 
-        var memento = spy(ActionMementoFactory.createMemento(board, action));
+        var memento = spy(createMemento(board, action));
         when(memento.getPieceType())
             .thenReturn(Piece.Type.QUEEN);
 
@@ -207,8 +207,8 @@ public class JournalImplTest implements TestFileReader {
         );
 
         var journal = new JournalImpl();
-        journal.add(ActionMementoFactory.createMemento(board, whiteAction));
-        journal.add(ActionMementoFactory.createMemento(board, blackAction));
+        journal.add(createMemento(board, whiteAction));
+        journal.add(createMemento(board, blackAction));
 
         var fileJournalContent = readFileContent("journal_castling.txt");
         assertEquals(fileJournalContent, journal.toString());
@@ -232,7 +232,7 @@ public class JournalImplTest implements TestFileReader {
         var action = new PieceEnPassantAction<>(whitePawn, blackPawn, position);
 
         var journal = new JournalImpl();
-        journal.add(ActionMementoFactory.createMemento(board, action));
+        journal.add(createMemento(board, action));
 
         var fileJournalContent = readFileContent("journal_en_passant_ply.txt");
         assertEquals(fileJournalContent, journal.toString());
@@ -250,7 +250,7 @@ public class JournalImplTest implements TestFileReader {
         var action = new PieceMoveAction<>(pawn, position);
 
         var journal = new JournalImpl();
-        journal.add(new CheckedActionMemento<>(ActionMementoFactory.createMemento(board, action)));
+        journal.add(new CheckedActionMemento<>(createMemento(board, action)));
 
         var fileJournalContent = readFileContent("journal_check_ply.txt");
         assertEquals(fileJournalContent, journal.toString());
@@ -268,7 +268,7 @@ public class JournalImplTest implements TestFileReader {
         var action = new PieceMoveAction<>(pawn, position);
 
         var journal = new JournalImpl();
-        journal.add(new CheckMatedActionMemento<>(ActionMementoFactory.createMemento(board, action)));
+        journal.add(new CheckMatedActionMemento<>(createMemento(board, action)));
 
         var fileJournalContent = readFileContent("journal_checkmate_ply.txt");
         var journalStr = journal.toString();
@@ -278,7 +278,7 @@ public class JournalImplTest implements TestFileReader {
 
     @Test
     void testGetAll() {
-        var memento = createMemento();
+        var memento = mockMemento();
 
         var journal = new JournalImpl();
         journal.add(memento);
@@ -290,7 +290,7 @@ public class JournalImplTest implements TestFileReader {
         assertEquals(memento, memento2);
     }
 
-    private static ActionMemento<?,?> createMemento() {
+    private static ActionMemento<?,?> mockMemento() {
         var board = new StringBoardBuilder()
                 .withWhitePawn("a2")
                 .build();
@@ -307,7 +307,7 @@ public class JournalImplTest implements TestFileReader {
 
         assertFalse(moveAction.isEmpty());
 
-        var memento = ActionMementoFactory.createMemento(board, moveAction.get());
+        var memento = createMemento(board, moveAction.get());
         assertEquals("MOVE PAWN(a2 a3)", memento.toString());
 
         return memento;

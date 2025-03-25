@@ -83,7 +83,7 @@ public class BotActionInputObserverTest {
 
     @Test
     void testGetPromotionPieceTypeThrowingException() {
-        var botObserver = new BotActionInputObserver(player, game, mock(ActionSelectionStrategy.class));
+        var botObserver = new BotActionInputObserver(player, game);
         var thrown = assertThrows(
                 IllegalStateException.class,
                 () -> botObserver.getPromotionPieceType()
