@@ -12,7 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.AbstractBoard;
-import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.mock.GameMock;
@@ -23,7 +23,7 @@ public class MinMaxActionSelectionStrategyTest {
 
     @Test
     void testActionSelection() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhiteKing("e1")
                 .withWhitePawn("e4")
                 .withBlackKing("e8")

@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.activity.action.CancelCastlingAction.UncastlingMoveAction;
-import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
@@ -20,7 +20,7 @@ public class CancelCastlingActionTest {
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     void testCancelCastlingAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhiteKing("e1")
                 .withWhiteRook("h1")
                 .build();

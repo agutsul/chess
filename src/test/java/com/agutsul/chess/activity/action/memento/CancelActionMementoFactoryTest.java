@@ -23,7 +23,7 @@ import com.agutsul.chess.activity.action.CancelCastlingAction;
 import com.agutsul.chess.activity.action.CancelEnPassantAction;
 import com.agutsul.chess.activity.action.CancelMoveAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
-import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -36,7 +36,7 @@ public class CancelActionMementoFactoryTest {
 
     @Test
     void testCancelMoveActionCreation() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e2")
                 .build();
 
@@ -65,7 +65,7 @@ public class CancelActionMementoFactoryTest {
 
     @Test
     void testCancelCaptureActionCreation() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackPawn("d3")
                 .withWhitePawn("e2")
                 .build();
@@ -97,7 +97,7 @@ public class CancelActionMementoFactoryTest {
 
     @Test
     void testCancelPromoteActionBasedOnMove() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e7")
                 .build();
 
@@ -133,7 +133,7 @@ public class CancelActionMementoFactoryTest {
 
     @Test
     void testCancelPromoteActionBasedOnCapture() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e7")
                 .withBlackRook("d8")
                 .build();
@@ -174,7 +174,7 @@ public class CancelActionMementoFactoryTest {
 
     @Test
     void testCancelCastlingAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhiteKing("e1")
                 .withWhiteRook("h1")
                 .build();
@@ -205,7 +205,7 @@ public class CancelActionMementoFactoryTest {
 
     @Test
     void testCancelEnPassantAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackPawn("a7")
                 .withWhitePawn("b5")
                 .build();

@@ -13,16 +13,16 @@ import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.piece.factory.PieceFactory;
 
-public final class StringBoardBuilder
+public final class LabeledBoardBuilder
         extends AbstractBoardBuilder<String> {
 
-    private static final Logger LOGGER = getLogger(StringBoardBuilder.class);
+    private static final Logger LOGGER = getLogger(LabeledBoardBuilder.class);
 
-    public StringBoardBuilder() {
+    public LabeledBoardBuilder() {
         this(new BoardContext<String>(), new BoardContext<String>());
     }
 
-    StringBoardBuilder(BoardContext<String> whiteContext,
+    LabeledBoardBuilder(BoardContext<String> whiteContext,
                        BoardContext<String> blackContext) {
 
         super(LOGGER, whiteContext, blackContext);

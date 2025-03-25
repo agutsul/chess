@@ -23,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.activity.action.event.WinExecutionEvent;
 import com.agutsul.chess.activity.action.event.WinPerformedEvent;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
@@ -35,7 +35,7 @@ public class WinGameCommandTest {
 
     @Test
     void testWinGameCommand() {
-        var board = spy(new StringBoardBuilder().build());
+        var board = spy(new LabeledBoardBuilder().build());
 
         var player1BoardState = insufficientMaterialBoardState(board, Colors.WHITE);
         var player2BoardState = defaultBoardState(board, Colors.BLACK);
@@ -67,7 +67,7 @@ public class WinGameCommandTest {
     void testWinGameCommandWithUnknownOpponentBoardStateException() {
         var game = mock(AbstractPlayableGame.class);
         when(game.getBoard())
-            .thenReturn(new StringBoardBuilder().build());
+            .thenReturn(new LabeledBoardBuilder().build());
 
         var command = new WinGameCommand(game, new UserPlayer("test", Colors.WHITE));
         var thrown = assertThrows(
@@ -164,7 +164,7 @@ public class WinGameCommandTest {
 
     @Test
     void testWinGameCommandWithException() {
-        var board = spy(new StringBoardBuilder().build());
+        var board = spy(new LabeledBoardBuilder().build());
 
         var player1BoardState = insufficientMaterialBoardState(board, Colors.WHITE);
         var player2BoardState = defaultBoardState(board, Colors.BLACK);

@@ -21,7 +21,7 @@ import com.agutsul.chess.activity.action.PieceCastlingAction.CastlingMoveAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.ai.MinMaxActionSelectionStrategy.ActionValueComparator;
-import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
@@ -33,7 +33,7 @@ public class ActionValueComparatorTest {
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     void testActionValuePieceMoveActionEqualValueSorting() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e2")
                 .withWhiteKing("e1")
                 .build();
@@ -58,7 +58,7 @@ public class ActionValueComparatorTest {
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     void testActionValuePieceCaptureActionTargetTypeValueSorting() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawns("e2", "a4")
                 .withBlackPawn("f3")
                 .withBlackKnight("b5")
@@ -90,7 +90,7 @@ public class ActionValueComparatorTest {
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     void testActionValuePiecePromoteActionSorting() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawns("e7", "a7")
                 .withBlackKnight("b8")
                 .withWhiteKing("e1")
@@ -124,7 +124,7 @@ public class ActionValueComparatorTest {
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     void testActionValuePieceCastlingActionSorting() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhiteRooks("a1", "h1")
                 .withWhiteKing("e1")
                 .build();
@@ -161,7 +161,7 @@ public class ActionValueComparatorTest {
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     void testActionValuePieceEnPassantActionSorting() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawns("a2", "h2")
                 .withBlackPawns("b4", "g4")
                 .build();
@@ -199,7 +199,7 @@ public class ActionValueComparatorTest {
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     void testActionValueSorting() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e5")
                 .withBlackPawn("d6")
                 .withWhiteKing("e1")

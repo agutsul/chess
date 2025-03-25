@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.activity.action.event.DrawExecutionEvent;
 import com.agutsul.chess.activity.action.event.DrawPerformedEvent;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
@@ -28,7 +28,7 @@ public class DrawGameCommandTest {
 
     @Test
     void testDrawGameCommand() {
-        var board = new StringBoardBuilder().build();
+        var board = new LabeledBoardBuilder().build();
         var game = mock(AbstractPlayableGame.class);
         when(game.getBoard())
             .thenReturn(board);

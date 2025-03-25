@@ -14,11 +14,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.color.Colors;
 
 @ExtendWith(MockitoExtension.class)
-public class StringBoardBuilderTest {
+public class LabeledBoardBuilderTest {
 
     @Test
     void testBoardBuilderPieceCreation() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackBishops("c8", "f8")
                 .withBlackKnights("b8", "g8")
                 .build();

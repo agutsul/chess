@@ -9,7 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
 
@@ -18,7 +18,7 @@ public class PieceActionAdapterTest {
 
     @Test
     void testAdaptKingSideCastlingAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackKing("e8")
                 .withBlackRook("h8")
                 .build();
@@ -31,7 +31,7 @@ public class PieceActionAdapterTest {
 
     @Test
     void testAdaptQueenSideCastlingAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackKing("e8")
                 .withBlackRook("a8")
                 .build();
@@ -55,7 +55,7 @@ public class PieceActionAdapterTest {
 
     @Test
     void testAdaptPawnMoveAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackPawn("e7")
                 .build();
 
@@ -67,7 +67,7 @@ public class PieceActionAdapterTest {
 
     @Test
     void testAdaptPieceMoveAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackBishop("a6")
                 .build();
 
@@ -79,7 +79,7 @@ public class PieceActionAdapterTest {
 
     @Test
     void testAdaptPawnPromoteMoveAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackPawn("a2")
                 .build();
 
@@ -91,7 +91,7 @@ public class PieceActionAdapterTest {
 
     @Test
     void testAdaptPawnCaptureAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackPawn("a5")
                 .withWhitePawn("b4")
                 .build();
@@ -104,7 +104,7 @@ public class PieceActionAdapterTest {
 
     @Test
     void testAdaptPieceCaptureAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackKnight("e5")
                 .withWhitePawn("f3")
                 .build();
@@ -117,7 +117,7 @@ public class PieceActionAdapterTest {
 
     @Test
     void testAdaptPawnPromoteCaptureAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackPawn("a2")
                 .withWhiteKnight("b1")
                 .build();
@@ -130,7 +130,7 @@ public class PieceActionAdapterTest {
 
     @Test
     void testAdaptInvalidPawnPromoteCaptureAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackPawn("a2")
                 .withWhiteKnight("b1")
                 .build();
@@ -147,7 +147,7 @@ public class PieceActionAdapterTest {
 
     @Test
     void testAdaptInvalidPawnPromoteMoveAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackPawn("b2")
                 .build();
 

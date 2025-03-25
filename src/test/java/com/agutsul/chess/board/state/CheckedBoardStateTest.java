@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.color.Colors;
 
 @ExtendWith(MockitoExtension.class)
@@ -17,7 +17,7 @@ public class CheckedBoardStateTest {
 
     @Test
     void testCheckedPieceActionsFiltered() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackKing("c6")
                 .withBlackPawn("a7")
                 .withBlackRook("e8")
@@ -37,7 +37,7 @@ public class CheckedBoardStateTest {
 
     @Test
     void testCheckedPieceActionsBlocked() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackKing("h8")
                 .withBlackPawn("h7")
                 .withBlackRook("g8")
@@ -57,7 +57,7 @@ public class CheckedBoardStateTest {
 
     @Test
     void testCheckedPieceActionsMovable() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhiteQueen("e8")
                 .withWhiteKing("e1")
                 .withBlackPawn("a7")

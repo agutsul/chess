@@ -16,7 +16,7 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.StandardBoard;
-import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
@@ -58,12 +58,12 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testDefaultKingActionsOnEmptyBoard() {
-        var board1 = new StringBoardBuilder().withWhiteKing("e1").build();
+        var board1 = new LabeledBoardBuilder().withWhiteKing("e1").build();
         assertPieceActions(board1, Colors.WHITE, KING_TYPE, "e1",
                 List.of("d1", "d2", "e2", "f2", "f1")
         );
 
-        var board2 = new StringBoardBuilder().withBlackKing("e8").build();
+        var board2 = new LabeledBoardBuilder().withBlackKing("e8").build();
         assertPieceActions(board2, Colors.BLACK, KING_TYPE, "e8",
                 List.of("d8", "d7", "e7", "f7", "f8")
         );
@@ -71,12 +71,12 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testRandomKingActionsOnEmptyBoard() {
-        var board1 = new StringBoardBuilder().withWhiteKing("e4").build();
+        var board1 = new LabeledBoardBuilder().withWhiteKing("e4").build();
         assertPieceActions(board1, Colors.WHITE, KING_TYPE, "e4",
                 List.of("e5", "e3", "d4", "f4", "d5", "f5", "f3", "d3")
         );
 
-        var board2 = new StringBoardBuilder().withBlackKing("d5").build();
+        var board2 = new LabeledBoardBuilder().withBlackKing("d5").build();
         assertPieceActions(board2, Colors.BLACK, KING_TYPE, "d5",
                 List.of("d6", "d4", "c5", "e5", "c6", "e6", "e4", "c4")
         );
@@ -84,7 +84,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testKingCastlingActionsOnEmptyBoard() {
-        var board1 = new StringBoardBuilder()
+        var board1 = new LabeledBoardBuilder()
                 .withWhiteRooks("a1", "h1")
                 .withWhiteKing("e1")
                 .build();
@@ -98,7 +98,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 List.of("O-O", "O-O-O")
         );
 
-        var board2 = new StringBoardBuilder()
+        var board2 = new LabeledBoardBuilder()
                 .withBlackRooks("a8", "h8")
                 .withBlackKing("e8")
                 .build();
@@ -115,7 +115,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testKingCastlingActionsOnEmptyBoardCastlilngBlockedByPiece() {
-        var board1 = new StringBoardBuilder()
+        var board1 = new LabeledBoardBuilder()
                 .withWhiteRooks("a1", "h1")
                 .withWhiteKnight("b1")
                 .withWhiteKing("e1")
@@ -130,7 +130,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 List.of("O-O")
         );
 
-        var board2 = new StringBoardBuilder()
+        var board2 = new LabeledBoardBuilder()
                 .withBlackRooks("a8", "h8")
                 .withBlackKnight("b8")
                 .withBlackKing("e8")
@@ -148,7 +148,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testKingCastlingActionsOnEmptyBoardCastlilngBlockedByKingCheck() {
-        var board1 = new StringBoardBuilder()
+        var board1 = new LabeledBoardBuilder()
                 .withWhiteRooks("a1", "h1")
                 .withBlackBishop("b4")
                 .withWhiteKing("e1")
@@ -162,7 +162,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 List.of("e2", "f2", "f1", "d1")
         );
 
-        var board2 = new StringBoardBuilder()
+        var board2 = new LabeledBoardBuilder()
                 .withBlackRooks("a8", "h8")
                 .withWhiteBishop("g6")
                 .withBlackKing("e8")
@@ -179,7 +179,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testKingCastlingActionsOnEmptyBoardCastlilngBlockedByAttackedPositionOnQueenSide() {
-        var board1 = new StringBoardBuilder()
+        var board1 = new LabeledBoardBuilder()
                 .withWhiteRooks("a1", "h1")
                 .withBlackQueen("c6")
                 .withWhiteKing("e1")
@@ -194,7 +194,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 List.of("O-O")
         );
 
-        var board2 = new StringBoardBuilder()
+        var board2 = new LabeledBoardBuilder()
                 .withBlackRooks("a8", "h8")
                 .withWhiteQueen("c7")
                 .withBlackKing("e8")
@@ -212,7 +212,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testKingCastlingActionsOnEmptyBoardCastlilngBlockedByAttackedPositionOnKingSide() {
-        var board1 = new StringBoardBuilder()
+        var board1 = new LabeledBoardBuilder()
                 .withWhiteRooks("a1", "h1")
                 .withBlackQueen("f6")
                 .withWhiteKing("e1")
@@ -227,7 +227,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 List.of("O-O-O")
         );
 
-        var board2 = new StringBoardBuilder()
+        var board2 = new LabeledBoardBuilder()
                 .withBlackRooks("a8", "h8")
                 .withWhiteQueen("f3")
                 .withBlackKing("e8")
@@ -298,7 +298,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testKingCheckMateBlockable() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackRook("g8")
                 .withBlackKing("h8")
                 .withBlackPawn("h7")
@@ -318,7 +318,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testKingCheckMovable() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackRook("e8")
                 .withBlackKing("c6")
                 .withWhiteBishop("h7")
@@ -338,7 +338,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testKingCastlingAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhiteRook("h1")
                 .withWhiteKing("e1")
                 .build();
@@ -353,7 +353,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testKingCastlingActionValidation() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhiteRook("h1")
                 .withWhiteKing("e1")
                 .build();
@@ -371,7 +371,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testKingCaptureProtectedPiece() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhiteKing("e1")
                 .withBlackPawns("d2","c3")
                 .build();
@@ -391,7 +391,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testKingMoveOnAttackedPosition() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhiteKing("e1")
                 .withBlackRook("d8")
                 .build();
@@ -414,7 +414,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testKingMoveOnMonitoredPosition() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhiteKing("b1")
                 .withBlackRook("d1")
                 .build();

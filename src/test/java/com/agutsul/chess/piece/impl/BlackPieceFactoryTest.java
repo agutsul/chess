@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.piece.Piece;
 
@@ -12,7 +12,7 @@ import com.agutsul.chess.piece.Piece;
 public class BlackPieceFactoryTest extends AbstractsPieceFactoryTest {
 
     public BlackPieceFactoryTest() {
-        super(new BlackPieceFactory(new StringBoardBuilder().build()));
+        super(new BlackPieceFactory(new LabeledBoardBuilder().build()));
     }
 
     @Test

@@ -13,14 +13,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.board.LabeledBoardBuilder;
 
 @ExtendWith(MockitoExtension.class)
 public class RookActionComparatorTest {
 
     @Test
     void testRookActionsSorting() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhiteKing("e1")
                 .withWhiteRook("h1")
                 .withBlackPawn("h5")

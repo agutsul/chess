@@ -15,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -27,7 +27,7 @@ public class ActionMementoFactoryTest {
 
     @Test
     void testMoveActionMemento() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e2")
                 .build();
 
@@ -42,7 +42,7 @@ public class ActionMementoFactoryTest {
 
     @Test
     void testCaptureActionMemento() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e2")
                 .withBlackPawn("d3")
                 .build();
@@ -58,7 +58,7 @@ public class ActionMementoFactoryTest {
 
     @Test
     void testCastlingActionMemento() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhiteKing("e1")
                 .withWhiteRook("h1")
                 .build();
@@ -74,7 +74,7 @@ public class ActionMementoFactoryTest {
 
     @Test
     void testPromoteActionMemento() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e7")
                 .build();
 
@@ -90,7 +90,7 @@ public class ActionMementoFactoryTest {
 
     @Test
     void testEnPassantActionMemento() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackPawn("a7")
                 .withWhitePawn("b5")
                 .build();

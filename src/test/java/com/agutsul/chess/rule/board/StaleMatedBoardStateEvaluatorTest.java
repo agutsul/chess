@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -19,7 +19,7 @@ public class StaleMatedBoardStateEvaluatorTest {
 
     @Test
     void testStaleMate() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhiteQueen("g6")
                 .withWhiteKing("a1")
                 .withBlackKing("h8")
@@ -30,7 +30,7 @@ public class StaleMatedBoardStateEvaluatorTest {
 
     @Test
     void testDiagram1StaleMate() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackKing("f8")
                 .withWhiteKing("f6")
                 .withWhitePawn("f7")
@@ -41,7 +41,7 @@ public class StaleMatedBoardStateEvaluatorTest {
 
     @Test
     void testDiagram2StaleMate() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackKing("a8")
                 .withBlackBishop("b8")
                 .withWhiteKing("b6")
@@ -53,7 +53,7 @@ public class StaleMatedBoardStateEvaluatorTest {
 
     @Test
     void testDiagram3StaleMate() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackKing("a1")
                 .withBlackPawn("a2")
                 .withWhiteKing("g5")
@@ -65,7 +65,7 @@ public class StaleMatedBoardStateEvaluatorTest {
 
     @Test
     void testDiagram4StaleMate() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackKing("a8")
                 .withWhiteKing("a6")
                 .withWhitePawn("a7")
@@ -77,7 +77,7 @@ public class StaleMatedBoardStateEvaluatorTest {
 
     @Test
     void testDiagram5StaleMate() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackKing("h1")
                 .withBlackPawns("e2","g2","h2")
                 .withBlackRook("g1")
@@ -90,7 +90,7 @@ public class StaleMatedBoardStateEvaluatorTest {
 
     @Test
     void testAnandVsKramnik2007StaleMate() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackKing("f5")
                 .withBlackPawns("f6","g7")
                 .withWhiteKing("h5")
@@ -102,7 +102,7 @@ public class StaleMatedBoardStateEvaluatorTest {
 
     @Test
     void testKorchnoiVsKarpov1978StaleMate() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackKing("h7")
                 .withBlackPawn("a4")
                 .withWhiteKing("f7")
@@ -115,7 +115,7 @@ public class StaleMatedBoardStateEvaluatorTest {
 
     @Test
     void testBernsteinVsSmyslov1946StaleMate() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackKing("f5")
                 .withBlackPawn("f4")
                 .withBlackRook("b2")
@@ -127,7 +127,7 @@ public class StaleMatedBoardStateEvaluatorTest {
 
     @Test
     void testMatulovicVsMinev1956StaleMate() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackKing("h5")
                 .withWhiteKing("h3")
                 .withWhitePawn("f4")
@@ -139,7 +139,7 @@ public class StaleMatedBoardStateEvaluatorTest {
 
     @Test
     void testWilliamsVsHarrwitz1846StaleMate() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackKing("c4")
                 .withBlackKnight("c3")
                 .withBlackRook("b3")
@@ -152,7 +152,7 @@ public class StaleMatedBoardStateEvaluatorTest {
 
     @Test
     void testCarlsenVsVanWely2007StaleMate() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackKing("d3")
                 .withBlackBishop("d2")
                 .withBlackRook("f8")
@@ -164,7 +164,7 @@ public class StaleMatedBoardStateEvaluatorTest {
 
     @Test
     void testEvansVsReshevsky1963StaleMate() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackKing("g7")
                 .withBlackQueen("g3")
                 .withBlackRook("e2")
@@ -179,7 +179,7 @@ public class StaleMatedBoardStateEvaluatorTest {
 
     @Test
     void testTroitskyVsVogt1896StaleMate() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withBlackKing("d8")
                 .withBlackQueen("d1")
                 .withBlackRook("g6")

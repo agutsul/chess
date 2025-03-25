@@ -32,7 +32,7 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.activity.action.memento.CheckMatedActionMemento;
 import com.agutsul.chess.activity.action.memento.CheckedActionMemento;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.piece.KingPiece;
@@ -291,7 +291,7 @@ public class JournalImplTest implements TestFileReader {
     }
 
     private static ActionMemento<?,?> mockMemento() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("a2")
                 .build();
 

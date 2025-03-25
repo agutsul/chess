@@ -23,7 +23,7 @@ import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.StandardBoard;
-import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -78,23 +78,23 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testRandomPawnActionsOnEmptyBoard() {
-        var board1 = new StringBoardBuilder().withWhitePawn("d4").build();
+        var board1 = new LabeledBoardBuilder().withWhitePawn("d4").build();
         assertPieceActions(board1, Colors.WHITE, PAWN_TYPE, "d4", List.of("d5"));
 
-        var board2 = new StringBoardBuilder().withBlackPawn("c5").build();
+        var board2 = new LabeledBoardBuilder().withBlackPawn("c5").build();
         assertPieceActions(board2, Colors.BLACK, PAWN_TYPE, "c5", List.of("c4"));
     }
 
     @Test
     void testPawnCaptureActionOnEmptyBoard() {
-        var board1 = new StringBoardBuilder()
+        var board1 = new LabeledBoardBuilder()
                 .withBlackPawn("a5")
                 .withWhitePawn("b4")
                 .build();
 
         assertPieceActions(board1, Colors.WHITE, PAWN_TYPE, "b4", List.of("b5"), List.of("a5"));
 
-        var board2 = new StringBoardBuilder()
+        var board2 = new LabeledBoardBuilder()
                 .withWhitePawn("d5")
                 .withBlackPawn("e6")
                 .build();
@@ -104,16 +104,16 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testPawnMovePromotionActionOnEmptyBoard() {
-        var board1 = new StringBoardBuilder().withWhitePawn("c7").build();
+        var board1 = new LabeledBoardBuilder().withWhitePawn("c7").build();
         assertPawnPromotionActions(board1, Colors.WHITE, PAWN_TYPE, "c7", List.of("c8"), List.of());
 
-        var board2 = new StringBoardBuilder().withBlackPawn("b2").build();
+        var board2 = new LabeledBoardBuilder().withBlackPawn("b2").build();
         assertPawnPromotionActions(board2, Colors.BLACK, PAWN_TYPE, "b2", List.of("b1"), List.of());
     }
 
     @Test
     void testPawnCapturePromotionActionOnEmptyBoard() {
-        var board1 = new StringBoardBuilder()
+        var board1 = new LabeledBoardBuilder()
                 .withWhitePawn("c7")
                 .withBlackKnight("b8")
                 .build();
@@ -121,7 +121,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertPawnPromotionActions(board1, Colors.WHITE, PAWN_TYPE, "c7",
                 List.of("c8"), List.of("b8"));
 
-        var board2 = new StringBoardBuilder()
+        var board2 = new LabeledBoardBuilder()
                 .withBlackPawn("c2")
                 .withWhiteKnight("b1")
                 .build();
@@ -132,7 +132,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testPawnEnPassantActionOnEmptyBoard() {
-        var board1 = new StringBoardBuilder()
+        var board1 = new LabeledBoardBuilder()
                 .withBlackPawn("a7")
                 .withWhitePawn("b5")
                 .build();
@@ -145,7 +145,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertPawnEnPassantActions(board1, Colors.WHITE, PAWN_TYPE, "b5",
                 List.of("b6"), List.of("a6"));
 
-        var board2 = new StringBoardBuilder()
+        var board2 = new LabeledBoardBuilder()
                 .withBlackPawn("b4")
                 .withWhitePawn("a2")
                 .build();
@@ -214,7 +214,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testPawnCaptureAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e4")
                 .withBlackPawn("d5")
                 .build();
@@ -234,7 +234,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testPawnCaptureActionValidation() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e4")
                 .withBlackPawn("d6")
                 .build();
@@ -260,7 +260,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testPawnEnPassantAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e5")
                 .withBlackPawn("d7")
                 .build();
@@ -285,7 +285,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testPawnEnPassantActionValidation() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e5")
                 .withBlackPawn("c7")
                 .build();
@@ -314,7 +314,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testPawnPromoteActionViaCapturing() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e7")
                 .withBlackKnight("d8")
                 .build();
@@ -335,7 +335,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testPawnPromoteActionViaMoving() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e7")
                 .build();
 
@@ -352,7 +352,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testPawnPromoteActionValidation() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e6")
                 .build();
 
@@ -372,7 +372,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testPawnActionAfterDisposing() {
-        var board1 = new StringBoardBuilder()
+        var board1 = new LabeledBoardBuilder()
                 .withWhitePawns("a3", "b2")
                 .build();
 
@@ -385,7 +385,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertTrue(board1.getActions(whitePawn).isEmpty());
         assertTrue(board1.getImpacts(whitePawn).isEmpty());
 
-        var board2 = new StringBoardBuilder()
+        var board2 = new LabeledBoardBuilder()
                 .withBlackPawns("b7", "a6")
                 .build();
 

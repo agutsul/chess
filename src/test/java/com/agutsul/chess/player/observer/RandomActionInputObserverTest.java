@@ -23,7 +23,7 @@ import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.activity.action.PieceCastlingAction;
 import com.agutsul.chess.activity.action.PieceCastlingAction.CastlingMoveAction;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
-import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.AbstractPlayableGame;
@@ -47,7 +47,7 @@ public class RandomActionInputObserverTest {
 
     @Test
     void testPawnMoveAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e3")
                 .build();
 
@@ -63,7 +63,7 @@ public class RandomActionInputObserverTest {
 
     @Test
     void testPawnPromotionAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e7")
                 .build();
 
@@ -79,7 +79,7 @@ public class RandomActionInputObserverTest {
 
     @Test
     void testPawnCaptureAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e4")
                 .withBlackPawn("f5")
                 .build();
@@ -99,7 +99,7 @@ public class RandomActionInputObserverTest {
 
     @Test
     void testPawnEnPassantAction() {
-        var board = spy(new StringBoardBuilder()
+        var board = spy(new LabeledBoardBuilder()
                 .withWhitePawn("e4")
                 .withBlackPawn("f4")
                 .build()
@@ -132,7 +132,7 @@ public class RandomActionInputObserverTest {
 
     @Test
     void testCastlingAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhiteKing("e1")
                 .withWhiteRook("h1")
                 .build();
@@ -167,7 +167,7 @@ public class RandomActionInputObserverTest {
     @Test
     void testDefeatAction() {
         when(game.getBoard())
-            .thenReturn(new StringBoardBuilder().build());
+            .thenReturn(new LabeledBoardBuilder().build());
 
         when(player.getColor())
             .thenReturn(Colors.WHITE);

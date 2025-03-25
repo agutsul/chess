@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -41,7 +41,7 @@ public class FoldRepetitionBoardStateEvaluatorTest {
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     void testFoldRepetitionForNonEmptyJournal() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e2")
                 .withBlackPawn("e7")
                 .withWhiteRook("a1")
@@ -87,7 +87,7 @@ public class FoldRepetitionBoardStateEvaluatorTest {
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     void testFoldRepetitionForWithThreeRepetitions() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e2")
                 .withBlackPawn("e7")
                 .withWhiteRook("a1")
@@ -138,7 +138,7 @@ public class FoldRepetitionBoardStateEvaluatorTest {
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     void testFoldRepetitionForWithFiveRepetitions() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e2")
                 .withBlackPawn("e7")
                 .withWhiteRook("a1")

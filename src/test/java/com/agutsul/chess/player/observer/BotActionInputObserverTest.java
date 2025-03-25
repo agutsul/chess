@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.ai.ActionSelectionStrategy;
-import com.agutsul.chess.board.StringBoardBuilder;
+import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
@@ -43,7 +43,7 @@ public class BotActionInputObserverTest {
 
     @Test
     void testGetActionCommandReturnAction() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e4")
                 .build();
 
@@ -62,7 +62,7 @@ public class BotActionInputObserverTest {
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     void testPromoteActionReturn() {
-        var board = new StringBoardBuilder()
+        var board = new LabeledBoardBuilder()
                 .withWhitePawn("e7")
                 .build();
 
