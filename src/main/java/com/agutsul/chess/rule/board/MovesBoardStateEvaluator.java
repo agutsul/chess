@@ -7,6 +7,7 @@ import static com.agutsul.chess.activity.action.Action.isMove;
 import static com.agutsul.chess.activity.action.Action.isPromote;
 import static com.agutsul.chess.board.state.BoardStateFactory.fiftyMovesBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.seventyFiveMovesBoardState;
+import static com.agutsul.chess.piece.Piece.isPawn;
 import static java.util.Collections.max;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -27,7 +28,6 @@ import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.journal.Journal;
-import com.agutsul.chess.piece.Piece;
 
 final class MovesBoardStateEvaluator
         extends AbstractJournalStateEvaluator {
@@ -237,7 +237,7 @@ final class MovesBoardStateEvaluator
 
             for (int i = actions.size() - 1, j = 0; i >= 0 && j < limit; i--, j++) {
                 var memento = actions.get(i);
-                if (!Piece.Type.PAWN.equals(memento.getPieceType())) {
+                if (!isPawn(memento.getPieceType())) {
                     continue;
                 }
 

@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.piece.Piece.isKing;
 import static java.time.Instant.now;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
@@ -262,9 +263,7 @@ abstract class AbstractPiece<COLOR extends Color>
         // piece can't protect itself. only other piece with the same color ( if it is not pinned )
         var protectors = board.getPieces(getColor()).stream()
                 .filter(piece -> !Objects.equals(piece, this))
-                .filter(piece -> Piece.Type.KING.equals(piece.getType())
-                        || !((Pinnable) piece).isPinned()
-                )
+                .filter(piece -> isKing(piece) || !((Pinnable) piece).isPinned())
                 .toList();
 
         var isProtected = protectors.stream()

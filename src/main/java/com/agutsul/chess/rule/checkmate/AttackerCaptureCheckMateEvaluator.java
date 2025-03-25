@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.checkmate;
 
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -72,7 +73,7 @@ final class AttackerCaptureCheckMateEvaluator
         var attackers = board.getAttackers(piece);
 
         boolean isCapturable = attackers.stream()
-                .filter(attacker -> !Piece.Type.KING.equals(attacker.getType()))
+                .filter(not(Piece::isKing))
                 .map(attacker -> board.getActions(attacker, Action.Type.CAPTURE))
                 .flatMap(Collection::stream)
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)

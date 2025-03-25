@@ -1,6 +1,7 @@
 package com.agutsul.chess.rule.board;
 
 import static com.agutsul.chess.board.state.BoardStateFactory.checkedBoardState;
+import static java.util.function.Predicate.not;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
@@ -36,7 +37,7 @@ final class CheckedBoardStateEvaluator
 
         var king = optionalKing.get();
         var isChecked = board.getPieces(king.getColor().invert()).stream()
-                .filter(piece -> !Piece.Type.KING.equals(piece.getType()))
+                .filter(not(Piece::isKing))
                 .map(piece -> board.getImpacts(piece, Impact.Type.CHECK))
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceCheckImpact<?,?,?,?>) impact)
@@ -45,8 +46,6 @@ final class CheckedBoardStateEvaluator
 
         king.setChecked(isChecked);
 
-        return isChecked
-                ? Optional.of(checkedBoardState(board, color))
-                : Optional.empty();
+        return Optional.ofNullable(isChecked ? checkedBoardState(board, color) : null);
     }
 }

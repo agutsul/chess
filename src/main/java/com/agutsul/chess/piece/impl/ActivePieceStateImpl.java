@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.piece.Piece.isPawn;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -74,7 +75,7 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
         LOGGER.info("Move '{}' to '{}'", piece, position);
 
         var actions = new ArrayList<Action<?>>(board.getActions(piece, Action.Type.MOVE));
-        if (Piece.Type.PAWN.equals(piece.getType())) {
+        if (isPawn(piece)) {
             actions.addAll(board.getActions(piece, Action.Type.BIG_MOVE));
         }
 

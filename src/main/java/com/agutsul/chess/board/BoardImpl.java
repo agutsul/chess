@@ -5,6 +5,7 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static java.util.concurrent.TimeUnit.MICROSECONDS;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -380,7 +381,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         // and attacker monitoring that position.
         // So, actual attack is blocked and as result position should be available for move
         var pinnedPieces = getPieces(attackerColor.invert()).stream()
-                .filter(piece -> !Piece.Type.KING.equals(piece.getType()))
+                .filter(not(Piece::isKing))
                 .filter(piece -> ((Pinnable) piece).isPinned())
                 .toList();
 

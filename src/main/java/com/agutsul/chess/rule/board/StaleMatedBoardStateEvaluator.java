@@ -1,6 +1,7 @@
 package com.agutsul.chess.rule.board;
 
 import static com.agutsul.chess.board.state.BoardStateFactory.staleMatedBoardState;
+import static com.agutsul.chess.piece.Piece.isKing;
 import static java.util.Comparator.comparing;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -39,7 +40,7 @@ final class StaleMatedBoardStateEvaluator
         for (var piece : pieces) {
             var actions = board.getActions(piece);
 
-            if (Piece.Type.KING.equals(piece.getType())) {
+            if (isKing(piece)) {
                 for (var action : actions) {
                     var targetPosition = action.getPosition();
 
@@ -59,8 +60,9 @@ final class StaleMatedBoardStateEvaluator
             }
         }
 
-        return allActions.isEmpty()
-                ? Optional.of(staleMatedBoardState(board, color))
-                : Optional.empty();
+        return Optional.ofNullable(allActions.isEmpty()
+                ? staleMatedBoardState(board, color)
+                : null
+        );
     }
 }

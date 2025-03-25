@@ -1,5 +1,7 @@
 package com.agutsul.chess.rule.checkmate;
 
+import static com.agutsul.chess.piece.Piece.isPawn;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -35,13 +37,13 @@ final class AttackerPinCheckMateEvaluator
         LOGGER.info("Evaluate attacker block for king '{}'", king);
         // get all piece moves of the same color as king except the king itself
         var pieceMovePositions = board.getPieces(king.getColor()).stream()
-                .filter(piece -> !Piece.Type.KING.equals(piece.getType()))
+                .filter(not(Piece::isKing))
                 // confirm that piece not already pinned
                 .filter(piece -> !((Pinnable) piece).isPinned())
                 // find all possible move actions
                 .map(piece -> {
                     var actions = new ArrayList<Action<?>>(board.getActions(piece, Action.Type.MOVE));
-                    if (Piece.Type.PAWN.equals(piece.getType())) {
+                    if (isPawn(piece)) {
                         actions.addAll(board.getActions(piece, Action.Type.BIG_MOVE));
                     }
 

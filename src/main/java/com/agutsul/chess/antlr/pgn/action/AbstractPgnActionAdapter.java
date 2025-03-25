@@ -4,6 +4,7 @@ import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActio
 import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter.CHECKMATE_CODE;
 import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter.CHECK_CODE;
 import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter.GOOD_MOVE_CODE;
+import static com.agutsul.chess.piece.Piece.isKing;
 import static com.agutsul.chess.position.Position.codeOf;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static org.apache.commons.lang3.StringUtils.contains;
@@ -81,7 +82,7 @@ abstract class AbstractPgnActionAdapter
                 continue;
             }
 
-            if (Piece.Type.KING.equals(piece.getType())) {
+            if (isKing(piece)) {
                 var isAttacked = board.isAttacked(
                         positionOf(position),
                         piece.getColor().invert()

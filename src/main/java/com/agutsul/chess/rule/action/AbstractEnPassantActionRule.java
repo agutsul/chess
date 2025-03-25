@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.action;
 
+import static com.agutsul.chess.piece.Piece.isPawn;
 import static java.util.Collections.emptyList;
 
 import java.util.ArrayList;
@@ -11,7 +12,6 @@ import com.agutsul.chess.activity.action.PieceEnPassantAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
-import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.AbstractRule;
 
@@ -53,8 +53,7 @@ public abstract class AbstractEnPassantActionRule<COLOR1 extends Color,
             }
 
             var enemyPiece = optionalEnemyPiece.get();
-            if (Objects.equals(enemyPiece.getColor(), pawn.getColor())
-                    || !Piece.Type.PAWN.equals(enemyPiece.getType())) {
+            if (Objects.equals(enemyPiece.getColor(), pawn.getColor()) || !isPawn(enemyPiece)) {
                 continue;
             }
 

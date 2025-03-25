@@ -1,5 +1,6 @@
 package com.agutsul.chess.activity.action.formatter;
 
+import static com.agutsul.chess.piece.Piece.isPawn;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
@@ -15,7 +16,6 @@ import com.agutsul.chess.Checkable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.activity.action.memento.ActionMementoDecorator;
-import com.agutsul.chess.piece.Piece;
 
 public enum StandardAlgebraicActionFormatter implements ActionFormatter {
     MOVE_MODE(Action.Type.MOVE) {
@@ -53,7 +53,7 @@ public enum StandardAlgebraicActionFormatter implements ActionFormatter {
         }
 
         private static String formatSource(ActionMemento<?,?> memento) {
-            if (Piece.Type.PAWN.equals(memento.getPieceType())) {
+            if (isPawn(memento.getPieceType())) {
                 return formatPawn(memento);
             }
 

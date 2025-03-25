@@ -1,5 +1,7 @@
 package com.agutsul.chess.rule.impact;
 
+import static com.agutsul.chess.piece.Piece.isKing;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -46,7 +48,7 @@ public abstract class AbstractMonitorLineImpactRule<COLOR extends Color,
                 if (!isKingFound) {
                     var foundPiece = optionalPiece.get();
                     if (foundPiece.getColor() != piece.getColor()) {
-                        isKingFound = Piece.Type.KING.equals(foundPiece.getType());
+                        isKingFound = isKing(foundPiece);
                     } else {
                         break;
                     }

@@ -74,4 +74,54 @@ public interface Piece<COLOR extends Color>
     Collection<Impact<?>> getImpacts(Impact.Type impactType);
 
     boolean isActive();
+
+    // utilities
+
+    static boolean isPawn(Piece<?> piece) {
+        return isPawn(piece.getType());
+    }
+
+    static boolean isPawn(Piece.Type pieceType) {
+        return Piece.Type.PAWN.equals(pieceType);
+    }
+
+    static boolean isKnight(Piece<?> piece) {
+        return isKnight(piece.getType());
+    }
+
+    static boolean isKnight(Piece.Type pieceType) {
+        return Piece.Type.KNIGHT.equals(pieceType);
+    }
+
+    static boolean isBishop(Piece<?> piece) {
+        return isBishop(piece.getType());
+    }
+
+    static boolean isBishop(Piece.Type pieceType) {
+        return Piece.Type.BISHOP.equals(pieceType);
+    }
+
+    static boolean isRook(Piece<?> piece) {
+        return isRook(piece.getType());
+    }
+
+    static boolean isRook(Piece.Type pieceType) {
+        return Piece.Type.ROOK.equals(pieceType);
+    }
+
+    static boolean isQueen(Piece<?> piece) {
+        return isQueen(piece.getType());
+    }
+
+    static boolean isQueen(Piece.Type pieceType) {
+        return Piece.Type.QUEEN.equals(pieceType);
+    }
+
+    static boolean isKing(Piece<?> piece) {
+        return isKing(piece.getType());
+    }
+
+    static boolean isKing(Piece.Type pieceType) {
+        return Piece.Type.KING.equals(pieceType);
+    }
 }
