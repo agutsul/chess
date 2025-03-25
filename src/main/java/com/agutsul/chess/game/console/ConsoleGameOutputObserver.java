@@ -1,6 +1,8 @@
 package com.agutsul.chess.game.console;
 
+import static com.agutsul.chess.activity.action.Action.isCastling;
 import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter.format;
+import static com.agutsul.chess.activity.action.memento.ActionMementoFactory.createMemento;
 import static com.agutsul.chess.journal.JournalFormatter.format;
 import static java.lang.System.lineSeparator;
 import static java.time.LocalDateTime.now;
@@ -24,7 +26,6 @@ import com.agutsul.chess.activity.action.event.WinExecutionEvent;
 import com.agutsul.chess.activity.action.event.WinPerformedEvent;
 import com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
-import com.agutsul.chess.activity.action.memento.ActionMementoFactory;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.game.Game;
@@ -211,8 +212,8 @@ public final class ConsoleGameOutputObserver
         var number = (journal.size() / 2) + 1;
 
         String formattedAction = null;
-        if (Action.Type.CASTLING.equals(action.getType())) {
-            var memento = ActionMementoFactory.createMemento(game.getBoard(), action);
+        if (isCastling(action)) {
+            var memento = createMemento(game.getBoard(), action);
             formattedAction = StandardAlgebraicActionFormatter.format(memento);
         } else {
             formattedAction = String.valueOf(action);

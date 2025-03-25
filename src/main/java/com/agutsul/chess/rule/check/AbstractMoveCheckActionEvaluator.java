@@ -34,7 +34,7 @@ abstract class AbstractMoveCheckActionEvaluator
         Collection<PieceCaptureAction<?,?,?,?>> checkActions = attackers.stream()
                 .map(attacker -> board.getActions(attacker, Action.Type.CAPTURE))
                 .flatMap(Collection::stream)
-                .filter(action -> Action.Type.CAPTURE.equals(action.getType()))
+                .filter(Action::isCapture)
                 .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(king, action.getTarget()))
                 .collect(toSet());
@@ -44,10 +44,7 @@ abstract class AbstractMoveCheckActionEvaluator
         var moveActionFilter = new ActionFilter<>(PieceMoveAction.class);
         filteredActions.addAll(moveActionFilter.apply(this.pieceActions));
 
-        var hasBigMove = this.pieceActions.stream()
-                .map(Action::getType)
-                .anyMatch(actionType -> Action.Type.BIG_MOVE.equals(actionType));
-
+        var hasBigMove = this.pieceActions.stream().anyMatch(Action::isBigMove);
         if (hasBigMove) {
             var bigMoveActionFilter = new ActionFilter<>(PieceBigMoveAction.class);
             filteredActions.addAll(bigMoveActionFilter.apply(this.pieceActions));

@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.action.function;
 
+import static com.agutsul.chess.activity.action.Action.isBigMove;
+
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -8,14 +10,13 @@ import com.agutsul.chess.activity.action.PieceBigMoveAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 
 final class BigMoveActionFunction
-        implements Function<Action<?>, Optional<PieceMoveAction<?,?>>> {
+        implements Function<Action<?>,Optional<PieceMoveAction<?,?>>> {
 
     @Override
     public Optional<PieceMoveAction<?,?>> apply(Action<?> action) {
-        if (Action.Type.BIG_MOVE.equals(action.getType())) {
-            return Optional.of((PieceBigMoveAction<?,?>) action);
-        }
-
-        return Optional.empty();
+        return Optional.ofNullable(isBigMove(action)
+                ? (PieceBigMoveAction<?,?>) action
+                : null
+        );
     }
 }

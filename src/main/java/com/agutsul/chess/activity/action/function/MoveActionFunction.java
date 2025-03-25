@@ -1,5 +1,8 @@
 package com.agutsul.chess.activity.action.function;
 
+import static com.agutsul.chess.activity.action.Action.isMove;
+import static com.agutsul.chess.activity.action.Action.isPromote;
+
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -8,18 +11,18 @@ import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 
 final class MoveActionFunction
-        implements Function<Action<?>, Optional<PieceMoveAction<?,?>>> {
+        implements Function<Action<?>,Optional<PieceMoveAction<?,?>>> {
 
     @Override
     public Optional<PieceMoveAction<?,?>> apply(Action<?> action) {
-        if (Action.Type.MOVE.equals(action.getType())) {
+        if (isMove(action)) {
             return Optional.of((PieceMoveAction<?,?>) action);
         }
 
-        if (Action.Type.PROMOTE.equals(action.getType())) {
+        if (isPromote(action)) {
             var sourceAction = ((PiecePromoteAction<?,?>) action).getSource();
 
-            if (Action.Type.MOVE.equals(sourceAction.getType())) {
+            if (isMove((Action<?>) sourceAction)) {
                 return Optional.of((PieceMoveAction<?,?>) sourceAction);
             }
         }

@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.activity.action.Action.isCastling;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -114,11 +115,9 @@ final class KingPieceImpl<COLOR extends Color>
 
         @Override
         public Collection<Action<?>> calculateActions(PIECE piece, Action.Type actionType) {
-            if (Action.Type.CASTLING.equals(actionType)) {
-                return emptyList();
-            }
-
-            return super.calculateActions(piece, actionType);
+            return isCastling(actionType)
+                    ? emptyList()
+                    : super.calculateActions(piece, actionType);
         }
 
         @Override

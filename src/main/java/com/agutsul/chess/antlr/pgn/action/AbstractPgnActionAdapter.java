@@ -36,16 +36,16 @@ abstract class AbstractPgnActionAdapter
     }
 
     Optional<Piece<Color>> getMovablePiece(Piece.Type pieceType, String position) {
-        return getMovablePiece(pieceType, null, position);
-    }
-
-    Optional<Piece<Color>> getMovablePiece(Piece.Type pieceType, String code, String position) {
-        var piece = getPiece(pieceType, code, position, Action.Type.MOVE);
+        var piece = getPiece(pieceType, null, position, Action.Type.MOVE);
         if (piece.isPresent()) {
             return piece;
         }
 
-        return getPiece(pieceType, code, position, Action.Type.BIG_MOVE);
+        return getPiece(pieceType, null, position, Action.Type.BIG_MOVE);
+    }
+
+    Optional<Piece<Color>> getMovablePiece(Piece.Type pieceType, String code, String position) {
+        return getPiece(pieceType, code, position, Action.Type.MOVE);
     }
 
     Optional<Piece<Color>> getCapturablePiece(Piece.Type pieceType, String code, String position) {

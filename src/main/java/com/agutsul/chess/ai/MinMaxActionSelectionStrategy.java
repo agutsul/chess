@@ -1,5 +1,6 @@
 package com.agutsul.chess.ai;
 
+import static com.agutsul.chess.activity.action.Action.isPromote;
 import static java.time.LocalDateTime.now;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -195,7 +196,7 @@ public final class MinMaxActionSelectionStrategy
                     .map(piece -> board.getActions(piece))
                     .flatMap(Collection::stream)
                     .map(action -> {
-                        if (!Action.Type.PROMOTE.equals(action.getType())) {
+                        if (!isPromote(action)) {
                             return List.of(action);
                         }
 

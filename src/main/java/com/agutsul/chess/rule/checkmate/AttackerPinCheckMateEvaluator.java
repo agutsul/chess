@@ -62,7 +62,7 @@ final class AttackerPinCheckMateEvaluator
         var isPinnable = attackers.stream()
                 .map(piece -> board.getActions(piece, Action.Type.CAPTURE))
                 .flatMap(Collection::stream)
-                .filter(action -> Action.Type.CAPTURE.equals(action.getType()))
+                .filter(Action::isCapture)
                 .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), king))
                 .map(PieceCaptureAction::getLine)

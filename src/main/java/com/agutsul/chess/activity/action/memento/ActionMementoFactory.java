@@ -1,5 +1,6 @@
 package com.agutsul.chess.activity.action.memento;
 
+import static com.agutsul.chess.activity.action.Action.isCastling;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
@@ -197,7 +198,7 @@ public enum ActionMementoFactory
         var function = MODES.get(action.getType());
 
         var memento = function.apply(action);
-        if (Action.Type.CASTLING.equals(action.getType())) {
+        if (isCastling(action)) {
             return memento;
         }
 
@@ -218,7 +219,7 @@ public enum ActionMementoFactory
                 .filter(piece -> {
                     var actions = board.getActions(piece);
                     var isFound = actions.stream()
-                            .filter(a -> !Action.Type.CASTLING.equals(a.getType()))
+                            .filter(act -> !isCastling(act))
                             .map(Action::getPosition)
                             .anyMatch(position -> Objects.equals(position, targetPosition));
 

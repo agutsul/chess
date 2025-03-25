@@ -1,5 +1,8 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.activity.action.Action.isCapture;
+import static com.agutsul.chess.activity.action.Action.isCastling;
+import static com.agutsul.chess.activity.action.Action.isMove;
 import static java.util.Collections.emptyList;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -70,31 +73,16 @@ final class RookPieceImpl<COLOR extends Color>
 
         @Override
         public int compare(Action<?> action1, Action<?> action2) {
-            var type1 = action1.getType();
-            var type2 = action2.getType();
-
             // expected order: capture, move, castling
-            if (Objects.equals(type1, type2)) {
+            if (Objects.equals(action1.getType(), action2.getType())) {
                 return 0;
             }
 
-            var isHigherPriority = (isCapture(type1) && isMove(type2))
-                    || (isCapture(type1) && isCastling(type2))
-                    || (isMove(type1) && isCastling(type2));
+            var isHigherPriority = (isCapture(action1) && isMove(action2))
+                    || (isCapture(action1) && isCastling(action2))
+                    || (isMove(action1) && isCastling(action2));
 
             return isHigherPriority ? -1 : 1;
-        }
-
-        private static boolean isCastling(Action.Type type) {
-            return Action.Type.CASTLING.equals(type);
-        }
-
-        private static boolean isCapture(Action.Type type) {
-            return Action.Type.CAPTURE.equals(type);
-        }
-
-        private static boolean isMove(Action.Type type) {
-            return Action.Type.MOVE.equals(type);
         }
     }
 

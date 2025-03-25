@@ -1,10 +1,10 @@
 package com.agutsul.chess.player.observer;
 
+import static com.agutsul.chess.activity.action.Action.isPromote;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.activity.action.adapter.ActionAdapter;
 import com.agutsul.chess.ai.ActionSelectionStrategy;
@@ -41,7 +41,7 @@ public final class BotActionInputObserver
         }
 
         var action = calculatedAction.get();
-        if (Action.Type.PROMOTE.equals(action.getType())) {
+        if (isPromote(action)) {
             this.promoteAction = (PiecePromoteAction<?,?>) action;
         }
 

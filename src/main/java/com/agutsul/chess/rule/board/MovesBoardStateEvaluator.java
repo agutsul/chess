@@ -1,21 +1,23 @@
 package com.agutsul.chess.rule.board;
 
+import static com.agutsul.chess.activity.action.Action.isBigMove;
+import static com.agutsul.chess.activity.action.Action.isCapture;
+import static com.agutsul.chess.activity.action.Action.isEnPassant;
+import static com.agutsul.chess.activity.action.Action.isMove;
+import static com.agutsul.chess.activity.action.Action.isPromote;
 import static com.agutsul.chess.board.state.BoardStateFactory.fiftyMovesBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.seventyFiveMovesBoardState;
 import static java.util.Collections.max;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.event.SetActionCounterEvent;
@@ -186,9 +188,6 @@ final class MovesBoardStateEvaluator
 
         private static final Logger LOGGER = getLogger(CaptureCalculationTask.class);
 
-        private static final Set<Action.Type> CAPTURE_TYPES =
-                EnumSet.of(Action.Type.CAPTURE, Action.Type.EN_PASSANT);
-
         CaptureCalculationTask(List<ActionMemento<?,?>> actions, int limit) {
             super(LOGGER, actions, limit);
         }
@@ -202,7 +201,7 @@ final class MovesBoardStateEvaluator
 
                 var actionType = memento.getActionType();
                 if (isCapture(actionType)
-                        || (Action.Type.PROMOTE.equals(actionType) && isCapture(memento))) {
+                        || (isPromote(actionType) && isCaptureMemento(memento))) {
 
                     counter++;
                 }
@@ -211,17 +210,15 @@ final class MovesBoardStateEvaluator
             return counter;
         }
 
-        private static boolean isCapture(ActionMemento<?,?> memento) {
+        private static boolean isCaptureMemento(ActionMemento<?,?> memento) {
             @SuppressWarnings("unchecked")
             var promoteMemento =
                     (ActionMemento<String,ActionMemento<String,String>>) memento;
 
             var originAction = promoteMemento.getTarget();
-            return isCapture(originAction.getActionType());
-        }
+            var actionType = originAction.getActionType();
 
-        private static boolean isCapture(Action.Type actionType) {
-            return CAPTURE_TYPES.contains(actionType);
+            return isCapture(actionType) || isEnPassant(actionType);
         }
     }
 
@@ -229,9 +226,6 @@ final class MovesBoardStateEvaluator
             extends AbstractCalculationTask {
 
         private static final Logger LOGGER = getLogger(PawnMoveCalculationTask.class);
-
-        private static final Set<Action.Type> MOVE_TYPES =
-                EnumSet.of(Action.Type.MOVE, Action.Type.BIG_MOVE);
 
         PawnMoveCalculationTask(List<ActionMemento<?,?>> actions, int limit) {
             super(LOGGER, actions, limit);
@@ -248,8 +242,8 @@ final class MovesBoardStateEvaluator
                 }
 
                 var actionType = memento.getActionType();
-                if (isMove(actionType)
-                        || (Action.Type.PROMOTE.equals(actionType) && isMove(memento))) {
+                if (isMove(actionType) || isBigMove(actionType)
+                        || (isPromote(actionType) && isMoveMemento(memento))) {
 
                     counter++;
                 }
@@ -258,17 +252,13 @@ final class MovesBoardStateEvaluator
             return counter;
         }
 
-        private static boolean isMove(ActionMemento<?,?> memento) {
+        private static boolean isMoveMemento(ActionMemento<?,?> memento) {
             @SuppressWarnings("unchecked")
             var promoteMemento =
                     (ActionMemento<String,ActionMemento<String,String>>) memento;
 
             var originAction = promoteMemento.getTarget();
             return isMove(originAction.getActionType());
-        }
-
-        private static boolean isMove(Action.Type actionType) {
-            return MOVE_TYPES.contains(actionType);
         }
     }
 }
