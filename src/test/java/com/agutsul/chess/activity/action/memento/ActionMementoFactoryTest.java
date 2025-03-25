@@ -1,5 +1,6 @@
 package com.agutsul.chess.activity.action.memento;
 
+import static com.agutsul.chess.activity.action.memento.ActionMementoFactory.createMemento;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.spy;
 
@@ -27,7 +28,7 @@ public class ActionMementoFactoryTest {
         var pawn = board.getPiece("e2");
         var actions = board.getActions(pawn.get(), Action.Type.MOVE);
 
-        var memento = ActionMementoFactory.createMemento(board, actions.iterator().next());
+        var memento = createMemento(board, actions.iterator().next());
 
         assertEquals(Action.Type.MOVE, memento.getActionType());
         assertEquals("MOVE PAWN(e2 e3)", String.valueOf(memento));
@@ -43,7 +44,7 @@ public class ActionMementoFactoryTest {
         var pawn = board.getPiece("e2");
         var actions = board.getActions(pawn.get(), Action.Type.CAPTURE);
 
-        var memento = ActionMementoFactory.createMemento(board, actions.iterator().next());
+        var memento = createMemento(board, actions.iterator().next());
 
         assertEquals(Action.Type.CAPTURE, memento.getActionType());
         assertEquals("CAPTURE PAWN(e2 d3)", String.valueOf(memento));
@@ -59,7 +60,7 @@ public class ActionMementoFactoryTest {
         var king = board.getPiece("e1");
         var actions = board.getActions(king.get(), Action.Type.CASTLING);
 
-        var memento = ActionMementoFactory.createMemento(board, actions.iterator().next());
+        var memento = createMemento(board, actions.iterator().next());
 
         assertEquals(Action.Type.CASTLING, memento.getActionType());
         assertEquals("CASTLING(MOVE KING(e1 g1) MOVE ROOK(h1 f1))", String.valueOf(memento));
@@ -75,7 +76,7 @@ public class ActionMementoFactoryTest {
         var actions = board.getActions(pawn.get(), Action.Type.PROMOTE);
 
         var action = spy(actions.iterator().next());
-        var memento = ActionMementoFactory.createMemento(board, action);
+        var memento = createMemento(board, action);
 
         assertEquals(Action.Type.PROMOTE, memento.getActionType());
         assertEquals("PROMOTE(MOVE PAWN(e7 e8) ?)", String.valueOf(memento));
@@ -96,7 +97,7 @@ public class ActionMementoFactoryTest {
         var whitePawn = (PawnPiece<Color>) board.getPiece("b5").get();
         var actions = board.getActions(whitePawn, Action.Type.EN_PASSANT);
 
-        var memento = ActionMementoFactory.createMemento(board, actions.iterator().next());
+        var memento = createMemento(board, actions.iterator().next());
 
         assertEquals(Action.Type.EN_PASSANT, memento.getActionType());
         assertEquals("EN_PASSANT(CAPTURE PAWN(b5 a5) a6)", String.valueOf(memento));
