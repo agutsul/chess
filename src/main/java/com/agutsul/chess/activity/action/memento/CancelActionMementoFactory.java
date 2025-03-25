@@ -12,6 +12,7 @@ import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Demotable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.CancelBigMoveAction;
 import com.agutsul.chess.activity.action.CancelCaptureAction;
 import com.agutsul.chess.activity.action.CancelCastlingAction;
 import com.agutsul.chess.activity.action.CancelCastlingAction.UncastlingMoveAction;
@@ -28,8 +29,8 @@ import com.agutsul.chess.position.Position;
 public enum CancelActionMementoFactory
         implements BiFunction<Board,ActionMemento<?,?>,Action<?>> {
 
-    MOVE_MODE(Action.Type.MOVE,             new CancelMoveActionFunction(Action.Type.MOVE)),
-    BIG_MOVE_MODE(Action.Type.BIG_MOVE,     new CancelMoveActionFunction(Action.Type.BIG_MOVE)),
+    MOVE_MODE(Action.Type.MOVE,             new CancelMoveActionFunction()),
+    BIG_MOVE_MODE(Action.Type.BIG_MOVE,     new CancelBigMoveActionFunction()),
     CAPTURE_MODE(Action.Type.CAPTURE,       new CancelCaptureActionFunction()),
     PROMOTE_MODE(Action.Type.PROMOTE,       new CancelPromoteActionFunction()),
     CASTLING_MODE(Action.Type.CASTLING,     new CancelCastlingActionFunction()),
@@ -60,18 +61,12 @@ public enum CancelActionMementoFactory
         return type;
     }
 
-    private static final class CancelMoveActionFunction
+    private static abstract class AbstractCancelMoveActionFunction
             implements BiFunction<Board,ActionMemento<?,?>,Action<?>> {
-
-        private final Action.Type actionType;
-
-        CancelMoveActionFunction(Action.Type actionType) {
-            this.actionType = actionType;
-        }
 
         @Override
         @SuppressWarnings("unchecked")
-        public Action<?> apply(Board board, ActionMemento<?,?> memento) {
+        public final Action<?> apply(Board board, ActionMemento<?,?> memento) {
             var actionMemento = (ActionMemento<String,String>) memento;
 
             var piece = board.getPiece(actionMemento.getTarget());
@@ -80,11 +75,31 @@ public enum CancelActionMementoFactory
             return create(piece.get(), position.get());
         }
 
+        abstract <COLOR extends Color,PIECE extends Piece<COLOR> & Movable>
+                 CancelMoveAction<COLOR,PIECE> create(Piece<Color> piece, Position position);
+    }
+
+    private static final class CancelMoveActionFunction
+            extends AbstractCancelMoveActionFunction {
+
+        @Override
         @SuppressWarnings("unchecked")
-        private <COLOR extends Color,PIECE extends Piece<COLOR> & Movable>
+        <COLOR extends Color,PIECE extends Piece<COLOR> & Movable>
                 CancelMoveAction<COLOR,PIECE> create(Piece<Color> piece, Position position) {
 
-            return new CancelMoveAction<>(this.actionType, (PIECE) piece, position);
+            return new CancelMoveAction<>((PIECE) piece, position);
+        }
+    }
+
+    private static final class CancelBigMoveActionFunction
+            extends AbstractCancelMoveActionFunction {
+
+        @Override
+        @SuppressWarnings("unchecked")
+        <COLOR extends Color, PIECE extends Piece<COLOR> & Movable>
+                CancelMoveAction<COLOR, PIECE> create(Piece<Color> piece, Position position) {
+
+            return new CancelBigMoveAction<>((PIECE) piece, position);
         }
     }
 

@@ -15,7 +15,11 @@ public class CancelMoveAction<COLOR extends Color,
 
     private static final Logger LOGGER = getLogger(CancelMoveAction.class);
 
-    public CancelMoveAction(Action.Type type, PIECE piece, Position position) {
+    public CancelMoveAction(PIECE piece, Position position) {
+        this(Action.Type.MOVE, piece, position);
+    }
+
+    CancelMoveAction(Action.Type type, PIECE piece, Position position) {
         super(type, piece, position);
     }
 

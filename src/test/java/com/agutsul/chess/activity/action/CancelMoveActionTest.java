@@ -38,7 +38,7 @@ public class CancelMoveActionTest {
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
         @SuppressWarnings({ "rawtypes", "unchecked" })
-        var cancelAction = new CancelMoveAction(Action.Type.MOVE, whitePawn, sourcePosition);
+        var cancelAction = new CancelMoveAction(whitePawn, sourcePosition);
         cancelAction.execute();
 
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
