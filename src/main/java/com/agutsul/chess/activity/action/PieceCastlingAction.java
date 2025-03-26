@@ -42,6 +42,12 @@ public class PieceCastlingAction<COLOR extends Color,
     }
 
     @Override
+    public final boolean matches(Piece<?> piece, Position position) {
+        return getSource().matches(piece, position)
+                || getTarget().matches(piece, position);
+    }
+
+    @Override
     public final int compareTo(Action<?> action) {
         int compared = super.compareTo(action);
         if (compared != 0) {

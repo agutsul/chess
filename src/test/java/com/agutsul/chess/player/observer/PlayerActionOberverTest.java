@@ -5,9 +5,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -67,15 +69,15 @@ public class PlayerActionOberverTest {
 
         var position = mock(Position.class);
 
-        var action = mock(PieceMoveAction.class);
-        when(action.getType())
-            .thenReturn(Action.Type.MOVE);
-        when(action.getSource())
-            .thenReturn(piece);
-        when(action.getPiece())
-            .thenReturn(piece);
-        when(action.getPosition())
-            .thenReturn(position);
+        var action = spy(new PieceMoveAction<>(piece, position));
+        doCallRealMethod()
+            .when(action).getType();
+        doCallRealMethod()
+            .when(action).getPosition();
+        doCallRealMethod()
+            .when(action).getPiece();
+        doCallRealMethod()
+            .when(action).getSource();
 
         var board = mock(AbstractBoard.class);
         when(board.getPiece(anyString()))

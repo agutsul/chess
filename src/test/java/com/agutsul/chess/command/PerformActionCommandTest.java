@@ -6,8 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -21,7 +23,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.LabeledBoardBuilder;
@@ -134,15 +135,15 @@ public class PerformActionCommandTest {
         when(board.getPosition(anyString()))
             .thenReturn(Optional.of(targetPosition));
 
-        var targetAction = mock(PieceMoveAction.class);
-        when(targetAction.getType())
-            .thenReturn(Action.Type.MOVE);
-        when(targetAction.getPosition())
-            .thenReturn(targetPosition);
-        when(targetAction.getPiece())
-            .thenReturn(piece);
-        when(targetAction.getSource())
-            .thenReturn(piece);
+        var targetAction = spy(new PieceMoveAction<>(piece, targetPosition));
+        doCallRealMethod()
+            .when(targetAction).getType();
+        doCallRealMethod()
+            .when(targetAction).getPosition();
+        doCallRealMethod()
+            .when(targetAction).getPiece();
+        doCallRealMethod()
+            .when(targetAction).getSource();
 
         var errorMessage = "test";
         doThrow(new IllegalActionException("test"))

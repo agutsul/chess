@@ -36,6 +36,12 @@ public final class CancelCastlingAction<COLOR extends Color,
         getTarget().execute();
     }
 
+    @Override
+    public final boolean matches(Piece<?> piece, Position position) {
+        return getSource().matches(piece, position)
+                || getTarget().matches(piece, position);
+    }
+
     public static final class UncastlingMoveAction<COLOR extends Color,
                                                    PIECE extends Piece<COLOR> & Castlingable & Movable>
             extends CancelMoveAction<COLOR,PIECE> {

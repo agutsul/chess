@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.action;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.ObjectUtils;
 
 import com.agutsul.chess.Executable;
@@ -9,6 +11,7 @@ import com.agutsul.chess.Valuable;
 import com.agutsul.chess.activity.Activity;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.position.Position;
 
 public interface Action<SOURCE>
         extends Executable, Positionable, Valuable,
@@ -31,6 +34,11 @@ public interface Action<SOURCE>
     String getCode();
 
     <COLOR extends Color,PIECE extends Piece<COLOR>> PIECE getPiece();
+
+    default boolean matches(Piece<?> piece, Position position) {
+        return Objects.equals(piece, getPiece())
+                && Objects.equals(position, getPosition());
+    }
 
     @Override
     default int compareTo(Action<?> action) {
