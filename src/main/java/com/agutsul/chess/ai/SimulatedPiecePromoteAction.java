@@ -20,8 +20,8 @@ final class SimulatedPiecePromoteAction<COLOR1 extends Color,
         setPieceType(promotedPieceType);
     }
 
-    <COLOR2 extends Color, PIECE2 extends Piece<COLOR2>> SimulatedPiecePromoteAction(
-            PieceCaptureAction<COLOR1, COLOR2, PIECE1, PIECE2> action,
+    <COLOR2 extends Color,PIECE2 extends Piece<COLOR2>> SimulatedPiecePromoteAction(
+            PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2> action,
             Observable observable,
             Piece.Type promotedPieceType) {
 
