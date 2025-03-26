@@ -72,6 +72,8 @@ public class PlayerActionOberverTest {
             .thenReturn(Action.Type.MOVE);
         when(action.getSource())
             .thenReturn(piece);
+        when(action.getPiece())
+            .thenReturn(piece);
         when(action.getPosition())
             .thenReturn(position);
 

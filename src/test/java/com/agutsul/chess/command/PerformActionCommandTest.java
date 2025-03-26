@@ -24,14 +24,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.LabeledBoardBuilder;
+import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.exception.IllegalPositionException;
 import com.agutsul.chess.piece.PawnPiece;
+import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.position.Position;
 
@@ -123,6 +124,8 @@ public class PerformActionCommandTest {
             .thenReturn(Colors.WHITE);
         when(piece.getPosition())
             .thenReturn(sourcePosition);
+        when(piece.getType())
+            .thenReturn(Piece.Type.PAWN);
 
         when(board.getPiece(anyString()))
             .thenReturn(Optional.of(piece));
@@ -136,6 +139,8 @@ public class PerformActionCommandTest {
             .thenReturn(Action.Type.MOVE);
         when(targetAction.getPosition())
             .thenReturn(targetPosition);
+        when(targetAction.getPiece())
+            .thenReturn(piece);
         when(targetAction.getSource())
             .thenReturn(piece);
 

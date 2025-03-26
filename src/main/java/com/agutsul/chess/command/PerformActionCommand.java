@@ -1,25 +1,17 @@
 package com.agutsul.chess.command;
 
+import static com.agutsul.chess.activity.action.Action.isCastling;
 import static com.agutsul.chess.activity.action.memento.ActionMementoFactory.createMemento;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.action.PieceBigMoveAction;
-import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceCastlingAction;
-import com.agutsul.chess.activity.action.PieceEnPassantAction;
-import com.agutsul.chess.activity.action.PieceMoveAction;
-import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.activity.action.event.ActionExecutionEvent;
 import com.agutsul.chess.activity.action.event.ActionPerformedEvent;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
@@ -89,11 +81,11 @@ public final class PerformActionCommand
 
     @Override
     protected void preExecute() throws CommandException {
-        var actionFilter = new ActionFilter(this.sourcePiece, this.targetPosition);
+        var actionMatcher = new ActionMatcher(this.sourcePiece, this.targetPosition);
 
         var allActions = board.getActions(this.sourcePiece);
         var targetAction = allActions.stream()
-                .filter(action -> actionFilter.test(action))
+                .filter(action -> actionMatcher.test(action))
                 .findFirst();
 
         if (targetAction.isEmpty()) {
@@ -127,94 +119,27 @@ public final class PerformActionCommand
         );
     }
 
-    private static final class ActionFilter
+    private static final class ActionMatcher
             implements Predicate<Action<?>> {
 
         private final Piece<?> piece;
         private final Position position;
 
-        ActionFilter(Piece<?> piece, Position position) {
+        ActionMatcher(Piece<?> piece, Position position) {
             this.piece = piece;
             this.position = position;
         }
 
         @Override
         public boolean test(Action<?> action) {
-            return ActionMatcher.matches(action, this.piece, this.position);
-        }
-
-        private enum ActionMatcher {
-            MOVE_MODE(Action.Type.MOVE) {
-                @Override
-                boolean equals(Action<?> action, Piece<?> piece, Position position) {
-                    var moveAction = (PieceMoveAction<?,?>) action;
-                    return Objects.equals(moveAction.getSource(), piece)
-                            && Objects.equals(moveAction.getPosition(), position);
-                }
-            },
-            BIG_MOVE_MODE(Action.Type.BIG_MOVE) {
-                @Override
-                boolean equals(Action<?> action, Piece<?> piece, Position position) {
-                    var moveAction = (PieceBigMoveAction<?,?>) action;
-                    return Objects.equals(moveAction.getSource(), piece)
-                            && Objects.equals(moveAction.getPosition(), position);
-                }
-            },
-            CAPTURE_MODE(Action.Type.CAPTURE) {
-                @Override
-                boolean equals(Action<?> action, Piece<?> piece, Position position) {
-                    var captureAction = (PieceCaptureAction<?,?,?,?>) action;
-                    return Objects.equals(captureAction.getSource(), piece)
-                            && Objects.equals(captureAction.getPosition(), position);
-                }
-            },
-            PROMOTE_MODE(Action.Type.PROMOTE) {
-                @Override
-                boolean equals(Action<?> action, Piece<?> piece, Position position) {
-                    var promoteAction = (PiecePromoteAction<?,?>) action;
-                    var originAction = (Action<?>) promoteAction.getSource();
-
-                    return matches(originAction, piece, position);
-                }
-            },
-            CASTLING_MODE(Action.Type.CASTLING) {
-                @Override
-                boolean equals(Action<?> action, Piece<?> piece, Position position) {
-                    var castlingAction = (PieceCastlingAction<?,?,?>) action;
-                    if (matches(castlingAction.getSource(), piece, position)) {
-                        return true;
-                    }
-
-                    return matches(castlingAction.getTarget(), piece, position);
-                }
-            },
-            EN_PASSANT_MODE(Action.Type.EN_PASSANT) {
-                @Override
-                boolean equals(Action<?> action, Piece<?> piece, Position position) {
-                    var enPassantAction = (PieceEnPassantAction<?,?,?,?>) action;
-                    return Objects.equals(enPassantAction.getSource(), piece)
-                            && Objects.equals(enPassantAction.getPosition(), position);
-                }
-            };
-
-            private static final Map<Action.Type, ActionMatcher> MODES =
-                    Stream.of(values()).collect(toMap(ActionMatcher::type, identity()));
-
-            private Action.Type type;
-
-            ActionMatcher(Action.Type type) {
-                this.type = type;
+            if (isCastling(action)) {
+                var castlingAction = (PieceCastlingAction<?,?,?>) action;
+                return test(castlingAction.getSource())
+                        || test(castlingAction.getTarget());
             }
 
-            abstract boolean equals(Action<?> action, Piece<?> piece, Position position);
-
-            private Action.Type type() {
-                return type;
-            }
-
-            private static boolean matches(Action<?> action, Piece<?> source, Position target) {
-                return MODES.get(action.getType()).equals(action, source, target);
-            }
+            return Objects.equals(action.getPiece(), piece)
+                    && Objects.equals(action.getPosition(), position);
         }
     }
 }
