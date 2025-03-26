@@ -1,6 +1,7 @@
 package com.agutsul.chess.activity.action.formatter;
 
 import static com.agutsul.chess.piece.Piece.isPawn;
+import static java.util.Objects.nonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
@@ -53,14 +54,9 @@ public enum StandardAlgebraicActionFormatter implements ActionFormatter {
         }
 
         private static String formatSource(ActionMemento<?,?> memento) {
-            if (isPawn(memento.getPieceType())) {
-                return formatPawn(memento);
-            }
-
-            return String.format("%s%s",
-                    memento.getPieceType(),
-                    formatCode(memento.getCode())
-            );
+            return isPawn(memento.getPieceType())
+                    ? formatPawn(memento)
+                    : String.format("%s%s", memento.getPieceType(), formatCode(memento.getCode()));
         }
     },
     EN_PASSANT_MODE(Action.Type.EN_PASSANT) {
@@ -77,13 +73,12 @@ public enum StandardAlgebraicActionFormatter implements ActionFormatter {
         @Override
         public String formatMemento(ActionMemento<?,?> memento) {
             var originMemento = (ActionMemento<?,?>) memento.getTarget();
-
-            var originAction = memento.getCode() != null
-                    ? format(new ActionMementoDecorator<>(originMemento, memento.getCode()))
-                    : format(originMemento);
+            var originAction = nonNull(memento.getCode())
+                    ? new ActionMementoDecorator<>(originMemento, memento.getCode())
+                    : originMemento;
 
             return String.format("%s%s%s",
-                    originAction,
+                    format(originAction),
                     PROMOTE_CODE,
                     memento.getPieceType()
             );
