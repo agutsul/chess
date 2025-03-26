@@ -27,16 +27,6 @@ final class TransformablePieceAdapter<PIECE extends Piece<?>
     }
 
     @Override
-    public boolean isPinned() {
-        return this.origin.isPinned();
-    }
-
-    @Override
-    public boolean isBlocked() {
-        return ((Blockable) this.origin).isBlocked();
-    }
-
-    @Override
     public void enpassant(PawnPiece<?> targetPiece, Position targetPosition) {
         ((EnPassantable) this.origin).enpassant(targetPiece, targetPosition);
     }
@@ -47,6 +37,11 @@ final class TransformablePieceAdapter<PIECE extends Piece<?>
     }
 
     @Override
+    public boolean isPinned() {
+        return this.origin.isPinned();
+    }
+
+    @Override
     public void castling(Position position) {
         ((Castlingable) this.origin).castling(position);
     }
@@ -54,6 +49,11 @@ final class TransformablePieceAdapter<PIECE extends Piece<?>
     @Override
     public void uncastling(Position position) {
         ((Castlingable) this.origin).uncastling(position);
+    }
+
+    @Override
+    public boolean isBlocked() {
+        return ((Blockable) this.origin).isBlocked();
     }
 
     @Override
