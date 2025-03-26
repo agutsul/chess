@@ -11,6 +11,7 @@
     <Or>
       <Class name="com.agutsul.chess.board.AbstractBoardBuilder$PieceBuilderTask" />
       <Class name="com.agutsul.chess.board.AbstractBoardBuilder$PieceBuilderSubTask" />
+      <Class name="com.agutsul.chess.ai.MinMaxActionSelectionStrategy$ActionSelectionTask" />
     </Or>
     <Bug code="Se" />
   </Match>
