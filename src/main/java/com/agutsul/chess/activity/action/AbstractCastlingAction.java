@@ -45,8 +45,8 @@ public abstract class AbstractCastlingAction<COLOR extends Color,
 
     @Override
     public final boolean matches(Piece<?> piece, Position position) {
-        return getSource().matches(piece, position)
-                || getTarget().matches(piece, position);
+        return Stream.of(super.getSource(), super.getTarget())
+                .anyMatch(action -> action.matches(piece, position));
     }
 
     @Override
