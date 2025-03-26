@@ -27,13 +27,13 @@ final class TransformablePieceAdapter<PIECE extends Piece<?>
     }
 
     @Override
-    public void promote(Position position, Piece.Type pieceType) {
-        this.origin.promote(position, pieceType);
+    public boolean isPinned() {
+        return this.origin.isPinned();
     }
 
     @Override
-    public void demote() {
-        demote(this.origin);
+    public boolean isBlocked() {
+        return ((Blockable) this.origin).isBlocked();
     }
 
     @Override
@@ -47,16 +47,6 @@ final class TransformablePieceAdapter<PIECE extends Piece<?>
     }
 
     @Override
-    public boolean isPinned() {
-        return this.origin.isPinned();
-    }
-
-    @Override
-    public boolean isBlocked() {
-        return ((Blockable) this.origin).isBlocked();
-    }
-
-    @Override
     public void castling(Position position) {
         ((Castlingable) this.origin).castling(position);
     }
@@ -66,6 +56,17 @@ final class TransformablePieceAdapter<PIECE extends Piece<?>
         ((Castlingable) this.origin).uncastling(position);
     }
 
+    @Override
+    public void promote(Position position, Piece.Type pieceType) {
+        this.origin.promote(position, pieceType);
+    }
+
+    @Override
+    public void demote() {
+        demote(this.origin);
+    }
+
+    // adapt demote action
     private static void demote(Piece<?> piece) {
         if (piece instanceof Demotable) {
             ((Demotable) piece).demote();
