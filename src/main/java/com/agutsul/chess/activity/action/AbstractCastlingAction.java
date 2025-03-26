@@ -44,6 +44,12 @@ public abstract class AbstractCastlingAction<COLOR extends Color,
     }
 
     @Override
+    public final boolean matches(Piece<?> piece, Position position) {
+        return getSource().matches(piece, position)
+                || getTarget().matches(piece, position);
+    }
+
+    @Override
     public final String getCode() {
         return this.side.name();
     }
