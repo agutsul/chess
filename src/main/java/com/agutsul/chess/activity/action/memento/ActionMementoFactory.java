@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.concurrent.LazyInitializer;
 
-import com.agutsul.chess.Positionable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCastlingAction;
 import com.agutsul.chess.activity.action.PieceCastlingAction.CastlingMoveAction;
@@ -25,64 +24,23 @@ import com.agutsul.chess.position.Position;
 public enum ActionMementoFactory
         implements Function<Action<?>,ActionMemento<?,?>> {
 
-    MOVE_MODE(Action.Type.MOVE) {
-
-        @Override
-        public ActionMemento<?,?> apply(Action<?> action) {
-            return createMemento(
-                    action.getType(),
-                    getSource(action),
-                    action.getPosition()
-            );
-        }
-    },
-    BIG_MOVE_MODE(Action.Type.BIG_MOVE) {
-
-        @Override
-        public ActionMemento<?,?> apply(Action<?> action) {
-            return createMemento(
-                    action.getType(),
-                    getSource(action),
-                    action.getPosition()
-            );
-        }
-    },
-    CAPTURE_MODE(Action.Type.CAPTURE) {
-
-        @Override
-        public ActionMemento<?,?> apply(Action<?> action) {
-            return createMemento(
-                    action.getType(),
-                    getSource(action),
-                    action.getPosition()
-            );
-        }
-    },
+    MOVE_MODE(Action.Type.MOVE),
+    BIG_MOVE_MODE(Action.Type.BIG_MOVE),
+    CAPTURE_MODE(Action.Type.CAPTURE),
     PROMOTE_MODE(Action.Type.PROMOTE) {
 
         @Override
         public ActionMemento<?,?> apply(Action<?> action) {
             var promoteAction = (PiecePromoteAction<?,?>) action;
+            var originAction = (Action<?>) promoteAction.getSource();
 
-            var originAction = promoteAction.getSource();
-            var memento = createMemento(
-                    originAction.getType(),
-                    originAction.getSource(),
-                    ((Positionable) originAction).getPosition()
-            );
-
-            var pieceTypeInitializer = new PieceTypeLazyInitializer(promoteAction);
+            @SuppressWarnings("unchecked")
+            var memento = (ActionMemento<String,String>) super.apply(originAction);
             return new PromoteActionMemento(
                     promoteAction.getType(),
-                    pieceTypeInitializer,
+                    new PieceTypeLazyInitializer(promoteAction),
                     memento
             );
-        }
-
-        @Override
-        Piece<?> getSource(Action<?> action) {
-            var promoteAction = (PiecePromoteAction<?,?>) action;
-            return super.getSource((Action<?>) promoteAction.getSource());
         }
 
         static final class PieceTypeLazyInitializer
@@ -106,29 +64,17 @@ public enum ActionMementoFactory
         public ActionMemento<?,?> apply(Action<?> action) {
             var castlingAction = (PieceCastlingAction<?,?,?>) action;
 
-            var kingAction = castlingAction.getSource();
-            var rookAction = castlingAction.getTarget();
-
             return new CastlingActionMemento(
                     castlingAction.getSide(),
                     castlingAction.getType(),
-                    createMemento(kingAction),
-                    createMemento(rookAction)
+                    createMemento(castlingAction.getSource()),
+                    createMemento(castlingAction.getTarget())
             );
         }
 
-        @Override
-        Piece<?> getSource(Action<?> action) {
-            var castlingAction = (PieceCastlingAction<?,?,?>) action;
-            return super.getSource(castlingAction.getSource());
-        }
-
-        private static ActionMemento<String,String> createMemento(CastlingMoveAction<?,?> action) {
-            return createMemento(
-                    action.getType(),
-                    action.getSource(),
-                    action.getPosition()
-            );
+        @SuppressWarnings("unchecked")
+        private ActionMemento<String,String> createMemento(CastlingMoveAction<?,?> action) {
+            return (ActionMemento<String,String>) super.apply(action);
         }
     },
     EN_PASSANT_MODE(Action.Type.EN_PASSANT) {
@@ -167,8 +113,9 @@ public enum ActionMementoFactory
         return type;
     }
 
-    Piece<?> getSource(Action<?> action) {
-        return (Piece<?>) action.getSource();
+    @Override
+    public ActionMemento<?,?> apply(Action<?> action) {
+        return createMemento(action.getType(), action.getPiece(), action.getPosition());
     }
 
     static ActionMemento<String,String> createMemento(Action.Type actionType,
@@ -196,9 +143,7 @@ public enum ActionMementoFactory
     }
 
     public static ActionMemento<?,?> createMemento(Board board, Action<?> action) {
-        var function = MODES.get(action.getType());
-
-        var memento = function.apply(action);
+        var memento = MODES.get(action.getType()).apply(action);
         if (isCastling(action)) {
             return memento;
         }
@@ -207,7 +152,7 @@ public enum ActionMementoFactory
         // To be able to clearly identify source piece while reviewing journal additional code should be provided.
         // Code can be either the first position symbol or the last one ( if the first matches )
 
-        var sourcePiece = function.getSource(action);
+        var sourcePiece = action.getPiece();
 
         var allPieces = board.getPieces(sourcePiece.getColor(), sourcePiece.getType());
         if (allPieces.size() == 1) {
