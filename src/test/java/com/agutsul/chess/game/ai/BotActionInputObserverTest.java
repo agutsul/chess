@@ -1,4 +1,4 @@
-package com.agutsul.chess.player.observer;
+package com.agutsul.chess.game.ai;
 
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;

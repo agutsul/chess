@@ -1,4 +1,4 @@
-package com.agutsul.chess.game;
+package com.agutsul.chess.game.ai;
 
 import static java.util.UUID.randomUUID;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
@@ -18,6 +18,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.command.SimulateActionCommand;
 import com.agutsul.chess.event.Observable;
+import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;

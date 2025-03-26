@@ -1,4 +1,4 @@
-package com.agutsul.chess.player.observer;
+package com.agutsul.chess.game.ai;
 
 import static com.agutsul.chess.activity.action.Action.isPromote;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -11,6 +11,7 @@ import com.agutsul.chess.ai.ActionSelectionStrategy;
 import com.agutsul.chess.ai.MinMaxActionSelectionStrategy;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
+import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
 
 public final class BotActionInputObserver
         extends AbstractPlayerInputObserver
