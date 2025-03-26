@@ -1,6 +1,7 @@
 package com.agutsul.chess.activity.action.memento;
 
 import static java.time.LocalDateTime.now;
+import static java.util.Objects.nonNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import org.apache.commons.lang3.concurrent.ConcurrentException;
@@ -12,7 +13,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
 final class PromoteActionMemento
-        extends AbstractActionMemento<String, ActionMemento<String,String>> {
+        extends AbstractActionMemento<String,ActionMemento<String,String>> {
 
     private static final Logger LOGGER = getLogger(PromoteActionMemento.class);
 
@@ -20,7 +21,7 @@ final class PromoteActionMemento
 
     PromoteActionMemento(Action.Type actionType,
                          LazyInitializer<Piece.Type> pieceTypeInitializer,
-                         ActionMemento<String, String> origin) {
+                         ActionMemento<String,String> origin) {
 
         super(now(), actionType, origin.getSource(), origin);
         this.pieceTypeInitializer = pieceTypeInitializer;
@@ -46,7 +47,7 @@ final class PromoteActionMemento
         return String.format("%s(%s %s)",
                 getActionType(),
                 getTarget(),
-                getPieceType() != null ? getPieceType().name() : "?"
+                nonNull(getPieceType()) ? getPieceType().name() : "?"
         );
     }
 }
