@@ -6,9 +6,9 @@ import java.util.Objects;
 
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
 import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.ActionFilter;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
-import com.agutsul.chess.activity.action.function.ActionFilter;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 

@@ -11,12 +11,12 @@ import java.util.Objects;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.ActionFilter;
 import com.agutsul.chess.activity.action.PieceBigMoveAction;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
-import com.agutsul.chess.activity.action.function.ActionFilter;
 import com.agutsul.chess.activity.cache.ActivityCacheImpl;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
