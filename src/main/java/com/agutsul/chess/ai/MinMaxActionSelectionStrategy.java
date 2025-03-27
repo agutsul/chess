@@ -1,6 +1,7 @@
 package com.agutsul.chess.ai;
 
 import static com.agutsul.chess.activity.action.Action.isPromote;
+import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static java.time.LocalDateTime.now;
 import static java.util.function.Function.identity;
 import static java.util.function.Predicate.not;
@@ -183,12 +184,21 @@ public final class MinMaxActionSelectionStrategy
 
         private int calculateValue(Board board, Action<?> action) {
             var sourcePiece = action.getPiece();
+            var direction = sourcePiece.getDirection();
+
+            var currentPlayerValue  = board.calculateValue(this.color) * direction;
+            var opponentPlayerValue = board.calculateValue(this.color.invert()) * Math.negateExact(direction);
+
             var boardValue = action.getValue()                         // action type influence
-                    + ((this.limit + 1)  * sourcePiece.getDirection()) // depth influence
-                    + board.calculateValue(this.color)                 // current board pieces
-                    + this.value;                                      // previous board pieces
+                    + ((this.limit + 1) * direction)                   // depth influence
+                    + (currentPlayerValue + opponentPlayerValue)       // current  board value
+                    + this.value;                                      // previous board value
 
             var boardState = board.getState();
+            if (boardState.isType(CHECK_MATED)) {
+                return 1000 * boardValue * direction;
+            }
+
             return boardState.getType().rank() * boardValue;
         }
 
