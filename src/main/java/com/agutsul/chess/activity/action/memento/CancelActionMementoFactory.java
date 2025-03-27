@@ -26,39 +26,41 @@ import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
-public enum CancelActionMementoFactory
-        implements BiFunction<Board,ActionMemento<?,?>,Action<?>> {
-
-    MOVE_MODE(Action.Type.MOVE,             new CancelMoveActionFunction()),
-    BIG_MOVE_MODE(Action.Type.BIG_MOVE,     new CancelBigMoveActionFunction()),
-    CAPTURE_MODE(Action.Type.CAPTURE,       new CancelCaptureActionFunction()),
-    PROMOTE_MODE(Action.Type.PROMOTE,       new CancelPromoteActionFunction()),
-    CASTLING_MODE(Action.Type.CASTLING,     new CancelCastlingActionFunction()),
-    EN_PASSANT_MODE(Action.Type.EN_PASSANT, new CancelEnPassantActionFunction());
-
-    private static final Map<Action.Type,CancelActionMementoFactory> MODES =
-            Stream.of(values()).collect(toMap(CancelActionMementoFactory::type, identity()));
-
-    private Action.Type type;
-    private BiFunction<Board,ActionMemento<?,?>,Action<?>> function;
-
-    CancelActionMementoFactory(Action.Type type,
-                               BiFunction<Board,ActionMemento<?,?>,Action<?>> function) {
-        this.type = type;
-        this.function = function;
-    }
+public enum CancelActionMementoFactory {
+    INSTANCE;
 
     public static Action<?> createAction(Board board, ActionMemento<?,?> memento) {
-        return MODES.get(memento.getActionType()).apply(board, memento);
+        return FactoryMode.MODES.get(memento.getActionType()).apply(board, memento);
     }
 
-    @Override
-    public Action<?> apply(Board board, ActionMemento<?,?> memento) {
-        return function.apply(board, memento);
-    }
+    private enum FactoryMode implements BiFunction<Board,ActionMemento<?,?>,Action<?>> {
 
-    private Action.Type type() {
-        return type;
+        MOVE_MODE(Action.Type.MOVE,             new CancelMoveActionFunction()),
+        BIG_MOVE_MODE(Action.Type.BIG_MOVE,     new CancelBigMoveActionFunction()),
+        CAPTURE_MODE(Action.Type.CAPTURE,       new CancelCaptureActionFunction()),
+        PROMOTE_MODE(Action.Type.PROMOTE,       new CancelPromoteActionFunction()),
+        CASTLING_MODE(Action.Type.CASTLING,     new CancelCastlingActionFunction()),
+        EN_PASSANT_MODE(Action.Type.EN_PASSANT, new CancelEnPassantActionFunction());
+
+        private static final Map<Action.Type,FactoryMode> MODES =
+                Stream.of(values()).collect(toMap(FactoryMode::type, identity()));
+
+        private Action.Type type;
+        private BiFunction<Board,ActionMemento<?,?>,Action<?>> function;
+
+        FactoryMode(Action.Type type, BiFunction<Board,ActionMemento<?,?>,Action<?>> function) {
+            this.type = type;
+            this.function = function;
+        }
+
+        @Override
+        public Action<?> apply(Board board, ActionMemento<?,?> memento) {
+            return function.apply(board, memento);
+        }
+
+        private Action.Type type() {
+            return type;
+        }
     }
 
     private static abstract class AbstractCancelMoveActionFunction
@@ -76,7 +78,7 @@ public enum CancelActionMementoFactory
         }
 
         abstract <COLOR extends Color,PIECE extends Piece<COLOR> & Movable>
-                CancelMoveAction<COLOR,PIECE> create(Piece<COLOR> piece, Position position);
+                Action<?> create(Piece<COLOR> piece, Position position);
     }
 
     private static final class CancelMoveActionFunction
@@ -97,7 +99,7 @@ public enum CancelActionMementoFactory
         @Override
         @SuppressWarnings("unchecked")
         <COLOR extends Color,PIECE extends Piece<COLOR> & Movable>
-                CancelMoveAction<COLOR,PIECE> create(Piece<COLOR> piece, Position position) {
+                CancelBigMoveAction<COLOR,PIECE> create(Piece<COLOR> piece, Position position) {
 
             return new CancelBigMoveAction<>((PIECE) piece, position);
         }
