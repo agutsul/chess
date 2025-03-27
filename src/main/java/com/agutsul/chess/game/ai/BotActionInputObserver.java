@@ -5,8 +5,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.activity.action.ActionAdapter;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
-import com.agutsul.chess.activity.action.adapter.ActionAdapter;
 import com.agutsul.chess.ai.ActionSelectionStrategy;
 import com.agutsul.chess.ai.MinMaxActionSelectionStrategy;
 import com.agutsul.chess.game.Game;

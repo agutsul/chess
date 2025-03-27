@@ -7,7 +7,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.action.adapter.ActionAdapter;
+import com.agutsul.chess.activity.action.ActionAdapter;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.CommandException;
 import com.agutsul.chess.game.Game;

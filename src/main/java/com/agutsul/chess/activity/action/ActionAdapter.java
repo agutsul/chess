@@ -1,6 +1,5 @@
-package com.agutsul.chess.activity.action.adapter;
+package com.agutsul.chess.activity.action;
 
-import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 

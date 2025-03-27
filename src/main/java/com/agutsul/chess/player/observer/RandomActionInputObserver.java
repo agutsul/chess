@@ -7,7 +7,7 @@ import java.util.Random;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.activity.action.adapter.ActionAdapter;
+import com.agutsul.chess.activity.action.ActionAdapter;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
