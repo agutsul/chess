@@ -112,6 +112,6 @@ public class MinMaxActionSelectionStrategyTest {
         var action = strategy.select(Colors.BLACK);
 
         assertTrue(action.isPresent());
-        assertEquals("Nf6xh5", String.valueOf(action));
+        assertEquals("Nf6xh5", String.valueOf(action.get()));
     }
 }

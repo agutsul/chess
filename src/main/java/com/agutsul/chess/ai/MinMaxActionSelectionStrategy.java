@@ -191,7 +191,7 @@ public final class MinMaxActionSelectionStrategy
 
             var boardValue = action.getValue()                         // action type influence
                     + ((this.limit + 1) * direction)                   // depth influence
-                    + (currentPlayerValue + opponentPlayerValue)       // current  board value
+                    + currentPlayerValue + opponentPlayerValue         // current  board value
                     + this.value;                                      // previous board value
 
             var boardState = board.getState();
