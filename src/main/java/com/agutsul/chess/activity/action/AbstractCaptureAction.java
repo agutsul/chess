@@ -30,7 +30,7 @@ public abstract class AbstractCaptureAction<COLOR1 extends Color,
 
     @Override
     public final String getCode() {
-        return String.format("%sx%s", getSource(), createTargetLabel(getTarget()));
+        return String.format("%sx%s", getPiece(), createTargetLabel(getTarget()));
     }
 
     @Override
