@@ -1,8 +1,8 @@
 package com.agutsul.chess.activity.action;
 
+import static org.apache.commons.lang3.ObjectUtils.compare;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Executable;
@@ -63,7 +63,7 @@ public class PiecePromoteAction<COLOR1 extends Color,
             return compared;
         }
 
-        return ObjectUtils.compare((Action<?>) action.getSource(), (Action<?>) getSource());
+        return compare((Action<?>) action.getSource(), (Action<?>) getSource());
     }
 
     public final Observable getObservable() {

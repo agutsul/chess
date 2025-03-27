@@ -1,8 +1,8 @@
 package com.agutsul.chess.activity.action;
 
-import java.util.Objects;
+import static org.apache.commons.lang3.ObjectUtils.compare;
 
-import org.apache.commons.lang3.ObjectUtils;
+import java.util.Objects;
 
 import com.agutsul.chess.Executable;
 import com.agutsul.chess.Positionable;
@@ -42,7 +42,7 @@ public interface Action<SOURCE>
 
     @Override
     default int compareTo(Action<?> action) {
-        return ObjectUtils.compare(getType(), action.getType());
+        return compare(getType(), action.getType());
     }
 
     @Override

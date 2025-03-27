@@ -1,8 +1,8 @@
 package com.agutsul.chess.activity.action;
 
+import static org.apache.commons.lang3.ObjectUtils.compare;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Castlingable;
@@ -48,7 +48,7 @@ public class PieceCastlingAction<COLOR extends Color,
             return compared;
         }
 
-        return ObjectUtils.compare(getSide(), ((PieceCastlingAction<?,?,?>) action).getSide());
+        return compare(getSide(), ((PieceCastlingAction<?,?,?>) action).getSide());
     }
 
     public static final class CastlingMoveAction<COLOR extends Color,
