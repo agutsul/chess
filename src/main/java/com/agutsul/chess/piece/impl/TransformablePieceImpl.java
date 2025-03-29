@@ -47,13 +47,13 @@ import com.agutsul.chess.position.Position;
  * Requires extending all interfaces of promoted pieces
  * to properly proxy those newly created pieces
  */
-final class PromotablePieceProxy<PIECE extends Piece<?>
-                                        & Movable & Capturable & Protectable
-                                        & Restorable & Disposable & Pinnable>
+final class TransformablePieceImpl<PIECE extends Piece<?>
+                                            & Movable & Capturable & Protectable
+                                            & Restorable & Disposable & Pinnable>
         extends AbstractLifecyclePieceProxy<PIECE>
         implements TransformablePieceProxy<PIECE> {
 
-    private static final Logger LOGGER = getLogger(PromotablePieceProxy.class);
+    private static final Logger LOGGER = getLogger(TransformablePieceImpl.class);
 
     private final PieceFactory pieceFactory;
     private final PawnPiece<Color> pawnPiece;
@@ -62,8 +62,8 @@ final class PromotablePieceProxy<PIECE extends Piece<?>
     private PieceState<?> currentState;
 
     @SuppressWarnings("unchecked")
-    PromotablePieceProxy(Board board, PieceFactory pieceFactory,
-                         PawnPiece<Color> pawnPiece, int promotionLine) {
+    TransformablePieceImpl(Board board, PieceFactory pieceFactory,
+                           PawnPiece<Color> pawnPiece, int promotionLine) {
 
         super((PIECE) pawnPiece);
 
@@ -270,7 +270,7 @@ final class PromotablePieceProxy<PIECE extends Piece<?>
         @Override
         public void unpromote(Piece<?> piece) {
             LOGGER.info("Undo promote by '{}'", piece);
-            ((PromotablePieceProxy<?>) piece).cancelPromote();
+            ((TransformablePieceImpl<?>) piece).cancelPromote();
         }
 
         @Override
@@ -336,7 +336,7 @@ final class PromotablePieceProxy<PIECE extends Piece<?>
 
             validatePromotion(piece, position, pieceType);
 
-            ((PromotablePieceProxy<?>) piece).doPromote(position, pieceType);
+            ((TransformablePieceImpl<?>) piece).doPromote(position, pieceType);
         }
 
         private void validatePromotion(PIECE piece, Position position, Piece.Type pieceType) {

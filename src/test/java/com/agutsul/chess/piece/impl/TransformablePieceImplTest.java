@@ -36,7 +36,7 @@ import com.agutsul.chess.piece.factory.PieceFactory;
 import com.agutsul.chess.position.Position;
 
 @ExtendWith(MockitoExtension.class)
-public class PromotablePieceProxyTest {
+public class TransformablePieceImplTest {
 
     @Mock
     private AbstractBoard board;
@@ -45,11 +45,11 @@ public class PromotablePieceProxyTest {
     @Mock
     private PieceFactory pieceFactory;
 
-    private PromotablePieceProxy<?> proxy;
+    private TransformablePieceImpl<?> proxy;
 
     @BeforeEach
     public void setUp() {
-        this.proxy = new PromotablePieceProxy<>(board, pieceFactory, pawn, 7);
+        this.proxy = new TransformablePieceImpl<>(board, pieceFactory, pawn, 7);
     }
 
     @Test

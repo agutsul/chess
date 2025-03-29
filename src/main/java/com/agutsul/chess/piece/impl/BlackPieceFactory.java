@@ -58,11 +58,11 @@ public final class BlackPieceFactory
 
     @Override
     public PawnPiece<Color> createPawn(Position position) {
-        var pawn = new PromotablePieceProxy<>(board, this,
+        var piece = new TransformablePieceImpl<>(board, this,
                 super.createPawn(position, PAWN_UNICODE),
                 promotion.line()
         );
 
-        return new TransformablePieceAdapter<>(pinnableProxy(pawn));
+        return new TransformablePieceAdapter<>(pinnableProxy(piece));
     }
 }

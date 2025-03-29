@@ -58,7 +58,7 @@ public class TransformablePieceAdapterTest {
 
     @Test
     void testCastling() {
-        var proxy = mock(PromotablePieceProxy.class);
+        var proxy = mock(TransformablePieceImpl.class);
 
         var adapter = new TransformablePieceAdapter<>(proxy);
         adapter.castling(mock(Position.class));
@@ -68,7 +68,7 @@ public class TransformablePieceAdapterTest {
 
     @Test
     void testUnCastling() {
-        var proxy = mock(PromotablePieceProxy.class);
+        var proxy = mock(TransformablePieceImpl.class);
 
         var adapter = new TransformablePieceAdapter<>(proxy);
         adapter.uncastling(mock(Position.class));
@@ -78,7 +78,7 @@ public class TransformablePieceAdapterTest {
 
     @Test
     void testPromote() {
-        var proxy = mock(PromotablePieceProxy.class);
+        var proxy = mock(TransformablePieceImpl.class);
 
         var adapter = new TransformablePieceAdapter<>(proxy);
         adapter.promote(mock(Position.class), Piece.Type.QUEEN);
@@ -88,7 +88,7 @@ public class TransformablePieceAdapterTest {
 
     @Test
     void testDemote() {
-        var proxy = mock(PromotablePieceProxy.class);
+        var proxy = mock(TransformablePieceImpl.class);
 
         var adapter = new TransformablePieceAdapter<>(proxy);
         adapter.demote();
