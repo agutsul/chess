@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import com.agutsul.chess.activity.action.ActionAdapter;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.ai.ActionSelectionStrategy;
-import com.agutsul.chess.ai.MinMaxActionSelectionStrategy;
+import com.agutsul.chess.ai.AlphaBetaActionSelectionStrategy;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
@@ -19,14 +19,13 @@ public final class BotActionInputObserver
 
     private static final Logger LOGGER = getLogger(BotActionInputObserver.class);
 
-    private static final int DEFAULT_DEPTH = 2;
-
     private final ActionSelectionStrategy actionStrategy;
 
     private PiecePromoteAction<?,?> promoteAction;
 
     public BotActionInputObserver(Player player, Game game) {
-        this(player, game, new MinMaxActionSelectionStrategy(game, DEFAULT_DEPTH));
+//        this(player, game, new MinMaxActionSelectionStrategy(game));
+        this(player, game, new AlphaBetaActionSelectionStrategy(game));
     }
 
     BotActionInputObserver(Player player, Game game, ActionSelectionStrategy actionStrategy) {

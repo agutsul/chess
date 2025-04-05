@@ -20,7 +20,6 @@ import com.agutsul.chess.activity.action.PieceCastlingAction;
 import com.agutsul.chess.activity.action.PieceCastlingAction.CastlingMoveAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
-import com.agutsul.chess.ai.MinMaxActionSelectionStrategy.ActionValueComparator;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Colors;
