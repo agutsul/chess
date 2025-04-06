@@ -30,6 +30,7 @@ import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.board.event.CopyVisitedPositionsEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
@@ -342,6 +343,8 @@ abstract class AbstractPiece<COLOR extends Color>
     void process(Event event) {
         if (event instanceof ClearPieceDataEvent) {
             process((ClearPieceDataEvent) event);
+        } else if (event instanceof CopyVisitedPositionsEvent) {
+            process((CopyVisitedPositionsEvent) event);
         }
     }
 
@@ -397,6 +400,13 @@ abstract class AbstractPiece<COLOR extends Color>
 
         this.positions.clear();
         this.positions.addAll(positions);
+    }
+
+    private void process(CopyVisitedPositionsEvent event) {
+        var piece = event.getPiece();
+        if (Objects.equals(this, piece)) {
+            setPositions(piece.getPositions());
+        }
     }
 
     private void process(ClearPieceDataEvent event) {

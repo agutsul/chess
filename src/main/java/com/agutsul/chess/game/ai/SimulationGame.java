@@ -1,11 +1,15 @@
 package com.agutsul.chess.game.ai;
 
+import static java.lang.System.lineSeparator;
 import static java.util.UUID.randomUUID;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Set;
 
 import org.slf4j.Logger;
 
@@ -31,6 +35,9 @@ public final class SimulationGame
         implements Closeable {
 
     private static final Logger LOGGER = getLogger(SimulationGame.class);
+
+    private static final Set<Piece.Type> PIECE_TYPES =
+            EnumSet.of(Piece.Type.PAWN, Piece.Type.ROOK, Piece.Type.KING);
 
     private final Action<?> originAction;
 
@@ -75,7 +82,7 @@ public final class SimulationGame
             getBoard().setState(evaluateBoardState(getCurrentPlayer()));
 
         } catch (Throwable throwable) {
-            LOGGER.error(System.lineSeparator() + String.valueOf(getBoard()));
+            LOGGER.error("{}{}", lineSeparator(), String.valueOf(getBoard()));
             LOGGER.error("{}: Game simulation exception('{}'), board state '{}', journal '{}': {}",
                     getCurrentPlayer().getColor(),
                     this.originAction,
@@ -105,11 +112,13 @@ public final class SimulationGame
         var board = boardBuilder.build();
         board.setState(origin.getState());
 
-        // copy piece visited positions
+        // copy piece visited positions to properly resolve en-passant and castling actions
         var observableBoard = (Observable) board;
-        for (var piece : origin.getPieces(Piece.Type.PAWN)) {
-            observableBoard.notifyObservers(new CopyVisitedPositionsEvent(piece));
-        }
+        PIECE_TYPES.stream()
+            .map(pieceType -> origin.getPieces(pieceType))
+            .flatMap(Collection::stream)
+            .map(CopyVisitedPositionsEvent::new)
+            .forEach(event -> observableBoard.notifyObservers(event));
 
         return board;
     }

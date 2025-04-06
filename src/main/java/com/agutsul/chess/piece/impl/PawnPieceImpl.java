@@ -20,7 +20,6 @@ import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.activity.cache.ActivityCacheImpl;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.board.event.CopyVisitedPositionsEvent;
 import com.agutsul.chess.board.event.ResetPawnMoveActionEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
@@ -94,8 +93,6 @@ final class PawnPieceImpl<COLOR extends Color>
 
         if (event instanceof ResetPawnMoveActionEvent) {
             process((ResetPawnMoveActionEvent) event);
-        } else if (event instanceof CopyVisitedPositionsEvent) {
-            process((CopyVisitedPositionsEvent) event);
         }
     }
 
@@ -105,13 +102,6 @@ final class PawnPieceImpl<COLOR extends Color>
             cancelMove(getPosition());
             // move piece back to source position
             doMove(event.getPosition());
-        }
-    }
-
-    private void process(CopyVisitedPositionsEvent event) {
-        var piece = event.getPiece();
-        if (Objects.equals(this, piece)) {
-            setPositions(piece.getPositions());
         }
     }
 
