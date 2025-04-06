@@ -1,7 +1,7 @@
 package com.agutsul.chess.board;
 
 import static java.util.Collections.emptyList;
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.collections4.ListUtils.partition;
 
 import java.io.Serializable;
@@ -331,11 +331,10 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
         private static <COLOR extends Color,T> Optional<PieceBuilderSubTask<COLOR,T>>
                 createTask(List<T> positions, Function<T,Piece<COLOR>> function) {
 
-            if (isEmpty(positions)) {
-                return Optional.empty();
-            }
-
-            return Optional.of(new PieceBuilderSubTask<>(positions, function));
+            return Optional.ofNullable(isNotEmpty(positions)
+                    ? new PieceBuilderSubTask<>(positions, function)
+                    : null
+            );
         }
     }
 
