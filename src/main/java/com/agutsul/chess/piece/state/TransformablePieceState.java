@@ -5,6 +5,7 @@ import com.agutsul.chess.Promotable;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.state.State;
+
 public interface TransformablePieceState<PIECE extends Piece<?>>
         extends State<PIECE> {
 
