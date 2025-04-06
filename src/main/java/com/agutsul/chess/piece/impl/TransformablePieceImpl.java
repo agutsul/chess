@@ -21,10 +21,12 @@ import org.slf4j.Logger;
 import com.agutsul.chess.Blockable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Castlingable;
+import com.agutsul.chess.Demotable;
 import com.agutsul.chess.Disposable;
 import com.agutsul.chess.EnPassantable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.Pinnable;
+import com.agutsul.chess.Promotable;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.Restorable;
 import com.agutsul.chess.activity.action.Action;
@@ -138,7 +140,7 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
         LOGGER.info("Demote '{}' to '{}'", this, Piece.Type.PAWN.name());
 
         var state = (TransformablePieceState<?>) getState();
-        ((TransformablePieceState<? extends Piece<Color>>) state).unpromote(this);
+        ((TransformablePieceState<? extends Piece<Color>>) state).demote(this);
     }
 
     @Override
@@ -268,7 +270,7 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
         }
 
         @Override
-        public void unpromote(Piece<?> piece) {
+        public void demote(Demotable piece) {
             LOGGER.info("Undo promote by '{}'", piece);
             ((TransformablePieceImpl<?>) piece).cancelPromote();
         }
@@ -331,7 +333,7 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
         }
 
         @Override
-        public void promote(PIECE piece, Position position, Piece.Type pieceType) {
+        public void promote(Promotable piece, Position position, Piece.Type pieceType) {
             LOGGER.info("Promoting '{}' to '{}'", piece, position);
 
             validatePromotion(piece, position, pieceType);
@@ -339,7 +341,7 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
             ((TransformablePieceImpl<?>) piece).doPromote(position, pieceType);
         }
 
-        private void validatePromotion(PIECE piece, Position position, Piece.Type pieceType) {
+        private void validatePromotion(Promotable piece, Position position, Piece.Type pieceType) {
             // after execution of MOVE or CAPTURE
             // piece should already be placed at target position
             var promotionPosition = this.origin.getPosition();
@@ -370,12 +372,12 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
             }
         }
 
-        private static String formatInvalidPromotionMessage(Piece<?> piece,
+        private static String formatInvalidPromotionMessage(Promotable piece,
                                                             Position position,
                                                             Piece.Type pieceType) {
 
             return String.format("%s invalid promotion to %s at '%s'",
-                    piece.getType().name(),
+                    ((Piece<?>) piece).getType().name(),
                     pieceType.name(),
                     position
             );
@@ -400,7 +402,7 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
         }
 
         @Override
-        public void promote(PIECE piece, Position position, Piece.Type pieceType) {
+        public void promote(Promotable piece, Position position, Piece.Type pieceType) {
             LOGGER.warn("Promoting disabled '{}' to '{}'", piece, position);
             // do nothing
         }
