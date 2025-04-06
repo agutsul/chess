@@ -26,7 +26,7 @@ import com.agutsul.chess.piece.factory.PieceFactory;
 import com.agutsul.chess.position.Position;
 
 abstract class AbstractPieceFactory<COLOR extends Color>
-        implements PieceFactory {
+        implements PieceFactory<COLOR> {
 
     enum Directions implements Direction {
         UP(1),
@@ -110,32 +110,32 @@ abstract class AbstractPieceFactory<COLOR extends Color>
     }
 
     @Override
-    public final KingPiece<Color> createKing(String code) {
+    public final KingPiece<COLOR> createKing(String code) {
         return createKing(positionOf(code));
     }
 
     @Override
-    public final QueenPiece<Color> createQueen(String code) {
+    public final QueenPiece<COLOR> createQueen(String code) {
         return createQueen(positionOf(code));
     }
 
     @Override
-    public final RookPiece<Color> createRook(String code) {
+    public final RookPiece<COLOR> createRook(String code) {
         return createRook(positionOf(code));
     }
 
     @Override
-    public final BishopPiece<Color> createBishop(String code) {
+    public final BishopPiece<COLOR> createBishop(String code) {
         return createBishop(positionOf(code));
     }
 
     @Override
-    public final KnightPiece<Color> createKnight(String code) {
+    public final KnightPiece<COLOR> createKnight(String code) {
         return createKnight(positionOf(code));
     }
 
     @Override
-    public final PawnPiece<Color> createPawn(String code) {
+    public final PawnPiece<COLOR> createPawn(String code) {
         return createPawn(positionOf(code));
     }
 
@@ -170,13 +170,13 @@ abstract class AbstractPieceFactory<COLOR extends Color>
                                    direction.code(), promotion.line(), bigMove.line());
     }
 
-    <PIECE extends Piece<COLOR> & Demotable,PROXY extends PieceProxy<PIECE> & Demotable>
+    <PIECE extends Piece<COLOR> & Demotable,PROXY extends PieceProxy<COLOR,PIECE> & Demotable>
             PROXY demotableProxy(PIECE piece) {
 
         return DemotablePieceProxyFactory.createProxy(piece);
     }
 
-    <PIECE extends Piece<COLOR> & Pinnable,PROXY extends PieceProxy<PIECE> & Pinnable>
+    <PIECE extends Piece<COLOR> & Pinnable,PROXY extends PieceProxy<COLOR,PIECE> & Pinnable>
             PROXY pinnableProxy(PIECE piece) {
 
         return PinnablePieceProxyFactory.createProxy(board, piece);
@@ -188,21 +188,21 @@ abstract class AbstractPieceFactory<COLOR extends Color>
         QUEEN_MODE(Piece.Type.QUEEN,   piece -> new DemotableQueenPieceProxy<>((QueenPiece<?>) piece)),
         ROOK_MODE(Piece.Type.ROOK,     piece -> new DemotableRookPieceProxy<>((RookPiece<?>) piece));
 
-        private static final Map<Piece.Type,Function<Piece<?>,AbstractDemotablePieceProxy<?>>> MODES =
+        private static final Map<Piece.Type,Function<Piece<?>,AbstractDemotablePieceProxy<?,?>>> MODES =
                 Stream.of(values()).collect(toMap(DemotablePieceProxyFactory::type, DemotablePieceProxyFactory::function));
 
         private Piece.Type pieceType;
-        private Function<Piece<?>,AbstractDemotablePieceProxy<?>> function;
+        private Function<Piece<?>,AbstractDemotablePieceProxy<?,?>> function;
 
         DemotablePieceProxyFactory(Piece.Type pieceType,
-                                   Function<Piece<?>,AbstractDemotablePieceProxy<?>> function) {
+                                   Function<Piece<?>,AbstractDemotablePieceProxy<?,?>> function) {
 
             this.pieceType = pieceType;
             this.function = function;
         }
 
         @SuppressWarnings("unchecked")
-        static <PIECE extends Piece<?> & Demotable,PROXY extends PieceProxy<PIECE> & Demotable>
+        static <COLOR extends Color,PIECE extends Piece<COLOR> & Demotable,PROXY extends PieceProxy<COLOR,PIECE> & Demotable>
                 PROXY createProxy(PIECE piece) {
 
             if (piece == null) {
@@ -217,7 +217,7 @@ abstract class AbstractPieceFactory<COLOR extends Color>
             return (PROXY) function.apply(piece);
         }
 
-        private Function<Piece<?>,AbstractDemotablePieceProxy<?>> function() {
+        private Function<Piece<?>,AbstractDemotablePieceProxy<?,?>> function() {
             return function;
         }
 
@@ -227,9 +227,10 @@ abstract class AbstractPieceFactory<COLOR extends Color>
 
         // actual demotable proxy implementations
 
-        private static final class DemotableBishopPieceProxy<PIECE extends BishopPiece<?>>
-                extends AbstractDemotablePieceProxy<PIECE>
-                implements BishopPiece<Color> {
+        private static final class DemotableBishopPieceProxy<COLOR extends Color,
+                                                             PIECE extends BishopPiece<COLOR>>
+                extends AbstractDemotablePieceProxy<COLOR,PIECE>
+                implements BishopPiece<COLOR> {
 
             private static final Logger LOGGER = getLogger(DemotableBishopPieceProxy.class);
 
@@ -243,9 +244,10 @@ abstract class AbstractPieceFactory<COLOR extends Color>
             }
         }
 
-        private static final class DemotableKnightPieceProxy<PIECE extends KnightPiece<?>>
-                extends AbstractDemotablePieceProxy<PIECE>
-                implements KnightPiece<Color> {
+        private static final class DemotableKnightPieceProxy<COLOR extends Color,
+                                                             PIECE extends KnightPiece<COLOR>>
+                extends AbstractDemotablePieceProxy<COLOR,PIECE>
+                implements KnightPiece<COLOR> {
 
             private static final Logger LOGGER = getLogger(DemotableKnightPieceProxy.class);
 
@@ -259,9 +261,10 @@ abstract class AbstractPieceFactory<COLOR extends Color>
             }
         }
 
-        private static final class DemotableQueenPieceProxy<PIECE extends QueenPiece<?>>
-                extends AbstractDemotablePieceProxy<PIECE>
-                implements QueenPiece<Color> {
+        private static final class DemotableQueenPieceProxy<COLOR extends Color,
+                                                            PIECE extends QueenPiece<COLOR>>
+                extends AbstractDemotablePieceProxy<COLOR,PIECE>
+                implements QueenPiece<COLOR> {
 
             private static final Logger LOGGER = getLogger(DemotableQueenPieceProxy.class);
 
@@ -275,9 +278,10 @@ abstract class AbstractPieceFactory<COLOR extends Color>
             }
         }
 
-        private static final class DemotableRookPieceProxy<PIECE extends RookPiece<?>>
-                extends AbstractDemotablePieceProxy<PIECE>
-                implements RookPiece<Color> {
+        private static final class DemotableRookPieceProxy<COLOR extends Color,
+                                                           PIECE extends RookPiece<COLOR>>
+                extends AbstractDemotablePieceProxy<COLOR,PIECE>
+                implements RookPiece<COLOR> {
 
             private static final Logger LOGGER = getLogger(DemotableRookPieceProxy.class);
 
@@ -309,21 +313,21 @@ abstract class AbstractPieceFactory<COLOR extends Color>
         ROOK_MODE(Piece.Type.ROOK,     (board,piece) -> new PinnableRookPieceProxy<>(board,   (RookPiece<?>) piece)),
         PAWN_MODE(Piece.Type.PAWN,     (board,piece) -> new PinnablePawnPieceProxy<>(board,   (PawnPiece<?>) piece));
 
-        private static final Map<Piece.Type,BiFunction<Board,Piece<?>,AbstractPinnablePieceProxy<?>>> MODES =
+        private static final Map<Piece.Type,BiFunction<Board,Piece<?>,AbstractPinnablePieceProxy<?,?>>> MODES =
                 Stream.of(values()).collect(toMap(PinnablePieceProxyFactory::type, PinnablePieceProxyFactory::function));
 
         private Piece.Type pieceType;
-        private BiFunction<Board,Piece<?>,AbstractPinnablePieceProxy<?>> function;
+        private BiFunction<Board,Piece<?>,AbstractPinnablePieceProxy<?,?>> function;
 
         PinnablePieceProxyFactory(Piece.Type pieceType,
-                                  BiFunction<Board,Piece<?>,AbstractPinnablePieceProxy<?>> function) {
+                                  BiFunction<Board,Piece<?>,AbstractPinnablePieceProxy<?,?>> function) {
 
             this.pieceType = pieceType;
             this.function = function;
         }
 
         @SuppressWarnings("unchecked")
-        static <PIECE extends Piece<?> & Pinnable,PROXY extends PieceProxy<PIECE> & Pinnable>
+        static <COLOR extends Color,PIECE extends Piece<COLOR> & Pinnable,PROXY extends PieceProxy<COLOR,PIECE> & Pinnable>
                 PROXY createProxy(Board board, PIECE piece) {
 
             if (board == null || piece == null) {
@@ -338,7 +342,7 @@ abstract class AbstractPieceFactory<COLOR extends Color>
             return (PROXY) function.apply(board, piece);
         }
 
-        private BiFunction<Board,Piece<?>,AbstractPinnablePieceProxy<?>> function() {
+        private BiFunction<Board,Piece<?>,AbstractPinnablePieceProxy<?,?>> function() {
             return function;
         }
 
@@ -348,9 +352,10 @@ abstract class AbstractPieceFactory<COLOR extends Color>
 
         // actual pinnable proxy implementations
 
-        private static final class PinnableBishopPieceProxy<PIECE extends BishopPiece<?>>
-                extends AbstractPinnablePieceProxy<PIECE>
-                implements BishopPiece<Color> {
+        private static final class PinnableBishopPieceProxy<COLOR extends Color,
+                                                            PIECE extends BishopPiece<COLOR>>
+                extends AbstractPinnablePieceProxy<COLOR,PIECE>
+                implements BishopPiece<COLOR> {
 
             private static final Logger LOGGER = getLogger(PinnableBishopPieceProxy.class);
 
@@ -359,9 +364,10 @@ abstract class AbstractPieceFactory<COLOR extends Color>
             }
         }
 
-        private static final class PinnableKnightPieceProxy<PIECE extends KnightPiece<?>>
-                extends AbstractPinnablePieceProxy<PIECE>
-                implements KnightPiece<Color> {
+        private static final class PinnableKnightPieceProxy<COLOR extends Color,
+                                                            PIECE extends KnightPiece<COLOR>>
+                extends AbstractPinnablePieceProxy<COLOR,PIECE>
+                implements KnightPiece<COLOR> {
 
             private static final Logger LOGGER = getLogger(PinnableKnightPieceProxy.class);
 
@@ -370,9 +376,10 @@ abstract class AbstractPieceFactory<COLOR extends Color>
             }
         }
 
-        private static final class PinnableQueenPieceProxy<PIECE extends QueenPiece<?>>
-                extends AbstractPinnablePieceProxy<PIECE>
-                implements QueenPiece<Color> {
+        private static final class PinnableQueenPieceProxy<COLOR extends Color,
+                                                           PIECE extends QueenPiece<COLOR>>
+                extends AbstractPinnablePieceProxy<COLOR,PIECE>
+                implements QueenPiece<COLOR> {
 
             private static final Logger LOGGER = getLogger(PinnableQueenPieceProxy.class);
 
@@ -381,9 +388,10 @@ abstract class AbstractPieceFactory<COLOR extends Color>
             }
         }
 
-        private static final class PinnableRookPieceProxy<PIECE extends RookPiece<?>>
-                extends AbstractPinnablePieceProxy<PIECE>
-                implements RookPiece<Color> {
+        private static final class PinnableRookPieceProxy<COLOR extends Color,
+                                                          PIECE extends RookPiece<COLOR>>
+                extends AbstractPinnablePieceProxy<COLOR,PIECE>
+                implements RookPiece<COLOR> {
 
             private static final Logger LOGGER = getLogger(PinnableRookPieceProxy.class);
 
@@ -404,9 +412,10 @@ abstract class AbstractPieceFactory<COLOR extends Color>
             }
         }
 
-        private static final class PinnablePawnPieceProxy<PIECE extends PawnPiece<?>>
-                extends AbstractPinnablePieceProxy<PIECE>
-                implements PawnPiece<Color> {
+        private static final class PinnablePawnPieceProxy<COLOR extends Color,
+                                                          PIECE extends PawnPiece<COLOR>>
+                extends AbstractPinnablePieceProxy<COLOR,PIECE>
+                implements PawnPiece<COLOR> {
 
             private static final Logger LOGGER = getLogger(PinnablePawnPieceProxy.class);
 

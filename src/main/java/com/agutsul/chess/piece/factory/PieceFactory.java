@@ -9,7 +9,7 @@ import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.position.Position;
 
-public interface PieceFactory {
+public interface PieceFactory<COLOR extends Color> {
 
     interface Direction {
         int code();
@@ -23,21 +23,21 @@ public interface PieceFactory {
         int line();
     }
 
-    KingPiece<Color> createKing(Position position);
-    KingPiece<Color> createKing(String code);
+    KingPiece<COLOR> createKing(Position position);
+    KingPiece<COLOR> createKing(String code);
 
-    QueenPiece<Color> createQueen(Position position);
-    QueenPiece<Color> createQueen(String code);
+    QueenPiece<COLOR> createQueen(Position position);
+    QueenPiece<COLOR> createQueen(String code);
 
-    RookPiece<Color> createRook(Position position);
-    RookPiece<Color> createRook(String code);
+    RookPiece<COLOR> createRook(Position position);
+    RookPiece<COLOR> createRook(String code);
 
-    BishopPiece<Color> createBishop(Position position);
-    BishopPiece<Color> createBishop(String code);
+    BishopPiece<COLOR> createBishop(Position position);
+    BishopPiece<COLOR> createBishop(String code);
 
-    KnightPiece<Color> createKnight(Position position);
-    KnightPiece<Color> createKnight(String code);
+    KnightPiece<COLOR> createKnight(Position position);
+    KnightPiece<COLOR> createKnight(String code);
 
-    PawnPiece<Color> createPawn(Position position);
-    PawnPiece<Color> createPawn(String code);
+    PawnPiece<COLOR> createPawn(Position position);
+    PawnPiece<COLOR> createPawn(String code);
 }

@@ -15,7 +15,7 @@ import com.agutsul.chess.piece.factory.PieceFactory;
 import com.agutsul.chess.position.Position;
 
 public final class PositionedBoardBuilder
-        extends AbstractBoardBuilder<Position> {
+        extends AbstractBoardBuilder<Color,Position> {
 
     private static final Logger LOGGER = getLogger(PositionedBoardBuilder.class);
 
@@ -23,53 +23,51 @@ public final class PositionedBoardBuilder
         this(new BoardContext<Position>(), new BoardContext<Position>());
     }
 
-    PositionedBoardBuilder(BoardContext<Position> whiteContext,
-                           BoardContext<Position> blackContext) {
-
+    PositionedBoardBuilder(BoardContext<Position> whiteContext,BoardContext<Position> blackContext) {
         super(LOGGER, whiteContext, blackContext);
     }
 
     @Override
-    PieceFactoryAdapter<Position> createPieceFactoryAdapter(PieceFactory pieceFactory) {
-        return new PositionPieceFactoryAdapter(pieceFactory);
+    PieceFactoryAdapter<Color,Position> createPieceFactoryAdapter(PieceFactory<Color> pieceFactory) {
+        return new PositionPieceFactoryAdapter<>(pieceFactory);
     }
 
-    private static final class PositionPieceFactoryAdapter
-            implements PieceFactoryAdapter<Position> {
+    private static final class PositionPieceFactoryAdapter<COLOR extends Color>
+            implements PieceFactoryAdapter<COLOR,Position> {
 
-        private final PieceFactory pieceFactory;
+        private final PieceFactory<COLOR> pieceFactory;
 
-        PositionPieceFactoryAdapter(PieceFactory pieceFactory) {
+        PositionPieceFactoryAdapter(PieceFactory<COLOR> pieceFactory) {
             this.pieceFactory = pieceFactory;
         }
 
         @Override
-        public KingPiece<Color> createKing(Position position) {
+        public KingPiece<COLOR> createKing(Position position) {
             return pieceFactory.createKing(position);
         }
 
         @Override
-        public QueenPiece<Color> createQueen(Position position) {
+        public QueenPiece<COLOR> createQueen(Position position) {
             return pieceFactory.createQueen(position);
         }
 
         @Override
-        public RookPiece<Color> createRook(Position position) {
+        public RookPiece<COLOR> createRook(Position position) {
             return pieceFactory.createRook(position);
         }
 
         @Override
-        public BishopPiece<Color> createBishop(Position position) {
+        public BishopPiece<COLOR> createBishop(Position position) {
             return pieceFactory.createBishop(position);
         }
 
         @Override
-        public KnightPiece<Color> createKnight(Position position) {
+        public KnightPiece<COLOR> createKnight(Position position) {
             return pieceFactory.createKnight(position);
         }
 
         @Override
-        public PawnPiece<Color> createPawn(Position position) {
+        public PawnPiece<COLOR> createPawn(Position position) {
             return pieceFactory.createPawn(position);
         }
     }

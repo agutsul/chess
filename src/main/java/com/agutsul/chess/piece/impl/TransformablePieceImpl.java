@@ -49,23 +49,24 @@ import com.agutsul.chess.position.Position;
  * Requires extending all interfaces of promoted pieces
  * to properly proxy those newly created pieces
  */
-final class TransformablePieceImpl<PIECE extends Piece<?>
+final class TransformablePieceImpl<COLOR extends Color,
+                                   PIECE extends Piece<COLOR>
                                             & Movable & Capturable & Protectable
                                             & Restorable & Disposable & Pinnable>
-        extends AbstractLifecyclePieceProxy<PIECE>
-        implements TransformablePieceProxy<PIECE> {
+        extends AbstractLifecyclePieceProxy<COLOR,PIECE>
+        implements TransformablePieceProxy<COLOR,PIECE> {
 
     private static final Logger LOGGER = getLogger(TransformablePieceImpl.class);
 
-    private final PieceFactory pieceFactory;
-    private final PawnPiece<Color> pawnPiece;
+    private final PieceFactory<COLOR> pieceFactory;
+    private final PawnPiece<COLOR> pawnPiece;
 
     private final ActivePieceState<?> activeState;
     private PieceState<?> currentState;
 
     @SuppressWarnings("unchecked")
-    TransformablePieceImpl(Board board, PieceFactory pieceFactory,
-                           PawnPiece<Color> pawnPiece, int promotionLine) {
+    TransformablePieceImpl(Board board, PieceFactory<COLOR> pieceFactory,
+                           PawnPiece<COLOR> pawnPiece, int promotionLine) {
 
         super((PIECE) pawnPiece);
 
@@ -97,8 +98,8 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
 
     @Override
     @SuppressWarnings("unchecked")
-    public PieceState<Piece<Color>> getState() {
-        return (PieceState<Piece<Color>>) (PieceState<?>) this.currentState;
+    public PieceState<Piece<COLOR>> getState() {
+        return (PieceState<Piece<COLOR>>) (PieceState<?>) this.currentState;
     }
 
     @Override
@@ -126,21 +127,15 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void promote(Position position, Piece.Type pieceType) {
         LOGGER.info("Promote '{}' to '{}'", this, pieceType.name());
-
-        var state = (TransformablePieceState<?>) getState();
-        ((TransformablePieceState<PawnPiece<?>>) state).promote(this, position, pieceType);
+        ((TransformablePieceState<?>) getState()).promote(this, position, pieceType);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void demote() {
         LOGGER.info("Demote '{}' to '{}'", this, Piece.Type.PAWN.name());
-
-        var state = (TransformablePieceState<?>) getState();
-        ((TransformablePieceState<? extends Piece<Color>>) state).demote(this);
+        ((TransformablePieceState<?>) getState()).demote(this);
     }
 
     @Override
@@ -209,7 +204,8 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
         this.origin = (PIECE) this.pawnPiece;
     }
 
-    private Piece<Color> createPiece(Position position, Piece.Type pieceType) {
+    @SuppressWarnings("unchecked")
+    private Piece<COLOR> createPiece(Position position, Piece.Type pieceType) {
         var factory = PromotionFactory.of(pieceType);
         if (factory == null) {
             throw new IllegalActionException(
@@ -217,7 +213,7 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
             );
         }
 
-        return factory.createPiece(pieceFactory, position);
+        return (Piece<COLOR>) factory.createPiece(pieceFactory, position);
     }
 
     private enum PromotionFactory {
@@ -230,10 +226,10 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
                 Stream.of(values()).collect(toMap(PromotionFactory::type, identity()));
 
         private Piece.Type type;
-        private BiFunction<PieceFactory,Position,Piece<Color>> function;
+        private BiFunction<PieceFactory<?>,Position,Piece<?>> function;
 
         PromotionFactory(Piece.Type type,
-                         BiFunction<PieceFactory,Position,Piece<Color>> function) {
+                         BiFunction<PieceFactory<?>,Position,Piece<?>> function) {
 
             this.type = type;
             this.function = function;
@@ -243,7 +239,7 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
             return MODES.get(type);
         }
 
-        public Piece<Color> createPiece(PieceFactory pieceFactory, Position position) {
+        public Piece<?> createPiece(PieceFactory<?> pieceFactory, Position position) {
             return function.apply(pieceFactory, position);
         }
 
@@ -272,7 +268,7 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
         @Override
         public void demote(Demotable piece) {
             LOGGER.info("Undo promote by '{}'", piece);
-            ((TransformablePieceImpl<?>) piece).cancelPromote();
+            ((TransformablePieceImpl<?,?>) piece).cancelPromote();
         }
 
         @Override
@@ -338,7 +334,7 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
 
             validatePromotion(piece, position, pieceType);
 
-            ((TransformablePieceImpl<?>) piece).doPromote(position, pieceType);
+            ((TransformablePieceImpl<?,?>) piece).doPromote(position, pieceType);
         }
 
         private void validatePromotion(Promotable piece, Position position, Piece.Type pieceType) {

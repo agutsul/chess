@@ -43,9 +43,9 @@ public class TransformablePieceImplTest {
     @Mock
     private PawnPiece<Color> pawn;
     @Mock
-    private PieceFactory pieceFactory;
+    private PieceFactory<Color> pieceFactory;
 
-    private TransformablePieceImpl<?> proxy;
+    private TransformablePieceImpl<?,?> proxy;
 
     @BeforeEach
     public void setUp() {
@@ -71,7 +71,7 @@ public class TransformablePieceImplTest {
         when(pieceFactory.createBishop(eq(position)))
             .thenReturn(mock(BishopPiece.class));
 
-        var origin = (PawnPiece<?>) proxy.origin;
+        var origin = (PawnPiece<Color>) proxy.origin;
 
         proxy.promote(position, Piece.Type.BISHOP);
 
@@ -100,7 +100,7 @@ public class TransformablePieceImplTest {
         when(pieceFactory.createKnight(eq(position)))
             .thenReturn(mock(KnightPiece.class));
 
-        var origin = (PawnPiece<?>) proxy.origin;
+        var origin = (PawnPiece<Color>) proxy.origin;
 
         proxy.promote(position, Piece.Type.KNIGHT);
 
@@ -129,7 +129,7 @@ public class TransformablePieceImplTest {
         when(pieceFactory.createQueen(eq(position)))
             .thenReturn(mock(QueenPiece.class));
 
-        var origin = (PawnPiece<?>) proxy.origin;
+        var origin = (PawnPiece<Color>) proxy.origin;
 
         proxy.promote(position, Piece.Type.QUEEN);
 
@@ -158,7 +158,7 @@ public class TransformablePieceImplTest {
         when(pieceFactory.createRook(eq(position)))
             .thenReturn(mock(RookPiece.class));
 
-        var origin = (PawnPiece<?>) proxy.origin;
+        var origin = (PawnPiece<Color>) proxy.origin;
 
         proxy.promote(position, Piece.Type.ROOK);
 

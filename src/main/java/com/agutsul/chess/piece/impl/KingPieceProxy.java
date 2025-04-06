@@ -12,11 +12,11 @@ import com.agutsul.chess.position.Position;
  * Mainly used to prevent any usage of unsupported methods
  * received by extending AbstractPiece class
  */
-final class KingPieceProxy
-        extends AbstractPieceProxy<KingPiece<?>>
-        implements KingPiece<Color> {
+final class KingPieceProxy<COLOR extends Color>
+        extends AbstractPieceProxy<COLOR,KingPiece<COLOR>>
+        implements KingPiece<COLOR> {
 
-    KingPieceProxy(KingPiece<?> origin) {
+    KingPieceProxy(KingPiece<COLOR> origin) {
         super(origin);
     }
 

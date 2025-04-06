@@ -13,8 +13,9 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
-abstract class AbstractPieceProxy<PIECE extends Piece<?> & Movable & Capturable & Protectable>
-        implements PieceProxy<PIECE>, Movable, Capturable, Protectable {
+abstract class AbstractPieceProxy<COLOR extends Color,
+                                  PIECE extends Piece<COLOR> & Movable & Capturable & Protectable>
+        implements PieceProxy<COLOR,PIECE>, Movable, Capturable, Protectable {
 
     protected PIECE origin;
 
@@ -28,9 +29,8 @@ abstract class AbstractPieceProxy<PIECE extends Piece<?> & Movable & Capturable 
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public PieceState<Piece<Color>> getState() {
-        return (PieceState<Piece<Color>>) (PieceState<?>) this.origin.getState();
+    public PieceState<Piece<COLOR>> getState() {
+        return this.origin.getState();
     }
 
     @Override
@@ -59,7 +59,7 @@ abstract class AbstractPieceProxy<PIECE extends Piece<?> & Movable & Capturable 
     }
 
     @Override
-    public final Color getColor() {
+    public final COLOR getColor() {
         return this.origin.getColor();
     }
 

@@ -32,7 +32,7 @@ public class KingPieceProxyTest {
     private KingPiece<Color> piece;
 
     @InjectMocks
-    private KingPieceProxy proxy;
+    private KingPieceProxy<?> proxy;
 
     @Test
     void testGetType() {

@@ -24,13 +24,15 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 
-abstract class AbstractPinnablePieceProxy<PIECE extends Piece<?>
+abstract class AbstractPinnablePieceProxy<COLOR extends Color,
+                                          PIECE extends Piece<COLOR>
                                                 & Movable & Capturable & Protectable
                                                 & Restorable & Disposable & Pinnable>
-        extends AbstractLifecyclePieceProxy<PIECE>
+        extends AbstractLifecyclePieceProxy<COLOR,PIECE>
         implements Pinnable {
 
     protected final Logger logger;

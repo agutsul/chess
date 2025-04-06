@@ -52,8 +52,8 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     private static final Logger LOGGER = getLogger(BoardImpl.class);
 
-    private final PieceFactory whitePieceFactory;
-    private final PieceFactory blackPieceFactory;
+    private final PieceFactory<?> whitePieceFactory;
+    private final PieceFactory<?> blackPieceFactory;
 
     private final List<Observer> observers;
     private final List<BoardState> states;
@@ -432,11 +432,11 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         refresh();
     }
 
-    PieceFactory getWhitePieceFactory() {
+    PieceFactory<?> getWhitePieceFactory() {
         return whitePieceFactory;
     }
 
-    PieceFactory getBlackPieceFactory() {
+    PieceFactory<?> getBlackPieceFactory() {
         return blackPieceFactory;
     }
 

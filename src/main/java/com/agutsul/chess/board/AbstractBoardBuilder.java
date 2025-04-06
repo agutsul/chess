@@ -29,7 +29,7 @@ import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.piece.factory.PieceFactory;
 
-abstract class AbstractBoardBuilder<T extends Serializable>
+abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
         implements BoardBuilder<T> {
 
     private final Map<Piece.Type,BiConsumer<BoardContext<T>,T>> piecePositionSetters = new EnumMap<>(Map.of(
@@ -54,22 +54,22 @@ abstract class AbstractBoardBuilder<T extends Serializable>
         this.blackPieceContext = blackPieceContext;
     }
 
-    interface PieceFactoryAdapter<POSITION extends Serializable> {
+    interface PieceFactoryAdapter<COLOR extends Color,POSITION extends Serializable> {
 
-        KingPiece<Color>   createKing(POSITION position);
+        KingPiece<COLOR>   createKing(POSITION position);
 
-        QueenPiece<Color>  createQueen(POSITION position);
+        QueenPiece<COLOR>  createQueen(POSITION position);
 
-        RookPiece<Color>   createRook(POSITION position);
+        RookPiece<COLOR>   createRook(POSITION position);
 
-        BishopPiece<Color> createBishop(POSITION position);
+        BishopPiece<COLOR> createBishop(POSITION position);
 
-        KnightPiece<Color> createKnight(POSITION position);
+        KnightPiece<COLOR> createKnight(POSITION position);
 
-        PawnPiece<Color>   createPawn(POSITION position);
+        PawnPiece<COLOR>   createPawn(POSITION position);
     }
 
-    abstract PieceFactoryAdapter<T> createPieceFactoryAdapter(PieceFactory pieceFactory);
+    abstract PieceFactoryAdapter<COLOR,T> createPieceFactoryAdapter(PieceFactory<COLOR> pieceFactory);
 
     @Override
     public final Board build() {
@@ -273,28 +273,29 @@ abstract class AbstractBoardBuilder<T extends Serializable>
         return board;
     }
 
-    private PieceBuilderTask<T> createPieceBuilderTask(PieceFactory pieceFactory,
-                                                       BoardContext<T> context) {
+    @SuppressWarnings("unchecked")
+    private PieceBuilderTask<COLOR,T> createPieceBuilderTask(PieceFactory<?> pieceFactory,
+                                                             BoardContext<T> context) {
 
-        var pieceFactoryAdapter = createPieceFactoryAdapter(pieceFactory);
+        var pieceFactoryAdapter = createPieceFactoryAdapter((PieceFactory<COLOR>) pieceFactory);
         return new PieceBuilderTask<>(pieceFactoryAdapter, context);
     }
 
-    private static class PieceBuilderTask<T extends Serializable>
-            extends RecursiveTask<List<Piece<Color>>> {
+    private static class PieceBuilderTask<COLOR extends Color,T extends Serializable>
+            extends RecursiveTask<List<Piece<COLOR>>> {
 
         private static final long serialVersionUID = 1L;
 
-        private final PieceFactoryAdapter<T> pieceFactory;
+        private final PieceFactoryAdapter<COLOR,T> pieceFactory;
         private final BoardContext<T> context;
 
-        public PieceBuilderTask(PieceFactoryAdapter<T> pieceFactory, BoardContext<T> context) {
+        public PieceBuilderTask(PieceFactoryAdapter<COLOR,T> pieceFactory, BoardContext<T> context) {
             this.pieceFactory = pieceFactory;
             this.context = context;
         }
 
         @Override
-        protected List<Piece<Color>> compute() {
+        protected List<Piece<COLOR>> compute() {
             var optionalTasks = List.of(
                     createTask(context.getKingPositions(),   position -> pieceFactory.createKing(position)),
                     createTask(context.getQueenPositions(),  position -> pieceFactory.createQueen(position)),
@@ -319,7 +320,7 @@ abstract class AbstractBoardBuilder<T extends Serializable>
                 task.fork();
             }
 
-            var pieces = new ArrayList<Piece<Color>>();
+            var pieces = new ArrayList<Piece<COLOR>>();
             for (var task : tasks) {
                 pieces.addAll(task.join());
             }
@@ -327,8 +328,9 @@ abstract class AbstractBoardBuilder<T extends Serializable>
             return pieces;
         }
 
-        private static <T> Optional<PieceBuilderSubTask<T>> createTask(List<T> positions,
-                                                                       Function<T,Piece<Color>> function) {
+        private static <COLOR extends Color,T> Optional<PieceBuilderSubTask<COLOR,T>>
+                createTask(List<T> positions, Function<T,Piece<COLOR>> function) {
+
             if (isEmpty(positions)) {
                 return Optional.empty();
             }
@@ -337,22 +339,23 @@ abstract class AbstractBoardBuilder<T extends Serializable>
         }
     }
 
-    private static class PieceBuilderSubTask<T>
-            extends RecursiveTask<List<Piece<Color>>> {
+    private static class PieceBuilderSubTask<COLOR extends Color,T>
+            extends RecursiveTask<List<Piece<COLOR>>> {
 
         private static final long serialVersionUID = 1L;
 
         private final List<T> positions;
-        private final Function<T,Piece<Color>> function;
+        private final Function<T,Piece<COLOR>> function;
 
         public PieceBuilderSubTask(List<T> positions,
-                                   Function<T,Piece<Color>> function) {
+                                   Function<T,Piece<COLOR>> function) {
+
             this.positions = positions;
             this.function = function;
         }
 
         @Override
-        protected List<Piece<Color>> compute() {
+        protected List<Piece<COLOR>> compute() {
             // no more splits
             if (this.positions.size() == 1) {
                 var position = this.positions.get(0);
@@ -368,7 +371,7 @@ abstract class AbstractBoardBuilder<T extends Serializable>
                 task.fork();
             }
 
-            var pieces = new ArrayList<Piece<Color>>();
+            var pieces = new ArrayList<Piece<COLOR>>();
             for (var task : tasks) {
                 pieces.addAll(task.join());
             }

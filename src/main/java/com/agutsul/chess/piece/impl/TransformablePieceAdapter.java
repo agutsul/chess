@@ -11,16 +11,18 @@ import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.Promotable;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.Restorable;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
-final class TransformablePieceAdapter<PIECE extends Piece<?>
+final class TransformablePieceAdapter<COLOR extends Color,
+                                      PIECE extends Piece<COLOR>
                                             & Movable & Capturable & Protectable
                                             & Restorable & Disposable & Pinnable
                                             & Promotable>
-        extends AbstractLifecyclePieceProxy<PIECE>
-        implements TransformablePieceProxy<PIECE> {
+        extends AbstractLifecyclePieceProxy<COLOR,PIECE>
+        implements TransformablePieceProxy<COLOR,PIECE> {
 
     TransformablePieceAdapter(PIECE piece) {
         super(piece);
@@ -71,7 +73,7 @@ final class TransformablePieceAdapter<PIECE extends Piece<?>
         if (piece instanceof Demotable) {
             ((Demotable) piece).demote();
         } else {
-            var proxy = (PieceProxy<?>) piece;
+            var proxy = (PieceProxy<?,?>) piece;
             demote(proxy.getOrigin());
         }
     }

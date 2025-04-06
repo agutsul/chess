@@ -63,6 +63,6 @@ public final class WhitePieceFactory
 
     @Override
     public KingPiece<Color> createKing(Position position) {
-        return new KingPieceProxy(super.createKing(position, KING_UNICODE));
+        return new KingPieceProxy<>(super.createKing(position, KING_UNICODE));
     }
 }

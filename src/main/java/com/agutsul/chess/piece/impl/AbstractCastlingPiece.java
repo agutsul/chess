@@ -151,11 +151,11 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
             if (piece instanceof AbstractCastlingPiece) {
                 cancelCastling((AbstractCastlingPiece<?>) piece, position);
             } else {
-                cancelCastling((PieceProxy<?>) piece, position);
+                cancelCastling((PieceProxy<?,?>) piece, position);
             }
         }
 
-        private static void cancelCastling(PieceProxy<?> proxy, Position position) {
+        private static void cancelCastling(PieceProxy<?,?> proxy, Position position) {
             cancelCastling((AbstractCastlingPiece<?>) proxy.getOrigin(), position);
         }
 
@@ -225,12 +225,12 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
             if (piece instanceof AbstractCastlingPiece) {
                 doCastling((AbstractCastlingPiece<?>) piece, position);
             } else {
-                doCastling((PieceProxy<?>) piece, position);
+                doCastling((PieceProxy<?,?>) piece, position);
             }
         }
 
         @SuppressWarnings("unchecked")
-        private void doCastling(PieceProxy<?> proxy, Position position) {
+        private void doCastling(PieceProxy<?,?> proxy, Position position) {
             doCastling((PIECE) proxy.getOrigin(), position);
         }
 
