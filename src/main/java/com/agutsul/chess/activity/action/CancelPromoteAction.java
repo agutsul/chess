@@ -29,21 +29,21 @@ public final class CancelPromoteAction<COLOR1 extends Color,
 
     @Override
     public void execute() {
-        var action = (Action<?>) getSource();
+        var originAction = (Action<?>) getSource();
 
-        if (!isCapture(action) && !isMove(action)) {
+        if (!isCapture(originAction) && !isMove(originAction)) {
             throw new IllegalStateException(String.format(
                     "Unable to cancel promotion. Unsuppoted action type: '%s'",
-                    action.getType()
+                    originAction.getType()
             ));
         }
 
-        var promoted = action.getSource();
+        var promoted = originAction.getPiece();
         LOGGER.info("Cancel promote by '{}'", promoted);
 
         // cancel promotion back to pawn
         ((Demotable) promoted).demote();
         // cancel origin action
-        action.execute();
+        originAction.execute();
     }
 }
