@@ -1,5 +1,8 @@
 package com.agutsul.chess.game.ai;
 
+import static com.agutsul.chess.piece.Piece.Type.KING;
+import static com.agutsul.chess.piece.Piece.Type.PAWN;
+import static com.agutsul.chess.piece.Piece.Type.ROOK;
 import static java.lang.System.lineSeparator;
 import static java.util.UUID.randomUUID;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
@@ -36,8 +39,7 @@ public final class SimulationGame
 
     private static final Logger LOGGER = getLogger(SimulationGame.class);
 
-    private static final Set<Piece.Type> PIECE_TYPES =
-            EnumSet.of(Piece.Type.PAWN, Piece.Type.ROOK, Piece.Type.KING);
+    private static final Set<Piece.Type> PIECE_TYPES = EnumSet.of(PAWN, ROOK, KING);
 
     private final Action<?> originAction;
 
