@@ -39,7 +39,7 @@ import com.agutsul.chess.piece.factory.PieceFactory;
 import com.agutsul.chess.piece.state.ActivePieceState;
 import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.piece.state.PieceState;
-import com.agutsul.chess.piece.state.PromotablePieceState;
+import com.agutsul.chess.piece.state.TransformablePieceState;
 import com.agutsul.chess.position.Position;
 
 /**
@@ -70,7 +70,7 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
         this.pawnPiece = pawnPiece;
         this.pieceFactory = pieceFactory;
 
-        var state = new ActivePromotablePieceState<>(board, pawnPiece, promotionLine);
+        var state = new ActiveTransformablePieceState<>(board, pawnPiece, promotionLine);
 
         this.activeState = state;
         setState(state);
@@ -128,8 +128,8 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
     public void promote(Position position, Piece.Type pieceType) {
         LOGGER.info("Promote '{}' to '{}'", this, pieceType.name());
 
-        var state = (PromotablePieceState<?>) getState();
-        ((PromotablePieceState<PawnPiece<?>>) state).promote(this, position, pieceType);
+        var state = (TransformablePieceState<?>) getState();
+        ((TransformablePieceState<PawnPiece<?>>) state).promote(this, position, pieceType);
     }
 
     @Override
@@ -137,8 +137,8 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
     public void demote() {
         LOGGER.info("Demote '{}' to '{}'", this, Piece.Type.PAWN.name());
 
-        var state = (PromotablePieceState<?>) getState();
-        ((PromotablePieceState<? extends Piece<Color>>) state).unpromote(this);
+        var state = (TransformablePieceState<?>) getState();
+        ((TransformablePieceState<? extends Piece<Color>>) state).unpromote(this);
     }
 
     @Override
@@ -150,7 +150,7 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
     @Override
     public void dispose(Instant instant) {
         this.origin.dispose(instant);
-        setState(new DisposedPromotablePieceState<>(instant));
+        setState(new DisposedTransformablePieceState<>(instant));
     }
 
     @Override
@@ -250,15 +250,15 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
         }
     }
 
-    static abstract class AbstractPromotablePieceState<PIECE extends PawnPiece<?>>
+    static abstract class AbstractTransformablePieceState<PIECE extends PawnPiece<?>>
             implements PieceState<PIECE>,
-                       PromotablePieceState<PIECE> {
+                       TransformablePieceState<PIECE> {
 
-        private static final Logger LOGGER = getLogger(AbstractPromotablePieceState.class);
+        private static final Logger LOGGER = getLogger(AbstractTransformablePieceState.class);
 
         private final PieceState.Type type;
 
-        AbstractPromotablePieceState(PieceState.Type type) {
+        AbstractTransformablePieceState(PieceState.Type type) {
             this.type = type;
         }
 
@@ -311,18 +311,18 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
         }
     }
 
-    static final class ActivePromotablePieceState<PIECE extends PawnPiece<?>>
-            extends AbstractPromotablePieceState<PIECE>
+    static final class ActiveTransformablePieceState<PIECE extends PawnPiece<?>>
+            extends AbstractTransformablePieceState<PIECE>
             implements ActivePieceState<PIECE> {
 
-        private static final Logger LOGGER = getLogger(ActivePromotablePieceState.class);
+        private static final Logger LOGGER = getLogger(ActiveTransformablePieceState.class);
 
         private final Board board;
         private final int promotionLine;
 
         private PawnPiece<?> origin;
 
-        ActivePromotablePieceState(Board board, PIECE piece, int promotionLine) {
+        ActiveTransformablePieceState(Board board, PIECE piece, int promotionLine) {
             super(Type.ACTIVE);
 
             this.board = board;
@@ -382,19 +382,19 @@ final class TransformablePieceImpl<PIECE extends Piece<?>
         }
     }
 
-    static final class DisposedPromotablePieceState<PIECE extends PawnPiece<?>>
-            extends AbstractPromotablePieceState<PIECE>
+    static final class DisposedTransformablePieceState<PIECE extends PawnPiece<?>>
+            extends AbstractTransformablePieceState<PIECE>
             implements DisposedPieceState<PIECE> {
 
-        private static final Logger LOGGER = getLogger(DisposedPromotablePieceState.class);
+        private static final Logger LOGGER = getLogger(DisposedTransformablePieceState.class);
 
         private final PieceState<PIECE> origin;
 
-        DisposedPromotablePieceState(Instant instant) {
+        DisposedTransformablePieceState(Instant instant) {
             this(new DisposedPieceStateImpl<>(instant));
         }
 
-        private DisposedPromotablePieceState(PieceState<PIECE> pieceState) {
+        private DisposedTransformablePieceState(PieceState<PIECE> pieceState) {
             super(pieceState.getType());
             this.origin = pieceState;
         }
