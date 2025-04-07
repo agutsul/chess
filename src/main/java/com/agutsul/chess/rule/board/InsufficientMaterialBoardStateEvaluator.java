@@ -43,8 +43,9 @@ final class InsufficientMaterialBoardStateEvaluator
                 new PieceVersusKingEvaluationTask(board, Piece.Type.KNIGHT),
                 new BishopPositionColorVersusKingEvaluationTask(board),
                 new DoubleKnightsVersusKingEvaluationTask(board),
-                new KingBishopVersusKingKnightEvaluationTask(board),
+                new KingBishopVersusKingKnightEvaluationTask(board)/*,
                 new NoLegalActionsLeadToCheckmateEvaluationTask(board, journal)
+                */
         );
     }
 

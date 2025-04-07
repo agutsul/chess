@@ -8,8 +8,8 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.game.AbstractPlayableGame;
+import com.agutsul.chess.game.ai.BotActionInputObserver;
 import com.agutsul.chess.player.Player;
-import com.agutsul.chess.player.observer.RandomActionInputObserver;
 
 public final class ConsoleGame
         extends AbstractPlayableGame {
@@ -24,13 +24,13 @@ public final class ConsoleGame
         super(LOGGER, whitePlayer, blackPlayer, board);
 
         ((Observable) board).addObserver(new ConsolePlayerInputObserver(whitePlayer, this));
-        ((Observable) board).addObserver(new RandomActionInputObserver(blackPlayer, this));
+        //((Observable) board).addObserver(new RandomActionInputObserver(blackPlayer, this));
 
         // uncomment to manually enter player actions
         //((Observable) board).addObserver(new ConsolePlayerInputObserver(blackPlayer, this));
 
-        // uncomment to try minmax algo
-        //((Observable) board).addObserver(new BotActionInputObserver(blackPlayer, this));
+        // uncomment to play against computer
+        ((Observable) board).addObserver(new BotActionInputObserver(blackPlayer, this));
 
         addObserver(new ConsoleGameOutputObserver(this));
     }
