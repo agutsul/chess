@@ -29,7 +29,7 @@ public final class BoardStateEvaluatorImpl
                         new CheckMatedBoardStateEvaluator(board)
                 ),
                 new StaleMatedBoardStateEvaluator(board),
-                new InsufficientMaterialBoardStateEvaluator(board)
+                new InsufficientMaterialBoardStateEvaluator(board, journal)
         );
     }
 
