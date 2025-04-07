@@ -2,6 +2,7 @@ package com.agutsul.chess.rule.board;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +13,7 @@ import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.journal.Journal;
 
 @ExtendWith(MockitoExtension.class)
 public class InsufficientMaterialBoardStateEvaluatorTest {
@@ -111,7 +113,10 @@ public class InsufficientMaterialBoardStateEvaluatorTest {
     }
 
     private static void assertInsufficientMaterial(Board board, Color color) {
-        var evaluator = new InsufficientMaterialBoardStateEvaluator(board);
+        var journal = mock(Journal.class);
+
+        @SuppressWarnings("unchecked")
+        var evaluator = new InsufficientMaterialBoardStateEvaluator(board, journal);
         var boardState = evaluator.evaluate(color);
 
         assertTrue(boardState.isPresent());

@@ -11,19 +11,24 @@ import java.util.concurrent.ForkJoinPool;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.memento.ActionMemento;
+import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.game.Game;
+import com.agutsul.chess.journal.Journal;
 
 abstract class AbstractActionSelectionStrategy
         implements ActionSelectionStrategy {
 
     protected final Logger logger;
-    protected final Game game;
+    protected final Board board;
+    protected final Journal<ActionMemento<?,?>> journal;
     protected final int limit;
 
-    AbstractActionSelectionStrategy(Logger logger, Game game, int limit) {
+    AbstractActionSelectionStrategy(Logger logger, Board board,
+                                    Journal<ActionMemento<?,?>> journal, int limit) {
         this.logger = logger;
-        this.game  = game;
+        this.board = board;
+        this.journal = journal;
         this.limit = limit;
     }
 
@@ -31,7 +36,6 @@ abstract class AbstractActionSelectionStrategy
     public final Optional<Action<?>> select(Color color) {
         logger.info("Select '{}' action", color);
 
-        var board = this.game.getBoard();
         var isAnyAction = board.getPieces(color).stream()
                 .map(piece -> board.getActions(piece))
                 .anyMatch(not(Collection::isEmpty));

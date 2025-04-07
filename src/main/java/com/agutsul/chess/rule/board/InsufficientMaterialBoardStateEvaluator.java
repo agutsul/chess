@@ -14,9 +14,13 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.Blockable;
 import com.agutsul.chess.Pinnable;
+import com.agutsul.chess.activity.action.memento.ActionMemento;
+import com.agutsul.chess.ai.ActionSelectionStrategy;
+import com.agutsul.chess.ai.AlphaBetaActionSelectionStrategy;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
@@ -29,7 +33,7 @@ final class InsufficientMaterialBoardStateEvaluator
 
     private final List<BoardStateEvaluator<Optional<BoardState>>> evaluators;
 
-    InsufficientMaterialBoardStateEvaluator(Board board) {
+    InsufficientMaterialBoardStateEvaluator(Board board, Journal<ActionMemento<?,?>> journal) {
         super(board);
         this.evaluators = List.of(
                 new SingleKingEvaluationTask(board),
@@ -39,8 +43,8 @@ final class InsufficientMaterialBoardStateEvaluator
                 new PieceVersusKingEvaluationTask(board, Piece.Type.KNIGHT),
                 new BishopPositionColorVersusKingEvaluationTask(board),
                 new DoubleKnightsVersusKingEvaluationTask(board),
-                new KingBishopVersusKingKnightEvaluationTask(board)
-                // TODO implement: No sequence of legal moves can lead to checkmate.
+                new KingBishopVersusKingKnightEvaluationTask(board),
+                new NoLegalActionsLeadToCheckmateEvaluationTask(board, journal)
         );
     }
 
@@ -311,6 +315,31 @@ final class InsufficientMaterialBoardStateEvaluator
             return pieces.size() == 2
                 ? createBoardState(board, color)
                 : null;
+        }
+    }
+
+    private static final class NoLegalActionsLeadToCheckmateEvaluationTask
+            extends AbstractInsufficientMaterialBoardStateEvaluator {
+
+        private static final int ACTIONS_COUNT = 99;
+
+        private final ActionSelectionStrategy actionSelectionStrategy;
+
+        NoLegalActionsLeadToCheckmateEvaluationTask(Board board,
+                                                    Journal<ActionMemento<?,?>> journal) {
+            super(board, 0);
+            this.actionSelectionStrategy = new AlphaBetaActionSelectionStrategy(board, journal, ACTIONS_COUNT);
+        }
+
+        @Override
+        protected boolean isNotApplicable(Color color) {
+            var moves = this.actionSelectionStrategy.select(color);
+            return moves.isPresent();
+        }
+
+        @Override
+        protected BoardState evaluateBoard(Color color) {
+            return createBoardState(board, color);
         }
     }
 }

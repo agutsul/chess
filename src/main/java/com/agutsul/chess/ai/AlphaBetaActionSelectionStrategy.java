@@ -38,14 +38,18 @@ public final class AlphaBetaActionSelectionStrategy
     }
 
     public AlphaBetaActionSelectionStrategy(Game game, int limit) {
-        super(LOGGER, game, limit);
+        this(game.getBoard(), game.getJournal(), limit);
+    }
+
+    public AlphaBetaActionSelectionStrategy(Board board, Journal<ActionMemento<?,?>> journal,
+                                            int limit) {
+
+        super(LOGGER, board, journal, limit);
     }
 
     @Override
     protected AbstractActionSelectionTask createActionSelectionTask(Color color) {
-        return new AlphaBetaActionSelectionTask(
-                this.game.getBoard(), this.game.getJournal(), color, this.limit
-        );
+        return new AlphaBetaActionSelectionTask(this.board, this.journal, color, this.limit);
     }
 
     private static final class AlphaBetaActionSelectionTask
@@ -113,6 +117,16 @@ public final class AlphaBetaActionSelectionStrategy
 
             return 0;
         }
+
+//        @Override
+//        protected Pair<Action<?>,Integer> process(List<Pair<Action<?>,Integer>> actionValues) {
+//            var pair = super.process(actionValues);
+//
+//            var value = AlphaBetaFunction.of(this.color).apply(pair.getValue(), this.context);
+//            return value.isPresent()
+//                ? Pair.of(pair.getKey(), value.get())
+//                : pair;
+//        }
 
         // root level task
         @Override

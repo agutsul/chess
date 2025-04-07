@@ -29,14 +29,16 @@ public final class MinMaxActionSelectionStrategy
     }
 
     public MinMaxActionSelectionStrategy(Game game, int limit) {
-        super(LOGGER, game, limit);
+        this(game.getBoard(), game.getJournal(), limit);
+    }
+
+    public MinMaxActionSelectionStrategy(Board board, Journal<ActionMemento<?,?>> journal, int limit) {
+        super(LOGGER, board, journal, limit);
     }
 
     @Override
     protected AbstractActionSelectionTask createActionSelectionTask(Color color) {
-        return new MinMaxActionSelectionTask(
-                this.game.getBoard(), this.game.getJournal(), color, this.limit
-        );
+        return new MinMaxActionSelectionTask(this.board, this.journal, color, this.limit);
     }
 
     private static final class MinMaxActionSelectionTask
