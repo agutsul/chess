@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ForkJoinPool;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -44,6 +45,7 @@ import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.observer.GameExceptionObserver;
+import com.agutsul.chess.game.observer.GameOverObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
@@ -61,6 +63,8 @@ public abstract class AbstractPlayableGame
     private final Board board;
     private final Journal<ActionMemento<?,?>> journal;
 
+    private final ForkJoinPool forkJoinPool;
+
     private final BoardStateEvaluator<BoardState> boardStateEvaluator;
     private final List<Observer> observers;
 
@@ -69,36 +73,36 @@ public abstract class AbstractPlayableGame
 
     protected Player currentPlayer;
 
-    public AbstractPlayableGame(Logger logger,
-                                Player whitePlayer,
-                                Player blackPlayer,
-                                Board board) {
-
+    public AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer, Board board) {
         this(logger, whitePlayer, blackPlayer, board, new JournalImpl());
     }
 
-    protected AbstractPlayableGame(Logger logger,
-                                   Player whitePlayer,
-                                   Player blackPlayer,
-                                   Board board,
-                                   Journal<ActionMemento<?,?>> journal) {
+    protected AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer,
+                                   Board board, Journal<ActionMemento<?,?>> journal) {
 
-        this(logger, whitePlayer, blackPlayer,
-                board, journal, new BoardStateEvaluatorImpl(board, journal)
+        this(logger, whitePlayer, blackPlayer, board, journal, new ForkJoinPool(10));
+    }
+
+    protected AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer,
+                                   Board board, Journal<ActionMemento<?,?>> journal,
+                                   ForkJoinPool forkJoinPool) {
+
+        this(logger, whitePlayer, blackPlayer, board, journal, forkJoinPool,
+                new BoardStateEvaluatorImpl(board, journal, forkJoinPool)
         );
     }
 
-    protected AbstractPlayableGame(Logger logger,
-                                   Player whitePlayer,
-                                   Player blackPlayer,
-                                   Board board,
-                                   Journal<ActionMemento<?,?>> journal,
+    protected AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer,
+                                   Board board, Journal<ActionMemento<?,?>> journal,
+                                   ForkJoinPool forkJoinPool,
                                    BoardStateEvaluator<BoardState> boardStateEvaluator) {
 
         super(logger, whitePlayer, blackPlayer);
 
         this.board = board;
         this.journal = journal;
+
+        this.forkJoinPool = forkJoinPool;
         this.boardStateEvaluator = boardStateEvaluator;
 
         this.activeState = new ActivePlayerState((Observable) board);
@@ -113,11 +117,17 @@ public abstract class AbstractPlayableGame
         this.observers.add(new PlayerActionOberver(this));
         this.observers.add(new ActionEventObserver());
         this.observers.add(new GameExceptionObserver());
+        this.observers.add(new GameOverObserver());
     }
 
     @Override
     public final Journal<ActionMemento<?,?>> getJournal() {
         return this.journal;
+    }
+
+    @Override
+    public final ForkJoinPool getForkJoinPool() {
+        return this.forkJoinPool;
     }
 
     @Override
@@ -206,10 +216,7 @@ public abstract class AbstractPlayableGame
 
             notifyObservers(new GameExceptionEvent(this, throwable));
         } finally {
-            var event = new GameOverEvent(this);
-
-            notifyBoardObservers(event);
-            notifyObservers(event);
+            notifyObservers(new GameOverEvent(this));
         }
     }
 
@@ -276,12 +283,12 @@ public abstract class AbstractPlayableGame
     }
 
     private Optional<Player> findWinner() {
-        var currentPlayerScore  = calculateScore(this.currentPlayer);
+        var currentPlayerScore  = calculateScore(getCurrentPlayer());
         var opponentPlayerScore = calculateScore(getOpponentPlayer());
 
         var result = Integer.compare(currentPlayerScore, opponentPlayerScore);
         if (result == 0) {
-            var currentPlayerActions  = calculateActions(this.currentPlayer);
+            var currentPlayerActions  = calculateActions(getCurrentPlayer());
             var opponentPlayerActions = calculateActions(getOpponentPlayer());
 
             result = Integer.compare(currentPlayerActions, opponentPlayerActions);
@@ -290,7 +297,7 @@ public abstract class AbstractPlayableGame
             }
         }
 
-        return Optional.of(result > 0 ? this.currentPlayer : getOpponentPlayer());
+        return Optional.of(result > 0 ? getCurrentPlayer() : getOpponentPlayer());
     }
 
     private int calculateActions(Player player) {
@@ -314,12 +321,12 @@ public abstract class AbstractPlayableGame
     private Player switchPlayers() {
         var player = getOpponentPlayer();
 
-        this.currentPlayer.setState(this.lockedState);
+        getCurrentPlayer().setState(this.lockedState);
         player.setState(this.activeState);
 
         logger.info("Switched player '{}({})' => '{}({})'",
-                this.currentPlayer.getName(),
-                this.currentPlayer.getColor(),
+                getCurrentPlayer().getName(),
+                getCurrentPlayer().getColor(),
                 player.getName(),
                 player.getColor()
         );

@@ -22,7 +22,7 @@ import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.game.pgn.PgnGameFormatter;
 import com.agutsul.chess.player.Player;
 
-public class GameExceptionObserver
+public final class GameExceptionObserver
         implements Observer {
 
     private static final Logger LOGGER = getLogger(GameExceptionObserver.class);

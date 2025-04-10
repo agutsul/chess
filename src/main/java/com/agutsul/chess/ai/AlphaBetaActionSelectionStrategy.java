@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
@@ -38,13 +39,13 @@ public final class AlphaBetaActionSelectionStrategy
     }
 
     public AlphaBetaActionSelectionStrategy(Game game, int limit) {
-        this(game.getBoard(), game.getJournal(), limit);
+        this(game.getBoard(), game.getJournal(), game.getForkJoinPool(), limit);
     }
 
     public AlphaBetaActionSelectionStrategy(Board board, Journal<ActionMemento<?,?>> journal,
-                                            int limit) {
+                                            ForkJoinPool forkJoinPool, int limit) {
 
-        super(LOGGER, board, journal, limit);
+        super(LOGGER, board, journal, forkJoinPool, limit);
     }
 
     @Override

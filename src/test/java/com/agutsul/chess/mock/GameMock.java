@@ -3,6 +3,7 @@ package com.agutsul.chess.mock;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.ForkJoinPool;
 
 import org.slf4j.Logger;
 
@@ -22,22 +23,36 @@ public class GameMock
     private static final Logger LOGGER = getLogger(GameMock.class);
 
     public GameMock(Player whitePlayer, Player blackPlayer, Board board) {
-        this(whitePlayer, blackPlayer, board, new JournalImpl());
+        this(whitePlayer, blackPlayer, board, new JournalImpl(), ForkJoinPool.commonPool());
     }
 
-    public GameMock(Player whitePlayer, Player blackPlayer,
-            Board board, Journal<ActionMemento<?,?>> journal) {
+    public GameMock(Player whitePlayer, Player blackPlayer, Board board,
+                    Journal<ActionMemento<?,?>> journal) {
 
-        this(whitePlayer, blackPlayer,
-                board, journal, new BoardStateEvaluatorImpl(board, journal));
+        this(whitePlayer, blackPlayer, board, journal, ForkJoinPool.commonPool());
     }
 
-    public GameMock(Player whitePlayer, Player blackPlayer,
-            Board board, Journal<ActionMemento<?,?>> journal,
-            BoardStateEvaluator<BoardState> boardStateEvaluator) {
+    public GameMock(Player whitePlayer, Player blackPlayer, Board board,
+                    Journal<ActionMemento<?,?>> journal, ForkJoinPool forkJoinPool) {
 
-        super(LOGGER, whitePlayer, blackPlayer,
-                board, journal, boardStateEvaluator);
+        this(whitePlayer, blackPlayer, board, journal, forkJoinPool,
+                new BoardStateEvaluatorImpl(board, journal, forkJoinPool)
+        );
+    }
+
+    public GameMock(Player whitePlayer, Player blackPlayer, Board board,
+                    Journal<ActionMemento<?,?>> journal,
+                    BoardStateEvaluator<BoardState> boardStateEvaluator) {
+
+        super(LOGGER, whitePlayer, blackPlayer, board, journal,
+                ForkJoinPool.commonPool(), boardStateEvaluator);
+    }
+
+    public GameMock(Player whitePlayer, Player blackPlayer, Board board,
+                    Journal<ActionMemento<?,?>> journal, ForkJoinPool forkJoinPool,
+                    BoardStateEvaluator<BoardState> boardStateEvaluator) {
+
+        super(LOGGER, whitePlayer, blackPlayer, board, journal, forkJoinPool, boardStateEvaluator);
     }
 
     public void setStartedAt(LocalDateTime startedAt) {

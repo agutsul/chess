@@ -5,6 +5,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ForkJoinPool;
 
 import org.slf4j.Logger;
 
@@ -29,11 +30,12 @@ public final class MinMaxActionSelectionStrategy
     }
 
     public MinMaxActionSelectionStrategy(Game game, int limit) {
-        this(game.getBoard(), game.getJournal(), limit);
+        this(game.getBoard(), game.getJournal(), game.getForkJoinPool(), limit);
     }
 
-    public MinMaxActionSelectionStrategy(Board board, Journal<ActionMemento<?,?>> journal, int limit) {
-        super(LOGGER, board, journal, limit);
+    public MinMaxActionSelectionStrategy(Board board, Journal<ActionMemento<?,?>> journal,
+                                         ForkJoinPool forkJoinPool, int limit) {
+        super(LOGGER, board, journal, forkJoinPool, limit);
     }
 
     @Override

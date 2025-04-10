@@ -1,11 +1,8 @@
 package com.agutsul.chess.rule.board;
 
-import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
@@ -18,11 +15,10 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
-import com.agutsul.chess.board.state.CompositeBoardState;
 import com.agutsul.chess.color.Color;
 
 final class CompositeBoardStateEvaluator
-        implements BoardStateEvaluator<BoardState> {
+        implements BoardStateEvaluator<List<BoardState>> {
 
     private static final Logger LOGGER = getLogger(CompositeBoardStateEvaluator.class);
 
@@ -35,7 +31,6 @@ final class CompositeBoardStateEvaluator
                                  BoardStateEvaluator<Optional<BoardState>>... evaluators) {
 
         this(board, compose(evaluator, evaluators));
-
     }
 
     private CompositeBoardStateEvaluator(Board board,
@@ -45,50 +40,14 @@ final class CompositeBoardStateEvaluator
     }
 
     @Override
-    public BoardState evaluate(Color playerColor) {
-        var results = evaluate(evaluators, playerColor);
-
-        var boardStates = results.stream()
+    public List<BoardState> evaluate(Color playerColor) {
+        var boardStates = evaluate(evaluators, playerColor);
+        //  terminal states first
+        return boardStates.stream()
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(toMap(BoardState::getType, identity()));
-
-        if (boardStates.isEmpty()) {
-            return defaultBoardState(board, playerColor);
-        }
-
-        if (boardStates.size() == 1) {
-            return boardStates.values().iterator().next();
-        }
-
-        if (boardStates.containsKey(BoardState.Type.CHECK_MATED)) {
-            return boardStates.get(BoardState.Type.CHECK_MATED);
-        }
-
-        var terminalStates = boardStates.values().stream()
-                .filter(BoardState::isTerminal)
+                .sorted(comparing(BoardState::isTerminal).reversed())
                 .toList();
-
-        if (!terminalStates.isEmpty()) {
-            return new CompositeBoardState(boardStates.values().stream()
-                    //  terminal states first
-                    .sorted(comparing(BoardState::isTerminal).reversed())
-                    .toList()
-            );
-        }
-
-        var states = new ArrayList<BoardState>();
-
-        if (!boardStates.containsKey(BoardState.Type.CHECKED)) {
-            states.add(defaultBoardState(board, playerColor));
-        }
-
-        states.addAll(boardStates.values().stream()
-                .sorted(comparing(BoardState::getType))
-                .toList()
-        );
-
-        return new CompositeBoardState(states);
     }
 
     private List<Optional<BoardState>> evaluate(List<BoardStateEvaluator<Optional<BoardState>>> evaluators,

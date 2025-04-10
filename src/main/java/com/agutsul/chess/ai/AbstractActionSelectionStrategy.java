@@ -24,11 +24,15 @@ abstract class AbstractActionSelectionStrategy
     protected final Journal<ActionMemento<?,?>> journal;
     protected final int limit;
 
+    private final ForkJoinPool forkJoinPool;
+
     AbstractActionSelectionStrategy(Logger logger, Board board,
-                                    Journal<ActionMemento<?,?>> journal, int limit) {
+                                    Journal<ActionMemento<?,?>> journal,
+                                    ForkJoinPool forkJoinPool, int limit) {
         this.logger = logger;
         this.board = board;
         this.journal = journal;
+        this.forkJoinPool = forkJoinPool;
         this.limit = limit;
     }
 
@@ -46,11 +50,8 @@ abstract class AbstractActionSelectionStrategy
         }
 
         var startTimepoint = now();
-        try (var executor = new ForkJoinPool(10)) {
-            var result = executor.invoke(createActionSelectionTask(color));
-
-            // return action
-            return Optional.of(result.getKey());
+        try {
+            return Optional.ofNullable(searchAction(color));
         } finally {
             var duration = Duration.between(startTimepoint, now());
             logger.info("Select '{}' action duration: {}ms", color, duration.toMillis());
@@ -58,4 +59,15 @@ abstract class AbstractActionSelectionStrategy
     }
 
     protected abstract AbstractActionSelectionTask createActionSelectionTask(Color color);
+
+    private Action<?> searchAction(Color color) {
+        var task = createActionSelectionTask(color);
+        try {
+            var result = forkJoinPool.invoke(task);
+            return result.getKey();
+        } catch (Exception e) {
+            logger.error("Exception while action selection", e);
+        }
+        return null;
+    }
 }

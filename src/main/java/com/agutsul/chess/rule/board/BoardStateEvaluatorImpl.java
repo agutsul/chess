@@ -1,27 +1,111 @@
 package com.agutsul.chess.rule.board;
 
+import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
+import static java.util.Comparator.comparing;
+import static java.util.concurrent.ForkJoinPool.commonPool;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 import static org.slf4j.LoggerFactory.getLogger;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ForkJoinPool;
 
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.board.state.CompositeBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
+import com.agutsul.chess.rule.board.InsufficientMaterialBoardStateEvaluator.NoLegalActionsLeadToCheckmateEvaluationTask;
 
 public final class BoardStateEvaluatorImpl
         implements BoardStateEvaluator<BoardState> {
 
     private static final Logger LOGGER = getLogger(BoardStateEvaluatorImpl.class);
 
-    private final BoardStateEvaluator<BoardState> evaluator;
+    private final Board board;
+    private final BoardStateEvaluator<List<BoardState>> compositeEvaluator;
+    private final BoardStateEvaluator<Optional<BoardState>> legalActionsEvaluator;
+
+    public BoardStateEvaluatorImpl(Board board, Journal<ActionMemento<?,?>> journal,
+                                   ForkJoinPool forkJoinPool) {
+
+        this(board, createEvaluator(board, journal),
+             new NoLegalActionsLeadToCheckmateEvaluationTask(board, journal, forkJoinPool)
+        );
+    }
+
+    public BoardStateEvaluatorImpl(Board board, Journal<ActionMemento<?,?>> journal) {
+        this(board, journal, commonPool());
+    }
+
+    BoardStateEvaluatorImpl(Board board, BoardStateEvaluator<List<BoardState>> compositeEvaluator,
+                            BoardStateEvaluator<Optional<BoardState>> legalActionsEvaluator) {
+
+        this.board = board;
+        this.compositeEvaluator = compositeEvaluator;
+        this.legalActionsEvaluator = legalActionsEvaluator;
+    }
+
+    @Override
+    public BoardState evaluate(Color color) {
+        var boardStates = compositeEvaluator.evaluate(color);
+        LOGGER.info("{}: Board state: {}", color, boardStates);
+
+        if (boardStates.isEmpty()) {
+//            var boardState = legalActionsEvaluator.evaluate(color);
+//            return boardState.isEmpty()
+//                    ? defaultBoardState(board, color)
+//                    : new CompositeBoardState(List.of(
+//                            defaultBoardState(board, color),
+//                            boardState.get()
+//                      ));
+            return defaultBoardState(board, color);
+        }
+
+        if (boardStates.size() == 1) {
+            return boardStates.iterator().next();
+        }
+
+        var boardStateMap = boardStates.stream()
+                .collect(toMap(BoardState::getType, identity()));
+
+        if (boardStateMap.containsKey(BoardState.Type.CHECK_MATED)) {
+            return boardStateMap.get(BoardState.Type.CHECK_MATED);
+        }
+
+        if (boardStates.stream().anyMatch(BoardState::isTerminal)) {
+            return new CompositeBoardState(boardStates);
+        }
+
+        var states = new ArrayList<BoardState>();
+
+        if (!boardStateMap.containsKey(BoardState.Type.CHECKED)) {
+            states.add(defaultBoardState(board, color));
+
+//            var boardState = legalActionsEvaluator.evaluate(color);
+//            if (boardState.isPresent()) {
+//                states.add(boardState.get());
+//            }
+        }
+
+        states.addAll(boardStates.stream()
+                .sorted(comparing(BoardState::getType))
+                .toList()
+        );
+
+        return new CompositeBoardState(states);
+    }
 
     @SuppressWarnings("unchecked")
-    public BoardStateEvaluatorImpl(Board board,
-                                   Journal<ActionMemento<?,?>> journal) {
+    private static BoardStateEvaluator<List<BoardState>> createEvaluator(Board board,
+                                                                         Journal<ActionMemento<?,?>> journal) {
 
-        this.evaluator = new CompositeBoardStateEvaluator(board,
+        return new CompositeBoardStateEvaluator(board,
                 new BoardStatisticStateEvaluator(new MovesBoardStateEvaluator(board, journal)),
                 new BoardStatisticStateEvaluator(new FoldRepetitionBoardStateEvaluator(board, journal)),
                 new CheckableBoardStateEvaluator(
@@ -29,14 +113,7 @@ public final class BoardStateEvaluatorImpl
                         new CheckMatedBoardStateEvaluator(board)
                 ),
                 new StaleMatedBoardStateEvaluator(board),
-                new InsufficientMaterialBoardStateEvaluator(board, journal)
+                new InsufficientMaterialBoardStateEvaluator(board)
         );
-    }
-
-    @Override
-    public BoardState evaluate(Color color) {
-        var boardState = evaluator.evaluate(color);
-        LOGGER.info("{}: Board state: {}", color, boardState);
-        return boardState;
     }
 }

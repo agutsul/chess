@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 
 import org.slf4j.Logger;
 
@@ -33,7 +34,7 @@ final class InsufficientMaterialBoardStateEvaluator
 
     private final List<BoardStateEvaluator<Optional<BoardState>>> evaluators;
 
-    InsufficientMaterialBoardStateEvaluator(Board board, Journal<ActionMemento<?,?>> journal) {
+    InsufficientMaterialBoardStateEvaluator(Board board) {
         super(board);
         this.evaluators = List.of(
                 new SingleKingEvaluationTask(board),
@@ -43,9 +44,7 @@ final class InsufficientMaterialBoardStateEvaluator
                 new PieceVersusKingEvaluationTask(board, Piece.Type.KNIGHT),
                 new BishopPositionColorVersusKingEvaluationTask(board),
                 new DoubleKnightsVersusKingEvaluationTask(board),
-                new KingBishopVersusKingKnightEvaluationTask(board)/*,
-                new NoLegalActionsLeadToCheckmateEvaluationTask(board, journal)
-                */
+                new KingBishopVersusKingKnightEvaluationTask(board)
         );
     }
 
@@ -91,12 +90,10 @@ final class InsufficientMaterialBoardStateEvaluator
 
         @Override
         public final Optional<BoardState> evaluate(Color color) {
-            if (isNotApplicable(color)) {
-                return Optional.empty();
-            }
-
-            var boardState = evaluateBoard(color);
-            return Optional.ofNullable(boardState);
+            return Optional.ofNullable(isNotApplicable(color)
+                    ? null
+                    : evaluateBoard(color)
+            );
         }
 
         protected abstract boolean isNotApplicable(Color color);
@@ -319,17 +316,23 @@ final class InsufficientMaterialBoardStateEvaluator
         }
     }
 
-    private static final class NoLegalActionsLeadToCheckmateEvaluationTask
+    static final class NoLegalActionsLeadToCheckmateEvaluationTask
             extends AbstractInsufficientMaterialBoardStateEvaluator {
 
-        private static final int ACTIONS_COUNT = 99;
+        private static final int MAX_DEPTH = 3;
 
         private final ActionSelectionStrategy actionSelectionStrategy;
 
+        NoLegalActionsLeadToCheckmateEvaluationTask(Board board, Journal<ActionMemento<?,?>> journal,
+                                                    ForkJoinPool forkJoinPool) {
+
+            this(board, new AlphaBetaActionSelectionStrategy(board, journal, forkJoinPool, MAX_DEPTH));
+        }
+
         NoLegalActionsLeadToCheckmateEvaluationTask(Board board,
-                                                    Journal<ActionMemento<?,?>> journal) {
+                                                    ActionSelectionStrategy actionSelectionStrategy) {
             super(board, 0);
-            this.actionSelectionStrategy = new AlphaBetaActionSelectionStrategy(board, journal, ACTIONS_COUNT);
+            this.actionSelectionStrategy = actionSelectionStrategy;
         }
 
         @Override
@@ -340,7 +343,7 @@ final class InsufficientMaterialBoardStateEvaluator
 
         @Override
         protected BoardState evaluateBoard(Color color) {
-            return createBoardState(board, color);
+            return createBoardState(this.board, color);
         }
     }
 }

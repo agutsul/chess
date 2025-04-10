@@ -2,8 +2,11 @@ package com.agutsul.chess.rule.board;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 
+import java.util.Optional;
+import java.util.concurrent.ForkJoinPool;
+
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,7 +16,8 @@ import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
-import com.agutsul.chess.journal.Journal;
+import com.agutsul.chess.journal.JournalImpl;
+import com.agutsul.chess.rule.board.InsufficientMaterialBoardStateEvaluator.NoLegalActionsLeadToCheckmateEvaluationTask;
 
 @ExtendWith(MockitoExtension.class)
 public class InsufficientMaterialBoardStateEvaluatorTest {
@@ -112,13 +116,31 @@ public class InsufficientMaterialBoardStateEvaluatorTest {
         assertInsufficientMaterial(board, Colors.WHITE);
     }
 
+    @Test
+    @Disabled
+    // https://lichess.org/forum/lichess-feedback/if-your-only-legal-move-is-checkmate-but-you-run-out-of-time-you-still-lose
+    void testNoLegalActionsLeadToCheckmate() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("a8")
+                .withWhitePawns("a7","b6","c7","d6","d5")
+                .withBlackKing("c8")
+                .withBlackQueen("a1")
+                .withBlackPawn("d7")
+                .build();
+
+        // -Xms5120m -Xmx5120m
+        try (var pool = new ForkJoinPool(2)) {
+            var evaluator = new NoLegalActionsLeadToCheckmateEvaluationTask(board, new JournalImpl(), pool);
+            assertBoardState(evaluator.evaluate(Colors.BLACK));
+        }
+    }
+
     private static void assertInsufficientMaterial(Board board, Color color) {
-        var journal = mock(Journal.class);
+        var evaluator = new InsufficientMaterialBoardStateEvaluator(board);
+        assertBoardState(evaluator.evaluate(color));
+    }
 
-        @SuppressWarnings("unchecked")
-        var evaluator = new InsufficientMaterialBoardStateEvaluator(board, journal);
-        var boardState = evaluator.evaluate(color);
-
+    private static void assertBoardState(Optional<BoardState> boardState) {
         assertTrue(boardState.isPresent());
         assertEquals(BoardState.Type.INSUFFICIENT_MATERIAL, boardState.get().getType());
     }

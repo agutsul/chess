@@ -97,7 +97,7 @@ public final class SimulationGame
 
     @Override
     public void close() throws IOException {
-        notifyBoardObservers(new GameOverEvent(this));
+        notifyObservers(new GameOverEvent(this));
     }
 
     private static Player createPlayer(Color color) {
