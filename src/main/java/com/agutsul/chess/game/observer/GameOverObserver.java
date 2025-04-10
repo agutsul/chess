@@ -18,6 +18,8 @@ public final class GameOverObserver
 
     private void process(GameOverEvent event) {
         var game = event.getGame();
+
+        // force closing fork-join pool
         try (var pool = game.getForkJoinPool()) {
             notifyBoardObservers(game.getBoard(), event);
         }

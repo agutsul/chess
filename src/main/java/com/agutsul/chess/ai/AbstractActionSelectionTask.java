@@ -7,6 +7,7 @@ import static org.apache.commons.collections4.ListUtils.partition;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -33,11 +34,11 @@ abstract class AbstractActionSelectionTask
     protected final Journal<ActionMemento<?,?>> journal;
     protected final List<Action<?>> actions;
     protected final Color color;
+    protected final ForkJoinPool forkJoinPool;
     protected final int limit;
 
-    AbstractActionSelectionTask(Logger logger, Board board,
-                                Journal<ActionMemento<?,?>> journal,
-                                List<Action<?>> actions, Color color,
+    AbstractActionSelectionTask(Logger logger, Board board, Journal<ActionMemento<?,?>> journal,
+                                List<Action<?>> actions, Color color, ForkJoinPool forkJoinPool,
                                 int limit) {
 
         this.logger = logger;
@@ -45,6 +46,7 @@ abstract class AbstractActionSelectionTask
         this.journal = journal;
         this.actions = actions;
         this.color = color;
+        this.forkJoinPool = forkJoinPool;
         this.limit = limit;
     }
 
@@ -78,10 +80,14 @@ abstract class AbstractActionSelectionTask
     }
 
     protected boolean isDone(Game game) {
+        if (this.limit == 0) {
+            return true;
+        }
+
         var gameBoard = game.getBoard();
         var boardState = gameBoard.getState();
 
-        return this.limit == 0 || boardState.isTerminal();
+        return boardState.isTerminal();
     }
 
     protected static List<Action<?>> getActions(Board board, Color color) {

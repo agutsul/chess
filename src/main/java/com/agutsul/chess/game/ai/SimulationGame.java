@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.concurrent.ForkJoinPool;
 
 import org.slf4j.Logger;
 
@@ -46,13 +47,15 @@ public final class SimulationGame
     public SimulationGame(Color activeColor,
                           Board board,
                           Journal<ActionMemento<?,?>> journal,
+                          ForkJoinPool forkJoinPool,
                           Action<?> action) {
 
         super(LOGGER,
                 createPlayer(Colors.WHITE),
                 createPlayer(Colors.BLACK),
                 copyBoard(board),
-                new JournalImpl(journal)
+                new JournalImpl(journal),
+                forkJoinPool
         );
 
         this.originAction = action;
@@ -97,7 +100,7 @@ public final class SimulationGame
 
     @Override
     public void close() throws IOException {
-        notifyObservers(new GameOverEvent(this));
+        notifyBoardObservers(new GameOverEvent(this));
     }
 
     private static Player createPlayer(Color color) {

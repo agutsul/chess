@@ -24,7 +24,7 @@ abstract class AbstractActionSelectionStrategy
     protected final Journal<ActionMemento<?,?>> journal;
     protected final int limit;
 
-    private final ForkJoinPool forkJoinPool;
+    protected final ForkJoinPool forkJoinPool;
 
     AbstractActionSelectionStrategy(Logger logger, Board board,
                                     Journal<ActionMemento<?,?>> journal,

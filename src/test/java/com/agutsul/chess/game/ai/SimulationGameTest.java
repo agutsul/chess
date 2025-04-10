@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.util.concurrent.ForkJoinPool;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,36 +32,39 @@ public class SimulationGameTest {
 
         @SuppressWarnings({ "unchecked", "rawtypes" })
         var action = new PieceMoveAction(pawnPiece, position);
-        try (var game = new SimulationGame(Colors.WHITE, board, journal, action)) {
-            assertEquals(Colors.WHITE, game.getCurrentPlayer().getColor());
 
-            game.run();
+        try (var pool = new ForkJoinPool(2)) {
+            try (var game = new SimulationGame(Colors.WHITE, board, journal, pool, action)) {
+                assertEquals(Colors.WHITE, game.getCurrentPlayer().getColor());
 
-            assertEquals(Colors.BLACK, game.getCurrentPlayer().getColor());
-            assertNotEquals(board,   game.getBoard());
-            assertNotEquals(journal, game.getJournal());
+                game.run();
 
-            assertEquals(pawnPiece.getPositions().size(), 1);
+                assertEquals(Colors.BLACK, game.getCurrentPlayer().getColor());
+                assertNotEquals(board,   game.getBoard());
+                assertNotEquals(journal, game.getJournal());
 
-            var simulationBoard = game.getBoard();
+                assertEquals(pawnPiece.getPositions().size(), 1);
 
-            assertTrue(simulationBoard.isEmpty(pawnPiece.getPosition()));
-            assertFalse(simulationBoard.isEmpty(position));
+                var simulationBoard = game.getBoard();
 
-            var simulatedPawn = simulationBoard.getPiece("e4").get();
-            assertEquals(simulatedPawn.getPositions().size(), 2);
+                assertTrue(simulationBoard.isEmpty(pawnPiece.getPosition()));
+                assertFalse(simulationBoard.isEmpty(position));
 
-            var simulatedJournal = game.getJournal();
+                var simulatedPawn = simulationBoard.getPiece("e4").get();
+                assertEquals(simulatedPawn.getPositions().size(), 2);
 
-            assertFalse(simulatedJournal.isEmpty());
-            assertEquals(simulatedJournal.size(), 1);
+                var simulatedJournal = game.getJournal();
 
-            var simulatedActionMemento = simulatedJournal.get(0);
+                assertFalse(simulatedJournal.isEmpty());
+                assertEquals(simulatedJournal.size(), 1);
 
-            assertEquals(Action.Type.BIG_MOVE, simulatedActionMemento.getActionType());
-            assertEquals(Colors.WHITE, simulatedActionMemento.getColor());
-            assertEquals("e2", String.valueOf(simulatedActionMemento.getSource()));
-            assertEquals("e4", String.valueOf(simulatedActionMemento.getTarget()));
+                var simulatedActionMemento = simulatedJournal.get(0);
+
+                assertEquals(Action.Type.BIG_MOVE, simulatedActionMemento.getActionType());
+                assertEquals(Colors.WHITE, simulatedActionMemento.getColor());
+                assertEquals("e2", String.valueOf(simulatedActionMemento.getSource()));
+                assertEquals("e4", String.valueOf(simulatedActionMemento.getTarget()));
+            }
         }
     }
 }

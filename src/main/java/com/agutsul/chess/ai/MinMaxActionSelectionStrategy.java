@@ -40,7 +40,7 @@ public final class MinMaxActionSelectionStrategy
 
     @Override
     protected AbstractActionSelectionTask createActionSelectionTask(Color color) {
-        return new MinMaxActionSelectionTask(this.board, this.journal, color, this.limit);
+        return new MinMaxActionSelectionTask(this.board, this.journal, color, this.forkJoinPool, this.limit);
     }
 
     private static final class MinMaxActionSelectionTask
@@ -54,23 +54,23 @@ public final class MinMaxActionSelectionStrategy
 
         // root level task
         MinMaxActionSelectionTask(Board board, Journal<ActionMemento<?,?>> journal,
-                                  Color color, int limit) {
+                                  Color color, ForkJoinPool forkJoinPool, int limit) {
 
-            this(board, journal, getActions(board, color), color, limit, 0);
+            this(board, journal, getActions(board, color), color, forkJoinPool, limit, 0);
         }
 
         // node level task
         MinMaxActionSelectionTask(Board board, Journal<ActionMemento<?,?>> journal,
                                   List<Action<?>> actions, Color color,
-                                  int limit, int value) {
+                                  ForkJoinPool forkJoinPool, int limit, int value) {
 
-            super(LOGGER, board, journal, actions, color, limit);
+            super(LOGGER, board, journal, actions, color, forkJoinPool, limit);
             this.value = value;
         }
 
         @Override
         public Integer simulate(Action<?> action) {
-            try (var game = new SimulationGame(this.color, this.board, this.journal, action)) {
+            try (var game = new SimulationGame(color, board, journal, forkJoinPool, action)) {
 
                 game.run();
 
@@ -108,7 +108,7 @@ public final class MinMaxActionSelectionStrategy
         @Override
         protected AbstractActionSelectionTask createTask(List<Action<?>> actions) {
             return new MinMaxActionSelectionTask(this.board, this.journal,
-                    actions, this.color, this.limit, this.value
+                    actions, this.color, this.forkJoinPool, this.limit, this.value
             );
         }
 
@@ -117,7 +117,7 @@ public final class MinMaxActionSelectionStrategy
                                                                  Color color, int value) {
 
             return new MinMaxActionSelectionTask(game.getBoard(), game.getJournal(),
-                    actions, color, this.limit - 1, value
+                    actions, color, this.forkJoinPool, this.limit - 1, value
             );
         }
 

@@ -50,7 +50,9 @@ public final class AlphaBetaActionSelectionStrategy
 
     @Override
     protected AbstractActionSelectionTask createActionSelectionTask(Color color) {
-        return new AlphaBetaActionSelectionTask(this.board, this.journal, color, this.limit);
+        return new AlphaBetaActionSelectionTask(this.board, this.journal,
+                color, this.forkJoinPool, this.limit
+        );
     }
 
     private static final class AlphaBetaActionSelectionTask
@@ -64,23 +66,25 @@ public final class AlphaBetaActionSelectionStrategy
 
         // root level task
         AlphaBetaActionSelectionTask(Board board, Journal<ActionMemento<?,?>> journal,
-                                     Color color, int limit) {
+                                     Color color, ForkJoinPool forkJoinPool, int limit) {
 
-            this(board, journal, getActions(board, color), color, limit, new AlphaBetaContext());
+            this(board, journal, getActions(board, color),
+                    color, forkJoinPool, limit, new AlphaBetaContext());
         }
 
         // node level task
         AlphaBetaActionSelectionTask(Board board, Journal<ActionMemento<?,?>> journal,
                                      List<Action<?>> actions, Color color,
-                                     int limit, AlphaBetaContext context) {
+                                     ForkJoinPool forkJoinPool, int limit,
+                                     AlphaBetaContext context) {
 
-            super(LOGGER, board, journal, actions, color, limit);
+            super(LOGGER, board, journal, actions, color, forkJoinPool, limit);
             this.context = context;
         }
 
         @Override
         public Integer simulate(Action<?> action) {
-            try (var game = new SimulationGame(this.color, this.board, this.journal, action)) {
+            try (var game = new SimulationGame(color, board, journal, forkJoinPool, action)) {
 
                 game.run();
 
@@ -133,7 +137,7 @@ public final class AlphaBetaActionSelectionStrategy
         @Override
         protected AbstractActionSelectionTask createTask(List<Action<?>> actions) {
             return new AlphaBetaActionSelectionTask(this.board, this.journal,
-                    actions, this.color, this.limit, this.context
+                    actions, this.color, this.forkJoinPool, this.limit, this.context
             );
         }
 
@@ -142,7 +146,7 @@ public final class AlphaBetaActionSelectionStrategy
                                                                  Color color) {
 
             return new AlphaBetaActionSelectionTask(game.getBoard(), game.getJournal(),
-                    actions, color, this.limit - 1, this.context
+                    actions, color, this.forkJoinPool, this.limit - 1, this.context
             );
         }
 
