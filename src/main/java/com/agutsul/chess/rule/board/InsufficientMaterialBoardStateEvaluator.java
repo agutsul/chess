@@ -50,17 +50,16 @@ final class InsufficientMaterialBoardStateEvaluator
         this.legalActionsEvaluator = legalActionsEvaluator;
     }
 
-
     @Override
     public Optional<BoardState> evaluate(Color color) {
-        LOGGER.info("Insufficient material verification");
+        LOGGER.info("Insufficient material verification '{}'", color);
 
         var boardStates = this.compositeEvaluator.evaluate(color);
         if (!boardStates.isEmpty()) {
             return Optional.of(boardStates.getFirst());
         }
 
-        LOGGER.info("Insufficient material legal action verification");
+        LOGGER.info("Insufficient material legal action verification '{}'", color);
         // TODO: temporary comment while testing
         //        return this.legalActionsEvaluator.evaluate(color);
 
