@@ -8,6 +8,8 @@ import static com.agutsul.chess.board.state.BoardStateFactory.seventyFiveMovesBo
 import static com.agutsul.chess.board.state.BoardStateFactory.staleMatedBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.threeFoldRepetitionBoardState;
 import static java.util.concurrent.TimeUnit.MICROSECONDS;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,7 +18,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,11 +30,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
-import com.agutsul.chess.board.state.CheckMatedBoardState;
-import com.agutsul.chess.board.state.CheckedBoardState;
-import com.agutsul.chess.board.state.FiftyMovesBoardState;
-import com.agutsul.chess.board.state.StaleMatedBoardState;
-import com.agutsul.chess.board.state.ThreeFoldRepetitionBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 
@@ -85,13 +81,18 @@ public class CompositeBoardStateEvaluatorTest {
         @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
+        );
 
         var boardStates = evaluator.evaluate(Colors.WHITE);
         assertFalse(boardStates.isEmpty());
 
+        var boardStateMap = boardStates.stream()
+                .collect(toMap(BoardState::getType, identity()));
+
+        assertTrue(boardStateMap.containsKey(BoardState.Type.CHECKED));
+
         var boardState = boardStates.getFirst();
-        assertTrue(boardState instanceof CheckedBoardState);
         assertEquals(Colors.WHITE, boardState.getColor());
     }
 
@@ -119,13 +120,19 @@ public class CompositeBoardStateEvaluatorTest {
         @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
+        );
 
         var boardStates = evaluator.evaluate(Colors.BLACK);
         assertFalse(boardStates.isEmpty());
 
+        var boardStateMap = boardStates.stream()
+                .collect(toMap(BoardState::getType, identity()));
+
+        assertTrue(boardStateMap.containsKey(BoardState.Type.CHECK_MATED));
+        assertTrue(boardStateMap.containsKey(BoardState.Type.CHECKED));
+
         var boardState = boardStates.getFirst();
-        assertTrue(boardState instanceof CheckMatedBoardState);
         assertEquals(Colors.BLACK, boardState.getColor());
     }
 
@@ -150,13 +157,18 @@ public class CompositeBoardStateEvaluatorTest {
         @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
+        );
 
         var boardStates = evaluator.evaluate(Colors.BLACK);
         assertFalse(boardStates.isEmpty());
 
+        var boardStateMap = boardStates.stream()
+                .collect(toMap(BoardState::getType, identity()));
+
+        assertTrue(boardStateMap.containsKey(BoardState.Type.STALE_MATED));
+
         var boardState = boardStates.getFirst();
-        assertTrue(boardState instanceof StaleMatedBoardState);
         assertEquals(Colors.BLACK, boardState.getColor());
     }
 
@@ -175,13 +187,18 @@ public class CompositeBoardStateEvaluatorTest {
         @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
+        );
 
         var boardStates = evaluator.evaluate(Colors.WHITE);
         assertFalse(boardStates.isEmpty());
 
+        var boardStateMap = boardStates.stream()
+                .collect(toMap(BoardState::getType, identity()));
+
+        assertTrue(boardStateMap.containsKey(BoardState.Type.THREE_FOLD_REPETITION));
+
         var boardState = boardStates.getFirst();
-        assertTrue(boardState instanceof ThreeFoldRepetitionBoardState);
         assertEquals(Colors.WHITE, boardState.getColor());
     }
 
@@ -200,13 +217,18 @@ public class CompositeBoardStateEvaluatorTest {
         @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
+        );
 
         var boardStates = evaluator.evaluate(Colors.WHITE);
         assertFalse(boardStates.isEmpty());
 
+        var boardStateMap = boardStates.stream()
+                .collect(toMap(BoardState::getType, identity()));
+
+        assertTrue(boardStateMap.containsKey(BoardState.Type.FIFTY_MOVES));
+
         var boardState = boardStates.getFirst();
-        assertTrue(boardState instanceof FiftyMovesBoardState);
         assertEquals(Colors.WHITE, boardState.getColor());
     }
 
@@ -244,13 +266,20 @@ public class CompositeBoardStateEvaluatorTest {
         @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
+        );
 
         var boardStates = evaluator.evaluate(Colors.WHITE);
         assertFalse(boardStates.isEmpty());
 
+        var boardStateMap = boardStates.stream()
+                .collect(toMap(BoardState::getType, identity()));
+
+        assertTrue(boardStateMap.containsKey(BoardState.Type.CHECK_MATED));
+        assertTrue(boardStateMap.containsKey(BoardState.Type.CHECKED));
+        assertTrue(boardStateMap.containsKey(BoardState.Type.THREE_FOLD_REPETITION));
+
         var boardState = boardStates.getFirst();
-        assertTrue(boardState instanceof CheckMatedBoardState);
         assertEquals(Colors.WHITE, boardState.getColor());
     }
 
@@ -281,7 +310,8 @@ public class CompositeBoardStateEvaluatorTest {
         @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
+        );
 
         var boardStates = evaluator.evaluate(Colors.WHITE);
         assertFalse(boardStates.isEmpty());
@@ -316,10 +346,17 @@ public class CompositeBoardStateEvaluatorTest {
         @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
+        );
 
         var boardStates = evaluator.evaluate(Colors.WHITE);
         assertFalse(boardStates.isEmpty());
+
+        var boardStateMap = boardStates.stream()
+                .collect(toMap(BoardState::getType, identity()));
+
+        assertTrue(boardStateMap.containsKey(BoardState.Type.THREE_FOLD_REPETITION));
+        assertTrue(boardStateMap.containsKey(BoardState.Type.FIFTY_MOVES));
 
         var boardState = boardStates.getFirst();
         assertEquals(Colors.WHITE, boardState.getColor());
@@ -351,17 +388,19 @@ public class CompositeBoardStateEvaluatorTest {
         @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
+        );
 
         var boardStates = evaluator.evaluate(Colors.WHITE);
-        var types = Set.of(
-                BoardState.Type.SEVENTY_FIVE_MOVES,
-                BoardState.Type.FIVE_FOLD_REPETITION
-        );
         assertFalse(boardStates.isEmpty());
 
+        var boardStateMap = boardStates.stream()
+                .collect(toMap(BoardState::getType, identity()));
+
+        assertTrue(boardStateMap.containsKey(BoardState.Type.SEVENTY_FIVE_MOVES));
+        assertTrue(boardStateMap.containsKey(BoardState.Type.FIVE_FOLD_REPETITION));
+
         var boardState = boardStates.getFirst();
-        assertTrue(types.contains(boardState.getType()));
         assertEquals(Colors.WHITE, boardState.getColor());
     }
 
@@ -398,13 +437,20 @@ public class CompositeBoardStateEvaluatorTest {
         @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
                 checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator);
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
+        );
 
         var boardStates = evaluator.evaluate(Colors.WHITE);
         assertFalse(boardStates.isEmpty());
 
+        var boardStateMap = boardStates.stream()
+                .collect(toMap(BoardState::getType, identity()));
+
+        assertTrue(boardStateMap.containsKey(BoardState.Type.FIVE_FOLD_REPETITION));
+        assertTrue(boardStateMap.containsKey(BoardState.Type.CHECKED));
+        assertTrue(boardStateMap.containsKey(BoardState.Type.SEVENTY_FIVE_MOVES));
+
         var boardState = boardStates.getFirst();
-        assertTrue(boardState.isTerminal());
         assertEquals(Colors.WHITE, boardState.getColor());
     }
 

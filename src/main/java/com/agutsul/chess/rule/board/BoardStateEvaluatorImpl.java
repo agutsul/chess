@@ -9,7 +9,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 
 import org.slf4j.Logger;
@@ -20,7 +19,6 @@ import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.CompositeBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
-import com.agutsul.chess.rule.board.InsufficientMaterialBoardStateEvaluator.NoLegalActionsLeadToCheckmateEvaluationTask;
 
 public final class BoardStateEvaluatorImpl
         implements BoardStateEvaluator<BoardState> {
@@ -29,26 +27,20 @@ public final class BoardStateEvaluatorImpl
 
     private final Board board;
     private final BoardStateEvaluator<List<BoardState>> compositeEvaluator;
-    private final BoardStateEvaluator<Optional<BoardState>> legalActionsEvaluator;
 
     public BoardStateEvaluatorImpl(Board board, Journal<ActionMemento<?,?>> journal,
                                    ForkJoinPool forkJoinPool) {
 
-        this(board, createEvaluator(board, journal),
-             new NoLegalActionsLeadToCheckmateEvaluationTask(board, journal, forkJoinPool)
-        );
+        this(board, createEvaluator(board, journal, forkJoinPool));
     }
 
     public BoardStateEvaluatorImpl(Board board, Journal<ActionMemento<?,?>> journal) {
         this(board, journal, commonPool());
     }
 
-    BoardStateEvaluatorImpl(Board board, BoardStateEvaluator<List<BoardState>> compositeEvaluator,
-                            BoardStateEvaluator<Optional<BoardState>> legalActionsEvaluator) {
-
+    BoardStateEvaluatorImpl(Board board, BoardStateEvaluator<List<BoardState>> compositeEvaluator) {
         this.board = board;
         this.compositeEvaluator = compositeEvaluator;
-        this.legalActionsEvaluator = legalActionsEvaluator;
     }
 
     @Override
@@ -57,13 +49,6 @@ public final class BoardStateEvaluatorImpl
         LOGGER.info("{}: Board state: {}", color, boardStates);
 
         if (boardStates.isEmpty()) {
-//            var boardState = legalActionsEvaluator.evaluate(color);
-//            return boardState.isEmpty()
-//                    ? defaultBoardState(board, color)
-//                    : new CompositeBoardState(List.of(
-//                            defaultBoardState(board, color),
-//                            boardState.get()
-//                      ));
             return defaultBoardState(board, color);
         }
 
@@ -79,18 +64,18 @@ public final class BoardStateEvaluatorImpl
         }
 
         if (boardStates.stream().anyMatch(BoardState::isTerminal)) {
-            return new CompositeBoardState(boardStates);
+            //  terminal states first
+            var states = boardStates.stream()
+                    .sorted(comparing(BoardState::isTerminal).reversed())
+                    .toList();
+
+            return new CompositeBoardState(states);
         }
 
         var states = new ArrayList<BoardState>();
 
         if (!boardStateMap.containsKey(BoardState.Type.CHECKED)) {
             states.add(defaultBoardState(board, color));
-
-//            var boardState = legalActionsEvaluator.evaluate(color);
-//            if (boardState.isPresent()) {
-//                states.add(boardState.get());
-//            }
         }
 
         states.addAll(boardStates.stream()
@@ -103,7 +88,8 @@ public final class BoardStateEvaluatorImpl
 
     @SuppressWarnings("unchecked")
     private static BoardStateEvaluator<List<BoardState>> createEvaluator(Board board,
-                                                                         Journal<ActionMemento<?,?>> journal) {
+                                                                         Journal<ActionMemento<?,?>> journal,
+                                                                         ForkJoinPool forkJoinPool) {
 
         return new CompositeBoardStateEvaluator(board,
                 new BoardStatisticStateEvaluator(new MovesBoardStateEvaluator(board, journal)),
@@ -113,7 +99,7 @@ public final class BoardStateEvaluatorImpl
                         new CheckMatedBoardStateEvaluator(board)
                 ),
                 new StaleMatedBoardStateEvaluator(board),
-                new InsufficientMaterialBoardStateEvaluator(board)
+                new InsufficientMaterialBoardStateEvaluator(board, journal, forkJoinPool)
         );
     }
 }

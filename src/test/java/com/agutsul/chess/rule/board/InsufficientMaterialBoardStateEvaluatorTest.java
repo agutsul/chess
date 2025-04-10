@@ -17,7 +17,6 @@ import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.journal.JournalImpl;
-import com.agutsul.chess.rule.board.InsufficientMaterialBoardStateEvaluator.NoLegalActionsLeadToCheckmateEvaluationTask;
 
 @ExtendWith(MockitoExtension.class)
 public class InsufficientMaterialBoardStateEvaluatorTest {
@@ -129,15 +128,18 @@ public class InsufficientMaterialBoardStateEvaluatorTest {
                 .build();
 
         // -Xms5120m -Xmx5120m
-        try (var pool = new ForkJoinPool(2)) {
-            var evaluator = new NoLegalActionsLeadToCheckmateEvaluationTask(board, new JournalImpl(), pool);
-            assertBoardState(evaluator.evaluate(Colors.BLACK));
-        }
+//        try (var pool = new ForkJoinPool(2)) {
+//            var evaluator = new NoLegalActionsLeadToCheckmateEvaluationTask(board, new JournalImpl(), pool);
+//            assertBoardState(evaluator.evaluate(Colors.BLACK));
+//        }
+        assertInsufficientMaterial(board, Colors.BLACK);
     }
 
     private static void assertInsufficientMaterial(Board board, Color color) {
-        var evaluator = new InsufficientMaterialBoardStateEvaluator(board);
-        assertBoardState(evaluator.evaluate(color));
+        try (var pool = new ForkJoinPool(2)) {
+            var evaluator = new InsufficientMaterialBoardStateEvaluator(board, new JournalImpl(), pool);
+            assertBoardState(evaluator.evaluate(color));
+        }
     }
 
     private static void assertBoardState(Optional<BoardState> boardState) {

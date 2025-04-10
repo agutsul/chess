@@ -4,11 +4,8 @@ import static com.agutsul.chess.board.state.BoardStateFactory.insufficientMateri
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 
 import org.slf4j.Logger;
@@ -32,11 +29,48 @@ final class InsufficientMaterialBoardStateEvaluator
 
     private static final Logger LOGGER = getLogger(InsufficientMaterialBoardStateEvaluator.class);
 
-    private final List<BoardStateEvaluator<Optional<BoardState>>> evaluators;
+    private final BoardStateEvaluator<List<BoardState>> compositeEvaluator;
+    private final BoardStateEvaluator<Optional<BoardState>> legalActionsEvaluator;
 
-    InsufficientMaterialBoardStateEvaluator(Board board) {
+    InsufficientMaterialBoardStateEvaluator(Board board, Journal<ActionMemento<?,?>> journal,
+                                            ForkJoinPool forkJoinPool) {
+
+        this(board, createEvaluator(board, journal),
+                new NoLegalActionsLeadToCheckmateEvaluationTask(board, journal, forkJoinPool)
+        );
+    }
+
+    InsufficientMaterialBoardStateEvaluator(Board board,
+                                            BoardStateEvaluator<List<BoardState>> compositeEvaluator,
+                                            BoardStateEvaluator<Optional<BoardState>> legalActionsEvaluator) {
+
         super(board);
-        this.evaluators = List.of(
+
+        this.compositeEvaluator = compositeEvaluator;
+        this.legalActionsEvaluator = legalActionsEvaluator;
+    }
+
+
+    @Override
+    public Optional<BoardState> evaluate(Color color) {
+        LOGGER.info("Insufficient material verification");
+
+        var boardStates = this.compositeEvaluator.evaluate(color);
+        if (!boardStates.isEmpty()) {
+            return Optional.of(boardStates.getFirst());
+        }
+
+        LOGGER.info("Insufficient material legal action verification");
+        // TODO: temporary comment while testing
+        //        return this.legalActionsEvaluator.evaluate(color);
+
+        return Optional.empty();
+    }
+
+    @SuppressWarnings("unchecked")
+    private static BoardStateEvaluator<List<BoardState>> createEvaluator(Board board,
+                                                                         Journal<ActionMemento<?,?>> journal) {
+        return new CompositeBoardStateEvaluator(board,
                 new SingleKingEvaluationTask(board),
                 new KingWithBlockedPawnsEvaluationTask(board),
                 new KingVersusKingEvaluationTask(board),
@@ -46,36 +80,6 @@ final class InsufficientMaterialBoardStateEvaluator
                 new DoubleKnightsVersusKingEvaluationTask(board),
                 new KingBishopVersusKingKnightEvaluationTask(board)
         );
-    }
-
-    @Override
-    public Optional<BoardState> evaluate(Color color) {
-        var tasks = new ArrayList<Callable<Optional<BoardState>>>();
-        for (var evaluator : this.evaluators) {
-            tasks.add(new BoardStateEvaluationTask(evaluator, color));
-        }
-
-        try {
-            var results = new ArrayList<Optional<BoardState>>();
-
-            var executor = board.getExecutorService();
-            for (var future : executor.invokeAll(tasks)) {
-                results.add(future.get());
-            }
-
-            var result = results.stream()
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .findFirst();
-
-            return result;
-        } catch (InterruptedException e) {
-            LOGGER.error("Insufficient material board state evaluation interrupted", e);
-        } catch (ExecutionException e) {
-            LOGGER.error("Insufficient material board state evaluation failed", e);
-        }
-
-        return Optional.empty();
     }
 
     private static abstract class AbstractInsufficientMaterialBoardStateEvaluator

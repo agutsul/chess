@@ -2,7 +2,6 @@ package com.agutsul.chess.rule.board;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
-import static java.util.Comparator.comparing;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
@@ -35,6 +34,7 @@ final class CompositeBoardStateEvaluator
 
     private CompositeBoardStateEvaluator(Board board,
                                          List<BoardStateEvaluator<Optional<BoardState>>> evaluators) {
+
         this.board = board;
         this.evaluators = evaluators;
     }
@@ -42,11 +42,9 @@ final class CompositeBoardStateEvaluator
     @Override
     public List<BoardState> evaluate(Color playerColor) {
         var boardStates = evaluate(evaluators, playerColor);
-        //  terminal states first
         return boardStates.stream()
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .sorted(comparing(BoardState::isTerminal).reversed())
                 .toList();
     }
 
