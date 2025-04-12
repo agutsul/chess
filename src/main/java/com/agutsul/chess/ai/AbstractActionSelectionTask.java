@@ -1,6 +1,7 @@
 package com.agutsul.chess.ai;
 
 import static com.agutsul.chess.activity.action.Action.isPromote;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.ListUtils.partition;
 
@@ -48,6 +49,13 @@ abstract class AbstractActionSelectionTask
         this.color = color;
         this.forkJoinPool = forkJoinPool;
         this.limit = limit;
+    }
+
+    @Override
+    public final String toString() {
+        return String.format("[%s]",
+                this.actions.stream().map(Action::toString).collect(joining(","))
+        );
     }
 
     @Override

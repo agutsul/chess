@@ -69,7 +69,8 @@ public final class AlphaBetaActionSelectionStrategy
                                      Color color, ForkJoinPool forkJoinPool, int limit) {
 
             this(board, journal, getActions(board, color),
-                    color, forkJoinPool, limit, new AlphaBetaContext());
+                    color, forkJoinPool, limit, new AlphaBetaContext()
+            );
         }
 
         // node level task
@@ -107,7 +108,7 @@ public final class AlphaBetaActionSelectionStrategy
                     opponentTask.fork();
 
                     var opponentResult = opponentTask.join();
-                    boardValue = opponentResult.getValue();
+                    boardValue += opponentResult.getValue();
                 }
 
                 return boardValue;
@@ -243,6 +244,11 @@ public final class AlphaBetaActionSelectionStrategy
 
             public void setBeta(int beta) {
                 this.beta.set(beta);
+            }
+
+            @Override
+            public String toString() {
+                return String.format("[%d,%d]", getAlpha(), getBeta());
             }
         }
     }

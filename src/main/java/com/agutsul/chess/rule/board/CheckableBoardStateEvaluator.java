@@ -2,6 +2,7 @@ package com.agutsul.chess.rule.board;
 
 import java.util.Optional;
 
+import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 
@@ -10,6 +11,10 @@ final class CheckableBoardStateEvaluator
 
     private final CheckedBoardStateEvaluator checkedEvaluator;
     private final CheckMatedBoardStateEvaluator checkMatedEvaluator;
+
+    CheckableBoardStateEvaluator(Board board) {
+        this(new CheckedBoardStateEvaluator(board), new CheckMatedBoardStateEvaluator(board));
+    }
 
     CheckableBoardStateEvaluator(CheckedBoardStateEvaluator checkedEvaluator,
                                  CheckMatedBoardStateEvaluator checkMatedEvaluator) {

@@ -40,10 +40,9 @@ final class InsufficientMaterialBoardStateEvaluator
         );
     }
 
-    InsufficientMaterialBoardStateEvaluator(Board board,
-                                            BoardStateEvaluator<List<BoardState>> compositeEvaluator,
-                                            BoardStateEvaluator<Optional<BoardState>> legalActionsEvaluator) {
-
+    private InsufficientMaterialBoardStateEvaluator(Board board,
+                                                    BoardStateEvaluator<List<BoardState>> compositeEvaluator,
+                                                    BoardStateEvaluator<Optional<BoardState>> legalActionsEvaluator) {
         super(board);
 
         this.compositeEvaluator = compositeEvaluator;
@@ -55,15 +54,11 @@ final class InsufficientMaterialBoardStateEvaluator
         LOGGER.info("Insufficient material verification '{}'", color);
 
         var boardStates = this.compositeEvaluator.evaluate(color);
-        if (!boardStates.isEmpty()) {
-            return Optional.of(boardStates.getFirst());
+        if (boardStates.isEmpty()) {
+            return Optional.empty();
         }
 
-        LOGGER.info("Insufficient material legal action verification '{}'", color);
-        // TODO: temporary comment while testing
-        //        return this.legalActionsEvaluator.evaluate(color);
-
-        return Optional.empty();
+        return Optional.of(boardStates.getFirst());
     }
 
     @SuppressWarnings("unchecked")
@@ -124,18 +119,11 @@ final class InsufficientMaterialBoardStateEvaluator
         protected BoardState evaluateBoard(Color color) {
             var pawns = board.getPieces(color, Piece.Type.PAWN);
             var pawnStatuses = pawns.stream()
-                    .map(pawn -> {
-                        var isBlocked = ((Blockable) pawn).isBlocked();
-                        if (!isBlocked) {
-                            return ((Pinnable) pawn).isPinned();
-                        }
-
-                        return isBlocked;
-                    })
+                    .map(pawn -> isLocked(pawn))
                     .toList();
 
-            var isAllPawnsBlocked = !pawnStatuses.contains(Boolean.FALSE);
-            return isAllPawnsBlocked
+            var isAllPawnsLocked = !pawnStatuses.contains(Boolean.FALSE);
+            return isAllPawnsLocked
                     ? createBoardState(board, color)
                     : null;
         }
@@ -145,6 +133,10 @@ final class InsufficientMaterialBoardStateEvaluator
             var pawns = board.getPieces(color, Piece.Type.PAWN);
 
             return allPieces.size() == pawns.size() + 1; // +1 for king piece
+        }
+
+        private static boolean isLocked(Piece<?> piece) {
+            return ((Blockable) piece).isBlocked() || ((Pinnable) piece).isPinned();
         }
     }
 
@@ -319,7 +311,7 @@ final class InsufficientMaterialBoardStateEvaluator
         }
     }
 
-    static final class NoLegalActionsLeadToCheckmateEvaluationTask
+    private static final class NoLegalActionsLeadToCheckmateEvaluationTask
             extends AbstractInsufficientMaterialBoardStateEvaluator {
 
         private static final int MAX_DEPTH = 3;

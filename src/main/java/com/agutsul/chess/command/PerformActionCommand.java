@@ -47,6 +47,11 @@ public final class PerformActionCommand
         this.observable = observable;
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s", this.action);
+    }
+
     public void setSource(String source) {
         var foundPiece = board.getPiece(source);
         if (foundPiece.isEmpty()) {

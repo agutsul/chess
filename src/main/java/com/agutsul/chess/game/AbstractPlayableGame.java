@@ -121,6 +121,11 @@ public abstract class AbstractPlayableGame
     }
 
     @Override
+    public final Board getBoard() {
+        return this.board;
+    }
+
+    @Override
     public final Journal<ActionMemento<?,?>> getJournal() {
         return this.journal;
     }
@@ -246,11 +251,6 @@ public abstract class AbstractPlayableGame
         return Objects.equals(getCurrentPlayer(), getWhitePlayer())
                 ? getBlackPlayer()
                 : getWhitePlayer();
-    }
-
-    @Override
-    public final Board getBoard() {
-        return this.board;
     }
 
     protected final BoardState evaluateBoardState(Player player) {

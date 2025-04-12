@@ -127,16 +127,11 @@ public class InsufficientMaterialBoardStateEvaluatorTest {
                 .withBlackPawn("d7")
                 .build();
 
-        // -Xms5120m -Xmx5120m
-//        try (var pool = new ForkJoinPool(2)) {
-//            var evaluator = new NoLegalActionsLeadToCheckmateEvaluationTask(board, new JournalImpl(), pool);
-//            assertBoardState(evaluator.evaluate(Colors.BLACK));
-//        }
         assertInsufficientMaterial(board, Colors.BLACK);
     }
 
     private static void assertInsufficientMaterial(Board board, Color color) {
-        try (var pool = new ForkJoinPool(2)) {
+        try (var pool = new ForkJoinPool()) {
             var evaluator = new InsufficientMaterialBoardStateEvaluator(board, new JournalImpl(), pool);
             assertBoardState(evaluator.evaluate(color));
         }

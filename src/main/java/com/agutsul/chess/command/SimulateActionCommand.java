@@ -33,6 +33,11 @@ public final class SimulateActionCommand
     }
 
     @Override
+    public String toString() {
+        return String.format("%s", this.action);
+    }
+
+    @Override
     protected void preExecute() throws CommandException {
         var command = adapt(this.action);
 

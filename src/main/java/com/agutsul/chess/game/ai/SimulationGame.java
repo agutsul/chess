@@ -90,7 +90,7 @@ public final class SimulationGame
             LOGGER.error("{}{}", lineSeparator(), String.valueOf(getBoard()));
             LOGGER.error("{}: Game simulation exception('{}'), board state '{}', journal '{}': {}",
                     getCurrentPlayer().getColor(),
-                    this.originAction,
+                    getAction(),
                     getBoard().getState(),
                     getJournal(),
                     getStackTrace(throwable)

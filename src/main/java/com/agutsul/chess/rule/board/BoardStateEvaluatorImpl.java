@@ -1,13 +1,11 @@
 package com.agutsul.chess.rule.board;
 
+import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static java.util.Comparator.comparing;
 import static java.util.concurrent.ForkJoinPool.commonPool;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 
@@ -26,6 +24,7 @@ public final class BoardStateEvaluatorImpl
     private static final Logger LOGGER = getLogger(BoardStateEvaluatorImpl.class);
 
     private final Board board;
+
     private final BoardStateEvaluator<List<BoardState>> compositeEvaluator;
 
     public BoardStateEvaluatorImpl(Board board, Journal<ActionMemento<?,?>> journal,
@@ -38,7 +37,8 @@ public final class BoardStateEvaluatorImpl
         this(board, journal, commonPool());
     }
 
-    BoardStateEvaluatorImpl(Board board, BoardStateEvaluator<List<BoardState>> compositeEvaluator) {
+    private BoardStateEvaluatorImpl(Board board,
+                                    BoardStateEvaluator<List<BoardState>> compositeEvaluator) {
         this.board = board;
         this.compositeEvaluator = compositeEvaluator;
     }
@@ -46,6 +46,7 @@ public final class BoardStateEvaluatorImpl
     @Override
     public BoardState evaluate(Color color) {
         var boardStates = compositeEvaluator.evaluate(color);
+
         LOGGER.info("{}: Board state: {}", color, boardStates);
 
         if (boardStates.isEmpty()) {
@@ -56,34 +57,19 @@ public final class BoardStateEvaluatorImpl
             return boardStates.iterator().next();
         }
 
-        var boardStateMap = boardStates.stream()
-                .collect(toMap(BoardState::getType, identity()));
+        var checkMatedState = boardStates.stream()
+                .filter(boardState -> boardState.isType(CHECK_MATED))
+                .findFirst();
 
-        if (boardStateMap.containsKey(BoardState.Type.CHECK_MATED)) {
-            return boardStateMap.get(BoardState.Type.CHECK_MATED);
+        if (checkMatedState.isPresent()) {
+            return checkMatedState.get();
         }
 
-        if (boardStates.stream().anyMatch(BoardState::isTerminal)) {
-            //  terminal states first
-            var states = boardStates.stream()
-                    .sorted(comparing(BoardState::isTerminal).reversed())
-                    .toList();
+        var comparator = boardStates.stream().anyMatch(BoardState::isTerminal)
+                ? comparing(BoardState::isTerminal).reversed() //  terminal states first
+                : comparing(BoardState::getType);
 
-            return new CompositeBoardState(states);
-        }
-
-        var states = new ArrayList<BoardState>();
-
-        if (!boardStateMap.containsKey(BoardState.Type.CHECKED)) {
-            states.add(defaultBoardState(board, color));
-        }
-
-        states.addAll(boardStates.stream()
-                .sorted(comparing(BoardState::getType))
-                .toList()
-        );
-
-        return new CompositeBoardState(states);
+        return new CompositeBoardState(boardStates.stream().sorted(comparator).toList());
     }
 
     @SuppressWarnings("unchecked")
@@ -94,10 +80,7 @@ public final class BoardStateEvaluatorImpl
         return new CompositeBoardStateEvaluator(board,
                 new BoardStatisticStateEvaluator(new MovesBoardStateEvaluator(board, journal)),
                 new BoardStatisticStateEvaluator(new FoldRepetitionBoardStateEvaluator(board, journal)),
-                new CheckableBoardStateEvaluator(
-                        new CheckedBoardStateEvaluator(board),
-                        new CheckMatedBoardStateEvaluator(board)
-                ),
+                new CheckableBoardStateEvaluator(board),
                 new StaleMatedBoardStateEvaluator(board),
                 new InsufficientMaterialBoardStateEvaluator(board, journal, forkJoinPool)
         );
