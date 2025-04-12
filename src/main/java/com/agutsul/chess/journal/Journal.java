@@ -9,6 +9,10 @@ public interface Journal<MEMENTO extends Memento> {
 
     MEMENTO remove(int index);
 
+    MEMENTO removeFirst();
+
+    MEMENTO removeLast();
+
     MEMENTO get(int index);
 
     MEMENTO getFirst();

@@ -44,6 +44,16 @@ public final class JournalImpl
     }
 
     @Override
+    public ActionMemento<?,?> removeFirst() {
+        return this.list.removeFirst();
+    }
+
+    @Override
+    public ActionMemento<?,?> removeLast() {
+        return this.list.removeLast();
+    }
+
+    @Override
     public ActionMemento<?,?> get(int index) {
         LOGGER.debug("Journal get memento '{}'", index);
         return this.list.get(index);

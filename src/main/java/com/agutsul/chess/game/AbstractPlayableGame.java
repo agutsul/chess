@@ -257,13 +257,11 @@ public abstract class AbstractPlayableGame
         var boardState = this.boardStateEvaluator.evaluate(player.getColor());
 
         if (boardState.isType(CHECK_MATED)) {
-            var lastMemento = this.journal.remove(this.journal.size() - 1);
-            this.journal.add(new CheckMatedActionMemento<>(lastMemento));
+            this.journal.add(new CheckMatedActionMemento<>(this.journal.removeLast()));
         }
 
         if (boardState.isType(CHECKED)) {
-            var lastMemento = this.journal.remove(this.journal.size() - 1);
-            this.journal.add(new CheckedActionMemento<>(lastMemento));
+            this.journal.add(new CheckedActionMemento<>(this.journal.removeLast()));
         }
 
         return boardState;
@@ -363,7 +361,7 @@ public abstract class AbstractPlayableGame
         private void process(ActionCancelledEvent event) {
             clearPieceData(event.getColor());
             // remove last item from journal
-            journal.remove(journal.size() - 1);
+            journal.removeLast();
             // switch players
             currentPlayer = switchPlayers();
 

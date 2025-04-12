@@ -129,6 +129,16 @@ public final class FenGame
         }
 
         @Override
+        public ActionMemento<?,?> removeFirst() {
+            return this.origin.removeFirst();
+        }
+
+        @Override
+        public ActionMemento<?,?> removeLast() {
+            return this.origin.removeLast();
+        }
+
+        @Override
         public ActionMemento<?,?> get(int index) {
             return this.origin.get(index);
         }
