@@ -5,13 +5,11 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.ListUtils.partition;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
@@ -22,9 +20,8 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.journal.Journal;
 
-abstract class AbstractActionSelectionTask
-        extends RecursiveTask<Pair<Action<?>,Integer>>
-        implements SimulationTask {
+abstract class AbstractActionSelectionTask<RESULT,ACTION extends Action<?>>
+        extends RecursiveTask<RESULT> {
 
     private static final long serialVersionUID = 1L;
 
@@ -33,13 +30,13 @@ abstract class AbstractActionSelectionTask
     protected final Logger logger;
     protected final Board board;
     protected final Journal<ActionMemento<?,?>> journal;
-    protected final List<Action<?>> actions;
+    protected final List<ACTION> actions;
     protected final Color color;
     protected final ForkJoinPool forkJoinPool;
     protected final int limit;
 
     AbstractActionSelectionTask(Logger logger, Board board, Journal<ActionMemento<?,?>> journal,
-                                List<Action<?>> actions, Color color, ForkJoinPool forkJoinPool,
+                                List<ACTION> actions, Color color, ForkJoinPool forkJoinPool,
                                 int limit) {
 
         this.logger = logger;
@@ -59,33 +56,20 @@ abstract class AbstractActionSelectionTask
     }
 
     @Override
-    protected final Pair<Action<?>,Integer> compute() {
+    protected final RESULT compute() {
         if (this.actions.size() == 1) {
-            var action = this.actions.getFirst();
-            return Pair.of(action, simulate(action));
+            // simulate action
+            return compute(this.actions.getFirst());
         }
 
-        var subTasks = partition(this.actions, this.actions.size() / 2).stream()
-                .map(partitionedActions -> createTask(partitionedActions))
-                .toList();
-
-        for (var subTask : subTasks) {
-            subTask.fork();
-        }
-
-        var actionValues = new ArrayList<Pair<Action<?>,Integer>>();
-        for (var subTask : subTasks) {
-            actionValues.add(subTask.join());
-        }
-
-        return process(actionValues);
+        // split actions
+        var actions = partition(this.actions, this.actions.size() / 2);
+        return process(actions);
     }
 
-    protected abstract AbstractActionSelectionTask createTask(List<Action<?>> actions);
+    protected abstract RESULT compute(ACTION action);
 
-    protected Pair<Action<?>,Integer> process(List<Pair<Action<?>,Integer>> actionValues) {
-        return ActionSelectionFunction.of(this.color).apply(actionValues);
-    }
+    protected abstract RESULT process(List<List<ACTION>> actions);
 
     protected boolean isDone(Game game) {
         if (this.limit == 0) {
@@ -108,7 +92,8 @@ abstract class AbstractActionSelectionTask
                         // should be evaluated with all possible piece types:
                         // BISHOP, ROOK, KNIGHT, QUEEN
                         ? PROMOTE_ADAPTER.adapt((PiecePromoteAction<?, ?>) action)
-                        : List.of(action))
+                        : List.of(action)
+                )
                 .flatMap(Collection::stream)
                 .collect(toList());
 

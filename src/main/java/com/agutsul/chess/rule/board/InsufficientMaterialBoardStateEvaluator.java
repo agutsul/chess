@@ -12,9 +12,10 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.Blockable;
 import com.agutsul.chess.Pinnable;
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
-import com.agutsul.chess.ai.ActionSelectionStrategy;
 import com.agutsul.chess.ai.AlphaBetaActionSelectionStrategy;
+import com.agutsul.chess.ai.SelectionStrategy;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
@@ -35,7 +36,7 @@ final class InsufficientMaterialBoardStateEvaluator
     InsufficientMaterialBoardStateEvaluator(Board board, Journal<ActionMemento<?,?>> journal,
                                             ForkJoinPool forkJoinPool) {
 
-        this(board, createEvaluator(board, journal),
+        this(board, createEvaluator(board),
                 new NoLegalActionsLeadToCheckmateEvaluationTask(board, journal, forkJoinPool)
         );
     }
@@ -54,14 +55,15 @@ final class InsufficientMaterialBoardStateEvaluator
         LOGGER.info("Insufficient material verification '{}'", color);
 
         var boardStates = this.compositeEvaluator.evaluate(color);
-        var boardState = boardStates.isEmpty() ? null : boardStates.getFirst();
+        if (boardStates.isEmpty()) {
+            return this.legalActionsEvaluator.evaluate(color);
+        }
 
-        return Optional.ofNullable(boardState);
+        return Optional.of(boardStates.getFirst());
     }
 
     @SuppressWarnings("unchecked")
-    private static BoardStateEvaluator<List<BoardState>> createEvaluator(Board board,
-                                                                         Journal<ActionMemento<?,?>> journal) {
+    private static BoardStateEvaluator<List<BoardState>> createEvaluator(Board board) {
         return new CompositeBoardStateEvaluator(board,
                 new SingleKingEvaluationTask(board),
                 new KingWithBlockedPawnsEvaluationTask(board),
@@ -239,7 +241,9 @@ final class InsufficientMaterialBoardStateEvaluator
         }
 
         protected BoardState getBoardState(Color color) {
-            var isInsufficientMaterials = isInsufficientMaterial(color) || isInsufficientMaterial(color.invert());
+            var isInsufficientMaterials = isInsufficientMaterial(color)
+                    || isInsufficientMaterial(color.invert());
+
             return isInsufficientMaterials
                     ? createBoardState(board, color)
                     : null;
@@ -314,7 +318,7 @@ final class InsufficientMaterialBoardStateEvaluator
 
         private static final int MAX_DEPTH = 3;
 
-        private final ActionSelectionStrategy actionSelectionStrategy;
+        private final SelectionStrategy<Action<?>> actionSelectionStrategy;
 
         NoLegalActionsLeadToCheckmateEvaluationTask(Board board, Journal<ActionMemento<?,?>> journal,
                                                     ForkJoinPool forkJoinPool) {
@@ -323,15 +327,17 @@ final class InsufficientMaterialBoardStateEvaluator
         }
 
         NoLegalActionsLeadToCheckmateEvaluationTask(Board board,
-                                                    ActionSelectionStrategy actionSelectionStrategy) {
+                                                    SelectionStrategy<Action<?>> actionSelectionStrategy) {
             super(board, 0);
             this.actionSelectionStrategy = actionSelectionStrategy;
         }
 
         @Override
         protected boolean isNotApplicable(Color color) {
-            var moves = this.actionSelectionStrategy.select(color);
-            return moves.isPresent();
+            var moves = this.actionSelectionStrategy.select(color, BoardState.Type.CHECK_MATED);
+            // return moves.isPresent();
+            // TODO enable after implementation
+            return true;
         }
 
         @Override

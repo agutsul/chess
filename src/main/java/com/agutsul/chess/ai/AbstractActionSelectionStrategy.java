@@ -13,11 +13,12 @@ import org.slf4j.Logger;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.board.state.BoardState.Type;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 
 abstract class AbstractActionSelectionStrategy
-        implements ActionSelectionStrategy {
+        implements SelectionStrategy<Action<?>> {
 
     protected final Logger logger;
     protected final Board board;
@@ -58,16 +59,11 @@ abstract class AbstractActionSelectionStrategy
         }
     }
 
-    protected abstract AbstractActionSelectionTask createActionSelectionTask(Color color);
-
-    private Action<?> searchAction(Color color) {
-        var task = createActionSelectionTask(color);
-        try {
-            var result = forkJoinPool.invoke(task);
-            return result.getKey();
-        } catch (Exception e) {
-            logger.error("Exception while action selection", e);
-        }
-        return null;
+    @Override
+    public Optional<Action<?>> select(Color color, Type boardState) {
+        // TODO implement
+        return Optional.empty();
     }
+
+    protected abstract Action<?> searchAction(Color color);
 }

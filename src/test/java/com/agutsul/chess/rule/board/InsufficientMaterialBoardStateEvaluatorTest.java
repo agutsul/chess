@@ -127,6 +127,9 @@ public class InsufficientMaterialBoardStateEvaluatorTest {
                 .withBlackPawn("d7")
                 .build();
 
+//      System.out.println(board);
+
+// -Xms5120m -Xmx5120m
         assertInsufficientMaterial(board, Colors.BLACK);
     }
 

@@ -4,9 +4,12 @@ import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
@@ -39,12 +42,24 @@ public final class MinMaxActionSelectionStrategy
     }
 
     @Override
-    protected AbstractActionSelectionTask createActionSelectionTask(Color color) {
-        return new MinMaxActionSelectionTask(this.board, this.journal, color, this.forkJoinPool, this.limit);
+    protected Action<?> searchAction(Color color) {
+        var task = new MinMaxActionSelectionTask(
+                this.board, this.journal, color, this.forkJoinPool, this.limit
+        );
+
+        try {
+            var result = forkJoinPool.invoke(task);
+            return result.getKey();
+        } catch (Exception e) {
+            logger.error("Exception while action selection", e);
+        }
+
+        return null;
     }
 
     private static final class MinMaxActionSelectionTask
-            extends AbstractActionSelectionTask {
+            extends AbstractActionSelectionTask<Pair<Action<?>,Integer>,Action<?>>
+            implements SimulationTask<Action<?>,Integer> {
 
         private static final Logger LOGGER = getLogger(MinMaxActionSelectionTask.class);
 
@@ -82,16 +97,15 @@ public final class MinMaxActionSelectionStrategy
                 var opponentColor = this.color.invert();
 
                 var opponentActions = getActions(game.getBoard(), opponentColor);
-                if (!opponentActions.isEmpty()) {
-                    var opponentTask = createOpponentTask(game, opponentActions, opponentColor, boardValue);
-
-                    opponentTask.fork();
-
-                    var opponentResult = opponentTask.join();
-                    boardValue = opponentResult.getValue();
+                if (opponentActions.isEmpty()) {
+                    return boardValue;
                 }
 
-                return boardValue;
+                var opponentTask = createTask(game, opponentActions, opponentColor, boardValue);
+                opponentTask.fork();
+
+                var opponentResult = opponentTask.join();
+                return opponentResult.getValue();
             } catch (IOException e) {
                 var message = String.format("Closing '%s' game simulation for action '%s' failed",
                         this.color,
@@ -104,17 +118,36 @@ public final class MinMaxActionSelectionStrategy
             return 0;
         }
 
-        // root level task
         @Override
-        protected AbstractActionSelectionTask createTask(List<Action<?>> actions) {
+        protected Pair<Action<?>,Integer> compute(Action<?> action) {
+            return Pair.of(action, simulate(action));
+        }
+
+        @Override
+        protected Pair<Action<?>,Integer> process(List<List<Action<?>>> buckets) {
+            var subTasks = buckets.stream()
+                    .map(bucketActions -> createTask(bucketActions))
+                    .map(ForkJoinTask::fork)
+                    .toList();
+
+            var actionValues = new ArrayList<Pair<Action<?>,Integer>>();
+            for (var subTask : subTasks) {
+                actionValues.add(subTask.join());
+            }
+
+            return ActionSelectionFunction.of(this.color).apply(actionValues);
+        }
+
+        // root level task
+        private MinMaxActionSelectionTask createTask(List<Action<?>> actions) {
             return new MinMaxActionSelectionTask(this.board, this.journal,
                     actions, this.color, this.forkJoinPool, this.limit, this.value
             );
         }
 
         // node level task
-        protected AbstractActionSelectionTask createOpponentTask(Game game, List<Action<?>> actions,
-                                                                 Color color, int value) {
+        private MinMaxActionSelectionTask createTask(Game game, List<Action<?>> actions,
+                                                     Color color, int value) {
 
             return new MinMaxActionSelectionTask(game.getBoard(), game.getJournal(),
                     actions, color, this.forkJoinPool, this.limit - 1, value

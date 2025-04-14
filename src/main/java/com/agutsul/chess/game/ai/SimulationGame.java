@@ -76,16 +76,9 @@ public final class SimulationGame
                 getAction()
         );
 
+        var command = new SimulateActionCommand(this, getAction());
         try {
-            var command = new SimulateActionCommand(this, getAction());
             command.execute();
-
-            this.currentPlayer = next();
-
-            clearPieceData(getCurrentPlayer().getColor());
-
-            getBoard().setState(evaluateBoardState(getCurrentPlayer()));
-
         } catch (Throwable throwable) {
             LOGGER.error("{}{}", lineSeparator(), String.valueOf(getBoard()));
             LOGGER.error("{}: Game simulation exception('{}'), board state '{}', journal '{}': {}",
@@ -95,6 +88,10 @@ public final class SimulationGame
                     getJournal(),
                     getStackTrace(throwable)
             );
+        }
+
+        if (hasNext()) {
+            this.currentPlayer = next();
         }
     }
 

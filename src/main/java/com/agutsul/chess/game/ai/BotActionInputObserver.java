@@ -5,9 +5,10 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.ActionAdapter;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
-import com.agutsul.chess.ai.ActionSelectionStrategy;
+import com.agutsul.chess.ai.SelectionStrategy;
 import com.agutsul.chess.ai.AlphaBetaActionSelectionStrategy;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
@@ -19,7 +20,7 @@ public final class BotActionInputObserver
 
     private static final Logger LOGGER = getLogger(BotActionInputObserver.class);
 
-    private final ActionSelectionStrategy actionStrategy;
+    private final SelectionStrategy<Action<?>> actionStrategy;
 
     private PiecePromoteAction<?,?> promoteAction;
 
@@ -28,7 +29,7 @@ public final class BotActionInputObserver
         this(player, game, new AlphaBetaActionSelectionStrategy(game));
     }
 
-    BotActionInputObserver(Player player, Game game, ActionSelectionStrategy actionStrategy) {
+    BotActionInputObserver(Player player, Game game, SelectionStrategy<Action<?>> actionStrategy) {
         super(LOGGER, player, game);
         this.actionStrategy = actionStrategy;
     }

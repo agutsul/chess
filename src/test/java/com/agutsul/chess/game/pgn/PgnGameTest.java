@@ -221,8 +221,8 @@ public class PgnGameTest implements TestFileReader {
         var boardState = game.getBoard().getState();
 
         assertTrue(boardState instanceof CompositeBoardState);
-        assertEquals(BoardState.Type.FIVE_FOLD_REPETITION, boardState.getType());
-        assertEquals("FIVE_FOLD_REPETITION,CHECKED", boardState.toString());
+        assertTrue(boardState.isType(BoardState.Type.FIVE_FOLD_REPETITION));
+        assertTrue(boardState.isType(BoardState.Type.CHECKED));
 
         assertEquals(GameState.Type.DRAWN_GAME, game.getState().getType());
         // NOTE: actual journal size is not equal to expected because not all actions applied

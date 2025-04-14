@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
-import com.agutsul.chess.ai.ActionSelectionStrategy;
+import com.agutsul.chess.ai.SelectionStrategy;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.game.Game;
@@ -33,7 +33,7 @@ public class BotActionInputObserverTest {
 
     @Test
     void testGetActionCommandReturnDefeat() {
-        var actionStrategy = mock(ActionSelectionStrategy.class);
+        var actionStrategy = mock(SelectionStrategy.class);
         when(actionStrategy.select(any()))
             .thenReturn(Optional.empty());
 
@@ -51,7 +51,7 @@ public class BotActionInputObserverTest {
         @SuppressWarnings({ "unchecked", "rawtypes" })
         var action = new PieceMoveAction(piece.get(), positionOf("e5"));
 
-        var actionStrategy = mock(ActionSelectionStrategy.class);
+        var actionStrategy = mock(SelectionStrategy.class);
         when(actionStrategy.select(any()))
             .thenReturn(Optional.of(action));
 
@@ -71,7 +71,7 @@ public class BotActionInputObserverTest {
         var moveAction = new PieceMoveAction(piece.get(), positionOf("e8"));
         var promoteAction = new PiecePromoteAction(moveAction, mock(Observable.class));
 
-        var actionStrategy = mock(ActionSelectionStrategy.class);
+        var actionStrategy = mock(SelectionStrategy.class);
         when(actionStrategy.select(any()))
             .thenReturn(Optional.of(promoteAction));
 
