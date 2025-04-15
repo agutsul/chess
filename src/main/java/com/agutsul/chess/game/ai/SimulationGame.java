@@ -42,6 +42,7 @@ public final class SimulationGame
 
     private static final Set<Piece.Type> PIECE_TYPES = EnumSet.of(PAWN, ROOK, KING);
 
+    private final Color color;
     private final Action<?> originAction;
 
     public SimulationGame(Color activeColor,
@@ -58,11 +59,16 @@ public final class SimulationGame
                 forkJoinPool
         );
 
+        this.color = activeColor;
         this.originAction = action;
         this.currentPlayer = getPlayer(activeColor);
 
         getCurrentPlayer().setState(activeState);
         getOpponentPlayer().setState(lockedState);
+    }
+
+    public Color getColor() {
+        return color;
     }
 
     public Action<?> getAction() {
@@ -79,6 +85,10 @@ public final class SimulationGame
         var command = new SimulateActionCommand(this, getAction());
         try {
             command.execute();
+
+            if (hasNext()) {
+                this.currentPlayer = next();
+            }
         } catch (Throwable throwable) {
             LOGGER.error("{}{}", lineSeparator(), String.valueOf(getBoard()));
             LOGGER.error("{}: Game simulation exception('{}'), board state '{}', journal '{}': {}",
@@ -88,10 +98,6 @@ public final class SimulationGame
                     getJournal(),
                     getStackTrace(throwable)
             );
-        }
-
-        if (hasNext()) {
-            this.currentPlayer = next();
         }
     }
 

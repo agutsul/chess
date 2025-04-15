@@ -1,9 +1,7 @@
 package com.agutsul.chess.ai;
 
-import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
@@ -16,6 +14,7 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.command.SimulateGameCommand;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.ai.SimulationGame;
 import com.agutsul.chess.journal.Journal;
@@ -85,29 +84,29 @@ public final class MinMaxActionSelectionStrategy
 
         @Override
         public Integer simulate(Action<?> action) {
-            try (var game = new SimulationGame(color, board, journal, forkJoinPool, action)) {
+            try (var command = new SimulateGameCommand(board, journal, forkJoinPool, color, action)) {
+                command.setSimulationEvaluator(new MinMaxGameEvaluator(limit + 1, value));
+                command.execute();
 
-                game.run();
-
-                var boardValue = calculateValue(game.getBoard(), action);
+                var game = command.getGame();
                 if (isDone(game)) {
-                    return boardValue;
+                    return command.getValue();
                 }
 
                 var opponentColor = this.color.invert();
 
                 var opponentActions = getActions(game.getBoard(), opponentColor);
                 if (opponentActions.isEmpty()) {
-                    return boardValue;
+                    return command.getValue();
                 }
 
-                var opponentTask = createTask(game, opponentActions, opponentColor, boardValue);
+                var opponentTask = createTask(game, opponentActions, opponentColor, command.getValue());
                 opponentTask.fork();
 
                 var opponentResult = opponentTask.join();
                 return opponentResult.getValue();
-            } catch (IOException e) {
-                var message = String.format("Closing '%s' game simulation for action '%s' failed",
+            } catch (Exception e) {
+                var message = String.format("Simulation for '%s' action '%s' failed",
                         this.color,
                         action
                 );
@@ -119,12 +118,7 @@ public final class MinMaxActionSelectionStrategy
         }
 
         @Override
-        protected Pair<Action<?>,Integer> compute(Action<?> action) {
-            return Pair.of(action, simulate(action));
-        }
-
-        @Override
-        protected Pair<Action<?>,Integer> process(List<List<Action<?>>> buckets) {
+        public Pair<Action<?>,Integer> process(List<List<Action<?>>> buckets) {
             var subTasks = buckets.stream()
                     .map(bucketActions -> createTask(bucketActions))
                     .map(ForkJoinTask::fork)
@@ -136,6 +130,11 @@ public final class MinMaxActionSelectionStrategy
             }
 
             return ActionSelectionFunction.of(this.color).apply(actionValues);
+        }
+
+        @Override
+        protected Pair<Action<?>,Integer> compute(Action<?> action) {
+            return Pair.of(action, simulate(action));
         }
 
         // root level task
@@ -154,22 +153,23 @@ public final class MinMaxActionSelectionStrategy
             );
         }
 
-        private int calculateValue(Board board, Action<?> action) {
-            var sourcePiece = action.getPiece();
-            var direction = sourcePiece.getDirection();
+        private static final class MinMaxGameEvaluator
+                extends AbstractSimulationGameEvaluator {
 
-            var currentPlayerValue = board.calculateValue(this.color) * direction;
-            var opponentPlayerValue = board.calculateValue(this.color.invert()) * Math.negateExact(direction);
+            private final int value;
 
-            var boardValue = action.getValue() // action type influence
-                    + ((this.limit + 1) * direction) // depth influence
-                    + currentPlayerValue + opponentPlayerValue // current board value
-                    + this.value; // previous board value
+            MinMaxGameEvaluator(int limit, int value) {
+                super(limit);
+                this.value = value;
+            }
 
-            var boardState = board.getState();
-            return boardState.isType(CHECK_MATED)
-                    ? 1000 * boardValue * direction
-                    : boardState.getType().rank() * boardValue;
+            @Override
+            protected int calculateValue(SimulationGame game) {
+                var value = super.calculateValue(game)
+                        + this.value; // previous board value
+
+                return value;
+            }
         }
     }
 }

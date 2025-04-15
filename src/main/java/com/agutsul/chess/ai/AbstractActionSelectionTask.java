@@ -1,6 +1,5 @@
 package com.agutsul.chess.ai;
 
-import static com.agutsul.chess.activity.action.Action.isPromote;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.ListUtils.partition;
@@ -13,21 +12,23 @@ import java.util.concurrent.RecursiveTask;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
+import com.agutsul.chess.adapter.Adapter;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.journal.Journal;
 
 abstract class AbstractActionSelectionTask<RESULT,ACTION extends Action<?>>
-        extends RecursiveTask<RESULT> {
+        extends RecursiveTask<RESULT>
+        implements ActionSelectionTask<RESULT,ACTION> {
 
     private static final long serialVersionUID = 1L;
 
-    private static final PromoteActionAdapter PROMOTE_ADAPTER = new PromoteActionAdapter();
+    private static final Adapter<Action<?>,Collection<Action<?>>> ADAPTER = new SimulationActionAdapter();
 
     protected final Logger logger;
+
     protected final Board board;
     protected final Journal<ActionMemento<?,?>> journal;
     protected final List<ACTION> actions;
@@ -36,8 +37,8 @@ abstract class AbstractActionSelectionTask<RESULT,ACTION extends Action<?>>
     protected final int limit;
 
     AbstractActionSelectionTask(Logger logger, Board board, Journal<ActionMemento<?,?>> journal,
-                                List<ACTION> actions, Color color, ForkJoinPool forkJoinPool,
-                                int limit) {
+                                List<ACTION> actions, Color color,
+                                ForkJoinPool forkJoinPool, int limit) {
 
         this.logger = logger;
         this.board = board;
@@ -69,8 +70,6 @@ abstract class AbstractActionSelectionTask<RESULT,ACTION extends Action<?>>
 
     protected abstract RESULT compute(ACTION action);
 
-    protected abstract RESULT process(List<List<ACTION>> actions);
-
     protected boolean isDone(Game game) {
         if (this.limit == 0) {
             return true;
@@ -86,14 +85,7 @@ abstract class AbstractActionSelectionTask<RESULT,ACTION extends Action<?>>
         List<Action<?>> actions = board.getPieces(color).stream()
                 .map(piece -> board.getActions(piece))
                 .flatMap(Collection::stream)
-                .map(action -> isPromote(action)
-                        // replace origin promote action with pre-generated ones
-                        // containing promoted piece type because action selection
-                        // should be evaluated with all possible piece types:
-                        // BISHOP, ROOK, KNIGHT, QUEEN
-                        ? PROMOTE_ADAPTER.adapt((PiecePromoteAction<?, ?>) action)
-                        : List.of(action)
-                )
+                .map(ADAPTER::adapt)
                 .flatMap(Collection::stream)
                 .collect(toList());
 

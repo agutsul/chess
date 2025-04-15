@@ -1,11 +1,9 @@
 package com.agutsul.chess.ai;
 
-import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +23,8 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.command.SimulateGameCommand;
 import com.agutsul.chess.game.Game;
-import com.agutsul.chess.game.ai.SimulationGame;
 import com.agutsul.chess.journal.Journal;
 
 // https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
@@ -98,16 +96,16 @@ public final class AlphaBetaActionSelectionStrategy
 
         @Override
         public Integer simulate(Action<?> action) {
-            try (var game = new SimulationGame(color, board, journal, forkJoinPool, action)) {
+            try (var command = new SimulateGameCommand(board, journal, forkJoinPool, color, action)) {
+                command.setSimulationEvaluator(new AlphaBetaGameEvaluator(limit + 1));
+                command.execute();
 
-                game.run();
-
-                var boardValue = calculateValue(game.getBoard(), action);
+                var game = command.getGame();
                 if (isDone(game)) {
-                    return boardValue;
+                    return command.getValue();
                 }
 
-                var value = AlphaBetaFunction.of(this.color).apply(boardValue, this.context);
+                var value = AlphaBetaFunction.of(this.color).apply(command.getValue(), this.context);
                 if (value.isPresent()) {
                     return value.get();
                 }
@@ -116,16 +114,16 @@ public final class AlphaBetaActionSelectionStrategy
 
                 var opponentActions = getActions(game.getBoard(), opponentColor);
                 if (opponentActions.isEmpty()) {
-                    return boardValue;
+                    return command.getValue();
                 }
 
                 var opponentTask = createTask(game, opponentActions, opponentColor);
                 opponentTask.fork();
 
                 var opponentResult = opponentTask.join();
-                return boardValue + opponentResult.getValue();
-            } catch (IOException e) {
-                var message = String.format("Closing '%s' game simulation for action '%s' failed",
+                return command.getValue() + opponentResult.getValue();
+            } catch (Exception e) {
+                var message = String.format("Simulation for '%s' action '%s' failed",
                         this.color,
                         action
                 );
@@ -137,12 +135,7 @@ public final class AlphaBetaActionSelectionStrategy
         }
 
         @Override
-        protected Pair<Action<?>,Integer> compute(Action<?> action) {
-            return Pair.of(action, simulate(action));
-        }
-
-        @Override
-        protected Pair<Action<?>,Integer> process(List<List<Action<?>>> buckets) {
+        public Pair<Action<?>,Integer> process(List<List<Action<?>>> buckets) {
             var subTasks = buckets.stream()
                     .map(bucketActions -> createTask(bucketActions))
                     .map(ForkJoinTask::fork)
@@ -154,6 +147,11 @@ public final class AlphaBetaActionSelectionStrategy
             }
 
             return ActionSelectionFunction.of(this.color).apply(actionValues);
+        }
+
+        @Override
+        protected Pair<Action<?>,Integer> compute(Action<?> action) {
+            return Pair.of(action, simulate(action));
         }
 
         // root level task
@@ -172,21 +170,12 @@ public final class AlphaBetaActionSelectionStrategy
             );
         }
 
-        private int calculateValue(Board board, Action<?> action) {
-            var sourcePiece = action.getPiece();
-            var direction = sourcePiece.getDirection();
+        private static final class AlphaBetaGameEvaluator
+                extends AbstractSimulationGameEvaluator {
 
-            var currentPlayerValue = board.calculateValue(this.color) * direction;
-            var opponentPlayerValue = board.calculateValue(this.color.invert()) * Math.negateExact(direction);
-
-            var boardValue = action.getValue() // action type influence
-                    + ((this.limit + 1) * direction) // depth influence
-                    + currentPlayerValue + opponentPlayerValue; // current board value
-
-            var boardState = board.getState();
-            return boardState.isType(CHECK_MATED)
-                    ? 1000 * boardValue * direction
-                    : boardState.getType().rank() * boardValue;
+            AlphaBetaGameEvaluator(int limit) {
+                super(limit);
+            }
         }
 
         private enum AlphaBetaFunction

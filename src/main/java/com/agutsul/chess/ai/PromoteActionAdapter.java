@@ -14,15 +14,18 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
+import com.agutsul.chess.adapter.Adapter;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 
-final class PromoteActionAdapter {
+final class PromoteActionAdapter
+        implements Adapter<PiecePromoteAction<?,?>,Collection<Action<?>>> {
 
     private static final Set<Piece.Type> PROMOTION_TYPES = EnumSet.of(BISHOP, KNIGHT, ROOK, QUEEN);
 
+    @Override
     public Collection<Action<?>> adapt(PiecePromoteAction<?,?> action) {
         Collection<Action<?>> actions = PROMOTION_TYPES.stream()
                 .map(pieceType -> create(action, pieceType))
@@ -70,4 +73,5 @@ final class PromoteActionAdapter {
             setPieceType(promotedPieceType);
         }
     }
+
 }
