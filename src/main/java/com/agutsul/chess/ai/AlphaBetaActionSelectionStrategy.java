@@ -170,14 +170,6 @@ public final class AlphaBetaActionSelectionStrategy
             );
         }
 
-        private static final class AlphaBetaGameEvaluator
-                extends AbstractSimulationGameEvaluator {
-
-            AlphaBetaGameEvaluator(int limit) {
-                super(limit);
-            }
-        }
-
         private enum AlphaBetaFunction
                 implements BiFunction<Integer,AlphaBetaContext,Optional<Integer>> {
 
@@ -221,6 +213,14 @@ public final class AlphaBetaActionSelectionStrategy
 
             public static AlphaBetaFunction of(Color color) {
                 return MODES.get(color);
+            }
+        }
+
+        private static final class AlphaBetaGameEvaluator
+                extends AbstractSimulationGameEvaluator {
+
+            AlphaBetaGameEvaluator(int limit) {
+                super(limit);
             }
         }
 
