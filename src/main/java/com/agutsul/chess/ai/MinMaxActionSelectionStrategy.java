@@ -16,7 +16,6 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.command.SimulateGameCommand;
 import com.agutsul.chess.game.Game;
-import com.agutsul.chess.game.ai.SimulationGame;
 import com.agutsul.chess.journal.Journal;
 
 // https://en.wikipedia.org/wiki/Minimax
@@ -164,8 +163,8 @@ public final class MinMaxActionSelectionStrategy
             }
 
             @Override
-            protected int calculateValue(SimulationGame game) {
-                var value = super.calculateValue(game)
+            protected int calculateValue(Board board, Action<?> action, Color color) {
+                var value = super.calculateValue(board, action, color)
                         + this.value; // previous board value
 
                 return value;

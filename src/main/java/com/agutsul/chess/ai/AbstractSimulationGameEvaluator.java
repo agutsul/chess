@@ -2,6 +2,9 @@ package com.agutsul.chess.ai;
 
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 
+import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.game.ai.SimulationGame;
 
 abstract class AbstractSimulationGameEvaluator
@@ -15,27 +18,21 @@ abstract class AbstractSimulationGameEvaluator
 
     @Override
     public int evaluate(SimulationGame game) {
-        var value = calculateValue(game);
-
         var action = game.getAction();
         var sourcePiece = action.getPiece();
 
         var board = game.getBoard();
         var boardState = board.getState();
 
+        var value = calculateValue(board, action, game.getColor());
         return boardState.isType(CHECK_MATED)
                 ? 1000 * value * sourcePiece.getDirection()
                 : boardState.getType().rank() * value;
     }
 
-    protected int calculateValue(SimulationGame game) {
-        var action = game.getAction();
-
+    protected int calculateValue(Board board, Action<?> action, Color color) {
         var sourcePiece = action.getPiece();
         var direction = sourcePiece.getDirection();
-
-        var board = game.getBoard();
-        var color = game.getColor();
 
         var currentPlayerValue = board.calculateValue(color) * direction;
         var opponentPlayerValue = board.calculateValue(color.invert()) * Math.negateExact(direction);
