@@ -22,10 +22,11 @@ abstract class AbstractActionSimulationTask
 
     AbstractActionSimulationTask(Logger logger, Board board,
                                  Journal<ActionMemento<?,?>> journal,
-                                 List<Action<?>> actions, Color color,
-                                 ForkJoinPool forkJoinPool, int limit) {
+                                 ForkJoinPool forkJoinPool,
+                                 List<Action<?>> actions,
+                                 Color color, int limit) {
 
-        super(logger, board, journal, actions, color, forkJoinPool, limit);
+        super(logger, board, journal, forkJoinPool, actions, color, limit);
     }
 
     @Override

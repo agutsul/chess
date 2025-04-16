@@ -37,8 +37,9 @@ abstract class AbstractActionSelectionTask<RESULT,ACTION extends Action<?>>
 
     AbstractActionSelectionTask(Logger logger, Board board,
                                 Journal<ActionMemento<?,?>> journal,
-                                List<ACTION> actions, Color color,
-                                ForkJoinPool forkJoinPool, int limit) {
+                                ForkJoinPool forkJoinPool,
+                                List<ACTION> actions,
+                                Color color, int limit) {
 
         this.logger = logger;
         this.board = board;

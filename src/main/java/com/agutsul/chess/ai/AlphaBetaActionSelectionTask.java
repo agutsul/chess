@@ -48,7 +48,7 @@ final class AlphaBetaActionSelectionTask
                                  ForkJoinPool forkJoinPool, List<Action<?>> actions,
                                  Color color, int limit, AlphaBetaContext context) {
 
-        super(LOGGER, board, journal, actions, color, forkJoinPool, limit);
+        super(LOGGER, board, journal, forkJoinPool, actions, color, limit);
         this.context = context;
     }
 

@@ -37,7 +37,7 @@ final class MinMaxActionSelectionTask
                               ForkJoinPool forkJoinPool, List<Action<?>> actions,
                               Color color, int limit, int value) {
 
-        super(LOGGER, board, journal, actions, color, forkJoinPool, limit);
+        super(LOGGER, board, journal, forkJoinPool, actions, color, limit);
         this.value = value;
     }
 
