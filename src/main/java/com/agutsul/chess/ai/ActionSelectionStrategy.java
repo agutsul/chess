@@ -59,9 +59,9 @@ public final class ActionSelectionStrategy
         var startTimepoint = now();
         try {
             var result = forkJoinPool.invoke(task);
-            return Optional.ofNullable(result.getKey());
+            return Optional.of(result.getKey());
         } catch (Exception e) {
-            LOGGER.error("Exception while action selection", e);
+            LOGGER.error(String.format("Select('%s') '%s' action failure", type, color), e);
         } finally {
             var duration = Duration.between(startTimepoint, now());
             LOGGER.info("Select('{}') '{}' action duration: {}ms",
