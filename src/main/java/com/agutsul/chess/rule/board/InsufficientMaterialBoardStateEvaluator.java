@@ -14,7 +14,7 @@ import com.agutsul.chess.Blockable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
-import com.agutsul.chess.ai.AlphaBetaActionSelectionStrategy;
+import com.agutsul.chess.ai.ActionSelectionStrategy;
 import com.agutsul.chess.ai.SelectionStrategy;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
@@ -316,14 +316,14 @@ final class InsufficientMaterialBoardStateEvaluator
     private static final class NoLegalActionsLeadToCheckmateEvaluationTask
             extends AbstractInsufficientMaterialBoardStateEvaluator {
 
-        private static final int MAX_DEPTH = 3;
-
         private final SelectionStrategy<Action<?>> actionSelectionStrategy;
 
         NoLegalActionsLeadToCheckmateEvaluationTask(Board board, Journal<ActionMemento<?,?>> journal,
                                                     ForkJoinPool forkJoinPool) {
 
-            this(board, new AlphaBetaActionSelectionStrategy(board, journal, forkJoinPool, MAX_DEPTH));
+            this(board, new ActionSelectionStrategy(
+                    board, journal, forkJoinPool, SelectionStrategy.Type.ALPHA_BETA
+            ));
         }
 
         NoLegalActionsLeadToCheckmateEvaluationTask(Board board,

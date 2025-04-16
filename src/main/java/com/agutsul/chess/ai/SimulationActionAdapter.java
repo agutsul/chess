@@ -18,7 +18,7 @@ final class SimulationActionAdapter
         this(new PromoteActionAdapter());
     }
 
-    private SimulationActionAdapter(Adapter<PiecePromoteAction<?,?>,Collection<Action<?>>> adapter) {
+    SimulationActionAdapter(Adapter<PiecePromoteAction<?,?>,Collection<Action<?>>> adapter) {
         this.adapter = adapter;
     }
 

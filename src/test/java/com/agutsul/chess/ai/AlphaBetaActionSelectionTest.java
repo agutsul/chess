@@ -14,7 +14,7 @@ import com.agutsul.chess.mock.GameMock;
 import com.agutsul.chess.player.UserPlayer;
 
 @ExtendWith(MockitoExtension.class)
-public class AlphaBetaActionSelectionStrategyTest {
+public class AlphaBetaActionSelectionTest {
 
     @Test
     void testScholarCheckMateWhiteAction() {
@@ -37,7 +37,7 @@ public class AlphaBetaActionSelectionStrategyTest {
         var blackPlayer = new UserPlayer(randomUUID().toString(), Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer, board);
-        var strategy = new AlphaBetaActionSelectionStrategy(game);
+        var strategy = new ActionSelectionStrategy(game, SelectionStrategy.Type.ALPHA_BETA);
 
         var action = strategy.select(Colors.WHITE);
 
@@ -66,7 +66,7 @@ public class AlphaBetaActionSelectionStrategyTest {
         var blackPlayer = new UserPlayer(randomUUID().toString(), Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer, board);
-        var strategy = new AlphaBetaActionSelectionStrategy(game);
+        var strategy = new ActionSelectionStrategy(game, SelectionStrategy.Type.ALPHA_BETA);
 
         var action = strategy.select(Colors.BLACK);
 

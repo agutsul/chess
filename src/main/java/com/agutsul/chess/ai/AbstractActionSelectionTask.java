@@ -1,5 +1,4 @@
 package com.agutsul.chess.ai;
-
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.ListUtils.partition;
@@ -36,7 +35,8 @@ abstract class AbstractActionSelectionTask<RESULT,ACTION extends Action<?>>
     protected final ForkJoinPool forkJoinPool;
     protected final int limit;
 
-    AbstractActionSelectionTask(Logger logger, Board board, Journal<ActionMemento<?,?>> journal,
+    AbstractActionSelectionTask(Logger logger, Board board,
+                                Journal<ActionMemento<?,?>> journal,
                                 List<ACTION> actions, Color color,
                                 ForkJoinPool forkJoinPool, int limit) {
 
@@ -82,7 +82,7 @@ abstract class AbstractActionSelectionTask<RESULT,ACTION extends Action<?>>
     }
 
     protected static List<Action<?>> getActions(Board board, Color color) {
-        List<Action<?>> actions = board.getPieces(color).stream()
+        var actions = board.getPieces(color).stream()
                 .map(piece -> board.getActions(piece))
                 .flatMap(Collection::stream)
                 .map(ADAPTER::adapt)

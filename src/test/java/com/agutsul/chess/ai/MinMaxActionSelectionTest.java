@@ -20,7 +20,7 @@ import com.agutsul.chess.mock.GameMock;
 import com.agutsul.chess.player.UserPlayer;
 
 @ExtendWith(MockitoExtension.class)
-public class MinMaxActionSelectionStrategyTest {
+public class MinMaxActionSelectionTest {
 
     @Test
     void testActionSelection() {
@@ -35,7 +35,7 @@ public class MinMaxActionSelectionStrategyTest {
         var blackPlayer = new UserPlayer(randomUUID().toString(), Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer, board);
-        var strategy = new MinMaxActionSelectionStrategy(game);
+        var strategy = new ActionSelectionStrategy(game, SelectionStrategy.Type.MIN_MAX);
 
         var action = strategy.select(Colors.WHITE);
         assertTrue(action.isPresent());
@@ -51,7 +51,7 @@ public class MinMaxActionSelectionStrategyTest {
             .thenReturn(emptyList());
 
         var game = new GameMock(whitePlayer, blackPlayer, board);
-        var strategy = new MinMaxActionSelectionStrategy(game);
+        var strategy = new ActionSelectionStrategy(game, SelectionStrategy.Type.MIN_MAX);
 
         var action = strategy.select(Colors.WHITE);
         assertTrue(action.isEmpty());
@@ -78,7 +78,7 @@ public class MinMaxActionSelectionStrategyTest {
         var blackPlayer = new UserPlayer(randomUUID().toString(), Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer, board);
-        var strategy = new MinMaxActionSelectionStrategy(game);
+        var strategy = new ActionSelectionStrategy(game, SelectionStrategy.Type.MIN_MAX);
 
         var action = strategy.select(Colors.WHITE);
 
@@ -107,7 +107,7 @@ public class MinMaxActionSelectionStrategyTest {
         var blackPlayer = new UserPlayer(randomUUID().toString(), Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer, board);
-        var strategy = new MinMaxActionSelectionStrategy(game);
+        var strategy = new ActionSelectionStrategy(game, SelectionStrategy.Type.MIN_MAX);
 
         var action = strategy.select(Colors.BLACK);
 

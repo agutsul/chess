@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.ActionAdapter;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
+import com.agutsul.chess.ai.ActionSelectionStrategy;
 import com.agutsul.chess.ai.SelectionStrategy;
-import com.agutsul.chess.ai.AlphaBetaActionSelectionStrategy;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
@@ -25,8 +25,7 @@ public final class BotActionInputObserver
     private PiecePromoteAction<?,?> promoteAction;
 
     public BotActionInputObserver(Player player, Game game) {
-//        this(player, game, new MinMaxActionSelectionStrategy(game));
-        this(player, game, new AlphaBetaActionSelectionStrategy(game));
+        this(player, game, new ActionSelectionStrategy(game, SelectionStrategy.Type.ALPHA_BETA));
     }
 
     BotActionInputObserver(Player player, Game game, SelectionStrategy<Action<?>> actionStrategy) {

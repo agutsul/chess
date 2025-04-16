@@ -7,6 +7,12 @@ import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 
 public interface SelectionStrategy<ACTION extends Action<?>> {
+
+    enum Type {
+        MIN_MAX,
+        ALPHA_BETA
+    }
+
     Optional<ACTION> select(Color color);
     Optional<ACTION> select(Color color, BoardState.Type boardState);
 }
