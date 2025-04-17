@@ -8,7 +8,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.game.AbstractPlayableGame;
-import com.agutsul.chess.game.ai.BotActionInputObserver;
+import com.agutsul.chess.game.ai.SimulationActionInputObserver;
 import com.agutsul.chess.player.Player;
 
 public final class ConsoleGame
@@ -30,7 +30,7 @@ public final class ConsoleGame
         //((Observable) board).addObserver(new ConsolePlayerInputObserver(blackPlayer, this));
 
         // uncomment to play against computer
-        ((Observable) board).addObserver(new BotActionInputObserver(blackPlayer, this));
+        ((Observable) board).addObserver(new SimulationActionInputObserver(blackPlayer, this));
 
         addObserver(new ConsoleGameOutputObserver(this));
     }

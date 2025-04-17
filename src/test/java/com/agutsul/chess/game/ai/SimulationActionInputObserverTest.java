@@ -23,7 +23,7 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 
 @ExtendWith(MockitoExtension.class)
-public class BotActionInputObserverTest {
+public class SimulationActionInputObserverTest {
 
     @Mock
     Game game;
@@ -38,7 +38,7 @@ public class BotActionInputObserverTest {
             .thenReturn(Optional.empty());
 
         @SuppressWarnings("unchecked")
-        var botObserver = new BotActionInputObserver(player, game, actionStrategy);
+        var botObserver = new SimulationActionInputObserver(player, game, actionStrategy);
         assertEquals("defeat", botObserver.getActionCommand());
     }
 
@@ -57,7 +57,7 @@ public class BotActionInputObserverTest {
             .thenReturn(Optional.of(action));
 
         @SuppressWarnings("unchecked")
-        var botObserver = new BotActionInputObserver(player, game, actionStrategy);
+        var botObserver = new SimulationActionInputObserver(player, game, actionStrategy);
         assertEquals("e4 e5", botObserver.getActionCommand());
     }
 
@@ -77,7 +77,7 @@ public class BotActionInputObserverTest {
         when(actionStrategy.select(any()))
             .thenReturn(Optional.of(promoteAction));
 
-        var botObserver = new BotActionInputObserver(player, game, actionStrategy);
+        var botObserver = new SimulationActionInputObserver(player, game, actionStrategy);
 
         assertEquals("e7 e8", botObserver.getActionCommand());
         assertEquals("null", botObserver.getPromotionPieceType());
@@ -85,7 +85,7 @@ public class BotActionInputObserverTest {
 
     @Test
     void testGetPromotionPieceTypeThrowingException() {
-        var botObserver = new BotActionInputObserver(player, game);
+        var botObserver = new SimulationActionInputObserver(player, game);
         var thrown = assertThrows(
                 IllegalStateException.class,
                 () -> botObserver.getPromotionPieceType()

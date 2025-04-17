@@ -10,25 +10,28 @@ import com.agutsul.chess.activity.action.ActionAdapter;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.ai.ActionSelectionStrategy;
 import com.agutsul.chess.ai.SelectionStrategy;
+import com.agutsul.chess.ai.SelectionStrategy.Type;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
 
-public final class BotActionInputObserver
+public final class SimulationActionInputObserver
         extends AbstractPlayerInputObserver
         implements ActionAdapter {
 
-    private static final Logger LOGGER = getLogger(BotActionInputObserver.class);
+    private static final Logger LOGGER = getLogger(SimulationActionInputObserver.class);
 
     private final SelectionStrategy<Action<?>> actionStrategy;
 
     private PiecePromoteAction<?,?> promoteAction;
 
-    public BotActionInputObserver(Player player, Game game) {
-        this(player, game, new ActionSelectionStrategy(game, SelectionStrategy.Type.ALPHA_BETA));
+    public SimulationActionInputObserver(Player player, Game game) {
+        this(player, game, new ActionSelectionStrategy(game, Type.ALPHA_BETA));
     }
 
-    BotActionInputObserver(Player player, Game game, SelectionStrategy<Action<?>> actionStrategy) {
+    SimulationActionInputObserver(Player player, Game game,
+                                  SelectionStrategy<Action<?>> actionStrategy) {
+
         super(LOGGER, player, game);
         this.actionStrategy = actionStrategy;
     }
