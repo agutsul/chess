@@ -37,6 +37,7 @@ public class BotActionInputObserverTest {
         when(actionStrategy.select(any()))
             .thenReturn(Optional.empty());
 
+        @SuppressWarnings("unchecked")
         var botObserver = new BotActionInputObserver(player, game, actionStrategy);
         assertEquals("defeat", botObserver.getActionCommand());
     }
@@ -55,6 +56,7 @@ public class BotActionInputObserverTest {
         when(actionStrategy.select(any()))
             .thenReturn(Optional.of(action));
 
+        @SuppressWarnings("unchecked")
         var botObserver = new BotActionInputObserver(player, game, actionStrategy);
         assertEquals("e4 e5", botObserver.getActionCommand());
     }
