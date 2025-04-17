@@ -17,7 +17,7 @@ import com.agutsul.chess.journal.Journal;
 
 //https://en.wikipedia.org/wiki/Minimax
 final class MinMaxActionSelectionTask
-        extends AbstractActionSimulationTask {
+        extends AbstractActionValueSimulationTask {
 
     private static final Logger LOGGER = getLogger(MinMaxActionSelectionTask.class);
 
@@ -77,14 +77,14 @@ final class MinMaxActionSelectionTask
     }
 
     @Override
-    protected AbstractActionSimulationTask createTask(List<Action<?>> actions) {
+    protected AbstractActionValueSimulationTask createTask(List<Action<?>> actions) {
         // root level task
         return new MinMaxActionSelectionTask(this.board, this.journal,
                 this.forkJoinPool, actions, this.color, this.limit, this.value
         );
     }
 
-    private AbstractActionSimulationTask createTask(Game game, List<Action<?>> actions,
+    private AbstractActionValueSimulationTask createTask(Game game, List<Action<?>> actions,
                                                     Color color, int value) {
         // node level task
         return new MinMaxActionSelectionTask(game.getBoard(), game.getJournal(),

@@ -26,7 +26,7 @@ import com.agutsul.chess.journal.Journal;
 
 //https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
 final class AlphaBetaActionSelectionTask
-        extends AbstractActionSimulationTask {
+        extends AbstractActionValueSimulationTask {
 
     private static final Logger LOGGER = getLogger(AlphaBetaActionSelectionTask.class);
 
@@ -93,14 +93,14 @@ final class AlphaBetaActionSelectionTask
     }
 
     @Override
-    protected AbstractActionSimulationTask createTask(List<Action<?>> actions) {
+    protected AbstractActionValueSimulationTask createTask(List<Action<?>> actions) {
         // root level task
         return new AlphaBetaActionSelectionTask(this.board, this.journal,
                 this.forkJoinPool, actions, this.color, this.limit, this.context
         );
     }
 
-    private AbstractActionSimulationTask createTask(Game game, List<Action<?>> actions, Color color) {
+    private AbstractActionValueSimulationTask createTask(Game game, List<Action<?>> actions, Color color) {
         // node level task
         return new AlphaBetaActionSelectionTask(game.getBoard(), game.getJournal(),
                 this.forkJoinPool, actions, color, this.limit - 1, this.context

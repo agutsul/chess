@@ -14,17 +14,17 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 
-abstract class AbstractActionSimulationTask
+abstract class AbstractActionValueSimulationTask
         extends AbstractActionSelectionTask<Pair<Action<?>,Integer>,Action<?>>
         implements SimulationTask<Action<?>,Integer> {
 
     private static final long serialVersionUID = 1L;
 
-    AbstractActionSimulationTask(Logger logger, Board board,
-                                 Journal<ActionMemento<?,?>> journal,
-                                 ForkJoinPool forkJoinPool,
-                                 List<Action<?>> actions,
-                                 Color color, int limit) {
+    AbstractActionValueSimulationTask(Logger logger, Board board,
+                                      Journal<ActionMemento<?,?>> journal,
+                                      ForkJoinPool forkJoinPool,
+                                      List<Action<?>> actions,
+                                      Color color, int limit) {
 
         super(logger, board, journal, forkJoinPool, actions, color, limit);
     }
@@ -49,5 +49,5 @@ abstract class AbstractActionSimulationTask
         return Pair.of(action, simulate(action));
     }
 
-    protected abstract AbstractActionSimulationTask createTask(List<Action<?>> actions);
+    protected abstract AbstractActionValueSimulationTask createTask(List<Action<?>> actions);
 }
