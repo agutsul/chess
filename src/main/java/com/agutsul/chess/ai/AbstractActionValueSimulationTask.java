@@ -5,18 +5,18 @@ import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.game.ai.SimulationGame;
 import com.agutsul.chess.journal.Journal;
 
 abstract class AbstractActionValueSimulationTask
-        extends AbstractActionSelectionTask<Pair<Action<?>,Integer>,Action<?>>
-        implements SimulationTask<Action<?>,Integer> {
+        extends AbstractActionSelectionTask<Action<?>,ActionSimulationResult>
+        implements SimulationTask<Action<?>,ActionSimulationResult> {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,13 +30,13 @@ abstract class AbstractActionValueSimulationTask
     }
 
     @Override
-    public final Pair<Action<?>,Integer> process(List<List<Action<?>>> buckets) {
+    public final ActionSimulationResult process(List<List<Action<?>>> buckets) {
         var subTasks = buckets.stream()
                 .map(bucketActions -> createTask(bucketActions))
                 .map(ForkJoinTask::fork)
                 .toList();
 
-        var actionValues = new ArrayList<Pair<Action<?>,Integer>>();
+        var actionValues = new ArrayList<ActionSimulationResult>();
         for (var subTask : subTasks) {
             actionValues.add(subTask.join());
         }
@@ -45,9 +45,15 @@ abstract class AbstractActionValueSimulationTask
     }
 
     @Override
-    protected final Pair<Action<?>,Integer> compute(Action<?> action) {
-        return Pair.of(action, simulate(action));
+    protected final ActionSimulationResult compute(Action<?> action) {
+        return simulate(action);
     }
 
     protected abstract AbstractActionValueSimulationTask createTask(List<Action<?>> actions);
+
+    protected static ActionSimulationResult createSimulationResult(SimulationGame game, int value) {
+        return new ActionSimulationResult(game.getBoard(), game.getJournal(),
+                game.getAction(), game.getColor(), value
+        );
+    }
 }

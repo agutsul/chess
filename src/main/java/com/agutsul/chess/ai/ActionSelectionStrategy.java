@@ -59,7 +59,7 @@ public final class ActionSelectionStrategy
         var startTimepoint = now();
         try {
             var result = forkJoinPool.invoke(task);
-            return Optional.of(result.getKey());
+            return Optional.of(result.getAction());
         } catch (Exception e) {
             LOGGER.error(String.format("Select('%s') '%s' action failure", type, color), e);
         } finally {
@@ -74,7 +74,6 @@ public final class ActionSelectionStrategy
 
     @Override
     public Optional<Action<?>> select(Color color, BoardState.Type boardState) {
-        // TODO implement
         return Optional.empty();
     }
 

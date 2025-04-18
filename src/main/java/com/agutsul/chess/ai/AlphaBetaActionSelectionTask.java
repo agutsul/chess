@@ -53,33 +53,34 @@ final class AlphaBetaActionSelectionTask
     }
 
     @Override
-    public Integer simulate(Action<?> action) {
+    public ActionSimulationResult simulate(Action<?> action) {
         try (var command = new SimulateGameCommand(board, journal, forkJoinPool, color, action)) {
             command.setSimulationEvaluator(new AlphaBetaGameEvaluator(limit + 1));
             command.execute();
 
             var game = command.getGame();
             if (isDone(game)) {
-                return command.getValue();
+                return createSimulationResult(game, command.getValue());
             }
 
             var value = AlphaBetaFunction.of(this.color).apply(command.getValue(), this.context);
             if (value.isPresent()) {
-                return value.get();
+                return createSimulationResult(game, value.get());
             }
 
+            var simulationResult = createSimulationResult(game, command.getValue());
             var opponentColor = this.color.invert();
 
             var opponentActions = getActions(game.getBoard(), opponentColor);
             if (opponentActions.isEmpty()) {
-                return command.getValue();
+                return simulationResult;
             }
 
             var opponentTask = createTask(game, opponentActions, opponentColor);
             opponentTask.fork();
 
-            var opponentResult = opponentTask.join();
-            return command.getValue() + opponentResult.getValue();
+            simulationResult.setOpponentActionResult(opponentTask.join());
+            return simulationResult;
         } catch (Exception e) {
             var message = String.format("Simulation for '%s' action '%s' failed",
                     this.color,
@@ -89,7 +90,7 @@ final class AlphaBetaActionSelectionTask
             logger.error(message, e);
         }
 
-        return 0;
+        return new ActionSimulationResult(board, journal, action, color, 0);
     }
 
     @Override

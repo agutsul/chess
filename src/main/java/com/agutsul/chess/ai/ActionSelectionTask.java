@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.agutsul.chess.activity.action.Action;
 
-interface ActionSelectionTask<RESULT,ACTION extends Action<?>> {
+interface ActionSelectionTask<ACTION extends Action<?>,
+                              RESULT  extends SimulationResult<ACTION>> {
+
     RESULT process(List<List<ACTION>> actions);
 }

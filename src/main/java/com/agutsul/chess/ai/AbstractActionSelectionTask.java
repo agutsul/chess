@@ -18,9 +18,10 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.journal.Journal;
 
-abstract class AbstractActionSelectionTask<RESULT,ACTION extends Action<?>>
+abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
+                                           RESULT extends SimulationResult<ACTION>>
         extends RecursiveTask<RESULT>
-        implements ActionSelectionTask<RESULT,ACTION> {
+        implements ActionSelectionTask<ACTION,RESULT> {
 
     private static final long serialVersionUID = 1L;
 

@@ -42,28 +42,30 @@ final class MinMaxActionSelectionTask
     }
 
     @Override
-    public Integer simulate(Action<?> action) {
+    public ActionSimulationResult simulate(Action<?> action) {
         try (var command = new SimulateGameCommand(board, journal, forkJoinPool, color, action)) {
             command.setSimulationEvaluator(new MinMaxGameEvaluator(limit + 1, value));
             command.execute();
 
             var game = command.getGame();
+
+            var simulationResult = createSimulationResult(game, command.getValue());
             if (isDone(game)) {
-                return command.getValue();
+                return simulationResult;
             }
 
             var opponentColor = this.color.invert();
 
             var opponentActions = getActions(game.getBoard(), opponentColor);
             if (opponentActions.isEmpty()) {
-                return command.getValue();
+                return simulationResult;
             }
 
             var opponentTask = createTask(game, opponentActions, opponentColor, command.getValue());
             opponentTask.fork();
 
-            var opponentResult = opponentTask.join();
-            return opponentResult.getValue();
+            simulationResult.setOpponentActionResult(opponentTask.join());
+            return simulationResult;
         } catch (Exception e) {
             var message = String.format("Simulation for '%s' action '%s' failed",
                     this.color,
@@ -73,7 +75,7 @@ final class MinMaxActionSelectionTask
             logger.error(message, e);
         }
 
-        return 0;
+        return new ActionSimulationResult(board, journal, action, color, 0);
     }
 
     @Override
@@ -85,7 +87,7 @@ final class MinMaxActionSelectionTask
     }
 
     private AbstractActionValueSimulationTask createTask(Game game, List<Action<?>> actions,
-                                                    Color color, int value) {
+                                                         Color color, int value) {
         // node level task
         return new MinMaxActionSelectionTask(game.getBoard(), game.getJournal(),
                 this.forkJoinPool, actions, color, this.limit - 1, value

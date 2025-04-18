@@ -15,7 +15,6 @@ import com.agutsul.chess.ai.SimulationEvaluator;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.CommandException;
-import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.ai.SimulationGame;
 import com.agutsul.chess.journal.Journal;
 
@@ -45,7 +44,7 @@ public final class SimulateGameCommand
         this.evaluator = evaluator;
     }
 
-    public Game getGame() {
+    public SimulationGame getGame() {
         return this.game;
     }
 

@@ -316,7 +316,7 @@ final class InsufficientMaterialBoardStateEvaluator
     private static final class NoLegalActionsLeadToCheckmateEvaluationTask
             extends AbstractInsufficientMaterialBoardStateEvaluator {
 
-        private final SelectionStrategy<Action<?>> actionSelectionStrategy;
+        private final SelectionStrategy<Action<?>> selectionStrategy;
 
         NoLegalActionsLeadToCheckmateEvaluationTask(Board board, Journal<ActionMemento<?,?>> journal,
                                                     ForkJoinPool forkJoinPool) {
@@ -327,14 +327,14 @@ final class InsufficientMaterialBoardStateEvaluator
         }
 
         NoLegalActionsLeadToCheckmateEvaluationTask(Board board,
-                                                    SelectionStrategy<Action<?>> actionSelectionStrategy) {
+                                                    SelectionStrategy<Action<?>> selectionStrategy) {
             super(board, 0);
-            this.actionSelectionStrategy = actionSelectionStrategy;
+            this.selectionStrategy = selectionStrategy;
         }
 
         @Override
         protected boolean isNotApplicable(Color color) {
-            var moves = this.actionSelectionStrategy.select(color, BoardState.Type.CHECK_MATED);
+            var moves = this.selectionStrategy.select(color, BoardState.Type.CHECK_MATED);
             // return moves.isPresent();
             // TODO enable after implementation
             return true;
