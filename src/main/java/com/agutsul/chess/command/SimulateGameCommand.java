@@ -8,9 +8,9 @@ import java.util.concurrent.ForkJoinPool;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.Valuable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
+import com.agutsul.chess.ai.ActionSimulationResult;
 import com.agutsul.chess.ai.SimulationEvaluator;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -18,21 +18,21 @@ import com.agutsul.chess.exception.CommandException;
 import com.agutsul.chess.game.ai.SimulationGame;
 import com.agutsul.chess.journal.Journal;
 
-public final class SimulateGameCommand
+public final class SimulateGameCommand<T extends Comparable<T>>
         extends AbstractCommand
-        implements Closeable, Valuable {
+        implements Closeable {
 
     private static final Logger LOGGER = getLogger(SimulateGameCommand.class);
 
     private final SimulationGame game;
 
-    private SimulationEvaluator evaluator;
-    private int value;
+    private SimulationEvaluator<T> evaluator;
+    private ActionSimulationResult<T> result;
 
     public SimulateGameCommand(Board board, Journal<ActionMemento<?,?>> journal,
                                ForkJoinPool forkJoinPool, Color color, Action<?> action) {
 
-        this(new SimulationGame(color, board, journal, forkJoinPool, action));
+        this(new SimulationGame(board, journal, forkJoinPool, color, action));
     }
 
     private SimulateGameCommand(SimulationGame game) {
@@ -40,17 +40,12 @@ public final class SimulateGameCommand
         this.game = game;
     }
 
-    public void setSimulationEvaluator(SimulationEvaluator evaluator) {
+    public void setSimulationEvaluator(SimulationEvaluator<T> evaluator) {
         this.evaluator = evaluator;
     }
 
-    public SimulationGame getGame() {
-        return this.game;
-    }
-
-    @Override
-    public int getValue() {
-        return this.value;
+    public ActionSimulationResult<T> getSimulationResult() {
+        return this.result;
     }
 
     @Override
@@ -72,6 +67,9 @@ public final class SimulateGameCommand
 
     @Override
     protected void postExecute() throws CommandException {
-        this.value = this.evaluator.evaluate(this.game);
+        var value = this.evaluator.evaluate(this.game);
+        this.result = new ActionSimulationResult<>(game.getBoard(), game.getJournal(),
+                game.getAction(), game.getColor(), value
+        );
     }
 }

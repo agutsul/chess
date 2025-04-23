@@ -225,8 +225,8 @@ public class ActionValueComparatorTest {
     }
 
     @SuppressWarnings("unchecked")
-    private static ActionSimulationResult mockSimulationResult(Action<?> action, int value) {
-        return new ActionSimulationResult(
+    private static ActionSimulationResult<?> mockSimulationResult(Action<?> action, int value) {
+        return new ActionSimulationResult<>(
                 mock(Board.class), mock(Journal.class), action, mock(Color.class), 0
         );
     }

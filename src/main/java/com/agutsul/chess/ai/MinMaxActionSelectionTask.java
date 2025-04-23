@@ -12,12 +12,11 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.command.SimulateGameCommand;
-import com.agutsul.chess.game.Game;
 import com.agutsul.chess.journal.Journal;
 
 //https://en.wikipedia.org/wiki/Minimax
 final class MinMaxActionSelectionTask
-        extends AbstractActionValueSimulationTask {
+        extends AbstractActionIntegerValueSimulationTask {
 
     private static final Logger LOGGER = getLogger(MinMaxActionSelectionTask.class);
 
@@ -42,60 +41,63 @@ final class MinMaxActionSelectionTask
     }
 
     @Override
-    public ActionSimulationResult simulate(Action<?> action) {
-        try (var command = new SimulateGameCommand(board, journal, forkJoinPool, color, action)) {
+    public ActionSimulationResult<Integer> simulate(Action<?> action) {
+        try (var command = new SimulateGameCommand<Integer>(board, journal, forkJoinPool, color, action)) {
             command.setSimulationEvaluator(new MinMaxGameEvaluator(limit + 1, value));
             command.execute();
 
-            var game = command.getGame();
-
-            var simulationResult = createSimulationResult(game, command.getValue());
-            if (isDone(game)) {
+            var simulationResult = command.getSimulationResult();
+            if (isDone(simulationResult)) {
                 return simulationResult;
             }
 
             var opponentColor = this.color.invert();
 
-            var opponentActions = getActions(game.getBoard(), opponentColor);
+            var opponentActions = getActions(simulationResult.getBoard(), opponentColor);
             if (opponentActions.isEmpty()) {
                 return simulationResult;
             }
 
-            var opponentTask = createTask(game, opponentActions, opponentColor, command.getValue());
+            var opponentTask = createTask(simulationResult, opponentActions, opponentColor);
             opponentTask.fork();
 
-            simulationResult.setOpponentActionResult(opponentTask.join());
+            var opponentResult = opponentTask.join();
+
+            simulationResult.setOpponentActionResult(opponentResult);
+            simulationResult.setValue(opponentResult.getValue());
+
             return simulationResult;
         } catch (Exception e) {
             var message = String.format("Simulation for '%s' action '%s' failed",
-                    this.color,
-                    action
+                    this.color, action
             );
 
             logger.error(message, e);
         }
 
-        return new ActionSimulationResult(board, journal, action, color, 0);
+        return new ActionSimulationResult<>(board, journal, action, color, 0);
     }
 
     @Override
-    protected AbstractActionValueSimulationTask createTask(List<Action<?>> actions) {
+    protected MinMaxActionSelectionTask createTask(List<Action<?>> actions) {
         // root level task
         return new MinMaxActionSelectionTask(this.board, this.journal,
                 this.forkJoinPool, actions, this.color, this.limit, this.value
         );
     }
 
-    private AbstractActionValueSimulationTask createTask(Game game, List<Action<?>> actions,
-                                                         Color color, int value) {
+    @Override
+    protected MinMaxActionSelectionTask createTask(SimulationResult<Action<?>,Integer> simulationResult,
+                                                   List<Action<?>> actions, Color color) {
         // node level task
-        return new MinMaxActionSelectionTask(game.getBoard(), game.getJournal(),
-                this.forkJoinPool, actions, color, this.limit - 1, value
+        return new MinMaxActionSelectionTask(simulationResult.getBoard(),
+                simulationResult.getJournal(), this.forkJoinPool, actions, color,
+                this.limit - 1, simulationResult.getValue()
         );
     }
 
     private static final class MinMaxGameEvaluator
-            extends AbstractSimulationGameEvaluator {
+            extends AbstractIntegerGameEvaluator {
 
         // previous board value
         private final int value;

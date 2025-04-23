@@ -74,6 +74,29 @@ public final class ActionSelectionStrategy
 
     @Override
     public Optional<Action<?>> select(Color color, BoardState.Type boardState) {
+        LOGGER.info("Select('{}') '{}' action", color, boardState);
+
+        if (!isAnyAction(color)) {
+            LOGGER.info("Select('{}') '{}' action: No action found", color, boardState);
+            return Optional.empty();
+        }
+
+        var startTimepoint = now();
+        try {
+            var result = forkJoinPool.invoke(new BoardStateActionSelectionTask(
+                    board, journal, forkJoinPool, color, boardState, 2
+            ));
+
+            return Optional.of(result.getAction());
+        } catch (Exception e) {
+            LOGGER.error(String.format("Select('%s') '%s' action failure", color, boardState), e);
+        } finally {
+            var duration = Duration.between(startTimepoint, now());
+            LOGGER.info("Select('{}') '{}' action duration: {}ms",
+                    color, boardState, duration.toMillis()
+            );
+        }
+
         return Optional.empty();
     }
 

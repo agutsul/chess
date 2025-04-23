@@ -34,7 +34,7 @@ public class SimulationGameTest {
         var action = new PieceMoveAction(pawnPiece, position);
 
         try (var pool = new ForkJoinPool(2)) {
-            try (var game = new SimulationGame(Colors.WHITE, board, journal, pool, action)) {
+            try (var game = new SimulationGame(board, journal, pool, Colors.WHITE, action)) {
                 assertEquals(Colors.WHITE, game.getCurrentPlayer().getColor());
 
                 game.run();

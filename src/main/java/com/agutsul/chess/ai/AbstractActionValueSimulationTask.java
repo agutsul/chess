@@ -11,49 +11,47 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.game.ai.SimulationGame;
 import com.agutsul.chess.journal.Journal;
 
-abstract class AbstractActionValueSimulationTask
-        extends AbstractActionSelectionTask<Action<?>,ActionSimulationResult>
-        implements SimulationTask<Action<?>,ActionSimulationResult> {
+abstract class AbstractActionValueSimulationTask<VALUE extends Comparable<VALUE>>
+        extends AbstractActionSelectionTask<Action<?>,VALUE,ActionSimulationResult<VALUE>>
+        implements SimulationTask<Action<?>,VALUE,ActionSimulationResult<VALUE>> {
 
     private static final long serialVersionUID = 1L;
 
     AbstractActionValueSimulationTask(Logger logger, Board board,
                                       Journal<ActionMemento<?,?>> journal,
-                                      ForkJoinPool forkJoinPool,
-                                      List<Action<?>> actions,
+                                      ForkJoinPool forkJoinPool, List<Action<?>> actions,
                                       Color color, int limit) {
 
         super(logger, board, journal, forkJoinPool, actions, color, limit);
     }
 
     @Override
-    public final ActionSimulationResult process(List<List<Action<?>>> buckets) {
+    public final ActionSimulationResult<VALUE> process(List<List<Action<?>>> buckets) {
         var subTasks = buckets.stream()
-                .map(bucketActions -> createTask(bucketActions))
+                .map(actions -> createTask(actions))
                 .map(ForkJoinTask::fork)
                 .toList();
 
-        var actionValues = new ArrayList<ActionSimulationResult>();
+        var actionValues = new ArrayList<ActionSimulationResult<VALUE>>();
         for (var subTask : subTasks) {
             actionValues.add(subTask.join());
         }
 
-        return ActionSelectionFunction.of(this.color).apply(actionValues);
+        return select(actionValues);
     }
 
     @Override
-    protected final ActionSimulationResult compute(Action<?> action) {
+    protected final ActionSimulationResult<VALUE> compute(Action<?> action) {
         return simulate(action);
     }
 
-    protected abstract AbstractActionValueSimulationTask createTask(List<Action<?>> actions);
+    protected abstract AbstractActionValueSimulationTask<VALUE> createTask(List<Action<?>> actions);
 
-    protected static ActionSimulationResult createSimulationResult(SimulationGame game, int value) {
-        return new ActionSimulationResult(game.getBoard(), game.getJournal(),
-                game.getAction(), game.getColor(), value
-        );
-    }
+    protected abstract AbstractActionValueSimulationTask<VALUE> createTask(SimulationResult<Action<?>,VALUE> simulationResult,
+                                                                           List<Action<?>> actions, Color color);
+
+
+    protected abstract ActionSimulationResult<VALUE> select(List<ActionSimulationResult<VALUE>> list);
 }

@@ -45,10 +45,8 @@ public final class SimulationGame
     private final Color color;
     private final Action<?> originAction;
 
-    public SimulationGame(Color activeColor,
-                          Board board,
-                          Journal<ActionMemento<?,?>> journal,
-                          ForkJoinPool forkJoinPool,
+    public SimulationGame(Board board, Journal<ActionMemento<?,?>> journal,
+                          ForkJoinPool forkJoinPool, Color activeColor,
                           Action<?> action) {
 
         super(LOGGER,

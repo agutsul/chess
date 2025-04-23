@@ -18,7 +18,7 @@ import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
 public interface Piece<COLOR extends Color>
-        extends Positionable, Valuable {
+        extends Positionable, Valuable<Integer> {
 
     enum Type implements Rankable {
         PAWN("",    1),

@@ -15,13 +15,13 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.adapter.Adapter;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.game.Game;
 import com.agutsul.chess.journal.Journal;
 
 abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
-                                           RESULT extends SimulationResult<ACTION>>
+                                           VALUE extends Comparable<VALUE>,
+                                           RESULT extends SimulationResult<ACTION,VALUE>>
         extends RecursiveTask<RESULT>
-        implements ActionSelectionTask<ACTION,RESULT> {
+        implements ActionSelectionTask<ACTION,VALUE,RESULT> {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,8 +38,7 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
 
     AbstractActionSelectionTask(Logger logger, Board board,
                                 Journal<ActionMemento<?,?>> journal,
-                                ForkJoinPool forkJoinPool,
-                                List<ACTION> actions,
+                                ForkJoinPool forkJoinPool, List<ACTION> actions,
                                 Color color, int limit) {
 
         this.logger = logger;
@@ -72,12 +71,12 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
 
     protected abstract RESULT compute(ACTION action);
 
-    protected boolean isDone(Game game) {
+    protected boolean isDone(RESULT result) {
         if (this.limit == 0) {
             return true;
         }
 
-        var gameBoard = game.getBoard();
+        var gameBoard = result.getBoard();
         var boardState = gameBoard.getState();
 
         return boardState.isTerminal();

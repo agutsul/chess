@@ -224,7 +224,7 @@ abstract class AbstractPiece<COLOR extends Color>
     }
 
     @Override
-    public final int getValue() {
+    public final Integer getValue() {
         return this.value;
     }
 

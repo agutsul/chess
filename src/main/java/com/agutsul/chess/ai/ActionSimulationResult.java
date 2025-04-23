@@ -6,19 +6,19 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 
-public final class ActionSimulationResult
-        implements SimulationResult<Action<?>> {
+public final class ActionSimulationResult<T extends Comparable<T>>
+        implements SimulationResult<Action<?>,T> {
 
     private final Action<?> action;
     private final Color color;
     private final Board board;
     private final Journal<ActionMemento<?,?>> journal;
-    private Integer value;
+    private T value;
 
-    private ActionSimulationResult opponentActionResult;
+    private ActionSimulationResult<T> opponentActionResult;
 
     public ActionSimulationResult(Board board, Journal<ActionMemento<?,?>> journal,
-                                  Action<?> action, Color color, Integer value) {
+                                  Action<?> action, Color color, T value) {
         this.board = board;
         this.journal = journal;
         this.action = action;
@@ -26,16 +26,31 @@ public final class ActionSimulationResult
         this.value = value;
     }
 
-    public void setOpponentActionResult(ActionSimulationResult result) {
-        this.opponentActionResult = result;
-
-        if (result != null) {
-            this.value += result.getValue();
-        }
+    @Override
+    public Board getBoard() {
+        return board;
     }
 
-    public ActionSimulationResult getOpponentActionResult() {
+    @Override
+    public Journal<ActionMemento<?,?>> getJournal() {
+        return journal;
+    }
+
+    @Override
+    public T getValue() {
+        return this.value;
+    }
+
+    public void setValue(T value) {
+        this.value = value;
+    }
+
+    public ActionSimulationResult<T> getOpponentActionResult() {
         return this.opponentActionResult;
+    }
+
+    public void setOpponentActionResult(ActionSimulationResult<T> result) {
+        this.opponentActionResult = result;
     }
 
     public Action<?> getAction() {
@@ -44,18 +59,5 @@ public final class ActionSimulationResult
 
     public Color getColor() {
         return color;
-    }
-
-    public Board getBoard() {
-        return board;
-    }
-
-    public Journal<ActionMemento<?,?>> getJournal() {
-        return journal;
-    }
-
-    @Override
-    public int getValue() {
-        return this.value;
     }
 }

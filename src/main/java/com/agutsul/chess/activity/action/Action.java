@@ -14,7 +14,7 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
 public interface Action<SOURCE>
-        extends Executable, Positionable, Valuable,
+        extends Executable, Positionable, Valuable<Integer>,
                 Comparable<Action<?>>, Activity<Action.Type,SOURCE> {
 
     enum Type implements Activity.Type, Rankable {
@@ -46,7 +46,7 @@ public interface Action<SOURCE>
     }
 
     @Override
-    default int getValue() {
+    default Integer getValue() {
         return getType().rank() * getPiece().getDirection();
     }
 

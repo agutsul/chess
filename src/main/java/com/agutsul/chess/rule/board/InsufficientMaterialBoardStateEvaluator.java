@@ -56,7 +56,7 @@ final class InsufficientMaterialBoardStateEvaluator
 
         var boardStates = this.compositeEvaluator.evaluate(color);
         if (boardStates.isEmpty()) {
-            return this.legalActionsEvaluator.evaluate(color);
+            return Optional.empty();
         }
 
         return Optional.of(boardStates.getFirst());
@@ -79,9 +79,21 @@ final class InsufficientMaterialBoardStateEvaluator
     private static abstract class AbstractInsufficientMaterialBoardStateEvaluator
             extends AbstractBoardStateEvaluator {
 
+        AbstractInsufficientMaterialBoardStateEvaluator(Board board) {
+            super(board);
+        }
+
+        protected BoardState createBoardState(Board board, Color color) {
+            return insufficientMaterialBoardState(board, color);
+        }
+    }
+
+    private static abstract class AbstractPieceCounterInsufficientMaterialBoardStateEvaluator
+            extends AbstractInsufficientMaterialBoardStateEvaluator {
+
         protected final int piecesCount;
 
-        AbstractInsufficientMaterialBoardStateEvaluator(Board board, int piecesCount) {
+        AbstractPieceCounterInsufficientMaterialBoardStateEvaluator(Board board, int piecesCount) {
             super(board);
             this.piecesCount = piecesCount;
         }
@@ -97,14 +109,10 @@ final class InsufficientMaterialBoardStateEvaluator
         protected abstract boolean isNotApplicable(Color color);
 
         protected abstract BoardState evaluateBoard(Color color);
-
-        protected BoardState createBoardState(Board board, Color color) {
-            return insufficientMaterialBoardState(board, color);
-        }
     }
 
     private static class KingWithBlockedPawnsEvaluationTask
-            extends AbstractInsufficientMaterialBoardStateEvaluator {
+            extends AbstractPieceCounterInsufficientMaterialBoardStateEvaluator {
 
         KingWithBlockedPawnsEvaluationTask(Board board) {
             super(board, 1);
@@ -141,7 +149,7 @@ final class InsufficientMaterialBoardStateEvaluator
     }
 
     private static class SingleKingEvaluationTask
-            extends AbstractInsufficientMaterialBoardStateEvaluator {
+            extends AbstractPieceCounterInsufficientMaterialBoardStateEvaluator {
 
         SingleKingEvaluationTask(Board board) {
             super(board, 1);
@@ -165,7 +173,7 @@ final class InsufficientMaterialBoardStateEvaluator
     }
 
     private static class KingVersusKingEvaluationTask
-            extends AbstractInsufficientMaterialBoardStateEvaluator {
+            extends AbstractPieceCounterInsufficientMaterialBoardStateEvaluator {
 
         public KingVersusKingEvaluationTask(Board board) {
             this(board, 2);
@@ -328,21 +336,18 @@ final class InsufficientMaterialBoardStateEvaluator
 
         NoLegalActionsLeadToCheckmateEvaluationTask(Board board,
                                                     SelectionStrategy<Action<?>> selectionStrategy) {
-            super(board, 0);
+            super(board);
             this.selectionStrategy = selectionStrategy;
         }
 
         @Override
-        protected boolean isNotApplicable(Color color) {
-            var moves = this.selectionStrategy.select(color, BoardState.Type.CHECK_MATED);
-            // return moves.isPresent();
-            // TODO enable after implementation
-            return true;
-        }
+        public Optional<BoardState> evaluate(Color color) {
+            var checkMateAction = this.selectionStrategy.select(color, BoardState.Type.CHECK_MATED);
+            if (checkMateAction.isPresent()) {
+                return Optional.empty();
+            }
 
-        @Override
-        protected BoardState evaluateBoard(Color color) {
-            return createBoardState(this.board, color);
+            return Optional.of(createBoardState(this.board, color));
         }
     }
 }
