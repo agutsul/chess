@@ -15,7 +15,7 @@ public final class ActionSimulationResult<T extends Comparable<T>>
     private final Journal<ActionMemento<?,?>> journal;
     private T value;
 
-    private ActionSimulationResult<T> opponentActionResult;
+    private SimulationResult<Action<?>,T> opponentResult;
 
     public ActionSimulationResult(Board board, Journal<ActionMemento<?,?>> journal,
                                   Action<?> action, Color color, T value) {
@@ -24,6 +24,11 @@ public final class ActionSimulationResult<T extends Comparable<T>>
         this.action = action;
         this.color = color;
         this.value = value;
+    }
+
+    @Override
+    public Action<?> getSimulated() {
+        return action;
     }
 
     @Override
@@ -45,16 +50,12 @@ public final class ActionSimulationResult<T extends Comparable<T>>
         this.value = value;
     }
 
-    public ActionSimulationResult<T> getOpponentActionResult() {
-        return this.opponentActionResult;
+    public SimulationResult<Action<?>,T> getOpponentResult() {
+        return this.opponentResult;
     }
 
-    public void setOpponentActionResult(ActionSimulationResult<T> result) {
-        this.opponentActionResult = result;
-    }
-
-    public Action<?> getAction() {
-        return action;
+    public void setOpponentResult(SimulationResult<Action<?>,T> result) {
+        this.opponentResult = result;
     }
 
     public Color getColor() {

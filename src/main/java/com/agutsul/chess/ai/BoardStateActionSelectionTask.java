@@ -15,7 +15,7 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.command.SimulateGameCommand;
+import com.agutsul.chess.command.SimulateGameActionCommand;
 import com.agutsul.chess.game.ai.SimulationGame;
 import com.agutsul.chess.journal.Journal;
 
@@ -53,12 +53,12 @@ final class BoardStateActionSelectionTask
     }
 
     @Override
-    public ActionSimulationResult<Boolean> simulate(Action<?> action) {
-        try (var command = new SimulateGameCommand<Boolean>(board, journal, forkJoinPool, color, action)) {
+    public SimulationResult<Action<?>,Boolean> simulate(Action<?> action) {
+        try (var command = new SimulateGameActionCommand<Boolean>(board, journal, forkJoinPool, color, action)) {
             command.setSimulationEvaluator(new BoardStateActionGameEvaluator(initColor, boardState, limit + 1));
             command.execute();
 
-            var simulationResult = command.getSimulationResult();
+            var simulationResult = (ActionSimulationResult<Boolean>) command.getSimulationResult();
             if (isDone(simulationResult)) {
                 return simulationResult;
             }
@@ -75,7 +75,7 @@ final class BoardStateActionSelectionTask
 
             var opponentResult = opponentTask.join();
 
-            simulationResult.setOpponentActionResult(opponentResult);
+            simulationResult.setOpponentResult(opponentResult);
             simulationResult.setValue(opponentResult.getValue());
 
             return simulationResult;
@@ -91,8 +91,8 @@ final class BoardStateActionSelectionTask
     }
 
     @Override
-    protected ActionSimulationResult<Boolean>
-            select(List<ActionSimulationResult<Boolean>> actionValues) {
+    protected SimulationResult<Action<?>,Boolean>
+            select(List<SimulationResult<Action<?>,Boolean>> actionValues) {
 
         var result = actionValues.stream()
                 .filter(av -> av.getValue() && this.context.isFound())
@@ -104,7 +104,7 @@ final class BoardStateActionSelectionTask
     }
 
     @Override
-    protected boolean isDone(ActionSimulationResult<Boolean> simulationResult) {
+    protected boolean isDone(SimulationResult<Action<?>,Boolean> simulationResult) {
         if (this.limit == 0 || this.context.isFound()) {
             return true;
         }

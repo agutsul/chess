@@ -11,7 +11,7 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.command.SimulateGameCommand;
+import com.agutsul.chess.command.SimulateGameActionCommand;
 import com.agutsul.chess.journal.Journal;
 
 //https://en.wikipedia.org/wiki/Minimax
@@ -41,12 +41,12 @@ final class MinMaxActionSelectionTask
     }
 
     @Override
-    public ActionSimulationResult<Integer> simulate(Action<?> action) {
-        try (var command = new SimulateGameCommand<Integer>(board, journal, forkJoinPool, color, action)) {
+    public SimulationResult<Action<?>,Integer> simulate(Action<?> action) {
+        try (var command = new SimulateGameActionCommand<Integer>(board, journal, forkJoinPool, color, action)) {
             command.setSimulationEvaluator(new MinMaxGameEvaluator(limit + 1, value));
             command.execute();
 
-            var simulationResult = command.getSimulationResult();
+            var simulationResult = (ActionSimulationResult<Integer>) command.getSimulationResult();
             if (isDone(simulationResult)) {
                 return simulationResult;
             }
@@ -63,7 +63,7 @@ final class MinMaxActionSelectionTask
 
             var opponentResult = opponentTask.join();
 
-            simulationResult.setOpponentActionResult(opponentResult);
+            simulationResult.setOpponentResult(opponentResult);
             simulationResult.setValue(opponentResult.getValue());
 
             return simulationResult;

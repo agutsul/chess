@@ -52,8 +52,8 @@ public class ActionValueComparatorTest {
         values.sort(new ActionValueComparator());
 
         assertEquals(2, values.size());
-        assertEquals(action2, values.getFirst().getAction());
-        assertEquals(action1, values.getLast().getAction());
+        assertEquals(action2, values.getFirst().getSimulated());
+        assertEquals(action1, values.getLast().getSimulated());
     }
 
     @Test
@@ -84,8 +84,8 @@ public class ActionValueComparatorTest {
         values.sort(new ActionValueComparator());
 
         assertEquals(2, values.size());
-        assertEquals(action2, values.getFirst().getAction());
-        assertEquals(action1, values.getLast().getAction());
+        assertEquals(action2, values.getFirst().getSimulated());
+        assertEquals(action1, values.getLast().getSimulated());
     }
 
     @Test
@@ -118,8 +118,8 @@ public class ActionValueComparatorTest {
         values.sort(new ActionValueComparator());
 
         assertEquals(2, values.size());
-        assertEquals(promoteAction2, values.getFirst().getAction());
-        assertEquals(promoteAction1, values.getLast().getAction());
+        assertEquals(promoteAction2, values.getFirst().getSimulated());
+        assertEquals(promoteAction1, values.getLast().getSimulated());
     }
 
     @Test
@@ -155,8 +155,8 @@ public class ActionValueComparatorTest {
         values.sort(new ActionValueComparator());
 
         assertEquals(2, values.size());
-        assertEquals(castlingAction2, values.getFirst().getAction());
-        assertEquals(castlingAction1, values.getLast().getAction());
+        assertEquals(castlingAction2, values.getFirst().getSimulated());
+        assertEquals(castlingAction1, values.getLast().getSimulated());
     }
 
     @Test
@@ -193,8 +193,8 @@ public class ActionValueComparatorTest {
         values.sort(new ActionValueComparator());
 
         assertEquals(2, values.size());
-        assertEquals(enpassantAction2.get(0), values.getFirst().getAction());
-        assertEquals(enpassantAction1.get(0), values.getLast().getAction());
+        assertEquals(enpassantAction2.get(0), values.getFirst().getSimulated());
+        assertEquals(enpassantAction1.get(0), values.getLast().getSimulated());
     }
 
     @Test
@@ -220,8 +220,8 @@ public class ActionValueComparatorTest {
         values.sort(new ActionValueComparator());
 
         assertEquals(2, values.size());
-        assertEquals(action2, values.getFirst().getAction());
-        assertEquals(action1, values.getLast().getAction());
+        assertEquals(action2, values.getFirst().getSimulated());
+        assertEquals(action1, values.getLast().getSimulated());
     }
 
     @SuppressWarnings("unchecked")

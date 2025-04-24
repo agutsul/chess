@@ -14,8 +14,8 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 
 abstract class AbstractActionValueSimulationTask<VALUE extends Comparable<VALUE>>
-        extends AbstractActionSelectionTask<Action<?>,VALUE,ActionSimulationResult<VALUE>>
-        implements SimulationTask<Action<?>,VALUE,ActionSimulationResult<VALUE>> {
+        extends AbstractActionSelectionTask<Action<?>,VALUE,SimulationResult<Action<?>,VALUE>>
+        implements SimulationTask<Action<?>,VALUE,SimulationResult<Action<?>,VALUE>> {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,13 +28,13 @@ abstract class AbstractActionValueSimulationTask<VALUE extends Comparable<VALUE>
     }
 
     @Override
-    public final ActionSimulationResult<VALUE> process(List<List<Action<?>>> buckets) {
+    public final SimulationResult<Action<?>,VALUE> process(List<List<Action<?>>> buckets) {
         var subTasks = buckets.stream()
                 .map(actions -> createTask(actions))
                 .map(ForkJoinTask::fork)
                 .toList();
 
-        var actionValues = new ArrayList<ActionSimulationResult<VALUE>>();
+        var actionValues = new ArrayList<SimulationResult<Action<?>,VALUE>>();
         for (var subTask : subTasks) {
             actionValues.add(subTask.join());
         }
@@ -43,7 +43,7 @@ abstract class AbstractActionValueSimulationTask<VALUE extends Comparable<VALUE>
     }
 
     @Override
-    protected final ActionSimulationResult<VALUE> compute(Action<?> action) {
+    protected final SimulationResult<Action<?>,VALUE> compute(Action<?> action) {
         return simulate(action);
     }
 
@@ -53,5 +53,5 @@ abstract class AbstractActionValueSimulationTask<VALUE extends Comparable<VALUE>
                                                                            List<Action<?>> actions, Color color);
 
 
-    protected abstract ActionSimulationResult<VALUE> select(List<ActionSimulationResult<VALUE>> list);
+    protected abstract SimulationResult<Action<?>,VALUE> select(List<SimulationResult<Action<?>,VALUE>> list);
 }

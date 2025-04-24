@@ -20,7 +20,7 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
-import com.agutsul.chess.command.SimulateGameCommand;
+import com.agutsul.chess.command.SimulateGameActionCommand;
 import com.agutsul.chess.journal.Journal;
 
 //https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
@@ -52,12 +52,12 @@ final class AlphaBetaActionSelectionTask
     }
 
     @Override
-    public ActionSimulationResult<Integer> simulate(Action<?> action) {
-        try (var command = new SimulateGameCommand<Integer>(board, journal, forkJoinPool, color, action)) {
+    public SimulationResult<Action<?>,Integer> simulate(Action<?> action) {
+        try (var command = new SimulateGameActionCommand<Integer>(board, journal, forkJoinPool, color, action)) {
             command.setSimulationEvaluator(new AlphaBetaGameEvaluator(limit + 1));
             command.execute();
 
-            var simulationResult = command.getSimulationResult();
+            var simulationResult = (ActionSimulationResult<Integer>) command.getSimulationResult();
             if (isDone(simulationResult)) {
                 return simulationResult;
             }
@@ -79,7 +79,7 @@ final class AlphaBetaActionSelectionTask
 
             var opponentResult = opponentTask.join();
 
-            simulationResult.setOpponentActionResult(opponentResult);
+            simulationResult.setOpponentResult(opponentResult);
             simulationResult.setValue(simulationResult.getValue() + opponentResult.getValue());
 
             return simulationResult;
@@ -116,7 +116,7 @@ final class AlphaBetaActionSelectionTask
             createActionValueResult(ActionSimulationResult<Integer> simulationResult, Integer value) {
 
         return new ActionSimulationResult<>(simulationResult.getBoard(),
-                simulationResult.getJournal(), simulationResult.getAction(),
+                simulationResult.getJournal(), simulationResult.getSimulated(),
                 simulationResult.getColor(), value
         );
     }

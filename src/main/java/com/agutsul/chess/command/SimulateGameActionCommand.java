@@ -12,39 +12,40 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.ai.ActionSimulationResult;
 import com.agutsul.chess.ai.SimulationEvaluator;
+import com.agutsul.chess.ai.SimulationResult;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.CommandException;
 import com.agutsul.chess.game.ai.SimulationGame;
 import com.agutsul.chess.journal.Journal;
 
-public final class SimulateGameCommand<T extends Comparable<T>>
+public final class SimulateGameActionCommand<V extends Comparable<V>>
         extends AbstractCommand
         implements Closeable {
 
-    private static final Logger LOGGER = getLogger(SimulateGameCommand.class);
+    private static final Logger LOGGER = getLogger(SimulateGameActionCommand.class);
 
     private final SimulationGame game;
 
-    private SimulationEvaluator<T> evaluator;
-    private ActionSimulationResult<T> result;
+    private SimulationEvaluator<V> evaluator;
+    private SimulationResult<Action<?>,V> result;
 
-    public SimulateGameCommand(Board board, Journal<ActionMemento<?,?>> journal,
-                               ForkJoinPool forkJoinPool, Color color, Action<?> action) {
+    public SimulateGameActionCommand(Board board, Journal<ActionMemento<?,?>> journal,
+                                     ForkJoinPool forkJoinPool, Color color, Action<?> action) {
 
         this(new SimulationGame(board, journal, forkJoinPool, color, action));
     }
 
-    private SimulateGameCommand(SimulationGame game) {
+    private SimulateGameActionCommand(SimulationGame game) {
         super(LOGGER);
         this.game = game;
     }
 
-    public void setSimulationEvaluator(SimulationEvaluator<T> evaluator) {
+    public void setSimulationEvaluator(SimulationEvaluator<V> evaluator) {
         this.evaluator = evaluator;
     }
 
-    public ActionSimulationResult<T> getSimulationResult() {
+    public SimulationResult<Action<?>,V> getSimulationResult() {
         return this.result;
     }
 
@@ -68,8 +69,13 @@ public final class SimulateGameCommand<T extends Comparable<T>>
     @Override
     protected void postExecute() throws CommandException {
         var value = this.evaluator.evaluate(this.game);
-        this.result = new ActionSimulationResult<>(game.getBoard(), game.getJournal(),
-                game.getAction(), game.getColor(), value
+        this.result = createSimulationResult(value);
+    }
+
+    private SimulationResult<Action<?>,V> createSimulationResult(V value) {
+        return new ActionSimulationResult<>(this.game.getBoard(),
+                this.game.getJournal(), this.game.getAction(),
+                this.game.getColor(), value
         );
     }
 }

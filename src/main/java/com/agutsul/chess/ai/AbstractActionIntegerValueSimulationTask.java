@@ -28,14 +28,16 @@ abstract class AbstractActionIntegerValueSimulationTask
     }
 
     @Override
-    protected ActionSimulationResult<Integer>
-            select(List<ActionSimulationResult<Integer>> actionValues) {
+    protected SimulationResult<Action<?>,Integer>
+            select(List<SimulationResult<Action<?>,Integer>> actionValues) {
 
         return ActionSelectionFunction.of(this.color).apply(actionValues);
     }
 
     static abstract class AbstractIntegerGameEvaluator
             extends AbstractSimulationGameEvaluator<Integer> {
+
+        private static final int CHECK_MATE_COEF = 1000;
 
         AbstractIntegerGameEvaluator(int limit) {
             super(limit);
@@ -51,7 +53,7 @@ abstract class AbstractActionIntegerValueSimulationTask
 
             var value = calculateValue(board, action, game.getColor());
             return boardState.isType(CHECK_MATED)
-                    ? 1000 * value * sourcePiece.getDirection()
+                    ? CHECK_MATE_COEF * value * sourcePiece.getDirection()
                     : boardState.getType().rank() * value;
         }
 

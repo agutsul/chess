@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 
@@ -21,20 +22,20 @@ enum ActionSelectionFunction {
     private static final Map<Color,ActionSelectionFunction> MODES =
             Stream.of(values()).collect(toMap(ActionSelectionFunction::color,identity()));
 
-    private static final Comparator<ActionSimulationResult<Integer>> COMPARATOR =
+    private static final Comparator<SimulationResult<Action<?>,Integer>> COMPARATOR =
             new ActionValueComparator<>();
 
     private Color color;
-    private Function<List<ActionSimulationResult<Integer>>,ActionSimulationResult<Integer>> function;
+    private Function<List<SimulationResult<Action<?>,Integer>>,SimulationResult<Action<?>,Integer>> function;
 
     ActionSelectionFunction(Color color,
-                            Function<List<ActionSimulationResult<Integer>>,ActionSimulationResult<Integer>> function) {
+                            Function<List<SimulationResult<Action<?>,Integer>>,SimulationResult<Action<?>,Integer>> function) {
 
         this.color = color;
         this.function = function;
     }
 
-    public ActionSimulationResult<Integer> apply(List<ActionSimulationResult<Integer>> actionValues) {
+    public SimulationResult<Action<?>,Integer> apply(List<SimulationResult<Action<?>,Integer>> actionValues) {
         sort(actionValues, COMPARATOR);
         return function.apply(actionValues);
     }
