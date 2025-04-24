@@ -116,7 +116,7 @@ final class AlphaBetaActionSelectionTask
             createActionValueResult(ActionSimulationResult<Integer> simulationResult, Integer value) {
 
         return new ActionSimulationResult<>(simulationResult.getBoard(),
-                simulationResult.getJournal(), simulationResult.getSimulated(),
+                simulationResult.getJournal(), simulationResult.getAction(),
                 simulationResult.getColor(), value
         );
     }

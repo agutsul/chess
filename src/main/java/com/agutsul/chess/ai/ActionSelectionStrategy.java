@@ -59,7 +59,7 @@ public final class ActionSelectionStrategy
         var startTimepoint = now();
         try {
             var result = forkJoinPool.invoke(task);
-            return Optional.of(result.getSimulated());
+            return Optional.of(result.getAction());
         } catch (Exception e) {
             LOGGER.error(String.format("Select('%s') '%s' action failure", type, color), e);
         } finally {
@@ -87,7 +87,7 @@ public final class ActionSelectionStrategy
                     board, journal, forkJoinPool, color, boardState, 2
             ));
 
-            return Optional.of(result.getSimulated());
+            return Optional.of(result.getAction());
         } catch (Exception e) {
             LOGGER.error(String.format("Select('%s') '%s' action failure", color, boardState), e);
         } finally {

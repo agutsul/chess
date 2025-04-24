@@ -27,7 +27,7 @@ public final class ActionSimulationResult<T extends Comparable<T>>
     }
 
     @Override
-    public Action<?> getSimulated() {
+    public Action<?> getAction() {
         return action;
     }
 

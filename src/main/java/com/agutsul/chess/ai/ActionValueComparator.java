@@ -26,6 +26,6 @@ final class ActionValueComparator<VALUE extends Comparable<VALUE>>
     }
 
     private Action<?> getAction(SimulationResult<Action<?>,VALUE> result) {
-        return ((ActionSimulationResult<VALUE>) result).getSimulated();
+        return ((ActionSimulationResult<VALUE>) result).getAction();
     }
 }
