@@ -6,19 +6,19 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 
-public final class ActionSimulationResult<T extends Comparable<T>>
-        implements SimulationResult<Action<?>,T> {
+public final class ActionSimulationResult<VALUE extends Comparable<VALUE>>
+        implements TaskResult<Action<?>,VALUE> {
 
     private final Action<?> action;
     private final Color color;
     private final Board board;
     private final Journal<ActionMemento<?,?>> journal;
-    private T value;
+    private VALUE value;
 
-    private SimulationResult<Action<?>,T> opponentResult;
+    private TaskResult<Action<?>,VALUE> opponentResult;
 
     public ActionSimulationResult(Board board, Journal<ActionMemento<?,?>> journal,
-                                  Action<?> action, Color color, T value) {
+                                  Action<?> action, Color color, VALUE value) {
         this.board = board;
         this.journal = journal;
         this.action = action;
@@ -42,23 +42,30 @@ public final class ActionSimulationResult<T extends Comparable<T>>
     }
 
     @Override
-    public T getValue() {
+    public VALUE getValue() {
         return this.value;
     }
 
-    public void setValue(T value) {
+    public void setValue(VALUE value) {
         this.value = value;
     }
 
-    public SimulationResult<Action<?>,T> getOpponentResult() {
+    @Override
+    public TaskResult<Action<?>,VALUE> getOpponentResult() {
         return this.opponentResult;
     }
 
-    public void setOpponentResult(SimulationResult<Action<?>,T> result) {
+    public void setOpponentResult(TaskResult<Action<?>,VALUE> result) {
         this.opponentResult = result;
     }
 
+    @Override
     public Color getColor() {
         return color;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s: %s: %s", getColor(), getAction(), String.valueOf(getValue()));
     }
 }

@@ -27,6 +27,7 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.command.SimulateActionCommand;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.game.AbstractPlayableGame;
+import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
@@ -88,12 +89,14 @@ public final class SimulationGame
                 this.currentPlayer = next();
             }
         } catch (Throwable throwable) {
+            notifyObservers(new GameExceptionEvent(this, throwable));
+
             LOGGER.error("{}{}", lineSeparator(), String.valueOf(getBoard()));
             LOGGER.error("{}: Game simulation exception('{}'), board state '{}', journal '{}': {}",
                     getCurrentPlayer().getColor(),
-                    getAction(),
-                    getBoard().getState(),
-                    getJournal(),
+                    String.valueOf(getAction()),
+                    String.valueOf(getBoard().getState()),
+                    String.valueOf(getJournal()),
                     getStackTrace(throwable)
             );
         }

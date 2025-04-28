@@ -1,0 +1,53 @@
+package com.agutsul.chess.ai;
+
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.color.Color;
+
+final class PlayerBoardStateResultMatcher<ACTION extends Action<?>,
+                                          VALUE extends Comparable<VALUE>,
+                                          RESULT extends TaskResult<ACTION,VALUE>>
+        implements ResultMatcher<ACTION,VALUE,RESULT> {
+
+    private final Color color;
+    private final BoardState.Type boardState;
+
+    private final AtomicBoolean found;
+
+    PlayerBoardStateResultMatcher(Color color, BoardState.Type boardState) {
+        this.color = color;
+        this.boardState = boardState;
+        this.found = new AtomicBoolean(false);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean match(RESULT result) {
+        if (found.get()) {
+            return true;
+        }
+
+        var opponentResult = result.getOpponentResult();
+        if (opponentResult != null) {
+            return match((RESULT) opponentResult);
+        }
+
+        var board = result.getBoard();
+        var boardState = board.getState();
+
+        var journal = result.getJournal();
+        var actionMemento = journal.getLast();
+
+        var matched = Objects.equals(this.color, actionMemento.getColor())
+                && boardState.isType(this.boardState);
+
+        if (matched) {
+            found.set(matched);
+        }
+
+        return matched;
+    }
+}

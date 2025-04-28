@@ -52,16 +52,17 @@ public final class ActionSelectionStrategy
         }
 
         var task = switch (type) {
-            case ALPHA_BETA -> new AlphaBetaActionSelectionTask(board, journal, forkJoinPool, color, 3);
-            case MIN_MAX -> new MinMaxActionSelectionTask(board, journal, forkJoinPool, color, 2);
+            case ALPHA_BETA -> new AlphaBetaActionSelectionTask(board, journal, forkJoinPool, color);
+            case MIN_MAX -> new MinMaxActionSelectionTask(board, journal, forkJoinPool, color);
         };
 
         var startTimepoint = now();
         try {
             var result = forkJoinPool.invoke(task);
-            return Optional.of(result.getAction());
+            return Optional.ofNullable(result.getAction());
         } catch (Exception e) {
-            LOGGER.error(String.format("Select('%s') '%s' action failure", type, color), e);
+            var message = String.format("Select('%s') '%s' action failure", type, color);
+            LOGGER.error(message, e);
         } finally {
             var duration = Duration.between(startTimepoint, now());
             LOGGER.info("Select('{}') '{}' action duration: {}ms",
@@ -81,15 +82,27 @@ public final class ActionSelectionStrategy
             return Optional.empty();
         }
 
+        var task = switch (type) {
+            case ALPHA_BETA -> new AlphaBetaActionSelectionTask(board, journal, forkJoinPool, color, boardState);
+            case MIN_MAX -> new MinMaxActionSelectionTask(board, journal, forkJoinPool, color, boardState);
+        };
+/*
+        if (task.getLimit() == 0) {
+            LOGGER.info("Select('{}') '{}' action: No action found, limit reached", color, boardState);
+            return Optional.empty();
+        }
+*/
         var startTimepoint = now();
         try {
-            var result = forkJoinPool.invoke(new BoardStateActionSelectionTask(
-                    board, journal, forkJoinPool, color, boardState, 2
-            ));
+            var result = forkJoinPool.invoke(task);
 
-            return Optional.of(result.getAction());
+            var resultMatcher = task.getResultMatcher();
+            if (resultMatcher.match(result)) {
+                return Optional.ofNullable(result.getAction());
+            }
         } catch (Exception e) {
-            LOGGER.error(String.format("Select('%s') '%s' action failure", color, boardState), e);
+            var message = String.format("Select('%s') '%s' action failure", color, boardState);
+            LOGGER.error(message, e);
         } finally {
             var duration = Duration.between(startTimepoint, now());
             LOGGER.info("Select('{}') '{}' action duration: {}ms",

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.command.SimulateGameActionCommand;
 import com.agutsul.chess.journal.Journal;
@@ -21,32 +22,64 @@ final class MinMaxActionSelectionTask
     private static final Logger LOGGER = getLogger(MinMaxActionSelectionTask.class);
 
     private static final long serialVersionUID = 1L;
+    private static final int DEFAULT_LIMIT = 2;
 
     private final int value;
 
-    // root level task
     MinMaxActionSelectionTask(Board board, Journal<ActionMemento<?,?>> journal,
-                              ForkJoinPool forkJoinPool, Color color, int limit) {
+                              ForkJoinPool forkJoinPool, Color color) {
 
-        this(board, journal, forkJoinPool, getActions(board, color), color, limit, 0);
+        // best matched action selection
+        this(board, journal, forkJoinPool, color, DEFAULT_LIMIT,
+                new TerminalBoardStateResultMatcher<>()
+        );
     }
 
-    // node level task
+    @SuppressWarnings("unchecked")
     MinMaxActionSelectionTask(Board board, Journal<ActionMemento<?,?>> journal,
-                              ForkJoinPool forkJoinPool, List<Action<?>> actions,
-                              Color color, int limit, int value) {
+                              ForkJoinPool forkJoinPool, Color color, BoardState.Type boardState) {
 
-        super(LOGGER, board, journal, forkJoinPool, actions, color, limit);
+        // first matched action selection
+        this(board, journal, forkJoinPool, color, calculateLimit(journal, DEFAULT_LIMIT),
+                new CompositeResultMatcher<Action<?>,Integer,TaskResult<Action<?>,Integer>>(
+                        new PlayerBoardStateResultMatcher<>(color, boardState),
+                        new TerminalBoardStateResultMatcher<>()
+                )
+        );
+    }
+
+    private MinMaxActionSelectionTask(Board board, Journal<ActionMemento<?,?>> journal,
+                                      ForkJoinPool forkJoinPool, Color color, int limit,
+                                      ResultMatcher<Action<?>,Integer,TaskResult<Action<?>,Integer>> resultMatcher) {
+
+        this(board, journal, forkJoinPool,
+                getActions(board, color), color, limit, resultMatcher, 0
+        );
+    }
+
+
+    private MinMaxActionSelectionTask(Board board, Journal<ActionMemento<?,?>> journal,
+                                      ForkJoinPool forkJoinPool, List<Action<?>> actions,
+                                      Color color, int limit,
+                                      ResultMatcher<Action<?>,Integer,TaskResult<Action<?>,Integer>> resultMatcher,
+                                      int value) {
+
+        super(LOGGER, board, journal, forkJoinPool, actions, color, limit, resultMatcher);
         this.value = value;
     }
 
     @Override
-    public SimulationResult<Action<?>,Integer> simulate(Action<?> action) {
+    public TaskResult<Action<?>,Integer> simulate(Action<?> action) {
         try (var command = new SimulateGameActionCommand<Integer>(board, journal, forkJoinPool, color, action)) {
             command.setSimulationEvaluator(new MinMaxGameEvaluator(limit + 1, value));
             command.execute();
 
-            var simulationResult = (ActionSimulationResult<Integer>) command.getSimulationResult();
+            var game = command.getGame();
+
+            var simulationResult = new ActionSimulationResult<>(
+                    game.getBoard(), game.getJournal(), action, this.color, command.getValue()
+            );
+
             if (isDone(simulationResult)) {
                 return simulationResult;
             }
@@ -55,6 +88,9 @@ final class MinMaxActionSelectionTask
 
             var opponentActions = getActions(simulationResult.getBoard(), opponentColor);
             if (opponentActions.isEmpty()) {
+                simulationResult.setOpponentResult(new ActionSimulationResult<>(
+                        simulationResult.getBoard(), simulationResult.getJournal(), null, opponentColor, 0
+                ));
                 return simulationResult;
             }
 
@@ -82,17 +118,17 @@ final class MinMaxActionSelectionTask
     protected MinMaxActionSelectionTask createTask(List<Action<?>> actions) {
         // root level task
         return new MinMaxActionSelectionTask(this.board, this.journal,
-                this.forkJoinPool, actions, this.color, this.limit, this.value
+                this.forkJoinPool, actions, this.color, this.limit, this.resultMatcher, this.value
         );
     }
 
     @Override
-    protected MinMaxActionSelectionTask createTask(SimulationResult<Action<?>,Integer> simulationResult,
+    protected MinMaxActionSelectionTask createTask(TaskResult<Action<?>,Integer> simulationResult,
                                                    List<Action<?>> actions, Color color) {
         // node level task
         return new MinMaxActionSelectionTask(simulationResult.getBoard(),
                 simulationResult.getJournal(), this.forkJoinPool, actions, color,
-                this.limit - 1, simulationResult.getValue()
+                this.limit - 1, this.resultMatcher, simulationResult.getValue()
         );
     }
 

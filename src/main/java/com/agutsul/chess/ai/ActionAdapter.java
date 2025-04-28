@@ -9,16 +9,16 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.adapter.Adapter;
 
-final class SimulationActionAdapter
+final class ActionAdapter
         implements Adapter<Action<?>,Collection<Action<?>>> {
 
     private final Adapter<PiecePromoteAction<?,?>,Collection<Action<?>>> adapter;
 
-    SimulationActionAdapter() {
+    ActionAdapter() {
         this(new PromoteActionAdapter());
     }
 
-    SimulationActionAdapter(Adapter<PiecePromoteAction<?,?>,Collection<Action<?>>> adapter) {
+    ActionAdapter(Adapter<PiecePromoteAction<?,?>,Collection<Action<?>>> adapter) {
         this.adapter = adapter;
     }
 

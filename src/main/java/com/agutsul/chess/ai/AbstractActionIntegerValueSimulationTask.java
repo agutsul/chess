@@ -22,14 +22,15 @@ abstract class AbstractActionIntegerValueSimulationTask
     AbstractActionIntegerValueSimulationTask(Logger logger, Board board,
                                              Journal<ActionMemento<?,?>> journal,
                                              ForkJoinPool forkJoinPool, List<Action<?>> actions,
-                                             Color color, int limit) {
+                                             Color color, int limit,
+                                             ResultMatcher<Action<?>,Integer,TaskResult<Action<?>,Integer>> resultMatcher) {
 
-        super(logger, board, journal, forkJoinPool, actions, color, limit);
+        super(logger, board, journal, forkJoinPool, actions, color, limit, resultMatcher);
     }
 
     @Override
-    protected SimulationResult<Action<?>,Integer>
-            select(List<SimulationResult<Action<?>,Integer>> actionValues) {
+    protected TaskResult<Action<?>,Integer>
+            select(List<TaskResult<Action<?>,Integer>> actionValues) {
 
         return ActionSelectionFunction.of(this.color).apply(actionValues);
     }

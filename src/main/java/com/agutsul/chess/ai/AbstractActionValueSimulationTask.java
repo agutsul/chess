@@ -14,27 +14,27 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 
 abstract class AbstractActionValueSimulationTask<VALUE extends Comparable<VALUE>>
-        extends AbstractActionSelectionTask<Action<?>,VALUE,SimulationResult<Action<?>,VALUE>>
-        implements SimulationTask<Action<?>,VALUE,SimulationResult<Action<?>,VALUE>> {
+        extends AbstractActionSelectionTask<Action<?>,VALUE,TaskResult<Action<?>,VALUE>>
+        implements SimulationTask<Action<?>,VALUE,TaskResult<Action<?>,VALUE>> {
 
     private static final long serialVersionUID = 1L;
 
-    AbstractActionValueSimulationTask(Logger logger, Board board,
-                                      Journal<ActionMemento<?,?>> journal,
+    AbstractActionValueSimulationTask(Logger logger, Board board, Journal<ActionMemento<?,?>> journal,
                                       ForkJoinPool forkJoinPool, List<Action<?>> actions,
-                                      Color color, int limit) {
+                                      Color color, int limit,
+                                      ResultMatcher<Action<?>,VALUE,TaskResult<Action<?>,VALUE>> resultMatcher) {
 
-        super(logger, board, journal, forkJoinPool, actions, color, limit);
+        super(logger, board, journal, forkJoinPool, actions, color, limit, resultMatcher);
     }
 
     @Override
-    public final SimulationResult<Action<?>,VALUE> process(List<List<Action<?>>> buckets) {
+    public final TaskResult<Action<?>,VALUE> process(List<List<Action<?>>> buckets) {
         var subTasks = buckets.stream()
                 .map(actions -> createTask(actions))
                 .map(ForkJoinTask::fork)
                 .toList();
 
-        var actionValues = new ArrayList<SimulationResult<Action<?>,VALUE>>();
+        var actionValues = new ArrayList<TaskResult<Action<?>,VALUE>>();
         for (var subTask : subTasks) {
             actionValues.add(subTask.join());
         }
@@ -43,15 +43,15 @@ abstract class AbstractActionValueSimulationTask<VALUE extends Comparable<VALUE>
     }
 
     @Override
-    protected final SimulationResult<Action<?>,VALUE> compute(Action<?> action) {
+    protected final TaskResult<Action<?>,VALUE> compute(Action<?> action) {
         return simulate(action);
     }
 
     protected abstract AbstractActionValueSimulationTask<VALUE> createTask(List<Action<?>> actions);
 
-    protected abstract AbstractActionValueSimulationTask<VALUE> createTask(SimulationResult<Action<?>,VALUE> simulationResult,
+    protected abstract AbstractActionValueSimulationTask<VALUE> createTask(TaskResult<Action<?>,VALUE> simulationResult,
                                                                            List<Action<?>> actions, Color color);
 
 
-    protected abstract SimulationResult<Action<?>,VALUE> select(List<SimulationResult<Action<?>,VALUE>> list);
+    protected abstract TaskResult<Action<?>,VALUE> select(List<TaskResult<Action<?>,VALUE>> list);
 }

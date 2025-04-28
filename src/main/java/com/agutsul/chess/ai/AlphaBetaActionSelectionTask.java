@@ -18,59 +18,95 @@ import org.slf4j.Logger;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.command.SimulateGameActionCommand;
 import com.agutsul.chess.journal.Journal;
 
 //https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
-final class AlphaBetaActionSelectionTask
+class AlphaBetaActionSelectionTask
         extends AbstractActionIntegerValueSimulationTask {
 
     private static final Logger LOGGER = getLogger(AlphaBetaActionSelectionTask.class);
 
     private static final long serialVersionUID = 1L;
+    private static final int DEFAULT_LIMIT = 3;
 
     private final AlphaBetaContext context;
 
-    // root level task
     AlphaBetaActionSelectionTask(Board board, Journal<ActionMemento<?,?>> journal,
-                                 ForkJoinPool forkJoinPool, Color color, int limit) {
+                                 ForkJoinPool forkJoinPool, Color color) {
 
-        this(board, journal, forkJoinPool,
-                getActions(board, color), color, limit, new AlphaBetaContext()
+        // best matched action selection
+        this(board, journal, forkJoinPool, color, DEFAULT_LIMIT,
+                new TerminalBoardStateResultMatcher<>()
         );
     }
 
-    // node level task
+    @SuppressWarnings("unchecked")
     AlphaBetaActionSelectionTask(Board board, Journal<ActionMemento<?,?>> journal,
-                                 ForkJoinPool forkJoinPool, List<Action<?>> actions,
-                                 Color color, int limit, AlphaBetaContext context) {
+                                 ForkJoinPool forkJoinPool, Color color, BoardState.Type boardState) {
 
-        super(LOGGER, board, journal, forkJoinPool, actions, color, limit);
+        // first matched action selection
+        this(board, journal, forkJoinPool, color, calculateLimit(journal, DEFAULT_LIMIT),
+                new CompositeResultMatcher<Action<?>,Integer,TaskResult<Action<?>,Integer>>(
+                        new PlayerBoardStateResultMatcher<>(color, boardState),
+                        new TerminalBoardStateResultMatcher<>()
+                )
+        );
+    }
+
+    private AlphaBetaActionSelectionTask(Board board, Journal<ActionMemento<?,?>> journal,
+                                         ForkJoinPool forkJoinPool, Color color, int limit,
+                                         ResultMatcher<Action<?>,Integer,TaskResult<Action<?>,Integer>> resultMatcher) {
+
+        this(board, journal, forkJoinPool,
+                getActions(board, color), color, limit, resultMatcher, new AlphaBetaContext()
+        );
+    }
+
+    private AlphaBetaActionSelectionTask(Board board, Journal<ActionMemento<?,?>> journal,
+                                         ForkJoinPool forkJoinPool, List<Action<?>> actions,
+                                         Color color, int limit,
+                                         ResultMatcher<Action<?>,Integer,TaskResult<Action<?>,Integer>> resultMatcher,
+                                         AlphaBetaContext context) {
+
+        super(LOGGER, board, journal, forkJoinPool, actions, color, limit, resultMatcher);
         this.context = context;
     }
 
     @Override
-    public SimulationResult<Action<?>,Integer> simulate(Action<?> action) {
+    public TaskResult<Action<?>,Integer> simulate(Action<?> action) {
         try (var command = new SimulateGameActionCommand<Integer>(board, journal, forkJoinPool, color, action)) {
             command.setSimulationEvaluator(new AlphaBetaGameEvaluator(limit + 1));
             command.execute();
 
-            var simulationResult = (ActionSimulationResult<Integer>) command.getSimulationResult();
+            var game = command.getGame();
+
+            var simulationResult = new ActionSimulationResult<>(
+                    game.getBoard(), game.getJournal(), action, this.color, command.getValue()
+            );
+
             if (isDone(simulationResult)) {
                 return simulationResult;
             }
 
-            var value = AlphaBetaFunction.of(this.color).apply(simulationResult.getValue(), this.context);
-            if (value.isPresent()) {
-                return createActionValueResult(simulationResult, value.get());
+            var selectionFunction = AlphaBetaFunction.of(this.color);
+
+            var selectedValue = selectionFunction.apply(simulationResult.getValue(), this.context);
+            if (selectedValue.isPresent()) {
+                simulationResult.setValue(selectedValue.get());
+                return simulationResult;
             }
 
             var opponentColor = this.color.invert();
 
             var opponentActions = getActions(simulationResult.getBoard(), opponentColor);
             if (opponentActions.isEmpty()) {
+                simulationResult.setOpponentResult(new ActionSimulationResult<>(
+                        simulationResult.getBoard(), simulationResult.getJournal(), null, opponentColor, 0
+                ));
                 return simulationResult;
             }
 
@@ -98,26 +134,16 @@ final class AlphaBetaActionSelectionTask
     protected AlphaBetaActionSelectionTask createTask(List<Action<?>> actions) {
         // root level task
         return new AlphaBetaActionSelectionTask(this.board, this.journal,
-                this.forkJoinPool, actions, this.color, this.limit, this.context
+                this.forkJoinPool, actions, this.color, this.limit, this.resultMatcher, this.context
         );
     }
 
     @Override
-    protected AlphaBetaActionSelectionTask createTask(SimulationResult<Action<?>,Integer> simulationResult,
+    protected AlphaBetaActionSelectionTask createTask(TaskResult<Action<?>,Integer> simulationResult,
                                                       List<Action<?>> actions, Color color) {
         // node level task
-        return new AlphaBetaActionSelectionTask(simulationResult.getBoard(),
-                simulationResult.getJournal(), this.forkJoinPool, actions, color,
-                this.limit - 1, this.context
-        );
-    }
-
-    private ActionSimulationResult<Integer>
-            createActionValueResult(ActionSimulationResult<Integer> simulationResult, Integer value) {
-
-        return new ActionSimulationResult<>(simulationResult.getBoard(),
-                simulationResult.getJournal(), simulationResult.getAction(),
-                simulationResult.getColor(), value
+        return new AlphaBetaActionSelectionTask(simulationResult.getBoard(), simulationResult.getJournal(),
+                this.forkJoinPool, actions, color, this.limit - 1, this.resultMatcher, this.context
         );
     }
 

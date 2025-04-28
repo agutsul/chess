@@ -7,6 +7,7 @@ import static java.util.concurrent.ForkJoinPool.commonPool;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 
 import org.slf4j.Logger;
@@ -26,11 +27,14 @@ public final class BoardStateEvaluatorImpl
     private final Board board;
 
     private final BoardStateEvaluator<List<BoardState>> compositeEvaluator;
+    private final BoardStateEvaluator<Optional<BoardState>> insufficientMaterialEvaluator;
 
     public BoardStateEvaluatorImpl(Board board, Journal<ActionMemento<?,?>> journal,
                                    ForkJoinPool forkJoinPool) {
 
-        this(board, createEvaluator(board, journal, forkJoinPool));
+        this(board, createEvaluator(board, journal),
+                new InsufficientMaterialBoardStateEvaluator(board, journal, forkJoinPool)
+        );
     }
 
     public BoardStateEvaluatorImpl(Board board, Journal<ActionMemento<?,?>> journal) {
@@ -38,9 +42,11 @@ public final class BoardStateEvaluatorImpl
     }
 
     private BoardStateEvaluatorImpl(Board board,
-                                    BoardStateEvaluator<List<BoardState>> compositeEvaluator) {
+                                    BoardStateEvaluator<List<BoardState>> compositeEvaluator,
+                                    BoardStateEvaluator<Optional<BoardState>> insufficientMaterialEvaluator) {
         this.board = board;
         this.compositeEvaluator = compositeEvaluator;
+        this.insufficientMaterialEvaluator = insufficientMaterialEvaluator;
     }
 
     @Override
@@ -50,7 +56,10 @@ public final class BoardStateEvaluatorImpl
         LOGGER.info("{}: Board state: {}", color, boardStates);
 
         if (boardStates.isEmpty()) {
-            return defaultBoardState(board, color);
+            var boardState = insufficientMaterialEvaluator.evaluate(color);
+            return boardState.isPresent()
+                ? boardState.get()
+                : defaultBoardState(board, color);
         }
 
         if (boardStates.size() == 1) {
@@ -74,15 +83,13 @@ public final class BoardStateEvaluatorImpl
 
     @SuppressWarnings("unchecked")
     private static BoardStateEvaluator<List<BoardState>> createEvaluator(Board board,
-                                                                         Journal<ActionMemento<?,?>> journal,
-                                                                         ForkJoinPool forkJoinPool) {
+                                                                         Journal<ActionMemento<?,?>> journal) {
 
         return new CompositeBoardStateEvaluator(board,
                 new BoardStatisticStateEvaluator(new MovesBoardStateEvaluator(board, journal)),
                 new BoardStatisticStateEvaluator(new FoldRepetitionBoardStateEvaluator(board, journal)),
                 new CheckableBoardStateEvaluator(board),
-                new StaleMatedBoardStateEvaluator(board),
-                new InsufficientMaterialBoardStateEvaluator(board, journal, forkJoinPool)
+                new StaleMatedBoardStateEvaluator(board)
         );
     }
 }

@@ -22,20 +22,20 @@ enum ActionSelectionFunction {
     private static final Map<Color,ActionSelectionFunction> MODES =
             Stream.of(values()).collect(toMap(ActionSelectionFunction::color,identity()));
 
-    private static final Comparator<SimulationResult<Action<?>,Integer>> COMPARATOR =
+    private static final Comparator<TaskResult<Action<?>,Integer>> COMPARATOR =
             new ActionValueComparator<>();
 
     private Color color;
-    private Function<List<SimulationResult<Action<?>,Integer>>,SimulationResult<Action<?>,Integer>> function;
+    private Function<List<TaskResult<Action<?>,Integer>>,TaskResult<Action<?>,Integer>> function;
 
     ActionSelectionFunction(Color color,
-                            Function<List<SimulationResult<Action<?>,Integer>>,SimulationResult<Action<?>,Integer>> function) {
+                            Function<List<TaskResult<Action<?>,Integer>>,TaskResult<Action<?>,Integer>> function) {
 
         this.color = color;
         this.function = function;
     }
 
-    public SimulationResult<Action<?>,Integer> apply(List<SimulationResult<Action<?>,Integer>> actionValues) {
+    public TaskResult<Action<?>,Integer> apply(List<TaskResult<Action<?>,Integer>> actionValues) {
         sort(actionValues, COMPARATOR);
         return function.apply(actionValues);
     }

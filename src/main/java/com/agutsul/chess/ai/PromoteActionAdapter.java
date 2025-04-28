@@ -73,5 +73,4 @@ final class PromoteActionAdapter
             setPieceType(promotedPieceType);
         }
     }
-
 }

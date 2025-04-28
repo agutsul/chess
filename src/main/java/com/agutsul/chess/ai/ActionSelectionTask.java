@@ -6,7 +6,7 @@ import com.agutsul.chess.activity.action.Action;
 
 interface ActionSelectionTask<ACTION extends Action<?>,
                               VALUE extends Comparable<VALUE>,
-                              RESULT extends SimulationResult<ACTION,VALUE>> {
+                              RESULT extends TaskResult<ACTION,VALUE>> {
 
     RESULT process(List<List<ACTION>> actions);
 }

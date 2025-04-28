@@ -1,7 +1,7 @@
 package com.agutsul.chess.ai;
 
-abstract class AbstractSimulationGameEvaluator<T extends Comparable<T>>
-        implements SimulationEvaluator<T> {
+abstract class AbstractSimulationGameEvaluator<VALUE extends Comparable<VALUE>>
+        implements SimulationEvaluator<VALUE> {
 
     protected final int limit;
 

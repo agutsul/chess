@@ -18,14 +18,14 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 
 abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
-                                           VALUE extends Comparable<VALUE>,
-                                           RESULT extends SimulationResult<ACTION,VALUE>>
+                                           VALUE  extends Comparable<VALUE>,
+                                           RESULT extends TaskResult<ACTION,VALUE>>
         extends RecursiveTask<RESULT>
         implements ActionSelectionTask<ACTION,VALUE,RESULT> {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Adapter<Action<?>,Collection<Action<?>>> ADAPTER = new SimulationActionAdapter();
+    private static final Adapter<Action<?>,Collection<Action<?>>> ADAPTER = new ActionAdapter();
 
     protected final Logger logger;
 
@@ -35,11 +35,11 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
     protected final Color color;
     protected final ForkJoinPool forkJoinPool;
     protected final int limit;
+    protected final ResultMatcher<ACTION,VALUE,RESULT> resultMatcher;
 
-    AbstractActionSelectionTask(Logger logger, Board board,
-                                Journal<ActionMemento<?,?>> journal,
-                                ForkJoinPool forkJoinPool, List<ACTION> actions,
-                                Color color, int limit) {
+    AbstractActionSelectionTask(Logger logger, Board board, Journal<ActionMemento<?,?>> journal,
+                                ForkJoinPool forkJoinPool, List<ACTION> actions, Color color,
+                                int limit, ResultMatcher<ACTION,VALUE,RESULT> resultMatcher) {
 
         this.logger = logger;
         this.board = board;
@@ -48,6 +48,15 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
         this.color = color;
         this.forkJoinPool = forkJoinPool;
         this.limit = limit;
+        this.resultMatcher = resultMatcher;
+    }
+/*
+    public int getLimit() {
+        return this.limit;
+    }
+*/
+    public ResultMatcher<ACTION,VALUE,RESULT> getResultMatcher() {
+        return this.resultMatcher;
     }
 
     @Override
@@ -76,10 +85,7 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
             return true;
         }
 
-        var gameBoard = result.getBoard();
-        var boardState = gameBoard.getState();
-
-        return boardState.isTerminal();
+        return resultMatcher.match(result);
     }
 
     protected static List<Action<?>> getActions(Board board, Color color) {
@@ -91,5 +97,14 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
                 .collect(toList());
 
         return actions;
+    }
+
+    protected static int calculateLimit(Journal<ActionMemento<?,?>> journal, int defaultLimit) {
+        var value = defaultLimit - ( journal.size() % (2 * defaultLimit) );
+        if (value >= 0) {
+            return value;
+        }
+
+        return defaultLimit - Math.negateExact(value);
     }
 }
