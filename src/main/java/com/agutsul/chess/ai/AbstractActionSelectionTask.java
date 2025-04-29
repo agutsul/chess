@@ -98,13 +98,4 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
 
         return actions;
     }
-
-    protected static int calculateLimit(Journal<ActionMemento<?,?>> journal, int defaultLimit) {
-        var value = defaultLimit - ( journal.size() % (2 * defaultLimit) );
-        if (value >= 0) {
-            return value;
-        }
-
-        return defaultLimit - Math.negateExact(value);
-    }
 }

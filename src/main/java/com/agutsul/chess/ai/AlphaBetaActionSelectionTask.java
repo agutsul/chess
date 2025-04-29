@@ -49,7 +49,7 @@ class AlphaBetaActionSelectionTask
                                  ForkJoinPool forkJoinPool, Color color, BoardState.Type boardState) {
 
         // first matched action selection
-        this(board, journal, forkJoinPool, color, calculateLimit(journal, DEFAULT_LIMIT),
+        this(board, journal, forkJoinPool, color, DEFAULT_LIMIT,
                 new CompositeResultMatcher<Action<?>,Integer,TaskResult<Action<?>,Integer>>(
                         new PlayerBoardStateResultMatcher<>(color, boardState),
                         new TerminalBoardStateResultMatcher<>()
