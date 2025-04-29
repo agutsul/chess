@@ -40,8 +40,9 @@ final class CheckMatedBoardStateEvaluator
         var isCheckMated = checkMateEvaluator.evaluate(king);
         king.setCheckMated(isCheckMated);
 
-        return isCheckMated
-                ? Optional.of(checkMatedBoardState(board, color))
-                : Optional.empty();
+        return Optional.ofNullable(isCheckMated
+                ? checkMatedBoardState(board, color)
+                : null
+        );
     }
 }
