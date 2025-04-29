@@ -46,6 +46,9 @@ final class CheckedBoardStateEvaluator
 
         king.setChecked(isChecked);
 
-        return Optional.ofNullable(isChecked ? checkedBoardState(board, color) : null);
+        return Optional.ofNullable(isChecked
+                ? checkedBoardState(board, color)
+                : null
+        );
     }
 }

@@ -57,9 +57,7 @@ public final class BoardStateEvaluatorImpl
 
         if (boardStates.isEmpty()) {
             var boardState = insufficientMaterialEvaluator.evaluate(color);
-            return boardState.isPresent()
-                ? boardState.get()
-                : defaultBoardState(board, color);
+            return boardState.orElse(defaultBoardState(board, color));
         }
 
         if (boardStates.size() == 1) {

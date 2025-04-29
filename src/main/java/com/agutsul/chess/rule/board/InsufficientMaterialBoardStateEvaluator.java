@@ -55,11 +55,7 @@ final class InsufficientMaterialBoardStateEvaluator
         LOGGER.info("Insufficient material verification '{}'", color);
 
         var boardStates = this.compositeEvaluator.evaluate(color);
-        if (boardStates.isEmpty()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(boardStates.getFirst());
+        return boardStates.stream().findFirst();
     }
 
     @SuppressWarnings("unchecked")
