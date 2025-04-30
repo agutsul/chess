@@ -76,10 +76,7 @@ final class MinMaxActionSelectionTask
 
             var game = command.getGame();
 
-            var simulationResult = new ActionSimulationResult<>(
-                    game.getBoard(), game.getJournal(), action, this.color, command.getValue()
-            );
-
+            var simulationResult = createTaskResult(game, action, command.getValue());
             if (isDone(simulationResult)) {
                 return simulationResult;
             }
@@ -88,9 +85,7 @@ final class MinMaxActionSelectionTask
 
             var opponentActions = getActions(simulationResult.getBoard(), opponentColor);
             if (opponentActions.isEmpty()) {
-                simulationResult.setOpponentResult(new ActionSimulationResult<>(
-                        simulationResult.getBoard(), simulationResult.getJournal(), null, opponentColor, 0
-                ));
+                simulationResult.setOpponentResult(createTaskResult(simulationResult, opponentColor, 0));
                 return simulationResult;
             }
 

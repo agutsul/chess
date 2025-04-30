@@ -11,6 +11,7 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.game.Game;
 import com.agutsul.chess.journal.Journal;
 
 abstract class AbstractActionValueSimulationTask<VALUE extends Comparable<VALUE>>
@@ -46,6 +47,11 @@ abstract class AbstractActionValueSimulationTask<VALUE extends Comparable<VALUE>
     protected final TaskResult<Action<?>,VALUE> compute(Action<?> action) {
         return simulate(action);
     }
+
+    protected abstract TaskResult<Action<?>,VALUE> createTaskResult(Game game, Action<?> action, VALUE value);
+
+    protected abstract TaskResult<Action<?>,VALUE> createTaskResult(TaskResult<Action<?>,VALUE> result,
+                                                                    Color color, VALUE value);
 
     protected abstract AbstractActionValueSimulationTask<VALUE> createTask(List<Action<?>> actions);
 

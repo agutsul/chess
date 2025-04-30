@@ -11,6 +11,7 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.ai.SimulationGame;
 import com.agutsul.chess.journal.Journal;
 
@@ -33,6 +34,19 @@ abstract class AbstractActionIntegerValueSimulationTask
             select(List<TaskResult<Action<?>,Integer>> actionValues) {
 
         return ActionSelectionFunction.of(this.color).apply(actionValues);
+    }
+
+    @Override
+    protected ActionSimulationResult<Integer> createTaskResult(Game game, Action<?> action, Integer value) {
+
+        return new ActionSimulationResult<>(game.getBoard(), game.getJournal(), action, color, value);
+    }
+
+    @Override
+    protected ActionSimulationResult<Integer> createTaskResult(TaskResult<Action<?>,Integer> result,
+                                                               Color color, Integer value) {
+
+        return new ActionSimulationResult<>(result.getBoard(), result.getJournal(), null, color, value);
     }
 
     static abstract class AbstractIntegerGameEvaluator
