@@ -80,9 +80,7 @@ public abstract class AbstractPlayableGame
     protected AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer,
                                    Board board, Journal<ActionMemento<?,?>> journal) {
 
-        this(logger, whitePlayer, blackPlayer, board, journal, null,
-                new BoardStateEvaluatorImpl(board, journal)
-        );
+        this(logger, whitePlayer, blackPlayer, board, journal, null);
     }
 
     protected AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer,

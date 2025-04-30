@@ -28,17 +28,17 @@ public final class BoardStateEvaluatorImpl
     private final BoardStateEvaluator<List<BoardState>> compositeEvaluator;
     private final BoardStateEvaluator<Optional<BoardState>> insufficientMaterialEvaluator;
 
+    public BoardStateEvaluatorImpl(Board board, Journal<ActionMemento<?,?>> journal) {
+        this(board, createEvaluator(board, journal),
+                new InsufficientMaterialBoardStateEvaluator(board, journal)
+        );
+    }
+
     public BoardStateEvaluatorImpl(Board board, Journal<ActionMemento<?,?>> journal,
                                    ForkJoinPool forkJoinPool) {
 
         this(board, createEvaluator(board, journal),
                 new InsufficientMaterialBoardStateEvaluator(board, journal, forkJoinPool)
-        );
-    }
-
-    public BoardStateEvaluatorImpl(Board board, Journal<ActionMemento<?,?>> journal) {
-        this(board, createEvaluator(board, journal),
-                new InsufficientMaterialBoardStateEvaluator(board, journal)
         );
     }
 
