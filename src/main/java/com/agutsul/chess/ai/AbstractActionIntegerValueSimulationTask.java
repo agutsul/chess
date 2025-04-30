@@ -37,6 +37,12 @@ abstract class AbstractActionIntegerValueSimulationTask
     }
 
     @Override
+    protected ActionSimulationResult<Integer> createTaskResult(Action<?> action, Integer value) {
+
+        return new ActionSimulationResult<>(this.board, this.journal, action, this.color, value);
+    }
+
+    @Override
     protected ActionSimulationResult<Integer> createTaskResult(Game game, Action<?> action, Integer value) {
 
         return new ActionSimulationResult<>(game.getBoard(), game.getJournal(), action, color, value);

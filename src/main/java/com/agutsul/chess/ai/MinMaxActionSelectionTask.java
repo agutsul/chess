@@ -106,7 +106,7 @@ final class MinMaxActionSelectionTask
             logger.error(message, e);
         }
 
-        return new ActionSimulationResult<>(board, journal, action, color, 0);
+        return createTaskResult(action, 0);
     }
 
     @Override

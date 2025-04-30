@@ -48,6 +48,8 @@ abstract class AbstractActionValueSimulationTask<VALUE extends Comparable<VALUE>
         return simulate(action);
     }
 
+    protected abstract TaskResult<Action<?>,VALUE> createTaskResult(Action<?> action, VALUE value);
+
     protected abstract TaskResult<Action<?>,VALUE> createTaskResult(Game game, Action<?> action, VALUE value);
 
     protected abstract TaskResult<Action<?>,VALUE> createTaskResult(TaskResult<Action<?>,VALUE> result,
