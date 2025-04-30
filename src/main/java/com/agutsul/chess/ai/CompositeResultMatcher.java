@@ -22,12 +22,6 @@ final class CompositeResultMatcher<ACTION extends Action<?>,
 
     @Override
     public boolean match(RESULT result) {
-        for (var matcher : this.matchers) {
-            if (matcher.match(result)) {
-                return true;
-            }
-        }
-
-        return false;
+        return this.matchers.stream().anyMatch(matcher -> matcher.match(result));
     }
 }

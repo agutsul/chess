@@ -86,12 +86,7 @@ public final class ActionSelectionStrategy
             case ALPHA_BETA -> new AlphaBetaActionSelectionTask(board, journal, forkJoinPool, color, boardState);
             case MIN_MAX -> new MinMaxActionSelectionTask(board, journal, forkJoinPool, color, boardState);
         };
-/*
-        if (task.getLimit() == 0) {
-            LOGGER.info("Select('{}') '{}' action: No action found, limit reached", color, boardState);
-            return Optional.empty();
-        }
-*/
+
         var startTimepoint = now();
         try {
             var result = forkJoinPool.invoke(task);

@@ -50,11 +50,7 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
         this.limit = limit;
         this.resultMatcher = resultMatcher;
     }
-/*
-    public int getLimit() {
-        return this.limit;
-    }
-*/
+
     public ResultMatcher<ACTION,VALUE,RESULT> getResultMatcher() {
         return this.resultMatcher;
     }

@@ -80,7 +80,7 @@ public abstract class AbstractPlayableGame
     protected AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer,
                                    Board board, Journal<ActionMemento<?,?>> journal) {
 
-        this(logger, whitePlayer, blackPlayer, board, journal, new ForkJoinPool(2));
+        this(logger, whitePlayer, blackPlayer, board, journal, new ForkJoinPool());
     }
 
     protected AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer,
