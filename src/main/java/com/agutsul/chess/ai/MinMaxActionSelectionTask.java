@@ -74,9 +74,7 @@ final class MinMaxActionSelectionTask
             command.setSimulationEvaluator(new MinMaxGameEvaluator(limit + 1, value));
             command.execute();
 
-            var game = command.getGame();
-
-            var simulationResult = createTaskResult(game, action, command.getValue());
+            var simulationResult = createTaskResult(command.getGame(), action, command.getValue());
             if (isDone(simulationResult)) {
                 return simulationResult;
             }

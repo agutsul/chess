@@ -82,9 +82,7 @@ class AlphaBetaActionSelectionTask
             command.setSimulationEvaluator(new AlphaBetaGameEvaluator(limit + 1));
             command.execute();
 
-            var game = command.getGame();
-
-            var simulationResult = createTaskResult(game, action, command.getValue());
+            var simulationResult = createTaskResult(command.getGame(), action, command.getValue());
             if (isDone(simulationResult)) {
                 return simulationResult;
             }
