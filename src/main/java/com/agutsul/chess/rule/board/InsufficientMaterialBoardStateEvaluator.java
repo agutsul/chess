@@ -334,7 +334,7 @@ final class InsufficientMaterialBoardStateEvaluator
     }
 
     private static final class NoLegalActionsLeadToCheckmateEvaluationTask
-            extends AbstractInsufficientMaterialBoardStateEvaluator {
+            extends AbstractPieceCounterInsufficientMaterialBoardStateEvaluator {
 
         private final SelectionStrategy<Action<?>> selectionStrategy;
 
@@ -348,21 +348,29 @@ final class InsufficientMaterialBoardStateEvaluator
 
         NoLegalActionsLeadToCheckmateEvaluationTask(Board board,
                                                     SelectionStrategy<Action<?>> selectionStrategy) {
-            super(board);
+            super(board, 16);
             this.selectionStrategy = selectionStrategy;
         }
 
         @Override
-        public Optional<BoardState> evaluate(Color color) {
+        protected boolean isNotApplicable(Color color) {
+            var activePieces = board.getPieces(color).size();
+            var capturedPieces = this.piecesCount - activePieces;
+
+            return capturedPieces < activePieces;
+        }
+
+        @Override
+        protected BoardState evaluateBoard(Color color) {
             // action leading to check mate
             var checkMateAction = selectionStrategy.select(color, BoardState.Type.CHECK_MATED);
             if (checkMateAction.isPresent()) {
                 // it is not insufficient material board state
-                return Optional.empty();
+                return null;
             }
 
             // action not found, so no way to check mate => insufficient material board state
-            return Optional.of(createBoardState(board, color));
+            return createBoardState(board, color);
         }
     }
 }

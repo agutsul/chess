@@ -163,7 +163,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     @Override
     public <COLOR extends Color> Collection<Piece<COLOR>> getPieces() {
-        LOGGER.info("Getting all pieces");
+        LOGGER.info("Getting all active pieces");
 
         var allPieces = this.pieceCache.getActive();
 
