@@ -34,6 +34,7 @@ import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.UserPlayer;
+import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 
 public final class SimulationGame
         extends AbstractPlayableGame
@@ -47,15 +48,21 @@ public final class SimulationGame
     private final Action<?> originAction;
 
     public SimulationGame(Board board, Journal<ActionMemento<?,?>> journal,
-                          ForkJoinPool forkJoinPool, Color activeColor,
-                          Action<?> action) {
+                          ForkJoinPool forkJoinPool, Color activeColor, Action<?> action) {
 
-        super(LOGGER,
-                createPlayer(Colors.WHITE),
-                createPlayer(Colors.BLACK),
-                copyBoard(board),
-                new JournalImpl(journal),
-                forkJoinPool
+        this(createPlayer(Colors.WHITE), createPlayer(Colors.BLACK),
+                copyBoard(board), new JournalImpl(journal),
+                forkJoinPool, activeColor, action
+        );
+    }
+
+    private SimulationGame(Player whitePlayer, Player blackPlayer,
+                           Board board, Journal<ActionMemento<?,?>> journal,
+                           ForkJoinPool forkJoinPool, Color activeColor,
+                           Action<?> action) {
+
+        super(LOGGER, whitePlayer, blackPlayer, board, journal, forkJoinPool,
+                new BoardStateEvaluatorImpl(board, journal)
         );
 
         this.color = activeColor;
@@ -89,8 +96,6 @@ public final class SimulationGame
                 this.currentPlayer = next();
             }
         } catch (Throwable throwable) {
-            notifyObservers(new GameExceptionEvent(this, throwable));
-
             LOGGER.error("{}{}", lineSeparator(), String.valueOf(getBoard()));
             LOGGER.error("{}: Game simulation exception('{}'), board state '{}', journal '{}': {}",
                     getCurrentPlayer().getColor(),
@@ -99,6 +104,8 @@ public final class SimulationGame
                     String.valueOf(getJournal()),
                     getStackTrace(throwable)
             );
+
+            notifyObservers(new GameExceptionEvent(this, throwable));
         }
     }
 

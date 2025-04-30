@@ -33,11 +33,17 @@ final class InsufficientMaterialBoardStateEvaluator
     private final BoardStateEvaluator<List<BoardState>> compositeEvaluator;
     private final BoardStateEvaluator<Optional<BoardState>> legalActionsEvaluator;
 
+    InsufficientMaterialBoardStateEvaluator(Board board, Journal<ActionMemento<?,?>> journal) {
+        this(board, journal, (ForkJoinPool) null);
+    }
+
     InsufficientMaterialBoardStateEvaluator(Board board, Journal<ActionMemento<?,?>> journal,
                                             ForkJoinPool forkJoinPool) {
 
         this(board, createEvaluator(board),
-                new NoLegalActionsLeadToCheckmateEvaluationTask(board, journal, forkJoinPool)
+                forkJoinPool != null
+                    ? new NoLegalActionsLeadToCheckmateEvaluationTask(board, journal, forkJoinPool)
+                    : (BoardStateEvaluator<Optional<BoardState>>) null
         );
     }
 
@@ -54,8 +60,18 @@ final class InsufficientMaterialBoardStateEvaluator
     public Optional<BoardState> evaluate(Color color) {
         LOGGER.info("Insufficient material verification '{}'", color);
 
-        var boardStates = this.compositeEvaluator.evaluate(color);
-        return boardStates.stream().findFirst();
+        var boardStates = compositeEvaluator.evaluate(color);
+        if (!boardStates.isEmpty()) {
+            LOGGER.info("Insufficient material verification '{}' - piece pattern found", color);
+            return Optional.of(boardStates.getFirst());
+        }
+
+        if (legalActionsEvaluator != null) {
+            LOGGER.info("Insufficient material verification '{}' - check legal actions...", color);
+            return legalActionsEvaluator.evaluate(color);
+        }
+
+        return Optional.empty();
     }
 
     @SuppressWarnings("unchecked")
@@ -338,12 +354,15 @@ final class InsufficientMaterialBoardStateEvaluator
 
         @Override
         public Optional<BoardState> evaluate(Color color) {
-            var checkMateAction = this.selectionStrategy.select(color, BoardState.Type.CHECK_MATED);
+            // action leading to check mate
+            var checkMateAction = selectionStrategy.select(color, BoardState.Type.CHECK_MATED);
             if (checkMateAction.isPresent()) {
+                // it is not insufficient material board state
                 return Optional.empty();
             }
 
-            return Optional.of(createBoardState(this.board, color));
+            // action not found, so no way to check mate => insufficient material board state
+            return Optional.of(createBoardState(board, color));
         }
     }
 }

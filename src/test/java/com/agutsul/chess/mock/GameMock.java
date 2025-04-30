@@ -15,7 +15,6 @@ import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
-import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 
 public class GameMock
         extends AbstractPlayableGame {
@@ -23,36 +22,27 @@ public class GameMock
     private static final Logger LOGGER = getLogger(GameMock.class);
 
     public GameMock(Player whitePlayer, Player blackPlayer, Board board) {
-        this(whitePlayer, blackPlayer, board, new JournalImpl(), ForkJoinPool.commonPool());
+        super(LOGGER, whitePlayer, blackPlayer, board, new JournalImpl());
     }
 
-    public GameMock(Player whitePlayer, Player blackPlayer, Board board,
-                    Journal<ActionMemento<?,?>> journal) {
+    public GameMock(Player whitePlayer, Player blackPlayer,
+                    Board board, Journal<ActionMemento<?,?>> journal) {
 
-        this(whitePlayer, blackPlayer, board, journal, ForkJoinPool.commonPool());
+        super(LOGGER, whitePlayer, blackPlayer, board, journal);
     }
 
-    public GameMock(Player whitePlayer, Player blackPlayer, Board board,
-                    Journal<ActionMemento<?,?>> journal, ForkJoinPool forkJoinPool) {
+    public GameMock(Player whitePlayer, Player blackPlayer,
+                    Board board, Journal<ActionMemento<?,?>> journal,
+                    ForkJoinPool forkJoinPool) {
 
-        this(whitePlayer, blackPlayer, board, journal, forkJoinPool,
-                new BoardStateEvaluatorImpl(board, journal, forkJoinPool)
-        );
+        super(LOGGER,whitePlayer, blackPlayer, board, journal, forkJoinPool);
     }
 
-    public GameMock(Player whitePlayer, Player blackPlayer, Board board,
-                    Journal<ActionMemento<?,?>> journal,
+    public GameMock(Player whitePlayer, Player blackPlayer,
+                    Board board, Journal<ActionMemento<?,?>> journal,
                     BoardStateEvaluator<BoardState> boardStateEvaluator) {
 
-        super(LOGGER, whitePlayer, blackPlayer, board, journal,
-                ForkJoinPool.commonPool(), boardStateEvaluator);
-    }
-
-    public GameMock(Player whitePlayer, Player blackPlayer, Board board,
-                    Journal<ActionMemento<?,?>> journal, ForkJoinPool forkJoinPool,
-                    BoardStateEvaluator<BoardState> boardStateEvaluator) {
-
-        super(LOGGER, whitePlayer, blackPlayer, board, journal, forkJoinPool, boardStateEvaluator);
+        super(LOGGER, whitePlayer, blackPlayer, board, journal, null, boardStateEvaluator);
     }
 
     public void setStartedAt(LocalDateTime startedAt) {

@@ -46,6 +46,13 @@ public final class ActionSelectionStrategy
     public Optional<Action<?>> select(Color color) {
         LOGGER.info("Select('{}') '{}' action", type, color);
 
+        if (forkJoinPool == null) {
+            throw new IllegalStateException(String.format(
+                    "Unable to select action for '%s': fork-join pool not set",
+                    color
+            ));
+        }
+
         if (!isAnyAction(color)) {
             LOGGER.info("Select('{}') '{}' action: No action found", type, color);
             return Optional.empty();
@@ -76,6 +83,13 @@ public final class ActionSelectionStrategy
     @Override
     public Optional<Action<?>> select(Color color, BoardState.Type boardState) {
         LOGGER.info("Select('{}') '{}' action", color, boardState);
+
+        if (forkJoinPool == null) {
+            throw new IllegalStateException(String.format(
+                    "Unable to select action for '%s' and board state '%s': fork-join pool not set",
+                    color, boardState.name()
+            ));
+        }
 
         if (!isAnyAction(color)) {
             LOGGER.info("Select('{}') '{}' action: No action found", color, boardState);

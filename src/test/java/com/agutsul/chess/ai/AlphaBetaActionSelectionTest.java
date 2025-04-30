@@ -4,12 +4,15 @@ import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.concurrent.ForkJoinPool;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.mock.GameMock;
 import com.agutsul.chess.player.UserPlayer;
 
@@ -36,7 +39,10 @@ public class AlphaBetaActionSelectionTest {
         var whitePlayer = new UserPlayer(randomUUID().toString(), Colors.WHITE);
         var blackPlayer = new UserPlayer(randomUUID().toString(), Colors.BLACK);
 
-        var game = new GameMock(whitePlayer, blackPlayer, board);
+        var game = new GameMock(whitePlayer, blackPlayer,
+                board, new JournalImpl(), new ForkJoinPool(2)
+        );
+
         var strategy = new ActionSelectionStrategy(game, SelectionStrategy.Type.ALPHA_BETA);
 
         var action = strategy.select(Colors.WHITE);
@@ -65,7 +71,10 @@ public class AlphaBetaActionSelectionTest {
         var whitePlayer = new UserPlayer(randomUUID().toString(), Colors.WHITE);
         var blackPlayer = new UserPlayer(randomUUID().toString(), Colors.BLACK);
 
-        var game = new GameMock(whitePlayer, blackPlayer, board);
+        var game = new GameMock(whitePlayer, blackPlayer,
+                board, new JournalImpl(), new ForkJoinPool(2)
+        );
+
         var strategy = new ActionSelectionStrategy(game, SelectionStrategy.Type.ALPHA_BETA);
 
         var action = strategy.select(Colors.BLACK);

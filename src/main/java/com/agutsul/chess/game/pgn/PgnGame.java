@@ -11,6 +11,7 @@ import java.util.function.IntFunction;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.event.Observable;
@@ -18,6 +19,8 @@ import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Termination;
 import com.agutsul.chess.game.state.GameState;
+import com.agutsul.chess.journal.Journal;
+import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
 
 public final class PgnGame
@@ -33,14 +36,17 @@ public final class PgnGame
     public PgnGame(Player whitePlayer, Player blackPlayer,
                    Map<String,String> tags, List<String> actions) {
 
-        this(whitePlayer, blackPlayer, new StandardBoard(), actions);
+        this(whitePlayer, blackPlayer, new StandardBoard(), new JournalImpl(), actions);
 
         this.parsedTags = tags;
         this.parsedActions = actions;
     }
 
-    PgnGame(Player whitePlayer, Player blackPlayer, Board board, List<String> actions) {
-        super(LOGGER, whitePlayer, blackPlayer, board);
+    PgnGame(Player whitePlayer, Player blackPlayer,
+            Board board, Journal<ActionMemento<?,?>> journal,
+            List<String> actions) {
+
+        super(LOGGER, whitePlayer, blackPlayer, board, journal);
 
         var observable = (Observable) board;
         observable.addObserver(createPlayerObserver(whitePlayer, actions, index -> index % 2 == 0));

@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -116,7 +115,6 @@ public class InsufficientMaterialBoardStateEvaluatorTest {
     }
 
     @Test
-    @Disabled
     // https://lichess.org/forum/lichess-feedback/if-your-only-legal-move-is-checkmate-but-you-run-out-of-time-you-still-lose
     void testNoLegalActionsLeadToCheckmate() {
         var board = new LabeledBoardBuilder()

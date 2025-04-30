@@ -3,7 +3,6 @@ package com.agutsul.chess.rule.board;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static java.util.Comparator.comparing;
-import static java.util.concurrent.ForkJoinPool.commonPool;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.List;
@@ -38,7 +37,9 @@ public final class BoardStateEvaluatorImpl
     }
 
     public BoardStateEvaluatorImpl(Board board, Journal<ActionMemento<?,?>> journal) {
-        this(board, journal, commonPool());
+        this(board, createEvaluator(board, journal),
+                new InsufficientMaterialBoardStateEvaluator(board, journal)
+        );
     }
 
     private BoardStateEvaluatorImpl(Board board,
@@ -64,14 +65,13 @@ public final class BoardStateEvaluatorImpl
             return boardStates.iterator().next();
         }
 
-        var checkMatedState = boardStates.stream()
+        return boardStates.stream()
                 .filter(boardState -> boardState.isType(CHECK_MATED))
-                .findFirst();
+                .findFirst()
+                .orElse(createCompositeBoardState(boardStates));
+    }
 
-        if (checkMatedState.isPresent()) {
-            return checkMatedState.get();
-        }
-
+    private static CompositeBoardState createCompositeBoardState(List<BoardState> boardStates) {
         var comparator = boardStates.stream().anyMatch(BoardState::isTerminal)
                 ? comparing(BoardState::isTerminal).reversed() //  terminal states first
                 : comparing(BoardState::getType);

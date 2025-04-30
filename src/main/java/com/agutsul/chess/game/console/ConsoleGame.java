@@ -2,6 +2,8 @@ package com.agutsul.chess.game.console;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.util.concurrent.ForkJoinPool;
+
 import org.slf4j.Logger;
 
 import com.agutsul.chess.board.Board;
@@ -9,6 +11,7 @@ import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.ai.SimulationActionInputObserver;
+import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
 
 public final class ConsoleGame
@@ -21,7 +24,7 @@ public final class ConsoleGame
     }
 
     ConsoleGame(Player whitePlayer, Player blackPlayer, Board board) {
-        super(LOGGER, whitePlayer, blackPlayer, board);
+        super(LOGGER, whitePlayer, blackPlayer, board, new JournalImpl(), new ForkJoinPool());
 
         ((Observable) board).addObserver(new ConsolePlayerInputObserver(whitePlayer, this));
         //((Observable) board).addObserver(new RandomActionInputObserver(blackPlayer, this));

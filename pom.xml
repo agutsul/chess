@@ -15,7 +15,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- versions -->
         <project.java.version>21</project.java.version>
-        <argLine></argLine>
+        <argLine>-Xms512m -Xmx512m -Xss512m</argLine>
 
         <commons-io.version>2.18.0</commons-io.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>

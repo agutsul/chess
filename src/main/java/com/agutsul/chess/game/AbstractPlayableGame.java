@@ -11,6 +11,7 @@ import static com.agutsul.chess.board.state.BoardState.Type.SEVENTY_FIVE_MOVES;
 import static com.agutsul.chess.board.state.BoardState.Type.STALE_MATED;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.concurrent.TimeUnit.MICROSECONDS;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 
 import java.util.Collection;
@@ -45,7 +46,6 @@ import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.observer.GameExceptionObserver;
-import com.agutsul.chess.game.observer.GameOverObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
@@ -80,7 +80,9 @@ public abstract class AbstractPlayableGame
     protected AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer,
                                    Board board, Journal<ActionMemento<?,?>> journal) {
 
-        this(logger, whitePlayer, blackPlayer, board, journal, new ForkJoinPool());
+        this(logger, whitePlayer, blackPlayer, board, journal, null,
+                new BoardStateEvaluatorImpl(board, journal)
+        );
     }
 
     protected AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer,
@@ -102,8 +104,8 @@ public abstract class AbstractPlayableGame
         this.board = board;
         this.journal = journal;
 
-        this.forkJoinPool = forkJoinPool;
         this.boardStateEvaluator = boardStateEvaluator;
+        this.forkJoinPool = forkJoinPool;
 
         this.activeState = new ActivePlayerState((Observable) board);
         this.lockedState = new LockedPlayerState();
@@ -117,7 +119,6 @@ public abstract class AbstractPlayableGame
         this.observers.add(new PlayerActionOberver(this));
         this.observers.add(new ActionEventObserver());
         this.observers.add(new GameExceptionObserver());
-        this.observers.add(new GameOverObserver());
     }
 
     @Override
@@ -221,7 +222,18 @@ public abstract class AbstractPlayableGame
 
             notifyObservers(new GameExceptionEvent(this, throwable));
         } finally {
-            notifyObservers(new GameOverEvent(this));
+            notifyBoardObservers(new GameOverEvent(this));
+
+            if (forkJoinPool != null) {
+                try {
+                    forkJoinPool.shutdown();
+                    if (!forkJoinPool.awaitTermination(1, MICROSECONDS)) {
+                        forkJoinPool.shutdownNow();
+                    }
+                } catch (InterruptedException e) {
+                    forkJoinPool.shutdownNow();
+                }
+            }
         }
     }
 
