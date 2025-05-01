@@ -25,7 +25,7 @@ import com.agutsul.chess.command.SimulateGameActionCommand;
 import com.agutsul.chess.journal.Journal;
 
 //https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
-class AlphaBetaActionSelectionTask
+final class AlphaBetaActionSelectionTask
         extends AbstractActionIntegerValueSimulationTask {
 
     private static final Logger LOGGER = getLogger(AlphaBetaActionSelectionTask.class);

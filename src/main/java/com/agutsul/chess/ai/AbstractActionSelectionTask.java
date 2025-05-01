@@ -51,10 +51,6 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
         this.resultMatcher = resultMatcher;
     }
 
-    public ResultMatcher<ACTION,VALUE,RESULT> getResultMatcher() {
-        return this.resultMatcher;
-    }
-
     @Override
     public final String toString() {
         return String.format("[%s]",

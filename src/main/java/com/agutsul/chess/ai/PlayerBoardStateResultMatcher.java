@@ -7,10 +7,8 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 
-final class PlayerBoardStateResultMatcher<ACTION extends Action<?>,
-                                          VALUE extends Comparable<VALUE>,
-                                          RESULT extends TaskResult<ACTION,VALUE>>
-        implements ResultMatcher<ACTION,VALUE,RESULT> {
+final class PlayerBoardStateResultMatcher<RESULT extends TaskResult<Action<?>,Integer>>
+        implements ResultMatcher<Action<?>,Integer,RESULT> {
 
     private final Color color;
     private final BoardState.Type boardState;

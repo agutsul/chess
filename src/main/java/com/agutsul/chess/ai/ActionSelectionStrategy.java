@@ -105,7 +105,7 @@ public final class ActionSelectionStrategy
         try {
             var result = forkJoinPool.invoke(task);
 
-            var resultMatcher = task.getResultMatcher();
+            var resultMatcher = new PlayerBoardStateResultMatcher<>(color, boardState);
             if (resultMatcher.match(result)) {
                 return Optional.ofNullable(result.getAction());
             }

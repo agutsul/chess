@@ -2,10 +2,8 @@ package com.agutsul.chess.ai;
 
 import com.agutsul.chess.activity.action.Action;
 
-final class TerminalBoardStateResultMatcher<ACTION extends Action<?>,
-                                            VALUE extends Comparable<VALUE>,
-                                            RESULT extends TaskResult<ACTION,VALUE>>
-        implements ResultMatcher<ACTION,VALUE,RESULT> {
+final class TerminalBoardStateResultMatcher<RESULT extends TaskResult<Action<?>,Integer>>
+        implements ResultMatcher<Action<?>,Integer,RESULT> {
 
     @Override
     public boolean match(RESULT result) {
