@@ -27,7 +27,7 @@ public class FenGameParserTest implements TestFileReader {
     @Test
     void testParsingStandardBoardFenGameFile() throws URISyntaxException, IOException {
         var games = parseGames("chess_move_0.fen", 1);
-        var game = games.get(0);
+        var game = games.getFirst();
 
         var board = game.getBoard();
         var standardBoard = readFileContent("standard_board.txt");
@@ -46,7 +46,7 @@ public class FenGameParserTest implements TestFileReader {
     //  e2 -> e4
     void testParsingWhitePawnMoveFenGameFile() throws URISyntaxException, IOException {
         var games = parseGames("chess_move_1.fen", 1);
-        var game = games.get(0);
+        var game = games.getFirst();
 
         var board = game.getBoard();
         assertFalse(board.getPiece("e2").isPresent());
@@ -71,7 +71,7 @@ public class FenGameParserTest implements TestFileReader {
     // c7 -> c5
     void testParsingBlackPawnMoveFenGameFile() throws URISyntaxException, IOException {
         var games = parseGames("chess_move_2.fen", 1);
-        var game = games.get(0);
+        var game = games.getFirst();
 
         var board = game.getBoard();
         assertFalse(board.getPiece("c7").isPresent());
@@ -96,7 +96,7 @@ public class FenGameParserTest implements TestFileReader {
     // g1 -> f3
     void testParsingWhiteKnightMoveFenGemFile() throws URISyntaxException, IOException {
         var games = parseGames("chess_move_3.fen", 1);
-        var game = games.get(0);
+        var game = games.getFirst();
 
         var board = game.getBoard();
         assertFalse(board.getPiece("g1").isPresent());

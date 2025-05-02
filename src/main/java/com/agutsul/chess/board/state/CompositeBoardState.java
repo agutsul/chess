@@ -31,12 +31,12 @@ public final class CompositeBoardState
 
     @Override
     public Color getColor() {
-        return boardStates.get(0).getColor();
+        return boardStates.getFirst().getColor();
     }
 
     @Override
     public Type getType() {
-        return boardStates.get(0).getType();
+        return boardStates.getFirst().getType();
     }
 
     @Override
@@ -53,12 +53,12 @@ public final class CompositeBoardState
 
     @Override
     public Collection<Action<?>> getActions(Piece<?> piece) {
-        return boardStates.get(0).getActions(piece);
+        return boardStates.getFirst().getActions(piece);
     }
 
     @Override
     public Collection<Impact<?>> getImpacts(Piece<?> piece) {
-        return boardStates.get(0).getImpacts(piece);
+        return boardStates.getFirst().getImpacts(piece);
     }
 
     @Override

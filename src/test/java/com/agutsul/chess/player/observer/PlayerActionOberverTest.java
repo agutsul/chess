@@ -163,7 +163,7 @@ public class PlayerActionOberverTest {
         doAnswer(inv -> {
             var arg = inv.getArgument(0);
             if (arg instanceof ActionCancelledEvent) {
-                journal.remove(journal.size() - 1);
+                journal.removeLast();
             }
             return null;
         }).when(game).notifyObservers(any());

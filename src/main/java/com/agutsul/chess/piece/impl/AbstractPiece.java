@@ -235,7 +235,7 @@ abstract class AbstractPiece<COLOR extends Color>
         }
 
         // returns the last position which means current piece position
-        return this.positions.get(this.positions.size() - 1);
+        return this.positions.getLast();
     }
 
     @Override

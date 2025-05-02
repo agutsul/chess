@@ -49,7 +49,7 @@ public class GameExceptionObserverTest implements TestFileReader {
         var parser = new PgnGameParser();
 
         var games = parser.parse(readFileContent("scholar_mate.pgn"));
-        var game = games.get(0);
+        var game = games.getFirst();
 
         assertTrue(listFileNames(tempDir).isEmpty());
 
@@ -69,7 +69,7 @@ public class GameExceptionObserverTest implements TestFileReader {
         var parser = new PgnGameParser();
 
         var games = parser.parse(readFileContent("scholar_mate.pgn"));
-        var game = games.get(0);
+        var game = games.getFirst();
 
         assertTrue(listFileNames(tempDir).isEmpty());
 
@@ -81,7 +81,7 @@ public class GameExceptionObserverTest implements TestFileReader {
         var fileNames = listFileNames(tempDir);
         assertEquals(2, fileNames.size());
 
-        var pgnFileName = fileNames.get(0);
+        var pgnFileName = fileNames.getFirst();
         assertEquals(getExtension(pgnFileName), "pgn");
 
         assertTrue(containsPlayerName(pgnFileName, game.getWhitePlayer()));

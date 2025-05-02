@@ -55,7 +55,7 @@ public abstract class AbstractCaptureLineActionRule<COLOR1 extends Color,
             var line = (Line) calculatedLine;
 
             // get piece on the last position of the line
-            var optionalPiece = board.getPiece(line.get(line.size() - 1));
+            var optionalPiece = board.getPiece(line.getLast());
             if (optionalPiece.isPresent()) {
                 @SuppressWarnings("unchecked")
                 var piece2 = (PIECE2) optionalPiece.get();

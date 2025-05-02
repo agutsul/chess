@@ -357,7 +357,7 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
         protected List<Piece<COLOR>> compute() {
             // no more splits
             if (this.positions.size() == 1) {
-                var position = this.positions.get(0);
+                var position = this.positions.getFirst();
                 return List.of(function.apply(position));
             }
 

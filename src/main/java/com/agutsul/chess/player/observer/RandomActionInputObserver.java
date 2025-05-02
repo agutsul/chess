@@ -44,7 +44,7 @@ public final class RandomActionInputObserver
         }
 
         if (actions.size() == 1) {
-            return adapt(actions.get(0));
+            return adapt(actions.getFirst());
         }
 
         var index = this.random.nextInt(0, actions.size());

@@ -86,7 +86,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
             return null;
         }
 
-        return this.states.get(this.states.size() - 1);
+        return this.states.getLast();
     }
 
     @Override

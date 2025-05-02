@@ -58,7 +58,7 @@ public class SimulationGameTest {
                 assertFalse(simulatedJournal.isEmpty());
                 assertEquals(simulatedJournal.size(), 1);
 
-                var simulatedActionMemento = simulatedJournal.get(0);
+                var simulatedActionMemento = simulatedJournal.getFirst();
 
                 assertEquals(Action.Type.BIG_MOVE, simulatedActionMemento.getActionType());
                 assertEquals(Colors.WHITE, simulatedActionMemento.getColor());

@@ -187,14 +187,14 @@ public class ActionValueComparatorTest {
 
         var values = new ArrayList<ActionSimulationResult>();
 
-        values.add(mockSimulationResult(enpassantAction1.get(0), 1));
-        values.add(mockSimulationResult(enpassantAction2.get(0), 1));
+        values.add(mockSimulationResult(enpassantAction1.getFirst(), 1));
+        values.add(mockSimulationResult(enpassantAction2.getFirst(), 1));
 
         values.sort(new ActionValueComparator());
 
         assertEquals(2, values.size());
-        assertEquals(enpassantAction2.get(0), values.getFirst().getAction());
-        assertEquals(enpassantAction1.get(0), values.getLast().getAction());
+        assertEquals(enpassantAction2.getFirst(), values.getFirst().getAction());
+        assertEquals(enpassantAction1.getFirst(), values.getLast().getAction());
     }
 
     @Test

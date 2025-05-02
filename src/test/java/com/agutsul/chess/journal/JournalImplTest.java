@@ -68,7 +68,7 @@ public class JournalImplTest implements TestFileReader {
 
         assertEquals(1, journal.size());
 
-        journal.remove(journal.size() - 1);
+        journal.removeLast();
 
         assertTrue(journal.isEmpty());
     }
