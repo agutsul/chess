@@ -1,4 +1,4 @@
-fileName,status,actions,tags
+file,status,actions,tags
 chess_promote_mate.pgn,WHITE_WIN,95,10
 chess_monitored_position.pgn,WHITE_WIN,53,10
 chess_unprotected_attacker_check.pgn,WHITE_WIN,23,10
