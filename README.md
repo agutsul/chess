@@ -37,6 +37,8 @@ Execute following command to get surefire report
 
 # Features
 
-- all piece actions supported ( MOVE, CAPTURE, PROMOTE, CASTLING, EN-PASSANTE )
-- alpha-beta pruning and minimax action selection support
-- PGN and FEN support via ANTLR ( currently limited by unit test only )
+- all piece actions supported ( move, capture, promote, castling, en-passante )
+- 'undo' action
+- action journal
+- alpha-beta pruning and minimax action selections are supported
+- PGN and FEN support via ANTLR ( limited by unit tests only )
