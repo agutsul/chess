@@ -189,7 +189,7 @@ public class TransformablePieceImplTest {
                 var moveAction = new PieceMoveAction<>(piece, position);
 
                 return List.of(new PiecePromoteAction<>(moveAction, board));
-        });
+            });
 
         when(pieceFactory.createRook(eq(position)))
             .thenReturn(mock(RookPiece.class));
