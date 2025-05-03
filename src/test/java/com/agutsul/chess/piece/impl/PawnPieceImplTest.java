@@ -22,8 +22,8 @@ import com.agutsul.chess.activity.action.PieceEnPassantAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.LabeledBoardBuilder;
+import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -43,7 +43,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         var expectedPositions = List.of(
                 "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2", // white pawns
                 "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"  // black pawns
-                );
+        );
 
         var board = new StandardBoard();
         var pieces = board.getPieces(PAWN_TYPE);
@@ -56,24 +56,21 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
         assertTrue(positions.containsAll(expectedPositions));
 
-        for (var color : Colors.values()) {
-            for (var piece : pieces.stream()
-                    .filter(piece -> Objects.equals(piece.getColor(), color))
-                    .toList()) {
-
+        Stream.of(Colors.values())
+            .flatMap(color -> pieces.stream().filter(piece -> Objects.equals(piece.getColor(), color)))
+            .forEach(piece -> {
                 var position = piece.getPosition();
-                var direction = piece.getColor() == Colors.WHITE ? 1 : -1;
+                var direction = Colors.WHITE.equals(piece.getColor()) ? 1 : -1;
 
                 var expected = Stream.of(
-                        positionOf(position.x(), position.y() + direction),
-                        positionOf(position.x(), position.y() + 2 * direction))
-                .map(String::valueOf)
-                .toList();
+                            positionOf(position.x(), position.y() + direction),
+                            positionOf(position.x(), position.y() + 2 * direction))
+                    .map(String::valueOf)
+                    .toList();
 
                 assertTrue(expectedPositions.contains(String.valueOf(position)));
-                assertPieceActions(board, color, PAWN_TYPE, String.valueOf(position), expected);
-            }
-        }
+                assertPieceActions(board, piece.getColor(), PAWN_TYPE, String.valueOf(position), expected);
+            });
     }
 
     @Test
