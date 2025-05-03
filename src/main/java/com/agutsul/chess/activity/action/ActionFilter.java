@@ -67,10 +67,7 @@ public final class ActionFilter<ACTION extends Action<?>>
                 }
 
                 if (isPromote(action)) {
-                    var sourceAction = ((PiecePromoteAction<?,?>) action).getSource();
-                    if (isMove((Action<?>) sourceAction)) {
-                        return Optional.of((PieceMoveAction<?,?>) sourceAction);
-                    }
+                    return apply((Action<?>) ((PiecePromoteAction<?,?>) action).getSource());
                 }
 
                 return Optional.empty();
@@ -93,10 +90,7 @@ public final class ActionFilter<ACTION extends Action<?>>
                 }
 
                 if (isPromote(action)) {
-                    var sourceAction = ((PiecePromoteAction<?,?>) action).getSource();
-                    if (isCapture((Action<?>) sourceAction)) {
-                        return Optional.of((PieceCaptureAction<?,?,?,?>) sourceAction);
-                    }
+                    return apply((Action<?>) ((PiecePromoteAction<?,?>) action).getSource());
                 }
 
                 return Optional.empty();
