@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.ForkJoinPool;
 
+import org.junit.jupiter.api.AutoClose;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -18,6 +19,9 @@ import com.agutsul.chess.player.UserPlayer;
 
 @ExtendWith(MockitoExtension.class)
 public class AlphaBetaActionSelectionTest {
+
+    @AutoClose
+    ForkJoinPool forkJoinPool = new ForkJoinPool(2);
 
     @Test
     void testScholarCheckMateWhiteAction() {
@@ -40,7 +44,7 @@ public class AlphaBetaActionSelectionTest {
         var blackPlayer = new UserPlayer(randomUUID().toString(), Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer,
-                board, new JournalImpl(), new ForkJoinPool(2)
+                board, new JournalImpl(), forkJoinPool
         );
 
         var strategy = new ActionSelectionStrategy(game, SelectionStrategy.Type.ALPHA_BETA);
@@ -72,7 +76,7 @@ public class AlphaBetaActionSelectionTest {
         var blackPlayer = new UserPlayer(randomUUID().toString(), Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer,
-                board, new JournalImpl(), new ForkJoinPool(2)
+                board, new JournalImpl(), forkJoinPool
         );
 
         var strategy = new ActionSelectionStrategy(game, SelectionStrategy.Type.ALPHA_BETA);

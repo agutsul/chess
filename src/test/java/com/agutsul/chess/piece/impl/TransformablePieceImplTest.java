@@ -3,6 +3,7 @@ package com.agutsul.chess.piece.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -50,6 +51,41 @@ public class TransformablePieceImplTest {
     @BeforeEach
     public void setUp() {
         this.proxy = new TransformablePieceImpl<>(board, pieceFactory, pawn, 7);
+    }
+
+    @Test
+    void testGetPosiotionsNonPromotedPawn() {
+        assertEquals(pawn.getPositions(), proxy.getPositions());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void testGetPosiotionsForPromotedPawn() {
+        var position = mock(Position.class);
+
+        when(pawn.getPositions())
+            .thenReturn(List.of(position));
+
+        doNothing()
+            .when(pawn).dispose(any());
+
+        when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
+            .then(inv -> {
+                var piece = inv.getArgument(0, PawnPiece.class);
+                var moveAction = new PieceMoveAction<>(piece, position);
+
+                return List.of(new PiecePromoteAction<>(moveAction, board));
+            });
+
+        when(pieceFactory.createBishop(eq(position)))
+            .thenReturn(mock(BishopPiece.class));
+
+        proxy.promote(position, Piece.Type.BISHOP);
+
+        var promotedPositions = proxy.getPositions();
+        var pawnPositions = pawn.getPositions();
+
+        assertTrue(promotedPositions.containsAll(pawnPositions));
     }
 
     @Test

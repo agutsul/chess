@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 
+import org.junit.jupiter.api.AutoClose;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,6 +20,9 @@ import com.agutsul.chess.journal.JournalImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class InsufficientMaterialBoardStateEvaluatorTest {
+
+    @AutoClose
+    ForkJoinPool forkJoinPool = new ForkJoinPool(2);
 
     @Test
     // https://en.wikipedia.org/wiki/Draw_(chess)
@@ -128,11 +132,9 @@ public class InsufficientMaterialBoardStateEvaluatorTest {
         assertInsufficientMaterial(board, Colors.BLACK);
     }
 
-    private static void assertInsufficientMaterial(Board board, Color color) {
-        try (var pool = new ForkJoinPool()) {
-            var evaluator = new InsufficientMaterialBoardStateEvaluator(board, new JournalImpl(), pool);
-            assertBoardState(evaluator.evaluate(color));
-        }
+    private void assertInsufficientMaterial(Board board, Color color) {
+        var evaluator = new InsufficientMaterialBoardStateEvaluator(board, new JournalImpl(), forkJoinPool);
+        assertBoardState(evaluator.evaluate(color));
     }
 
     private static void assertBoardState(Optional<BoardState> boardState) {

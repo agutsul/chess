@@ -3,7 +3,6 @@ package com.agutsul.chess.rule.board;
 import static com.agutsul.chess.activity.action.memento.ActionMementoFactory.createMemento;
 import static com.agutsul.chess.rule.board.MovesBoardStateEvaluator.FIFTY_MOVES;
 import static com.agutsul.chess.rule.board.MovesBoardStateEvaluator.SEVENTY_FIVE_MOVES;
-import static java.util.concurrent.TimeUnit.MICROSECONDS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -13,7 +12,7 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AutoClose;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,28 +33,16 @@ import com.agutsul.chess.position.Position;
 @ExtendWith(MockitoExtension.class)
 public class MovesBoardStateEvaluatorTest {
 
-    ExecutorService executorService;
+    @AutoClose
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Mock
     StandardBoard board;
 
     @BeforeEach
     void setUp() {
-        this.executorService = Executors.newSingleThreadExecutor();
         when(board.getExecutorService())
             .thenReturn(executorService);
-    }
-
-    @AfterEach
-    void tearDown() {
-        try {
-            this.executorService.shutdown();
-            if (!this.executorService.awaitTermination(1, MICROSECONDS)) {
-                this.executorService.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            this.executorService.shutdownNow();
-        }
     }
 
     @Test

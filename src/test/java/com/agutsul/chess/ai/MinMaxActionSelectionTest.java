@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.concurrent.ForkJoinPool;
 
+import org.junit.jupiter.api.AutoClose;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,6 +25,9 @@ import com.agutsul.chess.player.UserPlayer;
 
 @ExtendWith(MockitoExtension.class)
 public class MinMaxActionSelectionTest {
+
+    @AutoClose
+    ForkJoinPool forkJoinPool = new ForkJoinPool(2);
 
     @Test
     void testActionSelection() {
