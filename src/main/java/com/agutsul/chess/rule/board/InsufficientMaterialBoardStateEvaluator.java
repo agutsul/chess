@@ -138,14 +138,12 @@ final class InsufficientMaterialBoardStateEvaluator
         @Override
         protected BoardState evaluateBoard(Color color) {
             var pawns = board.getPieces(color, Piece.Type.PAWN);
-            var pawnStatuses = pawns.stream()
-                    .map(pawn -> isLocked(pawn))
-                    .toList();
+            var isAnyNonLocked = pawns.stream()
+                    .anyMatch(pawn -> !isLocked(pawn));
 
-            var isAllPawnsLocked = !pawnStatuses.contains(Boolean.FALSE);
-            return isAllPawnsLocked
-                    ? createBoardState(board, color)
-                    : null;
+            return isAnyNonLocked
+                    ? null
+                    : createBoardState(board, color);
         }
 
         private boolean isKingAndPawnsOnly(Color color) {
