@@ -30,7 +30,7 @@ final class MinMaxActionSelectionTask
                               ForkJoinPool forkJoinPool, Color color) {
 
         // best matched action selection
-        this(board, journal, forkJoinPool, color, DEFAULT_LIMIT, TERMINAL_RESULT_MATCHER);
+        this(board, journal, forkJoinPool, color, DEFAULT_LIMIT, TERMINAL_BOARD_STATE_RESULT_MATCHER);
     }
 
     @SuppressWarnings("unchecked")
@@ -41,7 +41,7 @@ final class MinMaxActionSelectionTask
         this(board, journal, forkJoinPool, color, DEFAULT_LIMIT,
                 new CompositeResultMatcher<Action<?>,Integer,TaskResult<Action<?>,Integer>>(
                         new PlayerBoardStateResultMatcher<>(color, boardState),
-                        TERMINAL_RESULT_MATCHER
+                        TERMINAL_BOARD_STATE_RESULT_MATCHER
                 )
         );
     }

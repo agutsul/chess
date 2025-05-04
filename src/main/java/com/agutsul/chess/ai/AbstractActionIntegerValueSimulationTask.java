@@ -19,11 +19,11 @@ abstract class AbstractActionIntegerValueSimulationTask
         extends AbstractActionValueSimulationTask<Integer> {
 
     private static final long serialVersionUID = 1L;
-    protected static ResultMatcher<Action<?>,Integer,TaskResult<Action<?>,Integer>> TERMINAL_RESULT_MATCHER =
+
+    protected static final ResultMatcher<Action<?>,Integer,TaskResult<Action<?>,Integer>> TERMINAL_BOARD_STATE_RESULT_MATCHER =
             new TerminalBoardStateResultMatcher<>();
 
-    AbstractActionIntegerValueSimulationTask(Logger logger, Board board,
-                                             Journal<ActionMemento<?,?>> journal,
+    AbstractActionIntegerValueSimulationTask(Logger logger, Board board, Journal<ActionMemento<?,?>> journal,
                                              ForkJoinPool forkJoinPool, List<Action<?>> actions,
                                              Color color, int limit,
                                              ResultMatcher<Action<?>,Integer,TaskResult<Action<?>,Integer>> resultMatcher) {
