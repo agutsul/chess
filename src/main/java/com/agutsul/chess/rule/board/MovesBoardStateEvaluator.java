@@ -200,7 +200,7 @@ final class MovesBoardStateEvaluator
                 var memento = actions.get(i);
 
                 var actionType = memento.getActionType();
-                if (isCapture(actionType)
+                if (isCapture(actionType) || isEnPassant(actionType)
                         || (isPromote(actionType) && isCaptureMemento(memento))) {
 
                     counter++;
@@ -218,7 +218,7 @@ final class MovesBoardStateEvaluator
             var originAction = promoteMemento.getTarget();
             var actionType = originAction.getActionType();
 
-            return isCapture(actionType) || isEnPassant(actionType);
+            return isCapture(actionType);
         }
     }
 
