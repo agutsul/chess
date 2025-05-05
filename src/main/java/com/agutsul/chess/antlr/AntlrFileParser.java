@@ -31,8 +31,8 @@ public class AntlrFileParser<T extends Game>
         var games = new ArrayList<T>();
 
         try (var iterator = lineIterator(file)) {
-            while (iterator.hasNext()) {
-                var line = strip(iterator.next());
+            for (String line = null; iterator.hasNext();) {
+                line = strip(iterator.next());
                 if (isNotBlank(line)) {
                     games.addAll(parser.parse(line));
                 }
