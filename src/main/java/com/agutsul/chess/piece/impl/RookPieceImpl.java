@@ -8,7 +8,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -55,10 +54,9 @@ final class RookPieceImpl<COLOR extends Color>
         // (because by default castling is initiated by the king)
         // and as result be the last in the result collection.
         // Action order influences action auto-detection used by PerformActionCommand.
-        var actions = new ArrayList<>(super.getActions());
-        actions.sort(ROOK_COMPARATOR);
-
-        return actions;
+        return super.getActions().stream()
+                .sorted(ROOK_COMPARATOR)
+                .toList();
     }
 
     @Override

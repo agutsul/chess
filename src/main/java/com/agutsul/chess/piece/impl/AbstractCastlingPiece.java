@@ -56,14 +56,14 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
     @Override
     public Collection<Action<?>> getActions() {
-        return filterActions(super.getActions());
+        return filterEnabledActions(super.getActions());
     }
 
     @Override
     public Collection<Action<?>> getActions(Action.Type actionType) {
         var actions = super.getActions(actionType);
         return isCastling(actionType)
-                ? filterActions(actions)
+                ? filterEnabledActions(actions)
                 : actions;
     }
 
@@ -107,7 +107,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         }
     }
 
-    private Collection<Action<?>> filterActions(Collection<Action<?>> actions) {
+    private Collection<Action<?>> filterEnabledActions(Collection<Action<?>> actions) {
         var filteredActions = actions.stream()
                 .filter(action -> {
                     if (!isCastling(action)) {
