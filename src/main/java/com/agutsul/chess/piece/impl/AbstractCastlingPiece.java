@@ -7,7 +7,6 @@ import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -109,19 +108,18 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     }
 
     private Collection<Action<?>> filterActions(Collection<Action<?>> actions) {
-        var filteredActions = new ArrayList<Action<?>>();
-        for (var action : actions) {
-            if (isCastling(action)) {
-                var castlingAction = (PieceCastlingAction<?,?,?>) action;
-                // filter castling actions to return ones for enabled sides only
-                if (isTrue(sides.get(castlingAction.getSide()))) {
-                    filteredActions.add(action);
-                }
-            } else {
-                // return all non-castling related actions
-                filteredActions.add(action);
-            }
-        }
+        var filteredActions = actions.stream()
+                .filter(action -> {
+                    if (!isCastling(action)) {
+                        // return all non-castling related actions
+                        return true;
+                    }
+
+                    var castlingAction = (PieceCastlingAction<?,?,?>) action;
+                    // filter castling actions to return ones for enabled sides only
+                    return isTrue(sides.get(castlingAction.getSide()));
+                })
+                .toList();
 
         return filteredActions;
     }

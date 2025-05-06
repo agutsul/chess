@@ -41,4 +41,5 @@ Execute following command to get surefire report
 - 'undo' action
 - action journal
 - alpha-beta pruning and minimax action selections are supported
+- SAN support
 - PGN and FEN support via ANTLR ( limited by unit tests only )
