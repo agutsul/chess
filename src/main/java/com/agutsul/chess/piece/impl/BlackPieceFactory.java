@@ -28,7 +28,7 @@ public final class BlackPieceFactory
     private static final String PAWN_UNICODE    = "\u265F";
 
     public BlackPieceFactory(Board board) {
-        super(LOGGER, board, Colors.BLACK, Directions.DOWN, Promotions.BLACK, BigMoves.BLACK);
+        super(LOGGER, board, Colors.BLACK, Directions.BLACK, Promotions.BLACK, BigMoves.BLACK);
     }
 
     @Override

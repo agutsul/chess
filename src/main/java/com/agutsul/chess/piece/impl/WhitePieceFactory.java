@@ -28,7 +28,7 @@ public final class WhitePieceFactory
     private static final String PAWN_UNICODE    = "\u2659";
 
     public WhitePieceFactory(Board board) {
-        super(LOGGER, board, Colors.WHITE, Directions.UP, Promotions.WHITE, BigMoves.WHITE);
+        super(LOGGER, board, Colors.WHITE, Directions.WHITE, Promotions.WHITE, BigMoves.WHITE);
     }
 
     @Override

@@ -29,8 +29,8 @@ abstract class AbstractPieceFactory<COLOR extends Color>
         implements PieceFactory<COLOR> {
 
     enum Directions implements Direction {
-        UP(1),
-        DOWN(-1);
+        WHITE(1),
+        BLACK(-1);
 
         private int code;
 
