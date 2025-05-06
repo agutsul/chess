@@ -61,10 +61,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
     @Override
     public Collection<Action<?>> getActions(Action.Type actionType) {
-        var actions = super.getActions(actionType);
-        return isCastling(actionType)
-                ? filterEnabledActions(actions)
-                : actions;
+        return filterEnabledActions(super.getActions(actionType));
     }
 
     @Override
