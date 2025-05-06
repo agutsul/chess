@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.activity.action.Action.isMove;
 import static java.time.Instant.now;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -7,6 +8,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -59,6 +61,18 @@ final class PawnPieceImpl<COLOR extends Color>
                 new PawnActionCache(),
                 new ActivityCacheImpl<Impact.Type,Impact<?>>()
         );
+    }
+
+    @Override
+    public Collection<Action<?>> getActions(Action.Type actionType) {
+        var actions = super.getActions(actionType);
+        if (isMove(actionType) && !isMoved()) {
+            return Stream.of(super.getActions(Action.Type.BIG_MOVE), actions)
+                    .flatMap(Collection::stream)
+                    .toList();
+        }
+
+        return actions;
     }
 
     @Override

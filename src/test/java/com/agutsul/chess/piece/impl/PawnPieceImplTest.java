@@ -60,16 +60,16 @@ public class PawnPieceImplTest extends AbstractPieceTest {
             .flatMap(color -> pieces.stream().filter(piece -> Objects.equals(piece.getColor(), color)))
             .forEach(piece -> {
                 var position = piece.getPosition();
-                var direction = Colors.WHITE.equals(piece.getColor()) ? 1 : -1;
-
                 var expected = Stream.of(
-                            positionOf(position.x(), position.y() + direction),
-                            positionOf(position.x(), position.y() + 2 * direction))
+                            positionOf(position.x(), position.y() + piece.getDirection()),
+                            positionOf(position.x(), position.y() + 2 * piece.getDirection()))
                     .map(String::valueOf)
                     .toList();
 
                 assertTrue(expectedPositions.contains(String.valueOf(position)));
-                assertPieceActions(board, piece.getColor(), PAWN_TYPE, String.valueOf(position), expected);
+                assertPieceActions(board, piece.getColor(),
+                        PAWN_TYPE, String.valueOf(position), expected
+                );
             });
     }
 
@@ -396,13 +396,9 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertTrue(board2.getImpacts(blackPawn).isEmpty());
     }
 
-    static void assertPawnEnPassantActions(
-            Board board,
-            Color color,
-            Piece.Type type,
-            String sourcePosition,
-            List<String> expectedMovePositions,
-            List<String> expectedEnPassantPositions) {
+    static void assertPawnEnPassantActions(Board board, Color color, Piece.Type type,
+                                           String sourcePosition, List<String> expectedMovePositions,
+                                           List<String> expectedEnPassantPositions) {
 
         var optionalPiece = board.getPiece(sourcePosition);
         assertTrue(optionalPiece.isPresent());
@@ -413,9 +409,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertEquals(piece.getType(), type);
 
         var actions = piece.getActions();
-        assertEquals(actions.size(),
-                expectedMovePositions.size()
-                + expectedEnPassantPositions.size());
+        assertEquals(actions.size(), expectedMovePositions.size() + expectedEnPassantPositions.size());
 
         if (!expectedMovePositions.isEmpty()) {
             var movePositions = actions.stream()
@@ -440,13 +434,9 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         }
     }
 
-    static void assertPawnPromotionActions(
-            Board board,
-            Color color,
-            Piece.Type type,
-            String sourcePosition,
-            List<String> expectedMovePromotePositions,
-            List<String> expectedCapturePromotePositions) {
+    static void assertPawnPromotionActions(Board board, Color color, Piece.Type type,
+                                           String sourcePosition, List<String> expectedMovePromotePositions,
+                                           List<String> expectedCapturePromotePositions) {
 
         var optionalPiece = board.getPiece(sourcePosition);
         assertTrue(optionalPiece.isPresent());
@@ -457,9 +447,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertEquals(piece.getType(), type);
 
         var actions = piece.getActions();
-        assertEquals(actions.size(),
-                expectedMovePromotePositions.size()
-                + expectedCapturePromotePositions.size());
+        assertEquals(actions.size(), expectedMovePromotePositions.size() + expectedCapturePromotePositions.size());
 
         if (!expectedMovePromotePositions.isEmpty()) {
             @SuppressWarnings("rawtypes")
