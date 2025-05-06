@@ -1,29 +1,18 @@
 package com.agutsul.chess.color;
 
 public enum Colors implements Color {
-    WHITE("#FFFFFF") {
+    WHITE {
         @Override
         public Color invert() {
             return BLACK;
         }
     },
-    BLACK("#000000") {
+    BLACK {
         @Override
         public Color invert() {
             return WHITE;
         }
     };
-
-    // RGB code
-    private String code;
-
-    Colors(String code) {
-        this.code = code;
-    }
-
-    public String code() {
-        return code;
-    }
 
     @Override
     public String toString() {
