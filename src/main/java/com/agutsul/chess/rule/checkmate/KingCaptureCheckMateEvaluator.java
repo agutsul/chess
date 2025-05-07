@@ -2,8 +2,6 @@ package com.agutsul.chess.rule.checkmate;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.util.HashSet;
-
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Protectable;
@@ -11,7 +9,6 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
-import com.agutsul.chess.position.Position;
 
 final class KingCaptureCheckMateEvaluator
         implements CheckMateEvaluator {
@@ -36,17 +33,11 @@ final class KingCaptureCheckMateEvaluator
                 .filter(action -> !checkMakers.contains(action.getTarget()))
                 .toList();
 
-        var positions = new HashSet<Position>();
-        for (var action : captureActions) {
-            var piece = action.getTarget();
+        var capturedPiece = captureActions.stream()
+                .map(PieceCaptureAction::getTarget)
+                .filter(piece -> !((Protectable) piece).isProtected())
+                .findFirst();
 
-            var isProtected = ((Protectable) piece).isProtected();
-            if (!isProtected) {
-                positions.add(piece.getPosition());
-                break;
-            }
-        }
-
-        return !positions.isEmpty();
+        return capturedPiece.isPresent();
     }
 }
