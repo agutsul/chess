@@ -76,11 +76,11 @@ final class RookPieceImpl<COLOR extends Color>
                 return 0;
             }
 
-            var isHigherPriority = (isCapture(action1) && isMove(action2))
+            var isPriority = (isCapture(action1) && isMove(action2))
                     || (isCapture(action1) && isCastling(action2))
                     || (isMove(action1) && isCastling(action2));
 
-            return isHigherPriority ? -1 : 1;
+            return isPriority ? -1 : 1;
         }
     }
 

@@ -1,13 +1,13 @@
 package com.agutsul.chess.piece.impl;
 
 import static com.agutsul.chess.activity.action.Action.isCastling;
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import org.slf4j.Logger;
 
@@ -45,7 +45,7 @@ final class KingPieceImpl<COLOR extends Color>
         super(board, Piece.Type.KING, color, unicode, position, direction,
                 new KingPieceActionRule<>(board),
                 new KingPieceImpactRule<>(board),
-                asList(Side.values())
+                List.of(Side.values())
         );
 
         this.checkedPieceState = new KingCheckedPieceState<>(getState());

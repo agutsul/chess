@@ -10,6 +10,6 @@ import com.agutsul.chess.piece.RookPiece;
 
 interface TransformablePieceProxy<COLOR extends Color,PIECE extends Piece<COLOR>>
         extends PieceProxy<COLOR,PIECE>, PawnPiece<COLOR>, KnightPiece<COLOR>,
-                BishopPiece<COLOR>, RookPiece<COLOR>, QueenPiece<COLOR>{
+                BishopPiece<COLOR>, RookPiece<COLOR>, QueenPiece<COLOR> {
 
 }

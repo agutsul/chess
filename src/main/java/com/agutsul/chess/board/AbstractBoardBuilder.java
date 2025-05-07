@@ -6,11 +6,13 @@ import static org.apache.commons.collections4.ListUtils.partition;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -235,15 +237,9 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
                                       T position1, T position2,
                                       @SuppressWarnings("unchecked") T... positions) {
 
-        var pawnPositions = new ArrayList<T>();
-
-        pawnPositions.add(position1);
-        pawnPositions.add(position2);
-        pawnPositions.addAll(List.of(positions));
-
-        pawnPositions.forEach(position ->
-            addPiecePosition(Piece.Type.PAWN, context, position)
-        );
+        Stream.of(List.of(position1, position2), List.of(positions))
+            .flatMap(Collection::stream)
+            .forEach(position -> addPiecePosition(Piece.Type.PAWN, context, position));
 
         return this;
     }
@@ -364,11 +360,8 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
             // split to subtasks
             var tasks = partition(this.positions, this.positions.size() / 2).stream()
                     .map(positions -> new PieceBuilderSubTask<>(positions, function))
+                    .map(ForkJoinTask::fork)
                     .toList();
-
-            for (var task : tasks) {
-                task.fork();
-            }
 
             var pieces = new ArrayList<Piece<COLOR>>();
             for (var task : tasks) {

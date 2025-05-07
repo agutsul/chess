@@ -1,7 +1,8 @@
 package com.agutsul.chess.rule.check;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Objects;
 
 import com.agutsul.chess.Protectable;
@@ -26,25 +27,16 @@ final class KingCapturePieceActionEvaluator
 
     @Override
     public Collection<Action<?>> evaluate(KingPiece<?> king) {
-        var pieces = board.getPieces(king.getColor().invert());
-
-        var filteredActions = new HashSet<>();
-
         var captureFilter = new ActionFilter<>(PieceCaptureAction.class);
-        filteredActions.addAll(captureFilter.apply(this.pieceActions));
+        var filteredActions = captureFilter.apply(this.pieceActions);
 
-        var actions = new HashSet<Action<?>>();
-        for (var piece : pieces) {
-            for (var action : filteredActions) {
-                var captureAction = (AbstractCaptureAction<?,?,?,?>) action;
-
-                if (Objects.equals(captureAction.getTarget(), piece)
-                        && !((Protectable) piece).isProtected()) {
-
-                    actions.add(captureAction);
-                }
-            }
-        }
+        var opponentPieces = board.getPieces(king.getColor().invert());
+        Collection<Action<?>> actions = opponentPieces.stream()
+                .filter(piece -> !((Protectable) piece).isProtected())
+                .flatMap(piece -> filteredActions.stream()
+                        .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
+                        .filter(action -> Objects.equals(action.getTarget(), piece)))
+                .collect(toSet());
 
         return actions;
     }

@@ -27,10 +27,11 @@ public final class CompositePieceAlgo<COLOR extends Color,
 
     @Override
     public Collection<RESULT> calculate(SOURCE source) {
-        var results = new ArrayList<RESULT>();
-        for (var algo : algos) {
-            results.addAll(algo.calculate(source));
-        }
+        var results = algos.stream()
+                .map(algo -> algo.calculate(source))
+                .flatMap(Collection::stream)
+                .toList();
+
         return results;
     }
 }

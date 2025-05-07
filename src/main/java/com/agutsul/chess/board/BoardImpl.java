@@ -288,7 +288,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
         @SuppressWarnings("unchecked")
         var capturedPiece = capturedPieces.stream()
-                .filter(piece -> !piece.isActive())
+                .filter(not(Piece::isActive))
                 .filter(piece -> Objects.nonNull(capturedAt(piece)))
                 .sorted(comparing(piece -> capturedAt((Piece<?>) piece)).reversed())
                 .map(piece -> (Piece<COLOR>) piece)

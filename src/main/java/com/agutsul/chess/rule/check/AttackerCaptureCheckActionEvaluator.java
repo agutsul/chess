@@ -1,5 +1,7 @@
 package com.agutsul.chess.rule.check;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -26,8 +28,6 @@ final class AttackerCaptureCheckActionEvaluator
 
     @Override
     public Collection<Action<?>> evaluate(KingPiece<?> king) {
-        var attackers = board.getAttackers(king);
-
         var filteredActions = new HashSet<>();
 
         var captureFilter = new ActionFilter<>(PieceCaptureAction.class);
@@ -39,16 +39,13 @@ final class AttackerCaptureCheckActionEvaluator
             filteredActions.addAll(enPassantFilter.apply(this.pieceActions));
         }
 
-        var actions = new HashSet<Action<?>>();
-        for (var attacker : attackers) {
-            for (var action : filteredActions) {
-                var captureAction = (AbstractCaptureAction<?,?,?,?>) action;
-
-                if (Objects.equals(captureAction.getTarget(), attacker)) {
-                    actions.add(captureAction);
-                }
-            }
-        }
+        var attackers = board.getAttackers(king);
+        Collection<Action<?>> actions = attackers.stream()
+                .flatMap(attacker -> filteredActions.stream()
+                        .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
+                        .filter(action -> Objects.equals(action.getTarget(), attacker))
+                )
+                .collect(toSet());
 
         return actions;
     }

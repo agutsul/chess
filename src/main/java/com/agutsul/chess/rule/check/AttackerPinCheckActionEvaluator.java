@@ -1,7 +1,9 @@
 package com.agutsul.chess.rule.check;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Optional;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
@@ -22,19 +24,12 @@ final class AttackerPinCheckActionEvaluator
                                   Collection<PieceCaptureAction<?,?,?,?>> checkActions,
                                   Collection<PieceMoveAction<?,?>> pieceMoveActions) {
 
-        var actions = new HashSet<Action<?>>();
-        for (var checkedAction : checkActions) {
-            var attackLine = checkedAction.getLine();
-            if (attackLine.isEmpty()) {
-                continue;
-            }
-
-            for (var pieceMoveAction : pieceMoveActions) {
-                if (attackLine.get().contains(pieceMoveAction.getPosition())) {
-                    actions.add(pieceMoveAction);
-                }
-            }
-        }
+        Collection<Action<?>> actions = checkActions.stream()
+                .map(PieceCaptureAction::getLine)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .flatMap(line -> pieceMoveActions.stream().filter(action -> line.contains(action.getPosition())))
+                .collect(toSet());
 
         return actions;
     }

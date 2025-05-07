@@ -20,10 +20,9 @@ public final class CompositePieceRule<RESULT extends Activity<TYPE,?>,
     public CompositePieceRule(Rule<? extends Piece<?>,?> rule,
                               Rule<? extends Piece<?>,?>... additionalRules) {
 
-        register(rule);
-
-        Stream.of(additionalRules)
-            .forEach(ruleItem -> register(ruleItem));
+        Stream.of(List.of(rule), List.of(additionalRules))
+            .flatMap(Collection::stream)
+            .forEach(this::register);
     }
 
     @Override
@@ -33,10 +32,9 @@ public final class CompositePieceRule<RESULT extends Activity<TYPE,?>,
 
     @SuppressWarnings("unchecked")
     public Collection<RESULT> evaluate(Piece<?> piece, TYPE type, TYPE... additionalTypes) {
-        var types = new ArrayList<TYPE>();
-
-        types.add(type);
-        types.addAll(List.of(additionalTypes));
+        var types = Stream.of(List.of(type), List.of(additionalTypes))
+                .flatMap(Collection::stream)
+                .toList();
 
         var typeRules = this.rules.stream()
                 .filter(rule -> types.contains(rule.getType()))
@@ -53,13 +51,12 @@ public final class CompositePieceRule<RESULT extends Activity<TYPE,?>,
     private Collection<RESULT> evaluate(Collection<? extends Rule<Piece<?>,?>> rules,
                                         Piece<?> piece) {
 
-        var list = new ArrayList<RESULT>();
-        for (var rule : rules) {
-            var result = rule.evaluate(piece);
-            list.addAll((Collection<RESULT>) result);
-        }
+        var result = rules.stream()
+                .map(rule -> (Collection<RESULT>) rule.evaluate(piece))
+                .flatMap(Collection::stream)
+                .toList();
 
-        return list;
+        return result;
     }
 
     @SuppressWarnings("unchecked")
