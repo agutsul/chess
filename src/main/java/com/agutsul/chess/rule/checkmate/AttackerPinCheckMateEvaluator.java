@@ -1,11 +1,9 @@
 package com.agutsul.chess.rule.checkmate;
 
-import static com.agutsul.chess.piece.Piece.isPawn;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -41,14 +39,7 @@ final class AttackerPinCheckMateEvaluator
                 // confirm that piece not already pinned
                 .filter(piece -> !((Pinnable) piece).isPinned())
                 // find all possible move actions
-                .map(piece -> {
-                    var actions = new ArrayList<Action<?>>(board.getActions(piece, Action.Type.MOVE));
-                    if (isPawn(piece)) {
-                        actions.addAll(board.getActions(piece, Action.Type.BIG_MOVE));
-                    }
-
-                    return actions;
-                })
+                .map(piece -> board.getActions(piece, Action.Type.MOVE))
                 .flatMap(Collection::stream)
                 .map(action -> (PieceMoveAction<?,?>) action)
                 .map(PieceMoveAction::getPosition)
