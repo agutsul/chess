@@ -43,8 +43,7 @@ final class CompositeBoardStateEvaluator
     public List<BoardState> evaluate(Color playerColor) {
         var boardStates = evaluate(evaluators, playerColor);
         return boardStates.stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .flatMap(Optional::stream)
                 .toList();
     }
 

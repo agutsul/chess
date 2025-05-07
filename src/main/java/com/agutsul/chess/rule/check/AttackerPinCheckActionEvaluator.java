@@ -26,8 +26,7 @@ final class AttackerPinCheckActionEvaluator
 
         Collection<Action<?>> actions = checkActions.stream()
                 .map(PieceCaptureAction::getLine)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .flatMap(Optional::stream)
                 .flatMap(line -> pieceMoveActions.stream().filter(action -> line.contains(action.getPosition())))
                 .collect(toSet());
 

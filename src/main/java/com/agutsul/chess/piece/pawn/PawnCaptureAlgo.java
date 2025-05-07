@@ -38,8 +38,7 @@ final class PawnCaptureAlgo<COLOR extends Color,
             ));
 
         return nextPositions.stream()
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .flatMap(Optional::stream)
                 .toList();
     }
 }

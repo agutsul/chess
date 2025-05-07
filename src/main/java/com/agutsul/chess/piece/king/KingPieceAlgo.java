@@ -56,8 +56,7 @@ final class KingPieceAlgo<COLOR extends Color,
                         currentPosition.x() + move.x(),
                         currentPosition.y() + move.y()
                 ))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .flatMap(Optional::stream)
                 .toList();
 
         return nextPositions;

@@ -68,8 +68,7 @@ public class PiecePinImpactRule<COLOR1 extends Color,
         for (var line : kingLines) {
             var linePieces = line.stream()
                     .map(position -> board.getPiece(position))
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
+                    .flatMap(Optional::stream)
                     .toList();
 
             if (linePieces.size() < 3) {

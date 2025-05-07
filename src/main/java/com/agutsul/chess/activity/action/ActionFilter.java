@@ -50,8 +50,7 @@ public final class ActionFilter<ACTION extends Action<?>>
 
         var filteredActions = actions.stream()
                 .map(action -> (Optional<ACTION>) filter.apply(action))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .flatMap(Optional::stream)
                 .toList();
 
         return filteredActions;

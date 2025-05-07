@@ -302,8 +302,7 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
             );
 
             var tasks = optionalTasks.stream()
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
+                    .flatMap(Optional::stream)
                     .toList();
 
             if (tasks.isEmpty()) {

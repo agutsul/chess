@@ -235,9 +235,8 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         );
 
         var requestedPositions = allPositions.stream()
-                .map(code -> getPosition(code))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .map(this::getPosition)
+                .flatMap(Optional::stream)
                 .collect(toSet());
 
         var piecesByColor = this.pieceCache.getActive(color);
