@@ -195,14 +195,9 @@ final class PawnPieceImpl<COLOR extends Color>
                     Action.Type.PROMOTE
             );
 
-            var moveActions = filter(calculatedActions, PieceMoveAction.class);
-            if (piece.isMoved()) {
-                return moveActions;
-            }
-
             var actions = new ArrayList<Action<?>>();
 
-            actions.addAll(moveActions);
+            actions.addAll(filter(calculatedActions, PieceMoveAction.class));
             actions.addAll(super.calculateActions(piece, Action.Type.BIG_MOVE));
 
             return actions;

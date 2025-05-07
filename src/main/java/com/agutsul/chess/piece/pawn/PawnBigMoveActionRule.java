@@ -30,6 +30,10 @@ final class PawnBigMoveActionRule<COLOR extends Color,
 
     @Override
     protected Collection<Calculated> calculate(PAWN pawn) {
+        if (pawn.isMoved()) {
+            return emptyList();
+        }
+
         // check if intermediate position is empty for move
         var positions = super.calculate(pawn);
         if (positions.isEmpty()) {
