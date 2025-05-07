@@ -2,15 +2,16 @@ package com.agutsul.chess.rule.board;
 
 import static com.agutsul.chess.board.state.BoardStateFactory.staleMatedBoardState;
 import static com.agutsul.chess.piece.Piece.isKing;
+import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
@@ -36,31 +37,26 @@ final class StaleMatedBoardStateEvaluator
                 .sorted(comparing(Piece::getType)) // make king piece the last
                 .toList();
 
-        var allActions = new ArrayList<Action<?>>();
-        for (var piece : pieces) {
-            var actions = board.getActions(piece);
-
-            if (isKing(piece)) {
-                for (var action : actions) {
-                    var targetPosition = action.getPosition();
-
-                    var isPositionAvailable = !board.isAttacked(targetPosition, attackerColor)
-                            && !board.isMonitored(targetPosition, attackerColor);
-
-                    if (isPositionAvailable) {
-                        allActions.add(action);
+        var actions = pieces.stream()
+                .map(piece -> {
+                    var pieceActions = board.getActions(piece);
+                    if (!isKing(piece)) {
+                        return pieceActions;
                     }
-                }
-            } else {
-                allActions.addAll(actions);
-            }
 
-            if (!allActions.isEmpty()) {
-                break;
-            }
-        }
+                    var kingActions = pieceActions.stream()
+                            .filter(action -> !board.isAttacked(action.getPosition(),  attackerColor))
+                            .filter(action -> !board.isMonitored(action.getPosition(), attackerColor))
+                            .findFirst()
+                            .map(List::of)
+                            .orElse(emptyList());
 
-        return Optional.ofNullable(allActions.isEmpty()
+                    return kingActions;
+                })
+                .flatMap(Collection::stream)
+                .findFirst();
+
+        return Optional.ofNullable(actions.isEmpty()
                 ? staleMatedBoardState(board, color)
                 : null
         );
