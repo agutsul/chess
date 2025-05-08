@@ -202,7 +202,6 @@ public final class ConsoleGameOutputObserver
         displayBoard(this.game.getBoard());
     }
 
-
     // utilities
 
     private static void displayAction(Game game, Player player, Action<?> action) {
@@ -211,7 +210,7 @@ public final class ConsoleGameOutputObserver
         var journal = game.getJournal();
         var number = (journal.size() / 2) + 1;
 
-        String formattedAction = isCastling(action)
+        var formattedAction = isCastling(action)
                 ? StandardAlgebraicActionFormatter.format(createMemento(game.getBoard(), action))
                 : String.valueOf(action);
 

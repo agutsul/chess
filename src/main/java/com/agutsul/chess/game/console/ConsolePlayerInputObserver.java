@@ -83,7 +83,7 @@ public final class ConsolePlayerInputObserver
         @SuppressWarnings("resource")
         var scanner = new Scanner(System.in, StandardCharsets.UTF_8);
         while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
+            var line = scanner.nextLine();
             if (!line.isBlank()) {
                 return line;
             }
