@@ -107,8 +107,8 @@ final class PawnPieceImpl<COLOR extends Color>
     }
 
     @SuppressWarnings("unchecked")
-    private static <A extends Action<?>> Collection<Action<?>> filter(Collection<Action<?>> actions,
-                                                                      Class<A> actionClass) {
+    private static <A extends Action<?>> Collection<Action<?>>
+            filter(Collection<Action<?>> actions, Class<A> actionClass) {
 
         var filter = new ActionFilter<>(actionClass);
         var filtered = (Collection<Action<?>>) filter.apply(actions);

@@ -261,7 +261,7 @@ abstract class AbstractPiece<COLOR extends Color>
     public final boolean isProtected() {
         LOGGER.info("Checking if piece '{}' is protected by the other piece", this);
 
-        // piece can't protect itself. only other piece with the same color ( if it is not pinned )
+        // piece can't protect itself. only the other piece with the same color ( if it is not pinned )
         var protectors = board.getPieces(getColor()).stream()
                 .filter(piece -> !Objects.equals(piece, this))
                 .filter(piece -> isKing(piece) || !((Pinnable) piece).isPinned())

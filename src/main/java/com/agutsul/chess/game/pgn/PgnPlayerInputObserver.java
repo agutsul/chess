@@ -13,8 +13,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.antlr.pgn.action.PgnActionAdapter;
 import com.agutsul.chess.antlr.pgn.action.PawnPromotionTypeAdapter;
+import com.agutsul.chess.antlr.pgn.action.PgnActionAdapter;
 import com.agutsul.chess.antlr.pgn.action.PieceActionAdapter;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.Termination;
@@ -35,14 +35,8 @@ final class PgnPlayerInputObserver
         super(LOGGER, player, game);
 
         this.actionIterator = new ActionIterator(actions);
-        this.pieceActionAdapter = new PieceActionAdapter(
-                game.getBoard(),
-                player.getColor()
-        );
-        this.promotionTypeAdapter = new PawnPromotionTypeAdapter(
-                game.getBoard(),
-                player.getColor()
-        );
+        this.pieceActionAdapter = new PieceActionAdapter(game.getBoard(), player.getColor());
+        this.promotionTypeAdapter = new PawnPromotionTypeAdapter(game.getBoard(), player.getColor());
     }
 
     @Override

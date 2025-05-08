@@ -368,8 +368,7 @@ final class TransformablePieceImpl<COLOR extends Color,
             }
         }
 
-        private static String formatInvalidPromotionMessage(Promotable piece,
-                                                            Position position,
+        private static String formatInvalidPromotionMessage(Promotable piece, Position position,
                                                             Piece.Type pieceType) {
 
             return String.format("%s invalid promotion to %s at '%s'",
