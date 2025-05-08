@@ -1,6 +1,5 @@
 package com.agutsul.chess.piece.impl;
 
-import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
@@ -73,7 +72,7 @@ abstract class AbstractPinnablePieceProxy<COLOR extends Color,
 
         var pinImpact = optionalPinImpact.get();
         // return actions the on pinned line
-        var allowedActions = filterActions(actions, pinImpact.getTarget());
+        var allowedActions = filter(actions, pinImpact.getTarget());
         if (!allowedActions.isEmpty()) {
             return allowedActions;
         }
@@ -85,7 +84,7 @@ abstract class AbstractPinnablePieceProxy<COLOR extends Color,
             return actions;
         }
         // return actions to capture king's attacker
-        return filterActions(actions, optionalKing.get());
+        return filter(actions, optionalKing.get());
     }
 
     @Override
@@ -102,34 +101,29 @@ abstract class AbstractPinnablePieceProxy<COLOR extends Color,
 
     // utility methods
 
-    private static Collection<Action<?>> filterActions(Collection<Action<?>> actions,
-                                                       PieceCheckImpact<?,?,?,?> impact) {
+    private static Collection<Action<?>> filter(Collection<Action<?>> actions,
+                                                PieceCheckImpact<?,?,?,?> impact) {
 
         var pinnedLine = impact.getLine();
-        if (pinnedLine.isEmpty()) {
-            return emptyList();
-        }
-
-        var line = pinnedLine.get();
-        return actions.stream()
-                .filter(action -> line.contains(action.getPosition()))
+        var filtered = pinnedLine.stream()
+                .flatMap(line -> actions.stream().filter(action -> line.contains(action.getPosition())))
                 .toList();
+
+        return filtered;
     }
 
-    private static Collection<Action<?>> filterActions(Collection<Action<?>> actions,
-                                                       KingPiece<?> king) {
-
+    private static Collection<Action<?>> filter(Collection<Action<?>> actions, KingPiece<?> king) {
         Collection<Action<?>> filteredActions = new HashSet<>();
 
-        filteredActions.addAll(filterActions(actions, king, PieceCaptureAction.class));
-        filteredActions.addAll(filterActions(actions, king, PieceEnPassantAction.class));
+        filteredActions.addAll(filter(actions, king, PieceCaptureAction.class));
+        filteredActions.addAll(filter(actions, king, PieceEnPassantAction.class));
 
         return filteredActions;
     }
 
-    private static <A extends AbstractCaptureAction<?,?,?,?>> Collection<Action<?>> filterActions(Collection<Action<?>> actions,
-                                                                                                  KingPiece<?> king,
-                                                                                                  Class<A> actionClass) {
+    private static <A extends AbstractCaptureAction<?,?,?,?>> Collection<Action<?>>
+            filter(Collection<Action<?>> actions, KingPiece<?> king, Class<A> actionClass) {
+
         var filter = new ActionFilter<>(actionClass);
         var filteredActions = filter.apply(actions);
 
