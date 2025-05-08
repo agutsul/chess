@@ -211,13 +211,9 @@ public final class ConsoleGameOutputObserver
         var journal = game.getJournal();
         var number = (journal.size() / 2) + 1;
 
-        String formattedAction = null;
-        if (isCastling(action)) {
-            var memento = createMemento(game.getBoard(), action);
-            formattedAction = StandardAlgebraicActionFormatter.format(memento);
-        } else {
-            formattedAction = String.valueOf(action);
-        }
+        String formattedAction = isCastling(action)
+                ? StandardAlgebraicActionFormatter.format(createMemento(game.getBoard(), action))
+                : String.valueOf(action);
 
         System.out.println(String.format("%d. %s %s: '%s': %s",
                 number,
