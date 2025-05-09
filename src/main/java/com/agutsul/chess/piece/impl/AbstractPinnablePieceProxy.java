@@ -113,7 +113,7 @@ abstract class AbstractPinnablePieceProxy<COLOR extends Color,
     }
 
     private static Collection<Action<?>> filter(Collection<Action<?>> actions, KingPiece<?> king) {
-        Collection<Action<?>> filteredActions = new HashSet<>();
+        var filteredActions = new HashSet<Action<?>>();
 
         filteredActions.addAll(filter(actions, king, PieceCaptureAction.class));
         filteredActions.addAll(filter(actions, king, PieceEnPassantAction.class));
