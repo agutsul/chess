@@ -73,7 +73,7 @@ final class TransformablePieceImpl<COLOR extends Color,
         this.pawnPiece = pawnPiece;
         this.pieceFactory = pieceFactory;
 
-        var state = new ActiveTransformablePieceState<>(board/*, pawnPiece*/, promotionLine);
+        var state = new ActiveTransformablePieceState<>(board, promotionLine);
 
         this.activeState = state;
         setState(state);
