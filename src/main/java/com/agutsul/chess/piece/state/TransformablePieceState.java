@@ -9,6 +9,6 @@ import com.agutsul.chess.state.State;
 public interface TransformablePieceState<PIECE extends Piece<?>>
         extends State<PIECE> {
 
-    void promote(Promotable piece, Position position, Piece.Type pieceType);
-    void demote(Demotable piece);
+    <P extends Piece<?> & Promotable> void promote(P piece, Position position, Piece.Type pieceType);
+    <D extends Piece<?> & Demotable>  void demote(D piece);
 }

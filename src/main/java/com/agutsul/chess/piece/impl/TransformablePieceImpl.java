@@ -73,7 +73,7 @@ final class TransformablePieceImpl<COLOR extends Color,
         this.pawnPiece = pawnPiece;
         this.pieceFactory = pieceFactory;
 
-        var state = new ActiveTransformablePieceState<>(board, pawnPiece, promotionLine);
+        var state = new ActiveTransformablePieceState<>(board/*, pawnPiece*/, promotionLine);
 
         this.activeState = state;
         setState(state);
@@ -266,7 +266,7 @@ final class TransformablePieceImpl<COLOR extends Color,
         }
 
         @Override
-        public void demote(Demotable piece) {
+        public <D extends Piece<?> & Demotable> void demote(D piece) {
             LOGGER.info("Undo promote by '{}'", piece);
             ((TransformablePieceImpl<?,?>) piece).cancelPromote();
         }
@@ -316,29 +316,19 @@ final class TransformablePieceImpl<COLOR extends Color,
         private final Board board;
         private final int promotionLine;
 
-        private PawnPiece<?> origin;
-
-        ActiveTransformablePieceState(Board board, PIECE piece, int promotionLine) {
+        ActiveTransformablePieceState(Board board, int promotionLine) {
             super(Type.ACTIVE);
 
             this.board = board;
             this.promotionLine = promotionLine;
-            this.origin = piece;
         }
 
         @Override
-        public void promote(Promotable piece, Position position, Piece.Type pieceType) {
+        public <P extends Piece<?> & Promotable> void promote(P piece, Position position, Piece.Type pieceType) {
             LOGGER.info("Promoting '{}' to '{}'", piece, position);
 
-            validatePromotion(piece, position, pieceType);
-
-            ((TransformablePieceImpl<?,?>) piece).doPromote(position, pieceType);
-        }
-
-        private void validatePromotion(Promotable piece, Position position, Piece.Type pieceType) {
-            // after execution of MOVE or CAPTURE
-            // piece should already be placed at target position
-            var promotionPosition = this.origin.getPosition();
+            // after execution of MOVE or CAPTURE piece should already be placed at target position
+            var promotionPosition = piece.getPosition();
             if (Objects.equals(promotionPosition, position)) {
 
                 // just double check if it is promotion line
@@ -347,23 +337,23 @@ final class TransformablePieceImpl<COLOR extends Color,
                         formatInvalidPromotionMessage(piece, position, pieceType)
                     );
                 }
+            } else {
+                // validate promotion action ( check if promoted position is legal )
+                var promoteActions = this.board.getActions(piece, Action.Type.PROMOTE);
+                var possiblePositions = promoteActions.stream()
+                        .map(action -> (PiecePromoteAction<?,?>) action)
+                        .map(action -> (Action<?>) action.getSource())
+                        .map(Action::getPosition)
+                        .collect(toSet());
 
-                return;
+                if (!possiblePositions.contains(position)) {
+                    throw new IllegalActionException(
+                        formatInvalidPromotionMessage(piece, position, pieceType)
+                    );
+                }
             }
 
-            // validate promotion action ( check if promoted position is legal )
-            var promoteActions = this.board.getActions(this.origin, Action.Type.PROMOTE);
-            var possiblePromotions = promoteActions.stream()
-                    .map(action -> (PiecePromoteAction<?,?>) action)
-                    .map(action -> (Action<?>) action.getSource())
-                    .map(Action::getPosition)
-                    .collect(toSet());
-
-            if (!possiblePromotions.contains(position)) {
-                throw new IllegalActionException(
-                    formatInvalidPromotionMessage(piece, position, pieceType)
-                );
-            }
+            ((TransformablePieceImpl<?,?>) piece).doPromote(position, pieceType);
         }
 
         private static String formatInvalidPromotionMessage(Promotable piece, Position position,
@@ -395,7 +385,7 @@ final class TransformablePieceImpl<COLOR extends Color,
         }
 
         @Override
-        public void promote(Promotable piece, Position position, Piece.Type pieceType) {
+        public <P extends Piece<?> & Promotable> void promote(P piece, Position position, Piece.Type pieceType) {
             LOGGER.warn("Promoting disabled '{}' to '{}'", piece, position);
             // do nothing
         }

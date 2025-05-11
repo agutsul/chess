@@ -69,7 +69,7 @@ public class TransformablePieceImplTest {
         doNothing()
             .when(pawn).dispose(any());
 
-        when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
+        when(board.getActions(any(), eq(Action.Type.PROMOTE)))
             .then(inv -> {
                 var piece = inv.getArgument(0, PawnPiece.class);
                 var moveAction = new PieceMoveAction<>(piece, position);
@@ -96,7 +96,7 @@ public class TransformablePieceImplTest {
         doNothing()
             .when(pawn).dispose(any());
 
-        when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
+        when(board.getActions(any(), eq(Action.Type.PROMOTE)))
             .then(inv -> {
                 var piece = inv.getArgument(0, PawnPiece.class);
                 var moveAction = new PieceMoveAction<>(piece, position);
@@ -125,7 +125,7 @@ public class TransformablePieceImplTest {
         doNothing()
             .when(pawn).dispose(any());
 
-        when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
+        when(board.getActions(any(), eq(Action.Type.PROMOTE)))
             .then(inv -> {
                 var piece = inv.getArgument(0, PawnPiece.class);
                 var moveAction = new PieceMoveAction<>(piece, position);
@@ -154,7 +154,7 @@ public class TransformablePieceImplTest {
         doNothing()
             .when(pawn).dispose(any());
 
-        when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
+        when(board.getActions(any(), eq(Action.Type.PROMOTE)))
             .then(inv -> {
                 var piece = inv.getArgument(0, PawnPiece.class);
                 var moveAction = new PieceMoveAction<>(piece, position);
@@ -183,7 +183,7 @@ public class TransformablePieceImplTest {
         doNothing()
             .when(pawn).dispose(any());
 
-        when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
+        when(board.getActions(any(), eq(Action.Type.PROMOTE)))
             .then(inv -> {
                 var piece = inv.getArgument(0, PawnPiece.class);
                 var moveAction = new PieceMoveAction<>(piece, position);
@@ -208,7 +208,7 @@ public class TransformablePieceImplTest {
     void testUnsupportedPromotionType() {
         var position = mock(Position.class);
 
-        when(board.getActions(eq(pawn), eq(Action.Type.PROMOTE)))
+        when(board.getActions(any(), eq(Action.Type.PROMOTE)))
             .then(inv -> {
                 var piece = inv.getArgument(0, PawnPiece.class);
                 var moveAction = new PieceMoveAction<>(piece, position);
