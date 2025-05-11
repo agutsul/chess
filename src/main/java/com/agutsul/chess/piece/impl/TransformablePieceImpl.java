@@ -219,8 +219,8 @@ final class TransformablePieceImpl<COLOR extends Color,
     private enum PromotionFactory {
         KNIGHT_MODE(Piece.Type.KNIGHT, (pieceFactory, position) -> pieceFactory.createKnight(position)),
         BISHOP_MODE(Piece.Type.BISHOP, (pieceFactory, position) -> pieceFactory.createBishop(position)),
-        ROOK_MODE(Piece.Type.ROOK,     (pieceFactory, position) -> pieceFactory.createRook(position)),
-        QUEEN_MODE(Piece.Type.QUEEN,   (pieceFactory, position) -> pieceFactory.createQueen(position));
+        QUEEN_MODE(Piece.Type.QUEEN,   (pieceFactory, position) -> pieceFactory.createQueen(position)),
+        ROOK_MODE(Piece.Type.ROOK,     (pieceFactory, position) -> pieceFactory.createRook(position));
 
         private static final Map<Piece.Type,PromotionFactory> MODES =
                 Stream.of(values()).collect(toMap(PromotionFactory::type, identity()));
@@ -280,8 +280,7 @@ final class TransformablePieceImpl<COLOR extends Color,
         @Override
         public Collection<Action<?>> calculateActions(PIECE piece, Action.Type actionType) {
             LOGGER.warn("Calculating actions({}) for piece '{}'",
-                    actionType.name(),
-                    piece
+                    actionType.name(), piece
             );
 
             return emptyList();
@@ -296,8 +295,7 @@ final class TransformablePieceImpl<COLOR extends Color,
         @Override
         public Collection<Impact<?>> calculateImpacts(PIECE piece, Impact.Type impactType) {
             LOGGER.warn("Calculating impacts({}) for piece '{}'",
-                    impactType.name(),
-                    piece
+                    impactType.name(), piece
             );
 
             return emptyList();

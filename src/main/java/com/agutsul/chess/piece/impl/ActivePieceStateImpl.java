@@ -92,12 +92,12 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
         LOGGER.info("Capture '{}' by '{}'", targetPiece, piece);
 
         var possibleActions = board.getActions(piece, Action.Type.CAPTURE);
-        var possiblePositions = possibleActions.stream()
+        var possiblePieces = possibleActions.stream()
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .map(AbstractCaptureAction::getTarget)
                 .collect(toSet());
 
-        if (!possiblePositions.contains(targetPiece)) {
+        if (!possiblePieces.contains(targetPiece)) {
             throw new IllegalActionException(
                     String.format("%s invalid capture of %s", piece, targetPiece)
             );
