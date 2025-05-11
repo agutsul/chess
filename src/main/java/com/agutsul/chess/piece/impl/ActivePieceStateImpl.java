@@ -72,8 +72,8 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
     public void move(PIECE piece, Position position) {
         LOGGER.info("Move '{}' to '{}'", piece, position);
 
-        var actions = board.getActions(piece, Action.Type.MOVE);
-        var possiblePositions = actions.stream()
+        var possibleActions = board.getActions(piece, Action.Type.MOVE);
+        var possiblePositions = possibleActions.stream()
                 .map(action -> (AbstractMoveAction<?,?>) action)
                 .map(AbstractMoveAction::getTarget)
                 .collect(toSet());
@@ -92,12 +92,12 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
         LOGGER.info("Capture '{}' by '{}'", targetPiece, piece);
 
         var possibleActions = board.getActions(piece, Action.Type.CAPTURE);
-        var possiblePieces = possibleActions.stream()
+        var possibleTargets = possibleActions.stream()
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .map(AbstractCaptureAction::getTarget)
                 .collect(toSet());
 
-        if (!possiblePieces.contains(targetPiece)) {
+        if (!possibleTargets.contains(targetPiece)) {
             throw new IllegalActionException(
                     String.format("%s invalid capture of %s", piece, targetPiece)
             );
