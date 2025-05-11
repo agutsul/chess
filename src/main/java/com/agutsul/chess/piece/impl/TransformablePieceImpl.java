@@ -313,6 +313,8 @@ final class TransformablePieceImpl<COLOR extends Color,
 
         private static final Logger LOGGER = getLogger(ActiveTransformablePieceState.class);
 
+        private static final String INVALID_PROMOTION_MESSAGE = "%s invalid promotion to %s at '%s'";
+
         private final Board board;
         private final int promotionLine;
 
@@ -333,9 +335,11 @@ final class TransformablePieceImpl<COLOR extends Color,
 
                 // just double check if it is promotion line
                 if (promotionPosition.y() != this.promotionLine) {
-                    throw new IllegalActionException(
-                        formatInvalidPromotionMessage(piece, position, pieceType)
+                    var message = String.format(INVALID_PROMOTION_MESSAGE,
+                            piece.getType().name(), pieceType.name(), position
                     );
+
+                    throw new IllegalActionException(message);
                 }
             } else {
                 // validate promotion action ( check if promoted position is legal )
@@ -347,23 +351,15 @@ final class TransformablePieceImpl<COLOR extends Color,
                         .collect(toSet());
 
                 if (!possiblePositions.contains(position)) {
-                    throw new IllegalActionException(
-                        formatInvalidPromotionMessage(piece, position, pieceType)
+                    var message = String.format(INVALID_PROMOTION_MESSAGE,
+                            piece.getType().name(), pieceType.name(), position
                     );
+
+                    throw new IllegalActionException(message);
                 }
             }
 
             ((TransformablePieceImpl<?,?>) piece).doPromote(position, pieceType);
-        }
-
-        private static String formatInvalidPromotionMessage(Promotable piece, Position position,
-                                                            Piece.Type pieceType) {
-
-            return String.format("%s invalid promotion to %s at '%s'",
-                    ((Piece<?>) piece).getType().name(),
-                    pieceType.name(),
-                    position
-            );
         }
     }
 
