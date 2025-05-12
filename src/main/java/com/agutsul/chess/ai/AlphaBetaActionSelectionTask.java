@@ -130,10 +130,10 @@ final class AlphaBetaActionSelectionTask
     }
 
     @Override
-    protected AlphaBetaActionSelectionTask createTask(TaskResult<Action<?>,Integer> simulationResult,
+    protected AlphaBetaActionSelectionTask createTask(TaskResult<Action<?>,Integer> result,
                                                       List<Action<?>> actions, Color color) {
         // node level task
-        return new AlphaBetaActionSelectionTask(simulationResult.getBoard(), simulationResult.getJournal(),
+        return new AlphaBetaActionSelectionTask(result.getBoard(), result.getJournal(),
                 this.forkJoinPool, actions, color, this.limit - 1, this.resultMatcher, this.context
         );
     }

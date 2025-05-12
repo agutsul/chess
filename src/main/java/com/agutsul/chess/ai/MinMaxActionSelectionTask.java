@@ -114,12 +114,12 @@ final class MinMaxActionSelectionTask
     }
 
     @Override
-    protected MinMaxActionSelectionTask createTask(TaskResult<Action<?>,Integer> simulationResult,
+    protected MinMaxActionSelectionTask createTask(TaskResult<Action<?>,Integer> result,
                                                    List<Action<?>> actions, Color color) {
         // node level task
-        return new MinMaxActionSelectionTask(simulationResult.getBoard(),
-                simulationResult.getJournal(), this.forkJoinPool, actions, color,
-                this.limit - 1, this.resultMatcher, simulationResult.getValue()
+        return new MinMaxActionSelectionTask(result.getBoard(),
+                result.getJournal(), this.forkJoinPool, actions, color,
+                this.limit - 1, this.resultMatcher, result.getValue()
         );
     }
 
