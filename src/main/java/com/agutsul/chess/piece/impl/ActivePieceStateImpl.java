@@ -75,7 +75,7 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
         var possibleActions = board.getActions(piece, Action.Type.MOVE);
         var possiblePositions = possibleActions.stream()
                 .map(action -> (AbstractMoveAction<?,?>) action)
-                .map(AbstractMoveAction::getTarget)
+                .map(AbstractMoveAction::getPosition)
                 .collect(toSet());
 
         if (!possiblePositions.contains(position)) {
