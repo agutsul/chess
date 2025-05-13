@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "0-1"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:00:42"]
+[WhiteElo "1408"]
+[BlackElo "1105"]
+[WhiteRatingDiff "-78"]
+[BlackRatingDiff "+101"]
+[ECO "D06"]
+[Opening "Queen's Gambit Refused: Austrian Defense"]
+[TimeControl "300+0"]
+[Termination "Normal"]
+
+1. d4 d5 2. c4 c5 3. e3 e6 4. cxd5 cxd4 5. dxe6 dxe3 6. Qxd8+ Kxd8 7. exf7 exf2+ 8. Kxf2 Nf6 9. Bg5 Be6 10. Nf3 Bxf7 11. Nc3 Be7 12. Be2 Nc6 13. Rhd1+ Kc7 14. Bf4+ Kc8 15. Bb5 Bc5+ 16. Kf1 Nb4 17. a3 Nc2 18. Rac1 Ne3+ 19. Bxe3 Bxe3 20. Rc2 a6 21. Re2 axb5 22. Rxe3 Bc4+ 23. Kg1 Re8 24. Rxe8+ Nxe8 25. Ne5 h6 26. Nxc4 bxc4 27. Rd4 b5 28. Nxb5 Kb7 29. Nd6+ Kb6 30. Nxc4+ Kc5 0-1

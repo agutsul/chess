@@ -33,3 +33,4 @@ chess_insufficient_material_control_pawn_move_position.pgn,BLACK_WIN,80,10
 chess_insufficient_material_wrong_color.pgn,BLACK_WIN,57,10
 chess_short_game.pgn,BLACK_WIN,2,10
 chess_action_count_comparison.pgn,WHITE_WIN,7,10
+chess_player_perform_action_and_resign_at_once.pgn,BLACK_WIN,60,10
