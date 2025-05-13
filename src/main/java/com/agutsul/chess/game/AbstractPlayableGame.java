@@ -220,7 +220,10 @@ public abstract class AbstractPlayableGame
 
             notifyObservers(new GameExceptionEvent(this, throwable));
         } finally {
-            notifyBoardObservers(new GameOverEvent(this));
+            var event = new GameOverEvent(this);
+
+            notifyObservers(event);
+            notifyBoardObservers(event);
 
             if (forkJoinPool != null) {
                 try {
