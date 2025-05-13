@@ -1,23 +1,18 @@
 package com.agutsul.chess.game.pgn;
 
-import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
-import static com.agutsul.chess.board.state.BoardState.Type.INSUFFICIENT_MATERIAL;
-import static com.agutsul.chess.game.state.GameState.Type.BLACK_WIN;
-import static com.agutsul.chess.game.state.GameState.Type.DRAWN_GAME;
-import static com.agutsul.chess.game.state.GameState.Type.WHITE_WIN;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 
 import com.agutsul.chess.antlr.pgn.action.PawnPromotionTypeAdapter;
 import com.agutsul.chess.antlr.pgn.action.PgnActionAdapter;
 import com.agutsul.chess.antlr.pgn.action.PieceActionAdapter;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
-import com.agutsul.chess.game.Termination;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
 
@@ -57,47 +52,24 @@ final class PgnPlayerInputObserver
 
     private String finalCommand() {
         var pgnGame = (PgnGame) this.game;
-
         var gameState = pgnGame.getParsedGameState();
-        if (DRAWN_GAME.equals(gameState.getType())) {
+
+        switch (gameState.getType()) {
+        case WHITE_WIN:
+            return getPlayerCommand(Colors.WHITE);
+        case BLACK_WIN:
+            return getPlayerCommand(Colors.BLACK);
+        case DRAWN_GAME:
             return DRAW_COMMAND;
+        default:
+            return EXIT_COMMAND;
         }
+    }
 
-        var termination = pgnGame.getParsedTermination();
-        if (Termination.TIME_FORFEIT.equals(termination)) {
-            return DEFEAT_COMMAND;
-        }
-
-        if (Termination.ABANDONED.equals(termination)) {
-            if (WHITE_WIN.equals(gameState.getType())) {
-                return Colors.WHITE.equals(player.getColor()) ? WIN_COMMAND : DEFEAT_COMMAND;
-            }
-
-            if (BLACK_WIN.equals(gameState.getType())) {
-                return Colors.BLACK.equals(player.getColor()) ? WIN_COMMAND : DEFEAT_COMMAND;
-            }
-        }
-
-        var board = pgnGame.getBoard();
-        if (Termination.NORMAL.equals(termination)) {
-
-            var currentState = board.getState();
-            if (currentState.isAnyType(CHECKED, INSUFFICIENT_MATERIAL)) {
-                return DEFEAT_COMMAND;
-            }
-
-            var boardStates = new ArrayList<>(board.getStates());
-            if (boardStates.size() < 2) {
-                return DEFEAT_COMMAND;
-            }
-
-            var opponentState = boardStates.get(boardStates.size() - 2);
-            if (opponentState.isType(INSUFFICIENT_MATERIAL)) {
-                return WIN_COMMAND;
-            }
-        }
-
-        return EXIT_COMMAND;
+    private String getPlayerCommand(Color color) {
+        return Objects.equals(color, player.getColor())
+                ? WIN_COMMAND
+                : DEFEAT_COMMAND;
     }
 
     private static final class ActionIterator

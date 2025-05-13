@@ -24,6 +24,7 @@ public final class ConsolePlayerInputObserver
 
     private static final String PROMOTION_PIECE_TYPE_MESSAGE = "Choose promotion piece type:";
     private static final String EMPTY_LINE_MESSAGE = "Unable to process an empty line";
+    private static final String UNSUPPORTED_COMMAND_MESSAGE = "Unsupported command";
 
     private static final String PROMPT_PROMOTION_PIECE_TYPE_MESSAGE =
             createPromptPromotionPieceTypeMessage();
@@ -49,6 +50,12 @@ public final class ConsolePlayerInputObserver
                 this.player,
                 actionCommand
         );
+
+        if (WIN_COMMAND.equalsIgnoreCase(actionCommand)) {
+            throw new IllegalActionException(String.format("%: '%s'",
+                    UNSUPPORTED_COMMAND_MESSAGE, actionCommand
+            ));
+        }
 
         return actionCommand;
     }
