@@ -45,17 +45,17 @@ public final class ConsolePlayerInputObserver
         System.out.println(message);
 
         var actionCommand = lowerCase(readConsoleInput());
-        LOGGER.info("{}: '{}' performs move: '{}'",
-                this.player.getColor(),
-                this.player,
-                actionCommand
-        );
-
         if (WIN_COMMAND.equalsIgnoreCase(actionCommand)) {
             throw new IllegalActionException(String.format("%: '%s'",
                     UNSUPPORTED_COMMAND_MESSAGE, actionCommand
             ));
         }
+
+        LOGGER.info("{}: '{}' performs move: '{}'",
+                this.player.getColor(),
+                this.player,
+                actionCommand
+        );
 
         return actionCommand;
     }
