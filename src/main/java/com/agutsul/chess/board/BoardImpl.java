@@ -366,15 +366,26 @@ final class BoardImpl extends AbstractBoard implements Closeable {
                 .anyMatch(targetPosition -> Objects.equals(targetPosition, position));
 
         if (!isMonitored) {
-            return isMonitored;
+            return false;
         }
 
         var optionalKing = getKing(attackerColor.invert());
         if (optionalKing.isEmpty()) {
-            return isMonitored;
+            return false;
         }
 
         var king = optionalKing.get();
+
+        var checkMakers = getAttackers(king);
+        var isCheckMakerMonitored = checkMakers.stream()
+                .map(piece -> getImpacts(piece, Impact.Type.MONITOR))
+                .flatMap(Collection::stream)
+                .map(Impact::getPosition)
+                .anyMatch(targetPosition -> Objects.equals(targetPosition, position));
+
+        if (!isCheckMakerMonitored) {
+            return false;
+        }
 
         // check if there is pinned piece in between monitored position
         // and attacker monitoring that position.

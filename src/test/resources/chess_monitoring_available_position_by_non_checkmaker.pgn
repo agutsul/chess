@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1-0"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:55:37"]
+[WhiteElo "1687"]
+[BlackElo "1500"]
+[WhiteRatingDiff "+5"]
+[BlackRatingDiff "-6"]
+[ECO "A01"]
+[Opening "Nimzo-Larsen Attack"]
+[TimeControl "60+0"]
+[Termination "Time forfeit"]
+
+1. b3  f6 2. Bb2  e5 3. g3  d5 4. Bg2  c6 5. e3  Be6 6. f3  Qd7 7. d3  a5 8. c3  a4 9. Nd2  axb3 10. Nxb3  Na6 11. Qc2  Nc5 12. Nxc5  Bxc5 13. d4  exd4 14. exd4  Ba3 15. Bxa3  Rxa3 16. Qb2  Ra7 17. Ne2  b5 18. O-O  h5 19. f4  h4 20. g4  Bxg4 21. Nc1  h3 22. Bf3  Nh6 23. Qf2  Kf7 24. Ne2  Rha8 25. Ng3  Bxf3 26. Qxf3  Nf5 27. Nxf5  Qxf5 28. Rae1  Rxa2 29. Rf2  Ra1 30. Rff1  R1a2 31. Rf2  Rxf2 32. Kxf2  Ra2+ 33. Kf1  Rxh2 34. Re2 1-0
