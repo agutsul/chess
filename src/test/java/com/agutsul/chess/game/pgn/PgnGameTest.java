@@ -60,7 +60,7 @@ public final class PgnGameTest extends AbstractPgnGameTest {
     }
 
     @Test
-    void testFiveRepetitionsFailurePgnGame() throws URISyntaxException, IOException  {
+    void testFiveRepetitionsFailurePgnGameNotAllActionsPerformed() throws URISyntaxException, IOException  {
         var game = parseGame(readFileContent("chess_five_repetition_failure.pgn"));
 
         assertEquals(140, game.getParsedActions().size());
@@ -69,11 +69,35 @@ public final class PgnGameTest extends AbstractPgnGameTest {
 
         game.run();
 
+        var boardState = game.getBoard().getState();
+        assertTrue(boardState.isType(BoardState.Type.FIVE_FOLD_REPETITION));
+        assertEquals("FIVE_FOLD_REPETITION(WHITE: Ke2)", boardState.toString());
+
         // NOTE: actual state differs from expected because of five repetitions rule ('Ke2')
         // Looks like this rule was not applied while performing this game.
         assertEquals(GameState.Type.DRAWN_GAME, game.getState().getType());
         // NOTE: actual journal size is not equal to expected because not all actions applied
         assertEquals(111, game.getJournal().size());
+    }
+
+    @Test
+    void testFiveRepetitionsFailurePgnGameAllActionsPerformed() throws URISyntaxException, IOException {
+        var game = parseGame(readFileContent("chess_five_repetition_failure2.pgn"));
+
+        assertEquals(93, game.getParsedActions().size());
+        assertEquals(GameState.Type.WHITE_WIN, game.getParsedGameState().getType());
+        assertEquals(10, game.getParsedTags().size());
+
+        game.run();
+
+        var boardState = game.getBoard().getState();
+        assertTrue(boardState.isType(BoardState.Type.FIVE_FOLD_REPETITION));
+        assertEquals("FIVE_FOLD_REPETITION(WHITE: Bb3)", boardState.toString());
+
+        // NOTE: actual state differs from expected because of five repetitions rule ('Ke2')
+        // Looks like this rule was not applied while performing this game.
+        assertEquals(GameState.Type.DRAWN_GAME, game.getState().getType());
+        assertEquals(93, game.getJournal().size());
     }
 
     @Test

@@ -2,12 +2,12 @@ package com.agutsul.chess.rule.board;
 
 import static com.agutsul.chess.board.state.BoardStateFactory.fiveFoldRepetitionBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.threeFoldRepetitionBoardState;
+import static java.util.Map.Entry.comparingByValue;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -39,18 +39,29 @@ final class FoldRepetitionBoardStateEvaluator
             return Optional.empty();
         }
 
-        var stats = calculateStatistics(journal.get(color));
-        var maxRepetitions = stats.entrySet().stream()
-                .mapToInt(Entry::getValue)
-                .max()
-                .orElse(0);
+        var journalActions = journal.get(color);
 
+        var map = new HashMap<String,ActionMemento<?,?>>();
+        for (var action : journalActions) {
+            map.put(createActionCode(action), action);
+        }
+
+        var stats = calculateStatistics(journalActions);
+
+        var maxEntry = stats.entrySet().stream().max(comparingByValue());
+        if (maxEntry.isEmpty()) {
+            return Optional.empty();
+        }
+
+        var maxRepetitions = maxEntry.map(Map.Entry::getValue).orElse(0);
         if (maxRepetitions >= FIVE_REPETITIONS) {
-            return Optional.of(fiveFoldRepetitionBoardState(board, color));
+            var actionMemento = map.get(maxEntry.get().getKey());
+            return Optional.of(fiveFoldRepetitionBoardState(board, actionMemento));
         }
 
         if (maxRepetitions >= THREE_REPETITIONS) {
-            return Optional.of(threeFoldRepetitionBoardState(board, color));
+            var actionMemento = map.get(maxEntry.get().getKey());
+            return Optional.of(threeFoldRepetitionBoardState(board, actionMemento));
         }
 
         return Optional.empty();

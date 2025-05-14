@@ -244,8 +244,8 @@ public abstract class AbstractPlayableGame
             this.currentPlayer.play();
 
             if (!hasNext()) {
-                logger.info("Game stopped due to board state: {}",
-                        this.board.getState()
+                logger.info("Game stopped due to board state of '{}': {}",
+                        this.currentPlayer.getColor(), this.board.getState()
                 );
                 break;
             }

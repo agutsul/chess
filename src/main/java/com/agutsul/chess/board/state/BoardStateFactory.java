@@ -10,6 +10,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
@@ -45,8 +46,8 @@ public abstract class BoardStateFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <STATE extends BoardState & FiveFoldRepetitionBoardState> STATE fiveFoldRepetitionBoardState(Board board, Color color) {
-        return (STATE) new FiveFoldRepetitionBoardStateImpl(board, color);
+    public static <STATE extends BoardState & FiveFoldRepetitionBoardState> STATE fiveFoldRepetitionBoardState(Board board, ActionMemento<?,?> memento) {
+        return (STATE) new FiveFoldRepetitionBoardStateImpl(board, memento);
     }
 
     @SuppressWarnings("unchecked")
@@ -82,8 +83,8 @@ public abstract class BoardStateFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <STATE extends BoardState & ThreeFoldRepetitionBoardState> STATE threeFoldRepetitionBoardState(Board board, Color color) {
-        return (STATE) new ThreeFoldRepetitionBoardStateImpl(board, color);
+    public static <STATE extends BoardState & ThreeFoldRepetitionBoardState> STATE threeFoldRepetitionBoardState(Board board, ActionMemento<?,?> memento) {
+        return (STATE) new ThreeFoldRepetitionBoardStateImpl(board, memento);
     }
 
     // actual terminal state classes
@@ -149,8 +150,21 @@ public abstract class BoardStateFactory {
 
         private static final Logger LOGGER = getLogger(FiveFoldRepetitionBoardState.class);
 
-        FiveFoldRepetitionBoardStateImpl(Board board, Color color) {
-            super(LOGGER, BoardState.Type.FIVE_FOLD_REPETITION, board, color);
+        private final ActionMemento<?,?> actionMemento;
+
+        FiveFoldRepetitionBoardStateImpl(Board board, ActionMemento<?,?> actionMemento) {
+            super(LOGGER, BoardState.Type.FIVE_FOLD_REPETITION, board, actionMemento.getColor());
+            this.actionMemento = actionMemento;
+        }
+
+        @Override
+        public ActionMemento<?,?> getActionMemento() {
+            return this.actionMemento;
+        }
+
+        @Override
+        public String toString() {
+            return FoldRepetitionBoardState.format(this);
         }
     }
 
@@ -219,8 +233,21 @@ public abstract class BoardStateFactory {
 
         private static final Logger LOGGER = getLogger(ThreeFoldRepetitionBoardState.class);
 
-        ThreeFoldRepetitionBoardStateImpl(Board board, Color color) {
-            super(LOGGER, BoardState.Type.THREE_FOLD_REPETITION, board, color);
+        private final ActionMemento<?,?> actionMemento;
+
+        ThreeFoldRepetitionBoardStateImpl(Board board, ActionMemento<?,?> actionMemento) {
+            super(LOGGER, BoardState.Type.THREE_FOLD_REPETITION, board, actionMemento.getColor());
+            this.actionMemento = actionMemento;
+        }
+
+        @Override
+        public ActionMemento<?,?> getActionMemento() {
+            return this.actionMemento;
+        }
+
+        @Override
+        public String toString() {
+            return FoldRepetitionBoardState.format(this);
         }
     }
 

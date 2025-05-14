@@ -27,6 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
@@ -169,7 +170,15 @@ public class CompositeBoardStateEvaluatorTest {
 
         var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
         when(foldRepetitionEvaluator.evaluate(any()))
-            .thenReturn(Optional.of(threeFoldRepetitionBoardState(board, Colors.WHITE)));
+            .thenAnswer(inv -> {
+                var color = inv.getArgument(0, Color.class);
+
+                var actionMemento = mock(ActionMemento.class);
+                when(actionMemento.getColor())
+                    .thenReturn(color);
+
+                return Optional.of(threeFoldRepetitionBoardState(board, actionMemento));
+            });
 
         @SuppressWarnings("unchecked")
         var evaluator = new CompositeBoardStateEvaluator(board,
@@ -243,8 +252,12 @@ public class CompositeBoardStateEvaluatorTest {
         when(foldRepetitionEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = threeFoldRepetitionBoardState(board, color);
-                return Optional.of(state);
+
+                var actionMemento = mock(ActionMemento.class);
+                when(actionMemento.getColor())
+                    .thenReturn(color);
+
+                return Optional.of(threeFoldRepetitionBoardState(board, actionMemento));
             });
 
         var movesEvaluator = mock(MovesBoardStateEvaluator.class);
@@ -287,8 +300,12 @@ public class CompositeBoardStateEvaluatorTest {
         when(foldRepetitionEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = threeFoldRepetitionBoardState(board, color);
-                return Optional.of(state);
+
+                var actionMemento = mock(ActionMemento.class);
+                when(actionMemento.getColor())
+                    .thenReturn(color);
+
+                return Optional.of(threeFoldRepetitionBoardState(board, actionMemento));
             });
 
         var movesEvaluator = mock(MovesBoardStateEvaluator.class);
@@ -318,8 +335,12 @@ public class CompositeBoardStateEvaluatorTest {
         when(foldRepetitionEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = threeFoldRepetitionBoardState(board, color);
-                return Optional.of(state);
+
+                var actionMemento = mock(ActionMemento.class);
+                when(actionMemento.getColor())
+                    .thenReturn(color);
+
+                return Optional.of(threeFoldRepetitionBoardState(board, actionMemento));
             });
 
         var movesEvaluator = mock(MovesBoardStateEvaluator.class);
@@ -360,8 +381,12 @@ public class CompositeBoardStateEvaluatorTest {
         when(foldRepetitionEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = fiveFoldRepetitionBoardState(board, color);
-                return Optional.of(state);
+
+                var actionMemento = mock(ActionMemento.class);
+                when(actionMemento.getColor())
+                    .thenReturn(color);
+
+                return Optional.of(fiveFoldRepetitionBoardState(board, actionMemento));
             });
 
         var movesEvaluator = mock(MovesBoardStateEvaluator.class);
@@ -409,8 +434,12 @@ public class CompositeBoardStateEvaluatorTest {
         when(foldRepetitionEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = fiveFoldRepetitionBoardState(board, color);
-                return Optional.of(state);
+
+                var actionMemento = mock(ActionMemento.class);
+                when(actionMemento.getColor())
+                    .thenReturn(color);
+
+                return Optional.of(fiveFoldRepetitionBoardState(board, actionMemento));
             });
 
         var movesEvaluator = mock(MovesBoardStateEvaluator.class);
