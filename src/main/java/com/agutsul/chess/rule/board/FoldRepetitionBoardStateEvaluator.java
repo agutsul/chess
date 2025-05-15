@@ -40,12 +40,6 @@ final class FoldRepetitionBoardStateEvaluator
         }
 
         var journalActions = journal.get(color);
-
-        var map = new HashMap<String,ActionMemento<?,?>>();
-        for (var action : journalActions) {
-            map.put(createActionCode(action), action);
-        }
-
         var stats = calculateStatistics(journalActions);
 
         var maxEntry = stats.entrySet().stream().max(comparingByValue());
@@ -53,14 +47,19 @@ final class FoldRepetitionBoardStateEvaluator
             return Optional.empty();
         }
 
+        var actionsByCode = new HashMap<String,ActionMemento<?,?>>();
+        for (var action : journalActions) {
+            actionsByCode.put(createActionCode(action), action);
+        }
+
         var maxRepetitions = maxEntry.map(Map.Entry::getValue).orElse(0);
         if (maxRepetitions >= FIVE_REPETITIONS) {
-            var actionMemento = map.get(maxEntry.get().getKey());
+            var actionMemento = actionsByCode.get(maxEntry.get().getKey());
             return Optional.of(fiveFoldRepetitionBoardState(board, actionMemento));
         }
 
         if (maxRepetitions >= THREE_REPETITIONS) {
-            var actionMemento = map.get(maxEntry.get().getKey());
+            var actionMemento = actionsByCode.get(maxEntry.get().getKey());
             return Optional.of(threeFoldRepetitionBoardState(board, actionMemento));
         }
 
