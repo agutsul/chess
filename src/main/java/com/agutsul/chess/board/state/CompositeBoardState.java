@@ -3,7 +3,6 @@ package com.agutsul.chess.board.state;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.joining;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -15,14 +14,14 @@ import com.agutsul.chess.piece.Piece;
 public final class CompositeBoardState
         implements BoardState {
 
-    private List<BoardState> boardStates;
+    private final List<BoardState> boardStates;
 
-    public CompositeBoardState(Collection<BoardState> boardStates) {
+    public CompositeBoardState(List<BoardState> boardStates) {
         if (boardStates.isEmpty()) {
             throw new IllegalArgumentException("Unable to set empty board states");
         }
 
-        this.boardStates = unmodifiableList(new ArrayList<>(boardStates));
+        this.boardStates = unmodifiableList(boardStates);
     }
 
     public Collection<BoardState> getBoardStates() {
