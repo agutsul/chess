@@ -24,6 +24,7 @@ import com.agutsul.chess.piece.state.ActivePieceState;
 import com.agutsul.chess.piece.state.CastlingablePieceState;
 import com.agutsul.chess.piece.state.CheckMatedPieceState;
 import com.agutsul.chess.piece.state.CheckedPieceState;
+import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
@@ -92,6 +93,13 @@ final class KingPieceImpl<COLOR extends Color>
     @Override
     public void restore() {
         throw new UnsupportedOperationException(RESTORE_ERROR_MESSAGE);
+    }
+
+    @Override
+    DisposedPieceState<?> createDisposedPieceState(Instant instant) {
+        throw new UnsupportedOperationException(
+                String.format("%s at '%s'", DISPOSE_ERROR_MESSAGE, instant)
+        );
     }
 
     static class KingCheckedPieceState<PIECE extends KingPiece<?>>
