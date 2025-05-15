@@ -5,7 +5,7 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.state.State;
 
-public interface FoldRepetitionBoardState
+interface FoldRepetitionBoardState
         extends State<Board> {
 
     ActionMemento<?,?> getActionMemento();
