@@ -90,8 +90,17 @@ final class RookPieceImpl<COLOR extends Color>
 
         private static final Logger LOGGER = getLogger(DisposedCastlingablePieceState.class);
 
+        private final DisposedPieceState<PIECE> disposedState;
+
         DisposedCastlingablePieceState(Instant instant) {
-            super(new DisposedPieceStateImpl<>(instant));
+            this(new DisposedPieceStateImpl<>(instant));
+        }
+
+        private <DPS extends AbstractPieceState<PIECE> & DisposedPieceState<PIECE>>
+                DisposedCastlingablePieceState(DPS pieceState) {
+
+            super(pieceState);
+            this.disposedState = pieceState;
         }
 
         @Override
@@ -102,7 +111,7 @@ final class RookPieceImpl<COLOR extends Color>
 
         @Override
         public Instant getDisposedAt() {
-            return ((DisposedPieceState<?>) this.origin).getDisposedAt();
+            return this.disposedState.getDisposedAt();
         }
     }
 }

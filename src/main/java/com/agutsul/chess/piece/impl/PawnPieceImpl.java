@@ -225,8 +225,17 @@ final class PawnPieceImpl<COLOR extends Color>
 
         private static final Logger LOGGER = getLogger(DisposedEnPassantablePieceState.class);
 
+        private final DisposedPieceState<PIECE> disposedState;
+
         DisposedEnPassantablePieceState(Instant instant) {
-            super(new DisposedPieceStateImpl<>(instant));
+            this(new DisposedPieceStateImpl<>(instant));
+        }
+
+        private <DPS extends AbstractPieceState<PIECE> & DisposedPieceState<PIECE>>
+                DisposedEnPassantablePieceState(DPS pieceState) {
+
+            super(pieceState);
+            this.disposedState = pieceState;
         }
 
         @Override
@@ -237,7 +246,7 @@ final class PawnPieceImpl<COLOR extends Color>
 
         @Override
         public Instant getDisposedAt() {
-            return ((DisposedPieceState<?>) this.origin).getDisposedAt();
+            return this.disposedState.getDisposedAt();
         }
     }
 

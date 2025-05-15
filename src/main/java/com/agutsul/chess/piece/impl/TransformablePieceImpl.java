@@ -369,15 +369,17 @@ final class TransformablePieceImpl<COLOR extends Color,
 
         private static final Logger LOGGER = getLogger(DisposedTransformablePieceState.class);
 
-        private final PieceState<PIECE> origin;
+        private final DisposedPieceState<PIECE> disposedState;
 
         DisposedTransformablePieceState(Instant instant) {
             this(new DisposedPieceStateImpl<>(instant));
         }
 
-        private DisposedTransformablePieceState(PieceState<PIECE> pieceState) {
+        private <DPS extends PieceState<PIECE> & DisposedPieceState<PIECE>>
+                DisposedTransformablePieceState(DPS pieceState) {
+
             super(pieceState.getType());
-            this.origin = pieceState;
+            this.disposedState = pieceState;
         }
 
         @Override
@@ -388,7 +390,7 @@ final class TransformablePieceImpl<COLOR extends Color,
 
         @Override
         public Instant getDisposedAt() {
-            return ((DisposedPieceState<?>) this.origin).getDisposedAt();
+            return this.disposedState.getDisposedAt();
         }
     }
 }
