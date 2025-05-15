@@ -8,6 +8,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -49,25 +50,25 @@ final class FoldRepetitionBoardStateEvaluator
         }
 
         var maxRepetitions = maxEntry.map(Map.Entry::getValue).orElse(0);
-        if (maxRepetitions > 0) {
+        if (maxRepetitions >= FIVE_REPETITIONS) {
+            var actionMemento = findActionMemento(journalActions, maxEntry.get().getKey());
+            return Optional.of(fiveFoldRepetitionBoardState(board, actionMemento));
+        }
 
-            var actionsByCode = new HashMap<String,ActionMemento<?,?>>();
-            for (var action : journalActions) {
-                actionsByCode.put(createActionCode(action), action);
-            }
-
-            if (maxRepetitions >= FIVE_REPETITIONS) {
-                var actionMemento = actionsByCode.get(maxEntry.get().getKey());
-                return Optional.of(fiveFoldRepetitionBoardState(board, actionMemento));
-            }
-
-            if (maxRepetitions >= THREE_REPETITIONS) {
-                var actionMemento = actionsByCode.get(maxEntry.get().getKey());
-                return Optional.of(threeFoldRepetitionBoardState(board, actionMemento));
-            }
+        if (maxRepetitions >= THREE_REPETITIONS) {
+            var actionMemento = findActionMemento(journalActions, maxEntry.get().getKey());
+            return Optional.of(threeFoldRepetitionBoardState(board, actionMemento));
         }
 
         return Optional.empty();
+    }
+
+    private static ActionMemento<?,?> findActionMemento(Collection<ActionMemento<?,?>> actions,
+                                                        String actionCode) {
+        return actions.stream()
+                .filter(action -> Objects.equals(createActionCode(action), actionCode))
+                .findFirst()
+                .get();
     }
 
     private static Map<String,Integer> calculateStatistics(Collection<ActionMemento<?,?>> actions) {
