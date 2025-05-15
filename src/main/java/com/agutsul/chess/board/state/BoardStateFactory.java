@@ -69,7 +69,7 @@ public abstract class BoardStateFactory {
 
     @SuppressWarnings("unchecked")
     public static <STATE extends BoardState & DefaultBoardState> STATE defaultBoardState(Board board, Color color) {
-        return  (STATE) new DefaultBoardStateImpl(board, color);
+        return (STATE) new DefaultBoardStateImpl(board, color);
     }
 
     @SuppressWarnings("unchecked")
