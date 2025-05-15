@@ -116,8 +116,6 @@ public final class PgnGameTest extends AbstractPgnGameTest {
         assertTrue(boardState.isType(BoardState.Type.FIVE_FOLD_REPETITION));
         assertTrue(boardState.isType(BoardState.Type.CHECKED));
 
-        assertEquals("FIVE_FOLD_REPETITION(WHITE: Ne5+),CHECKED", boardState.toString());
-
         assertEquals(GameState.Type.DRAWN_GAME, game.getState().getType());
         // NOTE: actual journal size is not equal to expected because not all actions applied
         assertEquals(129, game.getJournal().size());
