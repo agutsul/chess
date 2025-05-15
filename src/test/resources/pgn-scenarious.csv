@@ -8,7 +8,7 @@ chess_capture_non_attacker_while_checked.pgn,WHITE_WIN,97,10
 chess_monitoring_empty_position.pgn,WHITE_WIN,65,10
 chess_move_inside_pinned_line.pgn,BLACK_WIN,72,10
 chess_anderssen_defense.pgn,WHITE_WIN,57,10
-chess_monitored_by_non_check_piece.pgn,WHITE_WIN, 57, 10
+chess_monitored_by_non_check_piece.pgn,WHITE_WIN,57,10
 chess_complex_action_format_with_promotion.pgn,BLACK_WIN,106,10
 chess_complex_action_format_with_capture_promotion.pgn,BLACK_WIN,86,10
 chess_checkmate_failure.pgn,BLACK_WIN,100,10
