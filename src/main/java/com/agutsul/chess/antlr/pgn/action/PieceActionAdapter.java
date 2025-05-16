@@ -84,12 +84,12 @@ public final class PieceActionAdapter
 
     private String adaptPieceCaptureAction(String action) {
 
-        if (isAllUpperCase(firstSymbol(action))) {
-            return pieceCaptureActionAdapter.adapt(action);
-        }
-
         if (isAllUpperCase(lastSymbol(action))) {
             return pawnPromoteCaptureActionAdapter.adapt(action);
+        }
+
+        if (isAllUpperCase(firstSymbol(action))) {
+            return pieceCaptureActionAdapter.adapt(action);
         }
 
         throw new IllegalActionException(formatInvalidActionMessage(action));
@@ -110,12 +110,12 @@ public final class PieceActionAdapter
 
     private String adaptPieceMoveAction(String action) {
 
-        if (isAllUpperCase(firstSymbol(action))) {
-            return pieceMoveActionAdapter.adapt(action);
-        }
-
         if (isAllUpperCase(lastSymbol(action))) {
             return pawnPromoteMoveActionAdapter.adapt(action);
+        }
+
+        if (isAllUpperCase(firstSymbol(action))) {
+            return pieceMoveActionAdapter.adapt(action);
         }
 
         throw new IllegalActionException(formatInvalidActionMessage(action));

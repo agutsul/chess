@@ -4,21 +4,13 @@ import static java.time.Instant.now;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Objects;
 
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.action.ActionFilter;
-import com.agutsul.chess.activity.action.PieceBigMoveAction;
-import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
-import com.agutsul.chess.activity.action.PieceMoveAction;
-import com.agutsul.chess.activity.action.PiecePromoteAction;
-import com.agutsul.chess.activity.cache.ActivityCacheImpl;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.event.ResetPawnMoveActionEvent;
@@ -56,9 +48,7 @@ final class PawnPieceImpl<COLOR extends Color>
                           int direction, PieceState<? extends PawnPiece<COLOR>> state) {
 
         super(board, Piece.Type.PAWN, color, unicode, position, direction,
-                (AbstractPieceState<? extends Piece<COLOR>>) state,
-                new PawnActionCache(),
-                new ActivityCacheImpl<Impact.Type,Impact<?>>()
+                (AbstractPieceState<? extends Piece<COLOR>>) state
         );
     }
 
@@ -104,16 +94,6 @@ final class PawnPieceImpl<COLOR extends Color>
             // move piece back to source position
             doMove(event.getPosition());
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <A extends Action<?>> Collection<Action<?>>
-            filter(Collection<Action<?>> actions, Class<A> actionClass) {
-
-        var filter = new ActionFilter<>(actionClass);
-        var filtered = (Collection<Action<?>>) filter.apply(actions);
-
-        return filtered;
     }
 
     static abstract class AbstractEnPassantablePieceState<PIECE extends PawnPiece<?>>
@@ -180,42 +160,12 @@ final class PawnPieceImpl<COLOR extends Color>
         public Collection<Action<?>> calculateActions(PIECE piece, Action.Type actionType) {
             switch (actionType) {
             case MOVE:
-                return calculateMoveActions(piece);
+                return this.actionRule.evaluate(piece, Action.Type.BIG_MOVE, Action.Type.MOVE);
             case CAPTURE:
-                return calculateCaptureActions(piece);
+                return this.actionRule.evaluate(piece, Action.Type.EN_PASSANT, Action.Type.CAPTURE);
             default:
                 return super.calculateActions(piece, actionType);
             }
-        }
-
-        private Collection<Action<?>> calculateMoveActions(PIECE piece) {
-            var calculatedActions = this.actionRule.evaluate(
-                    piece,
-                    Action.Type.MOVE,
-                    Action.Type.PROMOTE
-            );
-
-            var actions = new ArrayList<Action<?>>();
-
-            actions.addAll(filter(calculatedActions, PieceMoveAction.class));
-            actions.addAll(super.calculateActions(piece, Action.Type.BIG_MOVE));
-
-            return actions;
-        }
-
-        private Collection<Action<?>> calculateCaptureActions(PIECE piece) {
-            var calculatedActions = this.actionRule.evaluate(
-                    piece,
-                    Action.Type.CAPTURE,
-                    Action.Type.PROMOTE
-            );
-
-            var actions = new HashSet<Action<?>>();
-
-            actions.addAll(filter(calculatedActions, PieceCaptureAction.class));
-            actions.addAll(super.calculateActions(piece, Action.Type.EN_PASSANT));
-
-            return actions;
         }
     }
 
@@ -247,19 +197,6 @@ final class PawnPieceImpl<COLOR extends Color>
         @Override
         public Instant getDisposedAt() {
             return this.disposedState.getDisposedAt();
-        }
-    }
-
-    static final class PawnActionCache
-            extends ActivityCacheImpl<Action.Type,Action<?>> {
-
-        @Override
-        public void putAll(Collection<Action<?>> actions) {
-            super.put(Action.Type.CAPTURE,    filter(actions, PieceCaptureAction.class));
-            super.put(Action.Type.EN_PASSANT, filter(actions, PieceEnPassantAction.class));
-            super.put(Action.Type.MOVE,       filter(actions, PieceMoveAction.class));
-            super.put(Action.Type.BIG_MOVE,   filter(actions, PieceBigMoveAction.class));
-            super.put(Action.Type.PROMOTE,    filter(actions, PiecePromoteAction.class));
         }
     }
 }

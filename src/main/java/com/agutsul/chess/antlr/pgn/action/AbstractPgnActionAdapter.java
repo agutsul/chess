@@ -53,6 +53,10 @@ abstract class AbstractPgnActionAdapter
         return getPiece(pieceType, code, position, Action.Type.CAPTURE);
     }
 
+    Optional<Piece<Color>> getPromotablePiece(String code, String position) {
+        return getPiece(Piece.Type.PAWN, code, position, Action.Type.PROMOTE);
+    }
+
     Collection<Piece<Color>> findPieces(Piece.Type pieceType, String code) {
         var pieces = board.getPieces(color, pieceType).stream()
                 .filter(piece -> code == null || contains(codeOf(piece.getPosition()), code))

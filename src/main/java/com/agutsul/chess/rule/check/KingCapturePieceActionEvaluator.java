@@ -8,8 +8,6 @@ import java.util.Objects;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
 import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.action.ActionFilter;
-import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 
@@ -27,8 +25,9 @@ final class KingCapturePieceActionEvaluator
 
     @Override
     public Collection<Action<?>> evaluate(KingPiece<?> king) {
-        var captureFilter = new ActionFilter<>(PieceCaptureAction.class);
-        var filteredActions = captureFilter.apply(this.pieceActions);
+        var filteredActions = this.pieceActions.stream()
+                .filter(Action::isCapture)
+                .toList();
 
         var opponentPieces = board.getPieces(king.getColor().invert());
         Collection<Action<?>> actions = opponentPieces.stream()

@@ -5,7 +5,6 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.exception.UnknownPieceException;
-import com.agutsul.chess.piece.Piece;
 
 final class PawnPromoteMoveActionAdapter
         extends AbstractPgnActionAdapter {
@@ -28,7 +27,7 @@ final class PawnPromoteMoveActionAdapter
 
         var position = matcher.group(1);
 
-        var foundPiece = getMovablePiece(Piece.Type.PAWN, position);
+        var foundPiece = getPromotablePiece(null, position);
         if (foundPiece.isEmpty()) {
             throw new UnknownPieceException(formatUnknownPieceMessage(action));
         }

@@ -5,7 +5,6 @@ import java.util.HashSet;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
-import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceMonitorImpact;
 import com.agutsul.chess.board.Board;
@@ -24,18 +23,18 @@ final class KingMoveCheckActionEvaluator
     @Override
     Collection<Action<?>> process(KingPiece<?> king,
                                   Collection<PieceCaptureAction<?,?,?,?>> checkActions,
-                                  Collection<PieceMoveAction<?,?>> pieceMoveActions) {
+                                  Collection<Action<?>> actions) {
 
         var attackerColor = king.getColor().invert();
 
-        var actions = new HashSet<Action<?>>();
+        var filteredActions = new HashSet<Action<?>>();
         for (var checkedAction : checkActions) {
             var attackLine = checkedAction.getLine();
 
             var checkerMonitoredPositions = getMonitoredPositions(checkedAction.getSource());
 
-            for (var pieceMoveAction : pieceMoveActions) {
-                var targetPosition = pieceMoveAction.getPosition();
+            for (var action : actions) {
+                var targetPosition = action.getPosition();
 
                 // skip moves on positions inside attack line
                 if (attackLine.isPresent() && attackLine.get().contains(targetPosition)) {
@@ -50,7 +49,7 @@ final class KingMoveCheckActionEvaluator
                     // for example positions behind the king but on the same attack line
                     var isMonitored = board.isMonitored(targetPosition, attackerColor);
                     if (!isMonitored) {
-                        actions.add(pieceMoveAction);
+                        filteredActions.add(action);
                         continue;
                     }
 
@@ -59,13 +58,13 @@ final class KingMoveCheckActionEvaluator
                     // but as soon as position not directly attacked by the opponent piece
                     // it is valid for move action
                     if (!checkerMonitoredPositions.contains(targetPosition)) {
-                        actions.add(pieceMoveAction);
+                        filteredActions.add(action);
                     }
                 }
             }
         }
 
-        return actions;
+        return filteredActions;
     }
 
     private Collection<Position> getMonitoredPositions(Piece<?> piece) {

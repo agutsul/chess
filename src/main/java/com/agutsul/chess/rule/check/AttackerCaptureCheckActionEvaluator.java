@@ -1,16 +1,16 @@
 package com.agutsul.chess.rule.check;
 
+import static com.agutsul.chess.activity.action.Action.isCapture;
+import static com.agutsul.chess.activity.action.Action.isEnPassant;
+import static com.agutsul.chess.activity.action.Action.isPromote;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
+
+import org.apache.commons.collections.map.MultiValueMap;
 
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
 import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.action.ActionFilter;
-import com.agutsul.chess.activity.action.PieceCaptureAction;
-import com.agutsul.chess.activity.action.PieceEnPassantAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 
@@ -26,25 +26,26 @@ final class AttackerCaptureCheckActionEvaluator
         this.pieceActions = pieceActions;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Collection<Action<?>> evaluate(KingPiece<?> king) {
-        var filteredActions = new HashSet<>();
-
-        var captureFilter = new ActionFilter<>(PieceCaptureAction.class);
-        filteredActions.addAll(captureFilter.apply(this.pieceActions));
-
-        var hasEnPassante = this.pieceActions.stream().anyMatch(Action::isEnPassant);
-        if (hasEnPassante) {
-            var enPassantFilter = new ActionFilter<>(PieceEnPassantAction.class);
-            filteredActions.addAll(enPassantFilter.apply(this.pieceActions));
+        var actionTargets = new MultiValueMap();
+        for (var action : this.pieceActions) {
+            if (isCapture(action) || isEnPassant(action)) {
+                var captureAction = (AbstractCaptureAction<?,?,?,?>) action;
+                actionTargets.put(captureAction.getTarget(), action);
+            } else if (isPromote(action) && isCapture((Action<?>) action.getSource())) {
+                var captureAction = (AbstractCaptureAction<?,?,?,?>) action.getSource();
+                actionTargets.put(captureAction.getTarget(), action);
+            }
         }
 
         var attackers = board.getAttackers(king);
-        Collection<Action<?>> actions = attackers.stream()
-                .flatMap(attacker -> filteredActions.stream()
-                        .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                        .filter(action -> Objects.equals(action.getTarget(), attacker))
-                )
+        var actions = (Collection<Action<?>>) attackers.stream()
+                .filter(attacker -> actionTargets.containsKey(attacker))
+                .map(attacker -> actionTargets.getCollection(attacker))
+                .flatMap(Collection::stream)
+                .map(action -> (Action<?>) action)
                 .collect(toSet());
 
         return actions;

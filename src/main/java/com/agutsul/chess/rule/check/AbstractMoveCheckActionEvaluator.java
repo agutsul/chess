@@ -1,6 +1,8 @@
 package com.agutsul.chess.rule.check;
 
-import static java.util.stream.Collectors.toList;
+import static com.agutsul.chess.activity.action.Action.isBigMove;
+import static com.agutsul.chess.activity.action.Action.isMove;
+import static com.agutsul.chess.activity.action.Action.isPromote;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.ArrayList;
@@ -8,10 +10,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.action.ActionFilter;
-import com.agutsul.chess.activity.action.PieceBigMoveAction;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
-import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 
@@ -39,25 +38,19 @@ abstract class AbstractMoveCheckActionEvaluator
                 .filter(action -> Objects.equals(king, action.getTarget()))
                 .collect(toSet());
 
-        var filteredActions = new ArrayList<>();
-
-        var moveActionFilter = new ActionFilter<>(PieceMoveAction.class);
-        filteredActions.addAll(moveActionFilter.apply(this.pieceActions));
-
-        var hasBigMove = this.pieceActions.stream().anyMatch(Action::isBigMove);
-        if (hasBigMove) {
-            var bigMoveActionFilter = new ActionFilter<>(PieceBigMoveAction.class);
-            filteredActions.addAll(bigMoveActionFilter.apply(this.pieceActions));
+        var filteredActions = new ArrayList<Action<?>>();
+        for (var action : this.pieceActions) {
+            if (isMove(action) || isBigMove(action)) {
+                filteredActions.add(action);
+            } else if (isPromote(action) && isMove((Action<?>) action.getSource())) {
+                filteredActions.add(action);
+            }
         }
 
-        Collection<PieceMoveAction<?,?>> pieceMoveActions = filteredActions.stream()
-                .map(action -> (PieceMoveAction<?,?>) action)
-                .collect(toList());
-
-        return process(king, checkActions, pieceMoveActions);
+        return process(king, checkActions, filteredActions);
     }
 
     abstract Collection<Action<?>> process(KingPiece<?> king,
                                            Collection<PieceCaptureAction<?,?,?,?>> checkActions,
-                                           Collection<PieceMoveAction<?,?>> moveActions);
+                                           Collection<Action<?>> actions);
 }

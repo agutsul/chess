@@ -3,7 +3,6 @@ package com.agutsul.chess.piece.impl;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -16,9 +15,6 @@ import com.agutsul.chess.Protectable;
 import com.agutsul.chess.Restorable;
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
 import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.action.ActionFilter;
-import com.agutsul.chess.activity.action.PieceCaptureAction;
-import com.agutsul.chess.activity.action.PieceEnPassantAction;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
@@ -113,23 +109,12 @@ abstract class AbstractPinnablePieceProxy<COLOR extends Color,
     }
 
     private static Collection<Action<?>> filter(Collection<Action<?>> actions, KingPiece<?> king) {
-        var filteredActions = new HashSet<Action<?>>();
-
-        filteredActions.addAll(filter(actions, king, PieceCaptureAction.class));
-        filteredActions.addAll(filter(actions, king, PieceEnPassantAction.class));
-
-        return filteredActions;
-    }
-
-    private static <A extends AbstractCaptureAction<?,?,?,?>> Collection<Action<?>>
-            filter(Collection<Action<?>> actions, KingPiece<?> king, Class<A> actionClass) {
-
-        var filter = new ActionFilter<>(actionClass);
-        var filteredActions = filter.apply(actions);
-
-        return filteredActions.stream()
+        Collection<Action<?>> checkActions = actions.stream()
+                .filter(Action::isCapture)
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                .filter(action -> Objects.equals(action.getTarget(), king))
+                .filter(captureAction -> Objects.equals(captureAction.getTarget(), king))
                 .collect(toSet());
+
+        return checkActions;
     }
 }
