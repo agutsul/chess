@@ -33,9 +33,11 @@ final class KingCaptureCheckMateEvaluator
                 .filter(action -> !checkMakers.contains(action.getTarget()))
                 .toList();
 
+        var attackerColor = king.getColor().invert();
         var capturedPiece = captureActions.stream()
                 .map(PieceCaptureAction::getTarget)
                 .filter(piece -> !((Protectable) piece).isProtected())
+                .filter(piece -> !board.isMonitored(piece.getPosition(), attackerColor))
                 .findFirst();
 
         return capturedPiece.isPresent();
