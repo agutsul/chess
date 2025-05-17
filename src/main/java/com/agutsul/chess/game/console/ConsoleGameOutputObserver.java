@@ -7,6 +7,7 @@ import static com.agutsul.chess.journal.JournalFormatter.format;
 import static java.lang.System.lineSeparator;
 import static java.time.LocalDateTime.now;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -16,14 +17,8 @@ import com.agutsul.chess.activity.action.event.ActionCancelledEvent;
 import com.agutsul.chess.activity.action.event.ActionCancellingEvent;
 import com.agutsul.chess.activity.action.event.ActionExecutionEvent;
 import com.agutsul.chess.activity.action.event.ActionPerformedEvent;
-import com.agutsul.chess.activity.action.event.DefeatExecutionEvent;
-import com.agutsul.chess.activity.action.event.DefeatPerformedEvent;
-import com.agutsul.chess.activity.action.event.DrawExecutionEvent;
-import com.agutsul.chess.activity.action.event.DrawPerformedEvent;
-import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
-import com.agutsul.chess.activity.action.event.ExitPerformedEvent;
-import com.agutsul.chess.activity.action.event.WinExecutionEvent;
-import com.agutsul.chess.activity.action.event.WinPerformedEvent;
+import com.agutsul.chess.activity.action.event.ActionTerminatedEvent;
+import com.agutsul.chess.activity.action.event.ActionTerminationEvent;
 import com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
@@ -32,16 +27,14 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.event.BoardStateNotificationEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
+import com.agutsul.chess.game.event.GameTerminationEvent.Type;
 import com.agutsul.chess.game.observer.AbstractGameObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalFormatter.Mode;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
-import com.agutsul.chess.player.event.PlayerDefeatActionExceptionEvent;
-import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
-import com.agutsul.chess.player.event.PlayerExitActionExceptionEvent;
-import com.agutsul.chess.player.event.PlayerWinActionExceptionEvent;
+import com.agutsul.chess.player.event.PlayerTerminateActionExceptionEvent;
 
 public final class ConsoleGameOutputObserver
         extends AbstractGameObserver {
@@ -127,79 +120,26 @@ public final class ConsoleGameOutputObserver
     }
 
     @Override
-    protected void process(PlayerDrawActionExceptionEvent event) {
+    protected void process(PlayerTerminateActionExceptionEvent event) {
         displayErrorMessage(event.getMessage());
     }
 
     @Override
-    protected void process(DrawExecutionEvent event) {
+    protected void process(ActionTerminatedEvent event) {
+        if (!Type.EXIT.equals(event.getType())) {
+            displayBoard(this.game.getBoard());
+        }
+    }
+
+    @Override
+    protected void process(ActionTerminationEvent event) {
         var player = event.getPlayer();
-        System.out.println(String.format("%s: '%s' asked a draw",
-                player.getColor(),
-                player.getName()
-        ));
-    }
 
-    @Override
-    protected void process(DrawPerformedEvent ignoredEvent) {
-        displayBoard(this.game.getBoard());
-    }
+        var message = Type.EXIT.equals(event.getType())
+                ? String.format("%s: '%s' exit", player.getColor(), player.getName())
+                : String.format("%s: '%s' asked '%s'", player.getColor(), player.getName(), lowerCase(event.getType().name()));
 
-    @Override
-    protected void process(DefeatExecutionEvent event) {
-        var player = event.getPlayer();
-        System.out.println(String.format("%s: '%s' asked a defeat",
-                player.getColor(),
-                player.getName()
-        ));
-    }
-
-    @Override
-    protected void process(DefeatPerformedEvent event) {
-        displayBoard(this.game.getBoard());
-    }
-
-    @Override
-    protected void process(ExitExecutionEvent event) {
-        var player = event.getPlayer();
-        System.out.println(String.format("%s: '%s' exit",
-                player.getColor(),
-                player.getName()
-        ));
-    }
-
-    @Override
-    protected void process(ExitPerformedEvent ignoredEvent) {
-//        displayBoard(this.game.getBoard());
-    }
-
-    @Override
-    protected void process(PlayerExitActionExceptionEvent event) {
-        displayErrorMessage(event.getMessage());
-    }
-
-    @Override
-    protected void process(PlayerWinActionExceptionEvent event) {
-        displayErrorMessage(event.getMessage());
-    }
-
-    @Override
-    protected void process(PlayerDefeatActionExceptionEvent event) {
-        displayErrorMessage(event.getMessage());
-    }
-
-    @Override
-    protected void process(WinExecutionEvent event) {
-        var player = event.getPlayer();
-        System.out.println(String.format("%s: '%s' asked a win",
-                player.getColor(),
-                player.getName()
-        ));
-    }
-
-    @Override
-    protected void process(WinPerformedEvent event) {
-        displayBoard(this.game.getBoard());
+        System.out.println(message);
     }
 
     // utilities

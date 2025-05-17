@@ -31,16 +31,14 @@ import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.Game;
+import com.agutsul.chess.game.event.GameTerminationEvent.Type;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.AbstractRequestEvent;
 import com.agutsul.chess.player.event.PlayerActionEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionEvent;
-import com.agutsul.chess.player.event.PlayerDefeatActionEvent;
-import com.agutsul.chess.player.event.PlayerDrawActionEvent;
-import com.agutsul.chess.player.event.PlayerExitActionEvent;
-import com.agutsul.chess.player.event.PlayerWinActionEvent;
+import com.agutsul.chess.player.event.PlayerTerminateActionEvent;
 import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
@@ -183,10 +181,10 @@ public abstract class AbstractPlayerInputObserver
 
     private enum PlayerActionEventFactory {
         UNDO_MODE(UNDO_COMMAND,     player -> new PlayerCancelActionEvent(player)),
-        DRAW_MODE(DRAW_COMMAND,     player -> new PlayerDrawActionEvent(player)),
-        WIN_MODE(WIN_COMMAND,       player -> new PlayerWinActionEvent(player)),
-        DEFEAT_MODE(DEFEAT_COMMAND, player -> new PlayerDefeatActionEvent(player)),
-        EXIT_MODE(EXIT_COMMAND,     player -> new PlayerExitActionEvent(player));
+        DRAW_MODE(DRAW_COMMAND,     player -> new PlayerTerminateActionEvent(player, Type.DRAW)),
+        WIN_MODE(WIN_COMMAND,       player -> new PlayerTerminateActionEvent(player, Type.WIN)),
+        DEFEAT_MODE(DEFEAT_COMMAND, player -> new PlayerTerminateActionEvent(player, Type.DEFEAT)),
+        EXIT_MODE(EXIT_COMMAND,     player -> new PlayerTerminateActionEvent(player, Type.EXIT));
 
         private static final Map<String,PlayerActionEventFactory> MODES =
                 Stream.of(values()).collect(toMap(PlayerActionEventFactory::command, identity()));

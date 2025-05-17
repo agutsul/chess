@@ -38,10 +38,8 @@ import com.agutsul.chess.activity.action.event.ActionCancelledEvent;
 import com.agutsul.chess.activity.action.event.ActionCancellingEvent;
 import com.agutsul.chess.activity.action.event.ActionExecutionEvent;
 import com.agutsul.chess.activity.action.event.ActionPerformedEvent;
-import com.agutsul.chess.activity.action.event.DrawExecutionEvent;
-import com.agutsul.chess.activity.action.event.DrawPerformedEvent;
-import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
-import com.agutsul.chess.activity.action.event.ExitPerformedEvent;
+import com.agutsul.chess.activity.action.event.ActionTerminatedEvent;
+import com.agutsul.chess.activity.action.event.ActionTerminationEvent;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.state.AgreedBoardState;
@@ -53,6 +51,7 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
+import com.agutsul.chess.game.event.GameTerminationEvent;
 import com.agutsul.chess.game.state.BlackWinGameState;
 import com.agutsul.chess.game.state.DefaultGameState;
 import com.agutsul.chess.game.state.DrawnGameState;
@@ -67,10 +66,8 @@ import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.UserPlayer;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
-import com.agutsul.chess.player.event.PlayerDrawActionEvent;
-import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
-import com.agutsul.chess.player.event.PlayerExitActionEvent;
-import com.agutsul.chess.player.event.PlayerExitActionExceptionEvent;
+import com.agutsul.chess.player.event.PlayerTerminateActionEvent;
+import com.agutsul.chess.player.event.PlayerTerminateActionExceptionEvent;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
 
 @ExtendWith(MockitoExtension.class)
@@ -467,17 +464,20 @@ public class GameTest {
             });
 
         Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
-        assertionMap.put(DrawExecutionEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof DrawExecutionEvent);
-            assertEquals(blackPlayer, ((DrawExecutionEvent) evt).getPlayer());
+        assertionMap.put(ActionTerminationEvent.class, (gm, evt) -> {
+            assertTrue(evt instanceof ActionTerminationEvent);
+            assertEquals(blackPlayer, ((ActionTerminationEvent) evt).getPlayer());
+            assertEquals(GameTerminationEvent.Type.DRAW, ((ActionTerminationEvent) evt).getType());
         });
-        assertionMap.put(DrawPerformedEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof DrawPerformedEvent);
-            assertEquals(blackPlayer, ((DrawPerformedEvent) evt).getPlayer());
+        assertionMap.put(ActionTerminatedEvent.class, (gm, evt) -> {
+            assertTrue(evt instanceof ActionTerminatedEvent);
+            assertEquals(blackPlayer, ((ActionTerminatedEvent) evt).getPlayer());
+            assertEquals(GameTerminationEvent.Type.DRAW, ((ActionTerminatedEvent) evt).getType());
         });
-        assertionMap.put(PlayerDrawActionEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof PlayerDrawActionEvent);
-            assertEquals(blackPlayer, ((PlayerDrawActionEvent) evt).getPlayer());
+        assertionMap.put(PlayerTerminateActionEvent.class, (gm, evt) -> {
+            assertTrue(evt instanceof PlayerTerminateActionEvent);
+            assertEquals(blackPlayer, ((PlayerTerminateActionEvent) evt).getPlayer());
+            assertEquals(GameTerminationEvent.Type.DRAW, ((PlayerTerminateActionEvent) evt).getType());
         });
 
         game.addObserver(new GameOutputObserverMock(game, assertionMap));
@@ -540,9 +540,9 @@ public class GameTest {
             });
 
         Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
-        assertionMap.put(PlayerDrawActionExceptionEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof PlayerDrawActionExceptionEvent);
-            assertEquals("test", ((PlayerDrawActionExceptionEvent) evt).getMessage());
+        assertionMap.put(PlayerTerminateActionExceptionEvent.class, (gm, evt) -> {
+            assertTrue(evt instanceof PlayerTerminateActionExceptionEvent);
+            assertEquals("test", ((PlayerTerminateActionExceptionEvent) evt).getMessage());
         });
 
         game.addObserver(new GameOutputObserverMock(game, assertionMap));
@@ -599,17 +599,20 @@ public class GameTest {
             });
 
         Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
-        assertionMap.put(ExitExecutionEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof ExitExecutionEvent);
-            assertEquals(blackPlayer, ((ExitExecutionEvent) evt).getPlayer());
+        assertionMap.put(ActionTerminationEvent.class, (gm, evt) -> {
+            assertTrue(evt instanceof ActionTerminationEvent);
+            assertEquals(blackPlayer, ((ActionTerminationEvent) evt).getPlayer());
+            assertEquals(GameTerminationEvent.Type.EXIT, ((ActionTerminationEvent) evt).getType());
         });
-        assertionMap.put(ExitPerformedEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof ExitPerformedEvent);
-            assertEquals(blackPlayer, ((ExitPerformedEvent) evt).getPlayer());
+        assertionMap.put(ActionTerminatedEvent.class, (gm, evt) -> {
+            assertTrue(evt instanceof ActionTerminatedEvent);
+            assertEquals(blackPlayer, ((ActionTerminatedEvent) evt).getPlayer());
+            assertEquals(GameTerminationEvent.Type.EXIT, ((ActionTerminatedEvent) evt).getType());
         });
-        assertionMap.put(PlayerExitActionEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof PlayerExitActionEvent);
-            assertEquals(blackPlayer, ((PlayerExitActionEvent) evt).getPlayer());
+        assertionMap.put(PlayerTerminateActionEvent.class, (gm, evt) -> {
+            assertTrue(evt instanceof PlayerTerminateActionEvent);
+            assertEquals(blackPlayer, ((PlayerTerminateActionEvent) evt).getPlayer());
+            assertEquals(GameTerminationEvent.Type.EXIT, ((PlayerTerminateActionEvent) evt).getType());
         });
 
         game.addObserver(new GameOutputObserverMock(game, assertionMap));
@@ -673,9 +676,9 @@ public class GameTest {
             });
 
         Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
-        assertionMap.put(PlayerExitActionExceptionEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof PlayerExitActionExceptionEvent);
-            assertEquals("test", ((PlayerExitActionExceptionEvent) evt).getMessage());
+        assertionMap.put(PlayerTerminateActionExceptionEvent.class, (gm, evt) -> {
+            assertTrue(evt instanceof PlayerTerminateActionExceptionEvent);
+            assertEquals("test", ((PlayerTerminateActionExceptionEvent) evt).getMessage());
         });
 
         game.addObserver(new GameOutputObserverMock(game, assertionMap));

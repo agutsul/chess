@@ -7,14 +7,8 @@ import com.agutsul.chess.activity.action.event.ActionCancelledEvent;
 import com.agutsul.chess.activity.action.event.ActionCancellingEvent;
 import com.agutsul.chess.activity.action.event.ActionExecutionEvent;
 import com.agutsul.chess.activity.action.event.ActionPerformedEvent;
-import com.agutsul.chess.activity.action.event.DefeatExecutionEvent;
-import com.agutsul.chess.activity.action.event.DefeatPerformedEvent;
-import com.agutsul.chess.activity.action.event.DrawExecutionEvent;
-import com.agutsul.chess.activity.action.event.DrawPerformedEvent;
-import com.agutsul.chess.activity.action.event.ExitExecutionEvent;
-import com.agutsul.chess.activity.action.event.ExitPerformedEvent;
-import com.agutsul.chess.activity.action.event.WinExecutionEvent;
-import com.agutsul.chess.activity.action.event.WinPerformedEvent;
+import com.agutsul.chess.activity.action.event.ActionTerminatedEvent;
+import com.agutsul.chess.activity.action.event.ActionTerminationEvent;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.event.BoardStateNotificationEvent;
@@ -23,10 +17,7 @@ import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.observer.AbstractGameObserver;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
-import com.agutsul.chess.player.event.PlayerDefeatActionExceptionEvent;
-import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
-import com.agutsul.chess.player.event.PlayerExitActionExceptionEvent;
-import com.agutsul.chess.player.event.PlayerWinActionExceptionEvent;
+import com.agutsul.chess.player.event.PlayerTerminateActionExceptionEvent;
 
 public class GameOutputObserverMock
         extends AbstractGameObserver {
@@ -85,62 +76,17 @@ public class GameOutputObserverMock
     }
 
     @Override
-    protected void process(PlayerDrawActionExceptionEvent event) {
+    protected void process(ActionTerminatedEvent event) {
         consume(event);
     }
 
     @Override
-    protected void process(DrawExecutionEvent event) {
+    protected void process(ActionTerminationEvent event) {
         consume(event);
     }
 
     @Override
-    protected void process(DrawPerformedEvent event) {
-        consume(event);
-    }
-
-    @Override
-    protected void process(DefeatExecutionEvent event) {
-        consume(event);
-    }
-
-    @Override
-    protected void process(DefeatPerformedEvent event) {
-        consume(event);
-    }
-
-    @Override
-    protected void process(ExitExecutionEvent event) {
-        consume(event);
-    }
-
-    @Override
-    protected void process(ExitPerformedEvent event) {
-        consume(event);
-    }
-
-    @Override
-    protected void process(PlayerExitActionExceptionEvent event) {
-        consume(event);
-    }
-
-    @Override
-    protected void process(PlayerWinActionExceptionEvent event) {
-        consume(event);
-    }
-
-    @Override
-    protected void process(WinExecutionEvent event) {
-        consume(event);
-    }
-
-    @Override
-    protected void process(WinPerformedEvent event) {
-        consume(event);
-    }
-
-    @Override
-    protected void process(PlayerDefeatActionExceptionEvent event) {
+    protected void process(PlayerTerminateActionExceptionEvent event) {
         consume(event);
     }
 

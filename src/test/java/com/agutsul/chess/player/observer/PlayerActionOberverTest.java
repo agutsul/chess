@@ -24,8 +24,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.event.ActionCancelledEvent;
-import com.agutsul.chess.activity.action.event.DrawExecutionEvent;
-import com.agutsul.chess.activity.action.event.DrawPerformedEvent;
+import com.agutsul.chess.activity.action.event.ActionTerminatedEvent;
+import com.agutsul.chess.activity.action.event.ActionTerminationEvent;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.activity.action.memento.ActionMementoMock;
 import com.agutsul.chess.board.AbstractBoard;
@@ -34,6 +34,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.game.AbstractPlayableGame;
+import com.agutsul.chess.game.event.GameTerminationEvent.Type;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.piece.PawnPiece;
@@ -43,8 +44,8 @@ import com.agutsul.chess.player.event.PlayerActionEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
-import com.agutsul.chess.player.event.PlayerDrawActionEvent;
-import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
+import com.agutsul.chess.player.event.PlayerTerminateActionEvent;
+import com.agutsul.chess.player.event.PlayerTerminateActionExceptionEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.position.Position;
 
@@ -197,10 +198,10 @@ public class PlayerActionOberverTest {
             .thenReturn(Colors.WHITE);
 
         var observer = new PlayerActionOberver(game);
-        observer.observe(new PlayerDrawActionEvent(player));
+        observer.observe(new PlayerTerminateActionEvent(player, Type.DRAW));
 
-        verify(game, times(1)).notifyObservers(any(DrawExecutionEvent.class));
-        verify(game, times(1)).notifyObservers(any(DrawPerformedEvent.class));
+        verify(game, times(1)).notifyObservers(any(ActionTerminationEvent.class));
+        verify(game, times(1)).notifyObservers(any(ActionTerminatedEvent.class));
     }
 
     @Test
@@ -218,9 +219,9 @@ public class PlayerActionOberverTest {
             .thenReturn(Colors.WHITE);
 
         var observer = new PlayerActionOberver(game);
-        observer.observe(new PlayerDrawActionEvent(player));
+        observer.observe(new PlayerTerminateActionEvent(player, Type.DRAW));
 
-        verify(game, times(1)).notifyObservers(any(PlayerDrawActionExceptionEvent.class));
+        verify(game, times(1)).notifyObservers(any(PlayerTerminateActionExceptionEvent.class));
         verify(board, times(1)).notifyObservers(any(RequestPlayerActionEvent.class));
     }
 

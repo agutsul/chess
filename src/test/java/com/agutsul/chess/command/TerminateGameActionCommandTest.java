@@ -13,21 +13,22 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.activity.action.event.DrawExecutionEvent;
-import com.agutsul.chess.activity.action.event.DrawPerformedEvent;
+import com.agutsul.chess.activity.action.event.ActionTerminatedEvent;
+import com.agutsul.chess.activity.action.event.ActionTerminationEvent;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.AbstractPlayableGame;
+import com.agutsul.chess.game.event.GameTerminationEvent.Type;
 import com.agutsul.chess.player.UserPlayer;
 
 @ExtendWith(MockitoExtension.class)
-public class DrawGameCommandTest {
+public class TerminateGameActionCommandTest {
 
     @Test
-    void testDrawGameCommand() {
+    void testTerminateGameCommand() {
         var board = new LabeledBoardBuilder().build();
         var game = mock(AbstractPlayableGame.class);
         when(game.getBoard())
@@ -35,20 +36,20 @@ public class DrawGameCommandTest {
 
         var player = new UserPlayer("test", Colors.WHITE);
 
-        var command = new DrawGameCommand(game, player);
+        var command = new TerminateGameActionCommand(game, player, Type.DEFEAT);
         command.execute();
 
         var boardState = board.getState();
 
-        assertEquals(BoardState.Type.AGREED_DRAW, boardState.getType());
+        assertEquals(BoardState.Type.AGREED_DEFEAT, boardState.getType());
         assertEquals(Colors.WHITE, boardState.getColor());
 
-        verify(game, times(1)).notifyObservers(any(DrawExecutionEvent.class));
-        verify(game, times(1)).notifyObservers(any(DrawPerformedEvent.class));
+        verify(game, times(1)).notifyObservers(any(ActionTerminationEvent.class));
+        verify(game, times(1)).notifyObservers(any(ActionTerminatedEvent.class));
     }
 
     @Test
-    void testDrawGameCommandWithException() {
+    void testTerminateGameCommandWithException() {
         var board = mock(Board.class);
         doThrow(new RuntimeException("test"))
             .when(board).setState(any());
@@ -57,13 +58,15 @@ public class DrawGameCommandTest {
         when(game.getBoard())
             .thenReturn(board);
 
-        var command = new DrawGameCommand(game, new UserPlayer("test", Colors.WHITE));
+        var player = new UserPlayer("test", Colors.WHITE);
+
+        var command = new TerminateGameActionCommand(game, player, Type.DEFEAT);
         var thrown = assertThrows(
                 IllegalActionException.class,
                 () -> command.execute()
         );
 
         assertEquals("test", thrown.getMessage());
-        verify(game, times(1)).notifyObservers(any(DrawExecutionEvent.class));
+        verify(game, times(1)).notifyObservers(any(ActionTerminationEvent.class));
     }
 }

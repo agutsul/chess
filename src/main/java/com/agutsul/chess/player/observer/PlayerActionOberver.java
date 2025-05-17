@@ -13,11 +13,8 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.command.CancelActionCommand;
-import com.agutsul.chess.command.DefeatGameCommand;
-import com.agutsul.chess.command.DrawGameCommand;
-import com.agutsul.chess.command.ExitGameCommand;
 import com.agutsul.chess.command.PerformActionCommand;
-import com.agutsul.chess.command.WinGameCommand;
+import com.agutsul.chess.command.TerminateGameActionCommand;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
@@ -27,14 +24,8 @@ import com.agutsul.chess.player.event.PlayerActionEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
-import com.agutsul.chess.player.event.PlayerDefeatActionEvent;
-import com.agutsul.chess.player.event.PlayerDefeatActionExceptionEvent;
-import com.agutsul.chess.player.event.PlayerDrawActionEvent;
-import com.agutsul.chess.player.event.PlayerDrawActionExceptionEvent;
-import com.agutsul.chess.player.event.PlayerExitActionEvent;
-import com.agutsul.chess.player.event.PlayerExitActionExceptionEvent;
-import com.agutsul.chess.player.event.PlayerWinActionEvent;
-import com.agutsul.chess.player.event.PlayerWinActionExceptionEvent;
+import com.agutsul.chess.player.event.PlayerTerminateActionEvent;
+import com.agutsul.chess.player.event.PlayerTerminateActionExceptionEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 
 public final class PlayerActionOberver
@@ -61,12 +52,9 @@ public final class PlayerActionOberver
     private Map<Class<? extends Event>, Consumer<Event>> createEventProcessors() {
         var processors = new HashMap<Class<? extends Event>, Consumer<Event>>();
 
-        processors.put(PlayerActionEvent.class,       event -> process((PlayerActionEvent) event));
-        processors.put(PlayerCancelActionEvent.class, event -> process((PlayerCancelActionEvent) event));
-        processors.put(PlayerDrawActionEvent.class,   event -> process((PlayerDrawActionEvent) event));
-        processors.put(PlayerDefeatActionEvent.class, event -> process((PlayerDefeatActionEvent) event));
-        processors.put(PlayerWinActionEvent.class,    event -> process((PlayerWinActionEvent) event));
-        processors.put(PlayerExitActionEvent.class,   event -> process((PlayerExitActionEvent) event));
+        processors.put(PlayerActionEvent.class,          event -> process((PlayerActionEvent) event));
+        processors.put(PlayerCancelActionEvent.class,    event -> process((PlayerCancelActionEvent) event));
+        processors.put(PlayerTerminateActionEvent.class, event -> process((PlayerTerminateActionEvent) event));
 
         return unmodifiableMap(processors);
     }
@@ -107,53 +95,16 @@ public final class PlayerActionOberver
         }
     }
 
-    private void process(PlayerDrawActionEvent event) {
+    private void process(PlayerTerminateActionEvent event) {
         var player = event.getPlayer();
         try {
-            var drawGameCommand = new DrawGameCommand(this.game, player);
-            drawGameCommand.execute();
+            var terminateGameCommand = new TerminateGameActionCommand(this.game, player, event.getType());
+            terminateGameCommand.execute();
         } catch (Exception e) {
-            LOGGER.error("Player draw exception", e);
-            notifyGameEvent(new PlayerDrawActionExceptionEvent(e.getMessage()));
-
-            requestPlayerAction(player);
-        }
-    }
-
-    private void process(PlayerDefeatActionEvent event) {
-        var player = event.getPlayer();
-        try {
-            var defeatGameCommand = new DefeatGameCommand(this.game, player);
-            defeatGameCommand.execute();
-        } catch (Exception e) {
-            LOGGER.error("Player defeat exception", e);
-            notifyGameEvent(new PlayerDefeatActionExceptionEvent(e.getMessage()));
-
-            requestPlayerAction(player);
-        }
-    }
-
-    private void process(PlayerWinActionEvent event) {
-        var player = event.getPlayer();
-        try {
-            var winGameCommand = new WinGameCommand(this.game, player);
-            winGameCommand.execute();
-        } catch (Exception e) {
-            LOGGER.error("Player win exception", e);
-            notifyGameEvent(new PlayerWinActionExceptionEvent(e.getMessage()));
-
-            requestPlayerAction(player);
-        }
-    }
-
-    private void process(PlayerExitActionEvent event) {
-        var player = event.getPlayer();
-        try {
-            var exitGameCommand = new ExitGameCommand(this.game, player);
-            exitGameCommand.execute();
-        } catch (Exception e) {
-            LOGGER.error("Player exit exception", e);
-            notifyGameEvent(new PlayerExitActionExceptionEvent(e.getMessage()));
+            LOGGER.error(String.format("Player termination(%s) exception", event.getType()), e);
+            notifyGameEvent(new PlayerTerminateActionExceptionEvent(
+                    player, e.getMessage(), event.getType()
+            ));
 
             requestPlayerAction(player);
         }
