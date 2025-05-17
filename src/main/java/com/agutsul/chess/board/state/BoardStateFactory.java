@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.board.state.InsufficientMaterialBoardState.Pattern;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.check.CheckActionEvaluatorImpl;
@@ -78,8 +79,8 @@ public abstract class BoardStateFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <STATE extends BoardState & InsufficientMaterialBoardState> STATE insufficientMaterialBoardState(Board board, Color color) {
-        return (STATE) new InsufficientMaterialBoardStateImpl(board, color);
+    public static <STATE extends BoardState & InsufficientMaterialBoardState> STATE insufficientMaterialBoardState(Board board, Color color, Pattern pattern) {
+        return (STATE) new InsufficientMaterialBoardStateImpl(board, color, pattern);
     }
 
     @SuppressWarnings("unchecked")
@@ -222,8 +223,23 @@ public abstract class BoardStateFactory {
 
         private static final Logger LOGGER = getLogger(InsufficientMaterialBoardState.class);
 
-        InsufficientMaterialBoardStateImpl(Board board, Color color) {
+        private final Pattern pattern;
+
+        InsufficientMaterialBoardStateImpl(Board board, Color color, Pattern pattern) {
             super(LOGGER, BoardState.Type.INSUFFICIENT_MATERIAL, board, color);
+            this.pattern = pattern;
+        }
+
+        @Override
+        public Pattern getPattern() {
+            return pattern;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s(%s: %s)",
+                    super.toString(), getColor(), getPattern()
+            );
         }
     }
 

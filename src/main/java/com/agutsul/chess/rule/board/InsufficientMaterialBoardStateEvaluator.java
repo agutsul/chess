@@ -18,6 +18,7 @@ import com.agutsul.chess.ai.ActionSelectionStrategy;
 import com.agutsul.chess.ai.SelectionStrategy;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.board.state.InsufficientMaterialBoardState.Pattern;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.piece.Piece;
@@ -80,8 +81,8 @@ final class InsufficientMaterialBoardStateEvaluator
                 new SingleKingEvaluationTask(board),
                 new KingWithBlockedPawnsEvaluationTask(board),
                 new KingVersusKingEvaluationTask(board),
-                new PieceVersusKingEvaluationTask(board, Piece.Type.BISHOP),
-                new PieceVersusKingEvaluationTask(board, Piece.Type.KNIGHT),
+                new PieceVersusKingEvaluationTask(board, Piece.Type.BISHOP, Pattern.KING_AND_BISHOP_VS_KING),
+                new PieceVersusKingEvaluationTask(board, Piece.Type.KNIGHT, Pattern.KING_AND_KNIGHT_VS_KING),
                 new BishopPositionColorVersusKingEvaluationTask(board),
                 new DoubleKnightsVersusKingEvaluationTask(board),
                 new KingBishopVersusKingKnightEvaluationTask(board)
@@ -91,12 +92,15 @@ final class InsufficientMaterialBoardStateEvaluator
     private static abstract class AbstractInsufficientMaterialBoardStateEvaluator
             extends AbstractBoardStateEvaluator {
 
-        AbstractInsufficientMaterialBoardStateEvaluator(Board board) {
+        private final Pattern pattern;
+
+        AbstractInsufficientMaterialBoardStateEvaluator(Board board, Pattern pattern) {
             super(board);
+            this.pattern = pattern;
         }
 
         protected BoardState createBoardState(Board board, Color color) {
-            return insufficientMaterialBoardState(board, color);
+            return insufficientMaterialBoardState(board, color, this.pattern);
         }
     }
 
@@ -105,8 +109,8 @@ final class InsufficientMaterialBoardStateEvaluator
 
         protected final int piecesCount;
 
-        AbstractPieceCounterInsufficientMaterialBoardStateEvaluator(Board board, int piecesCount) {
-            super(board);
+        AbstractPieceCounterInsufficientMaterialBoardStateEvaluator(Board board, Pattern pattern, int piecesCount) {
+            super(board, pattern);
             this.piecesCount = piecesCount;
         }
 
@@ -127,7 +131,7 @@ final class InsufficientMaterialBoardStateEvaluator
             extends AbstractPieceCounterInsufficientMaterialBoardStateEvaluator {
 
         KingWithBlockedPawnsEvaluationTask(Board board) {
-            super(board, 1);
+            super(board, Pattern.KING_AND_BLOCKED_PAWNS, 1);
         }
 
         @Override
@@ -162,7 +166,7 @@ final class InsufficientMaterialBoardStateEvaluator
             extends AbstractPieceCounterInsufficientMaterialBoardStateEvaluator {
 
         SingleKingEvaluationTask(Board board) {
-            super(board, 1);
+            super(board, Pattern.SINGLE_KING, 1);
         }
 
         @Override
@@ -190,7 +194,11 @@ final class InsufficientMaterialBoardStateEvaluator
         }
 
         KingVersusKingEvaluationTask(Board board, int piecesCount) {
-            super(board, piecesCount);
+            this(board, Pattern.KING_VS_KING, piecesCount);
+        }
+
+        KingVersusKingEvaluationTask(Board board, Pattern pattern, int piecesCount) {
+            super(board, pattern, piecesCount);
         }
 
         @Override
@@ -219,12 +227,12 @@ final class InsufficientMaterialBoardStateEvaluator
 
         protected final Piece.Type pieceType;
 
-        public PieceVersusKingEvaluationTask(Board board, Piece.Type pieceType) {
-            this(board, pieceType, 3);
+        public PieceVersusKingEvaluationTask(Board board, Piece.Type pieceType, Pattern pattern) {
+            this(board, pieceType, pattern, 3);
         }
 
-        PieceVersusKingEvaluationTask(Board board, Piece.Type pieceType, int piecesCount) {
-            super(board, piecesCount);
+        PieceVersusKingEvaluationTask(Board board, Piece.Type pieceType, Pattern pattern, int piecesCount) {
+            super(board, pattern, piecesCount);
             this.pieceType = pieceType;
         }
 
@@ -279,7 +287,7 @@ final class InsufficientMaterialBoardStateEvaluator
             extends PieceVersusKingEvaluationTask {
 
         public BishopPositionColorVersusKingEvaluationTask(Board board) {
-            super(board, Piece.Type.BISHOP, 4);
+            super(board, Piece.Type.BISHOP, Pattern.BISHOP_POSITION_COLOR_VS_KING_POSITION_COLOR, 4);
         }
 
         @Override
@@ -319,7 +327,7 @@ final class InsufficientMaterialBoardStateEvaluator
             extends PieceVersusKingEvaluationTask {
 
         public DoubleKnightsVersusKingEvaluationTask(Board board) {
-            super(board, Piece.Type.KNIGHT, 4);
+            super(board, Piece.Type.KNIGHT, Pattern.KING_AND_DOUBLE_KNIGHTS_VS_KING, 4);
         }
 
         @Override
@@ -346,7 +354,8 @@ final class InsufficientMaterialBoardStateEvaluator
 
         NoLegalActionsLeadToCheckmateEvaluationTask(Board board,
                                                     SelectionStrategy<Action<?>> selectionStrategy) {
-            super(board, 16);
+
+            super(board, Pattern.NO_ACTIONS_LEAD_TO_CHECKMATE, 16);
             this.selectionStrategy = selectionStrategy;
         }
 
