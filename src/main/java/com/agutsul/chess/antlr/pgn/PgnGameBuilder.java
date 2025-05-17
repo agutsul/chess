@@ -7,8 +7,8 @@ import java.util.Map;
 
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.GameBuilder;
-import com.agutsul.chess.game.Termination;
 import com.agutsul.chess.game.pgn.PgnGame;
+import com.agutsul.chess.game.pgn.PgnTermination;
 import com.agutsul.chess.game.state.BlackWinGameState;
 import com.agutsul.chess.game.state.DefaultGameState;
 import com.agutsul.chess.game.state.DrawnGameState;
@@ -42,7 +42,7 @@ final class PgnGameBuilder
         game.setRound(round);
 
         game.setParsedGameState(resolveState(gameState));
-        game.setParsedTermination(Termination.codeOf(terminationType));
+        game.setParsedTermination(PgnTermination.codeOf(terminationType));
 
         return game;
     }

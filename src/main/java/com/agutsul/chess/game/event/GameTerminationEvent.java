@@ -1,6 +1,10 @@
 package com.agutsul.chess.game.event;
 
-public interface GameTerminationEvent {
+import com.agutsul.chess.game.Termination;
+
+public interface GameTerminationEvent
+        extends Termination {
+
     enum Type {
         EXIT,
         DRAW,
