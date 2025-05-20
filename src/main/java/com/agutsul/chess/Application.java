@@ -33,12 +33,17 @@ public class Application
 
     @Override
     public void execute() {
-        var game = new ConsoleGame(
+        var gameThread = new Thread(new ConsoleGame(
                 new UserPlayer("player1", Colors.WHITE),
                 new UserPlayer("player2", Colors.BLACK)
-        );
+        ));
+        gameThread.start();
 
-        game.run();
+        try {
+            gameThread.join();
+        } catch (InterruptedException e) {
+            LOGGER.error("Game thread interrupted", e);
+        }
     }
 
     public static String getProperty(String key) {
