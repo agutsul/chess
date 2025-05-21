@@ -51,12 +51,14 @@ final class PgnPlayerInputObserver
     }
 
     private String finalCommand() {
-        var gameState = ((PgnGame) this.game).getParsedGameState();
+        var pgnGame = (PgnGame) this.game;
+
+        var gameState = pgnGame.getParsedGameState();
         switch (gameState.getType()) {
         case WHITE_WIN:
-            return finalCommand(Colors.WHITE);
+            return finalCommand(this.player, Colors.WHITE);
         case BLACK_WIN:
-            return finalCommand(Colors.BLACK);
+            return finalCommand(this.player, Colors.BLACK);
         case DRAWN_GAME:
             return DRAW_COMMAND;
         default:
@@ -64,8 +66,8 @@ final class PgnPlayerInputObserver
         }
     }
 
-    private String finalCommand(Color color) {
-        return Objects.equals(color, player.getColor())
+    private static String finalCommand(Player player, Color color) {
+        return Objects.equals(player.getColor(), color)
                 ? WIN_COMMAND
                 : DEFEAT_COMMAND;
     }
