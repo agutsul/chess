@@ -360,12 +360,10 @@ public abstract class AbstractPlayableGame
         try {
             forkJoinPool.shutdown();
             if (!forkJoinPool.awaitTermination(1, MILLISECONDS)) {
-                var waitingThreads = forkJoinPool.shutdownNow();
-                System.out.println("Game1: " + waitingThreads.size());
+                forkJoinPool.shutdownNow();
             }
         } catch (InterruptedException e) {
-            var waitingThreads = forkJoinPool.shutdownNow();
-            System.out.println("Game2: " + waitingThreads.size());
+            forkJoinPool.shutdownNow();
         }
     }
 
