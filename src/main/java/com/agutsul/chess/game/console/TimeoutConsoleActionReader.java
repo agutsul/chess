@@ -58,12 +58,14 @@ final class TimeoutConsoleActionReader
     }
 
     private static GameTimeoutException createGameTimeoutException(Player player) {
-        return new GameTimeoutException(String.format(
-                "%s: '%s' entering action timeout", player.getColor(), player
-        ));
+        return new GameTimeoutException(createMessage(player, "%s: '%s' entering action timeout"));
     }
 
     private static IOException createIOException(Player player, String messageFormat, Exception e) {
-        return new IOException(String.format(messageFormat, player.getColor(), player), e);
+        return new IOException(createMessage(player, messageFormat), e);
+    }
+
+    private static String createMessage(Player player, String messageFormat) {
+        return String.format(messageFormat, player.getColor(), player);
     }
 }
