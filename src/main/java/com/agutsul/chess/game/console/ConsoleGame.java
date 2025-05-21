@@ -31,9 +31,9 @@ public final class ConsoleGame
                 new JournalImpl(), new ForkJoinPool(), TEN_MINUTES
         );
 
-        registerObserver(whitePlayer, inputStream);
+        registerConsoleInputObserver(whitePlayer, inputStream);
         // uncomment to manually enter player actions
-        //registerObserver(blackPlayer, inputStream);
+        //registerConsoleInputObserver(blackPlayer, inputStream);
 
         // uncomment to play against computer selecting actions randomly ( good for quick tests )
         //((Observable) board).addObserver(new RandomActionInputObserver(blackPlayer, this));
@@ -44,7 +44,7 @@ public final class ConsoleGame
         addObserver(new ConsoleGameOutputObserver(this));
     }
 
-    private void registerObserver(Player player, InputStream inputStream) {
+    private void registerConsoleInputObserver(Player player, InputStream inputStream) {
         ((Observable) getBoard()).addObserver(
                 new ConsolePlayerInputObserver(player, this, inputStream)
         );

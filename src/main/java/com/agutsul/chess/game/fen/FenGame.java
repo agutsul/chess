@@ -52,10 +52,8 @@ public final class FenGame
         // re-evaluate board state
         getBoard().setState(evaluateBoardState(getCurrentPlayer()));
 
-        var inputStream = System.in;
-
-        registerObserver(whitePlayer, inputStream);
-        registerObserver(blackPlayer, inputStream);
+        registerConsoleInputObserver(whitePlayer, System.in);
+        registerConsoleInputObserver(blackPlayer, System.in);
 
         // uncomment below for local debug of fen file
 //        addObserver(new ConsoleGameOutputObserver(this));
@@ -106,7 +104,7 @@ public final class FenGame
         this.parsedFullMoves = parsedFullMoves;
     }
 
-    private void registerObserver(Player player, InputStream inputStream) {
+    private void registerConsoleInputObserver(Player player, InputStream inputStream) {
         ((Observable) getBoard()).addObserver(
                 new ConsolePlayerInputObserver(player, this, inputStream)
         );
