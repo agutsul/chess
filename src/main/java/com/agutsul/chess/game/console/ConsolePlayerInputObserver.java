@@ -1,5 +1,4 @@
 package com.agutsul.chess.game.console;
-
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.apache.commons.lang3.StringUtils.strip;
