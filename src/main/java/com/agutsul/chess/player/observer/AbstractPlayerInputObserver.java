@@ -56,7 +56,7 @@ public abstract class AbstractPlayerInputObserver
     private static final String UNABLE_TO_PROCESS_MESSAGE = "Unable to process";
     private static final String INVALID_ACTION_FORMAT_MESSAGE= "Invalid action format";
 
-    protected static final Map<String, Piece.Type> PROMOTION_TYPES =
+    private static final Map<String, Piece.Type> PROMOTION_TYPES =
             Stream.of(KNIGHT, BISHOP, ROOK, QUEEN)
                     .collect(toMap(Piece.Type::code, identity()));
 
@@ -164,16 +164,16 @@ public abstract class AbstractPlayerInputObserver
         ));
     }
 
-    private void notifyBoardEvent(Event event) {
+    protected void notifyBoardEvent(Event event) {
         var board = this.game.getBoard();
         ((Observable) board).notifyObservers(event);
     }
 
-    private void notifyGameEvent(Event event) {
+    protected void notifyGameEvent(Event event) {
         ((Observable) this.game).notifyObservers(event);
     }
 
-    private void notifyExceptionEvent(String message) {
+    protected void notifyExceptionEvent(String message) {
         // display error message to player
         notifyGameEvent(new PlayerActionExceptionEvent(message));
         sleepQuietly(Duration.ofMillis(1));

@@ -1,8 +1,8 @@
 package com.agutsul.chess.game.console;
 
-import static java.lang.System.lineSeparator;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
+import static org.apache.commons.lang3.StringUtils.strip;
 import static org.apache.commons.lang3.StringUtils.trimToEmpty;
 import static org.apache.commons.lang3.StringUtils.upperCase;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -16,6 +16,8 @@ import org.slf4j.Logger;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
+import com.agutsul.chess.player.event.RequestPlayerActionEvent;
+import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
 
 public class ConsolePlayerInputObserver
@@ -23,12 +25,8 @@ public class ConsolePlayerInputObserver
 
     private static final Logger LOGGER = getLogger(ConsolePlayerInputObserver.class);
 
-    private static final String PROMOTION_PIECE_TYPE_MESSAGE = "Choose promotion piece type:";
     private static final String EMPTY_LINE_MESSAGE = "Unable to process an empty line";
     private static final String UNSUPPORTED_COMMAND_MESSAGE = "Unsupported command";
-
-    private static final String PROMPT_PROMOTION_PIECE_TYPE_MESSAGE =
-            createPromptPromotionPieceTypeMessage();
 
     protected InputStream inputStream;
     protected Instant actionStarted;
@@ -39,20 +37,27 @@ public class ConsolePlayerInputObserver
     }
 
     @Override
-    protected String getActionCommand() {
-        var message = String.format("%s: '%s' move:%s",
-                this.player.getColor(), this.player, lineSeparator()
-        );
+    protected void process(RequestPlayerActionEvent event) {
+        notifyGameEvent(event);
+        super.process(event);
+    }
 
-        LOGGER.info(message);
-        System.out.println(message);
+    @Override
+    protected void process(RequestPromotionPieceTypeEvent event) {
+        notifyGameEvent(event);
+        super.process(event);
+    }
+
+    @Override
+    protected String getActionCommand() {
+        LOGGER.info("{}: '{}' move:", this.player.getColor(), this.player);
 
         var timeoutMillis = this.game.getActionTimeout();
         if (timeoutMillis != null) {
             this.actionStarted = Instant.now();
         }
 
-        var actionCommand = lowerCase(readConsoleInput(timeoutMillis));
+        var actionCommand = strip(lowerCase(readConsoleInput(timeoutMillis)));
         if (isEmpty(actionCommand)) {
             throw new IllegalActionException(EMPTY_LINE_MESSAGE);
         }
@@ -75,8 +80,6 @@ public class ConsolePlayerInputObserver
         LOGGER.info("{}: '{}' request promotion piece type",
                 this.player.getColor(), this.player
         );
-
-        System.out.println(PROMPT_PROMOTION_PIECE_TYPE_MESSAGE);
 
         var timeoutMillis = this.game.getActionTimeout();
         if (timeoutMillis != null && this.actionStarted != null) {
@@ -112,17 +115,5 @@ public class ConsolePlayerInputObserver
         return timeoutMillis != null
                 ? new TimeoutConsoleActionReader(this.player, consoleActionReader, timeoutMillis)
                 : consoleActionReader;
-    }
-
-    private static String createPromptPromotionPieceTypeMessage() {
-        var builder = new StringBuilder();
-        builder.append(PROMOTION_PIECE_TYPE_MESSAGE).append(lineSeparator());
-
-        for (var pieceType : PROMOTION_TYPES.values()) {
-            builder.append("'").append(pieceType).append("' - ");
-            builder.append(pieceType.name()).append(lineSeparator());
-        }
-
-        return builder.toString();
     }
 }

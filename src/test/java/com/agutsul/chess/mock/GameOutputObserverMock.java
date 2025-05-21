@@ -18,6 +18,8 @@ import com.agutsul.chess.game.observer.AbstractGameObserver;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerTerminateActionExceptionEvent;
+import com.agutsul.chess.player.event.RequestPlayerActionEvent;
+import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 
 public class GameOutputObserverMock
         extends AbstractGameObserver {
@@ -42,6 +44,16 @@ public class GameOutputObserverMock
 
     @Override
     protected void process(BoardStateNotificationEvent event) {
+        consume(event);
+    }
+
+    @Override
+    protected void process(RequestPlayerActionEvent event) {
+        consume(event);
+    }
+
+    @Override
+    protected void process(RequestPromotionPieceTypeEvent event) {
         consume(event);
     }
 

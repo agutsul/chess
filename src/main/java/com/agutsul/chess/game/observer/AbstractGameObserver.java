@@ -21,6 +21,8 @@ import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerTerminateActionExceptionEvent;
+import com.agutsul.chess.player.event.RequestPlayerActionEvent;
+import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 
 public abstract class AbstractGameObserver
         implements Observer {
@@ -49,6 +51,9 @@ public abstract class AbstractGameObserver
         processors.put(GameOverEvent.class,               event -> process((GameOverEvent) event));
         processors.put(BoardStateNotificationEvent.class, event -> process((BoardStateNotificationEvent) event));
 
+        processors.put(RequestPlayerActionEvent.class,       event -> process((RequestPlayerActionEvent) event));
+        processors.put(RequestPromotionPieceTypeEvent.class, event -> process((RequestPromotionPieceTypeEvent) event));
+
         processors.put(ActionExecutionEvent.class,   event -> process((ActionExecutionEvent) event));
         processors.put(ActionCancellingEvent.class,  event -> process((ActionCancellingEvent) event));
 
@@ -70,6 +75,10 @@ public abstract class AbstractGameObserver
     protected abstract void process(GameOverEvent event);
 
     protected abstract void process(BoardStateNotificationEvent event);
+
+    protected abstract void process(RequestPlayerActionEvent event);
+
+    protected abstract void process(RequestPromotionPieceTypeEvent event);
 
     protected abstract void process(ActionPerformedEvent event);
 
