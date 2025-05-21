@@ -10,15 +10,12 @@ import static com.agutsul.chess.piece.Piece.Type.QUEEN;
 import static com.agutsul.chess.piece.Piece.Type.ROOK;
 import static java.lang.System.lineSeparator;
 import static java.time.LocalDateTime.now;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 import java.time.Duration;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.event.ActionCancelledEvent;
@@ -53,21 +50,15 @@ public final class ConsoleGameOutputObserver
     private static final String ENTER_ACTION_MESSAGE = "Please, enter an action in the following format: '<source_position> <target_position>'.";
     private static final String ENTER_ACTION_EXAMPLE_MESSAGE = "For example: 'e2 e4'";
 
-    private static final Map<String, Piece.Type> PROMOTION_TYPES =
-            Stream.of(KNIGHT, BISHOP, ROOK, QUEEN)
-                    .collect(toMap(Piece.Type::code, identity()));
-
     private static final String PROMOTION_PIECE_TYPE_MESSAGE = "Choose promotion piece type:";
     private static final String PROMPT_PROMOTION_PIECE_TYPE_MESSAGE =
-            createPromptPromotionPieceTypeMessage();
+            createPromptPromotionPieceTypeMessage(List.of(KNIGHT, BISHOP, ROOK, QUEEN));
 
     private static final String DRAW_MESSAGE = "Draw";
     private static final String ACTION_MESSAGE = "Action";
     private static final String GAME_OVER_MESSAGE = "Game over";
     private static final String DURATION_MESSAGE = "Duration (minutes)";
     private static final String BOARD_STATE_MESSAGE = "Board state";
-
-
 
     public ConsoleGameOutputObserver(Game game) {
         super(game);
@@ -112,11 +103,9 @@ public final class ConsoleGameOutputObserver
 
     @Override
     protected void process(RequestPlayerActionEvent event) {
-        var message = String.format("%s: '%s' move:%s",
+        System.out.println(String.format("%s: '%s' move:%s",
                 event.getPlayer().getColor(), event.getPlayer(), lineSeparator()
-        );
-
-        System.out.println(message);
+        ));
     }
 
     @Override
@@ -238,11 +227,11 @@ public final class ConsoleGameOutputObserver
         System.err.println(message);
     }
 
-    private static String createPromptPromotionPieceTypeMessage() {
+    private static String createPromptPromotionPieceTypeMessage(List<Piece.Type> promotionTypes) {
         var builder = new StringBuilder();
         builder.append(PROMOTION_PIECE_TYPE_MESSAGE).append(lineSeparator());
 
-        for (var pieceType : PROMOTION_TYPES.values()) {
+        for (var pieceType : promotionTypes) {
             builder.append("'").append(pieceType).append("' - ");
             builder.append(pieceType.name()).append(lineSeparator());
         }
