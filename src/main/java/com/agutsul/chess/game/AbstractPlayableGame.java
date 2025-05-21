@@ -239,12 +239,13 @@ public abstract class AbstractPlayableGame
             notifyObservers(new GameExceptionEvent(this, throwable));
         } finally {
             var event = new GameOverEvent(this);
-
-            notifyBoardObservers(event);
-            notifyObservers(event);
-
-            if (forkJoinPool != null) {
-                close(forkJoinPool);
+            try {
+                notifyBoardObservers(event);
+                notifyObservers(event);
+            } finally {
+                if (forkJoinPool != null) {
+                    close(forkJoinPool);
+                }
             }
         }
     }
