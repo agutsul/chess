@@ -7,8 +7,9 @@ import static org.apache.commons.lang3.StringUtils.trimToEmpty;
 import static org.apache.commons.lang3.StringUtils.upperCase;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.Instant;
 
 import org.slf4j.Logger;
 
@@ -17,7 +18,7 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
 
-public final class ConsolePlayerInputObserver
+public class ConsolePlayerInputObserver
         extends AbstractPlayerInputObserver {
 
     private static final Logger LOGGER = getLogger(ConsolePlayerInputObserver.class);
@@ -29,32 +30,41 @@ public final class ConsolePlayerInputObserver
     private static final String PROMPT_PROMOTION_PIECE_TYPE_MESSAGE =
             createPromptPromotionPieceTypeMessage();
 
-    public ConsolePlayerInputObserver(Player player, Game game) {
+    protected InputStream inputStream;
+    protected Instant actionStarted;
+
+    public ConsolePlayerInputObserver(Player player, Game game, InputStream inputStream) {
         super(LOGGER, player, game);
+        this.inputStream = inputStream;
     }
 
     @Override
     protected String getActionCommand() {
         var message = String.format("%s: '%s' move:%s",
-                this.player.getColor(),
-                this.player,
-                lineSeparator()
+                this.player.getColor(), this.player, lineSeparator()
         );
 
         LOGGER.info(message);
         System.out.println(message);
 
-        var actionCommand = lowerCase(readConsoleInput());
+        var timeoutMillis = this.game.getActionTimeout();
+        if (timeoutMillis != null) {
+            this.actionStarted = Instant.now();
+        }
+
+        var actionCommand = lowerCase(readConsoleInput(timeoutMillis));
+        if (isEmpty(actionCommand)) {
+            throw new IllegalActionException(EMPTY_LINE_MESSAGE);
+        }
+
         if (WIN_COMMAND.equalsIgnoreCase(actionCommand)) {
-            throw new IllegalActionException(String.format("%: '%s'",
+            throw new IllegalActionException(String.format("%s: '%s'",
                     UNSUPPORTED_COMMAND_MESSAGE, actionCommand
             ));
         }
 
         LOGGER.info("{}: '{}' performs move: '{}'",
-                this.player.getColor(),
-                this.player,
-                actionCommand
+                this.player.getColor(), this.player, actionCommand
         );
 
         return actionCommand;
@@ -63,40 +73,45 @@ public final class ConsolePlayerInputObserver
     @Override
     protected String getPromotionPieceType() {
         LOGGER.info("{}: '{}' request promotion piece type",
-                this.player.getColor(),
-                this.player
+                this.player.getColor(), this.player
         );
 
         System.out.println(PROMPT_PROMOTION_PIECE_TYPE_MESSAGE);
 
-        var input = trimToEmpty(readConsoleInput());
+        var timeoutMillis = this.game.getActionTimeout();
+        if (timeoutMillis != null && this.actionStarted != null) {
+            // calculate remaining timeout for promotion piece type selection
+            var generalTimeout = this.actionStarted.toEpochMilli() + timeoutMillis;
+            timeoutMillis = generalTimeout - Instant.now().toEpochMilli();
+        }
+
+        var input = trimToEmpty(readConsoleInput(timeoutMillis));
         if (isEmpty(input)) {
             throw new IllegalActionException(EMPTY_LINE_MESSAGE);
         }
 
         var pieceTypeCode = upperCase(input.substring(0, 1));
         LOGGER.info("{}: '{}' selects promotion piece type: '{}'",
-                this.player.getColor(),
-                this.player,
-                pieceTypeCode
+                this.player.getColor(), this.player, pieceTypeCode
         );
 
         return pieceTypeCode;
     }
 
-    private static String readConsoleInput() {
-        // Keep System.in open to allow users enter their commands in console
-        // Once console is closed it can't be reopen for further entering new commands
-        @SuppressWarnings("resource")
-        var scanner = new Scanner(System.in, StandardCharsets.UTF_8);
-        while (scanner.hasNextLine()) {
-            var line = scanner.nextLine();
-            if (!line.isBlank()) {
-                return line;
-            }
+    private String readConsoleInput(Long timeoutMillis) {
+        var consoleActionReader = createConsoleActionReader(timeoutMillis);
+        try {
+            return consoleActionReader.read();
+        } catch (IOException e) {
+            throw new IllegalActionException(e.getMessage(), e);
         }
+    }
 
-        return null;
+    private ConsoleActionReader createConsoleActionReader(Long timeoutMillis) {
+        var consoleActionReader = new ConsoleActionReaderImpl(this.player, this.inputStream);
+        return timeoutMillis != null
+                ? new TimeoutConsoleActionReader(this.player, consoleActionReader, timeoutMillis)
+                : consoleActionReader;
     }
 
     private static String createPromptPromotionPieceTypeMessage() {

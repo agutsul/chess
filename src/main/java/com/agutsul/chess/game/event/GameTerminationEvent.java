@@ -9,7 +9,8 @@ public interface GameTerminationEvent
         EXIT,
         DRAW,
         DEFEAT,
-        WIN
+        WIN,
+        TIMEOUT
     }
 
     Type getType();

@@ -4,7 +4,7 @@ import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
 import static java.util.concurrent.Executors.newFixedThreadPool;
-import static java.util.concurrent.TimeUnit.MICROSECONDS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.join;
@@ -46,6 +46,7 @@ import com.agutsul.chess.piece.factory.PieceFactory;
 import com.agutsul.chess.piece.impl.BlackPieceFactory;
 import com.agutsul.chess.piece.impl.WhitePieceFactory;
 import com.agutsul.chess.piece.state.DisposedPieceState;
+import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
 final class BoardImpl extends AbstractBoard implements Closeable {
@@ -138,8 +139,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     @Override
     public Collection<Action<?>> getActions(Piece<?> piece, Action.Type actionType) {
         LOGGER.info("Getting actions for '{}' and type '{}'",
-                piece,
-                actionType
+                piece, actionType
         );
 
         return piece.getActions(actionType);
@@ -154,8 +154,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     @Override
     public Collection<Impact<?>> getImpacts(Piece<?> piece, Impact.Type impactType) {
         LOGGER.info("Getting impacts for '{}' and type '{}'",
-                piece,
-                impactType
+                piece, impactType
         );
 
         return piece.getImpacts(impactType);
@@ -429,7 +428,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     public void close() throws IOException {
         try {
             this.executorService.shutdown();
-            if (!this.executorService.awaitTermination(1, MICROSECONDS)) {
+            if (!this.executorService.awaitTermination(1, MILLISECONDS)) {
                 this.executorService.shutdownNow();
             }
         } catch (InterruptedException e) {
@@ -455,7 +454,10 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     }
 
     private static Instant capturedAt(Piece<?> piece) {
-        var state = piece.getState();
+        return capturedAt(piece.getState());
+    }
+
+    private static Instant capturedAt(PieceState<?> state) {
         return state instanceof DisposedPieceState<?>
             ? ((DisposedPieceState<?>) state).getDisposedAt()
             : null;

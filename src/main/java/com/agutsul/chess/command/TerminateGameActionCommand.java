@@ -4,6 +4,7 @@ import static com.agutsul.chess.board.state.BoardStateFactory.agreedDefeatBoardS
 import static com.agutsul.chess.board.state.BoardStateFactory.agreedDrawBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.agreedWinBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.exitedBoardState;
+import static com.agutsul.chess.board.state.BoardStateFactory.timeoutBoardState;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import org.slf4j.Logger;
@@ -56,6 +57,8 @@ public class TerminateGameActionCommand
             return agreedWinBoardState(board, color);
         case EXIT:
             return exitedBoardState(board, color);
+        case TIMEOUT:
+            return timeoutBoardState(board, color);
         default:
             throw new IllegalStateException(String.format("Unknown termination type: %s", type));
         }

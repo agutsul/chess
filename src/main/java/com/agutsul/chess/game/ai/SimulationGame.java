@@ -62,7 +62,7 @@ public final class SimulationGame
                            Action<?> action) {
 
         super(LOGGER, whitePlayer, blackPlayer, board, journal, forkJoinPool,
-                new BoardStateEvaluatorImpl(board, journal)
+                new BoardStateEvaluatorImpl(board, journal), null
         );
 
         this.color = activeColor;

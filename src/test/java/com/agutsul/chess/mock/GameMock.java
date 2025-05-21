@@ -35,14 +35,14 @@ public class GameMock
                     Board board, Journal<ActionMemento<?,?>> journal,
                     ForkJoinPool forkJoinPool) {
 
-        super(LOGGER,whitePlayer, blackPlayer, board, journal, forkJoinPool);
+        super(LOGGER,whitePlayer, blackPlayer, board, journal, forkJoinPool, null);
     }
 
     public GameMock(Player whitePlayer, Player blackPlayer,
                     Board board, Journal<ActionMemento<?,?>> journal,
                     BoardStateEvaluator<BoardState> boardStateEvaluator) {
 
-        super(LOGGER, whitePlayer, blackPlayer, board, journal, null, boardStateEvaluator);
+        super(LOGGER, whitePlayer, blackPlayer, board, journal, null, boardStateEvaluator, null);
     }
 
     public void setStartedAt(LocalDateTime startedAt) {

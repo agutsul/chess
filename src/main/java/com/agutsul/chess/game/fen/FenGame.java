@@ -2,6 +2,7 @@ package com.agutsul.chess.game.fen;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,8 +52,10 @@ public final class FenGame
         // re-evaluate board state
         getBoard().setState(evaluateBoardState(getCurrentPlayer()));
 
-        ((Observable) board).addObserver(new ConsolePlayerInputObserver(whitePlayer, this));
-        ((Observable) board).addObserver(new ConsolePlayerInputObserver(blackPlayer, this));
+        var inputStream = System.in;
+
+        registerObserver(whitePlayer, inputStream);
+        registerObserver(blackPlayer, inputStream);
 
         // uncomment below for local debug of fen file
 //        addObserver(new ConsoleGameOutputObserver(this));
@@ -101,6 +104,12 @@ public final class FenGame
 
     private void setParsedFullMoves(int parsedFullMoves) {
         this.parsedFullMoves = parsedFullMoves;
+    }
+
+    private void registerObserver(Player player, InputStream inputStream) {
+        ((Observable) getBoard()).addObserver(
+                new ConsolePlayerInputObserver(player, this, inputStream)
+        );
     }
 
     static final class FenJournal

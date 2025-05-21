@@ -61,17 +61,21 @@ public final class PlayerActionOberver
 
     private void process(PlayerActionEvent event) {
         var board = this.game.getBoard();
+        var player = event.getPlayer();
+
         try {
-            var command = new PerformActionCommand(event.getPlayer(), board, (Observable) this.game);
+            var command = new PerformActionCommand(player, board, (Observable) this.game);
             command.setSource(event.getSource());
             command.setTarget(event.getTarget());
 
             command.execute();
         } catch (Exception e) {
-            LOGGER.error("Player action exception", e);
+            var message = String.format("Player '%s' action exception", player.getName());
+
+            LOGGER.error(message, e);
             notifyGameEvent(new PlayerActionExceptionEvent(e.getMessage()));
 
-            requestPlayerAction(board, event.getPlayer());
+            requestPlayerAction(board, player);
         }
     }
 
@@ -88,7 +92,9 @@ public final class PlayerActionOberver
             var cancelActionCommand = new CancelActionCommand(this.game, playerColor);
             cancelActionCommand.execute();
         } catch (Exception e) {
-            LOGGER.error("Player cancel action exception", e);
+            var message = String.format("Player '%s' cancel action exception", player.getName());
+            LOGGER.error(message, e);
+
             notifyGameEvent(new PlayerCancelActionExceptionEvent(e.getMessage()));
         } finally {
             requestPlayerAction(player);
@@ -97,13 +103,19 @@ public final class PlayerActionOberver
 
     private void process(PlayerTerminateActionEvent event) {
         var player = event.getPlayer();
+        var eventType = event.getType();
+
         try {
-            var terminateGameCommand = new TerminateGameActionCommand(this.game, player, event.getType());
+            var terminateGameCommand = new TerminateGameActionCommand(this.game, player, eventType);
             terminateGameCommand.execute();
         } catch (Exception e) {
-            LOGGER.error(String.format("Player termination(%s) exception", event.getType()), e);
+            var message = String.format("Player '%s' termination(%s) exception",
+                    player.getName(), eventType
+            );
+            LOGGER.error(message, e);
+
             notifyGameEvent(new PlayerTerminateActionExceptionEvent(
-                    player, e.getMessage(), event.getType()
+                    player, e.getMessage(), eventType
             ));
 
             requestPlayerAction(player);

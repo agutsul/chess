@@ -47,6 +47,11 @@ public abstract class BoardStateFactory {
     }
 
     @SuppressWarnings("unchecked")
+    public static <STATE extends BoardState & TimeoutBoardState> STATE timeoutBoardState(Board board, Color color) {
+        return (STATE) new TimeoutBoardStateImpl(board, color);
+    }
+
+    @SuppressWarnings("unchecked")
     public static <STATE extends BoardState & FiveFoldRepetitionBoardState> STATE fiveFoldRepetitionBoardState(Board board, ActionMemento<?,?> memento) {
         return (STATE) new FiveFoldRepetitionBoardStateImpl(board, memento);
     }
@@ -142,6 +147,17 @@ public abstract class BoardStateFactory {
 
         ExitedBoardStateImpl(Board board, Color color) {
             super(LOGGER, BoardState.Type.EXITED, board, color);
+        }
+    }
+
+    private static final class TimeoutBoardStateImpl
+            extends AbstractTerminalBoardState
+            implements TimeoutBoardState {
+
+        private static final Logger LOGGER = getLogger(TimeoutBoardState.class);
+
+        TimeoutBoardStateImpl(Board board, Color color) {
+            super(LOGGER, BoardState.Type.TIMEOUT, board, color);
         }
     }
 

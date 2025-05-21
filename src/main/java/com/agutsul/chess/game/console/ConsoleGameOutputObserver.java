@@ -126,7 +126,7 @@ public final class ConsoleGameOutputObserver
 
     @Override
     protected void process(ActionTerminatedEvent event) {
-        if (!Type.EXIT.equals(event.getType())) {
+        if (!Type.EXIT.equals(event.getType()) && !Type.TIMEOUT.equals(event.getType())) {
             displayBoard(this.game.getBoard());
         }
     }
@@ -135,9 +135,10 @@ public final class ConsoleGameOutputObserver
     protected void process(ActionTerminationEvent event) {
         var player = event.getPlayer();
 
-        var message = Type.EXIT.equals(event.getType())
-                ? String.format("%s: '%s' exit", player.getColor(), player.getName())
-                : String.format("%s: '%s' asked '%s'", player.getColor(), player.getName(), lowerCase(event.getType().name()));
+        var eventType = lowerCase(event.getType().name());
+        var message = Type.EXIT.equals(event.getType()) || Type.TIMEOUT.equals(event.getType())
+                ? String.format("%s: '%s' %s", player.getColor(), player.getName(), eventType)
+                : String.format("%s: '%s' asked '%s'", player.getColor(), player.getName(), eventType);
 
         System.out.println(message);
     }

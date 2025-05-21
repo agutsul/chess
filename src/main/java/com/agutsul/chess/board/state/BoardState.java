@@ -23,6 +23,7 @@ public interface BoardState
         FIVE_FOLD_REPETITION(true),   // draw - when the same position occurs five times with the same player to move  ( automatic )
         SEVENTY_FIVE_MOVES(true),     // draw - when the last seventy five successive moves made by both players contain no capture or pawn move ( automatic ). If the last move was a checkmate, the checkmate stands.
         AGREED_DEFEAT(true),
+        TIMEOUT(true),
         CHECKED(false),
         FIFTY_MOVES(false),           // draw - when the last fifty successive moves made by both players contain no capture or pawn move ( claims arbiter )
         THREE_FOLD_REPETITION(false), // draw - when the same position occurs three times with the same player to move ( claims arbiter )

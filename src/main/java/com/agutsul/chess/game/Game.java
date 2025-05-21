@@ -24,6 +24,7 @@ public interface Game extends Runnable {
     Player getOpponentPlayer();
 
     Board getBoard();
+    Long getActionTimeout(); // milliseconds
 
     LocalDateTime getStartedAt();
     LocalDateTime getFinishedAt();
