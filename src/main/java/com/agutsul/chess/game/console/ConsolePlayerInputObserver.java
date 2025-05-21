@@ -85,6 +85,11 @@ public class ConsolePlayerInputObserver
             // calculate remaining timeout for promotion piece type selection
             var generalTimeout = this.actionStarted.toEpochMilli() + timeoutMillis;
             timeoutMillis = generalTimeout - Instant.now().toEpochMilli();
+
+            // prevent re-usage of already set timestamp
+            // because promotion happens only after some actual action like move or capture
+            // that should set 'actionStarted' field properly
+            this.actionStarted = null;
         }
 
         var input = trimToEmpty(readConsoleInput(timeoutMillis));
