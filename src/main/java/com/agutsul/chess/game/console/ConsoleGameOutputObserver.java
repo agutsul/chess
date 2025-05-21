@@ -104,7 +104,7 @@ public final class ConsoleGameOutputObserver
     @Override
     protected void process(RequestPlayerActionEvent event) {
         System.out.println(String.format("%s: '%s' move:%s",
-                event.getPlayer().getColor(), event.getPlayer(), lineSeparator()
+                event.getColor(), event.getPlayer(), lineSeparator()
         ));
     }
 
