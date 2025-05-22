@@ -1,0 +1,6 @@
+Choose promotion piece type:
+'N' - KNIGHT
+'B' - BISHOP
+'R' - ROOK
+'Q' - QUEEN
+

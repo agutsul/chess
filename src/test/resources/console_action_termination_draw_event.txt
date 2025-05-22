@@ -1,0 +1,1 @@
+WHITE: 'white_player' asked 'draw'

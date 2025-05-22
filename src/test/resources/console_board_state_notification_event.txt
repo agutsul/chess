@@ -1,0 +1,3 @@
+WHITE: Board state: DEFAULT
+Action: e3
+
