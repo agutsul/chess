@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
@@ -107,7 +108,7 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
     }
 
     @Test
-    void testProcessGameOverEvent() throws URISyntaxException, IOException {
+    void testProcessGameOverDrawEvent() throws URISyntaxException, IOException {
         when(game.getBoard())
             .thenReturn(STANDARD_BOARD);
         when(game.getWinner())
@@ -120,7 +121,24 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
             .thenReturn(LocalDateTime.of(2021, 04, 24, 14, 50, 48, 123456789));
 
         observer.process(new GameOverEvent(game));
-        assertStream("console_game_over_event.txt", outputStream);
+        assertStream("console_game_over_draw_event.txt", outputStream);
+    }
+
+    @Test
+    void testProcessGameOverWinEvent() throws URISyntaxException, IOException {
+        when(game.getBoard())
+            .thenReturn(STANDARD_BOARD);
+        when(game.getWinner())
+            .thenReturn(Optional.of(PLAYER));
+        when(game.getJournal())
+            .thenReturn(new JournalImpl());
+        when(game.getStartedAt())
+            .thenReturn(LocalDateTime.of(2021, 04, 24, 14, 33, 48, 123456789));
+        when(game.getFinishedAt())
+            .thenReturn(LocalDateTime.of(2021, 04, 24, 14, 50, 48, 123456789));
+
+        observer.process(new GameOverEvent(game));
+        assertStream("console_game_over_win_event.txt", outputStream);
     }
 
     @Test
@@ -148,19 +166,21 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
 
     @Test
     void testProcessActionPerformedEvent() throws URISyntaxException, IOException {
-        var positionBoardBuilder = new PositionedBoardBuilder();
+        var boardBuilder = new PositionedBoardBuilder();
+
+        var searchedPosition = positionOf("e2");
         for (var piece : STANDARD_BOARD.getPieces()) {
-            if (isPawn(piece) && "e2".equals(String.valueOf(piece.getPosition()))) {
+            if (isPawn(piece) && Objects.equals(searchedPosition, piece.getPosition())) {
                 continue;
             }
 
-            positionBoardBuilder.withPiece(piece.getType(), piece.getColor(), piece.getPosition());
+            boardBuilder.withPiece(piece.getType(), piece.getColor(), piece.getPosition());
         }
 
-        positionBoardBuilder.withWhitePawn(positionOf("e3"));
+        boardBuilder.withWhitePawn(positionOf("e3"));
 
         when(game.getBoard())
-            .thenReturn(positionBoardBuilder.build());
+            .thenReturn(boardBuilder.build());
 
         var actionMemento = new ActionMementoMock<String,String>(
                 Colors.WHITE, Action.Type.MOVE, Piece.Type.PAWN, "e2", "e3"

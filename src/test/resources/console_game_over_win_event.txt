@@ -1,0 +1,6 @@
+WHITE: Board state: DEFAULT
+--------------------------------------------------
+
+--------------------------------------------------
+Game over. WHITE wins! Congratulations, 'white_player' !!!
+Duration (minutes): 17
