@@ -123,11 +123,10 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
 
     @Test
     void testProcessBoardStateNotificationEvent() throws URISyntaxException, IOException {
+        var boardState = defaultBoardState(new StandardBoard(), Colors.WHITE);
         var actionMemento = new ActionMementoMock<String,String>(
                 Colors.WHITE, Action.Type.MOVE, Piece.Type.PAWN, "e2", "e3"
         );
-
-        var boardState = defaultBoardState(new StandardBoard(), Colors.WHITE);
 
         observer.process(new BoardStateNotificationEvent(boardState, actionMemento));
         assertStream("console_board_state_notification_event.txt", outputStream);
@@ -147,9 +146,9 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
 
     @Test
     void testProcessActionPerformedEvent() throws URISyntaxException, IOException {
-        var standardBoard = new StandardBoard();
-
         var positionBoardBuilder = new PositionedBoardBuilder();
+
+        var standardBoard = new StandardBoard();
         for (var piece : standardBoard.getPieces()) {
             if (isPawn(piece) && "e2".equals(String.valueOf(piece.getPosition()))) {
                 continue;
@@ -220,7 +219,8 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
 
     @Test
     void testProcessPlayerCancelActionExceptionEvent() throws URISyntaxException, IOException {
-        observer.process(new PlayerCancelActionExceptionEvent("test player cancel action error message"));
+        var message = "test player cancel action error message";
+        observer.process(new PlayerCancelActionExceptionEvent(message));
         assertStream("console_player_cancel_action_exception_event.txt", errorStream);
     }
 
