@@ -1,8 +1,13 @@
 package com.agutsul.chess.game.console;
 
+import static java.lang.System.lineSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
@@ -11,41 +16,91 @@ import java.io.InputStream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.activity.action.PieceMoveAction;
+import com.agutsul.chess.activity.action.PiecePromoteAction;
+import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
+import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.UserPlayer;
+import com.agutsul.chess.player.event.RequestPlayerActionEvent;
+import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
+import com.agutsul.chess.position.Position;
 
 @ExtendWith(MockitoExtension.class)
 public class ConsolePlayerInputObserverTest {
 
-    @Test
-    void testGetActionCommandValidCommandWithoutTimeout() throws IOException {
-        var command = String.format("e2 e4%s", System.lineSeparator());
-        var player = new UserPlayer("white_player", Colors.WHITE);
+    private static final Player PLAYER = new UserPlayer("white_player", Colors.WHITE);
 
-        var game = mock(Game.class);
+    @Mock
+    AbstractPlayableGame game;
+
+    @Mock
+    Board board;
+
+    @Test
+    void testProcessRequestPlayerActionEvent() throws IOException {
+        doNothing()
+            .when(game).notifyObservers(any());
+
         when(game.getActionTimeout())
             .thenReturn(null);
 
+        var exitCommand = String.format("exit%s", lineSeparator());
+        try (var inputStream = new ByteArrayInputStream(exitCommand.getBytes())) {
+            var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
+            playerInputObserver.process(new RequestPlayerActionEvent(PLAYER));
+        }
+
+        verify(game, times(2)).notifyObservers(any());
+    }
+
+    @Test
+    void testProcessRequestPromotionPieceTypeEvent() throws IOException {
+        doNothing()
+            .when(game).notifyObservers(any());
+
+        when(game.getActionTimeout())
+            .thenReturn(null);
+
+        var promoteAction = new PiecePromoteAction<>(
+                new PieceMoveAction<>(mock(PawnPiece.class), mock(Position.class)),
+                game
+        );
+
+        var promotionTypeCommand = String.format("q%s", lineSeparator());
+        try (var inputStream = new ByteArrayInputStream(promotionTypeCommand.getBytes())) {
+            var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
+            playerInputObserver.process(new RequestPromotionPieceTypeEvent(Colors.WHITE, promoteAction));
+        }
+
+        verify(game, times(1)).notifyObservers(any());
+    }
+
+    @Test
+    void testGetActionCommandValidCommandWithoutTimeout() throws IOException {
+        when(game.getActionTimeout())
+            .thenReturn(null);
+
+        var command = String.format("e2 e4%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
-            var playerInputObserver = new ConsolePlayerInputObserver(player, game, inputStream);
+            var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
             assertEquals("e2 e4", playerInputObserver.getActionCommand());
         }
     }
 
     @Test
     void testGetActionCommandWithRuntimeException() throws IOException {
-        var player = new UserPlayer("white_player", Colors.WHITE);
-
-        var game = mock(Game.class);
         when(game.getActionTimeout())
             .thenReturn(null);
 
-        var playerInputObserver = new ConsolePlayerInputObserver(player, game, null);
+        var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, null);
         var thrown = assertThrows(
                 IllegalActionException.class,
                 () -> playerInputObserver.getActionCommand()
@@ -56,30 +111,24 @@ public class ConsolePlayerInputObserverTest {
 
     @Test
     void testGetActionCommandValidCommandWithTimeout() throws IOException {
-        var command = String.format("e2 e4%s", System.lineSeparator());
-        var player = new UserPlayer("white_player", Colors.WHITE);
-
-        var game = mock(Game.class);
         when(game.getActionTimeout())
             .thenReturn(1000L);
 
+        var command = String.format("e2 e4%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
-            var playerInputObserver = new ConsolePlayerInputObserver(player, game, inputStream);
+            var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
             assertEquals("e2 e4", playerInputObserver.getActionCommand());
         }
     }
 
     @Test
     void testGetActionCommandWithBlankCommand() throws IOException {
-        var command = String.format("%s", System.lineSeparator());
-        var player = new UserPlayer("white_player", Colors.WHITE);
-
-        var game = mock(Game.class);
         when(game.getActionTimeout())
             .thenReturn(null);
 
+        var command = String.format("%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
-            var playerInputObserver = new ConsolePlayerInputObserver(player, game, inputStream);
+            var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
             var thrown = assertThrows(
                     IllegalActionException.class,
                     () -> playerInputObserver.getActionCommand()
@@ -91,15 +140,12 @@ public class ConsolePlayerInputObserverTest {
 
     @Test
     void testGetActionCommandWithWinCommand() throws IOException {
-        var command = String.format("win%s", System.lineSeparator());
-        var player = new UserPlayer("white_player", Colors.WHITE);
-
-        var game = mock(Game.class);
         when(game.getActionTimeout())
             .thenReturn(null);
 
+        var command = String.format("win%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
-            var playerInputObserver = new ConsolePlayerInputObserver(player, game, inputStream);
+            var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
             var thrown = assertThrows(
                     IllegalActionException.class,
                     () -> playerInputObserver.getActionCommand()
@@ -111,30 +157,24 @@ public class ConsolePlayerInputObserverTest {
 
     @Test
     void testGetPromotionPieceTypeWithoutTimeout() throws IOException {
-        var command = String.format("q%s", System.lineSeparator());
-        var player = new UserPlayer("white_player", Colors.WHITE);
-
-        var game = mock(Game.class);
         when(game.getActionTimeout())
             .thenReturn(null);
 
+        var command = String.format("q%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
-            var playerInputObserver = new ConsolePlayerInputObserver(player, game, inputStream);
+            var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
             assertEquals("Q", playerInputObserver.getPromotionPieceType());
         }
     }
 
     @Test
     void testGetPromotionPieceTypeWithBlankCommand() throws IOException {
-        var command = String.format("%s", System.lineSeparator());
-        var player = new UserPlayer("white_player", Colors.WHITE);
-
-        var game = mock(Game.class);
         when(game.getActionTimeout())
             .thenReturn(null);
 
+        var command = String.format("%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
-            var playerInputObserver = new ConsolePlayerInputObserver(player, game, inputStream);
+            var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
 
             var thrown = assertThrows(
                     IllegalActionException.class,
@@ -147,18 +187,15 @@ public class ConsolePlayerInputObserverTest {
 
     @Test
     void testGetPromotionPieceTypeWithTimeout() throws IOException {
-        var moveCommand = String.format("e7 e8%s", System.lineSeparator());
-        var player = new UserPlayer("white_player", Colors.WHITE);
-
-        var game = mock(Game.class);
         when(game.getActionTimeout())
             .thenReturn(10 * 60 * 1000L);
 
+        var moveCommand = String.format("e7 e8%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(moveCommand.getBytes())) {
-            var playerInputObserver = new TestConsolePlayerInputObserver(player, game, inputStream);
+            var playerInputObserver = new TestConsolePlayerInputObserver(PLAYER, game, inputStream);
             assertEquals("e7 e8", playerInputObserver.getActionCommand());
 
-            var promotionTypeCommand = String.format("q%s", System.lineSeparator());
+            var promotionTypeCommand = String.format("q%s", lineSeparator());
             try (var inputStream2 = new ByteArrayInputStream(promotionTypeCommand.getBytes())) {
                 playerInputObserver.setInputStream(inputStream2);
                 assertEquals("Q", playerInputObserver.getPromotionPieceType());
