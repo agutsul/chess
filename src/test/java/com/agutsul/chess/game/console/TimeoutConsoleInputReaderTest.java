@@ -16,10 +16,10 @@ import com.agutsul.chess.exception.GameTimeoutException;
 import com.agutsul.chess.player.UserPlayer;
 
 @ExtendWith(MockitoExtension.class)
-public class TimeoutConsoleActionReaderTest {
+public class TimeoutConsoleInputReaderTest {
 
     @Mock
-    ConsoleActionReader consoleActionReader;
+    ConsoleInputReader consoleActionReader;
 
     @Test
     void testNegativeTimeoutArgument() {

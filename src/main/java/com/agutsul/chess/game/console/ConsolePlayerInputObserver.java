@@ -114,9 +114,9 @@ public class ConsolePlayerInputObserver
         }
     }
 
-    private ConsoleActionReader createConsoleActionReader(Long timeoutMillis) {
+    private ConsoleInputReader createConsoleActionReader(Long timeoutMillis) {
         return timeoutMillis != null
                 ? new TimeoutConsoleActionReader(this.player, this.inputStream, timeoutMillis)
-                : new ConsoleActionReaderImpl(this.player, this.inputStream);
+                : new ConsoleInputReaderImpl(this.player, this.inputStream);
     }
 }

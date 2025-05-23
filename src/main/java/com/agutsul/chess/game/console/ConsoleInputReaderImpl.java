@@ -9,13 +9,13 @@ import java.util.Scanner;
 
 import com.agutsul.chess.player.Player;
 
-final class ConsoleActionReaderImpl
-        implements ConsoleActionReader {
+final class ConsoleInputReaderImpl
+        implements ConsoleInputReader {
 
     private final Player player;
     private final InputStream inputStream;
 
-    ConsoleActionReaderImpl(Player player, InputStream inputStream) {
+    ConsoleInputReaderImpl(Player player, InputStream inputStream) {
         this.player = player;
         this.inputStream = wrap(inputStream);
     }

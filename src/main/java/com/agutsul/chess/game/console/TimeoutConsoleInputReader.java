@@ -21,17 +21,17 @@ import com.agutsul.chess.exception.GameTimeoutException;
 import com.agutsul.chess.player.Player;
 
 final class TimeoutConsoleActionReader
-        implements ConsoleActionReader {
+        implements ConsoleInputReader {
 
     private final Player player;
-    private final ConsoleActionReader consoleActionReader;
+    private final ConsoleInputReader consoleActionReader;
     private final long timeout;
 
     TimeoutConsoleActionReader(Player player, InputStream inputStream, long timeoutMillis) {
-        this(player, new TimeoutConsoleActionReaderImpl(player, inputStream), timeoutMillis);
+        this(player, new TimeoutConsoleInputReaderImpl(player, inputStream), timeoutMillis);
     }
 
-    TimeoutConsoleActionReader(Player player, ConsoleActionReader consoleActionReader,
+    TimeoutConsoleActionReader(Player player, ConsoleInputReader consoleActionReader,
                                long timeoutMillis) {
 
         this.player = player;
@@ -83,15 +83,15 @@ final class TimeoutConsoleActionReader
         return String.format(messageFormat, player.getColor(), player);
     }
 
-    private static final class TimeoutConsoleActionReaderImpl
-            implements ConsoleActionReader {
+    private static final class TimeoutConsoleInputReaderImpl
+            implements ConsoleInputReader {
 
-        private static final Logger LOGGER = getLogger(TimeoutConsoleActionReaderImpl.class);
+        private static final Logger LOGGER = getLogger(TimeoutConsoleInputReaderImpl.class);
 
         private final Player player;
         private final InputStream inputStream;
 
-        TimeoutConsoleActionReaderImpl(Player player, InputStream inputStream) {
+        TimeoutConsoleInputReaderImpl(Player player, InputStream inputStream) {
             this.player = player;
             this.inputStream = wrap(inputStream);
         }
