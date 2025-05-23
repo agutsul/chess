@@ -19,12 +19,12 @@ import com.agutsul.chess.player.UserPlayer;
 public class TimeoutConsoleInputReaderTest {
 
     @Mock
-    ConsoleInputReader consoleActionReader;
+    ConsoleInputReader consoleInputReader;
 
     @Test
     void testNegativeTimeoutArgument() {
         var player = new UserPlayer("test", Colors.WHITE);
-        var reader = new TimeoutConsoleActionReader(player, consoleActionReader, -1);
+        var reader = new TimeoutConsoleInputReader(player, consoleInputReader, -1);
 
         var thrown = assertThrows(
                 GameTimeoutException.class,
@@ -37,13 +37,13 @@ public class TimeoutConsoleInputReaderTest {
     @Test
     void testTimeoutException() throws IOException {
         var player = new UserPlayer("test", Colors.WHITE);
-        when(consoleActionReader.read())
+        when(consoleInputReader.read())
             .thenAnswer(inv -> {
                 Thread.sleep(100);
                 return null;
             });
 
-        var reader = new TimeoutConsoleActionReader(player, consoleActionReader, 50);
+        var reader = new TimeoutConsoleInputReader(player, consoleInputReader, 50);
 
         var thrown = assertThrows(
                 GameTimeoutException.class,
@@ -56,10 +56,10 @@ public class TimeoutConsoleInputReaderTest {
     @Test
     void testIOException() throws IOException {
         var player = new UserPlayer("test", Colors.WHITE);
-        when(consoleActionReader.read())
+        when(consoleInputReader.read())
             .thenThrow(new RuntimeException("test"));
 
-        var reader = new TimeoutConsoleActionReader(player, consoleActionReader, 50);
+        var reader = new TimeoutConsoleInputReader(player, consoleInputReader, 50);
 
         var thrown = assertThrows(
                 IOException.class,
@@ -72,10 +72,10 @@ public class TimeoutConsoleInputReaderTest {
     @Test
     void testConsoleReadSuccessfully() throws IOException {
         var player = new UserPlayer("test", Colors.WHITE);
-        when(consoleActionReader.read())
+        when(consoleInputReader.read())
             .thenReturn("e2 e4");
 
-        var reader = new TimeoutConsoleActionReader(player, consoleActionReader, 100);
+        var reader = new TimeoutConsoleInputReader(player, consoleInputReader, 100);
         assertEquals("e2 e4", reader.read());
     }
 }

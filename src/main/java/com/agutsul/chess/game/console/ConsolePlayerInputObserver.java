@@ -106,17 +106,14 @@ public class ConsolePlayerInputObserver
     }
 
     private String readConsoleInput(Long timeoutMillis) {
-        var consoleActionReader = createConsoleActionReader(timeoutMillis);
+        var consoleInputReader = timeoutMillis != null
+                ? new TimeoutConsoleInputReader(this.player, this.inputStream, timeoutMillis)
+                : new ConsoleInputReaderImpl(this.player, this.inputStream);
+
         try {
-            return consoleActionReader.read();
+            return consoleInputReader.read();
         } catch (IOException e) {
             throw new IllegalActionException(e.getMessage(), e);
         }
-    }
-
-    private ConsoleInputReader createConsoleActionReader(Long timeoutMillis) {
-        return timeoutMillis != null
-                ? new TimeoutConsoleActionReader(this.player, this.inputStream, timeoutMillis)
-                : new ConsoleInputReaderImpl(this.player, this.inputStream);
     }
 }

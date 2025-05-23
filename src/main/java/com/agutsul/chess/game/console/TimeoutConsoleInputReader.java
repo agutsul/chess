@@ -20,19 +20,19 @@ import org.slf4j.Logger;
 import com.agutsul.chess.exception.GameTimeoutException;
 import com.agutsul.chess.player.Player;
 
-final class TimeoutConsoleActionReader
+final class TimeoutConsoleInputReader
         implements ConsoleInputReader {
 
     private final Player player;
     private final ConsoleInputReader consoleActionReader;
     private final long timeout;
 
-    TimeoutConsoleActionReader(Player player, InputStream inputStream, long timeoutMillis) {
+    TimeoutConsoleInputReader(Player player, InputStream inputStream, long timeoutMillis) {
         this(player, new TimeoutConsoleInputReaderImpl(player, inputStream), timeoutMillis);
     }
 
-    TimeoutConsoleActionReader(Player player, ConsoleInputReader consoleActionReader,
-                               long timeoutMillis) {
+    TimeoutConsoleInputReader(Player player, ConsoleInputReader consoleActionReader,
+                              long timeoutMillis) {
 
         this.player = player;
         this.consoleActionReader = consoleActionReader;
