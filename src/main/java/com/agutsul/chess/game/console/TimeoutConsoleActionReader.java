@@ -1,11 +1,21 @@
 package com.agutsul.chess.game.console;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
+import static org.apache.commons.io.input.CloseShieldInputStream.wrap;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.slf4j.LoggerFactory.getLogger;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.time.Duration;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import org.slf4j.Logger;
 
 import com.agutsul.chess.exception.GameTimeoutException;
 import com.agutsul.chess.player.Player;
@@ -16,6 +26,10 @@ final class TimeoutConsoleActionReader
     private final Player player;
     private final ConsoleActionReader consoleActionReader;
     private final long timeout;
+
+    TimeoutConsoleActionReader(Player player, InputStream inputStream, long timeoutMillis) {
+        this(player, new TimeoutConsoleActionReaderImpl(player, inputStream), timeoutMillis);
+    }
 
     TimeoutConsoleActionReader(Player player, ConsoleActionReader consoleActionReader,
                                long timeoutMillis) {
@@ -67,5 +81,46 @@ final class TimeoutConsoleActionReader
 
     private static String createMessage(Player player, String messageFormat) {
         return String.format(messageFormat, player.getColor(), player);
+    }
+
+    private static final class TimeoutConsoleActionReaderImpl
+            implements ConsoleActionReader {
+
+        private static final Logger LOGGER = getLogger(TimeoutConsoleActionReaderImpl.class);
+
+        private final Player player;
+        private final InputStream inputStream;
+
+        TimeoutConsoleActionReaderImpl(Player player, InputStream inputStream) {
+            this.player = player;
+            this.inputStream = wrap(inputStream);
+        }
+
+        @Override
+        public String read() throws IOException {
+            String line = null;
+            try (var reader = new BufferedReader(new InputStreamReader(this.inputStream, UTF_8))) {
+                do {
+                    while (!reader.ready()) {
+                        Thread.sleep(Duration.ofMillis(10));
+                    }
+
+                    line = reader.readLine();
+                } while (isBlank(line));
+            } catch (IOException e) {
+                var message = String.format(
+                        "%s: '%s' Reading action from console failed",
+                        this.player.getColor(), this.player
+                );
+
+                throw new IOException(message, e);
+            } catch (InterruptedException e) {
+                LOGGER.warn("{}: '{}' console read cancelled",
+                        this.player.getColor(), this.player
+                );
+            }
+
+            return line;
+        }
     }
 }
