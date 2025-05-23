@@ -97,16 +97,9 @@ final class TimeoutConsoleInputReader
                     line = reader.readLine();
                 } while (isBlank(line));
             } catch (InterruptedException e) {
-                LOGGER.warn("{}: '{}' console read cancelled",
-                        this.player.getColor(), this.player
-                );
+                LOGGER.warn(createMessage(player, "%s: '%s' console read cancelled"));
             } catch (Exception e) {
-                var message = String.format(
-                        "%s: '%s' Reading action from console failed",
-                        this.player.getColor(), this.player
-                );
-
-                throw new IOException(message, e);
+                throw createIOException(player, "%s: '%s' Reading action from console failed", e);
             }
 
             return line;
