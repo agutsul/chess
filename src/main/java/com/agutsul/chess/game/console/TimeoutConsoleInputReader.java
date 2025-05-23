@@ -24,18 +24,18 @@ final class TimeoutConsoleInputReader
         implements ConsoleInputReader {
 
     private final Player player;
-    private final ConsoleInputReader consoleActionReader;
+    private final ConsoleInputReader consoleInputReader;
     private final long timeout;
 
     TimeoutConsoleInputReader(Player player, InputStream inputStream, long timeoutMillis) {
         this(player, new TimeoutConsoleInputReaderImpl(player, inputStream), timeoutMillis);
     }
 
-    TimeoutConsoleInputReader(Player player, ConsoleInputReader consoleActionReader,
+    TimeoutConsoleInputReader(Player player, ConsoleInputReader consoleInputReader,
                               long timeoutMillis) {
 
         this.player = player;
-        this.consoleActionReader = consoleActionReader;
+        this.consoleInputReader = consoleInputReader;
         this.timeout = timeoutMillis;
     }
 
@@ -48,7 +48,7 @@ final class TimeoutConsoleInputReader
 
         var executor = newSingleThreadExecutor();
         try {
-            var future = executor.submit(() -> this.consoleActionReader.read());
+            var future = executor.submit(() -> this.consoleInputReader.read());
             try {
                 return future.get(this.timeout, TimeUnit.MILLISECONDS);
             } catch (TimeoutException e) {
