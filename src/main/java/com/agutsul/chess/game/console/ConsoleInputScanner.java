@@ -1,7 +1,6 @@
 package com.agutsul.chess.game.console;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.apache.commons.io.input.CloseShieldInputStream.wrap;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,15 +8,11 @@ import java.util.Scanner;
 
 import com.agutsul.chess.player.Player;
 
-final class ConsoleInputReaderImpl
-        implements ConsoleInputReader {
+final class ConsoleInputScanner
+        extends AbstractConsoleInputReader {
 
-    private final Player player;
-    private final InputStream inputStream;
-
-    ConsoleInputReaderImpl(Player player, InputStream inputStream) {
-        this.player = player;
-        this.inputStream = wrap(inputStream);
+    ConsoleInputScanner(Player player, InputStream inputStream) {
+        super(player, inputStream);
     }
 
     @Override

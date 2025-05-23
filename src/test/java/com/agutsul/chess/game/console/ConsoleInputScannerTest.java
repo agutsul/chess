@@ -15,7 +15,7 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.player.UserPlayer;
 
 @ExtendWith(MockitoExtension.class)
-public class ConsoleInputReaderImplTest {
+public class ConsoleInputScannerTest {
 
     @Test
     void testInputStreamRead() throws IOException {
@@ -23,7 +23,7 @@ public class ConsoleInputReaderImplTest {
         var player = new UserPlayer("white_player", Colors.WHITE);
 
         try (var inputStream = new ByteArrayInputStream(text.getBytes())) {
-            var consoleActionReader = new ConsoleInputReaderImpl(player, inputStream);
+            var consoleActionReader = new ConsoleInputScanner(player, inputStream);
             assertEquals("test", consoleActionReader.read());
         }
     }
@@ -34,7 +34,7 @@ public class ConsoleInputReaderImplTest {
         var player = new UserPlayer("white_player", Colors.WHITE);
 
         try (var inputStream = new ByteArrayInputStream(text.getBytes())) {
-            var consoleActionReader = new ConsoleInputReaderImpl(player, inputStream);
+            var consoleActionReader = new ConsoleInputScanner(player, inputStream);
             assertNull(consoleActionReader.read());
         }
     }
@@ -42,7 +42,7 @@ public class ConsoleInputReaderImplTest {
     @Test
     void testExceptionWhileReading() throws IOException {
         var player = new UserPlayer("white_player", Colors.WHITE);
-        var consoleActionReader = new ConsoleInputReaderImpl(player, null);
+        var consoleActionReader = new ConsoleInputScanner(player, null);
 
         var thrown = assertThrows(
                 IOException.class,

@@ -2,7 +2,6 @@ package com.agutsul.chess.game.console;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
-import static org.apache.commons.io.input.CloseShieldInputStream.wrap;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -23,32 +22,26 @@ import com.agutsul.chess.player.Player;
 final class TimeoutConsoleInputReader
         implements ConsoleInputReader {
 
+    private final ConsoleInputReader reader;
     private final Player player;
-    private final ConsoleInputReader consoleInputReader;
     private final long timeout;
 
     TimeoutConsoleInputReader(Player player, InputStream inputStream, long timeoutMillis) {
-        this(player, new TimeoutConsoleInputReaderImpl(player, inputStream), timeoutMillis);
-    }
-
-    TimeoutConsoleInputReader(Player player, ConsoleInputReader consoleInputReader,
-                              long timeoutMillis) {
-
+        this.reader = new TimeoutConsoleInputBufferedReader(player, inputStream);
         this.player = player;
-        this.consoleInputReader = consoleInputReader;
         this.timeout = timeoutMillis;
     }
 
     @Override
     public String read() throws IOException {
         if (this.timeout <= 0) {
-            // it means that current timestamp is greater than general action timeout
+            // it means that current timestamp is greater than overall action timeout
             throw createGameTimeoutException(this.player);
         }
 
         var executor = newSingleThreadExecutor();
         try {
-            var future = executor.submit(() -> this.consoleInputReader.read());
+            var future = executor.submit(() -> this.reader.read());
             try {
                 return future.get(this.timeout, TimeUnit.MILLISECONDS);
             } catch (TimeoutException e) {
@@ -83,17 +76,13 @@ final class TimeoutConsoleInputReader
         return String.format(messageFormat, player.getColor(), player);
     }
 
-    private static final class TimeoutConsoleInputReaderImpl
-            implements ConsoleInputReader {
+    private static final class TimeoutConsoleInputBufferedReader
+            extends AbstractConsoleInputReader {
 
-        private static final Logger LOGGER = getLogger(TimeoutConsoleInputReaderImpl.class);
+        private static final Logger LOGGER = getLogger(TimeoutConsoleInputBufferedReader.class);
 
-        private final Player player;
-        private final InputStream inputStream;
-
-        TimeoutConsoleInputReaderImpl(Player player, InputStream inputStream) {
-            this.player = player;
-            this.inputStream = wrap(inputStream);
+        TimeoutConsoleInputBufferedReader(Player player, InputStream inputStream) {
+            super(player, inputStream);
         }
 
         @Override

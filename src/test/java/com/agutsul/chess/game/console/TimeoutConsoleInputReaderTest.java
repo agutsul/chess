@@ -2,13 +2,14 @@ package com.agutsul.chess.game.console;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.color.Colors;
@@ -18,13 +19,10 @@ import com.agutsul.chess.player.UserPlayer;
 @ExtendWith(MockitoExtension.class)
 public class TimeoutConsoleInputReaderTest {
 
-    @Mock
-    ConsoleInputReader consoleInputReader;
-
     @Test
     void testNegativeTimeoutArgument() {
         var player = new UserPlayer("test", Colors.WHITE);
-        var reader = new TimeoutConsoleInputReader(player, consoleInputReader, -1);
+        var reader = new TimeoutConsoleInputReader(player, mock(InputStream.class), -1);
 
         var thrown = assertThrows(
                 GameTimeoutException.class,
@@ -37,13 +35,7 @@ public class TimeoutConsoleInputReaderTest {
     @Test
     void testTimeoutException() throws IOException {
         var player = new UserPlayer("test", Colors.WHITE);
-        when(consoleInputReader.read())
-            .thenAnswer(inv -> {
-                Thread.sleep(100);
-                return null;
-            });
-
-        var reader = new TimeoutConsoleInputReader(player, consoleInputReader, 50);
+        var reader = new TimeoutConsoleInputReader(player, new DelayedInputStreamMock(), 50);
 
         var thrown = assertThrows(
                 GameTimeoutException.class,
@@ -54,28 +46,26 @@ public class TimeoutConsoleInputReaderTest {
     }
 
     @Test
-    void testIOException() throws IOException {
+    void testConsoleReadSuccessfully() throws IOException {
+        var text = String.format("e2 e4%s", System.lineSeparator());
         var player = new UserPlayer("test", Colors.WHITE);
-        when(consoleInputReader.read())
-            .thenThrow(new RuntimeException("test"));
 
-        var reader = new TimeoutConsoleInputReader(player, consoleInputReader, 50);
-
-        var thrown = assertThrows(
-                IOException.class,
-                () -> reader.read()
-        );
-
-        assertEquals("WHITE: 'test' failed to enter action", thrown.getMessage());
+        try (var inputStream = new ByteArrayInputStream(text.getBytes())) {
+            var reader = new TimeoutConsoleInputReader(player, inputStream, 100);
+            assertEquals("e2 e4", reader.read());
+        }
     }
 
-    @Test
-    void testConsoleReadSuccessfully() throws IOException {
-        var player = new UserPlayer("test", Colors.WHITE);
-        when(consoleInputReader.read())
-            .thenReturn("e2 e4");
+    private static class DelayedInputStreamMock extends InputStream {
 
-        var reader = new TimeoutConsoleInputReader(player, consoleInputReader, 100);
-        assertEquals("e2 e4", reader.read());
+        @Override
+        public int read() throws IOException {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // ignore
+            }
+            return 0;
+        }
     }
 }

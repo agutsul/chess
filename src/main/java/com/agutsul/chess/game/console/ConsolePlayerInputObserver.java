@@ -108,7 +108,7 @@ public class ConsolePlayerInputObserver
     private String readConsoleInput(Long timeoutMillis) {
         var consoleInputReader = timeoutMillis != null
                 ? new TimeoutConsoleInputReader(this.player, this.inputStream, timeoutMillis)
-                : new ConsoleInputReaderImpl(this.player, this.inputStream);
+                : new ConsoleInputScanner(this.player, this.inputStream);
 
         try {
             return consoleInputReader.read();
