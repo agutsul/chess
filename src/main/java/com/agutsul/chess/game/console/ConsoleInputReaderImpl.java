@@ -1,10 +1,10 @@
 package com.agutsul.chess.game.console;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.commons.io.input.CloseShieldInputStream.wrap;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 import com.agutsul.chess.player.Player;
@@ -22,7 +22,7 @@ final class ConsoleInputReaderImpl
 
     @Override
     public String read() throws IOException {
-        try (var scanner = new Scanner(this.inputStream, StandardCharsets.UTF_8)) {
+        try (var scanner = new Scanner(this.inputStream, UTF_8)) {
             if (scanner.hasNextLine()) {
                 var line = scanner.nextLine();
                 if (!line.isBlank()) {
