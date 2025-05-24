@@ -91,10 +91,13 @@ abstract class AbstractGame
             return new DefaultGameState();
         }
 
-        return Stream.ofNullable(getWinner())
+        var state = Stream.of(getWinner())
                 .flatMap(Optional::stream)
                 .findFirst()
-                .map(winner -> WIN_STATES.get(winner.getColor()))
+                .map(Player::getColor)
+                .map(winnerColor -> WIN_STATES.get(winnerColor))
                 .orElse(new DrawnGameState());
+
+        return state;
     }
 }
