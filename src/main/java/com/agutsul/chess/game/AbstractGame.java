@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.toMap;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -21,6 +22,11 @@ import com.agutsul.chess.player.Player;
 
 abstract class AbstractGame
         implements Game {
+
+    private static final Map<Color,GameState> WIN_STATES = Map.of(
+            Colors.WHITE, new WhiteWinGameState(),
+            Colors.BLACK, new BlackWinGameState()
+    );
 
     protected final Logger logger;
 
@@ -85,15 +91,10 @@ abstract class AbstractGame
             return new DefaultGameState();
         }
 
-        var winner = getWinner();
-        if (winner.isEmpty()) {
-            return new DrawnGameState();
-        }
-
-        var state = Objects.equals(getWhitePlayer(), winner.get())
-                ? new WhiteWinGameState()
-                : new BlackWinGameState();
-
-        return state;
+        return Stream.ofNullable(getWinner())
+                .flatMap(Optional::stream)
+                .findFirst()
+                .map(winner -> WIN_STATES.get(winner.getColor()))
+                .orElse(new DrawnGameState());
     }
 }
