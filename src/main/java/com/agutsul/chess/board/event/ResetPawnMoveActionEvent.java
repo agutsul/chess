@@ -14,8 +14,12 @@ public final class ResetPawnMoveActionEvent
     private final Position position;
 
     public ResetPawnMoveActionEvent(PawnPiece<Color> pawnPiece, String position) {
+        this(pawnPiece, positionOf(position));
+    }
+
+    public ResetPawnMoveActionEvent(PawnPiece<Color> pawnPiece, Position position) {
         this.pawnPiece = pawnPiece;
-        this.position  = positionOf(position);
+        this.position  = position;
     }
 
     public PawnPiece<Color> getPawnPiece() {
