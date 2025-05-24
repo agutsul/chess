@@ -1,21 +1,13 @@
 package com.agutsul.chess.game;
 
-import static com.agutsul.chess.board.state.BoardState.Type.AGREED_DEFEAT;
-import static com.agutsul.chess.board.state.BoardState.Type.AGREED_DRAW;
-import static com.agutsul.chess.board.state.BoardState.Type.AGREED_WIN;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.DEFAULT;
-import static com.agutsul.chess.board.state.BoardState.Type.FIVE_FOLD_REPETITION;
-import static com.agutsul.chess.board.state.BoardState.Type.SEVENTY_FIVE_MOVES;
-import static com.agutsul.chess.board.state.BoardState.Type.STALE_MATED;
-import static com.agutsul.chess.board.state.BoardState.Type.TIMEOUT;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -29,7 +21,6 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Executable;
-import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.event.ActionCancelledEvent;
 import com.agutsul.chess.activity.action.event.ActionPerformedEvent;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
@@ -59,6 +50,8 @@ import com.agutsul.chess.player.state.LockedPlayerState;
 import com.agutsul.chess.player.state.PlayerState;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
+import com.agutsul.chess.rule.winner.WinnerEvaluator;
+import com.agutsul.chess.rule.winner.WinnerEvaluatorImpl;
 
 public abstract class AbstractPlayableGame
         extends AbstractGame
@@ -71,6 +64,8 @@ public abstract class AbstractPlayableGame
     private final ForkJoinPool forkJoinPool;
 
     private final BoardStateEvaluator<BoardState> boardStateEvaluator;
+    private final WinnerEvaluator<Player> winnerEvaluator;
+
     private final List<Observer> observers;
 
     protected final PlayerState activeState;
@@ -111,6 +106,8 @@ public abstract class AbstractPlayableGame
         this.actionTimeout = actionTimeoutMillis;
 
         this.boardStateEvaluator = boardStateEvaluator;
+        this.winnerEvaluator = new WinnerEvaluatorImpl();
+
         this.forkJoinPool = forkJoinPool;
 
         this.activeState = new ActivePlayerState((Observable) board);
@@ -149,21 +146,7 @@ public abstract class AbstractPlayableGame
 
     @Override
     public final Optional<Player> getWinner() {
-        var boardState = this.board.getState();
-        if (boardState.isAnyType(AGREED_DEFEAT, TIMEOUT)) {
-            return createWinner(getOpponentPlayer());
-        }
-
-        if (boardState.isAnyType(CHECK_MATED, AGREED_WIN)) {
-            return createWinner(getCurrentPlayer());
-        }
-
-        if (boardState.isAnyType(AGREED_DRAW, FIVE_FOLD_REPETITION, SEVENTY_FIVE_MOVES, STALE_MATED)) {
-            return Optional.empty();
-        }
-
-        // TODO: confirm winner detection algo
-        return findWinner();
+        return Optional.ofNullable(this.winnerEvaluator.evaluate(this));
     }
 
     @Override
@@ -298,47 +281,6 @@ public abstract class AbstractPlayableGame
 
     protected final void notifyBoardObservers(Event event) {
         ((Observable) this.board).notifyObservers(event);
-    }
-
-    private Optional<Player> createWinner(Player player) {
-        logger.info("{} wins. Player '{}'", player.getColor(), player.getName());
-        return Optional.of(player);
-    }
-
-    private Optional<Player> findWinner() {
-        var currentPlayerScore  = calculateScore(getCurrentPlayer());
-        var opponentPlayerScore = calculateScore(getOpponentPlayer());
-
-        var result = Integer.compare(currentPlayerScore, opponentPlayerScore);
-        if (result == 0) {
-            var currentPlayerActions  = calculateActions(getCurrentPlayer());
-            var opponentPlayerActions = calculateActions(getOpponentPlayer());
-
-            result = Integer.compare(currentPlayerActions, opponentPlayerActions);
-            if (result == 0) {
-                return Optional.empty();
-            }
-        }
-
-        return Optional.of(result > 0 ? getCurrentPlayer() : getOpponentPlayer());
-    }
-
-    private int calculateActions(Player player) {
-        var pieces = board.getPieces(player.getColor());
-
-        int result = 0;
-        for (var action : Action.Type.values()) {
-            result += pieces.stream()
-                    .map(piece -> board.getActions(piece, action))
-                    .mapToInt(Collection::size)
-                    .sum();
-        }
-
-        return result;
-    }
-
-    private int calculateScore(Player player) {
-        return Math.abs(board.calculateValue(player.getColor()));
     }
 
     private Player switchPlayers() {
