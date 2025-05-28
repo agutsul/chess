@@ -119,6 +119,18 @@ public class InsufficientMaterialBoardStateEvaluatorTest {
     }
 
     @Test
+    void testKingAndKnightVsKingAndQueen() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("f7")
+                .withWhiteQueen("g8")
+                .withBlackKing("f3")
+                .withBlackKnight("f4")
+                .build();
+
+        assertInsufficientMaterial(board, Colors.BLACK);
+    }
+
+    @Test
     // https://lichess.org/forum/lichess-feedback/if-your-only-legal-move-is-checkmate-but-you-run-out-of-time-you-still-lose
     void testNoLegalActionsLeadToCheckmate() {
         var board = new LabeledBoardBuilder()
