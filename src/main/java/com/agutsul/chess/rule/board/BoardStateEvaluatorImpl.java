@@ -95,7 +95,7 @@ public final class BoardStateEvaluatorImpl
 
         // prevent wrapping single board state with composite
         if (states.isEmpty() && boardStates.size() == 1) {
-            return boardStates.get(0);
+            return boardStates.getFirst();
         }
 
         states.addAll(boardStates.stream()
