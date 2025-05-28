@@ -76,10 +76,12 @@ public final class BoardStateEvaluatorImpl
         }
 
         if (boardStates.stream().anyMatch(BoardState::isTerminal)) {
-            return new CompositeBoardState(boardStates.stream()
-                    .sorted(comparing(BoardState::isTerminal).reversed()) // terminal states first
-                    .toList()
-            );
+            return boardStates.size() == 1
+                    ? boardStates.getFirst() // prevent wrapping single board state with composite
+                    : new CompositeBoardState(boardStates.stream()
+                            .sorted(comparing(BoardState::isTerminal).reversed()) // terminal states first
+                            .toList()
+                      );
         }
 
         var states = new ArrayList<BoardState>();
