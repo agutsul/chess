@@ -59,6 +59,11 @@ public final class StandardBoard
     }
 
     @Override
+    public BoardState getState(Color color) {
+        return this.origin.getState(color);
+    }
+
+    @Override
     public Collection<BoardState> getStates() {
         return this.origin.getStates();
     }

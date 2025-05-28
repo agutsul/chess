@@ -50,8 +50,8 @@ import com.agutsul.chess.player.state.LockedPlayerState;
 import com.agutsul.chess.player.state.PlayerState;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
-import com.agutsul.chess.rule.winner.WinnerEvaluator;
-import com.agutsul.chess.rule.winner.WinnerEvaluatorImpl;
+import com.agutsul.chess.rule.winner.PlayerEvaluator;
+import com.agutsul.chess.rule.winner.PlayerEvaluatorImpl;
 
 public abstract class AbstractPlayableGame
         extends AbstractGame
@@ -64,7 +64,7 @@ public abstract class AbstractPlayableGame
     private final ForkJoinPool forkJoinPool;
 
     private final BoardStateEvaluator<BoardState> boardStateEvaluator;
-    private final WinnerEvaluator<Player> winnerEvaluator;
+    private final PlayerEvaluator winnerEvaluator;
 
     private final List<Observer> observers;
 
@@ -106,7 +106,7 @@ public abstract class AbstractPlayableGame
         this.actionTimeout = actionTimeoutMillis;
 
         this.boardStateEvaluator = boardStateEvaluator;
-        this.winnerEvaluator = new WinnerEvaluatorImpl();
+        this.winnerEvaluator = new PlayerEvaluatorImpl();
 
         this.forkJoinPool = forkJoinPool;
 

@@ -85,7 +85,8 @@ final class InsufficientMaterialBoardStateEvaluator
                 new PieceVersusKingEvaluationTask(board, Piece.Type.KNIGHT, Pattern.KING_AND_KNIGHT_VS_KING),
                 new BishopPositionColorVersusKingEvaluationTask(board),
                 new DoubleKnightsVersusKingEvaluationTask(board),
-                new KingBishopVersusKingKnightEvaluationTask(board)
+                new KingBishopVersusKingKnightEvaluationTask(board),
+                new KingKnightVersusKingQueenEvaluationTask(board)
         );
     }
 
@@ -256,7 +257,7 @@ final class InsufficientMaterialBoardStateEvaluator
             extends KingVersusKingEvaluationTask {
 
         public KingBishopVersusKingKnightEvaluationTask(Board board) {
-            super(board, 4);
+            super(board, Pattern.KING_AND_BISHOP_VS_KING_AND_KNIGHT, 4);
         }
 
         @Override
@@ -280,6 +281,35 @@ final class InsufficientMaterialBoardStateEvaluator
             var knightPieces = board.getPieces(color.invert(), Piece.Type.KNIGHT);
 
             return bishopPieces.size() == 1 && knightPieces.size() == 1;
+        }
+    }
+
+    // https://www.chess.com/forum/view/endgames/king--queen-vs-king--knight
+    private static final class KingKnightVersusKingQueenEvaluationTask
+            extends KingVersusKingEvaluationTask {
+
+        public KingKnightVersusKingQueenEvaluationTask(Board board) {
+            super(board, Pattern.KING_AND_KNIGHT_VS_KING_AND_QUEEN, 4);
+        }
+
+        @Override
+        protected BoardState evaluateBoard(Color color) {
+            return isKingVsKing(color)
+                ? getBoardState(color)
+                : null;
+        }
+
+        protected BoardState getBoardState(Color color) {
+            return isInsufficientMaterial(color)
+                    ? createBoardState(board, color)
+                    : null;
+        }
+
+        private boolean isInsufficientMaterial(Color color) {
+            var knightPieces = board.getPieces(color, Piece.Type.KNIGHT);
+            var queenPieces  = board.getPieces(color.invert(), Piece.Type.QUEEN);
+
+            return queenPieces.size() == 1 && knightPieces.size() == 1;
         }
     }
 

@@ -13,6 +13,7 @@ import com.agutsul.chess.antlr.pgn.action.PgnActionAdapter;
 import com.agutsul.chess.antlr.pgn.action.PieceActionAdapter;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.exception.GameTimeoutException;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
 
@@ -52,6 +53,13 @@ final class PgnPlayerInputObserver
 
     private String finalCommand() {
         var pgnGame = (PgnGame) this.game;
+
+        if (PgnTermination.TIME_FORFEIT.equals(pgnGame.getParsedTermination())) {
+            throw new GameTimeoutException(String.format(
+                    "%s: '%s' entering action timeout",
+                    this.player.getColor(), this.player
+            ));
+        }
 
         var gameState = pgnGame.getParsedGameState();
         switch (gameState.getType()) {

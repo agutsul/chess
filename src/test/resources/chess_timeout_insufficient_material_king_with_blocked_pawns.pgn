@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "0-1"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:05:34"]
+[WhiteElo "1693"]
+[BlackElo "1898"]
+[WhiteRatingDiff "-5"]
+[BlackRatingDiff "+5"]
+[ECO "B03"]
+[Opening "Alekhine Defense"]
+[TimeControl "180+0"]
+[Termination "Time forfeit"]
+
+1. e4 Nf6 2. e5 Nd5 3. d4 d6 4. f4 dxe5 5. fxe5 Nc6 6. Nf3 Bg4 7. c3 e6 8. Bd3 Be7 9. O-O O-O 10. Qe1 f5 11. exf6 Nxf6 12. Nbd2 Bf5 13. Ne4 Nxe4 14. Bxe4 Bxe4 15. Qxe4 Qd5 16. Qg4 Qf5 17. Qg3 Bd6 18. Qf2 Qh5 19. g3 e5 20. d5 e4 21. dxc6 Rxf3 22. Qg2 bxc6 23. Bf4 Bc5+ 24. Kh1 Rxf1+ 25. Rxf1 Qd5 26. b3 e3 27. Qxd5+ cxd5 28. Re1 Re8 29. Kg2 d4 30. cxd4 Bxd4 31. Kf3 c5 32. Bxe3 Bxe3 33. Rxe3 Rd8 34. Ke2 Kf7 35. Rc3 Rd5 36. Rf3+ Ke7 37. Re3+ Kd7 38. Rd3 Kd6 39. Rxd5+ Kxd5 40. Kd3 a5 41. h3 h6 42. g4 g5 43. Ke3 c4 0-1

@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1/2-1/2"]
+[UTCDate "2014.07.01"]
+[UTCTime "05:51:40"]
+[WhiteElo "1452"]
+[BlackElo "1371"]
+[WhiteRatingDiff "-3"]
+[BlackRatingDiff "+2"]
+[ECO "A40"]
+[Opening "Horwitz Defense"]
+[TimeControl "180+0"]
+[Termination "Time forfeit"]
+
+1. d4 e6 2. e3 d5 3. f4 Bd6 4. c3 Ne7 5. g3 O-O 6. h4 Nbc6 7. b4 a6 8. a4 b5 9. axb5 Nxb4 10. cxb4 Bxb4+ 11. Bd2 Bxd2+ 12. Qxd2 c6 13. bxa6 Bxa6 14. Bxa6 Qb6 15. Qd3 Qb4+ 16. Nd2 Rab8 17. Rb1 Qa3 18. Rxb8 Qc1+ 19. Ke2 Rxb8 20. f5 Rb2 21. Nf3 Qxh1 22. fxe6 fxe6 23. g4 Qg2+ 24. Kd1 Ra2 25. Nb3 Rb2 26. g5 Qxf3+ 27. Kc1 Rh2 28. Nd2 Qh1+ 29. Kc2 Rxh4 30. Bb7 Qg1 31. Nf3 Qg2+ 32. Nd2 Qxg5 33. Kc3 Rh3 34. Nf1 Nf5 35. Bxc6 Nxe3 36. Be8 Nxf1 37. Bd7 Rxd3+ 38. Kxd3 Qg3+ 39. Kc2 Qe3 40. Bxe6+ Kf8 41. Bxd5 Qxd4 42. Bg2 1/2-1/2

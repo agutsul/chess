@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1/2-1/2"]
+[UTCDate "2014.07.01"]
+[UTCTime "06:25:49"]
+[WhiteElo "1540"]
+[BlackElo "1421"]
+[WhiteRatingDiff "-3"]
+[BlackRatingDiff "+3"]
+[ECO "B32"]
+[Opening "Sicilian Defense: Open #3"]
+[TimeControl "60+0"]
+[Termination "Time forfeit"]
+
+1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 f6 5. Nc3 g6 6. Be3 Bg7 7. Bc4 e6 8. O-O Nge7 9. f4 O-O 10. Qe2 d5 11. exd5 Nxd5 12. Bb3 Nxc3 13. bxc3 Nxd4 14. cxd4 Kh8 15. Rad1 Bd7 16. d5 exd5 17. Bxd5 Qc7 18. h3 Bc6 19. Bf3 Bxf3 20. Qxf3 Qc6 21. Qxc6 bxc6 22. Rd6 Rfc8 23. Rfd1 h6 24. Rd7 c5 25. Rb7 Rd8 26. Rdd7 Rxd7 27. Rxd7 g5 28. Bxc5 gxf4 29. Bxa7 Re8 30. Bd4 Kh7 31. Kf2 Kg6 32. Kf3 Re6 33. Kxf4 h5 34. g4 hxg4 35. hxg4 Re4+ 36. Kxe4 Kg5 37. Kd3 Kxg4 38. Kc4 Kf5 39. Kb5 Ke6 40. Rxg7 Kd5 41. Rg6 Kxd4 42. Rxf6 Kc3 43. Rf7 Kxc2 1/2-1/2

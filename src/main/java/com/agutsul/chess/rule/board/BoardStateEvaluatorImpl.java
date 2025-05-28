@@ -1,11 +1,15 @@
 package com.agutsul.chess.rule.board;
 
+import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
+import static com.agutsul.chess.board.state.BoardState.Type.THREE_FOLD_REPETITION;
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static java.util.Comparator.comparing;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 
@@ -14,7 +18,9 @@ import org.slf4j.Logger;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.board.state.BoardStateProxy;
 import com.agutsul.chess.board.state.CompositeBoardState;
+import com.agutsul.chess.board.state.ThreeFoldRepetitionBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 
@@ -61,33 +67,72 @@ public final class BoardStateEvaluatorImpl
             return boardState.orElse(defaultBoardState(board, color));
         }
 
-        if (boardStates.size() == 1) {
-            return boardStates.iterator().next();
+        var checkMatedState = boardStates.stream()
+                .filter(boardState -> boardState.isType(CHECK_MATED))
+                .findFirst();
+
+        if (checkMatedState.isPresent()) {
+            return checkMatedState.get();
         }
 
-        return boardStates.stream()
-                .filter(boardState -> boardState.isType(CHECK_MATED))
-                .findFirst()
-                .orElse(createCompositeBoardState(boardStates));
+        if (boardStates.stream().anyMatch(BoardState::isTerminal)) {
+            return new CompositeBoardState(boardStates.stream()
+                    .sorted(comparing(BoardState::isTerminal).reversed()) // terminal states first
+                    .toList()
+            );
+        }
+
+        var states = new ArrayList<BoardState>();
+        if (!boardStates.stream().anyMatch(boardState -> boardState.isType(CHECKED))) {
+            var isAllSameColor = boardStates.stream()
+                    .map(boardState -> adapt(boardState))
+                    .allMatch(boardState -> isBoardStateMatchColor(boardState, color));
+
+            if (!isAllSameColor) {
+                states.add(defaultBoardState(board, color));
+            }
+        }
+
+        // prevent wrapping single board state with composite
+        if (states.isEmpty() && boardStates.size() == 1) {
+            return boardStates.get(0);
+        }
+
+        states.addAll(boardStates.stream()
+                .sorted(comparing(BoardState::getType))
+                .toList()
+        );
+
+        return new CompositeBoardState(states);
     }
 
-    private static CompositeBoardState createCompositeBoardState(List<BoardState> boardStates) {
-        var comparator = boardStates.stream().anyMatch(BoardState::isTerminal)
-                ? comparing(BoardState::isTerminal).reversed() //  terminal states first
-                : comparing(BoardState::getType);
+    private static BoardState adapt(BoardState boardState) {
+        return boardState instanceof BoardStateProxy
+                ? ((BoardStateProxy) boardState).getOrigin()
+                : boardState;
+    }
 
-        return new CompositeBoardState(boardStates.stream().sorted(comparator).toList());
+    private static boolean isBoardStateMatchColor(BoardState boardState, Color color) {
+        return boardState.isType(THREE_FOLD_REPETITION)
+                ? isThreeFoldStateMatchColor((ThreeFoldRepetitionBoardState) boardState, color)
+                : Objects.equals(boardState.getColor(), color);
+    }
+
+    private static boolean isThreeFoldStateMatchColor(ThreeFoldRepetitionBoardState boardState, Color color) {
+        var actionMemento = boardState.getActionMemento();
+        return Objects.equals(actionMemento.getColor(), color);
     }
 
     @SuppressWarnings("unchecked")
-    private static BoardStateEvaluator<List<BoardState>> createEvaluator(Board board,
-                                                                         Journal<ActionMemento<?,?>> journal) {
+    private static BoardStateEvaluator<List<BoardState>>
+            createEvaluator(Board board, Journal<ActionMemento<?,?>> journal) {
 
         return new CompositeBoardStateEvaluator(board,
                 new BoardStatisticStateEvaluator(new MovesBoardStateEvaluator(board, journal)),
                 new BoardStatisticStateEvaluator(new FoldRepetitionBoardStateEvaluator(board, journal)),
                 new CheckableBoardStateEvaluator(board),
-                new StaleMatedBoardStateEvaluator(board)
+                new StaleMatedBoardStateEvaluator(board),
+                new InsufficientMaterialBoardStateEvaluator(board, journal)
         );
     }
 }

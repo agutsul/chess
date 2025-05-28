@@ -1,0 +1,17 @@
+[Event "Rated Bullet tournament"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1/2-1/2"]
+[UTCDate "2014.07.01"]
+[UTCTime "00:13:22"]
+[WhiteElo "1577"]
+[BlackElo "1669"]
+[WhiteRatingDiff "+3"]
+[BlackRatingDiff "-3"]
+[ECO "C01"]
+[Opening "French Defense: Exchange Variation"]
+[TimeControl "60+0"]
+[Termination "Time forfeit"]
+
+1. d4 e6 2. e4 d5 3. exd5 exd5 4. Nc3 Be6 5. Bb5+ c6 6. Ba4 Bb4 7. Bd2 Qa5 8. Bb3 Bxc3 9. Bxc3 Qc7 10. Qe2 Nf6 11. Nf3 Ne4 12. Ne5 Nd7 13. Nxd7 Qxd7 14. O-O-O Nxc3 15. bxc3 O-O-O 16. f4 g6 17. h3 Rhe8 18. g4 Bf5 19. Qf3 Be4 20. Qg3 Bxh1 21. Rxh1 Qe6 22. f5 Qe3+ 23. Qxe3 Rxe3 24. Kd2 Rde8 25. a4 Re2+ 26. Kd1 Rg2 27. Re1 Rxe1+ 28. Kxe1 Rg3 29. h4 Rxg4 30. Kf2 Rxh4 31. Kg3 Re4 32. c4 gxf5 33. cxd5 cxd5 34. Bxd5 Rxd4 35. Bf3 f4+ 36. Kg4 Rxa4 37. Bd5 f6 38. c4 Kc7 39. c5 Ra5 40. Kxf4 Rxc5 41. Ke4 Rxd5 42. Kxd5 1/2-1/2

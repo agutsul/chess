@@ -91,6 +91,16 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     }
 
     @Override
+    public BoardState getState(Color color) {
+        var states = this.states.stream()
+                .filter(state -> Objects.equals(color, state.getColor()))
+                .toList();
+
+        // returns last calculated state for the specified color
+        return states.isEmpty() ? null : states.getLast();
+    }
+
+    @Override
     public Collection<BoardState> getStates() {
         return unmodifiableList(this.states);
     }

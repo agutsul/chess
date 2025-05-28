@@ -16,6 +16,7 @@ public interface Board {
 
     void setState(BoardState state);
     BoardState getState();
+    BoardState getState(Color color);
     Collection<BoardState> getStates();
 
     ExecutorService getExecutorService();
