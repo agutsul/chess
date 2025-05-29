@@ -72,6 +72,7 @@ public abstract class AbstractPlayableGame
     protected final PlayerState lockedState;
 
     protected Player currentPlayer;
+    protected Player winnerPlayer;
 
     public AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer, Board board) {
         this(logger, whitePlayer, blackPlayer, board, new JournalImpl());
@@ -146,7 +147,7 @@ public abstract class AbstractPlayableGame
 
     @Override
     public final Optional<Player> getWinner() {
-        return Optional.ofNullable(this.winnerEvaluator.evaluate(this));
+        return Optional.ofNullable(this.winnerPlayer);
     }
 
     @Override
@@ -204,13 +205,14 @@ public abstract class AbstractPlayableGame
 
         try {
             execute();
+            evaluateWinner();
 
-            this.finishedAt = now();
             logger.info("Game over");
         } catch (GameTimeoutException e) {
             notifyObservers(new PlayerTerminateActionEvent(getCurrentPlayer(), Type.TIMEOUT));
 
-            this.finishedAt = now();
+            evaluateWinner();
+
             logger.info("Game over: {}", e.getMessage());
         } catch (Throwable throwable) {
             logger.error("{}: Game exception, board state '{}': {}",
@@ -242,6 +244,7 @@ public abstract class AbstractPlayableGame
                 logger.info("Game stopped due to board state of '{}': {}",
                         this.currentPlayer.getColor(), this.board.getState()
                 );
+
                 break;
             }
 
@@ -259,6 +262,20 @@ public abstract class AbstractPlayableGame
         return Objects.equals(getCurrentPlayer(), getWhitePlayer())
                 ? getBlackPlayer()
                 : getWhitePlayer();
+    }
+
+    protected final void evaluateWinner() {
+        try {
+            this.winnerPlayer = winnerEvaluator.evaluate(this);
+        } catch (Throwable throwable) {
+            logger.error("{}: Game exception, evaluate winner '{}': {}",
+                    this.currentPlayer.getColor(),
+                    this.board.getState(),
+                    getStackTrace(throwable)
+            );
+        } finally {
+            this.finishedAt = now();
+        }
     }
 
     protected final BoardState evaluateBoardState(Player player) {

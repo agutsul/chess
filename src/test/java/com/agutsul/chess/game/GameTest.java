@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -95,8 +96,6 @@ public class GameTest {
     @Test
     void testGetStateReturningDrawn() {
         var board = mock(AbstractBoard.class);
-        when(board.getState())
-            .thenReturn(defaultBoardState(board, Colors.WHITE));
 
         var whitePlayer = mock(Player.class);
         when(whitePlayer.getColor())
@@ -122,6 +121,7 @@ public class GameTest {
             .thenReturn(checkMatedBoardState(board, Colors.WHITE));
 
         var whitePlayer = mock(Player.class);
+        doNothing().when(whitePlayer).play();
         when(whitePlayer.getColor())
             .thenReturn(Colors.WHITE);
 
@@ -129,8 +129,12 @@ public class GameTest {
         when(blackPlayer.getColor())
             .thenReturn(Colors.BLACK);
 
-        var game = new GameMock(whitePlayer, blackPlayer, board);
+        var game = spy(new GameMock(whitePlayer, blackPlayer, board));
+        when(game.hasNext())
+            .thenReturn(false);
+
         game.setFinishedAt(LocalDateTime.now());
+        game.run();
 
         var state = game.getState();
 
@@ -148,12 +152,17 @@ public class GameTest {
         when(whitePlayer.getColor())
             .thenReturn(Colors.WHITE);
 
+        doNothing()
+            .when(whitePlayer).play();
+
         var blackPlayer = mock(Player.class);
         when(blackPlayer.getColor())
             .thenReturn(Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer, board);
         game.setFinishedAt(LocalDateTime.now());
+
+        game.run();
 
         var state = game.getState();
 
@@ -202,10 +211,20 @@ public class GameTest {
         when(board.getState())
             .thenReturn(checkMatedBoardState(board, Colors.WHITE));
 
-        var whitePlayer = new UserPlayer("test1", Colors.WHITE);
+        var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
+        doCallRealMethod().when(whitePlayer).getColor();
+        doCallRealMethod().when(whitePlayer).getName();
+        doNothing()
+            .when(whitePlayer).play();
+
         var blackPlayer = new UserPlayer("test2", Colors.BLACK);
 
-        var game = new GameMock(whitePlayer, blackPlayer, board);
+        var game = spy(new GameMock(whitePlayer, blackPlayer, board));
+        when(game.hasNext())
+            .thenReturn(false);
+
+        game.run();
+
         var winner = game.getWinner();
 
         assertTrue(winner.isPresent());
@@ -218,12 +237,20 @@ public class GameTest {
         when(board.getState())
             .thenReturn(agreedDrawBoardState(board, Colors.WHITE));
 
-        var whitePlayer = new UserPlayer("test1", Colors.WHITE);
+        var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
+        doCallRealMethod().when(whitePlayer).getColor();
+        doNothing()
+            .when(whitePlayer).play();
+
         var blackPlayer = new UserPlayer("test2", Colors.BLACK);
 
-        var game = new GameMock(whitePlayer, blackPlayer, board);
-        var winner = game.getWinner();
+        var game = spy(new GameMock(whitePlayer, blackPlayer, board));
+        when(game.hasNext())
+            .thenReturn(false);
 
+        game.run();
+
+        var winner = game.getWinner();
         assertTrue(winner.isEmpty());
     }
 
@@ -233,12 +260,20 @@ public class GameTest {
         when(board.getState())
             .thenReturn(exitedBoardState(board, Colors.WHITE));
 
-        var whitePlayer = new UserPlayer("test1", Colors.WHITE);
+        var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
+        doCallRealMethod().when(whitePlayer).getColor();
+        doNothing()
+            .when(whitePlayer).play();
+
         var blackPlayer = new UserPlayer("test2", Colors.BLACK);
 
-        var game = new GameMock(whitePlayer, blackPlayer, board);
-        var winner = game.getWinner();
+        var game = spy(new GameMock(whitePlayer, blackPlayer, board));
+        when(game.hasNext())
+            .thenReturn(false);
 
+        game.run();
+
+        var winner = game.getWinner();
         assertTrue(winner.isEmpty());
     }
 
@@ -551,7 +586,7 @@ public class GameTest {
         assertEquals(1, journal.size());
 
         var winner = game.getWinner();
-        assertTrue(winner.isPresent());
+        assertTrue(winner.isEmpty());
 
         verify(whitePlayer, times(1)).play();
         verify(blackPlayer, times(1)).play();
@@ -687,7 +722,7 @@ public class GameTest {
         assertEquals(1, journal.size());
 
         var winner = game.getWinner();
-        assertTrue(winner.isPresent());
+        assertTrue(winner.isEmpty());
 
         verify(whitePlayer, times(1)).play();
         verify(blackPlayer, times(1)).play();
