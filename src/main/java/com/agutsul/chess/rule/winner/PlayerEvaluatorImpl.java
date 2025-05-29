@@ -97,7 +97,9 @@ public final class PlayerEvaluatorImpl
                     .anyMatch(state -> isInsufficientMaterial(state, pattern));
         }
 
-        return boardState.isType(INSUFFICIENT_MATERIAL)
+        var isInsufficientMaterial = boardState.isType(INSUFFICIENT_MATERIAL)
                 && Objects.equals(((InsufficientMaterialBoardState) boardState).getPattern(), pattern);
+
+        return isInsufficientMaterial;
     }
 }
