@@ -98,7 +98,6 @@ public final class PlayerEvaluatorImpl
         }
 
         return boardState.isType(INSUFFICIENT_MATERIAL)
-            ? Objects.equals(((InsufficientMaterialBoardState) boardState).getPattern(), pattern)
-            : false;
+                && Objects.equals(((InsufficientMaterialBoardState) boardState).getPattern(), pattern);
     }
 }
