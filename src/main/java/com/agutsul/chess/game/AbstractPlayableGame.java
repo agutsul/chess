@@ -66,7 +66,7 @@ public abstract class AbstractPlayableGame
     private final BoardStateEvaluator<BoardState> boardStateEvaluator;
     private final PlayerEvaluator winnerEvaluator;
 
-    private final List<Observer> observers;
+    protected final List<Observer> observers;
 
     protected final PlayerState activeState;
     protected final PlayerState lockedState;
@@ -120,9 +120,7 @@ public abstract class AbstractPlayableGame
         this.currentPlayer = whitePlayer;
 
         this.observers = new CopyOnWriteArrayList<>();
-        this.observers.add(new PlayerActionOberver(this));
-        this.observers.add(new ActionEventObserver());
-        this.observers.add(new GameExceptionObserver());
+        initObservers();
     }
 
     @Override
@@ -300,6 +298,12 @@ public abstract class AbstractPlayableGame
         ((Observable) this.board).notifyObservers(event);
     }
 
+    protected void initObservers() {
+        this.observers.add(new PlayerActionOberver(this));
+        this.observers.add(new ActionEventObserver());
+        this.observers.add(new GameExceptionObserver());
+    }
+
     private Player switchPlayers() {
         var player = getOpponentPlayer();
 
@@ -327,7 +331,7 @@ public abstract class AbstractPlayableGame
         }
     }
 
-    private final class ActionEventObserver
+    final class ActionEventObserver
             implements Observer {
 
         private final Map<Class<? extends Event>, Consumer<Event>> processors;

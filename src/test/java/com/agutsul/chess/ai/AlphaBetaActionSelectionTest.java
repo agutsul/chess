@@ -13,8 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.game.GameMock;
 import com.agutsul.chess.journal.JournalImpl;
-import com.agutsul.chess.mock.GameMock;
 import com.agutsul.chess.player.UserPlayer;
 
 @ExtendWith(MockitoExtension.class)

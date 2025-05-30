@@ -28,7 +28,7 @@ import com.agutsul.chess.player.event.PlayerTerminateActionEvent;
 import com.agutsul.chess.player.event.PlayerTerminateActionExceptionEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 
-public final class PlayerActionOberver
+public class PlayerActionOberver
         implements Observer {
 
     private static final Logger LOGGER = getLogger(PlayerActionOberver.class);
@@ -60,11 +60,10 @@ public final class PlayerActionOberver
     }
 
     private void process(PlayerActionEvent event) {
-        var board = this.game.getBoard();
         var player = event.getPlayer();
 
         try {
-            var command = new PerformActionCommand(player, board, (Observable) this.game);
+            var command = new PerformActionCommand(player, game.getBoard(), (Observable) this.game);
             command.setSource(event.getSource());
             command.setTarget(event.getTarget());
 
@@ -75,7 +74,7 @@ public final class PlayerActionOberver
             LOGGER.error(message, e);
             notifyGameEvent(new PlayerActionExceptionEvent(e.getMessage()));
 
-            requestPlayerAction(board, player);
+            requestPlayerAction(player);
         }
     }
 
@@ -128,7 +127,7 @@ public final class PlayerActionOberver
         sleepQuietly(Duration.ofMillis(1));
     }
 
-    private void requestPlayerAction(Player player) {
+    protected void requestPlayerAction(Player player) {
         requestPlayerAction(game.getBoard(), player);
     }
 

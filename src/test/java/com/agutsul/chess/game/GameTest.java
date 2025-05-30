@@ -19,6 +19,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -41,7 +42,9 @@ import com.agutsul.chess.activity.action.event.ActionExecutionEvent;
 import com.agutsul.chess.activity.action.event.ActionPerformedEvent;
 import com.agutsul.chess.activity.action.event.ActionTerminatedEvent;
 import com.agutsul.chess.activity.action.event.ActionTerminationEvent;
+import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.AbstractBoard;
+import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.state.AgreedBoardState;
 import com.agutsul.chess.board.state.BoardState;
@@ -60,7 +63,6 @@ import com.agutsul.chess.game.state.GameState;
 import com.agutsul.chess.game.state.WhiteWinGameState;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
-import com.agutsul.chess.mock.GameMock;
 import com.agutsul.chess.mock.GameOutputObserverMock;
 import com.agutsul.chess.mock.PlayerInputObserverMock;
 import com.agutsul.chess.player.Player;
@@ -354,7 +356,7 @@ public class GameTest {
         var journal = new JournalImpl();
         var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
-        var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
+        var game = new UndoGameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
 
         var whitePlayerInputObserver = new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4", "undo", "d2 d4");
         var blackPlayerInputObserver = new PlayerInputObserverInteratorMock(blackPlayer, game, "e7 e5", "d7 d5");
@@ -411,7 +413,7 @@ public class GameTest {
         var journal = new JournalImpl();
         var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
-        var game = new GameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
+        var game = new UndoGameMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
 
         var whitePlayerInputObserver = new PlayerInputObserverInteratorMock(
                 whitePlayer, game, "undo", "e2 e4"
@@ -767,6 +769,19 @@ public class GameTest {
             }
 
             return (T) invocation.callRealMethod();
+        }
+    }
+
+    private static class UndoGameMock
+            extends AbstractPlayableGame {
+
+        UndoGameMock(Player whitePlayer, Player blackPlayer,
+                Board board, Journal<ActionMemento<?,?>> journal,
+                BoardStateEvaluator<BoardState> boardStateEvaluator) {
+
+            super(getLogger(GameMock.class), whitePlayer, blackPlayer,
+                    board, journal, null, boardStateEvaluator, null
+            );
         }
     }
 }
