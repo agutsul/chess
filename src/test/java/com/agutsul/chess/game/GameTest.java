@@ -776,8 +776,8 @@ public class GameTest {
     private static class UndoGameMock extends AbstractPlayableGame {
 
         UndoGameMock(Player whitePlayer, Player blackPlayer,
-                Board board, Journal<ActionMemento<?,?>> journal,
-                BoardStateEvaluator<BoardState> boardStateEvaluator) {
+                     Board board, Journal<ActionMemento<?,?>> journal,
+                     BoardStateEvaluator<BoardState> boardStateEvaluator) {
 
             super(getLogger(GameMock.class), whitePlayer, blackPlayer,
                     board, journal, null, boardStateEvaluator, null
