@@ -772,8 +772,8 @@ public class GameTest {
         }
     }
 
-    private static class UndoGameMock
-            extends AbstractPlayableGame {
+    // keep using origin list of observers to be able to test player action re-ask properly
+    private static class UndoGameMock extends AbstractPlayableGame {
 
         UndoGameMock(Player whitePlayer, Player blackPlayer,
                 Board board, Journal<ActionMemento<?,?>> journal,
