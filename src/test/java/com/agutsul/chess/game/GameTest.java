@@ -779,7 +779,7 @@ public class GameTest {
                      Board board, Journal<ActionMemento<?,?>> journal,
                      BoardStateEvaluator<BoardState> boardStateEvaluator) {
 
-            super(getLogger(GameMock.class), whitePlayer, blackPlayer,
+            super(getLogger(UndoGameMock.class), whitePlayer, blackPlayer,
                     board, journal, null, boardStateEvaluator, null
             );
         }
