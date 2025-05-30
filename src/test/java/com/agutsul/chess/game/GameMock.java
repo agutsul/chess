@@ -56,8 +56,8 @@ public class GameMock
 
     @Override
     protected void initObservers() {
-        this.observers.add(new PlayerActionOberverMock(this));
-        this.observers.add(new ActionEventObserver());
-        this.observers.add(new GameExceptionObserver());
+        addObserver(new PlayerActionOberverMock(this));
+        addObserver(new ActionEventObserver());
+        addObserver(new GameExceptionObserver());
     }
 }

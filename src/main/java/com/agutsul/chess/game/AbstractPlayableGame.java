@@ -57,6 +57,8 @@ public abstract class AbstractPlayableGame
         extends AbstractGame
         implements Iterator<Player>, Observable, Executable {
 
+    private final List<Observer> observers = new CopyOnWriteArrayList<>();
+
     private final Board board;
     private final Journal<ActionMemento<?,?>> journal;
     private final Long actionTimeout;
@@ -65,8 +67,6 @@ public abstract class AbstractPlayableGame
 
     private final BoardStateEvaluator<BoardState> boardStateEvaluator;
     private final PlayerEvaluator winnerEvaluator;
-
-    protected final List<Observer> observers;
 
     protected final PlayerState activeState;
     protected final PlayerState lockedState;
@@ -119,7 +119,6 @@ public abstract class AbstractPlayableGame
 
         this.currentPlayer = whitePlayer;
 
-        this.observers = new CopyOnWriteArrayList<>();
         initObservers();
     }
 
