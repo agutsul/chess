@@ -27,6 +27,7 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.command.SimulateActionCommand;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.game.AbstractPlayableGame;
+import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.journal.Journal;
@@ -61,8 +62,9 @@ public final class SimulationGame
                            ForkJoinPool forkJoinPool, Color activeColor,
                            Action<?> action) {
 
-        super(LOGGER, whitePlayer, blackPlayer, board, journal, forkJoinPool,
-                new BoardStateEvaluatorImpl(board, journal), null
+        super(LOGGER, whitePlayer, blackPlayer, board, journal,
+                new BoardStateEvaluatorImpl(board, journal),
+                new GameContext(forkJoinPool, null)
         );
 
         this.color = activeColor;

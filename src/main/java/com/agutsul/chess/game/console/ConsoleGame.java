@@ -11,6 +11,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.game.AbstractPlayableGame;
+import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.game.ai.SimulationActionInputObserver;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
@@ -28,7 +29,7 @@ public final class ConsoleGame
 
     ConsoleGame(Player whitePlayer, Player blackPlayer, Board board, InputStream inputStream) {
         super(LOGGER, whitePlayer, blackPlayer, board,
-                new JournalImpl(), new ForkJoinPool(), TEN_MINUTES
+                new JournalImpl(), new GameContext(new ForkJoinPool(), TEN_MINUTES)
         );
 
         registerConsoleInputObserver(whitePlayer, inputStream);

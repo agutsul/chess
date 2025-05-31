@@ -780,7 +780,7 @@ public class GameTest {
                      BoardStateEvaluator<BoardState> boardStateEvaluator) {
 
             super(getLogger(UndoGameMock.class), whitePlayer, blackPlayer,
-                    board, journal, null, boardStateEvaluator, null
+                    board, journal, boardStateEvaluator, new GameContext()
             );
         }
     }

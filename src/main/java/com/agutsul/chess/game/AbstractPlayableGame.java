@@ -5,6 +5,7 @@ import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.DEFAULT;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.Objects.isNull;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 
@@ -61,9 +62,8 @@ public abstract class AbstractPlayableGame
 
     private final Board board;
     private final Journal<ActionMemento<?,?>> journal;
-    private final Long actionTimeout;
 
-    private final ForkJoinPool forkJoinPool;
+    private final GameContext context;
 
     private final BoardStateEvaluator<BoardState> boardStateEvaluator;
     private final PlayerEvaluator winnerEvaluator;
@@ -81,35 +81,32 @@ public abstract class AbstractPlayableGame
     protected AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer,
                                    Board board, Journal<ActionMemento<?,?>> journal) {
 
-        this(logger, whitePlayer, blackPlayer, board, journal, null, null);
+        this(logger, whitePlayer, blackPlayer, board, journal, new GameContext());
     }
 
     protected AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer,
                                    Board board, Journal<ActionMemento<?,?>> journal,
-                                   ForkJoinPool forkJoinPool, Long actionTimeoutMillis) {
+                                   GameContext context) {
 
-        this(logger, whitePlayer, blackPlayer, board, journal, forkJoinPool,
-                new BoardStateEvaluatorImpl(board, journal, forkJoinPool),
-                actionTimeoutMillis
+        this(logger, whitePlayer, blackPlayer, board, journal,
+                new BoardStateEvaluatorImpl(board, journal, context.getForkJoinPool()),
+                context
         );
     }
 
     protected AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer,
                                    Board board, Journal<ActionMemento<?,?>> journal,
-                                   ForkJoinPool forkJoinPool,
                                    BoardStateEvaluator<BoardState> boardStateEvaluator,
-                                   Long actionTimeoutMillis) {
+                                   GameContext context) {
 
         super(logger, whitePlayer, blackPlayer);
 
         this.board = board;
         this.journal = journal;
-        this.actionTimeout = actionTimeoutMillis;
+        this.context = context;
 
         this.boardStateEvaluator = boardStateEvaluator;
         this.winnerEvaluator = new PlayerEvaluatorImpl();
-
-        this.forkJoinPool = forkJoinPool;
 
         this.activeState = new ActivePlayerState((Observable) board);
         this.lockedState = new LockedPlayerState();
@@ -134,12 +131,12 @@ public abstract class AbstractPlayableGame
 
     @Override
     public final ForkJoinPool getForkJoinPool() {
-        return this.forkJoinPool;
+        return this.context.getForkJoinPool();
     }
 
     @Override
     public final Long getActionTimeout() {
-        return this.actionTimeout;
+        return this.context.getActionTimeout();
     }
 
     @Override
@@ -225,8 +222,8 @@ public abstract class AbstractPlayableGame
                 notifyBoardObservers(event);
                 notifyObservers(event);
             } finally {
-                if (forkJoinPool != null) {
-                    close(forkJoinPool);
+                if (!isNull(context.getForkJoinPool())) {
+                    close(context.getForkJoinPool());
                 }
             }
         }
