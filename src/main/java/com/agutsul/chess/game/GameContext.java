@@ -11,6 +11,10 @@ public class GameContext {
 
     public GameContext() {}
 
+    public GameContext(ForkJoinPool forkJoinPool) {
+        this(forkJoinPool, null);
+    }
+
     public GameContext(ForkJoinPool forkJoinPool, Long actionTimeoutMillis) {
         this.forkJoinPool  = forkJoinPool;
         this.actionTimeout = actionTimeoutMillis;

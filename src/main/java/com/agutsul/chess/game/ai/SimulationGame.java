@@ -64,7 +64,7 @@ public final class SimulationGame
 
         super(LOGGER, whitePlayer, blackPlayer, board, journal,
                 new BoardStateEvaluatorImpl(board, journal),
-                new GameContext(forkJoinPool, null)
+                new GameContext(forkJoinPool)
         );
 
         this.color = activeColor;

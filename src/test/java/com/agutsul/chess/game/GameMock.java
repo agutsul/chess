@@ -36,7 +36,7 @@ public class GameMock
                     Board board, Journal<ActionMemento<?,?>> journal,
                     ForkJoinPool forkJoinPool) {
 
-        super(LOGGER,whitePlayer, blackPlayer, board, journal, new GameContext(forkJoinPool, null));
+        super(LOGGER, whitePlayer, blackPlayer, board, journal, new GameContext(forkJoinPool));
     }
 
     public GameMock(Player whitePlayer, Player blackPlayer,
