@@ -8,7 +8,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 
-final class PlayerScoreWinnerEvaluator
+final class WinnerScoreEvaluator
         implements WinnerEvaluator {
 
     @Override

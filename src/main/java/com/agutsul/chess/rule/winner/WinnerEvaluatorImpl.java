@@ -15,18 +15,16 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 
 public final class WinnerEvaluatorImpl
-        implements WinnerEvaluator {
+        extends AbstractWinnerEvaluator {
 
     private static final Logger LOGGER = getLogger(WinnerEvaluatorImpl.class);
 
-    private final WinnerEvaluator playerScoreEvaluator;
-
     public WinnerEvaluatorImpl() {
-        this(new PlayerScoreWinnerEvaluator());
+        this(new WinnerScoreEvaluator());
     }
 
     WinnerEvaluatorImpl(WinnerEvaluator playerScoreEvaluator) {
-        this.playerScoreEvaluator = playerScoreEvaluator;
+        super(playerScoreEvaluator);
     }
 
     @Override
@@ -53,6 +51,6 @@ public final class WinnerEvaluatorImpl
         }
 
         LOGGER.info("Perform player score comparison to resolve winner");
-        return this.playerScoreEvaluator.evaluate(game);
+        return super.evaluate(game);
     }
 }

@@ -17,7 +17,7 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 
 public final class ActionTimeoutWinnerEvaluator
-        implements WinnerEvaluator {
+        extends AbstractWinnerEvaluator {
 
     private static final Logger LOGGER = getLogger(ActionTimeoutWinnerEvaluator.class);
 
@@ -27,14 +27,12 @@ public final class ActionTimeoutWinnerEvaluator
             Pattern.BISHOP_POSITION_COLOR_VS_KING_POSITION_COLOR
     );
 
-    private final WinnerEvaluator playerScoreEvaluator;
-
     public ActionTimeoutWinnerEvaluator() {
-        this(new PlayerScoreWinnerEvaluator());
+        this(new WinnerScoreEvaluator());
     }
 
     ActionTimeoutWinnerEvaluator(WinnerEvaluator playerScoreEvaluator) {
-        this.playerScoreEvaluator = playerScoreEvaluator;
+        super(playerScoreEvaluator);
     }
 
     @Override
@@ -57,9 +55,8 @@ public final class ActionTimeoutWinnerEvaluator
         }
 
         LOGGER.info("Perform player score comparison to resolve winner");
-        return this.playerScoreEvaluator.evaluate(game);
+        return super.evaluate(game);
     }
-
 
     private static boolean isInsufficientMaterial(BoardState boardState) {
         return INSUFFICIENT_MATERIAL_PATTERNS.stream()
