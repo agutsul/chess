@@ -15,36 +15,45 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
+import com.agutsul.chess.event.Observable;
+import com.agutsul.chess.exception.CommandException;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.event.GameTerminationEvent.Type;
 import com.agutsul.chess.player.Player;
 
 public class TerminateGameActionCommand
-        extends AbstractUpdateBoardStateCommand {
+        extends AbstractCommand {
 
     private static final Logger LOGGER = getLogger(TerminateGameActionCommand.class);
 
+    private final Game game;
+    private final Player player;
     private final Type type;
 
     public TerminateGameActionCommand(Game game, Player player, Type type) {
-        super(LOGGER, game, player);
+        super(LOGGER);
+
+        this.game = game;
+        this.player = player;
         this.type = type;
     }
 
     @Override
-    protected void updateBoardState() {
-        var board = this.game.getBoard();
-        board.setState(createBoardState(board, this.player.getColor(), this.type));
+    protected final void executeInternal() throws CommandException {
+        notifyGameObservers(new ActionTerminationEvent(this.player, this.type));
+
+        try {
+            var board = this.game.getBoard();
+            board.setState(createBoardState(board, this.player.getColor(), this.type));
+        } catch (Exception e) {
+            throw new CommandException(e.getMessage());
+        }
+
+        notifyGameObservers(new ActionTerminatedEvent(this.player, this.type));
     }
 
-    @Override
-    protected Event createPreExecutionEvent() {
-        return new ActionTerminationEvent(this.player, this.type);
-    }
-
-    @Override
-    protected Event createPostExecutionEvent() {
-        return new ActionTerminatedEvent(this.player, this.type);
+    private void notifyGameObservers(Event event) {
+        ((Observable) this.game).notifyObservers(event);
     }
 
     private static BoardState createBoardState(Board board, Color color, Type type) {
