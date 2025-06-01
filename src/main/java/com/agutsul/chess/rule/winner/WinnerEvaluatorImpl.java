@@ -23,8 +23,8 @@ public final class WinnerEvaluatorImpl
         this(new WinnerScoreEvaluator());
     }
 
-    WinnerEvaluatorImpl(WinnerEvaluator playerScoreEvaluator) {
-        super(playerScoreEvaluator);
+    WinnerEvaluatorImpl(WinnerEvaluator winnerScoreEvaluator) {
+        super(winnerScoreEvaluator);
     }
 
     @Override

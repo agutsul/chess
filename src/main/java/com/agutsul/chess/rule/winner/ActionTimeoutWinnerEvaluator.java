@@ -31,8 +31,8 @@ public final class ActionTimeoutWinnerEvaluator
         this(new WinnerScoreEvaluator());
     }
 
-    ActionTimeoutWinnerEvaluator(WinnerEvaluator playerScoreEvaluator) {
-        super(playerScoreEvaluator);
+    ActionTimeoutWinnerEvaluator(WinnerEvaluator winnerScoreEvaluator) {
+        super(winnerScoreEvaluator);
     }
 
     @Override
