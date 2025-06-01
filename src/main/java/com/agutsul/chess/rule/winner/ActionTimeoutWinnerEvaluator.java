@@ -1,13 +1,6 @@
 package com.agutsul.chess.rule.winner;
 
-import static com.agutsul.chess.board.state.BoardState.Type.AGREED_DEFEAT;
-import static com.agutsul.chess.board.state.BoardState.Type.AGREED_DRAW;
-import static com.agutsul.chess.board.state.BoardState.Type.AGREED_WIN;
-import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
-import static com.agutsul.chess.board.state.BoardState.Type.FIVE_FOLD_REPETITION;
 import static com.agutsul.chess.board.state.BoardState.Type.INSUFFICIENT_MATERIAL;
-import static com.agutsul.chess.board.state.BoardState.Type.SEVENTY_FIVE_MOVES;
-import static com.agutsul.chess.board.state.BoardState.Type.STALE_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.TIMEOUT;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -23,10 +16,10 @@ import com.agutsul.chess.board.state.InsufficientMaterialBoardState.Pattern;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 
-public final class PlayerEvaluatorImpl
+public final class ActionTimeoutWinnerEvaluator
         implements PlayerEvaluator {
 
-    private static final Logger LOGGER = getLogger(PlayerEvaluatorImpl.class);
+    private static final Logger LOGGER = getLogger(ActionTimeoutWinnerEvaluator.class);
 
     private static final List<Pattern> INSUFFICIENT_MATERIAL_PATTERNS = List.of(
             Pattern.SINGLE_KING,
@@ -36,16 +29,15 @@ public final class PlayerEvaluatorImpl
 
     private final PlayerEvaluator playerScoreEvaluator;
 
-    public PlayerEvaluatorImpl() {
+    public ActionTimeoutWinnerEvaluator() {
         this(new PlayerScoreEvaluator());
     }
 
-    PlayerEvaluatorImpl(PlayerEvaluator playerScoreEvaluator) {
+    ActionTimeoutWinnerEvaluator(PlayerEvaluator playerScoreEvaluator) {
         this.playerScoreEvaluator = playerScoreEvaluator;
     }
 
     @Override
-    // returns winner player
     public Player evaluate(Game game) {
         var board = game.getBoard();
         var boardState = board.getState();
@@ -64,26 +56,10 @@ public final class PlayerEvaluatorImpl
             return opponentPlayer;
         }
 
-        if (boardState.isAnyType(AGREED_DEFEAT)) {
-            var opponentPlayer = game.getOpponentPlayer();
-            LOGGER.info("{} wins. Player '{}'", opponentPlayer.getColor(), opponentPlayer.getName());
-            return opponentPlayer;
-        }
-
-        if (boardState.isAnyType(CHECK_MATED, AGREED_WIN)) {
-            var currentPlayer = game.getCurrentPlayer();
-            LOGGER.info("{} wins. Player '{}'", currentPlayer.getColor(), currentPlayer.getName());
-            return currentPlayer;
-        }
-
-        if (boardState.isAnyType(AGREED_DRAW, FIVE_FOLD_REPETITION, SEVENTY_FIVE_MOVES, STALE_MATED)) {
-            LOGGER.info("No winner found for board state '{}': draw", board.getState());
-            return null;
-        }
-
         LOGGER.info("Perform player score comparison to resolve winner");
         return this.playerScoreEvaluator.evaluate(game);
     }
+
 
     private static boolean isInsufficientMaterial(BoardState boardState) {
         return INSUFFICIENT_MATERIAL_PATTERNS.stream()

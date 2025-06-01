@@ -16,7 +16,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.exception.GameTimeoutException;
+import com.agutsul.chess.exception.ActionTimeoutException;
 import com.agutsul.chess.player.Player;
 
 final class TimeoutConsoleInputReader
@@ -64,8 +64,8 @@ final class TimeoutConsoleInputReader
         }
     }
 
-    private static GameTimeoutException createGameTimeoutException(Player player) {
-        return new GameTimeoutException(createMessage(player, "%s: '%s' entering action timeout"));
+    private static ActionTimeoutException createGameTimeoutException(Player player) {
+        return new ActionTimeoutException(createMessage(player, "%s: '%s' entering action timeout"));
     }
 
     private static IOException createIOException(Player player, String messageFormat, Exception e) {

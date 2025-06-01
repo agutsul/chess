@@ -13,7 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.color.Colors;
-import com.agutsul.chess.exception.GameTimeoutException;
+import com.agutsul.chess.exception.ActionTimeoutException;
 import com.agutsul.chess.player.UserPlayer;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,7 +25,7 @@ public class TimeoutConsoleInputReaderTest {
         var reader = new TimeoutConsoleInputReader(player, mock(InputStream.class), -1);
 
         var thrown = assertThrows(
-                GameTimeoutException.class,
+                ActionTimeoutException.class,
                 () -> reader.read()
         );
 
@@ -38,7 +38,7 @@ public class TimeoutConsoleInputReaderTest {
         var reader = new TimeoutConsoleInputReader(player, new DelayedInputStreamMock(), 50);
 
         var thrown = assertThrows(
-                GameTimeoutException.class,
+                ActionTimeoutException.class,
                 () -> reader.read()
         );
 

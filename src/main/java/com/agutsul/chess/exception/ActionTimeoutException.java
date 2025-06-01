@@ -1,11 +1,11 @@
 package com.agutsul.chess.exception;
 
-public class GameTimeoutException
+public class ActionTimeoutException
         extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    public GameTimeoutException(String message) {
+    public ActionTimeoutException(String message) {
         super(message);
     }
 }

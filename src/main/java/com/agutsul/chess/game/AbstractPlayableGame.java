@@ -34,7 +34,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
-import com.agutsul.chess.exception.GameTimeoutException;
+import com.agutsul.chess.exception.ActionTimeoutException;
 import com.agutsul.chess.game.event.BoardStateNotificationEvent;
 import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
@@ -51,8 +51,9 @@ import com.agutsul.chess.player.state.LockedPlayerState;
 import com.agutsul.chess.player.state.PlayerState;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
+import com.agutsul.chess.rule.winner.ActionTimeoutWinnerEvaluator;
 import com.agutsul.chess.rule.winner.PlayerEvaluator;
-import com.agutsul.chess.rule.winner.PlayerEvaluatorImpl;
+import com.agutsul.chess.rule.winner.WinnerEvaluator;
 
 public abstract class AbstractPlayableGame
         extends AbstractGame
@@ -66,7 +67,6 @@ public abstract class AbstractPlayableGame
     private final GameContext context;
 
     private final BoardStateEvaluator<BoardState> boardStateEvaluator;
-    private final PlayerEvaluator winnerEvaluator;
 
     protected final PlayerState activeState;
     protected final PlayerState lockedState;
@@ -106,7 +106,6 @@ public abstract class AbstractPlayableGame
         this.context = context;
 
         this.boardStateEvaluator = boardStateEvaluator;
-        this.winnerEvaluator = new PlayerEvaluatorImpl();
 
         this.activeState = new ActivePlayerState((Observable) board);
         this.lockedState = new LockedPlayerState();
@@ -199,13 +198,13 @@ public abstract class AbstractPlayableGame
 
         try {
             execute();
-            evaluateWinner();
+            evaluateWinner(new WinnerEvaluator());
 
             logger.info("Game over");
-        } catch (GameTimeoutException e) {
+        } catch (ActionTimeoutException e) {
             notifyObservers(new PlayerTerminateActionEvent(getCurrentPlayer(), Type.TIMEOUT));
 
-            evaluateWinner();
+            evaluateWinner(new ActionTimeoutWinnerEvaluator());
 
             logger.info("Game over: {}", e.getMessage());
         } catch (Throwable throwable) {
@@ -258,7 +257,7 @@ public abstract class AbstractPlayableGame
                 : getWhitePlayer();
     }
 
-    protected final void evaluateWinner() {
+    protected final void evaluateWinner(PlayerEvaluator winnerEvaluator) {
         try {
             this.winnerPlayer = winnerEvaluator.evaluate(this);
         } catch (Throwable throwable) {
