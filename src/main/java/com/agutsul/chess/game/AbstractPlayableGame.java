@@ -52,8 +52,8 @@ import com.agutsul.chess.player.state.PlayerState;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 import com.agutsul.chess.rule.winner.ActionTimeoutWinnerEvaluator;
-import com.agutsul.chess.rule.winner.PlayerEvaluator;
 import com.agutsul.chess.rule.winner.WinnerEvaluator;
+import com.agutsul.chess.rule.winner.WinnerEvaluatorImpl;
 
 public abstract class AbstractPlayableGame
         extends AbstractGame
@@ -198,7 +198,7 @@ public abstract class AbstractPlayableGame
 
         try {
             execute();
-            evaluateWinner(new WinnerEvaluator());
+            evaluateWinner(new WinnerEvaluatorImpl());
 
             logger.info("Game over");
         } catch (ActionTimeoutException e) {
@@ -257,7 +257,7 @@ public abstract class AbstractPlayableGame
                 : getWhitePlayer();
     }
 
-    protected final void evaluateWinner(PlayerEvaluator winnerEvaluator) {
+    protected final void evaluateWinner(WinnerEvaluator winnerEvaluator) {
         try {
             this.winnerPlayer = winnerEvaluator.evaluate(this);
         } catch (Throwable throwable) {

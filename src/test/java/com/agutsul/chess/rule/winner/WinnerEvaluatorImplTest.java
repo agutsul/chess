@@ -25,7 +25,7 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 
 @ExtendWith(MockitoExtension.class)
-public class WinnerEvaluatorTest {
+public class WinnerEvaluatorImplTest {
 
     @Mock
     Game game;
@@ -49,7 +49,7 @@ public class WinnerEvaluatorTest {
         when(board.getState())
             .thenReturn(agreedDefeatBoardState(board, Colors.WHITE));
 
-        var evaluator = new WinnerEvaluator(mock(PlayerEvaluator.class));
+        var evaluator = new WinnerEvaluatorImpl(mock(WinnerEvaluator.class));
         var winner = evaluator.evaluate(game);
 
         assertEquals(blackPlayer, winner);
@@ -62,7 +62,7 @@ public class WinnerEvaluatorTest {
         when(board.getState())
             .thenReturn(agreedWinBoardState(board, Colors.BLACK));
 
-        var evaluator = new WinnerEvaluator(mock(PlayerEvaluator.class));
+        var evaluator = new WinnerEvaluatorImpl(mock(WinnerEvaluator.class));
         var winner = evaluator.evaluate(game);
 
         assertEquals(blackPlayer, winner);
@@ -75,7 +75,7 @@ public class WinnerEvaluatorTest {
         when(board.getState())
             .thenReturn(checkMatedBoardState(board, Colors.WHITE));
 
-        var evaluator = new WinnerEvaluator(mock(PlayerEvaluator.class));
+        var evaluator = new WinnerEvaluatorImpl(mock(WinnerEvaluator.class));
         var winner = evaluator.evaluate(game);
 
         assertEquals(whitePlayer, winner);
@@ -86,7 +86,7 @@ public class WinnerEvaluatorTest {
         when(board.getState())
             .thenReturn(agreedDrawBoardState(board, Colors.BLACK));
 
-        var evaluator = new WinnerEvaluator(mock(PlayerEvaluator.class));
+        var evaluator = new WinnerEvaluatorImpl(mock(WinnerEvaluator.class));
         assertNull(evaluator.evaluate(game));
     }
 
@@ -96,7 +96,7 @@ public class WinnerEvaluatorTest {
         when(board.getState())
             .thenReturn(boardState);
 
-        var evaluator = new WinnerEvaluator(mock(PlayerEvaluator.class));
+        var evaluator = new WinnerEvaluatorImpl(mock(WinnerEvaluator.class));
         assertNull(evaluator.evaluate(game));
     }
 
@@ -105,7 +105,7 @@ public class WinnerEvaluatorTest {
         when(board.getState())
             .thenReturn(seventyFiveMovesBoardState(board, Colors.WHITE));
 
-        var evaluator = new WinnerEvaluator(mock(PlayerEvaluator.class));
+        var evaluator = new WinnerEvaluatorImpl(mock(WinnerEvaluator.class));
         assertNull(evaluator.evaluate(game));
     }
 
@@ -114,7 +114,7 @@ public class WinnerEvaluatorTest {
         when(board.getState())
             .thenReturn(staleMatedBoardState(board, Colors.WHITE));
 
-        var evaluator = new WinnerEvaluator(mock(PlayerEvaluator.class));
+        var evaluator = new WinnerEvaluatorImpl(mock(WinnerEvaluator.class));
         assertNull(evaluator.evaluate(game));
     }
 }

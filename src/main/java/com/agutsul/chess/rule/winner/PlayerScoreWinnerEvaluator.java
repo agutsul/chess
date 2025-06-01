@@ -8,8 +8,8 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 
-final class PlayerScoreEvaluator
-        implements PlayerEvaluator {
+final class PlayerScoreWinnerEvaluator
+        implements WinnerEvaluator {
 
     @Override
     // TODO: confirm winner detection algo

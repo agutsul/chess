@@ -56,7 +56,7 @@ public class ActionTimeoutWinnerEvaluatorTest {
                 return null;
             });
 
-        var evaluator = new ActionTimeoutWinnerEvaluator(mock(PlayerEvaluator.class));
+        var evaluator = new ActionTimeoutWinnerEvaluator(mock(WinnerEvaluator.class));
         assertNull(evaluator.evaluate(game));
     }
 
@@ -76,7 +76,7 @@ public class ActionTimeoutWinnerEvaluatorTest {
                 return defaultBoardState(board, inv.getArgument(0));
             });
 
-        var evaluator = new ActionTimeoutWinnerEvaluator(mock(PlayerEvaluator.class));
+        var evaluator = new ActionTimeoutWinnerEvaluator(mock(WinnerEvaluator.class));
         var winner = evaluator.evaluate(game);
 
         assertEquals(blackPlayer, winner);
@@ -101,7 +101,7 @@ public class ActionTimeoutWinnerEvaluatorTest {
                 );
             });
 
-        var evaluator = new ActionTimeoutWinnerEvaluator(mock(PlayerEvaluator.class));
+        var evaluator = new ActionTimeoutWinnerEvaluator(mock(WinnerEvaluator.class));
         var winner = evaluator.evaluate(game);
 
         assertEquals(blackPlayer, winner);
@@ -126,7 +126,7 @@ public class ActionTimeoutWinnerEvaluatorTest {
                 );
             });
 
-        var evaluator = new ActionTimeoutWinnerEvaluator(mock(PlayerEvaluator.class));
+        var evaluator = new ActionTimeoutWinnerEvaluator(mock(WinnerEvaluator.class));
         assertNull(evaluator.evaluate(game));
     }
 }

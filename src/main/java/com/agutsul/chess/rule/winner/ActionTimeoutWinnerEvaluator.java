@@ -17,7 +17,7 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 
 public final class ActionTimeoutWinnerEvaluator
-        implements PlayerEvaluator {
+        implements WinnerEvaluator {
 
     private static final Logger LOGGER = getLogger(ActionTimeoutWinnerEvaluator.class);
 
@@ -27,13 +27,13 @@ public final class ActionTimeoutWinnerEvaluator
             Pattern.BISHOP_POSITION_COLOR_VS_KING_POSITION_COLOR
     );
 
-    private final PlayerEvaluator playerScoreEvaluator;
+    private final WinnerEvaluator playerScoreEvaluator;
 
     public ActionTimeoutWinnerEvaluator() {
-        this(new PlayerScoreEvaluator());
+        this(new PlayerScoreWinnerEvaluator());
     }
 
-    ActionTimeoutWinnerEvaluator(PlayerEvaluator playerScoreEvaluator) {
+    ActionTimeoutWinnerEvaluator(WinnerEvaluator playerScoreEvaluator) {
         this.playerScoreEvaluator = playerScoreEvaluator;
     }
 
