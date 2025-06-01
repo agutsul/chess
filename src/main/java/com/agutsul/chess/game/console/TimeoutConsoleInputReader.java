@@ -36,7 +36,7 @@ final class TimeoutConsoleInputReader
     public String read() throws IOException {
         if (this.timeout <= 0) {
             // it means that current timestamp is greater than overall action timeout
-            throw createGameTimeoutException(this.player);
+            throw createTimeoutException(this.player);
         }
 
         var executor = newSingleThreadExecutor();
@@ -46,7 +46,7 @@ final class TimeoutConsoleInputReader
                 return future.get(this.timeout, TimeUnit.MILLISECONDS);
             } catch (TimeoutException e) {
                 future.cancel(true);
-                throw createGameTimeoutException(this.player);
+                throw createTimeoutException(this.player);
             } catch (InterruptedException e) {
                 throw createIOException(this.player, "%s: '%s' entering action interrupted", e);
             } catch (ExecutionException e) {
@@ -64,7 +64,7 @@ final class TimeoutConsoleInputReader
         }
     }
 
-    private static ActionTimeoutException createGameTimeoutException(Player player) {
+    private static ActionTimeoutException createTimeoutException(Player player) {
         return new ActionTimeoutException(createMessage(player, "%s: '%s' entering action timeout"));
     }
 
