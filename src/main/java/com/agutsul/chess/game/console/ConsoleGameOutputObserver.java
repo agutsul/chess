@@ -33,6 +33,7 @@ import com.agutsul.chess.game.event.BoardStateNotificationEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.event.GameTerminationEvent.Type;
+import com.agutsul.chess.game.event.GameTimeoutTerminationEvent;
 import com.agutsul.chess.game.observer.AbstractGameObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalFormatter.Mode;
@@ -88,6 +89,21 @@ public final class ConsoleGameOutputObserver
 
         var finishedAt = defaultIfNull(game.getFinishedAt(), now());
         displayDuration(Duration.between(game.getStartedAt(), finishedAt));
+    }
+
+    @Override
+    protected void process(GameTimeoutTerminationEvent event) {
+        var game = event.getGame();
+
+        var line = "-".repeat(50);
+        System.out.println(line);
+
+        var player = game.getCurrentPlayer();
+        System.out.println(String.format(
+                "Game timeout for %s player: '%s'",
+                player.getColor(),
+                player.getName()
+        ));
     }
 
     @Override

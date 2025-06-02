@@ -14,6 +14,7 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.event.BoardStateNotificationEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
+import com.agutsul.chess.game.event.GameTimeoutTerminationEvent;
 import com.agutsul.chess.game.observer.AbstractGameObserver;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
@@ -102,10 +103,17 @@ public class GameOutputObserverMock
         consume(event);
     }
 
+    @Override
+    protected void process(GameTimeoutTerminationEvent event) {
+        consume(event);
+    }
+
     private void consume(Event event) {
         var consumer = consumers.get(event.getClass());
         if (consumer != null) {
             consumer.accept(this.game, event);
         }
     }
+
+
 }

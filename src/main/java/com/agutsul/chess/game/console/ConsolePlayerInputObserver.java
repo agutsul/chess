@@ -51,7 +51,9 @@ public class ConsolePlayerInputObserver
     protected String getActionCommand() {
         LOGGER.info("{}: '{}' move:", this.player.getColor(), this.player);
 
-        var timeoutMillis = this.game.getActionTimeout();
+        var context = this.game.getContext();
+
+        var timeoutMillis = context.getActionTimeout();
         if (timeoutMillis != null) {
             this.actionStarted = Instant.now();
         }
@@ -80,7 +82,9 @@ public class ConsolePlayerInputObserver
                 this.player.getColor(), this.player
         );
 
-        var timeoutMillis = this.game.getActionTimeout();
+        var context = this.game.getContext();
+
+        var timeoutMillis = context.getActionTimeout();
         if (timeoutMillis != null && this.actionStarted != null) {
             // calculate remaining timeout for promotion piece type selection
             var generalTimeout = this.actionStarted.toEpochMilli() + timeoutMillis;

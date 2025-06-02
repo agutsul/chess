@@ -26,6 +26,7 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
+import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.UserPlayer;
@@ -39,6 +40,9 @@ public class ConsolePlayerInputObserverTest {
     private static final Player PLAYER = new UserPlayer("white_player", Colors.WHITE);
 
     @Mock
+    GameContext context;
+
+    @Mock
     AbstractPlayableGame game;
 
     @Mock
@@ -49,8 +53,11 @@ public class ConsolePlayerInputObserverTest {
         doNothing()
             .when(game).notifyObservers(any());
 
-        when(game.getActionTimeout())
+        when(context.getActionTimeout())
             .thenReturn(null);
+
+        when(game.getContext())
+            .thenReturn(context);
 
         var exitCommand = String.format("exit%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(exitCommand.getBytes())) {
@@ -66,8 +73,11 @@ public class ConsolePlayerInputObserverTest {
         doNothing()
             .when(game).notifyObservers(any());
 
-        when(game.getActionTimeout())
+        when(context.getActionTimeout())
             .thenReturn(null);
+
+        when(game.getContext())
+            .thenReturn(context);
 
         var promoteAction = new PiecePromoteAction<>(
                 new PieceMoveAction<>(mock(PawnPiece.class), mock(Position.class)),
@@ -85,8 +95,11 @@ public class ConsolePlayerInputObserverTest {
 
     @Test
     void testGetActionCommandValidCommandWithoutTimeout() throws IOException {
-        when(game.getActionTimeout())
+        when(context.getActionTimeout())
             .thenReturn(null);
+
+        when(game.getContext())
+            .thenReturn(context);
 
         var command = String.format("e2 e4%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
@@ -97,8 +110,11 @@ public class ConsolePlayerInputObserverTest {
 
     @Test
     void testGetActionCommandWithRuntimeException() throws IOException {
-        when(game.getActionTimeout())
+        when(context.getActionTimeout())
             .thenReturn(null);
+
+        when(game.getContext())
+            .thenReturn(context);
 
         var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, null);
         var thrown = assertThrows(
@@ -111,8 +127,11 @@ public class ConsolePlayerInputObserverTest {
 
     @Test
     void testGetActionCommandValidCommandWithTimeout() throws IOException {
-        when(game.getActionTimeout())
+        when(context.getActionTimeout())
             .thenReturn(1000L);
+
+        when(game.getContext())
+            .thenReturn(context);
 
         var command = String.format("e2 e4%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
@@ -123,8 +142,11 @@ public class ConsolePlayerInputObserverTest {
 
     @Test
     void testGetActionCommandWithBlankCommand() throws IOException {
-        when(game.getActionTimeout())
+        when(context.getActionTimeout())
             .thenReturn(null);
+
+        when(game.getContext())
+            .thenReturn(context);
 
         var command = String.format("%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
@@ -140,8 +162,11 @@ public class ConsolePlayerInputObserverTest {
 
     @Test
     void testGetActionCommandWithWinCommand() throws IOException {
-        when(game.getActionTimeout())
+        when(context.getActionTimeout())
             .thenReturn(null);
+
+        when(game.getContext())
+            .thenReturn(context);
 
         var command = String.format("win%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
@@ -157,8 +182,11 @@ public class ConsolePlayerInputObserverTest {
 
     @Test
     void testGetPromotionPieceTypeWithoutTimeout() throws IOException {
-        when(game.getActionTimeout())
+        when(context.getActionTimeout())
             .thenReturn(null);
+
+        when(game.getContext())
+            .thenReturn(context);
 
         var command = String.format("q%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
@@ -169,8 +197,11 @@ public class ConsolePlayerInputObserverTest {
 
     @Test
     void testGetPromotionPieceTypeWithBlankCommand() throws IOException {
-        when(game.getActionTimeout())
+        when(context.getActionTimeout())
             .thenReturn(null);
+
+        when(game.getContext())
+            .thenReturn(context);
 
         var command = String.format("%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
@@ -187,8 +218,11 @@ public class ConsolePlayerInputObserverTest {
 
     @Test
     void testGetPromotionPieceTypeWithTimeout() throws IOException {
-        when(game.getActionTimeout())
+        when(context.getActionTimeout())
             .thenReturn(10 * 60 * 1000L);
+
+        when(game.getContext())
+            .thenReturn(context);
 
         var moveCommand = String.format("e7 e8%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(moveCommand.getBytes())) {

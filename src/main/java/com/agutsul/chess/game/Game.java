@@ -2,7 +2,6 @@ package com.agutsul.chess.game;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.concurrent.ForkJoinPool;
 
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
@@ -24,15 +23,17 @@ public interface Game extends Runnable {
     Player getOpponentPlayer();
 
     Board getBoard();
-    Long getActionTimeout(); // milliseconds
 
+    GameContext getContext();
+
+    void setStartedAt(LocalDateTime dateTime);
     LocalDateTime getStartedAt();
+
+    void setFinishedAt(LocalDateTime dateTime);
     LocalDateTime getFinishedAt();
 
     GameState getState();
 
     Journal<ActionMemento<?,?>> getJournal();
     Optional<Player> getWinner();
-
-    ForkJoinPool getForkJoinPool();
 }

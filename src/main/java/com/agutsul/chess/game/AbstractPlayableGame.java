@@ -3,10 +3,8 @@ package com.agutsul.chess.game;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.DEFAULT;
-import static java.time.LocalDateTime.now;
 import static java.util.Collections.unmodifiableMap;
-import static java.util.Objects.isNull;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCause;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 
 import java.util.HashMap;
@@ -14,9 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ForkJoinPool;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -41,6 +37,8 @@ import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.event.GameTerminationEvent.Type;
 import com.agutsul.chess.game.observer.GameExceptionObserver;
+import com.agutsul.chess.game.observer.GameOverObserver;
+import com.agutsul.chess.game.observer.GameStartedObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
@@ -52,7 +50,6 @@ import com.agutsul.chess.player.state.PlayerState;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 import com.agutsul.chess.rule.winner.ActionTimeoutWinnerEvaluator;
-import com.agutsul.chess.rule.winner.WinnerEvaluator;
 import com.agutsul.chess.rule.winner.WinnerEvaluatorImpl;
 
 public abstract class AbstractPlayableGame
@@ -72,7 +69,6 @@ public abstract class AbstractPlayableGame
     protected final PlayerState lockedState;
 
     protected Player currentPlayer;
-    protected Player winnerPlayer;
 
     public AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer, Board board) {
         this(logger, whitePlayer, blackPlayer, board, new JournalImpl());
@@ -110,8 +106,8 @@ public abstract class AbstractPlayableGame
         this.activeState = new ActivePlayerState((Observable) board);
         this.lockedState = new LockedPlayerState();
 
-        getWhitePlayer().setState(activeState);
-        getBlackPlayer().setState(lockedState);
+        whitePlayer.setState(activeState);
+        blackPlayer.setState(lockedState);
 
         this.currentPlayer = whitePlayer;
 
@@ -129,18 +125,8 @@ public abstract class AbstractPlayableGame
     }
 
     @Override
-    public final ForkJoinPool getForkJoinPool() {
-        return this.context.getForkJoinPool();
-    }
-
-    @Override
-    public final Long getActionTimeout() {
-        return this.context.getActionTimeout();
-    }
-
-    @Override
-    public final Optional<Player> getWinner() {
-        return Optional.ofNullable(this.winnerPlayer);
+    public final GameContext getContext() {
+        return this.context;
     }
 
     @Override
@@ -191,39 +177,39 @@ public abstract class AbstractPlayableGame
 
     @Override
     public void run() {
-        this.startedAt = now();
-
         notifyObservers(new GameStartedEvent(this));
         logger.info("Game started ...");
 
         try {
             execute();
+
             evaluateWinner(new WinnerEvaluatorImpl());
+            notifyObservers(new GameOverEvent(this));
 
             logger.info("Game over");
         } catch (ActionTimeoutException e) {
             notifyObservers(new PlayerTerminateActionEvent(getCurrentPlayer(), Type.TIMEOUT));
 
             evaluateWinner(new ActionTimeoutWinnerEvaluator());
+            notifyObservers(new GameOverEvent(this));
 
-            logger.info("Game over: {}", e.getMessage());
+            logger.info("Game over ( action timeout ): {}", e.getMessage());
         } catch (Throwable throwable) {
-            logger.error("{}: Game exception, board state '{}': {}",
-                    this.currentPlayer.getColor(),
-                    this.board.getState(),
-                    getStackTrace(throwable)
-            );
+            var cause = getRootCause(throwable);
+            var stackTrace = getStackTrace(throwable);
 
-            notifyObservers(new GameExceptionEvent(this, throwable));
-        } finally {
-            var event = new GameOverEvent(this);
-            try {
-                notifyBoardObservers(event);
-                notifyObservers(event);
-            } finally {
-                if (!isNull(context.getForkJoinPool())) {
-                    close(context.getForkJoinPool());
-                }
+            if (cause instanceof InterruptedException) {
+                // ignore game timeout interruption preventing any player action
+                logger.warn("{}: Game timeout interruption, board state '{}': {}",
+                        this.currentPlayer.getColor(), this.board.getState(), stackTrace
+                );
+            } else {
+                logger.error("{}: Game exception, board state '{}': {}",
+                        this.currentPlayer.getColor(), this.board.getState(), stackTrace
+                );
+
+                notifyObservers(new GameExceptionEvent(this, throwable));
+                notifyObservers(new GameOverEvent(this));
             }
         }
     }
@@ -257,20 +243,6 @@ public abstract class AbstractPlayableGame
                 : getWhitePlayer();
     }
 
-    protected final void evaluateWinner(WinnerEvaluator winnerEvaluator) {
-        try {
-            this.winnerPlayer = winnerEvaluator.evaluate(this);
-        } catch (Throwable throwable) {
-            logger.error("{}: Game exception, evaluate winner '{}': {}",
-                    this.currentPlayer.getColor(),
-                    this.board.getState(),
-                    getStackTrace(throwable)
-            );
-        } finally {
-            this.finishedAt = now();
-        }
-    }
-
     protected final BoardState evaluateBoardState(Player player) {
         var boardState = this.boardStateEvaluator.evaluate(player.getColor());
 
@@ -294,9 +266,13 @@ public abstract class AbstractPlayableGame
     }
 
     protected void initObservers() {
-        this.observers.add(new PlayerActionOberver(this));
-        this.observers.add(new ActionEventObserver());
-        this.observers.add(new GameExceptionObserver());
+        this.observers.addAll(List.of(
+                new GameStartedObserver(),
+                new GameOverObserver(),
+                new PlayerActionOberver(this),
+                new ActionEventObserver(),
+                new GameExceptionObserver()
+        ));
     }
 
     private Player switchPlayers() {
@@ -313,17 +289,6 @@ public abstract class AbstractPlayableGame
         );
 
         return player;
-    }
-
-    private static void close(ForkJoinPool forkJoinPool) {
-        try {
-            forkJoinPool.shutdown();
-            if (!forkJoinPool.awaitTermination(1, MILLISECONDS)) {
-                forkJoinPool.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            forkJoinPool.shutdownNow();
-        }
     }
 
     final class ActionEventObserver

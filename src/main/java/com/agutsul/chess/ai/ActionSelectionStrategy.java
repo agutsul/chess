@@ -30,7 +30,7 @@ public final class ActionSelectionStrategy
     private final SelectionStrategy.Type type;
 
     public ActionSelectionStrategy(Game game, SelectionStrategy.Type type) {
-        this(game.getBoard(), game.getJournal(), game.getForkJoinPool(), type);
+        this(game.getBoard(), game.getJournal(), game.getContext().getForkJoinPool(), type);
     }
 
     public ActionSelectionStrategy(Board board, Journal<ActionMemento<?,?>> journal,

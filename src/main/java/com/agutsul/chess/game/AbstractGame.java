@@ -1,11 +1,11 @@
 package com.agutsul.chess.game;
-
+import static java.util.Objects.isNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -19,6 +19,7 @@ import com.agutsul.chess.game.state.DrawnGameState;
 import com.agutsul.chess.game.state.GameState;
 import com.agutsul.chess.game.state.WhiteWinGameState;
 import com.agutsul.chess.player.Player;
+import com.agutsul.chess.rule.winner.WinnerEvaluator;
 
 abstract class AbstractGame
         implements Game {
@@ -36,8 +37,10 @@ abstract class AbstractGame
     protected String site;
     protected String round;
 
-    protected LocalDateTime startedAt;
-    protected LocalDateTime finishedAt;
+    private LocalDateTime startedAt;
+    private LocalDateTime finishedAt;
+
+    private Player winnerPlayer;
 
     AbstractGame(Logger logger, Player whitePlayer, Player blackPlayer) {
         this.logger = logger;
@@ -72,22 +75,37 @@ abstract class AbstractGame
 
     @Override
     public final Player getPlayer(Color color) {
-        return players.get(color);
+        return this.players.get(color);
+    }
+
+    @Override
+    public void setStartedAt(LocalDateTime dateTime) {
+        this.startedAt = dateTime;
     }
 
     @Override
     public final LocalDateTime getStartedAt() {
-        return startedAt;
+        return this.startedAt;
+    }
+
+    @Override
+    public void setFinishedAt(LocalDateTime dateTime) {
+        this.finishedAt = dateTime;
     }
 
     @Override
     public final LocalDateTime getFinishedAt() {
-        return finishedAt;
+        return this.finishedAt;
+    }
+
+    @Override
+    public final Optional<Player> getWinner() {
+        return Optional.ofNullable(this.winnerPlayer);
     }
 
     @Override
     public final GameState getState() {
-        if (Objects.isNull(getFinishedAt())) {
+        if (isNull(getFinishedAt())) {
             return new DefaultGameState();
         }
 
@@ -99,5 +117,17 @@ abstract class AbstractGame
                 .orElse(new DrawnGameState());
 
         return state;
+    }
+
+    protected final void evaluateWinner(WinnerEvaluator winnerEvaluator) {
+        try {
+            this.winnerPlayer = winnerEvaluator.evaluate(this);
+        } catch (Throwable throwable) {
+            logger.error("{}: Game exception, evaluate winner '{}': {}",
+                    getCurrentPlayer().getColor(),
+                    getBoard().getState(),
+                    getStackTrace(throwable)
+            );
+        }
     }
 }

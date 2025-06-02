@@ -2,7 +2,6 @@ package com.agutsul.chess.game;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.time.LocalDateTime;
 import java.util.concurrent.ForkJoinPool;
 
 import org.slf4j.Logger;
@@ -11,6 +10,8 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.game.observer.GameExceptionObserver;
+import com.agutsul.chess.game.observer.GameOverObserver;
+import com.agutsul.chess.game.observer.GameStartedObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.mock.PlayerActionOberverMock;
@@ -46,16 +47,10 @@ public class GameMock
         super(LOGGER, whitePlayer, blackPlayer, board, journal, boardStateEvaluator, new GameContext());
     }
 
-    public void setStartedAt(LocalDateTime startedAt) {
-        this.startedAt = startedAt;
-    }
-
-    public void setFinishedAt(LocalDateTime finishedAt) {
-        this.finishedAt = finishedAt;
-    }
-
     @Override
     protected void initObservers() {
+        addObserver(new GameStartedObserver());
+        addObserver(new GameOverObserver());
         addObserver(new PlayerActionOberverMock(this));
         addObserver(new ActionEventObserver());
         addObserver(new GameExceptionObserver());

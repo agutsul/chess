@@ -20,10 +20,14 @@ import com.agutsul.chess.ai.SelectionStrategy;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.game.Game;
+import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.player.Player;
 
 @ExtendWith(MockitoExtension.class)
 public class SimulationActionInputObserverTest {
+
+    @Mock
+    GameContext context;
 
     @Mock
     Game game;
@@ -85,6 +89,9 @@ public class SimulationActionInputObserverTest {
 
     @Test
     void testGetPromotionPieceTypeThrowingException() {
+        when(game.getContext())
+            .thenReturn(context);
+
         var botObserver = new SimulationActionInputObserver(player, game);
         var thrown = assertThrows(
                 IllegalStateException.class,

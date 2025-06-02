@@ -10,14 +10,17 @@ import org.slf4j.Logger;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.event.Observable;
-import com.agutsul.chess.game.AbstractPlayableGame;
+import com.agutsul.chess.game.AbstractGameProxy;
+import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.GameContext;
+import com.agutsul.chess.game.GameImpl;
+import com.agutsul.chess.game.TimeoutGame;
 import com.agutsul.chess.game.ai.SimulationActionInputObserver;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
 
 public final class ConsoleGame
-        extends AbstractPlayableGame {
+        extends AbstractGameProxy {
 
     private static final Logger LOGGER = getLogger(ConsoleGame.class);
 
@@ -27,27 +30,40 @@ public final class ConsoleGame
         this(whitePlayer, blackPlayer, new StandardBoard(), System.in);
     }
 
-    ConsoleGame(Player whitePlayer, Player blackPlayer, Board board, InputStream inputStream) {
-        super(LOGGER, whitePlayer, blackPlayer, board,
-                new JournalImpl(), new GameContext(new ForkJoinPool(), TEN_MINUTES)
-        );
+    public ConsoleGame(Player whitePlayer, Player blackPlayer, Long actionTimeout, Long gameTimeout) {
+        super(createGame(whitePlayer, blackPlayer, new StandardBoard(),
+                System.in, actionTimeout, gameTimeout
+        ));
+    }
 
-        registerConsoleInputObserver(whitePlayer, inputStream);
+    ConsoleGame(Player whitePlayer, Player blackPlayer, Board board, InputStream inputStream) {
+        super(createGame(whitePlayer, blackPlayer, board, inputStream, TEN_MINUTES, null));
+    }
+
+    private static Game createGame(Player whitePlayer, Player blackPlayer,
+                                   Board board, InputStream inputStream,
+                                   Long actionTimeout, Long gameTimeout) {
+
+        var context =  new GameContext(new ForkJoinPool(), actionTimeout, gameTimeout);
+        var game = new GameImpl(LOGGER, whitePlayer, blackPlayer, board, new JournalImpl(), context);
+
+        var observableBoard = (Observable) board;
+
+        observableBoard.addObserver(new ConsolePlayerInputObserver(whitePlayer, game, inputStream));
         // uncomment to manually enter player actions
-        //registerConsoleInputObserver(blackPlayer, inputStream);
+        //observableBoard.addObserver(new ConsolePlayerInputObserver(blackPlayer, game, inputStream));
 
         // uncomment to play against computer selecting actions randomly ( good for quick tests )
-        //((Observable) board).addObserver(new RandomActionInputObserver(blackPlayer, this));
+        //observableBoard.addObserver(new RandomActionInputObserver(blackPlayer, game));
 
         // uncomment to play against computer
-        ((Observable) board).addObserver(new SimulationActionInputObserver(blackPlayer, this));
+        observableBoard.addObserver(new SimulationActionInputObserver(blackPlayer, game));
 
-        addObserver(new ConsoleGameOutputObserver(this));
+        game.addObserver(new ConsoleGameOutputObserver(game));
+
+        return context.getGameTimeout() != null
+                ? new TimeoutGame(game, context.getGameTimeout())
+                : game;
     }
 
-    private void registerConsoleInputObserver(Player player, InputStream inputStream) {
-        ((Observable) getBoard()).addObserver(
-                new ConsolePlayerInputObserver(player, this, inputStream)
-        );
-    }
 }
