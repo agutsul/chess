@@ -10,30 +10,23 @@ import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.activity.action.memento.ActionMemento;
-import com.agutsul.chess.board.Board;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.GameTimeoutException;
 import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameTimeoutTerminationEvent;
 import com.agutsul.chess.game.observer.GameTimeoutTerminationObserver;
-import com.agutsul.chess.journal.Journal;
-import com.agutsul.chess.player.Player;
 import com.agutsul.chess.rule.winner.GameTimeoutWinnerEvaluator;
 
 public final class TimeoutGame
-        extends AbstractGame {
+        extends AbstractGameProxy {
 
     private static final Logger LOGGER = getLogger(TimeoutGame.class);
 
-    private final Game game;
     private final long timeout;
 
     public TimeoutGame(Game game, long timeoutMillis) {
-        super(LOGGER, game.getWhitePlayer(), game.getBlackPlayer());
-
-        this.game = game;
+        super(game);
         this.timeout = timeoutMillis;
 
         ((Observable) this.game).addObserver(new GameTimeoutTerminationObserver());
@@ -87,30 +80,5 @@ public final class TimeoutGame
                 executor.shutdownNow();
             }
         }
-    }
-
-    @Override
-    public Player getCurrentPlayer() {
-        return this.game.getCurrentPlayer();
-    }
-
-    @Override
-    public Player getOpponentPlayer() {
-        return this.game.getOpponentPlayer();
-    }
-
-    @Override
-    public Board getBoard() {
-        return this.game.getBoard();
-    }
-
-    @Override
-    public Journal<ActionMemento<?, ?>> getJournal() {
-        return this.game.getJournal();
-    }
-
-    @Override
-    public GameContext getContext() {
-        return this.game.getContext();
     }
 }
