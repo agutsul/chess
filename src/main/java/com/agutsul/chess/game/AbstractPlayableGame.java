@@ -50,6 +50,7 @@ import com.agutsul.chess.player.state.PlayerState;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 import com.agutsul.chess.rule.winner.ActionTimeoutWinnerEvaluator;
+import com.agutsul.chess.rule.winner.WinnerEvaluator;
 import com.agutsul.chess.rule.winner.WinnerEvaluatorImpl;
 
 public abstract class AbstractPlayableGame
@@ -255,6 +256,18 @@ public abstract class AbstractPlayableGame
         }
 
         return boardState;
+    }
+
+    protected final void evaluateWinner(WinnerEvaluator winnerEvaluator) {
+        try {
+            this.winner = winnerEvaluator.evaluate(this);
+        } catch (Throwable throwable) {
+            logger.error("{}: Game exception, evaluate winner '{}': {}",
+                    getCurrentPlayer().getColor(),
+                    getBoard().getState(),
+                    getStackTrace(throwable)
+            );
+        }
     }
 
     protected final void clearPieceData(Color color) {

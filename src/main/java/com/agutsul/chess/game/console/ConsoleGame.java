@@ -44,7 +44,7 @@ public final class ConsoleGame
                                    Board board, InputStream inputStream,
                                    Long actionTimeout, Long gameTimeout) {
 
-        var context =  new GameContext(new ForkJoinPool(), actionTimeout, gameTimeout);
+        var context = new GameContext(new ForkJoinPool(), actionTimeout, gameTimeout);
         var game = new GameImpl(LOGGER, whitePlayer, blackPlayer, board, new JournalImpl(), context);
 
         var observableBoard = (Observable) board;

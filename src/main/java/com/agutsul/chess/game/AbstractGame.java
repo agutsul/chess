@@ -2,7 +2,6 @@ package com.agutsul.chess.game;
 import static java.util.Objects.isNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
-import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -19,7 +18,6 @@ import com.agutsul.chess.game.state.DrawnGameState;
 import com.agutsul.chess.game.state.GameState;
 import com.agutsul.chess.game.state.WhiteWinGameState;
 import com.agutsul.chess.player.Player;
-import com.agutsul.chess.rule.winner.WinnerEvaluator;
 
 abstract class AbstractGame
         implements Game {
@@ -29,18 +27,18 @@ abstract class AbstractGame
             Colors.BLACK, new BlackWinGameState()
     );
 
-    protected final Logger logger;
-
     private final Map<Color,Player> players;
+
+    private LocalDateTime startedAt;
+    private LocalDateTime finishedAt;
+
+    protected final Logger logger;
 
     protected String event;
     protected String site;
     protected String round;
 
-    private LocalDateTime startedAt;
-    private LocalDateTime finishedAt;
-
-    private Player winnerPlayer;
+    protected Player winner;
 
     AbstractGame(Logger logger, Player whitePlayer, Player blackPlayer) {
         this.logger = logger;
@@ -100,7 +98,7 @@ abstract class AbstractGame
 
     @Override
     public final Optional<Player> getWinner() {
-        return Optional.ofNullable(this.winnerPlayer);
+        return Optional.ofNullable(this.winner);
     }
 
     @Override
@@ -117,17 +115,5 @@ abstract class AbstractGame
                 .orElse(new DrawnGameState());
 
         return state;
-    }
-
-    protected final void evaluateWinner(WinnerEvaluator winnerEvaluator) {
-        try {
-            this.winnerPlayer = winnerEvaluator.evaluate(this);
-        } catch (Throwable throwable) {
-            logger.error("{}: Game exception, evaluate winner '{}': {}",
-                    getCurrentPlayer().getColor(),
-                    getBoard().getState(),
-                    getStackTrace(throwable)
-            );
-        }
     }
 }

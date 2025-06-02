@@ -62,7 +62,7 @@ public final class TimeoutGame
                     getStackTrace(throwable)
             );
 
-            playableGame.notifyObservers(new GameExceptionEvent(this, throwable));
+            playableGame.notifyObservers(new GameExceptionEvent(playableGame, throwable));
             playableGame.notifyObservers(new GameOverEvent(playableGame));
         }
     }
@@ -70,7 +70,7 @@ public final class TimeoutGame
     private void execute() throws InterruptedException, ExecutionException {
         var executor = newSingleThreadExecutor();
         try {
-            var future = executor.submit(() -> this.game.run());
+            var future = executor.submit(this.game);
             try {
                 future.get(this.timeout, TimeUnit.MILLISECONDS);
             } catch (TimeoutException e) {
