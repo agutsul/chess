@@ -4,6 +4,7 @@ import static java.time.LocalDateTime.now;
 
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
+import com.agutsul.chess.game.AbstractGame;
 import com.agutsul.chess.game.event.GameStartedEvent;
 
 public final class GameStartedObserver
@@ -17,7 +18,6 @@ public final class GameStartedObserver
     }
 
     private void process(GameStartedEvent event) {
-        var game = event.getGame();
-        game.setStartedAt(now());
+        ((AbstractGame) event.getGame()).setStartedAt(now());
     }
 }

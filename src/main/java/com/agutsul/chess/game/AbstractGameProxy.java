@@ -60,18 +60,8 @@ public abstract class AbstractGameProxy
     }
 
     @Override
-    public void setStartedAt(LocalDateTime dateTime) {
-        this.game.setStartedAt(dateTime);
-    }
-
-    @Override
     public LocalDateTime getStartedAt() {
         return this.game.getStartedAt();
-    }
-
-    @Override
-    public void setFinishedAt(LocalDateTime dateTime) {
-        this.game.setFinishedAt(dateTime);
     }
 
     @Override

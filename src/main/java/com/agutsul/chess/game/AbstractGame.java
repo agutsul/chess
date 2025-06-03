@@ -19,7 +19,7 @@ import com.agutsul.chess.game.state.GameState;
 import com.agutsul.chess.game.state.WhiteWinGameState;
 import com.agutsul.chess.player.Player;
 
-abstract class AbstractGame
+public abstract class AbstractGame
         implements Game {
 
     private static final Map<Color,GameState> WIN_STATES = Map.of(
@@ -57,8 +57,7 @@ abstract class AbstractGame
         return this.players.get(color);
     }
 
-    @Override
-    public void setStartedAt(LocalDateTime dateTime) {
+    public final void setStartedAt(LocalDateTime dateTime) {
         this.startedAt = dateTime;
     }
 
@@ -67,8 +66,7 @@ abstract class AbstractGame
         return this.startedAt;
     }
 
-    @Override
-    public void setFinishedAt(LocalDateTime dateTime) {
+    public final void setFinishedAt(LocalDateTime dateTime) {
         this.finishedAt = dateTime;
     }
 

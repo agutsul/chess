@@ -22,10 +22,7 @@ public interface Game extends Runnable {
 
     GameContext getContext();
 
-    void setStartedAt(LocalDateTime dateTime);
     LocalDateTime getStartedAt();
-
-    void setFinishedAt(LocalDateTime dateTime);
     LocalDateTime getFinishedAt();
 
     GameState getState();
