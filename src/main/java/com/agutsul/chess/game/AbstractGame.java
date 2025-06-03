@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toMap;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -28,6 +29,8 @@ public abstract class AbstractGame
     );
 
     private final Map<Color,Player> players;
+
+    private Player currentPlayer;
 
     private LocalDateTime startedAt;
     private LocalDateTime finishedAt;
@@ -73,6 +76,22 @@ public abstract class AbstractGame
     @Override
     public final LocalDateTime getFinishedAt() {
         return this.finishedAt;
+    }
+
+    public final void setCurrentPlayer(Player player) {
+        this.currentPlayer = player;
+    }
+
+    @Override
+    public final Player getCurrentPlayer() {
+        return this.currentPlayer;
+    }
+
+    @Override
+    public final Player getOpponentPlayer() {
+        return Objects.equals(getCurrentPlayer(), getWhitePlayer())
+                ? getBlackPlayer()
+                : getWhitePlayer();
     }
 
     @Override

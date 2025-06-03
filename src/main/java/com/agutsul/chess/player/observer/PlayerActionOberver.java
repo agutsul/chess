@@ -1,11 +1,8 @@
 package com.agutsul.chess.player.observer;
-
-import static java.util.Collections.unmodifiableMap;
 import static org.apache.commons.lang3.ThreadUtils.sleepQuietly;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -33,12 +30,16 @@ public class PlayerActionOberver
 
     private static final Logger LOGGER = getLogger(PlayerActionOberver.class);
 
-    private final Map<Class<? extends Event>, Consumer<Event>> processors;
+    private final Map<Class<? extends Event>, Consumer<Event>> processors = Map.of(
+            PlayerActionEvent.class,          event -> process((PlayerActionEvent) event),
+            PlayerCancelActionEvent.class,    event -> process((PlayerCancelActionEvent) event),
+            PlayerTerminateActionEvent.class, event -> process((PlayerTerminateActionEvent) event)
+    );
+
     private final Game game;
 
     public PlayerActionOberver(Game game) {
         this.game = game;
-        this.processors = createEventProcessors();
     }
 
     @Override
@@ -47,16 +48,6 @@ public class PlayerActionOberver
         if (processor != null) {
             processor.accept(event);
         }
-    }
-
-    private Map<Class<? extends Event>, Consumer<Event>> createEventProcessors() {
-        var processors = new HashMap<Class<? extends Event>, Consumer<Event>>();
-
-        processors.put(PlayerActionEvent.class,          event -> process((PlayerActionEvent) event));
-        processors.put(PlayerCancelActionEvent.class,    event -> process((PlayerCancelActionEvent) event));
-        processors.put(PlayerTerminateActionEvent.class, event -> process((PlayerTerminateActionEvent) event));
-
-        return unmodifiableMap(processors);
     }
 
     private void process(PlayerActionEvent event) {

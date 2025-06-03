@@ -4,7 +4,6 @@ import static com.agutsul.chess.piece.Piece.Type.BISHOP;
 import static com.agutsul.chess.piece.Piece.Type.KNIGHT;
 import static com.agutsul.chess.piece.Piece.Type.QUEEN;
 import static com.agutsul.chess.piece.Piece.Type.ROOK;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.ArrayUtils.getLength;
@@ -17,7 +16,6 @@ import static org.apache.commons.lang3.StringUtils.upperCase;
 import static org.apache.commons.lang3.ThreadUtils.sleepQuietly;
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -60,7 +58,10 @@ public abstract class AbstractPlayerInputObserver
             Stream.of(KNIGHT, BISHOP, ROOK, QUEEN)
                     .collect(toMap(Piece.Type::code, identity()));
 
-    private final Map<Class<? extends Event>, Consumer<Event>> processors;
+    private final Map<Class<? extends Event>,Consumer<Event>> processors = Map.of(
+            RequestPlayerActionEvent.class,       event -> process((RequestPlayerActionEvent) event),
+            RequestPromotionPieceTypeEvent.class, event -> process((RequestPromotionPieceTypeEvent) event)
+    );
 
     protected final Player player;
     protected final Game game;
@@ -71,7 +72,6 @@ public abstract class AbstractPlayerInputObserver
         this.logger = logger;
         this.player = player;
         this.game = game;
-        this.processors = createEventProcessors();
     }
 
     @Override
@@ -140,15 +140,6 @@ public abstract class AbstractPlayerInputObserver
         }
     }
 
-    private Map<Class<? extends Event>, Consumer<Event>> createEventProcessors() {
-        var processors = new HashMap<Class<? extends Event>, Consumer<Event>>();
-
-        processors.put(RequestPlayerActionEvent.class, e -> process((RequestPlayerActionEvent) e));
-        processors.put(RequestPromotionPieceTypeEvent.class, e -> process((RequestPromotionPieceTypeEvent) e));
-
-        return unmodifiableMap(processors);
-    }
-
     private void processActionCommand(String command) {
         var positions = split(lowerCase(command), SPACE);
         if (getLength(positions) != 2) {
@@ -157,11 +148,7 @@ public abstract class AbstractPlayerInputObserver
             );
         }
 
-        notifyGameEvent(new PlayerActionEvent(
-                player,
-                strip(positions[0]),
-                strip(positions[1])
-        ));
+        notifyGameEvent(new PlayerActionEvent(player, strip(positions[0]), strip(positions[1])));
     }
 
     protected void notifyBoardEvent(Event event) {

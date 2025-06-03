@@ -28,7 +28,7 @@ import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 public abstract class AbstractGameObserver
         implements Observer {
 
-    private final Map<Class<? extends Event>, Consumer<Event>> processors;
+    private final Map<Class<? extends Event>,Consumer<Event>> processors;
 
     protected final Game game;
 

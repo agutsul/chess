@@ -69,7 +69,8 @@ public final class SimulationGame
 
         this.color = activeColor;
         this.originAction = action;
-        this.currentPlayer = getPlayer(activeColor);
+
+        setCurrentPlayer(getPlayer(activeColor));
 
         getCurrentPlayer().setState(activeState);
         getOpponentPlayer().setState(lockedState);
@@ -95,7 +96,7 @@ public final class SimulationGame
             command.execute();
 
             if (hasNext()) {
-                this.currentPlayer = next();
+                setCurrentPlayer(next());
             }
         } catch (Throwable throwable) {
             LOGGER.error("{}{}", lineSeparator(), String.valueOf(getBoard()));

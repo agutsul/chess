@@ -3,15 +3,12 @@ package com.agutsul.chess.game;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.DEFAULT;
-import static java.util.Collections.unmodifiableMap;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCause;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
@@ -69,8 +66,6 @@ public abstract class AbstractPlayableGame
     protected final PlayerState activeState;
     protected final PlayerState lockedState;
 
-    protected Player currentPlayer;
-
     public AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer, Board board) {
         this(logger, whitePlayer, blackPlayer, board, new JournalImpl());
     }
@@ -110,8 +105,7 @@ public abstract class AbstractPlayableGame
         whitePlayer.setState(activeState);
         blackPlayer.setState(lockedState);
 
-        this.currentPlayer = whitePlayer;
-
+        setCurrentPlayer(whitePlayer);
         initObservers();
     }
 
@@ -202,11 +196,11 @@ public abstract class AbstractPlayableGame
             if (cause instanceof InterruptedException) {
                 // ignore game timeout interruption preventing any player action
                 logger.warn("{}: Game timeout interruption, board state '{}': {}",
-                        this.currentPlayer.getColor(), this.board.getState(), stackTrace
+                        getCurrentPlayer().getColor(), getBoard().getState(), stackTrace
                 );
             } else {
                 logger.error("{}: Game exception, board state '{}': {}",
-                        this.currentPlayer.getColor(), this.board.getState(), stackTrace
+                        getCurrentPlayer().getColor(), getBoard().getState(), stackTrace
                 );
 
                 notifyObservers(new GameExceptionEvent(this, throwable));
@@ -218,30 +212,18 @@ public abstract class AbstractPlayableGame
     @Override
     public final void execute() {
         while (true) {
-            this.currentPlayer.play();
+            getCurrentPlayer().play();
 
             if (!hasNext()) {
                 logger.info("Game stopped due to board state of '{}': {}",
-                        this.currentPlayer.getColor(), this.board.getState()
+                        getCurrentPlayer().getColor(), this.board.getState()
                 );
 
                 break;
             }
 
-            this.currentPlayer = next();
+            setCurrentPlayer(next());
         }
-    }
-
-    @Override
-    public final Player getCurrentPlayer() {
-        return this.currentPlayer;
-    }
-
-    @Override
-    public final Player getOpponentPlayer() {
-        return Objects.equals(getCurrentPlayer(), getWhitePlayer())
-                ? getBlackPlayer()
-                : getWhitePlayer();
     }
 
     protected final BoardState evaluateBoardState(Player player) {
@@ -307,11 +289,10 @@ public abstract class AbstractPlayableGame
     final class ActionEventObserver
             implements Observer {
 
-        private final Map<Class<? extends Event>, Consumer<Event>> processors;
-
-        ActionEventObserver() {
-            this.processors = createEventProcessors();
-        }
+        private final Map<Class<? extends Event>,Consumer<Event>> processors = Map.of(
+                ActionCancelledEvent.class, event -> process((ActionCancelledEvent) event),
+                ActionPerformedEvent.class, event -> process((ActionPerformedEvent) event)
+        );
 
         @Override
         public void observe(Event event) {
@@ -321,30 +302,20 @@ public abstract class AbstractPlayableGame
             }
         }
 
-        private Map<Class<? extends Event>, Consumer<Event>> createEventProcessors() {
-            var processors = new HashMap<Class<? extends Event>, Consumer<Event>>();
-
-            processors.put(ActionCancelledEvent.class, event -> process((ActionCancelledEvent) event));
-            processors.put(ActionPerformedEvent.class, event -> process((ActionPerformedEvent) event));
-
-            return unmodifiableMap(processors);
-        }
-
         private void process(ActionCancelledEvent event) {
             clearPieceData(event.getColor());
-            // remove last item from journal
             journal.removeLast();
-            // switch players
-            currentPlayer = switchPlayers();
 
-            clearPieceData(currentPlayer.getColor());
-            // recalculate board state
-            board.setState(boardStateEvaluator.evaluate(currentPlayer.getColor()));
+            setCurrentPlayer(switchPlayers());
+
+            var currentColor = getCurrentPlayer().getColor();
+
+            clearPieceData(currentColor);
+            board.setState(boardStateEvaluator.evaluate(currentColor));
         }
 
         private void process(ActionPerformedEvent event) {
             var memento = event.getActionMemento();
-
             clearPieceData(memento.getColor());
 
             // add current action into journal to be used in board state evaluation

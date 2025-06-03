@@ -46,8 +46,7 @@ public final class FenGame
         setParsedHalfMoves(halfMoves);
         setParsedFullMoves(fullMoves);
 
-        // set active player
-        this.currentPlayer = getPlayer(color);
+        setCurrentPlayer(getPlayer(color));
 
         // re-evaluate board state
         getBoard().setState(evaluateBoardState(getCurrentPlayer()));
