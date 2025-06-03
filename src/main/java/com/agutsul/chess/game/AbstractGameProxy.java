@@ -45,21 +45,6 @@ public abstract class AbstractGameProxy
     }
 
     @Override
-    public String getEvent() {
-        return this.game.getEvent();
-    }
-
-    @Override
-    public String getSite() {
-        return this.game.getSite();
-    }
-
-    @Override
-    public String getRound() {
-        return this.game.getRound();
-    }
-
-    @Override
     public Player getWhitePlayer() {
         return this.game.getWhitePlayer();
     }

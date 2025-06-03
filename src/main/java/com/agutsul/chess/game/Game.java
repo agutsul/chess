@@ -12,10 +12,6 @@ import com.agutsul.chess.player.Player;
 
 public interface Game extends Runnable {
 
-    String getEvent();
-    String getSite();
-    String getRound();
-
     Player getWhitePlayer();
     Player getBlackPlayer();
     Player getPlayer(Color color);

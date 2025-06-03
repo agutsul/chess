@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.GameBuilder;
+import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.game.pgn.PgnGame;
 import com.agutsul.chess.game.pgn.PgnTermination;
 import com.agutsul.chess.game.state.BlackWinGameState;
@@ -35,11 +36,13 @@ final class PgnGameBuilder
         var player1 = new UserPlayer(whitePlayer, Colors.WHITE);
         var player2 = new UserPlayer(blackPlayer, Colors.BLACK);
 
-        var game = new PgnGame(player1, player2, tags, actions);
+        var context = new GameContext();
 
-        game.setEvent(event);
-        game.setSite(site);
-        game.setRound(round);
+        context.setEvent(event);
+        context.setSite(site);
+        context.setRound(round);
+
+        var game = new PgnGame(player1, player2, tags, actions, context);
 
         game.setParsedGameState(resolveState(gameState));
         game.setParsedTermination(PgnTermination.codeOf(terminationType));

@@ -30,13 +30,14 @@ public class PgnGameFormatter {
 
     public static String format(Game game) {
         var gameState = format(game.getState());
+        var context = game.getContext();
 
         var builder = new StringBuilder();
 
-        builder.append(format(EVENT_TAG,  game.getEvent()));
-        builder.append(format(SITE_TAGE,  game.getSite()));
+        builder.append(format(EVENT_TAG,  context.getEvent()));
+        builder.append(format(SITE_TAGE,  context.getSite()));
         builder.append(format(DATE_TAG,   format(game.getStartedAt())));
-        builder.append(format(ROUND_TAG,  game.getRound()));
+        builder.append(format(ROUND_TAG,  context.getRound()));
         builder.append(format(WHITE_TAG,  format(game.getWhitePlayer())));
         builder.append(format(BLACK_TAG,  format(game.getBlackPlayer())));
         builder.append(format(RESULT_TAG, gameState));

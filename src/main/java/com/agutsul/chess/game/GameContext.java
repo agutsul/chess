@@ -9,6 +9,10 @@ import java.util.concurrent.ForkJoinPool;
 
 public final class GameContext implements Closeable {
 
+    private String event;
+    private String site;
+    private String round;
+
     private ForkJoinPool forkJoinPool;
 
     // milliseconds
@@ -27,6 +31,24 @@ public final class GameContext implements Closeable {
         this.gameTimeout   = gameTimeoutMillis;
     }
 
+    public String getEvent() {
+        return event;
+    }
+    public void setEvent(String event) {
+        this.event = event;
+    }
+    public String getSite() {
+        return site;
+    }
+    public void setSite(String site) {
+        this.site = site;
+    }
+    public String getRound() {
+        return round;
+    }
+    public void setRound(String round) {
+        this.round = round;
+    }
     public Long getActionTimeout() {
         return actionTimeout;
     }

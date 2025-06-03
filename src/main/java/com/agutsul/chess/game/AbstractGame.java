@@ -34,31 +34,12 @@ abstract class AbstractGame
 
     protected final Logger logger;
 
-    protected String event;
-    protected String site;
-    protected String round;
-
     protected Player winner;
 
     AbstractGame(Logger logger, Player whitePlayer, Player blackPlayer) {
         this.logger = logger;
         this.players = Stream.of(whitePlayer, blackPlayer)
                 .collect(toMap(Player::getColor, identity()));
-    }
-
-    @Override
-    public final String getEvent() {
-        return event;
-    }
-
-    @Override
-    public final String getSite() {
-        return site;
-    }
-
-    @Override
-    public final String getRound() {
-        return round;
     }
 
     @Override

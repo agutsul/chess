@@ -17,6 +17,7 @@ import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.game.AbstractPlayableGame;
+import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.game.Termination;
 import com.agutsul.chess.game.state.GameState;
 import com.agutsul.chess.journal.Journal;
@@ -34,9 +35,10 @@ public final class PgnGame
     private List<String> parsedActions;
 
     public PgnGame(Player whitePlayer, Player blackPlayer,
-                   Map<String,String> tags, List<String> actions) {
+                   Map<String,String> tags, List<String> actions,
+                   GameContext context) {
 
-        this(whitePlayer, blackPlayer, new StandardBoard(), new JournalImpl(), actions);
+        this(whitePlayer, blackPlayer, new StandardBoard(), new JournalImpl(), context, actions);
 
         this.parsedTags = tags;
         this.parsedActions = actions;
@@ -44,9 +46,9 @@ public final class PgnGame
 
     PgnGame(Player whitePlayer, Player blackPlayer,
             Board board, Journal<ActionMemento<?,?>> journal,
-            List<String> actions) {
+            GameContext context, List<String> actions) {
 
-        super(LOGGER, whitePlayer, blackPlayer, board, journal);
+        super(LOGGER, whitePlayer, blackPlayer, board, journal, context);
 
         var observable = (Observable) board;
         observable.addObserver(createPlayerObserver(whitePlayer, actions, index -> index % 2 == 0));
@@ -54,18 +56,6 @@ public final class PgnGame
 
         // uncomment below for local debug of pgn file
 //        addObserver(new ConsoleGameOutputObserver(this));
-    }
-
-    public void setEvent(String parsedEvent) {
-        this.event = parsedEvent;
-    }
-
-    public void setSite(String parsedSite) {
-        this.site = parsedSite;
-    }
-
-    public void setRound(String parsedRound) {
-        this.round = parsedRound;
     }
 
     public GameState getParsedGameState() {
