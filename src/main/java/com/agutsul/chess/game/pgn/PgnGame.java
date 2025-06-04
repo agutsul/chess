@@ -17,7 +17,6 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.game.PlayableGameBuilder;
 import com.agutsul.chess.game.Termination;
-import com.agutsul.chess.game.console.ConsoleGameOutputObserver;
 import com.agutsul.chess.game.state.GameState;
 import com.agutsul.chess.player.Player;
 
@@ -48,7 +47,7 @@ public final class PgnGame<T extends Game & Observable>
         observable.addObserver(createPlayerObserver(whitePlayer, actions, index -> index % 2 == 0));
         observable.addObserver(createPlayerObserver(blackPlayer, actions, index -> index % 2 != 0));
 
-        addObserver(new ConsoleGameOutputObserver(this));
+//        addObserver(new ConsoleGameOutputObserver(this));
     }
 
     public GameState getParsedGameState() {
