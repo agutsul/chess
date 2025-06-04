@@ -30,14 +30,14 @@ public class FenGameTest implements TestFileReader {
 
         var board = new StandardBoard();
 
-        var game1 = new FenGame(player1, player2, board, Colors.WHITE, 0, 2);
+        var game1 = new FenGame<>(player1, player2, board, Colors.WHITE, 0, 2);
         var journal1 = game1.getJournal();
 
         assertTrue(journal1 instanceof FenJournal);
         assertEquals(2, journal1.size(Colors.WHITE));
         assertEquals(2, journal1.size(Colors.BLACK));
 
-        var game2 = new FenGame(player1, player2, board, Colors.BLACK, 0, 2);
+        var game2 = new FenGame<>(player1, player2, board, Colors.BLACK, 0, 2);
         var journal2 = game2.getJournal();
 
         assertTrue(journal2 instanceof FenJournal);
@@ -57,7 +57,7 @@ public class FenGameTest implements TestFileReader {
 
         var board = new StandardBoard();
 
-        var game = new FenGame(player1, player2, board, Colors.WHITE, 0, 2);
+        var game = new FenGame<>(player1, player2, board, Colors.WHITE, 0, 2);
         var journal = game.getJournal();
 
         assertEquals(2, journal.size(Colors.WHITE));

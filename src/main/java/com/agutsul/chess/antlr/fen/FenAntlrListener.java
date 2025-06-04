@@ -13,11 +13,11 @@ import com.agutsul.chess.game.fen.FenGame;
 
 final class FenAntlrListener
         extends fenBaseListener
-        implements AntlrGameListener<FenGame> {
+        implements AntlrGameListener<FenGame<?>> {
 
     private static final String FEN_LINE_PATTERN = "([p,P,n,N,b,B,r,R,q,Q,k,K,1-8]){1,8}";
 
-    private final List<FenGame> games = new ArrayList<>();
+    private final List<FenGame<?>> games = new ArrayList<>();
     private final Pattern linePattern;
 
     private FenGameBuilder gameBuilder;
@@ -27,7 +27,7 @@ final class FenAntlrListener
     }
 
     @Override
-    public List<FenGame> getGames() {
+    public List<FenGame<?>> getGames() {
         return this.games;
     }
 

@@ -1,13 +1,9 @@
 package com.agutsul.chess.game.fen;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
@@ -15,16 +11,16 @@ import com.agutsul.chess.board.event.SetActionCounterEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
-import com.agutsul.chess.game.AbstractPlayableGame;
+import com.agutsul.chess.game.AbstractGameProxy;
+import com.agutsul.chess.game.Game;
+import com.agutsul.chess.game.PlayableGameBuilder;
 import com.agutsul.chess.game.console.ConsolePlayerInputObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
 
-public final class FenGame
-        extends AbstractPlayableGame {
-
-    private static final Logger LOGGER = getLogger(FenGame.class);
+public final class FenGame<T extends Game & Observable>
+        extends AbstractGameProxy<T> {
 
     private String parsedCastling;
     private String parsedEnPassant;
@@ -35,24 +31,17 @@ public final class FenGame
     public FenGame(Player whitePlayer, Player blackPlayer,
                    Board board, Color color, int halfMoves, int fullMoves) {
 
-        super(LOGGER, whitePlayer, blackPlayer, board, new FenJournal(Map.of(
+        super(createGame(whitePlayer, blackPlayer, board, new FenJournal(Map.of(
                 // 'full move' means 'completed turn' and is calculated only after black piece move.
                 // At that time white pieces already moved but counter not yet increased
                 // So, increment by one for white color
                 Colors.WHITE, Colors.WHITE.equals(color) ? fullMoves : fullMoves + 1,
-                Colors.BLACK, fullMoves
-        )));
+                Colors.BLACK, fullMoves)),
+                System.in, color
+        ));
 
         setParsedHalfMoves(halfMoves);
         setParsedFullMoves(fullMoves);
-
-        setCurrentPlayer(getPlayer(color));
-
-        // re-evaluate board state
-        getBoard().setState(evaluateBoardState(getCurrentPlayer()));
-
-        registerConsoleInputObserver(whitePlayer, System.in);
-        registerConsoleInputObserver(blackPlayer, System.in);
 
         // uncomment below for local debug of fen file
 //        addObserver(new ConsoleGameOutputObserver(this));
@@ -96,17 +85,30 @@ public final class FenGame
     private void setParsedHalfMoves(int parsedHalfMoves) {
         this.parsedHalfMoves = parsedHalfMoves;
 
-        notifyBoardObservers(new SetActionCounterEvent(parsedHalfMoves));
+        ((Observable) getBoard()).notifyObservers(new SetActionCounterEvent(parsedHalfMoves));
     }
 
     private void setParsedFullMoves(int parsedFullMoves) {
         this.parsedFullMoves = parsedFullMoves;
     }
 
-    private void registerConsoleInputObserver(Player player, InputStream inputStream) {
-        ((Observable) getBoard()).addObserver(
-                new ConsolePlayerInputObserver(player, this, inputStream)
-        );
+    @SuppressWarnings("unchecked")
+    private static <T extends Game & Observable> T createGame(Player whitePlayer, Player blackPlayer,
+                                                              Board board, Journal<ActionMemento<?,?>> journal,
+                                                              InputStream inputStream, Color color) {
+
+        var game = new PlayableGameBuilder<>(whitePlayer, blackPlayer)
+                .withBoard(board)
+                .withJournal(journal)
+                .withActiveColor(color)
+                .build();
+
+        var observableBoard = (Observable) board;
+
+        observableBoard.addObserver(new ConsolePlayerInputObserver(whitePlayer, game, inputStream));
+        observableBoard.addObserver(new ConsolePlayerInputObserver(blackPlayer, game, inputStream));
+
+        return (T) game;
     }
 
     static final class FenJournal

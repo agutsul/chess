@@ -117,10 +117,10 @@ public class FenGameParserTest implements TestFileReader {
         assertEquals(2, game.getParsedFullMoves());
     }
 
-    private List<FenGame> parseGames(String fileName, int expectedGames)
+    private List<FenGame<?>> parseGames(String fileName, int expectedGames)
             throws URISyntaxException, IOException {
 
-        var parser = new AntlrFileParser<FenGame>(new FenGameParser());
+        var parser = new AntlrFileParser<FenGame<?>>(new FenGameParser());
         var games = parser.parse(readFile(fileName));
 
         assertNotNull(games);

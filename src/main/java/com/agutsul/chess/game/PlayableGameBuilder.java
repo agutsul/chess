@@ -7,6 +7,7 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
@@ -19,6 +20,8 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
     private final Player whitePlayer;
     private final Player blackPlayer;
 
+    private Color color;
+
     private Board board;
     private Journal<ActionMemento<?,?>> journal;
     private GameContext context;
@@ -27,6 +30,11 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
     public PlayableGameBuilder(Player whitePlayer, Player blackPlayer) {
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
+    }
+
+    public PlayableGameBuilder<GAME> withActiveColor(Color color) {
+        this.color = color;
+        return this;
     }
 
     public PlayableGameBuilder<GAME> withBoard(Board board) {
@@ -63,6 +71,12 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
         var game = new GameImpl(this.whitePlayer, this.blackPlayer,
                 board, journal, boardStateEvaluator, context
         );
+
+        if (!isNull(this.color)) {
+            game.setCurrentPlayer(game.getPlayer(color));
+            // re-evaluate board state
+            board.setState(game.evaluateBoardState(game.getCurrentPlayer()));
+        }
 
         var resultGame = isNull(context.getGameTimeout())
                 ? game

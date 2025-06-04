@@ -14,7 +14,7 @@ import com.agutsul.chess.antlr.grammar.fenParser;
 import com.agutsul.chess.game.fen.FenGame;
 
 public final class FenGameParser
-        extends AbstractAntlrGameParser<FenGame,fenParser,FenAntlrListener> {
+        extends AbstractAntlrGameParser<FenGame<?>,fenParser,FenAntlrListener> {
 
     private static final Logger LOGGER = getLogger(FenGameParser.class);
 
