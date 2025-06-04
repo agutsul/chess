@@ -10,7 +10,8 @@ import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.event.Observable;
+import com.agutsul.chess.event.Event;
+import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.GameTimeoutException;
 import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
@@ -18,23 +19,38 @@ import com.agutsul.chess.game.event.GameTimeoutTerminationEvent;
 import com.agutsul.chess.game.observer.GameTimeoutTerminationObserver;
 import com.agutsul.chess.rule.winner.GameTimeoutWinnerEvaluator;
 
-public final class TimeoutGame
-        extends AbstractGameProxy {
+final class TimeoutGame
+        extends AbstractGameProxy<AbstractPlayableGame>
+        implements Playable {
 
     private static final Logger LOGGER = getLogger(TimeoutGame.class);
 
     private final long timeout;
 
-    public TimeoutGame(Game game, long timeoutMillis) {
+    TimeoutGame(AbstractPlayableGame game, long timeoutMillis) {
         super(game);
         this.timeout = timeoutMillis;
 
-        ((Observable) this.game).addObserver(new GameTimeoutTerminationObserver());
+        addObserver(new GameTimeoutTerminationObserver());
+    }
+
+    @Override
+    public void addObserver(Observer observer) {
+        this.game.addObserver(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        this.game.removeObserver(observer);
+    }
+
+    @Override
+    public void notifyObservers(Event event) {
+        this.game.notifyObservers(event);
     }
 
     @Override
     public void run() {
-        var playableGame = (AbstractPlayableGame) this.game;
         try {
             if (this.timeout <= 0) {
                 throw new GameTimeoutException("Game timeout");
@@ -42,10 +58,10 @@ public final class TimeoutGame
 
             execute();
         } catch (GameTimeoutException e) {
-            playableGame.notifyObservers(new GameTimeoutTerminationEvent(playableGame));
+            this.game.notifyObservers(new GameTimeoutTerminationEvent(this.game));
 
-            playableGame.evaluateWinner(new GameTimeoutWinnerEvaluator());
-            playableGame.notifyObservers(new GameOverEvent(playableGame));
+            this.game.evaluateWinner(new GameTimeoutWinnerEvaluator());
+            this.game.notifyObservers(new GameOverEvent(this.game));
 
             LOGGER.info("Game over ( game timeout ): {}", e.getMessage());
         } catch (Throwable throwable) {
@@ -55,8 +71,8 @@ public final class TimeoutGame
                     getStackTrace(throwable)
             );
 
-            playableGame.notifyObservers(new GameExceptionEvent(playableGame, throwable));
-            playableGame.notifyObservers(new GameOverEvent(playableGame));
+            this.game.notifyObservers(new GameExceptionEvent(this.game, throwable));
+            this.game.notifyObservers(new GameOverEvent(this.game));
         }
     }
 

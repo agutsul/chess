@@ -1,5 +1,7 @@
 package com.agutsul.chess.game;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.memento.ActionMemento;
@@ -9,29 +11,15 @@ import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
 
-public final class GameImpl
-        extends AbstractPlayableGame {
+final class GameImpl extends AbstractPlayableGame {
 
-    public GameImpl(Logger logger, Player whitePlayer, Player blackPlayer, Board board) {
-        super(logger, whitePlayer, blackPlayer, board);
-    }
+    private static final Logger LOGGER = getLogger(GameImpl.class);
 
-    public GameImpl(Logger logger, Player whitePlayer, Player blackPlayer,
-                    Board board, Journal<ActionMemento<?,?>> journal) {
+    GameImpl(Player whitePlayer, Player blackPlayer,
+             Board board, Journal<ActionMemento<?,?>> journal,
+             BoardStateEvaluator<BoardState> boardStateEvaluator,
+             GameContext context) {
 
-        super(logger, whitePlayer, blackPlayer, board, journal);
-    }
-
-    public GameImpl(Logger logger, Player whitePlayer, Player blackPlayer,
-                    Board board, Journal<ActionMemento<?,?>> journal, GameContext context) {
-
-        super(logger, whitePlayer, blackPlayer, board, journal, context);
-    }
-
-    public GameImpl(Logger logger, Player whitePlayer, Player blackPlayer,
-                    Board board, Journal<ActionMemento<?,?>> journal,
-                    BoardStateEvaluator<BoardState> boardStateEvaluator, GameContext context) {
-
-        super(logger, whitePlayer, blackPlayer, board, journal, boardStateEvaluator, context);
+        super(LOGGER, whitePlayer, blackPlayer, board, journal, boardStateEvaluator, context);
     }
 }

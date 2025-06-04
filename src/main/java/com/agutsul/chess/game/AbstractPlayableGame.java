@@ -52,7 +52,7 @@ import com.agutsul.chess.rule.winner.WinnerEvaluatorImpl;
 
 public abstract class AbstractPlayableGame
         extends AbstractGame
-        implements Iterator<Player>, Observable, Executable {
+        implements Iterator<Player>, Playable, Executable {
 
     private final List<Observer> observers = new CopyOnWriteArrayList<>();
 

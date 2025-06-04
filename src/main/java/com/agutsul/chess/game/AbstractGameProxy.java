@@ -10,12 +10,12 @@ import com.agutsul.chess.game.state.GameState;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.player.Player;
 
-public abstract class AbstractGameProxy
+public abstract class AbstractGameProxy<GAME extends Game>
         implements Game {
 
-    protected final Game game;
+    protected final GAME game;
 
-    public AbstractGameProxy(Game game) {
+    public AbstractGameProxy(GAME game) {
         this.game = game;
     }
 

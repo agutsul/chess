@@ -77,7 +77,7 @@ public final class SimulationGame
     }
 
     public Color getColor() {
-        return color;
+        return this.color;
     }
 
     public Action<?> getAction() {
