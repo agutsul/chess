@@ -27,7 +27,7 @@ final class PgnPlayerInputObserver
     private final PgnActionAdapter pieceActionAdapter;
     private final PgnActionAdapter promotionTypeAdapter;
 
-    PgnPlayerInputObserver(Player player, PgnGame game, List<String> actions) {
+    PgnPlayerInputObserver(Player player, PgnGame<?> game, List<String> actions) {
         super(LOGGER, player, game);
 
         this.actionIterator = new ActionIterator(actions);
@@ -52,7 +52,7 @@ final class PgnPlayerInputObserver
     }
 
     private String finalCommand() {
-        var pgnGame = (PgnGame) this.game;
+        var pgnGame = (PgnGame<?>) this.game;
 
         if (PgnTermination.TIME_FORFEIT.equals(pgnGame.getParsedTermination())) {
             throw new ActionTimeoutException(String.format(

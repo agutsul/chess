@@ -10,7 +10,7 @@ import com.agutsul.chess.game.pgn.PgnGame;
 
 final class PgnAntlrListener
         extends PGNBaseListener
-        implements AntlrGameListener<PgnGame> {
+        implements AntlrGameListener<PgnGame<?>> {
 
     private static final String EVENT_TAG = "Event";
     private static final String SITE_TAG  = "Site";
@@ -19,13 +19,13 @@ final class PgnAntlrListener
     private static final String BLACK_TAG = "Black";
     private static final String TERMINATION_TAG = "Termination";
 
-    private final List<PgnGame> games = new ArrayList<>();
+    private final List<PgnGame<?>> games = new ArrayList<>();
     private PgnGameBuilder gameBuilder;
 
     private int variationDepth;
 
     @Override
-    public List<PgnGame> getGames() {
+    public List<PgnGame<?>> getGames() {
         return this.games;
     }
 

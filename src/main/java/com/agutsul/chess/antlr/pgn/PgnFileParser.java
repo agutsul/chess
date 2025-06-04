@@ -16,11 +16,11 @@ import com.agutsul.chess.antlr.AntlrParser;
 import com.agutsul.chess.game.pgn.PgnGame;
 
 public final class PgnFileParser
-        implements AntlrParser<PgnGame,File> {
+        implements AntlrParser<PgnGame<?>,File> {
 
     private static final Logger LOGGER = getLogger(PgnFileParser.class);
 
-    private final AntlrParser<PgnGame,String> parser;
+    private final AntlrParser<PgnGame<?>,String> parser;
 
     public PgnFileParser() {
         this(new PgnGameParser());
@@ -31,8 +31,8 @@ public final class PgnFileParser
     }
 
     @Override
-    public List<PgnGame> parse(File file) {
-        var games = new ArrayList<PgnGame>();
+    public List<PgnGame<?>> parse(File file) {
+        var games = new ArrayList<PgnGame<?>>();
 
         var builder = new PgnStringBuilder();
         try (var iterator = lineIterator(file)) {

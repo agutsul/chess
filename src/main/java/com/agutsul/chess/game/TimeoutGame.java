@@ -10,8 +10,6 @@ import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.event.Event;
-import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.GameTimeoutException;
 import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
@@ -35,21 +33,6 @@ final class TimeoutGame
     }
 
     @Override
-    public void addObserver(Observer observer) {
-        this.game.addObserver(observer);
-    }
-
-    @Override
-    public void removeObserver(Observer observer) {
-        this.game.removeObserver(observer);
-    }
-
-    @Override
-    public void notifyObservers(Event event) {
-        this.game.notifyObservers(event);
-    }
-
-    @Override
     public void run() {
         try {
             if (this.timeout <= 0) {
@@ -58,10 +41,10 @@ final class TimeoutGame
 
             execute();
         } catch (GameTimeoutException e) {
-            this.game.notifyObservers(new GameTimeoutTerminationEvent(this.game));
+            notifyObservers(new GameTimeoutTerminationEvent(this.game));
 
             this.game.evaluateWinner(new GameTimeoutWinnerEvaluator());
-            this.game.notifyObservers(new GameOverEvent(this.game));
+            notifyObservers(new GameOverEvent(this.game));
 
             LOGGER.info("Game over ( game timeout ): {}", e.getMessage());
         } catch (Throwable throwable) {
@@ -71,8 +54,8 @@ final class TimeoutGame
                     getStackTrace(throwable)
             );
 
-            this.game.notifyObservers(new GameExceptionEvent(this.game, throwable));
-            this.game.notifyObservers(new GameOverEvent(this.game));
+            notifyObservers(new GameExceptionEvent(this.game, throwable));
+            notifyObservers(new GameOverEvent(this.game));
         }
     }
 

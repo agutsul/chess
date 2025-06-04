@@ -20,7 +20,7 @@ import com.agutsul.chess.antlr.grammar.PGNParser;
 import com.agutsul.chess.game.pgn.PgnGame;
 
 public final class PgnGameParser
-        extends AbstractAntlrGameParser<PgnGame,PGNParser,PgnAntlrListener> {
+        extends AbstractAntlrGameParser<PgnGame<?>,PGNParser,PgnAntlrListener> {
 
     private static final Logger LOGGER = getLogger(PgnGameParser.class);
 
@@ -29,7 +29,7 @@ public final class PgnGameParser
     }
 
     @Override
-    public List<PgnGame> parse(String string) {
+    public List<PgnGame<?>> parse(String string) {
         var gameStrings = new ArrayList<String>();
 
         var builder = new PgnStringBuilder();

@@ -18,7 +18,7 @@ import com.agutsul.chess.game.state.WhiteWinGameState;
 import com.agutsul.chess.player.UserPlayer;
 
 final class PgnGameBuilder
-        implements GameBuilder<PgnGame> {
+        implements GameBuilder<PgnGame<?>> {
 
     private final List<String> actions = new ArrayList<>();
     private final Map<String,String> tags = new HashMap<>();
@@ -32,7 +32,7 @@ final class PgnGameBuilder
     private String terminationType;
 
     @Override
-    public PgnGame build() {
+    public PgnGame<?> build() {
         var player1 = new UserPlayer(whitePlayer, Colors.WHITE);
         var player2 = new UserPlayer(blackPlayer, Colors.BLACK);
 
@@ -42,7 +42,7 @@ final class PgnGameBuilder
         context.setSite(site);
         context.setRound(round);
 
-        var game = new PgnGame(player1, player2, tags, actions, context);
+        var game = new PgnGame<>(player1, player2, tags, actions, context);
 
         game.setParsedGameState(resolveState(gameState));
         game.setParsedTermination(PgnTermination.codeOf(terminationType));
@@ -50,57 +50,57 @@ final class PgnGameBuilder
         return game;
     }
 
-    GameBuilder<PgnGame> withEvent(String event) {
+    GameBuilder<PgnGame<?>> withEvent(String event) {
         this.event = event;
         return this;
     }
 
-    GameBuilder<PgnGame> withSite(String site) {
+    GameBuilder<PgnGame<?>> withSite(String site) {
         this.site = site;
         return this;
     }
 
-    GameBuilder<PgnGame> withRound(String round) {
+    GameBuilder<PgnGame<?>> withRound(String round) {
         this.round = round;
         return this;
     }
 
-    GameBuilder<PgnGame> withWhitePlayer(String playerName) {
+    GameBuilder<PgnGame<?>> withWhitePlayer(String playerName) {
         this.whitePlayer = playerName;
         return this;
     }
 
-    GameBuilder<PgnGame> withBlackPlayer(String playerName) {
+    GameBuilder<PgnGame<?>> withBlackPlayer(String playerName) {
         this.blackPlayer = playerName;
         return this;
     }
 
-    GameBuilder<PgnGame> withGameState(String state) {
+    GameBuilder<PgnGame<?>> withGameState(String state) {
         this.gameState = state;
         return this;
     }
 
-    GameBuilder<PgnGame> withGameTermination(String terminationType) {
+    GameBuilder<PgnGame<?>> withGameTermination(String terminationType) {
         this.terminationType = terminationType;
         return this;
     }
 
-    GameBuilder<PgnGame> withActions(List<String> actions) {
+    GameBuilder<PgnGame<?>> withActions(List<String> actions) {
         this.actions.addAll(actions);
         return this;
     }
 
-    GameBuilder<PgnGame> addAction(String action) {
+    GameBuilder<PgnGame<?>> addAction(String action) {
         this.actions.add(action);
         return this;
     }
 
-    GameBuilder<PgnGame> withTags(Map<String,String> tags) {
+    GameBuilder<PgnGame<?>> withTags(Map<String,String> tags) {
         this.tags.putAll(tags);
         return this;
     }
 
-    GameBuilder<PgnGame> addTag(String name, String value) {
+    GameBuilder<PgnGame<?>> addTag(String name, String value) {
         this.tags.put(name, value);
         return this;
     }

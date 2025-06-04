@@ -13,27 +13,29 @@ import com.agutsul.chess.game.PlayableGameBuilder;
 import com.agutsul.chess.game.ai.SimulationActionInputObserver;
 import com.agutsul.chess.player.Player;
 
-public final class ConsoleGame extends AbstractGameProxy<Game> {
+public final class ConsoleGame<T extends Game & Observable>
+        extends AbstractGameProxy<T> {
 
     private static final long TEN_MINUTES = 10 * 60 * 1000; // milliseconds
 
     public ConsoleGame(Player whitePlayer, Player blackPlayer) {
-        super(createGame(whitePlayer, blackPlayer, new StandardBoard(),
-                System.in, TEN_MINUTES, null
+        super(createGame(whitePlayer, blackPlayer,
+                new StandardBoard(), System.in, TEN_MINUTES, null
         ));
     }
 
     public ConsoleGame(Player whitePlayer, Player blackPlayer, Long actionTimeout, Long gameTimeout) {
-        super(createGame(whitePlayer, blackPlayer, new StandardBoard(),
-                System.in, actionTimeout, gameTimeout
+        super(createGame(whitePlayer, blackPlayer,
+                new StandardBoard(), System.in, actionTimeout, gameTimeout
         ));
     }
 
-    private static Game createGame(Player whitePlayer, Player blackPlayer,
-                                   Board board, InputStream inputStream,
-                                   Long actionTimeout, Long gameTimeout) {
+    @SuppressWarnings("unchecked")
+    private static <T extends Game & Observable> T createGame(Player whitePlayer, Player blackPlayer,
+                                                              Board board, InputStream inputStream,
+                                                              Long actionTimeout, Long gameTimeout) {
 
-        Game game = new PlayableGameBuilder<>(whitePlayer, blackPlayer)
+        var game = new PlayableGameBuilder<>(whitePlayer, blackPlayer)
                 .withBoard(board)
                 .withContext(new GameContext(new ForkJoinPool(), actionTimeout, gameTimeout))
                 .build();
@@ -50,7 +52,7 @@ public final class ConsoleGame extends AbstractGameProxy<Game> {
         // uncomment to play against computer
         observableBoard.addObserver(new SimulationActionInputObserver(blackPlayer, game));
 
-        ((Observable) game).addObserver(new ConsoleGameOutputObserver(game));
-        return game;
+        game.addObserver(new ConsoleGameOutputObserver(game));
+        return (T) game;
     }
 }

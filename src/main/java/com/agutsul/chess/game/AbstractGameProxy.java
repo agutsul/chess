@@ -6,12 +6,15 @@ import java.util.Optional;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.event.Event;
+import com.agutsul.chess.event.Observable;
+import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.game.state.GameState;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.player.Player;
 
-public abstract class AbstractGameProxy<GAME extends Game>
-        implements Game {
+public abstract class AbstractGameProxy<GAME extends Game & Observable>
+        implements Game, Observable {
 
     protected final GAME game;
 
@@ -77,6 +80,21 @@ public abstract class AbstractGameProxy<GAME extends Game>
     @Override
     public Optional<Player> getWinner() {
         return this.game.getWinner();
+    }
+
+    @Override
+    public void addObserver(Observer observer) {
+        this.game.addObserver(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        this.game.removeObserver(observer);
+    }
+
+    @Override
+    public void notifyObservers(Event event) {
+        this.game.notifyObservers(event);
     }
 
     @Override

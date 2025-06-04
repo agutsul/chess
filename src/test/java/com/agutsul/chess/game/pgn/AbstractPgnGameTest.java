@@ -14,11 +14,11 @@ import com.agutsul.chess.game.state.GameState;
 abstract class AbstractPgnGameTest
         implements TestFileReader {
 
-    PgnGame parseGame(String pgn) throws URISyntaxException, IOException {
+    PgnGame<?> parseGame(String pgn) throws URISyntaxException, IOException {
         return parseGames(pgn, 1).getFirst();
     }
 
-    List<PgnGame> parseGames(String pgn, int expectedGames)
+    List<PgnGame<?>> parseGames(String pgn, int expectedGames)
             throws URISyntaxException, IOException {
 
         var parser = new PgnGameParser();
@@ -30,7 +30,7 @@ abstract class AbstractPgnGameTest
         return games;
     }
 
-    static void assertGame(PgnGame game, GameState.Type expectedGameState,
+    static void assertGame(PgnGame<?> game, GameState.Type expectedGameState,
                            int expectedActionsCount, int expectedTagsCount) {
 
         assertEquals(expectedActionsCount, game.getParsedActions().size());

@@ -47,7 +47,7 @@ public class PgnGameParserTest implements TestFileReader {
         assertGame(games.getFirst(), GameState.Type.BLACK_WIN, 26, 10);
     }
 
-    private static void assertGame(PgnGame game, GameState.Type expectedGameState,
+    private static void assertGame(PgnGame<?> game, GameState.Type expectedGameState,
                                    int expectedActionsCount, int expectedTagsCount) {
 
         assertEquals(expectedActionsCount, game.getParsedActions().size());
@@ -55,7 +55,7 @@ public class PgnGameParserTest implements TestFileReader {
         assertEquals(expectedTagsCount, game.getParsedTags().size());
     }
 
-    private List<PgnGame> parseGames(String fileName, int expectedGames)
+    private List<PgnGame<?>> parseGames(String fileName, int expectedGames)
             throws URISyntaxException, IOException {
 
         var parser = new PgnGameParser();
