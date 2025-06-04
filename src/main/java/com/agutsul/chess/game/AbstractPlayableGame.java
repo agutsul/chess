@@ -3,7 +3,6 @@ package com.agutsul.chess.game;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.DEFAULT;
-import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCause;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 
 import java.util.Iterator;
@@ -27,28 +26,20 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
-import com.agutsul.chess.exception.ActionTimeoutException;
 import com.agutsul.chess.game.event.BoardStateNotificationEvent;
-import com.agutsul.chess.game.event.GameExceptionEvent;
-import com.agutsul.chess.game.event.GameOverEvent;
-import com.agutsul.chess.game.event.GameStartedEvent;
-import com.agutsul.chess.game.event.GameTerminationEvent.Type;
 import com.agutsul.chess.game.observer.GameExceptionObserver;
 import com.agutsul.chess.game.observer.GameOverObserver;
 import com.agutsul.chess.game.observer.GameStartedObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
-import com.agutsul.chess.player.event.PlayerTerminateActionEvent;
 import com.agutsul.chess.player.observer.PlayerActionOberver;
 import com.agutsul.chess.player.state.ActivePlayerState;
 import com.agutsul.chess.player.state.LockedPlayerState;
 import com.agutsul.chess.player.state.PlayerState;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
-import com.agutsul.chess.rule.winner.ActionTimeoutWinnerEvaluator;
 import com.agutsul.chess.rule.winner.WinnerEvaluator;
-import com.agutsul.chess.rule.winner.WinnerEvaluatorImpl;
 
 public abstract class AbstractPlayableGame
         extends AbstractGame
@@ -168,45 +159,6 @@ public abstract class AbstractPlayableGame
     @Override
     public final Player next() {
         return switchPlayers();
-    }
-
-    @Override
-    public void run() {
-        notifyObservers(new GameStartedEvent(this));
-        logger.info("Game started ...");
-
-        try {
-            execute();
-
-            evaluateWinner(new WinnerEvaluatorImpl());
-            notifyObservers(new GameOverEvent(this));
-
-            logger.info("Game over");
-        } catch (ActionTimeoutException e) {
-            notifyObservers(new PlayerTerminateActionEvent(getCurrentPlayer(), Type.TIMEOUT));
-
-            evaluateWinner(new ActionTimeoutWinnerEvaluator());
-            notifyObservers(new GameOverEvent(this));
-
-            logger.info("Game over ( action timeout ): {}", e.getMessage());
-        } catch (Throwable throwable) {
-            var cause = getRootCause(throwable);
-            var stackTrace = getStackTrace(throwable);
-
-            if (cause instanceof InterruptedException) {
-                // ignore game timeout interruption preventing any player action
-                logger.warn("{}: Game timeout interruption, board state '{}': {}",
-                        getCurrentPlayer().getColor(), getBoard().getState(), stackTrace
-                );
-            } else {
-                logger.error("{}: Game exception, board state '{}': {}",
-                        getCurrentPlayer().getColor(), getBoard().getState(), stackTrace
-                );
-
-                notifyObservers(new GameExceptionEvent(this, throwable));
-                notifyObservers(new GameOverEvent(this));
-            }
-        }
     }
 
     @Override

@@ -55,4 +55,9 @@ public class GameMock
         addObserver(new ActionEventObserver());
         addObserver(new GameExceptionObserver());
     }
+
+    @Override
+    public void run() {
+        // mock execution
+    }
 }
