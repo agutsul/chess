@@ -41,7 +41,9 @@ import com.agutsul.chess.activity.action.event.ActionExecutionEvent;
 import com.agutsul.chess.activity.action.event.ActionPerformedEvent;
 import com.agutsul.chess.activity.action.event.ActionTerminatedEvent;
 import com.agutsul.chess.activity.action.event.ActionTerminationEvent;
+import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.AbstractBoard;
+import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.state.AgreedBoardState;
 import com.agutsul.chess.board.state.BoardState;
@@ -53,6 +55,9 @@ import com.agutsul.chess.event.Event;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.event.GameTerminationEvent;
+import com.agutsul.chess.game.observer.GameExceptionObserver;
+import com.agutsul.chess.game.observer.GameOverObserver;
+import com.agutsul.chess.game.observer.GameStartedObserver;
 import com.agutsul.chess.game.state.BlackWinGameState;
 import com.agutsul.chess.game.state.DefaultGameState;
 import com.agutsul.chess.game.state.DrawnGameState;
@@ -61,6 +66,7 @@ import com.agutsul.chess.game.state.WhiteWinGameState;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.mock.GameOutputObserverMock;
+import com.agutsul.chess.mock.PlayerActionOberverMock;
 import com.agutsul.chess.mock.PlayerInputObserverMock;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.UserPlayer;
@@ -588,9 +594,7 @@ public class GameTest {
         var journal = new JournalImpl();
         var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
-        var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
-                boardStateEvaluator, new GameContext()
-        );
+        var game = new GameExceptionMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
 
         var whitePlayerInputObserver =
                 new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4");
@@ -728,9 +732,7 @@ public class GameTest {
         var journal = new JournalImpl();
         var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
-        var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
-                boardStateEvaluator, new GameContext()
-        );
+        var game = new GameExceptionMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
 
         var whitePlayerInputObserver =
                 new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4");
@@ -808,6 +810,27 @@ public class GameTest {
             }
 
             return (T) invocation.callRealMethod();
+        }
+    }
+
+    private static class GameExceptionMock
+            extends GameImpl {
+
+        GameExceptionMock(Player whitePlayer, Player blackPlayer, Board board, Journal<ActionMemento<?, ?>> journal,
+                BoardStateEvaluator<BoardState> boardStateEvaluator) {
+
+            super(whitePlayer, blackPlayer, board, journal, boardStateEvaluator, new GameContext());
+        }
+
+        @Override
+        protected void initObservers() {
+            List.of(
+                    new GameStartedObserver(),
+                    new GameOverObserver(),
+                    new PlayerActionOberverMock(this),
+                    new ActionEventObserver(),
+                    new GameExceptionObserver()
+            ).forEach(observer -> addObserver(observer));
         }
     }
 }

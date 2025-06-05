@@ -21,7 +21,7 @@ import com.agutsul.chess.rule.board.BoardStateEvaluator;
 import com.agutsul.chess.rule.winner.ActionTimeoutWinnerEvaluator;
 import com.agutsul.chess.rule.winner.WinnerEvaluatorImpl;
 
-final class GameImpl extends AbstractPlayableGame {
+class GameImpl extends AbstractPlayableGame {
 
     private static final Logger LOGGER = getLogger(GameImpl.class);
 
