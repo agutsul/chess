@@ -12,9 +12,9 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.concurrent.LazyInitializer;
 
+import com.agutsul.chess.activity.action.AbstractCastlingAction;
+import com.agutsul.chess.activity.action.AbstractMoveAction;
 import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.action.PieceCastlingAction;
-import com.agutsul.chess.activity.action.PieceCastlingAction.CastlingMoveAction;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.board.Board;
@@ -114,7 +114,7 @@ public enum ActionMementoFactory {
 
             @Override
             public ActionMemento<?,?> apply(Action<?> action) {
-                var castlingAction = (PieceCastlingAction<?,?,?>) action;
+                var castlingAction = (AbstractCastlingAction<?,?,?,?,?>) action;
 
                 return new CastlingActionMemento(
                         castlingAction.getSide(),
@@ -125,7 +125,7 @@ public enum ActionMementoFactory {
             }
 
             @SuppressWarnings("unchecked")
-            private ActionMemento<String,String> createMemento(CastlingMoveAction<?,?> action) {
+            private ActionMemento<String,String> createMemento(AbstractMoveAction<?,?> action) {
                 return (ActionMemento<String,String>) super.apply(action);
             }
         },
