@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
+import com.agutsul.chess.exception.ActionTimeoutException;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.event.GameTerminationEvent.Type;
@@ -113,14 +114,9 @@ public abstract class AbstractPlayerInputObserver
     }
 
     protected void process(RequestPlayerActionEvent event) {
-        var command = getActionCommand();
-
-        logger.debug("Processing player '{}' command '{}'",
-                this.player.getName(),
-                String.valueOf(command)
-        );
-
         try {
+            var command = getActionCommand();
+
             var eventFactory = PlayerActionEventFactory.of(command);
             if (eventFactory != null) {
                 notifyGameEvent(eventFactory.create(this.player));
@@ -131,6 +127,9 @@ public abstract class AbstractPlayerInputObserver
                         String.format("%s: '%s'", UNABLE_TO_PROCESS_MESSAGE, command)
                 );
             }
+        } catch (ActionTimeoutException e) {
+            logger.error("Player action timeout", e);
+            throw e;
         } catch (Exception e) {
             logger.error("Processing player action failed", e);
             notifyExceptionEvent(e.getMessage());
