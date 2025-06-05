@@ -73,7 +73,7 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
         );
 
         if (!isNull(this.color)) {
-            game.setCurrentPlayer(game.getPlayer(color));
+            game.setCurrentPlayer(game.getPlayer(this.color));
             // re-evaluate board state
             board.setState(game.evaluateBoardState(game.getCurrentPlayer()));
         }
