@@ -24,11 +24,11 @@ public class PlayerInputObserverMock
         this(player, game, actionCommand, null);
     }
 
-    public PlayerInputObserverMock(Player player,
-                                   Game game,
-                                   String actionCommand,
-                                   String promotionType) {
+    public PlayerInputObserverMock(Player player, Game game,
+                                   String actionCommand, String promotionType) {
+
         super(LOGGER, player, game);
+
         this.actionCommand = actionCommand;
         this.promotionType = promotionType;
     }
