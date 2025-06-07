@@ -1,12 +1,14 @@
 package com.agutsul.chess.ai;
 
 import static java.time.LocalDateTime.now;
+import static java.util.Objects.isNull;
 import static java.util.function.Predicate.not;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ForkJoinPool;
 
 import org.slf4j.Logger;
@@ -16,6 +18,7 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.exception.GameInterruptionException;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.journal.Journal;
 
@@ -44,9 +47,9 @@ public final class ActionSelectionStrategy
 
     @Override
     public Optional<Action<?>> select(Color color) {
-        LOGGER.info("Select('{}') '{}' action", type, color);
+        LOGGER.info("Select('{}') '{}' action", this.type, color);
 
-        if (forkJoinPool == null) {
+        if (isNull(forkJoinPool)) {
             throw new IllegalStateException(String.format(
                     "Unable to select action for '%s': fork-join pool not set",
                     color
@@ -54,11 +57,11 @@ public final class ActionSelectionStrategy
         }
 
         if (!isAnyAction(color)) {
-            LOGGER.info("Select('{}') '{}' action: No action found", type, color);
+            LOGGER.info("Select('{}') '{}' action: No action found", this.type, color);
             return Optional.empty();
         }
 
-        var task = switch (type) {
+        var task = switch (this.type) {
             case ALPHA_BETA -> new AlphaBetaActionSelectionTask(board, journal, forkJoinPool, color);
             case MIN_MAX -> new MinMaxActionSelectionTask(board, journal, forkJoinPool, color);
         };
@@ -67,24 +70,23 @@ public final class ActionSelectionStrategy
         try {
             var result = forkJoinPool.invoke(task);
             return Optional.ofNullable(result.getAction());
-        } catch (Exception e) {
-            var message = String.format("Select('%s') '%s' action failure", type, color);
-            LOGGER.error(message, e);
+        } catch (CancellationException e) {
+            throw new GameInterruptionException(String.format(
+                    "Select('%s') '%s' action interrupted", this.type, color
+            ));
         } finally {
             var duration = Duration.between(startTimepoint, now());
             LOGGER.info("Select('{}') '{}' action duration: {}ms",
-                    type, color, duration.toMillis()
+                    this.type, color, duration.toMillis()
             );
         }
-
-        return Optional.empty();
     }
 
     @Override
     public Optional<Action<?>> select(Color color, BoardState.Type boardState) {
         LOGGER.info("Select('{}') '{}' action", color, boardState);
 
-        if (forkJoinPool == null) {
+        if (isNull(forkJoinPool)) {
             throw new IllegalStateException(String.format(
                     "Unable to select action for '%s' and board state '%s': fork-join pool not set",
                     color, boardState.name()
@@ -96,7 +98,7 @@ public final class ActionSelectionStrategy
             return Optional.empty();
         }
 
-        var task = switch (type) {
+        var task = switch (this.type) {
             case ALPHA_BETA -> new AlphaBetaActionSelectionTask(board, journal, forkJoinPool, color, boardState);
             case MIN_MAX -> new MinMaxActionSelectionTask(board, journal, forkJoinPool, color, boardState);
         };
@@ -109,9 +111,10 @@ public final class ActionSelectionStrategy
             if (resultMatcher.match(result)) {
                 return Optional.ofNullable(result.getAction());
             }
-        } catch (Exception e) {
-            var message = String.format("Select('%s') '%s' action failure", color, boardState);
-            LOGGER.error(message, e);
+        } catch (CancellationException e) {
+            throw new GameInterruptionException(String.format(
+                    "Select('%s') '%s' action interrupted", this.type, color
+            ));
         } finally {
             var duration = Duration.between(startTimepoint, now());
             LOGGER.info("Select('{}') '{}' action duration: {}ms",

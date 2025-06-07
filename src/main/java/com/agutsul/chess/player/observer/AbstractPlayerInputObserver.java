@@ -129,14 +129,17 @@ public abstract class AbstractPlayerInputObserver
             }
         } catch (ActionTimeoutException e) {
             var message = String.format("%s: Player '%s' action timeout",
-                    this.player.getColor(),
-                    this.player
+                    this.player.getColor(), this.player
             );
 
             logger.error(message, e);
             throw e;
-        } catch (Exception e) {
-            logger.error("Processing player action failed", e);
+        } catch (IllegalActionException e) {
+            var message = String.format("%s: Player '%s' action failed",
+                    this.player.getColor(), this.player
+            );
+
+            logger.error(message, e);
             notifyExceptionEvent(e.getMessage());
 
             // re-ask player action

@@ -2,7 +2,9 @@ package com.agutsul.chess.ai;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ForkJoinPool;
 
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.command.SimulateGameActionCommand;
+import com.agutsul.chess.exception.GameInterruptionException;
 import com.agutsul.chess.journal.Journal;
 
 //https://en.wikipedia.org/wiki/Minimax
@@ -94,12 +97,13 @@ final class MinMaxActionSelectionTask
             simulationResult.setValue(opponentResult.getValue());
 
             return simulationResult;
-        } catch (Exception e) {
-            var message = String.format("Simulation for '%s' action '%s' failed",
-                    this.color, action
+        } catch (CancellationException e) {
+            throw new GameInterruptionException("Simulation interrupted");
+        } catch (IOException e) {
+            logger.error(
+                    String.format("Simulation for '%s' action '%s' failed", this.color, action),
+                    e
             );
-
-            logger.error(message, e);
         }
 
         return createTaskResult(action, 0);

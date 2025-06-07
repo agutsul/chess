@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.exception.GameInterruptionException;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.Piece.Type;
 import com.agutsul.chess.position.Position;
@@ -64,7 +65,7 @@ public class PieceCacheImpl implements PieceCache {
             this.pieceMap.putAll(map);
 
         } catch (InterruptedException e) {
-            LOGGER.error("Refreshing board cache interrupted", e);
+            throw new GameInterruptionException("Refreshing board cache interrupted");
         } catch (ExecutionException e) {
             LOGGER.error("Refreshing board cache failed", e);
         }
@@ -122,18 +123,15 @@ public class PieceCacheImpl implements PieceCache {
     private static abstract class AbstractPieceTask
             implements Callable<PieceMap> {
 
-        private final Logger logger;
         private final Collection<Piece<?>> pieces;
         private final Predicate<Piece<?>> predicate;
 
         final KeyFactory keyFactory;
 
-        AbstractPieceTask(Logger logger,
-                          Collection<Piece<?>> pieces,
+        AbstractPieceTask(Collection<Piece<?>> pieces,
                           KeyFactory keyFactory,
                           Predicate<Piece<?>> predicate) {
 
-            this.logger = logger;
             this.pieces = pieces;
             this.keyFactory = keyFactory;
             this.predicate = predicate;
@@ -143,30 +141,22 @@ public class PieceCacheImpl implements PieceCache {
 
         @Override
         public PieceMap call() throws Exception {
-            try {
-                var filteredPieces = this.pieces.stream()
-                        .filter(piece -> predicate.test(piece))
-                        .toList();
+            var filteredPieces = this.pieces.stream()
+                    .filter(piece -> predicate.test(piece))
+                    .toList();
 
-                return createPieceMap(filteredPieces);
-            } catch (Exception e) {
-                logger.error("Piece cache processing failure", e);
-            }
-
-            return new PieceMultiMap();
+            return createPieceMap(filteredPieces);
         }
     }
 
     private static final class ActivePieceTask
             extends AbstractPieceTask {
 
-        private static final Logger LOGGER = getLogger(ActivePieceTask.class);
-
         ActivePieceTask(Collection<Piece<?>> pieces,
                         KeyFactory keyFactory,
                         Predicate<Piece<?>> predicate) {
 
-            super(LOGGER, pieces, keyFactory, predicate);
+            super(pieces, keyFactory, predicate);
         }
 
         @Override
@@ -208,13 +198,11 @@ public class PieceCacheImpl implements PieceCache {
     private static final class CapturedPieceTask
             extends AbstractPieceTask {
 
-        private static final Logger LOGGER = getLogger(CapturedPieceTask.class);
-
         CapturedPieceTask(Collection<Piece<?>> pieces,
                           KeyFactory keyFactory,
                           Predicate<Piece<?>> predicate) {
 
-            super(LOGGER, pieces, keyFactory, predicate);
+            super(pieces, keyFactory, predicate);
         }
 
         @Override

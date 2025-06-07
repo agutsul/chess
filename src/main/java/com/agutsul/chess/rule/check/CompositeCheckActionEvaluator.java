@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.exception.GameInterruptionException;
 import com.agutsul.chess.piece.KingPiece;
 
 final class CompositeCheckActionEvaluator
@@ -43,7 +44,7 @@ final class CompositeCheckActionEvaluator
 
             return results;
         } catch (InterruptedException e) {
-            LOGGER.error("Check action evaluation interrupted", e);
+            throw new GameInterruptionException("Check action evaluation interrupted");
         } catch (ExecutionException e) {
             LOGGER.error("Check action evaluation failed", e);
         }

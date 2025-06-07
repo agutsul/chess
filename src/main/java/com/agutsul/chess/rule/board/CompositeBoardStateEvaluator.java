@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.exception.GameInterruptionException;
 
 final class CompositeBoardStateEvaluator
         implements BoardStateEvaluator<List<BoardState>> {
@@ -61,7 +62,7 @@ final class CompositeBoardStateEvaluator
 
             return results;
         } catch (InterruptedException e) {
-            LOGGER.error("Board state evaluation interrupted", e);
+            throw new GameInterruptionException("Board state evaluation interrupted");
         } catch (ExecutionException e) {
             LOGGER.error("Board state evaluation failed", e);
         }

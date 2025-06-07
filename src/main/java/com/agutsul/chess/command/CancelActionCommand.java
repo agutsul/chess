@@ -16,6 +16,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.CommandException;
+import com.agutsul.chess.exception.GameInterruptionException;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
 
@@ -62,6 +63,8 @@ public final class CancelActionCommand
 
         try {
             this.action.execute();
+        } catch (GameInterruptionException e) {
+            throw e;
         } catch (Exception e) {
             throw new CommandException(e.getMessage());
         }

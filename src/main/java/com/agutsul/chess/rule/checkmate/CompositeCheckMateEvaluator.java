@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.exception.GameInterruptionException;
 import com.agutsul.chess.piece.KingPiece;
 
 public final class CompositeCheckMateEvaluator
@@ -41,7 +42,7 @@ public final class CompositeCheckMateEvaluator
                 results.add(future.get());
             }
         } catch (InterruptedException e) {
-            LOGGER.error("Checkmate evaluation interrupted", e);
+            throw new GameInterruptionException("Checkmate evaluation interrupted");
         } catch (ExecutionException e) {
             LOGGER.error("Checkmate evaluation failed", e);
         }

@@ -49,8 +49,7 @@ final class TimeoutGame
             LOGGER.info("Game over ( game timeout ): {}", e.getMessage());
         } catch (Throwable throwable) {
             LOGGER.error("{}: Game exception, board state '{}': {}",
-                    getCurrentPlayer().getColor(),
-                    getBoard().getState(),
+                    getCurrentPlayer().getColor(), getBoard().getState(),
                     getStackTrace(throwable)
             );
 

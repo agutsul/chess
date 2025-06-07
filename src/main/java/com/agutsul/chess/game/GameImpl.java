@@ -1,6 +1,5 @@
 package com.agutsul.chess.game;
 
-import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCause;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -10,6 +9,7 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.exception.ActionTimeoutException;
+import com.agutsul.chess.exception.GameInterruptionException;
 import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
@@ -52,23 +52,16 @@ class GameImpl extends AbstractPlayableGame {
             notifyObservers(new GameOverEvent(this));
 
             logger.info("Game over ( action timeout ): {}", e.getMessage());
+        } catch (GameInterruptionException e) {
+            logger.info("Game interrupted ( game timeout ): {}", e.getMessage());
         } catch (Throwable throwable) {
-            var cause = getRootCause(throwable);
-            var stackTrace = getStackTrace(throwable);
+            logger.error("{}: Game exception, board state '{}': {}",
+                    getCurrentPlayer().getColor(), getBoard().getState(),
+                    getStackTrace(throwable)
+            );
 
-            if (cause instanceof InterruptedException) {
-                // ignore game timeout interruption preventing any player action
-                logger.warn("{}: Game timeout interruption, board state '{}': {}",
-                        getCurrentPlayer().getColor(), getBoard().getState(), stackTrace
-                );
-            } else {
-                logger.error("{}: Game exception, board state '{}': {}",
-                        getCurrentPlayer().getColor(), getBoard().getState(), stackTrace
-                );
-
-                notifyObservers(new GameExceptionEvent(this, throwable));
-                notifyObservers(new GameOverEvent(this));
-            }
+            notifyObservers(new GameExceptionEvent(this, throwable));
+            notifyObservers(new GameOverEvent(this));
         }
     }
 }

@@ -27,6 +27,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
+import com.agutsul.chess.exception.GameInterruptionException;
 import com.agutsul.chess.journal.Journal;
 
 final class MovesBoardStateEvaluator
@@ -134,7 +135,7 @@ final class MovesBoardStateEvaluator
 
                 return max(results) == 0;
             } catch (InterruptedException e) {
-                LOGGER.error("Board state evaluation interrupted", e);
+                throw new GameInterruptionException("Board state evaluation interrupted");
             } catch (ExecutionException e) {
                 LOGGER.error("Board state evaluation failed", e);
             }
@@ -146,10 +147,15 @@ final class MovesBoardStateEvaluator
                 throws InterruptedException, ExecutionException {
 
             var results = new ArrayList<Integer>();
-
-            var executor = board.getExecutorService();
-            for (var future : executor.invokeAll(tasks)) {
-                results.add(future.get());
+            try {
+                var executor = board.getExecutorService();
+                for (var future : executor.invokeAll(tasks)) {
+                    results.add(future.get());
+                }
+            } catch (InterruptedException e) {
+                throw new GameInterruptionException("Piece moves evaluation interrupted");
+            } catch (ExecutionException e) {
+                LOGGER.error("Piece moves evaluation failed", e);
             }
 
             return results;

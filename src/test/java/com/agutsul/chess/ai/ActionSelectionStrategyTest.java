@@ -116,8 +116,12 @@ public class ActionSelectionStrategyTest {
                 board, journal, forkJoinPool, ALPHA_BETA
         );
 
-        var result = selectionStrategy.select(Colors.WHITE);
-        assertTrue(result.isEmpty());
+        var thrown = assertThrows(
+                RuntimeException.class,
+                () -> selectionStrategy.select(Colors.WHITE)
+        );
+
+        assertEquals("test", thrown.getMessage());
     }
 
     @Test
@@ -246,7 +250,11 @@ public class ActionSelectionStrategyTest {
                 board, journal, forkJoinPool, ALPHA_BETA
         );
 
-        var result = selectionStrategy.select(Colors.WHITE, BoardState.Type.CHECK_MATED);
-        assertTrue(result.isEmpty());
+        var thrown = assertThrows(
+                RuntimeException.class,
+                () -> selectionStrategy.select(Colors.WHITE, BoardState.Type.CHECK_MATED)
+        );
+
+        assertEquals("test", thrown.getMessage());
     }
 }

@@ -3,6 +3,7 @@ package com.agutsul.chess.game.ai;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -76,8 +77,12 @@ public class SimulationGameTest {
 
             var currentPlayer = game.getCurrentPlayer();
 
-            game.run();
+            var thrown = assertThrows(
+                    RuntimeException.class,
+                    () -> game.run()
+            );
 
+            assertEquals("test", thrown.getMessage());
             assertEquals(currentPlayer, game.getCurrentPlayer());
         }
     }
@@ -120,6 +125,7 @@ public class SimulationGameTest {
 
             assertEquals(Action.Type.BIG_MOVE, simulatedActionMemento.getActionType());
             assertEquals(Colors.WHITE, simulatedActionMemento.getColor());
+
             assertEquals("e2", String.valueOf(simulatedActionMemento.getSource()));
             assertEquals("e4", String.valueOf(simulatedActionMemento.getTarget()));
         }

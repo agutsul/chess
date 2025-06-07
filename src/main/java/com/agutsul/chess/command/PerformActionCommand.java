@@ -17,6 +17,7 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.CommandException;
+import com.agutsul.chess.exception.GameInterruptionException;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.exception.IllegalPositionException;
 import com.agutsul.chess.piece.Piece;
@@ -44,6 +45,7 @@ public final class PerformActionCommand
 
     public PerformActionCommand(Player player, Board board, Observable observable) {
         super(LOGGER);
+
         this.player = player;
         this.board = board;
         this.observable = observable;
@@ -112,6 +114,8 @@ public final class PerformActionCommand
         try {
             this.memento = createMemento(this.board, this.action);
             this.action.execute();
+        } catch (GameInterruptionException e) {
+            throw e;
         } catch (Exception e) {
             throw new CommandException(e.getMessage());
         }

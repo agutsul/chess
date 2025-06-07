@@ -15,6 +15,8 @@ import com.agutsul.chess.command.TerminateGameActionCommand;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
+import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.exception.IllegalPositionException;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionEvent;
@@ -59,10 +61,8 @@ public class PlayerActionOberver
             command.setTarget(event.getTarget());
 
             command.execute();
-        } catch (Exception e) {
-            var message = String.format("Player '%s' action exception", player.getName());
-
-            LOGGER.error(message, e);
+        } catch (IllegalActionException | IllegalPositionException e) {
+            LOGGER.error(String.format("Player '%s' action exception", player.getName()), e);
             notifyGameEvent(new PlayerActionExceptionEvent(e.getMessage()));
 
             requestPlayerAction(player);
@@ -81,12 +81,12 @@ public class PlayerActionOberver
             // cancel current player action
             var cancelActionCommand = new CancelActionCommand(this.game, playerColor);
             cancelActionCommand.execute();
-        } catch (Exception e) {
-            var message = String.format("Player '%s' cancel action exception", player.getName());
-            LOGGER.error(message, e);
 
+            requestPlayerAction(player);
+        } catch (IllegalActionException | IllegalPositionException e) {
+            LOGGER.error(String.format("Player '%s' cancel action exception", player.getName()), e);
             notifyGameEvent(new PlayerCancelActionExceptionEvent(e.getMessage()));
-        } finally {
+
             requestPlayerAction(player);
         }
     }
@@ -98,11 +98,11 @@ public class PlayerActionOberver
         try {
             var terminateGameCommand = new TerminateGameActionCommand(this.game, player, eventType);
             terminateGameCommand.execute();
-        } catch (Exception e) {
-            var message = String.format("Player '%s' termination(%s) exception",
-                    player.getName(), eventType
+        } catch (IllegalActionException e) {
+            LOGGER.error(
+                    String.format("Player '%s' termination(%s) exception", player.getName(), eventType),
+                    e
             );
-            LOGGER.error(message, e);
 
             notifyGameEvent(new PlayerTerminateActionExceptionEvent(
                     player, e.getMessage(), eventType
@@ -119,7 +119,7 @@ public class PlayerActionOberver
     }
 
     protected void requestPlayerAction(Player player) {
-        requestPlayerAction(game.getBoard(), player);
+        requestPlayerAction(this.game.getBoard(), player);
     }
 
     private static void requestPlayerAction(Board board, Player player) {

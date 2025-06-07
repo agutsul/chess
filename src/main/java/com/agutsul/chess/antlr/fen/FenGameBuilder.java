@@ -7,13 +7,10 @@ import static org.apache.commons.lang3.StringUtils.isAllUpperCase;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.apache.commons.lang3.math.NumberUtils.toInt;
-import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import org.slf4j.Logger;
 
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.board.Board;
@@ -37,8 +34,6 @@ import com.agutsul.chess.rule.action.AbstractCastlingActionRule.Castling;
 
 final class FenGameBuilder
         implements GameBuilder<FenGame<?>> {
-
-    private static final Logger LOGGER = getLogger(FenGameBuilder.class);
 
     private static final String DISABLE_ALL_SYMBOL = "-";
 
@@ -212,11 +207,12 @@ final class FenGameBuilder
         ((Observable) board).notifyObservers(new SetCastlingableSideEvent(color, side, enabled));
     }
 
-    private static void enableEnPassant(Game game,
-                                        Color color, String positionCode) {
+    private static void enableEnPassant(Game game, Color color, String positionCode) {
         var board = game.getBoard();
+
         // en-passant selected position
         var position = positionOf(positionCode);
+
         // find piece in the same column
         var pawnPiece = board.getPieces(color, Piece.Type.PAWN).stream()
                 .filter(pawn -> Objects.equals(pawn.getPosition().x(), position.x()))
@@ -235,15 +231,11 @@ final class FenGameBuilder
 
         // perform piece 'big move' action to fill journal properly
         // so, during en-passant calculation 'big move' can be resolved in journal
-        try {
-            var command = new PerformActionCommand(game.getPlayer(color), board, (Observable) game);
-            command.setSource(sourcePosition);
-            command.setTarget(targetPosition);
 
-            command.execute();
-        } catch (Exception e) {
-            LOGGER.error("Unable to execute action", e);
-            throw new IllegalStateException(e);
-        }
+        var command = new PerformActionCommand(game.getPlayer(color), board, (Observable) game);
+        command.setSource(sourcePosition);
+        command.setTarget(targetPosition);
+
+        command.execute();
     }
 }

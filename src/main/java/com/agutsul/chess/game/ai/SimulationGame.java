@@ -22,10 +22,13 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.PositionedBoardBuilder;
 import com.agutsul.chess.board.event.CopyVisitedPositionsEvent;
+import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.command.SimulateActionCommand;
 import com.agutsul.chess.event.Observable;
+import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.exception.IllegalPositionException;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.game.event.GameExceptionEvent;
@@ -86,10 +89,7 @@ public final class SimulationGame
 
     @Override
     public void run() {
-        LOGGER.info("Simulate '{}' action '{}'",
-                getCurrentPlayer().getColor(),
-                getAction()
-        );
+        LOGGER.info("Simulate '{}' action '{}'", getCurrentPlayer().getColor(), getAction());
 
         var command = new SimulateActionCommand(this, getAction());
         try {
@@ -98,17 +98,18 @@ public final class SimulationGame
             if (hasNext()) {
                 setCurrentPlayer(next());
             }
-        } catch (Throwable throwable) {
-            LOGGER.error("{}{}", lineSeparator(), String.valueOf(getBoard()));
+        } catch (IllegalActionException | IllegalStateException | IllegalPositionException e) {
+            var boardState = getBoard().getState();
+
+            LOGGER.error("{}{}", lineSeparator(), getBoard());
             LOGGER.error("{}: Game simulation exception('{}'), board state '{}', journal '{}': {}",
-                    getCurrentPlayer().getColor(),
-                    String.valueOf(getAction()),
-                    String.valueOf(getBoard().getState()),
-                    String.valueOf(getJournal()),
-                    getStackTrace(throwable)
+                    getCurrentPlayer().getColor(), getAction(), boardState, getJournal(),
+                    getStackTrace(e)
             );
 
-            notifyObservers(new GameExceptionEvent(this, throwable));
+            if (!BoardState.Type.TIMEOUT.equals(boardState.getType())) {
+                notifyObservers(new GameExceptionEvent(this, e));
+            }
         }
     }
 
@@ -121,20 +122,20 @@ public final class SimulationGame
         return new UserPlayer(String.format("%s-%s", color, randomUUID()), color);
     }
 
-    private static Board copyBoard(Board origin) {
+    private static Board copyBoard(Board originBoard) {
         var boardBuilder = new PositionedBoardBuilder();
         // copy board pieces
-        for (var piece : origin.getPieces()) {
-            boardBuilder.withPiece(piece.getType(), piece.getColor(), piece.getPosition());
-        }
+        originBoard.getPieces().forEach(piece ->
+            boardBuilder.withPiece(piece.getType(), piece.getColor(), piece.getPosition())
+        );
 
         var board = boardBuilder.build();
-        board.setState(origin.getState());
+        board.setState(originBoard.getState());
 
         // copy piece visited positions to properly resolve en-passant and castling actions
         var observableBoard = (Observable) board;
         PIECE_TYPES.stream()
-            .map(pieceType -> origin.getPieces(pieceType))
+            .map(pieceType -> originBoard.getPieces(pieceType))
             .flatMap(Collection::stream)
             .map(CopyVisitedPositionsEvent::new)
             .forEach(event -> observableBoard.notifyObservers(event));

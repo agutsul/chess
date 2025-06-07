@@ -11,6 +11,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
@@ -22,6 +23,7 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.exception.GameInterruptionException;
 import com.agutsul.chess.piece.BishopPiece;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.KnightPiece;
@@ -77,6 +79,8 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
     public final Board build() {
         try (var executor = new ForkJoinPool()) {
             return createBoard(executor);
+        } catch (CancellationException e) {
+            throw new GameInterruptionException("Board creation interrupted");
         }
     }
 
@@ -250,22 +254,17 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
 
     private Board createBoard(ForkJoinPool executor) {
         var board = new BoardImpl();
-        try {
-            var tasks = List.of(
-                    createPieceBuilderTask(board.getWhitePieceFactory(), whitePieceContext),
-                    createPieceBuilderTask(board.getBlackPieceFactory(), blackPieceContext)
-            );
+        var tasks = List.of(
+                createPieceBuilderTask(board.getWhitePieceFactory(), whitePieceContext),
+                createPieceBuilderTask(board.getBlackPieceFactory(), blackPieceContext)
+        );
 
-            var pieces = new ArrayList<Piece<?>>();
-            for (var task : tasks) {
-                pieces.addAll(executor.invoke(task));
-            }
-
-            board.setPieces(pieces);
-        } catch (Exception e) {
-            logger.error("Board builder failed", e);
+        var pieces = new ArrayList<Piece<?>>();
+        for (var task : tasks) {
+            pieces.addAll(executor.invoke(task));
         }
 
+        board.setPieces(pieces);
         return board;
     }
 
