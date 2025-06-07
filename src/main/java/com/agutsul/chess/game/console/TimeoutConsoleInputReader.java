@@ -90,7 +90,7 @@ final class TimeoutConsoleInputReader
             String line = null;
             try (var reader = new BufferedReader(new InputStreamReader(this.inputStream, UTF_8))) {
                 do {
-                    while (!reader.ready() && !Thread.interrupted()) {
+                    while (!reader.ready()) {
                         Thread.sleep(Duration.ofMillis(10));
                     }
 
