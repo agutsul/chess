@@ -72,7 +72,8 @@ public final class ActionSelectionStrategy
             return Optional.ofNullable(result.getAction());
         } catch (CancellationException e) {
             throw new GameInterruptionException(String.format(
-                    "Select('%s') '%s' action interrupted", this.type, color
+                    "Select('%s') '%s' action interrupted",
+                    this.type, color
             ));
         } finally {
             var duration = Duration.between(startTimepoint, now());
@@ -113,7 +114,8 @@ public final class ActionSelectionStrategy
             }
         } catch (CancellationException e) {
             throw new GameInterruptionException(String.format(
-                    "Select('%s') '%s' action interrupted", this.type, color
+                    "Select('%s') '%s' action interrupted",
+                    this.type, color
             ));
         } finally {
             var duration = Duration.between(startTimepoint, now());

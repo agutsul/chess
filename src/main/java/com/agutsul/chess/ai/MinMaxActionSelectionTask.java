@@ -98,7 +98,10 @@ final class MinMaxActionSelectionTask
 
             return simulationResult;
         } catch (CancellationException e) {
-            throw new GameInterruptionException("Simulation interrupted");
+            throw new GameInterruptionException(String.format(
+                    "Simulation for '%s' action '%s' interrupted",
+                    this.color, action
+            ));
         } catch (IOException e) {
             logger.error(
                     String.format("Simulation for '%s' action '%s' failed", this.color, action),

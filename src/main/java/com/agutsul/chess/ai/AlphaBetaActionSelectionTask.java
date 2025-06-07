@@ -115,7 +115,8 @@ final class AlphaBetaActionSelectionTask
             return simulationResult;
         } catch (CancellationException e) {
             throw new GameInterruptionException(String.format(
-                    "Simulation for '%s' action '%s' interrupted", this.color, action
+                    "Simulation for '%s' action '%s' interrupted",
+                    this.color, action
             ));
         } catch (IOException e) {
             logger.error(
