@@ -4,7 +4,6 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -34,19 +33,26 @@ final class TimeoutGame
 
     @Override
     public void run() {
+        var executor = newSingleThreadExecutor();
         try {
             if (this.timeout <= 0) {
-                throw new GameTimeoutException("Game timeout");
+                throw new GameTimeoutException("Game timeout: invalid timeout value");
             }
 
-            execute();
+            var future = executor.submit(this.game);
+            try {
+                future.get(this.timeout, TimeUnit.MILLISECONDS);
+            } catch (TimeoutException e) {
+                future.cancel(true);
+                throw new GameTimeoutException("Game timeout exceeded");
+            }
         } catch (GameTimeoutException e) {
-            notifyObservers(new GameTimeoutTerminationEvent(this.game));
-
-            this.game.evaluateWinner(new GameTimeoutWinnerEvaluator());
-            notifyObservers(new GameOverEvent(this.game));
-
             LOGGER.info("Game over ( game timeout ): {}", e.getMessage());
+
+            notifyObservers(new GameTimeoutTerminationEvent(this.game));
+            this.game.evaluateWinner(new GameTimeoutWinnerEvaluator());
+
+            notifyObservers(new GameOverEvent(this.game));
         } catch (Throwable throwable) {
             LOGGER.error("{}: Game exception, board state '{}': {}",
                     getCurrentPlayer().getColor(), getBoard().getState(),
@@ -55,19 +61,6 @@ final class TimeoutGame
 
             notifyObservers(new GameExceptionEvent(this.game, throwable));
             notifyObservers(new GameOverEvent(this.game));
-        }
-    }
-
-    private void execute() throws InterruptedException, ExecutionException {
-        var executor = newSingleThreadExecutor();
-        try {
-            var future = executor.submit(this.game);
-            try {
-                future.get(this.timeout, TimeUnit.MILLISECONDS);
-            } catch (TimeoutException e) {
-                future.cancel(true);
-                throw new GameTimeoutException("Game timeout");
-            }
         } finally {
             try {
                 executor.shutdown();

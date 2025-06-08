@@ -91,8 +91,8 @@ public final class SimulationGame
     public void run() {
         LOGGER.info("Simulate '{}' action '{}'", getCurrentPlayer().getColor(), getAction());
 
-        var command = new SimulateActionCommand(this, getAction());
         try {
+            var command = new SimulateActionCommand(this, getAction());
             command.execute();
 
             if (hasNext()) {

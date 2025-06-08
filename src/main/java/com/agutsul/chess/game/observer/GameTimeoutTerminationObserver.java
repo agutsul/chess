@@ -25,14 +25,11 @@ public final class GameTimeoutTerminationObserver
 
     private void process(GameTimeoutTerminationEvent event) {
         var game = event.getGame();
-        var eventType = event.getType();
-
         try {
-            var terminateGameCommand = new TerminateGameActionCommand(game, game.getCurrentPlayer(), eventType);
-            terminateGameCommand.execute();
+            var command = new TerminateGameActionCommand(game, game.getCurrentPlayer(), event.getType());
+            command.execute();
         } catch (Throwable throwable) {
-            LOGGER.error(String.format("Game termination(%s) exception", eventType), throwable);
-
+            LOGGER.error(String.format("Game termination(%s) exception", event.getType()), throwable);
             ((Observable) game).notifyObservers(new GameExceptionEvent(game, throwable));
         }
     }
