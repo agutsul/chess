@@ -78,7 +78,7 @@ import com.agutsul.chess.rule.board.BoardStateEvaluator;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 
 @ExtendWith(MockitoExtension.class)
-public class GameTest {
+public class GameImplTest {
 
     @Test
     void testGetStateReturningDefault() {
