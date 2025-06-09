@@ -48,17 +48,17 @@ public class TimeoutGameTest {
         var whitePlayer = new UserPlayer(UUID.randomUUID().toString(), Colors.WHITE);
         var blackPlayer = new UserPlayer(UUID.randomUUID().toString(), Colors.BLACK);
 
+        var timeout = 100L;
         var game = new TimeoutGame(
-                new LongRunningGameMock(whitePlayer, blackPlayer, new StandardBoard(), 100L),
-                50L
+                new LongRunningGameMock(whitePlayer, blackPlayer, new StandardBoard(), timeout),
+                timeout / 2
         );
 
         game.run();
 
-        assertTrue(game.getWinner().isPresent());
-
-        var winner = game.getWinner().get();
-        assertEquals(blackPlayer, winner);
+        var winner = game.getWinner();
+        assertTrue(winner.isPresent());
+        assertEquals(blackPlayer, winner.get());
     }
 
     @Test
