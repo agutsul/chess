@@ -22,7 +22,7 @@ abstract class AbtractCheckActionEvaluator
 
     @Override
     public final Collection<Action<?>> evaluate(KingPiece<?> piece) {
-        LOGGER.info("{}: Evaluate actions for '{}'", getClass().getName(), piece);
+        LOGGER.info("{}: Evaluate actions for '{}'", getClass().getSimpleName(), piece);
         return this.evaluator.evaluate(piece);
     }
 }
