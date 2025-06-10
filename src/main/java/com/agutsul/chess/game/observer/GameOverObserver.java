@@ -8,25 +8,18 @@ import java.io.IOException;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.event.Event;
+import com.agutsul.chess.event.AbstractEventObserver;
 import com.agutsul.chess.event.Observable;
-import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.game.AbstractGame;
 import com.agutsul.chess.game.event.GameOverEvent;
 
 public final class GameOverObserver
-        implements Observer {
+        extends AbstractEventObserver<GameOverEvent> {
 
     private static final Logger LOGGER = getLogger(GameOverObserver.class);
 
     @Override
-    public void observe(Event event) {
-        if (event instanceof GameOverEvent) {
-            process((GameOverEvent) event);
-        }
-    }
-
-    private void process(GameOverEvent event) {
+    protected void process(GameOverEvent event) {
         var game = event.getGame();
         try {
             ((Observable) game.getBoard()).notifyObservers(event);

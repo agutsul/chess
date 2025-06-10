@@ -24,9 +24,8 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.event.SetActionCounterEvent;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.event.Event;
+import com.agutsul.chess.event.AbstractEventObserver;
 import com.agutsul.chess.event.Observable;
-import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.GameInterruptionException;
 import com.agutsul.chess.journal.Journal;
 
@@ -79,16 +78,10 @@ final class MovesBoardStateEvaluator
     }
 
     private final class ActionCounterChangeObserver
-            implements Observer {
+            extends AbstractEventObserver<SetActionCounterEvent> {
 
         @Override
-        public void observe(Event event) {
-            if (event instanceof SetActionCounterEvent) {
-                process((SetActionCounterEvent) event);
-            }
-        }
-
-        private void process(SetActionCounterEvent event) {
+        protected void process(SetActionCounterEvent event) {
             setActionCountMatcher(new HalfMoveActionCountMatcher(event.getCounter()));
         }
     }

@@ -44,7 +44,15 @@ public class GameMock
                     Board board, Journal<ActionMemento<?,?>> journal,
                     BoardStateEvaluator<BoardState> boardStateEvaluator) {
 
-        super(LOGGER, whitePlayer, blackPlayer, board, journal, boardStateEvaluator, new GameContext());
+        this(whitePlayer, blackPlayer, board, journal, boardStateEvaluator, new GameContext());
+    }
+
+    public GameMock(Player whitePlayer, Player blackPlayer,
+                    Board board, Journal<ActionMemento<?,?>> journal,
+                    BoardStateEvaluator<BoardState> boardStateEvaluator,
+                    GameContext context) {
+
+        super(LOGGER, whitePlayer, blackPlayer, board, journal, boardStateEvaluator, context);
     }
 
     @Override

@@ -16,14 +16,13 @@ import java.io.IOException;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.event.Event;
-import com.agutsul.chess.event.Observer;
+import com.agutsul.chess.event.AbstractEventObserver;
 import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.game.pgn.PgnGameFormatter;
 import com.agutsul.chess.player.Player;
 
 public final class GameExceptionObserver
-        implements Observer {
+        extends AbstractEventObserver<GameExceptionEvent> {
 
     private static final Logger LOGGER = getLogger(GameExceptionObserver.class);
 
@@ -40,13 +39,7 @@ public final class GameExceptionObserver
     }
 
     @Override
-    public void observe(Event event) {
-        if (event instanceof GameExceptionEvent) {
-            process((GameExceptionEvent) event);
-        }
-    }
-
-    private void process(GameExceptionEvent event) {
+    protected void process(GameExceptionEvent event) {
         var game = event.getGame();
 
         var fileName = String.format("%s_%s_%d.pgn",
