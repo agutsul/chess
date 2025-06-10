@@ -34,7 +34,7 @@ import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.event.GameTerminationEvent.Type;
 import com.agutsul.chess.game.event.GameTimeoutTerminationEvent;
-import com.agutsul.chess.game.observer.AbstractGameObserver;
+import com.agutsul.chess.game.observer.AbstractGameOutputObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalFormatter.Mode;
 import com.agutsul.chess.piece.Piece;
@@ -46,7 +46,7 @@ import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 
 public final class ConsoleGameOutputObserver
-        extends AbstractGameObserver {
+        extends AbstractGameOutputObserver {
 
     private static final String ENTER_ACTION_MESSAGE = "Please, enter an action in the following format: '<source_position> <target_position>'.";
     private static final String ENTER_ACTION_EXAMPLE_MESSAGE = "For example: 'e2 e4'";

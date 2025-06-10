@@ -15,7 +15,7 @@ import com.agutsul.chess.game.event.BoardStateNotificationEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.event.GameTimeoutTerminationEvent;
-import com.agutsul.chess.game.observer.AbstractGameObserver;
+import com.agutsul.chess.game.observer.AbstractGameOutputObserver;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerTerminateActionExceptionEvent;
@@ -23,7 +23,7 @@ import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 
 public class GameOutputObserverMock
-        extends AbstractGameObserver {
+        extends AbstractGameOutputObserver {
 
     private final Map<Class<? extends Event>, BiConsumer<Game,Event>> consumers;
 

@@ -25,14 +25,14 @@ import com.agutsul.chess.player.event.PlayerTerminateActionExceptionEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 
-public abstract class AbstractGameObserver
+public abstract class AbstractGameOutputObserver
         implements Observer {
 
     private final Map<Class<? extends Event>,Consumer<Event>> processors;
 
     protected final Game game;
 
-    public AbstractGameObserver(Game game) {
+    public AbstractGameOutputObserver(Game game) {
         this.game = game;
         this.processors = createEventProcessors();
     }
