@@ -26,13 +26,19 @@ public final class GameTimeoutWinnerEvaluator
         var board = game.getBoard();
         var boardState = board.getState();
 
-        if (boardState.isType(TIMEOUT)) {
-            var opponentPlayer = game.getOpponentPlayer();
-            LOGGER.info("{} wins. Player '{}'", opponentPlayer.getColor(), opponentPlayer.getName());
-            return opponentPlayer;
+        LOGGER.info("Perform winner evaluation for player {} and board ({}:{})",
+                game.getCurrentPlayer(), boardState.getColor(), boardState.getType());
+
+        var winner = boardState.isType(TIMEOUT)
+                ? game.getOpponentPlayer()
+                : super.evaluate(game);
+
+        if (winner != null) {
+            LOGGER.info("Performed winner evaluation: winner - '{}'", winner);
+        } else {
+            LOGGER.info("No winner found for board state '{}': draw", board.getState());
         }
 
-        LOGGER.info("Perform player score comparison to resolve winner");
-        return super.evaluate(game);
+        return winner;
     }
 }

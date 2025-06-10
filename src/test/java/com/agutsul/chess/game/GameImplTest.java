@@ -232,7 +232,7 @@ public class GameImplTest {
 
         var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
         doCallRealMethod().when(whitePlayer).getColor();
-        doCallRealMethod().when(whitePlayer).getName();
+
         doNothing()
             .when(whitePlayer).play();
 

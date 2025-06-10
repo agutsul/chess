@@ -28,29 +28,37 @@ public final class WinnerEvaluatorImpl
     }
 
     @Override
-    // returns winner player
     public Player evaluate(Game game) {
         var board = game.getBoard();
         var boardState = board.getState();
 
+        LOGGER.info("Perform winner evaluation for player '{}' and board ({}:{})",
+                game.getCurrentPlayer(), boardState.getColor(), boardState.getType());
+
+        var winner = resolveWinner(game);
+        if (winner != null) {
+            LOGGER.info("Performed winner evaluation: winner - '{}'", winner);
+        } else {
+            LOGGER.info("No winner found for board state '{}': draw", board.getState());
+        }
+
+        return winner;
+    }
+
+    private Player resolveWinner(Game game) {
+        var boardState = game.getBoard().getState();
         if (boardState.isAnyType(AGREED_DEFEAT)) {
-            var opponentPlayer = game.getOpponentPlayer();
-            LOGGER.info("{} wins. Player '{}'", opponentPlayer.getColor(), opponentPlayer.getName());
-            return opponentPlayer;
+            return game.getOpponentPlayer();
         }
 
         if (boardState.isAnyType(CHECK_MATED, AGREED_WIN)) {
-            var currentPlayer = game.getCurrentPlayer();
-            LOGGER.info("{} wins. Player '{}'", currentPlayer.getColor(), currentPlayer.getName());
-            return currentPlayer;
+            return game.getCurrentPlayer();
         }
 
         if (boardState.isAnyType(AGREED_DRAW, FIVE_FOLD_REPETITION, SEVENTY_FIVE_MOVES, STALE_MATED)) {
-            LOGGER.info("No winner found for board state '{}': draw", board.getState());
             return null;
         }
 
-        LOGGER.info("Perform player score comparison to resolve winner");
         return super.evaluate(game);
     }
 }
