@@ -1,7 +1,5 @@
 package com.agutsul.chess.board.state;
 
-import static com.agutsul.chess.rule.check.CheckActionEvaluator.Type.KING;
-import static com.agutsul.chess.rule.check.CheckActionEvaluator.Type.PIECE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
@@ -15,7 +13,9 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.InsufficientMaterialBoardState.Pattern;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.rule.check.CheckActionEvaluatorImpl;
+import com.agutsul.chess.rule.check.CheckActionEvaluator;
+import com.agutsul.chess.rule.check.KingCheckActionEvaluator;
+import com.agutsul.chess.rule.check.PieceCheckActionEvaluator;
 
 public abstract class BoardStateFactory {
 
@@ -306,11 +306,10 @@ public abstract class BoardStateFactory {
             }
 
             var king = optionalKing.get();
-            var evaluator = new CheckActionEvaluatorImpl(
-                    Objects.equals(piece, king) ? KING : PIECE,
-                    board,
-                    actions
-            );
+
+            CheckActionEvaluator evaluator = Objects.equals(piece, king)
+                    ? new KingCheckActionEvaluator(board, actions)
+                    : new PieceCheckActionEvaluator(board, actions);
 
             return evaluator.evaluate(king);
         }
