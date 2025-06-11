@@ -11,6 +11,7 @@ import com.agutsul.chess.activity.action.ActionAdapter;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
+import com.agutsul.chess.player.PlayerCommand;
 
 public final class RandomActionInputObserver
         extends AbstractPlayerInputObserver
@@ -40,7 +41,7 @@ public final class RandomActionInputObserver
                 .toList();
 
         if (actions.isEmpty()) {
-            return DEFEAT_COMMAND;
+            return String.valueOf(PlayerCommand.DEFEAT);
         }
 
         if (actions.size() == 1) {

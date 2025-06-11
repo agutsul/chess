@@ -13,6 +13,7 @@ import com.agutsul.chess.ai.SelectionStrategy;
 import com.agutsul.chess.ai.SelectionStrategy.Type;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
+import com.agutsul.chess.player.PlayerCommand;
 import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
 
 public final class SimulationActionInputObserver
@@ -40,7 +41,7 @@ public final class SimulationActionInputObserver
     protected String getActionCommand() {
         var calculatedAction = this.actionStrategy.select(player.getColor());
         if (calculatedAction.isEmpty()) {
-            return DEFEAT_COMMAND;
+            return String.valueOf(PlayerCommand.DEFEAT);
         }
 
         var action = calculatedAction.get();

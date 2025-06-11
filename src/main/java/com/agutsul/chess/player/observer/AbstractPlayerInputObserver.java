@@ -33,6 +33,7 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.event.GameTerminationEvent.Type;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
+import com.agutsul.chess.player.PlayerCommand;
 import com.agutsul.chess.player.event.AbstractRequestEvent;
 import com.agutsul.chess.player.event.PlayerActionEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
@@ -44,12 +45,6 @@ import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 
 public abstract class AbstractPlayerInputObserver
         implements Observer {
-
-    protected static final String UNDO_COMMAND =   "undo";
-    protected static final String DRAW_COMMAND =   "draw";
-    protected static final String WIN_COMMAND  =   "win";
-    protected static final String DEFEAT_COMMAND = "defeat";
-    protected static final String EXIT_COMMAND =   "exit";
 
     private static final String UNKNOWN_PROMOTION_PIECE_TYPE_MESSAGE = "Unknown promotion piece type";
     private static final String UNABLE_TO_PROCESS_MESSAGE = "Unable to process";
@@ -174,11 +169,11 @@ public abstract class AbstractPlayerInputObserver
     }
 
     private enum PlayerActionEventFactory {
-        UNDO_MODE(UNDO_COMMAND,     player -> new PlayerCancelActionEvent(player)),
-        DRAW_MODE(DRAW_COMMAND,     player -> new PlayerTerminateActionEvent(player, Type.DRAW)),
-        WIN_MODE(WIN_COMMAND,       player -> new PlayerTerminateActionEvent(player, Type.WIN)),
-        DEFEAT_MODE(DEFEAT_COMMAND, player -> new PlayerTerminateActionEvent(player, Type.DEFEAT)),
-        EXIT_MODE(EXIT_COMMAND,     player -> new PlayerTerminateActionEvent(player, Type.EXIT));
+        UNDO_MODE(PlayerCommand.UNDO,     player -> new PlayerCancelActionEvent(player)),
+        DRAW_MODE(PlayerCommand.DRAW,     player -> new PlayerTerminateActionEvent(player, Type.DRAW)),
+        WIN_MODE(PlayerCommand.WIN,       player -> new PlayerTerminateActionEvent(player, Type.WIN)),
+        DEFEAT_MODE(PlayerCommand.DEFEAT, player -> new PlayerTerminateActionEvent(player, Type.DEFEAT)),
+        EXIT_MODE(PlayerCommand.EXIT,     player -> new PlayerTerminateActionEvent(player, Type.EXIT));
 
         private static final Map<String,PlayerActionEventFactory> MODES =
                 Stream.of(values()).collect(toMap(PlayerActionEventFactory::command, identity()));
@@ -186,8 +181,8 @@ public abstract class AbstractPlayerInputObserver
         private String command;
         private Function<Player,Event> function;
 
-        PlayerActionEventFactory(String command, Function<Player,Event> function) {
-            this.command = command;
+        PlayerActionEventFactory(PlayerCommand command, Function<Player,Event> function) {
+            this.command = command.code();
             this.function = function;
         }
 

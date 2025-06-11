@@ -10,11 +10,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
+import com.agutsul.chess.player.PlayerCommand;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
@@ -63,7 +65,7 @@ public class ConsolePlayerInputObserver
             throw new IllegalActionException(EMPTY_LINE_MESSAGE);
         }
 
-        if (WIN_COMMAND.equalsIgnoreCase(actionCommand)) {
+        if (StringUtils.equalsIgnoreCase(PlayerCommand.WIN.code(), actionCommand)) {
             throw new IllegalActionException(String.format("%s: '%s'",
                     UNSUPPORTED_COMMAND_MESSAGE, actionCommand
             ));

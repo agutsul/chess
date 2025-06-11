@@ -31,6 +31,7 @@ import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.player.Player;
+import com.agutsul.chess.player.PlayerCommand;
 
 @ExtendWith(MockitoExtension.class)
 public class RandomActionInputObserverTest {
@@ -173,7 +174,7 @@ public class RandomActionInputObserverTest {
             .thenReturn(Colors.WHITE);
 
         var command = inputObserver.getActionCommand();
-        assertEquals(AbstractPlayerInputObserver.DEFEAT_COMMAND, command);
+        assertEquals(PlayerCommand.DEFEAT.toString(), command);
     }
 
     @Test

@@ -15,6 +15,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.ActionTimeoutException;
 import com.agutsul.chess.player.Player;
+import com.agutsul.chess.player.PlayerCommand;
 import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
 
 final class PgnPlayerInputObserver
@@ -68,16 +69,16 @@ final class PgnPlayerInputObserver
         case BLACK_WIN:
             return finalCommand(this.player, Colors.BLACK);
         case DRAWN_GAME:
-            return DRAW_COMMAND;
+            return PlayerCommand.DRAW.code();
         default:
-            return EXIT_COMMAND;
+            return PlayerCommand.EXIT.code();
         }
     }
 
     private static String finalCommand(Player player, Color color) {
         return Objects.equals(player.getColor(), color)
-                ? WIN_COMMAND
-                : DEFEAT_COMMAND;
+                ? PlayerCommand.WIN.code()
+                : PlayerCommand.DEFEAT.code();
     }
 
     private static final class ActionIterator
