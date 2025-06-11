@@ -114,6 +114,4 @@ public class GameOutputObserverMock
             consumer.accept(this.game, event);
         }
     }
-
-
 }

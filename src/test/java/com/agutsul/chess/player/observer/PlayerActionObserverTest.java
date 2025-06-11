@@ -50,12 +50,12 @@ import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.position.Position;
 
 @ExtendWith(MockitoExtension.class)
-public class PlayerActionOberverTest {
+public class PlayerActionObserverTest {
 
     @Test
     void testNoProcessingEvent() {
         var game = mock(AbstractPlayableGame.class);
-        var observer = new PlayerActionOberver(game);
+        var observer = new PlayerActionObserver(game);
         observer.observe(mock(Event.class));
 
         verify(game, never()).notifyObservers(any());
@@ -92,7 +92,7 @@ public class PlayerActionOberverTest {
         when(game.getBoard())
             .thenReturn(board);
 
-        var observer = new PlayerActionOberver(game);
+        var observer = new PlayerActionObserver(game);
         observer.observe(new PlayerActionEvent(mock(Player.class), "a2", "a3"));
 
         verify(game, times(2)).notifyObservers(any());
@@ -108,7 +108,7 @@ public class PlayerActionOberverTest {
         when(game.getBoard())
             .thenReturn(board);
 
-        var observer = new PlayerActionOberver(game);
+        var observer = new PlayerActionObserver(game);
         observer.observe(new PlayerActionEvent(mock(Player.class), "a2", "a3"));
 
         verify(game, times(1)).notifyObservers(any(PlayerActionExceptionEvent.class));
@@ -134,7 +134,7 @@ public class PlayerActionOberverTest {
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
-        var observer = new PlayerActionOberver(game);
+        var observer = new PlayerActionObserver(game);
         observer.observe(new PlayerCancelActionEvent(player));
 
         verify(game, times(1)).notifyObservers(any(PlayerCancelActionExceptionEvent.class));
@@ -173,7 +173,7 @@ public class PlayerActionOberverTest {
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
-        var observer = new PlayerActionOberver(game);
+        var observer = new PlayerActionObserver(game);
         observer.observe(new PlayerCancelActionEvent(player));
 
         verify(game, atLeast(2)).notifyObservers(any());
@@ -197,7 +197,7 @@ public class PlayerActionOberverTest {
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
-        var observer = new PlayerActionOberver(game);
+        var observer = new PlayerActionObserver(game);
         observer.observe(new PlayerTerminateActionEvent(player, Type.DRAW));
 
         verify(game, times(1)).notifyObservers(any(ActionTerminationEvent.class));
@@ -218,7 +218,7 @@ public class PlayerActionOberverTest {
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
-        var observer = new PlayerActionOberver(game);
+        var observer = new PlayerActionObserver(game);
         observer.observe(new PlayerTerminateActionEvent(player, Type.DRAW));
 
         verify(game, times(1)).notifyObservers(any(PlayerTerminateActionExceptionEvent.class));

@@ -34,7 +34,7 @@ import com.agutsul.chess.game.observer.GameStartedObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
-import com.agutsul.chess.player.observer.PlayerActionOberver;
+import com.agutsul.chess.player.observer.PlayerActionObserver;
 import com.agutsul.chess.player.state.ActivePlayerState;
 import com.agutsul.chess.player.state.LockedPlayerState;
 import com.agutsul.chess.player.state.PlayerState;
@@ -218,7 +218,7 @@ public abstract class AbstractPlayableGame
                 new CloseableGameOverObserver(this.context),
                 new GameStartedObserver(),
                 new GameOverObserver(),
-                new PlayerActionOberver(this),
+                new PlayerActionObserver(this),
                 new PostActionEventObserver(),
                 new GameExceptionObserver()
         ));
