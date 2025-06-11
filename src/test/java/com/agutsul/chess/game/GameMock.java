@@ -3,12 +3,14 @@ package com.agutsul.chess.game;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.game.observer.CloseableGameOverObserver;
 import com.agutsul.chess.game.observer.GameExceptionObserver;
 import com.agutsul.chess.game.observer.GameOverObserver;
 import com.agutsul.chess.game.observer.GameStartedObserver;
@@ -57,11 +59,14 @@ public class GameMock
 
     @Override
     protected void initObservers() {
-        addObserver(new GameStartedObserver());
-        addObserver(new GameOverObserver());
-        addObserver(new PlayerActionOberverMock(this));
-        addObserver(new ActionEventObserver());
-        addObserver(new GameExceptionObserver());
+        Stream.of(
+                new CloseableGameOverObserver(getContext()),
+                new GameStartedObserver(),
+                new GameOverObserver(),
+                new PlayerActionOberverMock(this),
+                new PostActionEventObserver(),
+                new GameExceptionObserver()
+        ).forEach(observer -> addObserver(observer));
     }
 
     @Override

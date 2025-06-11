@@ -7,9 +7,7 @@ import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 
@@ -23,10 +21,13 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.event.AbstractEventObserver;
+import com.agutsul.chess.event.CompositeEventObserver;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.game.event.BoardStateNotificationEvent;
+import com.agutsul.chess.game.observer.CloseableGameOverObserver;
 import com.agutsul.chess.game.observer.GameExceptionObserver;
 import com.agutsul.chess.game.observer.GameOverObserver;
 import com.agutsul.chess.game.observer.GameStartedObserver;
@@ -214,10 +215,11 @@ public abstract class AbstractPlayableGame
 
     protected void initObservers() {
         this.observers.addAll(List.of(
+                new CloseableGameOverObserver(this.context),
                 new GameStartedObserver(),
                 new GameOverObserver(),
                 new PlayerActionOberver(this),
-                new ActionEventObserver(),
+                new PostActionEventObserver(),
                 new GameExceptionObserver()
         ));
     }
@@ -238,23 +240,43 @@ public abstract class AbstractPlayableGame
         return player;
     }
 
-    final class ActionEventObserver
-            implements Observer {
+    final class PostActionEventObserver implements Observer {
 
-        private final Map<Class<? extends Event>,Consumer<Event>> processors = Map.of(
-                ActionCancelledEvent.class, event -> process((ActionCancelledEvent) event),
-                ActionPerformedEvent.class, event -> process((ActionPerformedEvent) event)
-        );
+        private final Observer observer;
+
+        PostActionEventObserver() {
+            this.observer = new CompositeEventObserver(
+                    new PerformedActionObserver(),
+                    new CancelledActionObserver()
+            );
+        }
 
         @Override
         public void observe(Event event) {
-            var processor = this.processors.get(event.getClass());
-            if (processor != null) {
-                processor.accept(event);
-            }
+            this.observer.observe(event);
         }
+    }
 
-        private void process(ActionCancelledEvent event) {
+    final class PerformedActionObserver
+            extends AbstractEventObserver<ActionPerformedEvent> {
+
+        @Override
+        protected void process(ActionPerformedEvent event) {
+            var memento = event.getActionMemento();
+            clearPieceData(memento.getColor());
+
+            // add current action into journal to be used in board state evaluation
+            journal.add(memento);
+            // recalculate board state to update journal records
+            evaluateBoardState(getOpponentPlayer());
+        }
+    }
+
+    final class CancelledActionObserver
+            extends AbstractEventObserver<ActionCancelledEvent> {
+
+        @Override
+        protected void process(ActionCancelledEvent event) {
             clearPieceData(event.getColor());
             journal.removeLast();
 
@@ -264,16 +286,6 @@ public abstract class AbstractPlayableGame
 
             clearPieceData(currentColor);
             board.setState(boardStateEvaluator.evaluate(currentColor));
-        }
-
-        private void process(ActionPerformedEvent event) {
-            var memento = event.getActionMemento();
-            clearPieceData(memento.getColor());
-
-            // add current action into journal to be used in board state evaluation
-            journal.add(memento);
-            // recalculate board state to update journal records
-            evaluateBoardState(getOpponentPlayer());
         }
     }
 }

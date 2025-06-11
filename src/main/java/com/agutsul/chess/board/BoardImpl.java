@@ -35,9 +35,10 @@ import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.event.AbstractEventObserver;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
-import com.agutsul.chess.game.event.GameOverEvent;
+import com.agutsul.chess.game.observer.CloseableGameOverObserver;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.cache.PieceCache;
@@ -69,7 +70,8 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         this.executorService = newFixedThreadPool(10);
 
         this.observers = new CopyOnWriteArrayList<>();
-        this.observers.add(new BoardEventObserver());
+        this.observers.add(new RefreshBoardObserver());
+        this.observers.add(new CloseableGameOverObserver(this));
 
         this.states = new ArrayList<>();
         // first move always for white side, so initial state with white color
@@ -473,22 +475,12 @@ final class BoardImpl extends AbstractBoard implements Closeable {
             : null;
     }
 
-    private final class BoardEventObserver
-            implements Observer {
-
-        private static final Logger LOGGER = getLogger(BoardEventObserver.class);
+    private final class RefreshBoardObserver
+            extends AbstractEventObserver<ClearPieceDataEvent> {
 
         @Override
-        public void observe(Event event) {
-            if (event instanceof ClearPieceDataEvent) {
-                refresh();
-            } else if (event instanceof GameOverEvent) {
-                try {
-                    close();
-                } catch (IOException e) {
-                    LOGGER.error("Error closing board executor", e);
-                }
-            }
+        protected void process(ClearPieceDataEvent event) {
+            refresh();
         }
     }
 }

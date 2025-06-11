@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,6 +56,7 @@ import com.agutsul.chess.event.Event;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.event.GameTerminationEvent;
+import com.agutsul.chess.game.observer.CloseableGameOverObserver;
 import com.agutsul.chess.game.observer.GameExceptionObserver;
 import com.agutsul.chess.game.observer.GameOverObserver;
 import com.agutsul.chess.game.observer.GameStartedObserver;
@@ -824,11 +826,12 @@ public class GameImplTest {
 
         @Override
         protected void initObservers() {
-            List.of(
+            Stream.of(
+                    new CloseableGameOverObserver(getContext()),
                     new GameStartedObserver(),
                     new GameOverObserver(),
                     new PlayerActionOberverMock(this),
-                    new ActionEventObserver(),
+                    new PostActionEventObserver(),
                     new GameExceptionObserver()
             ).forEach(observer -> addObserver(observer));
         }

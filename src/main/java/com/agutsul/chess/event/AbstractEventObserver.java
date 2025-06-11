@@ -7,7 +7,7 @@ import java.util.Objects;
 public abstract class AbstractEventObserver<EVENT extends Event>
         implements Observer {
 
-    protected final Type eventType;
+    private final Type eventType;
 
     protected AbstractEventObserver() {
         this.eventType =
@@ -20,6 +20,10 @@ public abstract class AbstractEventObserver<EVENT extends Event>
         if (Objects.equals(this.eventType, event.getClass())) {
             process((EVENT) event);
         }
+    }
+
+    public Type getEventType() {
+        return this.eventType;
     }
 
     protected abstract void process(EVENT event);
