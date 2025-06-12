@@ -41,7 +41,7 @@ public final class SimulationActionInputObserver
     protected String getActionCommand() {
         var calculatedAction = this.actionStrategy.select(player.getColor());
         if (calculatedAction.isEmpty()) {
-            return String.valueOf(PlayerCommand.DEFEAT);
+            return PlayerCommand.DEFEAT.code();
         }
 
         var action = calculatedAction.get();
