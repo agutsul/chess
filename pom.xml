@@ -18,7 +18,7 @@
         <argLine>-Xms512m -Xmx512m -Xss512m</argLine>
 
         <commons-io.version>2.18.0</commons-io.version>
-        <commons-beanutils.version>1.9.4</commons-beanutils.version>
+        <commons-beanutils.version>1.11.0</commons-beanutils.version>
         <commons-conf.version>2.11.0</commons-conf.version>
         <commons-lang3.version>3.17.0</commons-lang3.version>
         <commons-collections4.version>4.5.0-M2</commons-collections4.version>
@@ -41,6 +41,7 @@
         <maven.jacoco.plugin.version>0.8.12</maven.jacoco.plugin.version>
         <maven.project.info.reports.plugin.version>3.7.0</maven.project.info.reports.plugin.version>
         <maven.jxr.plugin.version>3.5.0</maven.jxr.plugin.version>
+        <maven.dependency.check.plugin.version>12.1.3</maven.dependency.check.plugin.version>
     </properties>
 
     <dependencies>
@@ -285,6 +286,27 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>${maven.dependency.check.plugin.version}</version>
+                <configuration>
+                    <!--failBuildOnCVSS>7</failBuildOnCVSS-->
+                    <ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled>
+                    <retireJsAnalyzerEnabled>false</retireJsAnalyzerEnabled>
+                    <nuspecAnalyzerEnabled>false</nuspecAnalyzerEnabled>
+                    <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
+                    <msbuildAnalyzerEnabled>false</msbuildAnalyzerEnabled>
+                    <nodeAnalyzerEnabled>false</nodeAnalyzerEnabled>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -345,6 +367,18 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
                 <version>${maven.jxr.plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>${maven.dependency.check.plugin.version}</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>aggregate</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
         </plugins>
     </reporting>
