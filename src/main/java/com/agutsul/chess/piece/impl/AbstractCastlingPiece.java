@@ -85,7 +85,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     }
 
     @Override
-    Observer createObserver() {
+    final Observer createObserver() {
         return new CompositeEventObserver(
                 new ClearPieceActivitiesObserver(),
                 new CopyPieceVisitedPositionsObserver(),
