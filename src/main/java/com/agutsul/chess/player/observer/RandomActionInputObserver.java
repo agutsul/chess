@@ -41,7 +41,7 @@ public final class RandomActionInputObserver
                 .toList();
 
         if (actions.isEmpty()) {
-            return String.valueOf(PlayerCommand.DEFEAT);
+            return PlayerCommand.DEFEAT.code();
         }
 
         if (actions.size() == 1) {

@@ -32,7 +32,6 @@ public class PlayerActionObserver
     }
 
     protected void notifyGameEvent(Event event) {
-        // display error message to player
         ((Observable) this.game).notifyObservers(event);
         sleepQuietly(Duration.ofMillis(1));
     }
