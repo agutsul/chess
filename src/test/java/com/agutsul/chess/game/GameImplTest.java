@@ -313,7 +313,9 @@ public class GameImplTest {
         game.run();
 
         var winner = game.getWinner();
-        assertTrue(winner.isEmpty());
+        //assertTrue(winner.isEmpty());
+        assertTrue(winner.isPresent());
+        assertEquals(blackPlayer, winner.get());
     }
 
     @Test

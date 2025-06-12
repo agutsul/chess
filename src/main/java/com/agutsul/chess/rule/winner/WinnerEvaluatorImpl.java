@@ -4,6 +4,7 @@ import static com.agutsul.chess.board.state.BoardState.Type.AGREED_DEFEAT;
 import static com.agutsul.chess.board.state.BoardState.Type.AGREED_DRAW;
 import static com.agutsul.chess.board.state.BoardState.Type.AGREED_WIN;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
+import static com.agutsul.chess.board.state.BoardState.Type.EXITED;
 import static com.agutsul.chess.board.state.BoardState.Type.FIVE_FOLD_REPETITION;
 import static com.agutsul.chess.board.state.BoardState.Type.SEVENTY_FIVE_MOVES;
 import static com.agutsul.chess.board.state.BoardState.Type.STALE_MATED;
@@ -47,7 +48,7 @@ public final class WinnerEvaluatorImpl
 
     private Player resolveWinner(Game game) {
         var boardState = game.getBoard().getState();
-        if (boardState.isAnyType(AGREED_DEFEAT)) {
+        if (boardState.isAnyType(AGREED_DEFEAT, EXITED)) {
             return game.getOpponentPlayer();
         }
 
