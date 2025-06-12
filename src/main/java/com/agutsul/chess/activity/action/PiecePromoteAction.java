@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.Executable;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.event.AbstractEventObserver;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
@@ -23,6 +24,7 @@ public class PiecePromoteAction<COLOR1 extends Color,
     private static final Logger LOGGER = getLogger(PiecePromoteAction.class);
 
     private final Observable observable;
+    private final Observer observer;
 
     // player selected piece type
     private Piece.Type pieceType;
@@ -30,14 +32,18 @@ public class PiecePromoteAction<COLOR1 extends Color,
     public PiecePromoteAction(PieceMoveAction<COLOR1,PIECE1> action,
                               Observable observable) {
         super(action);
+
         this.observable = observable;
+        this.observer = new PromotionPieceObserver();
     }
 
     public <COLOR2 extends Color,PIECE2 extends Piece<COLOR2>>
             PiecePromoteAction(PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2> action,
                                Observable observable) {
         super(action);
+
         this.observable = observable;
+        this.observer = new PromotionPieceObserver();
     }
 
     @Override
@@ -51,9 +57,7 @@ public class PiecePromoteAction<COLOR1 extends Color,
 
     @Override
     public final void observe(Event event) {
-        if (event instanceof PromotionPieceTypeEvent) {
-            process((PromotionPieceTypeEvent) event);
-        }
+        this.observer.observe(event);
     }
 
     @Override
@@ -78,14 +82,9 @@ public class PiecePromoteAction<COLOR1 extends Color,
         this.pieceType = pieceType;
     }
 
-    // actual piece promotion entry point
-    private void process(PromotionPieceTypeEvent event) {
-        // store selected piece type for using in journal
-        setPieceType(event.getPieceType());
-
+    private void promote() {
         LOGGER.info("Executing promote by '{}' to '{}'",
-                getPiece(),
-                getPieceType()
+                getPiece(), getPieceType()
         );
 
         // source action can be either MOVE or CAPTURE
@@ -93,5 +92,15 @@ public class PiecePromoteAction<COLOR1 extends Color,
 
         // transform pawn into selected piece type
         getPiece().promote(getPosition(), getPieceType());
+    }
+
+    private final class PromotionPieceObserver
+            extends AbstractEventObserver<PromotionPieceTypeEvent> {
+
+        @Override
+        protected void process(PromotionPieceTypeEvent event) {
+            setPieceType(event.getPieceType());
+            promote();
+        }
     }
 }
