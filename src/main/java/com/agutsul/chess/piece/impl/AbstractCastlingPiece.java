@@ -24,7 +24,9 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.event.SetCastlingableSideEvent;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.event.Event;
+import com.agutsul.chess.event.AbstractEventObserver;
+import com.agutsul.chess.event.CompositeEventObserver;
+import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.state.ActivePieceState;
@@ -83,19 +85,12 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     }
 
     @Override
-    void process(Event event) {
-        // give a chance for parent processor to handle event
-        super.process(event);
-
-        if (event instanceof SetCastlingableSideEvent) {
-            process((SetCastlingableSideEvent) event);
-        }
-    }
-
-    private void process(SetCastlingableSideEvent event) {
-        if (Objects.equals(getColor(), event.getColor())) {
-            set(event.getSide(), event.isEnabled());
-        }
+    Observer createObserver() {
+        return new CompositeEventObserver(
+                new ClearPieceActivitiesObserver(),
+                new CopyPieceVisitedPositionsObserver(),
+                new SetCastlingableSideObserver()
+        );
     }
 
     private void set(Castlingable.Side side, Boolean enabled) {
@@ -127,6 +122,17 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
     private void cancelCastling(Position position) {
         super.cancelMove(position);
+    }
+
+    private final class SetCastlingableSideObserver
+            extends AbstractEventObserver<SetCastlingableSideEvent> {
+
+        @Override
+        protected void process(SetCastlingableSideEvent event) {
+            if (Objects.equals(getColor(), event.getColor())) {
+                set(event.getSide(), event.isEnabled());
+            }
+        }
     }
 
     static abstract class AbstractCastlingablePieceState<PIECE extends Piece<?> & Movable & Capturable & Castlingable>

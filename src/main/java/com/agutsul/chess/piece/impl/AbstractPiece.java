@@ -32,7 +32,8 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.board.event.CopyVisitedPositionsEvent;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.event.Event;
+import com.agutsul.chess.event.AbstractEventObserver;
+import com.agutsul.chess.event.CompositeEventObserver;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.IllegalPositionException;
 import com.agutsul.chess.piece.Piece;
@@ -84,7 +85,7 @@ abstract class AbstractPiece<COLOR extends Color>
                   ActivityCache<Action.Type,Action<?>> actionCache,
                   ActivityCache<Impact.Type,Impact<?>> impactCache) {
 
-        this.observer = new ActionEventObserver();
+        this.observer = createObserver();
 
         this.board = (AbstractBoard) board;
         this.board.addObserver(this.observer);
@@ -290,7 +291,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
         clear();
 
-        this.observer = new ActionEventObserver();
+        this.observer = createObserver();
         this.board.addObserver(this.observer);
 
         setState((PieceState<?>) this.activeState);
@@ -340,12 +341,12 @@ abstract class AbstractPiece<COLOR extends Color>
         return new DisposedPieceStateImpl<>(instant);
     }
 
-    void process(Event event) {
-        if (event instanceof ClearPieceDataEvent) {
-            process((ClearPieceDataEvent) event);
-        } else if (event instanceof CopyVisitedPositionsEvent) {
-            process((CopyVisitedPositionsEvent) event);
-        }
+    // override specific piece observer
+    Observer createObserver() {
+        return new CompositeEventObserver(
+                new ClearPieceActivitiesObserver(),
+                new CopyPieceVisitedPositionsObserver()
+        );
     }
 
     final void doMove(Position position) {
@@ -402,31 +403,32 @@ abstract class AbstractPiece<COLOR extends Color>
         this.positions.addAll(positions);
     }
 
-    private void process(CopyVisitedPositionsEvent event) {
-        var piece = event.getPiece();
-        if (Objects.equals(this, piece)) {
-            setPositions(piece.getPositions());
-        }
-    }
-
-    private void process(ClearPieceDataEvent event) {
-        if (Objects.equals(getColor(), event.getColor())) {
-            clear();
-        }
-    }
-
     private void clear() {
         LOGGER.info("Clear '{}' cached actions/impacts", this);
         this.actionCache.clear();
         this.impactCache.clear();
     }
 
-    private final class ActionEventObserver
-            implements Observer {
+    final class ClearPieceActivitiesObserver
+            extends AbstractEventObserver<ClearPieceDataEvent> {
 
         @Override
-        public void observe(Event event) {
-            process(event);
+        protected void process(ClearPieceDataEvent event) {
+            if (Objects.equals(getColor(), event.getColor())) {
+                clear();
+            }
+        }
+    }
+
+    final class CopyPieceVisitedPositionsObserver
+            extends AbstractEventObserver<CopyVisitedPositionsEvent> {
+
+        @Override
+        protected void process(CopyVisitedPositionsEvent event) {
+            var piece = event.getPiece();
+            if (Objects.equals(AbstractPiece.this, piece)) {
+                setPositions(piece.getPositions());
+            }
         }
     }
 }

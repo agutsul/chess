@@ -15,7 +15,9 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.event.ResetPawnMoveActionEvent;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.event.Event;
+import com.agutsul.chess.event.AbstractEventObserver;
+import com.agutsul.chess.event.CompositeEventObserver;
+import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
@@ -78,21 +80,25 @@ final class PawnPieceImpl<COLOR extends Color>
     }
 
     @Override
-    void process(Event event) {
-        // give a chance for parent processor to handle event
-        super.process(event);
-
-        if (event instanceof ResetPawnMoveActionEvent) {
-            process((ResetPawnMoveActionEvent) event);
-        }
+    Observer createObserver() {
+        return new CompositeEventObserver(
+                new ClearPieceActivitiesObserver(),
+                new CopyPieceVisitedPositionsObserver(),
+                new ResetPawnMoveActionObserver()
+        );
     }
 
-    private void process(ResetPawnMoveActionEvent event) {
-        if (Objects.equals(this, event.getPawnPiece())) {
-            // cancel move to position
-            cancelMove(getPosition());
-            // move piece back to source position
-            doMove(event.getPosition());
+    private final class ResetPawnMoveActionObserver
+            extends AbstractEventObserver<ResetPawnMoveActionEvent> {
+
+        @Override
+        protected void process(ResetPawnMoveActionEvent event) {
+            if (Objects.equals(PawnPieceImpl.this, event.getPawnPiece())) {
+                // cancel move to position
+                cancelMove(getPosition());
+                // move piece back to source position
+                doMove(event.getPosition());
+            }
         }
     }
 
