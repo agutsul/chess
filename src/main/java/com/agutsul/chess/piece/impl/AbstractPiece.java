@@ -4,7 +4,7 @@ import static com.agutsul.chess.piece.Piece.isKing;
 import static java.time.Instant.now;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
-import static org.apache.commons.collections.CollectionUtils.isEmpty;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Instant;

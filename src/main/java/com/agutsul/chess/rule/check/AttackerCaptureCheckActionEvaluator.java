@@ -7,12 +7,13 @@ import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
 
-import org.apache.commons.collections.map.MultiValueMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
+import com.agutsul.chess.piece.Piece;
 
 final class AttackerCaptureCheckActionEvaluator
         implements CheckActionEvaluator {
@@ -26,10 +27,9 @@ final class AttackerCaptureCheckActionEvaluator
         this.pieceActions = pieceActions;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Collection<Action<?>> evaluate(KingPiece<?> king) {
-        var actionTargets = new MultiValueMap();
+        var actionTargets = new ArrayListValuedHashMap<Piece<?>,Action<?>>();
         for (var action : this.pieceActions) {
             if (isCapture(action) || isEnPassant(action)) {
                 var captureAction = (AbstractCaptureAction<?,?,?,?>) action;
@@ -41,12 +41,11 @@ final class AttackerCaptureCheckActionEvaluator
         }
 
         var attackers = board.getAttackers(king);
-        var actions = (Collection<Action<?>>) attackers.stream()
-                .filter(attacker -> actionTargets.containsKey(attacker))
-                .map(attacker -> actionTargets.getCollection(attacker))
-                .flatMap(Collection::stream)
-                .map(action -> (Action<?>) action)
-                .collect(toSet());
+        var actions = attackers.stream()
+            .filter(attacker -> actionTargets.containsKey(attacker))
+            .map(attacker -> actionTargets.get(attacker))
+            .flatMap(Collection::stream)
+            .collect(toSet());
 
         return actions;
     }
