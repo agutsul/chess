@@ -103,7 +103,7 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
         when(game.getBoard())
             .thenReturn(STANDARD_BOARD);
 
-        observer.process(new GameStartedEvent(game));
+        observer.observe(new GameStartedEvent(game));
         assertStream("console_game_started_event.txt", outputStream);
     }
 
@@ -120,7 +120,7 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
         when(game.getFinishedAt())
             .thenReturn(LocalDateTime.of(2021, 04, 24, 14, 50, 48, 123456789));
 
-        observer.process(new GameOverEvent(game));
+        observer.observe(new GameOverEvent(game));
         assertStream("console_game_over_draw_event.txt", outputStream);
     }
 
@@ -137,7 +137,7 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
         when(game.getFinishedAt())
             .thenReturn(LocalDateTime.of(2021, 04, 24, 14, 50, 48, 123456789));
 
-        observer.process(new GameOverEvent(game));
+        observer.observe(new GameOverEvent(game));
         assertStream("console_game_over_win_event.txt", outputStream);
     }
 
@@ -148,19 +148,19 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
                 Colors.WHITE, Action.Type.MOVE, Piece.Type.PAWN, "e2", "e3"
         );
 
-        observer.process(new BoardStateNotificationEvent(boardState, actionMemento));
+        observer.observe(new BoardStateNotificationEvent(boardState, actionMemento));
         assertStream("console_board_state_notification_event.txt", outputStream);
     }
 
     @Test
     void testProcessRequestPlayerActionEvent() throws URISyntaxException, IOException {
-        observer.process(new RequestPlayerActionEvent(PLAYER));
+        observer.observe(new RequestPlayerActionEvent(PLAYER));
         assertStream("console_request_player_action_event.txt", outputStream);
     }
 
     @Test
     void testProcessRequestPromotionPieceTypeEvent() throws URISyntaxException, IOException {
-        observer.process(new RequestPromotionPieceTypeEvent(Colors.WHITE, mock(PiecePromoteAction.class)));
+        observer.observe(new RequestPromotionPieceTypeEvent(Colors.WHITE, mock(PiecePromoteAction.class)));
         assertStream("console_request_promotion_piece_type_event.txt", outputStream);
     }
 
@@ -186,7 +186,7 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
                 Colors.WHITE, Action.Type.MOVE, Piece.Type.PAWN, "e2", "e3"
         );
 
-        observer.process(new ActionPerformedEvent(PLAYER, actionMemento));
+        observer.observe(new ActionPerformedEvent(PLAYER, actionMemento));
         assertStream("console_action_performed_event.txt", outputStream);
     }
 
@@ -200,7 +200,7 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
                 positionOf("e3")
         );
 
-        observer.process(new ActionExecutionEvent(PLAYER, moveAction));
+        observer.observe(new ActionExecutionEvent(PLAYER, moveAction));
         assertStream("console_action_execution_event.txt", outputStream);
     }
 
@@ -209,7 +209,7 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
         when(game.getBoard())
             .thenReturn(STANDARD_BOARD);
 
-        observer.process(new ActionCancelledEvent(Colors.WHITE));
+        observer.observe(new ActionCancelledEvent(Colors.WHITE));
         assertStream("console_action_cancelled_event.txt", outputStream);
     }
 
@@ -225,27 +225,27 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
                 positionOf("e3")
         );
 
-        observer.process(new ActionCancellingEvent(Colors.WHITE, moveAction));
+        observer.observe(new ActionCancellingEvent(Colors.WHITE, moveAction));
         assertStream("console_action_cancelling_event.txt", outputStream);
     }
 
     @Test
     void testProcessPlayerActionExceptionEvent() throws URISyntaxException, IOException {
-        observer.process(new PlayerActionExceptionEvent("test player action error message"));
+        observer.observe(new PlayerActionExceptionEvent("test player action error message"));
         assertStream("console_player_action_exception_event.txt", errorStream);
     }
 
     @Test
     void testProcessPlayerCancelActionExceptionEvent() throws URISyntaxException, IOException {
         var message = "test player cancel action error message";
-        observer.process(new PlayerCancelActionExceptionEvent(message));
+        observer.observe(new PlayerCancelActionExceptionEvent(message));
         assertStream("console_player_cancel_action_exception_event.txt", errorStream);
     }
 
     @Test
     void testProcessPlayerTerminateActionExceptionEvent() throws URISyntaxException, IOException {
         var message = "test player terminate action error message";
-        observer.process(new PlayerTerminateActionExceptionEvent(PLAYER, message, Type.DRAW));
+        observer.observe(new PlayerTerminateActionExceptionEvent(PLAYER, message, Type.DRAW));
         assertStream("console_player_terminate_action_exception_event.txt", errorStream);
     }
 
@@ -254,14 +254,16 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
         when(game.getBoard())
             .thenReturn(STANDARD_BOARD);
 
-        observer.process(new ActionTerminatedEvent(PLAYER, Type.DRAW));
+        observer.observe(new ActionTerminatedEvent(PLAYER, Type.DRAW));
         assertStream("console_action_terminated_event.txt", outputStream);
     }
 
     @ParameterizedTest(name = "{index}. testProcessActionTerminationEvent({0})")
     @EnumSource(value = Type.class, names = { "DRAW", "EXIT", "TIMEOUT" })
-    void testProcessActionTerminationEvent(Type terminationType) throws URISyntaxException, IOException {
-        observer.process(new ActionTerminationEvent(PLAYER, terminationType));
+    void testProcessActionTerminationEvent(Type terminationType)
+            throws URISyntaxException, IOException {
+
+        observer.observe(new ActionTerminationEvent(PLAYER, terminationType));
 
         var fileName = String.format(
                 "console_action_termination_%s_event.txt",
@@ -271,7 +273,9 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
         assertStream(fileName, outputStream);
     }
 
-    private void assertStream(String file, OutputStream stream) throws URISyntaxException, IOException {
+    private void assertStream(String file, OutputStream stream)
+            throws URISyntaxException, IOException {
+
         var expected = readFileContent(file);
         var actual = stream.toString();
 

@@ -21,11 +21,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -52,7 +50,7 @@ import com.agutsul.chess.board.state.DefaultBoardState;
 import com.agutsul.chess.board.state.ExitedBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
-import com.agutsul.chess.event.Event;
+import com.agutsul.chess.event.AbstractEventObserver;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.event.GameTerminationEvent;
@@ -67,7 +65,6 @@ import com.agutsul.chess.game.state.GameState;
 import com.agutsul.chess.game.state.WhiteWinGameState;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
-import com.agutsul.chess.mock.GameOutputObserverMock;
 import com.agutsul.chess.mock.PlayerActionObserverMock;
 import com.agutsul.chess.mock.PlayerInputObserverMock;
 import com.agutsul.chess.player.Player;
@@ -350,29 +347,39 @@ public class GameImplTest {
         board.addObserver(new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4"));
         board.addObserver(new PlayerInputObserverInteratorMock(blackPlayer, game, "e7 e5"));
 
-        Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
-        assertionMap.put(GameStartedEvent.class, (gm, evt) -> {
-            assertEquals(gm, game);
-            assertTrue(evt instanceof GameStartedEvent);
-            assertEquals(gm, ((GameStartedEvent) evt).getGame());
-        });
-        assertionMap.put(GameOverEvent.class, (gm, evt) -> {
-            assertEquals(gm, game);
-            assertTrue(evt instanceof GameOverEvent);
-            assertEquals(gm, ((GameOverEvent) evt).getGame());
-        });
-        assertionMap.put(ActionPerformedEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof ActionPerformedEvent);
-            assertNotNull(((ActionPerformedEvent) evt).getActionMemento());
-        });
-        assertionMap.put(ActionExecutionEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof ActionExecutionEvent);
+        game.addObserver(new AbstractEventObserver<GameStartedEvent>() {
 
-            var action = ((ActionExecutionEvent) evt).getAction();
-            assertTrue(action instanceof PieceMoveAction);
+            @Override
+            protected void process(GameStartedEvent event) {
+                assertEquals(game, event.getGame());
+            }
         });
 
-        game.addObserver(new GameOutputObserverMock(game, assertionMap));
+        game.addObserver(new AbstractEventObserver<GameOverEvent>() {
+
+            @Override
+            protected void process(GameOverEvent event) {
+                assertEquals(game, event.getGame());
+            }
+        });
+
+        game.addObserver(new AbstractEventObserver<ActionPerformedEvent>() {
+
+            @Override
+            protected void process(ActionPerformedEvent event) {
+                assertNotNull(event.getActionMemento());
+            }
+        });
+
+        game.addObserver(new AbstractEventObserver<ActionExecutionEvent>() {
+
+            @Override
+            protected void process(ActionExecutionEvent event) {
+                var action = event.getAction();
+                assertTrue(action instanceof PieceMoveAction);
+            }
+        });
+
         game.run();
 
         assertEquals(2, game.getJournal().size());
@@ -397,7 +404,8 @@ public class GameImplTest {
         var journal = new JournalImpl();
         var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
-        var game = new GameImpl(whitePlayer, blackPlayer, board, journal, boardStateEvaluator, new GameContext());
+        var game = new GameImpl(whitePlayer, blackPlayer,
+                board, journal, boardStateEvaluator, new GameContext());
 
         var whitePlayerInputObserver = new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4", "undo", "d2 d4");
         var blackPlayerInputObserver = new PlayerInputObserverInteratorMock(blackPlayer, game, "e7 e5", "d7 d5");
@@ -418,20 +426,27 @@ public class GameImplTest {
                 return defaultBoardState(board, color);
             });
 
-        Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
-        assertionMap.put(ActionCancellingEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof ActionCancellingEvent);
+        game.addObserver(new AbstractEventObserver<ActionCancellingEvent>() {
 
-            var action = ((ActionCancellingEvent) evt).getAction();
-            assertTrue(action instanceof CancelMoveAction);
-        });
-        assertionMap.put(ActionCancelledEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof ActionCancelledEvent);
+            @Override
+            protected void process(ActionCancellingEvent event) {
+                var action = event.getAction();
+                assertTrue(action instanceof CancelMoveAction);
+            }
         });
 
-        game.addObserver(new GameOutputObserverMock(game, assertionMap));
+        var cancelledColors = new HashSet<Color>();
+        game.addObserver(new AbstractEventObserver<ActionCancelledEvent>() {
+
+            @Override
+            protected void process(ActionCancelledEvent event) {
+                cancelledColors.add(event.getColor());
+            }
+        });
+
         game.run();
 
+        assertEquals(2, cancelledColors.size());
         assertEquals(2, game.getJournal().size());
         assertTrue(game.getWinner().isEmpty());
 
@@ -476,21 +491,22 @@ public class GameImplTest {
                 return defaultBoardState(board, color);
             });
 
-        Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
-        assertionMap.put(PlayerCancelActionExceptionEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof PlayerCancelActionExceptionEvent);
+        game.addObserver(new AbstractEventObserver<PlayerCancelActionExceptionEvent>() {
 
-            var message = ((PlayerCancelActionExceptionEvent) evt).getMessage();
-            assertEquals("No action to cancel", message);
-        });
-        assertionMap.put(PlayerActionExceptionEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof PlayerActionExceptionEvent);
-
-            var message = ((PlayerActionExceptionEvent) evt).getMessage();
-            assertEquals("Invalid action format: 'e7 '", message);
+            @Override
+            protected void process(PlayerCancelActionExceptionEvent event) {
+                assertEquals("No action to cancel", event.getMessage());
+            }
         });
 
-        game.addObserver(new GameOutputObserverMock(game, assertionMap));
+        game.addObserver(new AbstractEventObserver<PlayerActionExceptionEvent>() {
+
+            @Override
+            protected void process(PlayerActionExceptionEvent event) {
+                assertEquals("Invalid action format: 'e7 '", event.getMessage());
+            }
+        });
+
         game.run();
 
         assertEquals(2, game.getJournal().size());
@@ -520,8 +536,8 @@ public class GameImplTest {
         var journal = new JournalImpl();
         var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
-        var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
-                boardStateEvaluator, new GameContext()
+        var game = new GameImpl(whitePlayer, blackPlayer,
+                board, journal, boardStateEvaluator, new GameContext()
         );
 
         var whitePlayerInputObserver =
@@ -543,24 +559,33 @@ public class GameImplTest {
                 return defaultBoardState(board, color);
             });
 
-        Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
-        assertionMap.put(ActionTerminationEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof ActionTerminationEvent);
-            assertEquals(blackPlayer, ((ActionTerminationEvent) evt).getPlayer());
-            assertEquals(GameTerminationEvent.Type.DRAW, ((ActionTerminationEvent) evt).getType());
-        });
-        assertionMap.put(ActionTerminatedEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof ActionTerminatedEvent);
-            assertEquals(blackPlayer, ((ActionTerminatedEvent) evt).getPlayer());
-            assertEquals(GameTerminationEvent.Type.DRAW, ((ActionTerminatedEvent) evt).getType());
-        });
-        assertionMap.put(PlayerTerminateActionEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof PlayerTerminateActionEvent);
-            assertEquals(blackPlayer, ((PlayerTerminateActionEvent) evt).getPlayer());
-            assertEquals(GameTerminationEvent.Type.DRAW, ((PlayerTerminateActionEvent) evt).getType());
+        game.addObserver(new AbstractEventObserver<ActionTerminationEvent>() {
+
+            @Override
+            protected void process(ActionTerminationEvent event) {
+                assertEquals(blackPlayer, event.getPlayer());
+                assertEquals(GameTerminationEvent.Type.DRAW, event.getType());
+            }
         });
 
-        game.addObserver(new GameOutputObserverMock(game, assertionMap));
+        game.addObserver(new AbstractEventObserver<ActionTerminatedEvent>() {
+
+            @Override
+            protected void process(ActionTerminatedEvent event) {
+                assertEquals(blackPlayer, event.getPlayer());
+                assertEquals(GameTerminationEvent.Type.DRAW, event.getType());
+            }
+        });
+
+        game.addObserver(new AbstractEventObserver<PlayerTerminateActionEvent>() {
+
+            @Override
+            protected void process(PlayerTerminateActionEvent event) {
+                assertEquals(blackPlayer, event.getPlayer());
+                assertEquals(GameTerminationEvent.Type.DRAW, event.getType());
+            }
+        });
+
         game.run();
 
         assertEquals(1, game.getJournal().size());
@@ -619,13 +644,14 @@ public class GameImplTest {
                 return defaultBoardState(board, color);
             });
 
-        Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
-        assertionMap.put(PlayerTerminateActionExceptionEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof PlayerTerminateActionExceptionEvent);
-            assertEquals("test", ((PlayerTerminateActionExceptionEvent) evt).getMessage());
+        game.addObserver(new AbstractEventObserver<PlayerTerminateActionExceptionEvent>() {
+
+            @Override
+            protected void process(PlayerTerminateActionExceptionEvent event) {
+                assertEquals("test", event.getMessage());
+            }
         });
 
-        game.addObserver(new GameOutputObserverMock(game, assertionMap));
         game.run();
 
         assertEquals(1, journal.size());
@@ -680,24 +706,33 @@ public class GameImplTest {
                 return defaultBoardState(board, color);
             });
 
-        Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
-        assertionMap.put(ActionTerminationEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof ActionTerminationEvent);
-            assertEquals(blackPlayer, ((ActionTerminationEvent) evt).getPlayer());
-            assertEquals(GameTerminationEvent.Type.EXIT, ((ActionTerminationEvent) evt).getType());
-        });
-        assertionMap.put(ActionTerminatedEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof ActionTerminatedEvent);
-            assertEquals(blackPlayer, ((ActionTerminatedEvent) evt).getPlayer());
-            assertEquals(GameTerminationEvent.Type.EXIT, ((ActionTerminatedEvent) evt).getType());
-        });
-        assertionMap.put(PlayerTerminateActionEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof PlayerTerminateActionEvent);
-            assertEquals(blackPlayer, ((PlayerTerminateActionEvent) evt).getPlayer());
-            assertEquals(GameTerminationEvent.Type.EXIT, ((PlayerTerminateActionEvent) evt).getType());
+        game.addObserver(new AbstractEventObserver<ActionTerminationEvent>() {
+
+            @Override
+            protected void process(ActionTerminationEvent event) {
+                assertEquals(blackPlayer, event.getPlayer());
+                assertEquals(GameTerminationEvent.Type.EXIT, event.getType());
+            }
         });
 
-        game.addObserver(new GameOutputObserverMock(game, assertionMap));
+        game.addObserver(new AbstractEventObserver<ActionTerminatedEvent>() {
+
+            @Override
+            protected void process(ActionTerminatedEvent event) {
+                assertEquals(blackPlayer, event.getPlayer());
+                assertEquals(GameTerminationEvent.Type.EXIT, event.getType());
+            }
+        });
+
+        game.addObserver(new AbstractEventObserver<PlayerTerminateActionEvent>() {
+
+            @Override
+            protected void process(PlayerTerminateActionEvent event) {
+                assertEquals(blackPlayer, event.getPlayer());
+                assertEquals(GameTerminationEvent.Type.EXIT, event.getType());
+            }
+        });
+
         game.run();
 
         assertEquals(1, game.getJournal().size());
@@ -757,13 +792,14 @@ public class GameImplTest {
                 return defaultBoardState(board, color);
             });
 
-        Map<Class<? extends Event>, BiConsumer<Game,Event>> assertionMap = new HashMap<>();
-        assertionMap.put(PlayerTerminateActionExceptionEvent.class, (gm, evt) -> {
-            assertTrue(evt instanceof PlayerTerminateActionExceptionEvent);
-            assertEquals("test", ((PlayerTerminateActionExceptionEvent) evt).getMessage());
+        game.addObserver(new AbstractEventObserver<PlayerTerminateActionExceptionEvent>() {
+
+            @Override
+            protected void process(PlayerTerminateActionExceptionEvent event) {
+                assertEquals("test", event.getMessage());
+            }
         });
 
-        game.addObserver(new GameOutputObserverMock(game, assertionMap));
         game.run();
 
         assertEquals(1, journal.size());

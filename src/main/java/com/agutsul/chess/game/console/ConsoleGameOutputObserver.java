@@ -28,13 +28,15 @@ import com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormat
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.event.AbstractEventObserver;
+import com.agutsul.chess.event.AbstractObserverProxy;
+import com.agutsul.chess.event.CompositeEventObserver;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.event.BoardStateNotificationEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.event.GameTerminationEvent.Type;
 import com.agutsul.chess.game.event.GameTimeoutTerminationEvent;
-import com.agutsul.chess.game.observer.AbstractGameOutputObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalFormatter.Mode;
 import com.agutsul.chess.piece.Piece;
@@ -46,14 +48,7 @@ import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 
 public final class ConsoleGameOutputObserver
-        extends AbstractGameOutputObserver {
-
-    private static final String ENTER_ACTION_MESSAGE = "Please, enter an action in the following format: '<source_position> <target_position>'.";
-    private static final String ENTER_ACTION_EXAMPLE_MESSAGE = "For example: 'e2 e4'";
-
-    private static final String PROMOTION_PIECE_TYPE_MESSAGE = "Choose promotion piece type:";
-    private static final String PROMPT_PROMOTION_PIECE_TYPE_MESSAGE =
-            createPromptPromotionPieceTypeMessage(List.of(KNIGHT, BISHOP, ROOK, QUEEN));
+        extends AbstractObserverProxy {
 
     private static final String DRAW_MESSAGE = "Draw";
     private static final String ACTION_MESSAGE = "Action";
@@ -62,125 +57,253 @@ public final class ConsoleGameOutputObserver
     private static final String BOARD_STATE_MESSAGE = "Board state";
 
     public ConsoleGameOutputObserver(Game game) {
-        super(game);
-    }
-
-    @Override
-    protected void process(GameStartedEvent event) {
-        System.out.println(ENTER_ACTION_MESSAGE);
-        System.out.println(ENTER_ACTION_EXAMPLE_MESSAGE);
-
-        displayBoard(event.getGame().getBoard());
-    }
-
-    @Override
-    protected void process(GameOverEvent event) {
-        var game = event.getGame();
-
-        var board = game.getBoard();
-        displayBoardState(board.getState());
-
-        var line = "-".repeat(50);
-        System.out.println(line);
-        displayJournal(game.getJournal());
-
-        System.out.println(line);
-        displayWinner(game.getWinner());
-
-        var finishedAt = defaultIfNull(game.getFinishedAt(), now());
-        displayDuration(Duration.between(game.getStartedAt(), finishedAt));
-    }
-
-    @Override
-    protected void process(GameTimeoutTerminationEvent event) {
-        var game = event.getGame();
-
-        var line = "-".repeat(50);
-        System.out.println(line);
-
-        var player = game.getCurrentPlayer();
-        System.out.println(String.format(
-                "Game timeout for %s player: '%s'",
-                player.getColor(),
-                player.getName()
+        super(new CompositeEventObserver(
+                new GameStartedConsoleObserver(),
+                new GameOverConsoleObserver(),
+                new GameTimeoutTerminationConsoleObserver(),
+                new BoardStateNotificationConsoleObserver(),
+                new RequestPlayerActionConsoleObserver(),
+                new RequestPromotionPieceTypeConsoleObserver(),
+                new ActionPerformedConsoleObserver(game),
+                new ActionExecutionConsoleObserver(game),
+                new ActionCancelledConsoleObserver(game),
+                new ActionCancellingConsoleObserver(game),
+                new ActionTerminatedConsoleObserver(game),
+                new ActionTerminationConsoleObserver(),
+                new PlayerActionExceptionConsoleObserver(),
+                new PlayerCancelActionExceptionConsoleObserver(),
+                new PlayerTerminateActionExceptionConsoleObserver()
         ));
     }
 
-    @Override
-    protected void process(BoardStateNotificationEvent event) {
-        displayBoardState(event.getBoardState());
+    static final class GameStartedConsoleObserver
+            extends AbstractEventObserver<GameStartedEvent> {
 
-        System.out.println(String.format("%s: %s%s",
-                ACTION_MESSAGE,
-                format(event.getMemento()),
-                lineSeparator()
-        ));
+        private static final String ENTER_ACTION_MESSAGE =
+                "Please, enter an action in the following format: '<source_position> <target_position>'.";
+
+        private static final String ENTER_ACTION_EXAMPLE_MESSAGE =
+                "For example: 'e2 e4'";
+
+        @Override
+        protected void process(GameStartedEvent event) {
+            System.out.println(ENTER_ACTION_MESSAGE);
+            System.out.println(ENTER_ACTION_EXAMPLE_MESSAGE);
+
+            displayBoard(event.getGame().getBoard());
+        }
     }
 
-    @Override
-    protected void process(RequestPlayerActionEvent event) {
-        System.out.println(String.format("%s: '%s' move:%s",
-                event.getColor(), event.getPlayer(), lineSeparator()
-        ));
+    static final class GameOverConsoleObserver
+            extends AbstractEventObserver<GameOverEvent> {
+
+        @Override
+        protected void process(GameOverEvent event) {
+            var game = event.getGame();
+
+            var board = game.getBoard();
+            displayBoardState(board.getState());
+
+            var line = "-".repeat(50);
+            System.out.println(line);
+            displayJournal(game.getJournal());
+
+            System.out.println(line);
+            displayWinner(game.getWinner());
+
+            var finishedAt = defaultIfNull(game.getFinishedAt(), now());
+            displayDuration(Duration.between(game.getStartedAt(), finishedAt));
+        }
     }
 
-    @Override
-    protected void process(RequestPromotionPieceTypeEvent ignoredEvent) {
-        System.out.println(PROMPT_PROMOTION_PIECE_TYPE_MESSAGE);
+    static final class GameTimeoutTerminationConsoleObserver
+            extends AbstractEventObserver<GameTimeoutTerminationEvent> {
+
+        @Override
+        protected void process(GameTimeoutTerminationEvent event) {
+            var game = event.getGame();
+
+            var line = "-".repeat(50);
+            System.out.println(line);
+
+            var player = game.getCurrentPlayer();
+            System.out.println(String.format(
+                    "Game timeout for %s player: '%s'",
+                    player.getColor(),
+                    player.getName()
+            ));
+        }
     }
 
-    @Override
-    protected void process(ActionPerformedEvent ignoredEvent) {
-        displayBoard(this.game.getBoard());
+    static final class BoardStateNotificationConsoleObserver
+            extends AbstractEventObserver<BoardStateNotificationEvent> {
+
+        @Override
+        protected void process(BoardStateNotificationEvent event) {
+            displayBoardState(event.getBoardState());
+
+            System.out.println(String.format("%s: %s%s",
+                    ACTION_MESSAGE,
+                    format(event.getMemento()),
+                    lineSeparator()
+            ));
+        }
     }
 
-    @Override
-    protected void process(ActionExecutionEvent event) {
-        displayAction(this.game, event.getPlayer(), event.getAction());
+    static final class RequestPlayerActionConsoleObserver
+            extends AbstractEventObserver<RequestPlayerActionEvent> {
+
+        @Override
+        protected void process(RequestPlayerActionEvent event) {
+            System.out.println(String.format("%s: '%s' move:%s",
+                    event.getColor(), event.getPlayer(), lineSeparator()
+            ));
+        }
     }
 
-    @Override
-    protected void process(ActionCancelledEvent ignoredEvent) {
-        displayBoard(this.game.getBoard());
+    static final class RequestPromotionPieceTypeConsoleObserver
+            extends AbstractEventObserver<RequestPromotionPieceTypeEvent> {
+
+        private static final String PROMOTION_PIECE_TYPE_MESSAGE = "Choose promotion piece type:";
+        private static final String PROMPT_PROMOTION_PIECE_TYPE_MESSAGE =
+                createPromptPromotionPieceTypeMessage(List.of(KNIGHT, BISHOP, ROOK, QUEEN));
+
+        @Override
+        protected void process(RequestPromotionPieceTypeEvent ignoredEvent) {
+            System.out.println(PROMPT_PROMOTION_PIECE_TYPE_MESSAGE);
+        }
+
+        private static String createPromptPromotionPieceTypeMessage(List<Piece.Type> promotionTypes) {
+            var builder = new StringBuilder();
+            builder.append(PROMOTION_PIECE_TYPE_MESSAGE).append(lineSeparator());
+
+            for (var pieceType : promotionTypes) {
+                builder.append("'").append(pieceType).append("' - ");
+                builder.append(pieceType.name()).append(lineSeparator());
+            }
+
+            return builder.toString();
+        }
     }
 
-    @Override
-    protected void process(ActionCancellingEvent event) {
-        displayAction(this.game, this.game.getPlayer(event.getColor()), event.getAction());
-    }
+    static final class ActionPerformedConsoleObserver
+            extends AbstractEventObserver<ActionPerformedEvent> {
 
-    @Override
-    protected void process(PlayerActionExceptionEvent event) {
-        displayErrorMessage(event.getMessage());
-    }
+        private final Game game;
 
-    @Override
-    protected void process(PlayerCancelActionExceptionEvent event) {
-        displayErrorMessage(event.getMessage());
-    }
+        ActionPerformedConsoleObserver(Game game) {
+            this.game = game;
+        }
 
-    @Override
-    protected void process(PlayerTerminateActionExceptionEvent event) {
-        displayErrorMessage(event.getMessage());
-    }
-
-    @Override
-    protected void process(ActionTerminatedEvent event) {
-        if (!Type.EXIT.equals(event.getType()) && !Type.TIMEOUT.equals(event.getType())) {
+        @Override
+        protected void process(ActionPerformedEvent ignoredEvent) {
             displayBoard(this.game.getBoard());
         }
     }
 
-    @Override
-    protected void process(ActionTerminationEvent event) {
-        var player = event.getPlayer();
+    static final class ActionExecutionConsoleObserver
+            extends AbstractEventObserver<ActionExecutionEvent> {
 
-        var eventType = lowerCase(event.getType().name());
-        var message = Type.EXIT.equals(event.getType()) || Type.TIMEOUT.equals(event.getType())
-                ? String.format("%s: '%s' %s", player.getColor(), player.getName(), eventType)
-                : String.format("%s: '%s' asked '%s'", player.getColor(), player.getName(), eventType);
+        private final Game game;
 
-        System.out.println(message);
+        ActionExecutionConsoleObserver(Game game) {
+            this.game = game;
+        }
+
+        @Override
+        protected void process(ActionExecutionEvent event) {
+            displayAction(this.game, event.getPlayer(), event.getAction());
+        }
+    }
+
+    static final class ActionCancelledConsoleObserver
+            extends AbstractEventObserver<ActionCancelledEvent> {
+
+        private final Game game;
+
+        ActionCancelledConsoleObserver(Game game) {
+            this.game = game;
+        }
+
+        @Override
+        protected void process(ActionCancelledEvent ignoredEvent) {
+            displayBoard(this.game.getBoard());
+        }
+    }
+
+    static final class ActionCancellingConsoleObserver
+            extends AbstractEventObserver<ActionCancellingEvent> {
+
+        private final Game game;
+
+        ActionCancellingConsoleObserver(Game game) {
+            this.game = game;
+        }
+
+        @Override
+        protected void process(ActionCancellingEvent event) {
+            displayAction(game, game.getPlayer(event.getColor()), event.getAction());
+        }
+    }
+
+    static final class PlayerActionExceptionConsoleObserver
+            extends AbstractEventObserver<PlayerActionExceptionEvent> {
+
+        @Override
+        protected void process(PlayerActionExceptionEvent event) {
+            displayErrorMessage(event.getMessage());
+        }
+    }
+
+    static final class PlayerCancelActionExceptionConsoleObserver
+            extends AbstractEventObserver<PlayerCancelActionExceptionEvent> {
+
+        @Override
+        protected void process(PlayerCancelActionExceptionEvent event) {
+            displayErrorMessage(event.getMessage());
+        }
+    }
+
+    static final class PlayerTerminateActionExceptionConsoleObserver
+            extends AbstractEventObserver<PlayerTerminateActionExceptionEvent> {
+
+        @Override
+        protected void process(PlayerTerminateActionExceptionEvent event) {
+            displayErrorMessage(event.getMessage());
+        }
+    }
+
+    static final class ActionTerminatedConsoleObserver
+            extends AbstractEventObserver<ActionTerminatedEvent> {
+
+        private final Game game;
+
+        ActionTerminatedConsoleObserver(Game game) {
+            this.game = game;
+        }
+
+        @Override
+        protected void process(ActionTerminatedEvent event) {
+            if (!Type.EXIT.equals(event.getType()) && !Type.TIMEOUT.equals(event.getType())) {
+                displayBoard(game.getBoard());
+            }
+        }
+    }
+
+    static final class ActionTerminationConsoleObserver
+            extends AbstractEventObserver<ActionTerminationEvent> {
+
+        @Override
+        protected void process(ActionTerminationEvent event) {
+            var player = event.getPlayer();
+
+            var eventType = lowerCase(event.getType().name());
+            var message = Type.EXIT.equals(event.getType()) || Type.TIMEOUT.equals(event.getType())
+                    ? String.format("%s: '%s' %s", player.getColor(), player.getName(), eventType)
+                    : String.format("%s: '%s' asked '%s'", player.getColor(), player.getName(), eventType);
+
+            System.out.println(message);
+        }
     }
 
     // utilities
@@ -241,17 +364,5 @@ public final class ConsoleGameOutputObserver
 
     private static void displayErrorMessage(String message) {
         System.err.println(message);
-    }
-
-    private static String createPromptPromotionPieceTypeMessage(List<Piece.Type> promotionTypes) {
-        var builder = new StringBuilder();
-        builder.append(PROMOTION_PIECE_TYPE_MESSAGE).append(lineSeparator());
-
-        for (var pieceType : promotionTypes) {
-            builder.append("'").append(pieceType).append("' - ");
-            builder.append(pieceType.name()).append(lineSeparator());
-        }
-
-        return builder.toString();
     }
 }

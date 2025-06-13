@@ -22,6 +22,7 @@ import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.AbstractEventObserver;
+import com.agutsul.chess.event.AbstractObserverProxy;
 import com.agutsul.chess.event.CompositeEventObserver;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
@@ -240,20 +241,14 @@ public abstract class AbstractPlayableGame
         return player;
     }
 
-    final class PostActionEventObserver implements Observer {
-
-        private final Observer observer;
+    final class PostActionEventObserver
+            extends AbstractObserverProxy {
 
         PostActionEventObserver() {
-            this.observer = new CompositeEventObserver(
+            super(new CompositeEventObserver(
                     new PerformedActionObserver(),
                     new CancelledActionObserver()
-            );
-        }
-
-        @Override
-        public void observe(Event event) {
-            this.observer.observe(event);
+            ));
         }
     }
 
