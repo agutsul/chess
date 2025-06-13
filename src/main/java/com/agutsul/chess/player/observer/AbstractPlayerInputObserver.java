@@ -108,8 +108,7 @@ public abstract class AbstractPlayerInputObserver
 
             var pieceType = PROMOTION_TYPES.get(selectedType);
             if (pieceType == null) {
-                throw new IllegalActionException(String.format(
-                        "%s: '%s'",
+                throw new IllegalActionException(String.format("%s: '%s'",
                         UNKNOWN_PROMOTION_PIECE_TYPE_MESSAGE, selectedType
                 ));
             }
