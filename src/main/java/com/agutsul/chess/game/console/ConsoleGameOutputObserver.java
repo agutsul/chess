@@ -16,6 +16,7 @@ import static org.apache.commons.lang3.StringUtils.lowerCase;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.event.ActionCancelledEvent;
@@ -166,21 +167,21 @@ public final class ConsoleGameOutputObserver
 
         private static final String PROMOTION_PIECE_TYPE_MESSAGE = "Choose promotion piece type:";
         private static final String PROMPT_PROMOTION_PIECE_TYPE_MESSAGE =
-                createPromptPromotionPieceTypeMessage(List.of(KNIGHT, BISHOP, ROOK, QUEEN));
+                createPromptPromotionPieceTypeMessage(Stream.of(KNIGHT, BISHOP, ROOK, QUEEN));
 
         @Override
         protected void process(RequestPromotionPieceTypeEvent ignoredEvent) {
             System.out.println(PROMPT_PROMOTION_PIECE_TYPE_MESSAGE);
         }
 
-        private static String createPromptPromotionPieceTypeMessage(List<Piece.Type> promotionTypes) {
+        private static String createPromptPromotionPieceTypeMessage(Stream<Piece.Type> promotionTypes) {
             var builder = new StringBuilder();
             builder.append(PROMOTION_PIECE_TYPE_MESSAGE).append(lineSeparator());
 
-            for (var pieceType : promotionTypes) {
-                builder.append("'").append(pieceType).append("' - ");
-                builder.append(pieceType.name()).append(lineSeparator());
-            }
+            promotionTypes.forEach(pieceType ->
+                builder.append("'").append(pieceType).append("' - ")
+                    .append(pieceType.name()).append(lineSeparator())
+            );
 
             return builder.toString();
         }
@@ -276,6 +277,8 @@ public final class ConsoleGameOutputObserver
     private static final class ActionTerminatedConsoleObserver
             extends AbstractEventObserver<ActionTerminatedEvent> {
 
+        private static final List<Type> TERMINATION_TYPES = List.of(Type.EXIT, Type.TIMEOUT);
+
         private final Game game;
 
         ActionTerminatedConsoleObserver(Game game) {
@@ -284,7 +287,7 @@ public final class ConsoleGameOutputObserver
 
         @Override
         protected void process(ActionTerminatedEvent event) {
-            if (!Type.EXIT.equals(event.getType()) && !Type.TIMEOUT.equals(event.getType())) {
+            if (!TERMINATION_TYPES.contains(event.getType())) {
                 displayBoard(game.getBoard());
             }
         }
@@ -293,12 +296,14 @@ public final class ConsoleGameOutputObserver
     private static final class ActionTerminationConsoleObserver
             extends AbstractEventObserver<ActionTerminationEvent> {
 
+        private static final List<Type> TERMINATION_TYPES = List.of(Type.EXIT, Type.TIMEOUT);
+
         @Override
         protected void process(ActionTerminationEvent event) {
             var player = event.getPlayer();
 
             var eventType = lowerCase(event.getType().name());
-            var message = Type.EXIT.equals(event.getType()) || Type.TIMEOUT.equals(event.getType())
+            var message = TERMINATION_TYPES.contains(event.getType())
                     ? String.format("%s: '%s' %s", player.getColor(), player.getName(), eventType)
                     : String.format("%s: '%s' asked '%s'", player.getColor(), player.getName(), eventType);
 
