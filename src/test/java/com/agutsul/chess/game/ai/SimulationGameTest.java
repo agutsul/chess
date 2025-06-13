@@ -22,8 +22,7 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Colors;
-import com.agutsul.chess.event.Event;
-import com.agutsul.chess.event.Observer;
+import com.agutsul.chess.event.AbstractEventObserver;
 import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.piece.PawnPiece;
@@ -62,16 +61,15 @@ public class SimulationGameTest {
             doCallRealMethod()
                 .when(game).addObserver(any());
 
-            game.addObserver(new Observer() {
-                @Override
-                public void observe(Event event) {
-                    if (event instanceof GameExceptionEvent) {
-                        var exceptionEvent = (GameExceptionEvent) event;
-                        var throwable = exceptionEvent.getThrowable();
+            game.addObserver(new AbstractEventObserver<GameExceptionEvent>() {
 
-                        assertEquals(exception, throwable);
-                        assertEquals("test", throwable.getMessage());
-                    }
+                @Override
+                protected void process(GameExceptionEvent event) {
+                    var exceptionEvent = event;
+                    var throwable = exceptionEvent.getThrowable();
+
+                    assertEquals(exception, throwable);
+                    assertEquals("test", throwable.getMessage());
                 }
             });
 
