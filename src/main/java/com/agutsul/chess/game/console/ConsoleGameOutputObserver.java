@@ -76,7 +76,7 @@ public final class ConsoleGameOutputObserver
         ));
     }
 
-    static final class GameStartedConsoleObserver
+    private static final class GameStartedConsoleObserver
             extends AbstractEventObserver<GameStartedEvent> {
 
         private static final String ENTER_ACTION_MESSAGE =
@@ -94,7 +94,7 @@ public final class ConsoleGameOutputObserver
         }
     }
 
-    static final class GameOverConsoleObserver
+    private static final class GameOverConsoleObserver
             extends AbstractEventObserver<GameOverEvent> {
 
         @Override
@@ -116,7 +116,7 @@ public final class ConsoleGameOutputObserver
         }
     }
 
-    static final class GameTimeoutTerminationConsoleObserver
+    private static final class GameTimeoutTerminationConsoleObserver
             extends AbstractEventObserver<GameTimeoutTerminationEvent> {
 
         @Override
@@ -135,7 +135,7 @@ public final class ConsoleGameOutputObserver
         }
     }
 
-    static final class BoardStateNotificationConsoleObserver
+    private static final class BoardStateNotificationConsoleObserver
             extends AbstractEventObserver<BoardStateNotificationEvent> {
 
         @Override
@@ -150,7 +150,7 @@ public final class ConsoleGameOutputObserver
         }
     }
 
-    static final class RequestPlayerActionConsoleObserver
+    private static final class RequestPlayerActionConsoleObserver
             extends AbstractEventObserver<RequestPlayerActionEvent> {
 
         @Override
@@ -161,7 +161,7 @@ public final class ConsoleGameOutputObserver
         }
     }
 
-    static final class RequestPromotionPieceTypeConsoleObserver
+    private static final class RequestPromotionPieceTypeConsoleObserver
             extends AbstractEventObserver<RequestPromotionPieceTypeEvent> {
 
         private static final String PROMOTION_PIECE_TYPE_MESSAGE = "Choose promotion piece type:";
@@ -186,7 +186,7 @@ public final class ConsoleGameOutputObserver
         }
     }
 
-    static final class ActionPerformedConsoleObserver
+    private static final class ActionPerformedConsoleObserver
             extends AbstractEventObserver<ActionPerformedEvent> {
 
         private final Game game;
@@ -201,7 +201,7 @@ public final class ConsoleGameOutputObserver
         }
     }
 
-    static final class ActionExecutionConsoleObserver
+    private static final class ActionExecutionConsoleObserver
             extends AbstractEventObserver<ActionExecutionEvent> {
 
         private final Game game;
@@ -216,7 +216,7 @@ public final class ConsoleGameOutputObserver
         }
     }
 
-    static final class ActionCancelledConsoleObserver
+    private static final class ActionCancelledConsoleObserver
             extends AbstractEventObserver<ActionCancelledEvent> {
 
         private final Game game;
@@ -231,7 +231,7 @@ public final class ConsoleGameOutputObserver
         }
     }
 
-    static final class ActionCancellingConsoleObserver
+    private static final class ActionCancellingConsoleObserver
             extends AbstractEventObserver<ActionCancellingEvent> {
 
         private final Game game;
@@ -242,11 +242,11 @@ public final class ConsoleGameOutputObserver
 
         @Override
         protected void process(ActionCancellingEvent event) {
-            displayAction(game, game.getPlayer(event.getColor()), event.getAction());
+            displayAction(this.game, this.game.getPlayer(event.getColor()), event.getAction());
         }
     }
 
-    static final class PlayerActionExceptionConsoleObserver
+    private static final class PlayerActionExceptionConsoleObserver
             extends AbstractEventObserver<PlayerActionExceptionEvent> {
 
         @Override
@@ -255,7 +255,7 @@ public final class ConsoleGameOutputObserver
         }
     }
 
-    static final class PlayerCancelActionExceptionConsoleObserver
+    private static final class PlayerCancelActionExceptionConsoleObserver
             extends AbstractEventObserver<PlayerCancelActionExceptionEvent> {
 
         @Override
@@ -264,7 +264,7 @@ public final class ConsoleGameOutputObserver
         }
     }
 
-    static final class PlayerTerminateActionExceptionConsoleObserver
+    private static final class PlayerTerminateActionExceptionConsoleObserver
             extends AbstractEventObserver<PlayerTerminateActionExceptionEvent> {
 
         @Override
@@ -273,7 +273,7 @@ public final class ConsoleGameOutputObserver
         }
     }
 
-    static final class ActionTerminatedConsoleObserver
+    private static final class ActionTerminatedConsoleObserver
             extends AbstractEventObserver<ActionTerminatedEvent> {
 
         private final Game game;
@@ -290,7 +290,7 @@ public final class ConsoleGameOutputObserver
         }
     }
 
-    static final class ActionTerminationConsoleObserver
+    private static final class ActionTerminationConsoleObserver
             extends AbstractEventObserver<ActionTerminationEvent> {
 
         @Override
