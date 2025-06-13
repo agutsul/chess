@@ -1,12 +1,8 @@
 package com.agutsul.chess.game.pgn;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-
-import org.slf4j.Logger;
 
 import com.agutsul.chess.antlr.pgn.action.PawnPromotionTypeAdapter;
 import com.agutsul.chess.antlr.pgn.action.PgnActionAdapter;
@@ -21,15 +17,13 @@ import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
 final class PgnPlayerInputObserver
         extends AbstractPlayerInputObserver {
 
-    private static final Logger LOGGER = getLogger(PgnPlayerInputObserver.class);
-
     private final ActionIterator actionIterator;
 
     private final PgnActionAdapter pieceActionAdapter;
     private final PgnActionAdapter promotionTypeAdapter;
 
     PgnPlayerInputObserver(Player player, PgnGame<?> game, List<String> actions) {
-        super(LOGGER, player, game);
+        super(player, game);
 
         this.actionIterator = new ActionIterator(actions);
         this.pieceActionAdapter = new PieceActionAdapter(game.getBoard(), player.getColor());

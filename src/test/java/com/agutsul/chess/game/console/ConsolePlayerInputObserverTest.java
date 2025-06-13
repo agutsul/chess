@@ -62,7 +62,7 @@ public class ConsolePlayerInputObserverTest {
         var exitCommand = String.format("exit%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(exitCommand.getBytes())) {
             var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
-            playerInputObserver.process(new RequestPlayerActionEvent(PLAYER));
+            playerInputObserver.observe(new RequestPlayerActionEvent(PLAYER));
         }
 
         verify(game, times(2)).notifyObservers(any());
@@ -87,7 +87,7 @@ public class ConsolePlayerInputObserverTest {
         var promotionTypeCommand = String.format("q%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(promotionTypeCommand.getBytes())) {
             var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
-            playerInputObserver.process(new RequestPromotionPieceTypeEvent(Colors.WHITE, promoteAction));
+            playerInputObserver.observe(new RequestPromotionPieceTypeEvent(Colors.WHITE, promoteAction));
         }
 
         verify(game, times(1)).notifyObservers(any());

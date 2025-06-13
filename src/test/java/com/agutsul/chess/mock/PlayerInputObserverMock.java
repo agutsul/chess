@@ -1,17 +1,11 @@
 package com.agutsul.chess.mock;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
-import org.slf4j.Logger;
-
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
 
 public class PlayerInputObserverMock
         extends AbstractPlayerInputObserver {
-
-    private static final Logger LOGGER = getLogger(PlayerInputObserverMock.class);
 
     private final String actionCommand;
     private final String promotionType;
@@ -27,7 +21,7 @@ public class PlayerInputObserverMock
     public PlayerInputObserverMock(Player player, Game game,
                                    String actionCommand, String promotionType) {
 
-        super(LOGGER, player, game);
+        super(player, game);
 
         this.actionCommand = actionCommand;
         this.promotionType = promotionType;

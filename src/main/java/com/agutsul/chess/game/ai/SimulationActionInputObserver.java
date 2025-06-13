@@ -1,9 +1,6 @@
 package com.agutsul.chess.game.ai;
 
 import static com.agutsul.chess.activity.action.Action.isPromote;
-import static org.slf4j.LoggerFactory.getLogger;
-
-import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.ActionAdapter;
@@ -20,8 +17,6 @@ public final class SimulationActionInputObserver
         extends AbstractPlayerInputObserver
         implements ActionAdapter {
 
-    private static final Logger LOGGER = getLogger(SimulationActionInputObserver.class);
-
     private final SelectionStrategy<Action<?>> actionStrategy;
 
     private PiecePromoteAction<?,?> promoteAction;
@@ -33,7 +28,7 @@ public final class SimulationActionInputObserver
     SimulationActionInputObserver(Player player, Game game,
                                   SelectionStrategy<Action<?>> actionStrategy) {
 
-        super(LOGGER, player, game);
+        super(player, game);
         this.actionStrategy = actionStrategy;
     }
 

@@ -14,18 +14,19 @@ import static org.apache.commons.lang3.StringUtils.split;
 import static org.apache.commons.lang3.StringUtils.strip;
 import static org.apache.commons.lang3.StringUtils.upperCase;
 import static org.apache.commons.lang3.ThreadUtils.sleepQuietly;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Duration;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.event.AbstractEventObserver;
+import com.agutsul.chess.event.CompositeEventObserver;
 import com.agutsul.chess.event.Event;
-import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.ActionTimeoutException;
 import com.agutsul.chess.exception.IllegalActionException;
@@ -44,30 +45,13 @@ import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 
 public abstract class AbstractPlayerInputObserver
-        implements Observer {
-
-    private static final String UNKNOWN_PROMOTION_PIECE_TYPE_MESSAGE = "Unknown promotion piece type";
-    private static final String UNABLE_TO_PROCESS_MESSAGE = "Unable to process";
-    private static final String INVALID_ACTION_FORMAT_MESSAGE= "Invalid action format";
-
-    private static final Map<String, Piece.Type> PROMOTION_TYPES =
-            Stream.of(KNIGHT, BISHOP, ROOK, QUEEN)
-                    .collect(toMap(Piece.Type::code, identity()));
-
-    private final Map<Class<? extends Event>,Consumer<Event>> processors = Map.of(
-            RequestPlayerActionEvent.class,       event -> process((RequestPlayerActionEvent) event),
-            RequestPromotionPieceTypeEvent.class, event -> process((RequestPromotionPieceTypeEvent) event)
-    );
+        extends AbstractPlayerObserver {
 
     protected final Player player;
-    protected final Game game;
 
-    private final Logger logger;
-
-    protected AbstractPlayerInputObserver(Logger logger, Player player, Game game) {
-        this.logger = logger;
+    protected AbstractPlayerInputObserver(Player player, Game game) {
+        super(game);
         this.player = player;
-        this.game = game;
     }
 
     @Override
@@ -81,121 +65,146 @@ public abstract class AbstractPlayerInputObserver
             return;
         }
 
-        var processor = this.processors.get(requestEvent.getClass());
-        if (processor != null) {
-            processor.accept(requestEvent);
-        }
+        super.observe(event);
     }
 
     protected abstract String getActionCommand();
 
     protected abstract String getPromotionPieceType();
 
-    protected void process(RequestPromotionPieceTypeEvent event) {
-        var selectedType = upperCase(strip(getPromotionPieceType()));
-
-        logger.debug("Processing selected pawn promotion type '{}'", selectedType);
-
-        var pieceType = PROMOTION_TYPES.get(selectedType);
-        if (pieceType == null) {
-            throw new IllegalActionException(
-                    String.format("%s: '%s'", UNKNOWN_PROMOTION_PIECE_TYPE_MESSAGE, selectedType)
-            );
-        }
-
-        var action = event.getAction();
-        // callback to origin action to continue processing
-        action.observe(new PromotionPieceTypeEvent(this.player, pieceType));
+    @Override
+    protected Observer createObserver() {
+        return new CompositeEventObserver(
+                new RequestPlayerActionObserver(),
+                new RequestPromotionPieceTypeObserver()
+        );
     }
 
-    protected void process(RequestPlayerActionEvent event) {
-        try {
-            var command = getActionCommand();
-
-            var eventFactory = PlayerActionEventFactory.of(command);
-            if (eventFactory != null) {
-                notifyGameEvent(eventFactory.create(this.player));
-            } else if (contains(command, SPACE)) {
-                processActionCommand(command);
-            } else {
-                throw new IllegalActionException(
-                        String.format("%s: '%s'", UNABLE_TO_PROCESS_MESSAGE, command)
-                );
-            }
-        } catch (ActionTimeoutException e) {
-            var message = String.format("%s: Player '%s' action timeout",
-                    this.player.getColor(), this.player
-            );
-
-            logger.error(message, e);
-            throw e;
-        } catch (IllegalActionException e) {
-            var message = String.format("%s: Player '%s' action failed",
-                    this.player.getColor(), this.player
-            );
-
-            logger.error(message, e);
-            notifyExceptionEvent(e.getMessage());
-
-            // re-ask player action
-            notifyBoardEvent(event);
-        }
-    }
-
-    private void processActionCommand(String command) {
-        var positions = split(lowerCase(command), SPACE);
-        if (getLength(positions) != 2) {
-            throw new IllegalActionException(
-                    String.format("%s: '%s'", INVALID_ACTION_FORMAT_MESSAGE, command)
-            );
-        }
-
-        notifyGameEvent(new PlayerActionEvent(player, strip(positions[0]), strip(positions[1])));
-    }
-
-    protected void notifyBoardEvent(Event event) {
-        var board = this.game.getBoard();
-        ((Observable) board).notifyObservers(event);
-    }
-
-    protected void notifyGameEvent(Event event) {
-        ((Observable) this.game).notifyObservers(event);
-    }
-
-    protected void notifyExceptionEvent(String message) {
+    protected final void notifyExceptionEvent(String message) {
         // display error message to player
         notifyGameEvent(new PlayerActionExceptionEvent(message));
         sleepQuietly(Duration.ofMillis(1));
     }
 
-    private enum PlayerActionEventFactory {
-        UNDO_MODE(PlayerCommand.UNDO,     player -> new PlayerCancelActionEvent(player)),
-        DRAW_MODE(PlayerCommand.DRAW,     player -> new PlayerTerminateActionEvent(player, Type.DRAW)),
-        WIN_MODE(PlayerCommand.WIN,       player -> new PlayerTerminateActionEvent(player, Type.WIN)),
-        DEFEAT_MODE(PlayerCommand.DEFEAT, player -> new PlayerTerminateActionEvent(player, Type.DEFEAT)),
-        EXIT_MODE(PlayerCommand.EXIT,     player -> new PlayerTerminateActionEvent(player, Type.EXIT));
+    protected class RequestPromotionPieceTypeObserver
+            extends AbstractEventObserver<RequestPromotionPieceTypeEvent> {
 
-        private static final Map<String,PlayerActionEventFactory> MODES =
-                Stream.of(values()).collect(toMap(PlayerActionEventFactory::command, identity()));
+        private static final Logger LOGGER = getLogger(RequestPromotionPieceTypeObserver.class);
 
-        private String command;
-        private Function<Player,Event> function;
+        private static final String UNKNOWN_PROMOTION_PIECE_TYPE_MESSAGE =
+                "Unknown promotion piece type";
 
-        PlayerActionEventFactory(PlayerCommand command, Function<Player,Event> function) {
-            this.command = command.code();
-            this.function = function;
+        private static final Map<String, Piece.Type> PROMOTION_TYPES =
+                Stream.of(KNIGHT, BISHOP, ROOK, QUEEN)
+                        .collect(toMap(Piece.Type::code, identity()));
+
+        public RequestPromotionPieceTypeObserver() {}
+
+        @Override
+        protected void process(RequestPromotionPieceTypeEvent event) {
+            var selectedType = upperCase(strip(getPromotionPieceType()));
+
+            LOGGER.debug("Processing selected pawn promotion type '{}'", selectedType);
+
+            var pieceType = PROMOTION_TYPES.get(selectedType);
+            if (pieceType == null) {
+                throw new IllegalActionException(String.format(
+                        "%s: '%s'",
+                        UNKNOWN_PROMOTION_PIECE_TYPE_MESSAGE, selectedType
+                ));
+            }
+
+            var action = event.getAction();
+            // callback to origin action to continue processing
+            action.observe(new PromotionPieceTypeEvent(player, pieceType));
+        }
+    }
+
+    protected class RequestPlayerActionObserver
+            extends AbstractEventObserver<RequestPlayerActionEvent> {
+
+        private static final Logger LOGGER = getLogger(RequestPlayerActionObserver.class);
+
+        private static final String UNABLE_TO_PROCESS_MESSAGE = "Unable to process";
+        private static final String INVALID_ACTION_FORMAT_MESSAGE= "Invalid action format";
+
+        public RequestPlayerActionObserver() {}
+
+        @Override
+        protected void process(RequestPlayerActionEvent event) {
+            try {
+                var command = getActionCommand();
+
+                var eventFactory = PlayerActionEventFactory.of(command);
+                if (eventFactory != null) {
+                    notifyGameEvent(eventFactory.create(player));
+                } else if (contains(command, SPACE)) {
+                    processActionCommand(command);
+                } else {
+                    throw new IllegalActionException(String.format("%s: '%s'",
+                            UNABLE_TO_PROCESS_MESSAGE, command
+                    ));
+                }
+            } catch (ActionTimeoutException e) {
+                var message = String.format("%s: Player '%s' action timeout",
+                        player.getColor(), player
+                );
+
+                LOGGER.error(message, e);
+                throw e;
+            } catch (IllegalActionException e) {
+                var message = String.format("%s: Player '%s' action failed",
+                        player.getColor(), player
+                );
+
+                LOGGER.error(message, e);
+                notifyExceptionEvent(e.getMessage());
+
+                // re-ask player action
+                notifyBoardEvent(event);
+            }
         }
 
-        public static PlayerActionEventFactory of(String command) {
-            return MODES.get(strip(lowerCase(command)));
+        private void processActionCommand(String command) {
+            var positions = split(lowerCase(command), SPACE);
+            if (getLength(positions) != 2) {
+                throw new IllegalActionException(String.format("%s: '%s'",
+                        INVALID_ACTION_FORMAT_MESSAGE, command
+                ));
+            }
+
+            notifyGameEvent(new PlayerActionEvent(player, strip(positions[0]), strip(positions[1])));
         }
 
-        public Event create(Player player) {
-            return function.apply(player);
-        }
+        private enum PlayerActionEventFactory {
+            UNDO_MODE(PlayerCommand.UNDO,     player -> new PlayerCancelActionEvent(player)),
+            DRAW_MODE(PlayerCommand.DRAW,     player -> new PlayerTerminateActionEvent(player, Type.DRAW)),
+            WIN_MODE(PlayerCommand.WIN,       player -> new PlayerTerminateActionEvent(player, Type.WIN)),
+            DEFEAT_MODE(PlayerCommand.DEFEAT, player -> new PlayerTerminateActionEvent(player, Type.DEFEAT)),
+            EXIT_MODE(PlayerCommand.EXIT,     player -> new PlayerTerminateActionEvent(player, Type.EXIT));
 
-        private String command() {
-            return command;
+            private static final Map<String,PlayerActionEventFactory> MODES =
+                    Stream.of(values()).collect(toMap(PlayerActionEventFactory::command, identity()));
+
+            private String command;
+            private Function<Player,Event> function;
+
+            PlayerActionEventFactory(PlayerCommand command, Function<Player,Event> function) {
+                this.command = command.code();
+                this.function = function;
+            }
+
+            public static PlayerActionEventFactory of(String command) {
+                return MODES.get(strip(lowerCase(command)));
+            }
+
+            public Event create(Player player) {
+                return function.apply(player);
+            }
+
+            private String command() {
+                return command;
+            }
         }
     }
 }

@@ -13,6 +13,8 @@ import java.time.Instant;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
+import com.agutsul.chess.event.CompositeEventObserver;
+import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
@@ -33,20 +35,16 @@ public class ConsolePlayerInputObserver
     protected Instant actionStarted;
 
     public ConsolePlayerInputObserver(Player player, Game game, InputStream inputStream) {
-        super(LOGGER, player, game);
+        super(player, game);
         this.inputStream = inputStream;
     }
 
     @Override
-    protected void process(RequestPlayerActionEvent event) {
-        notifyGameEvent(event);
-        super.process(event);
-    }
-
-    @Override
-    protected void process(RequestPromotionPieceTypeEvent event) {
-        notifyGameEvent(event);
-        super.process(event);
+    protected Observer createObserver() {
+        return new CompositeEventObserver(
+                new RequestPlayerActionConsoleObserver(),
+                new RequestPromotionPieceTypeConsoleObserver()
+        );
     }
 
     @Override
@@ -120,6 +118,26 @@ public class ConsolePlayerInputObserver
             return consoleInputReader.read();
         } catch (IOException e) {
             throw new IllegalActionException(e.getMessage(), e);
+        }
+    }
+
+    private final class RequestPlayerActionConsoleObserver
+            extends RequestPlayerActionObserver {
+
+        @Override
+        protected void process(RequestPlayerActionEvent event) {
+            notifyGameEvent(event);
+            super.process(event);
+        }
+    }
+
+    private final class RequestPromotionPieceTypeConsoleObserver
+            extends RequestPromotionPieceTypeObserver {
+
+        @Override
+        protected void process(RequestPromotionPieceTypeEvent event) {
+            notifyGameEvent(event);
+            super.process(event);
         }
     }
 }
