@@ -22,12 +22,16 @@ public final class ConsoleGame<T extends Game & Observable>
         super(createGame(whitePlayer, blackPlayer,
                 new StandardBoard(), System.in, TEN_MINUTES, null
         ));
+
+        addObserver(new ConsoleGameOutputObserver(game));
     }
 
     public ConsoleGame(Player whitePlayer, Player blackPlayer, Long actionTimeout, Long gameTimeout) {
         super(createGame(whitePlayer, blackPlayer,
                 new StandardBoard(), System.in, actionTimeout, gameTimeout
         ));
+
+        addObserver(new ConsoleGameOutputObserver(game));
     }
 
     @SuppressWarnings("unchecked")
@@ -52,7 +56,6 @@ public final class ConsoleGame<T extends Game & Observable>
         // uncomment to play against computer
         observableBoard.addObserver(new SimulationActionInputObserver(blackPlayer, game));
 
-        game.addObserver(new ConsoleGameOutputObserver(game));
         return (T) game;
     }
 }
