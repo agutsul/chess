@@ -26,7 +26,7 @@ public abstract class AbstractEventObserver<EVENT extends Event>
         }
     }
 
-    public Type getEventType() {
+    public final Type getEventType() {
         return this.eventType;
     }
 
