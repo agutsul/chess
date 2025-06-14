@@ -113,9 +113,8 @@ public abstract class AbstractPlayerInputObserver
                 ));
             }
 
-            var action = event.getAction();
             // callback to origin action to continue processing
-            action.observe(new PromotionPieceTypeEvent(player, pieceType));
+            event.getObserver().observe(new PromotionPieceTypeEvent(player, pieceType));
         }
     }
 

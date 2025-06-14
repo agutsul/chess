@@ -18,6 +18,6 @@ public class PieceTypeRequestObserverMock
     @Override
     protected void process(RequestPromotionPieceTypeEvent event) {
         // mock interaction with user during piece type selection
-        event.getAction().observe(PROMOTION_EVENT);
+        event.getObserver().observe(PROMOTION_EVENT);
     }
 }
