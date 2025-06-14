@@ -22,8 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Colors;
-import com.agutsul.chess.event.Event;
-import com.agutsul.chess.event.Observer;
+import com.agutsul.chess.event.AbstractEventObserver;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
@@ -79,11 +78,11 @@ public class ConsolePlayerInputObserverTest {
         when(game.getContext())
             .thenReturn(context);
 
-        var observer = new Observer() {
+        var observer = new AbstractEventObserver<PromotionPieceTypeEvent>() {
+
             @Override
-            public void observe(Event event) {
-                assertTrue(event instanceof PromotionPieceTypeEvent);
-                assertTrue(isQueen(((PromotionPieceTypeEvent) event).getPieceType()));
+            protected void process(PromotionPieceTypeEvent event) {
+                assertTrue(isQueen(event.getPieceType()));
             }
         };
 
