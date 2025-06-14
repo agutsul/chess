@@ -16,7 +16,6 @@ public abstract class AbstractEventObserver<EVENT extends Event>
 
     protected AbstractEventObserver() {
         this.eventType = resolveEventType(getClass());
-                //((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     @Override
@@ -40,16 +39,5 @@ public abstract class AbstractEventObserver<EVENT extends Event>
                 .map(cls -> ((ParameterizedType) cls.getGenericSuperclass()).getActualTypeArguments()[0])
                 .findFirst()
                 .orElse(null);
-/*
-        var classes =  getAllSuperclasses(clazz);
-        for (var cls : classes) {
-            if (Objects.equals(AbstractEventObserver.class, cls.getSuperclass())) {
-                var genericType = cls.getGenericSuperclass();
-                return ((ParameterizedType) genericType).getActualTypeArguments()[0];
-            }
-        }
-
-        return null;
-*/
     }
 }
