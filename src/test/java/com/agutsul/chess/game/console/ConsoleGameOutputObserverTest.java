@@ -32,7 +32,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.TestFileReader;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
-import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.activity.action.event.ActionCancelledEvent;
 import com.agutsul.chess.activity.action.event.ActionCancellingEvent;
 import com.agutsul.chess.activity.action.event.ActionExecutionEvent;
@@ -45,6 +44,7 @@ import com.agutsul.chess.board.PositionedBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.event.BoardStateNotificationEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
@@ -160,7 +160,7 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
 
     @Test
     void testProcessRequestPromotionPieceTypeEvent() throws URISyntaxException, IOException {
-        observer.observe(new RequestPromotionPieceTypeEvent(Colors.WHITE, mock(PiecePromoteAction.class)));
+        observer.observe(new RequestPromotionPieceTypeEvent(Colors.WHITE, mock(Observer.class)));
         assertStream("console_request_promotion_piece_type_event.txt", outputStream);
     }
 

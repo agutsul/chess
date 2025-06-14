@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import com.agutsul.chess.Executable;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.AbstractEventObserver;
-import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.piece.PawnPiece;
@@ -18,8 +17,7 @@ import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 
 public class PiecePromoteAction<COLOR1 extends Color,
                                 PIECE1 extends PawnPiece<COLOR1>>
-        extends AbstractPromoteAction<COLOR1,PIECE1>
-        implements Observer {
+        extends AbstractPromoteAction<COLOR1,PIECE1> {
 
     private static final Logger LOGGER = getLogger(PiecePromoteAction.class);
 
@@ -51,13 +49,8 @@ public class PiecePromoteAction<COLOR1 extends Color,
         LOGGER.info("Executing promote by '{}'", getPiece());
         // prompt player about piece type to create during promotion
         observable.notifyObservers(
-                new RequestPromotionPieceTypeEvent(getPiece().getColor(), this)
+                new RequestPromotionPieceTypeEvent(getPiece().getColor(), this.observer)
         );
-    }
-
-    @Override
-    public final void observe(Event event) {
-        this.observer.observe(event);
     }
 
     @Override

@@ -1,11 +1,12 @@
 package com.agutsul.chess.game.console;
 
+import static com.agutsul.chess.piece.Piece.isQueen;
 import static java.lang.System.lineSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,20 +20,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.activity.action.PieceMoveAction;
-import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.event.Event;
+import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.GameContext;
-import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.UserPlayer;
+import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
-import com.agutsul.chess.position.Position;
 
 @ExtendWith(MockitoExtension.class)
 public class ConsolePlayerInputObserverTest {
@@ -79,15 +79,18 @@ public class ConsolePlayerInputObserverTest {
         when(game.getContext())
             .thenReturn(context);
 
-        var promoteAction = new PiecePromoteAction<>(
-                new PieceMoveAction<>(mock(PawnPiece.class), mock(Position.class)),
-                game
-        );
+        var observer = new Observer() {
+            @Override
+            public void observe(Event event) {
+                assertTrue(event instanceof PromotionPieceTypeEvent);
+                assertTrue(isQueen(((PromotionPieceTypeEvent) event).getPieceType()));
+            }
+        };
 
         var promotionTypeCommand = String.format("q%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(promotionTypeCommand.getBytes())) {
             var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
-            playerInputObserver.observe(new RequestPromotionPieceTypeEvent(Colors.WHITE, promoteAction));
+            playerInputObserver.observe(new RequestPromotionPieceTypeEvent(Colors.WHITE, observer));
         }
 
         verify(game, times(1)).notifyObservers(any());

@@ -3,10 +3,12 @@ package com.agutsul.chess.player.observer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,13 +17,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
+import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.mock.PlayerInputObserverMock;
+import com.agutsul.chess.piece.PawnPiece;
+import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerActionEvent;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
@@ -30,6 +36,7 @@ import com.agutsul.chess.player.event.PlayerTerminateActionEvent;
 import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
+import com.agutsul.chess.position.Position;
 
 @ExtendWith(MockitoExtension.class)
 public class PlayerInputObserverTest {
@@ -159,37 +166,49 @@ public class PlayerInputObserverTest {
     }
 
     @Test
-    void testObservePlaverPromotionPieceTypeEvent() {
-        var game = mock(AbstractPlayableGame.class);
+    void testObservePlayerPromotionPieceTypeEvent() {
+        var observable = mock(Observable.class);
+        doAnswer(inv -> {
+            var promotionRequestEvent = inv.getArgument(0, RequestPromotionPieceTypeEvent.class);
+            var observer = promotionRequestEvent.getObserver();
 
-        var whitePlayer = mock(Player.class);
-        when(whitePlayer.getColor())
+            observer.observe(new PromotionPieceTypeEvent(mock(Player.class), Piece.Type.QUEEN));
+
+            return null;
+        }).when(observable).notifyObservers(any());
+
+        var piece = mock(PawnPiece.class);
+        when(piece.getColor())
             .thenReturn(Colors.WHITE);
 
-        var action = mock(PiecePromoteAction.class);
+        var moveAction = mock(PieceMoveAction.class);
+        when(moveAction.getSource())
+            .thenReturn(piece);
+        when(moveAction.getPosition())
+            .thenReturn(mock(Position.class));
 
-        var event = new RequestPromotionPieceTypeEvent(Colors.WHITE, action);
+        @SuppressWarnings("unchecked")
+        var action = spy(new PiecePromoteAction<>(moveAction, observable));
+        action.execute();
 
-        var observer = new PlayerInputObserverMock(whitePlayer, game, null, "Q");
-        observer.observe(event);
-
-        verify(action, times(1)).observe(any(PromotionPieceTypeEvent.class));
+        verify(action, times(2)).getPiece();
+        verify(piece,  times(1)).promote(any(), eq(Piece.Type.QUEEN));
     }
 
     @Test
-    void testObservePlaverPromotionPieceTypeEventUnknowPromotionType() {
+    void testObservePlayerPromotionPieceTypeEventUnknowPromotionType() {
         var game = mock(AbstractPlayableGame.class);
 
         var whitePlayer = mock(Player.class);
         when(whitePlayer.getColor())
             .thenReturn(Colors.WHITE);
 
+        var observer = new PlayerInputObserverMock(whitePlayer, game, null, "Z");
         var event = new RequestPromotionPieceTypeEvent(
                 Colors.WHITE,
-                mock(PiecePromoteAction.class)
+                observer
         );
 
-        var observer = new PlayerInputObserverMock(whitePlayer, game, null, "Z");
         var thrown = assertThrows(
                 IllegalActionException.class,
                 () -> observer.observe(event)
