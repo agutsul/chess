@@ -2,10 +2,9 @@ package com.agutsul.chess.piece.cache;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableCollection;
-import static org.apache.commons.lang3.StringUtils.join;
+import static java.util.stream.Collectors.joining;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +15,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -248,12 +248,9 @@ public class PieceCacheImpl implements PieceCache {
         }
 
         private static String createKey(String string, String... strings) {
-            var list = new ArrayList<String>();
-
-            list.add(string);
-            list.addAll(List.of(strings));
-
-            return join(list, "_");
+            return Stream.of(List.of(string), List.of(strings))
+                    .flatMap(Collection::stream)
+                    .collect(joining("_"));
         }
     }
 }
