@@ -114,7 +114,8 @@ public abstract class AbstractPlayerInputObserver
             }
 
             // callback to origin action to continue processing
-            event.getObserver().observe(new PromotionPieceTypeEvent(player, pieceType));
+            var observer = event.getObserver();
+            observer.observe(new PromotionPieceTypeEvent(player, pieceType));
         }
     }
 
@@ -124,7 +125,7 @@ public abstract class AbstractPlayerInputObserver
         private static final Logger LOGGER = getLogger(RequestPlayerActionObserver.class);
 
         private static final String UNABLE_TO_PROCESS_MESSAGE = "Unable to process";
-        private static final String INVALID_ACTION_FORMAT_MESSAGE= "Invalid action format";
+        private static final String INVALID_ACTION_FORMAT_MESSAGE = "Invalid action format";
 
         public RequestPlayerActionObserver() {}
 
@@ -188,7 +189,11 @@ public abstract class AbstractPlayerInputObserver
             private Function<Player,Event> function;
 
             PlayerActionEventFactory(PlayerCommand command, Function<Player,Event> function) {
-                this.command = command.code();
+                this(command.code(), function);
+            }
+
+            PlayerActionEventFactory(String command, Function<Player,Event> function) {
+                this.command = command;
                 this.function = function;
             }
 
