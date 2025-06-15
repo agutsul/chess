@@ -36,7 +36,10 @@ public abstract class AbstractEventObserver<EVENT extends Event>
         return Stream.of(List.of(clazz), getAllSuperclasses(clazz))
                 .flatMap(Collection::stream)
                 .filter(cls -> Objects.equals(AbstractEventObserver.class, cls.getSuperclass()))
-                .map(cls -> ((ParameterizedType) cls.getGenericSuperclass()).getActualTypeArguments()[0])
+                .map(cls -> (ParameterizedType) cls.getGenericSuperclass())
+                .map(ParameterizedType::getActualTypeArguments)
+                .map(List::of)
+                .flatMap(Collection::stream)
                 .findFirst()
                 .orElse(null);
     }
