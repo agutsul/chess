@@ -56,6 +56,7 @@ public final class ConsoleGameOutputObserver
     private static final String GAME_OVER_MESSAGE = "Game over";
     private static final String DURATION_MESSAGE = "Duration (minutes)";
     private static final String BOARD_STATE_MESSAGE = "Board state";
+    private static final String LINE = "-".repeat(50);
 
     public ConsoleGameOutputObserver(Game game) {
         super(new CompositeEventObserver(
@@ -105,11 +106,10 @@ public final class ConsoleGameOutputObserver
             var board = game.getBoard();
             displayBoardState(board.getState());
 
-            var line = "-".repeat(50);
-            System.out.println(line);
+            System.out.println(LINE);
             displayJournal(game.getJournal());
 
-            System.out.println(line);
+            System.out.println(LINE);
             displayWinner(game.getWinner());
 
             var finishedAt = defaultIfNull(game.getFinishedAt(), now());
@@ -122,16 +122,14 @@ public final class ConsoleGameOutputObserver
 
         @Override
         protected void process(GameTimeoutTerminationEvent event) {
+            System.out.println(LINE);
+
             var game = event.getGame();
-
-            var line = "-".repeat(50);
-            System.out.println(line);
-
             var player = game.getCurrentPlayer();
+
             System.out.println(String.format(
                     "Game timeout for %s player: '%s'",
-                    player.getColor(),
-                    player.getName()
+                    player.getColor(), player.getName()
             ));
         }
     }
