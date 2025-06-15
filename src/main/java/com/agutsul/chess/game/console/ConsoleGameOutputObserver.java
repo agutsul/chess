@@ -349,9 +349,11 @@ public final class ConsoleGameOutputObserver
     }
 
     private static void displayWinner(Optional<Player> winner) {
-        String message = winner.isPresent()
-                ? formatWinnerMessage(winner.get())
-                : DRAW_MESSAGE;
+        var message = Stream.of(winner)
+                .flatMap(Optional::stream)
+                .findFirst()
+                .map(player -> formatWinnerMessage(player))
+                .orElse(DRAW_MESSAGE);
 
         System.out.println(String.format("%s. %s", GAME_OVER_MESSAGE, message));
     }
@@ -360,14 +362,13 @@ public final class ConsoleGameOutputObserver
         System.out.println(String.format("%s: %s", DURATION_MESSAGE, duration.toMinutes()));
     }
 
-    private static String formatWinnerMessage(Player player) {
-        return String.format("%s wins! Congratulations, '%s' !!!",
-                player.getColor(),
-                player
-        );
-    }
-
     private static void displayErrorMessage(String message) {
         System.err.println(message);
+    }
+
+    private static String formatWinnerMessage(Player player) {
+        return String.format("%s wins! Congratulations, '%s' !!!",
+                player.getColor(), player
+        );
     }
 }
