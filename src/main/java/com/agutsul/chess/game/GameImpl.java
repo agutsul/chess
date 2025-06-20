@@ -41,14 +41,14 @@ class GameImpl extends AbstractPlayableGame {
         try {
             execute();
 
-            evaluateWinner(new WinnerEvaluatorImpl());
+            setWinner(evaluateWinner(new WinnerEvaluatorImpl()));
             notifyObservers(new GameOverEvent(this));
 
             logger.info("Game over");
         } catch (ActionTimeoutException e) {
             notifyObservers(new PlayerTerminateActionEvent(getCurrentPlayer(), Type.TIMEOUT));
 
-            evaluateWinner(new ActionTimeoutWinnerEvaluator());
+            setWinner(evaluateWinner(new ActionTimeoutWinnerEvaluator()));
             notifyObservers(new GameOverEvent(this));
 
             logger.info("Game over ( action timeout ): {}", e.getMessage());

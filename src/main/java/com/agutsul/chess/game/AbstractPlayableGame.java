@@ -3,7 +3,6 @@ package com.agutsul.chess.game;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.DEFAULT;
-import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 
 import java.util.Iterator;
 import java.util.List;
@@ -168,13 +167,8 @@ public abstract class AbstractPlayableGame
     @Override
     public final void execute() {
         while (true) {
+            requestPlayerAction(getCurrentPlayer());
 
-            // request player action
-            ((Observable) getCurrentPlayer()).notifyObservers(
-                    new RequestPlayerActionEvent(getCurrentPlayer())
-            );
-
-            // check if board state is terminal
             if (!hasNext()) {
                 logger.info("Game stopped due to board state of '{}': {}",
                         getCurrentPlayer().getColor(), this.board.getState()
@@ -183,7 +177,6 @@ public abstract class AbstractPlayableGame
                 break;
             }
 
-            // switch players
             setCurrentPlayer(next());
         }
     }
@@ -202,16 +195,8 @@ public abstract class AbstractPlayableGame
         return boardState;
     }
 
-    protected final void evaluateWinner(WinnerEvaluator winnerEvaluator) {
-        try {
-            setWinner(winnerEvaluator.evaluate(this));
-        } catch (Throwable throwable) {
-            logger.error("{}: Game exception, evaluate winner '{}': {}",
-                    getCurrentPlayer().getColor(),
-                    getBoard().getState(),
-                    getStackTrace(throwable)
-            );
-        }
+    protected final Player evaluateWinner(WinnerEvaluator winnerEvaluator) {
+        return winnerEvaluator.evaluate(this);
     }
 
     protected final void clearPieceData(Color color) {
@@ -232,6 +217,10 @@ public abstract class AbstractPlayableGame
                 new PostActionEventObserver(),
                 new GameExceptionObserver()
         ));
+    }
+
+    private void requestPlayerAction(Player player) {
+        ((Observable) player).notifyObservers(new RequestPlayerActionEvent(player));
     }
 
     final class PostActionEventObserver

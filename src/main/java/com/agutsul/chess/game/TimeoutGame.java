@@ -50,7 +50,7 @@ final class TimeoutGame
             LOGGER.info("Game over ( game timeout ): {}", e.getMessage());
 
             notifyObservers(new GameTimeoutTerminationEvent(this.game));
-            this.game.evaluateWinner(new GameTimeoutWinnerEvaluator());
+            this.game.setWinner(this.game.evaluateWinner(new GameTimeoutWinnerEvaluator()));
 
             notifyObservers(new GameOverEvent(this.game));
         } catch (Throwable throwable) {
