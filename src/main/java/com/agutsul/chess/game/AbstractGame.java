@@ -30,14 +30,13 @@ public abstract class AbstractGame
 
     private final Map<Color,Player> players;
 
-    private Player currentPlayer;
+    protected final Logger logger;
 
     private LocalDateTime startedAt;
     private LocalDateTime finishedAt;
 
-    protected final Logger logger;
-
-    protected Player winner;
+    private Player currentPlayer;
+    private Player winner;
 
     AbstractGame(Logger logger, Player whitePlayer, Player blackPlayer) {
         this.logger = logger;
@@ -78,7 +77,7 @@ public abstract class AbstractGame
         return this.finishedAt;
     }
 
-    public final void setCurrentPlayer(Player player) {
+    public void setCurrentPlayer(Player player) {
         this.currentPlayer = player;
     }
 
@@ -97,6 +96,10 @@ public abstract class AbstractGame
     @Override
     public final Optional<Player> getWinner() {
         return Optional.ofNullable(this.winner);
+    }
+
+    public void setWinner(Player player) {
+        this.winner = player;
     }
 
     @Override

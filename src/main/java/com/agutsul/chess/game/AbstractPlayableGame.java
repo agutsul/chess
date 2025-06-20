@@ -28,17 +28,18 @@ import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.game.event.BoardStateNotificationEvent;
+import com.agutsul.chess.game.event.SwitchPlayerEvent;
 import com.agutsul.chess.game.observer.CloseableGameOverObserver;
 import com.agutsul.chess.game.observer.GameExceptionObserver;
 import com.agutsul.chess.game.observer.GameOverObserver;
 import com.agutsul.chess.game.observer.GameStartedObserver;
+import com.agutsul.chess.game.observer.SwitchPlayerObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
+import com.agutsul.chess.player.event.RequestPlayerActionEvent;
+import com.agutsul.chess.player.observer.PlayableObserver;
 import com.agutsul.chess.player.observer.PlayerActionObserver;
-import com.agutsul.chess.player.state.ActivePlayerState;
-import com.agutsul.chess.player.state.LockedPlayerState;
-import com.agutsul.chess.player.state.PlayerState;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 import com.agutsul.chess.rule.winner.WinnerEvaluator;
@@ -52,12 +53,8 @@ public abstract class AbstractPlayableGame
     private final Board board;
     private final Journal<ActionMemento<?,?>> journal;
 
-    private final GameContext context;
-
     private final BoardStateEvaluator<BoardState> boardStateEvaluator;
-
-    protected final PlayerState activeState;
-    protected final PlayerState lockedState;
+    private final GameContext context;
 
     public AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer, Board board) {
         this(logger, whitePlayer, blackPlayer, board, new JournalImpl());
@@ -92,14 +89,13 @@ public abstract class AbstractPlayableGame
 
         this.boardStateEvaluator = boardStateEvaluator;
 
-        this.activeState = new ActivePlayerState((Observable) board);
-        this.lockedState = new LockedPlayerState();
+        var playableObserver = new PlayableObserver(board);
+        ((Observable) whitePlayer).addObserver(playableObserver);
+        ((Observable) blackPlayer).addObserver(playableObserver);
 
-        whitePlayer.setState(activeState);
-        blackPlayer.setState(lockedState);
+        initObservers();
 
         setCurrentPlayer(whitePlayer);
-        initObservers();
     }
 
     @Override
@@ -135,6 +131,12 @@ public abstract class AbstractPlayableGame
     }
 
     @Override
+    public final void setCurrentPlayer(Player player) {
+        super.setCurrentPlayer(player);
+        notifyObservers(new SwitchPlayerEvent());
+    }
+
+    @Override
     public final boolean hasNext() {
         logger.info("Checking board state ...");
 
@@ -160,14 +162,19 @@ public abstract class AbstractPlayableGame
 
     @Override
     public final Player next() {
-        return switchPlayers();
+        return getOpponentPlayer();
     }
 
     @Override
     public final void execute() {
         while (true) {
-            getCurrentPlayer().play();
 
+            // request player action
+            ((Observable) getCurrentPlayer()).notifyObservers(
+                    new RequestPlayerActionEvent(getCurrentPlayer())
+            );
+
+            // check if board state is terminal
             if (!hasNext()) {
                 logger.info("Game stopped due to board state of '{}': {}",
                         getCurrentPlayer().getColor(), this.board.getState()
@@ -176,6 +183,7 @@ public abstract class AbstractPlayableGame
                 break;
             }
 
+            // switch players
             setCurrentPlayer(next());
         }
     }
@@ -196,7 +204,7 @@ public abstract class AbstractPlayableGame
 
     protected final void evaluateWinner(WinnerEvaluator winnerEvaluator) {
         try {
-            this.winner = winnerEvaluator.evaluate(this);
+            setWinner(winnerEvaluator.evaluate(this));
         } catch (Throwable throwable) {
             logger.error("{}: Game exception, evaluate winner '{}': {}",
                     getCurrentPlayer().getColor(),
@@ -220,25 +228,10 @@ public abstract class AbstractPlayableGame
                 new GameStartedObserver(),
                 new GameOverObserver(),
                 new PlayerActionObserver(this),
+                new SwitchPlayerObserver(this),
                 new PostActionEventObserver(),
                 new GameExceptionObserver()
         ));
-    }
-
-    private Player switchPlayers() {
-        var player = getOpponentPlayer();
-
-        getCurrentPlayer().setState(this.lockedState);
-        player.setState(this.activeState);
-
-        logger.info("Switched player '{}({})' => '{}({})'",
-                getCurrentPlayer().getName(),
-                getCurrentPlayer().getColor(),
-                player.getName(),
-                player.getColor()
-        );
-
-        return player;
     }
 
     final class PostActionEventObserver
@@ -275,7 +268,7 @@ public abstract class AbstractPlayableGame
             clearPieceData(event.getColor());
             journal.removeLast();
 
-            setCurrentPlayer(switchPlayers());
+            setCurrentPlayer(getOpponentPlayer());
 
             var currentColor = getCurrentPlayer().getColor();
 

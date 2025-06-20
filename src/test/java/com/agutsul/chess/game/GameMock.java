@@ -14,6 +14,7 @@ import com.agutsul.chess.game.observer.CloseableGameOverObserver;
 import com.agutsul.chess.game.observer.GameExceptionObserver;
 import com.agutsul.chess.game.observer.GameOverObserver;
 import com.agutsul.chess.game.observer.GameStartedObserver;
+import com.agutsul.chess.game.observer.SwitchPlayerObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.mock.PlayerActionObserverMock;
@@ -64,9 +65,10 @@ public class GameMock
                 new GameStartedObserver(),
                 new GameOverObserver(),
                 new PlayerActionObserverMock(this),
+                new SwitchPlayerObserver(this),
                 new PostActionEventObserver(),
                 new GameExceptionObserver()
-        ).forEach(observer -> addObserver(observer));
+        ).forEach(this::addObserver);
     }
 
     @Override

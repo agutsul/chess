@@ -1,10 +1,23 @@
 package com.agutsul.chess.player;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.event.Event;
+import com.agutsul.chess.event.Observable;
+import com.agutsul.chess.event.Observer;
+import com.agutsul.chess.player.state.ActivePlayerState;
+import com.agutsul.chess.player.state.LockedPlayerState;
 import com.agutsul.chess.player.state.PlayerState;
 
 public abstract class AbstractPlayer
-        implements Player {
+        implements Player, Observable {
+
+    private static final PlayerState ACTIVE_STATE = new ActivePlayerState();
+    private static final PlayerState LOCKED_STATE = new LockedPlayerState();
+
+    private final List<Observer> observers = new CopyOnWriteArrayList<>();
 
     private final String name;
     private final Color color;
@@ -17,18 +30,25 @@ public abstract class AbstractPlayer
     }
 
     @Override
-    public void setState(PlayerState state) {
-        this.state = state;
+    public final void addObserver(Observer observer) {
+        this.observers.add(observer);
+    }
+
+    @Override
+    public final void removeObserver(Observer observer) {
+        this.observers.remove(observer);
+    }
+
+    @Override
+    public final void notifyObservers(Event event) {
+        for (var observer : this.observers) {
+            observer.observe(event);
+        }
     }
 
     @Override
     public PlayerState getState() {
         return state;
-    }
-
-    @Override
-    public void play() {
-        state.play(this);
     }
 
     @Override
@@ -44,5 +64,19 @@ public abstract class AbstractPlayer
     @Override
     public String toString() {
         return getName();
+    }
+
+    @Override
+    public void activate() {
+        setState(ACTIVE_STATE);
+    }
+
+    @Override
+    public void idle() {
+        setState(LOCKED_STATE);
+    }
+
+    void setState(PlayerState state) {
+        this.state = state;
     }
 }

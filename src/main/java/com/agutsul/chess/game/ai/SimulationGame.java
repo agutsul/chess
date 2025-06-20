@@ -74,9 +74,6 @@ public final class SimulationGame
         this.originAction = action;
 
         setCurrentPlayer(getPlayer(activeColor));
-
-        getCurrentPlayer().setState(activeState);
-        getOpponentPlayer().setState(lockedState);
     }
 
     public Color getColor() {

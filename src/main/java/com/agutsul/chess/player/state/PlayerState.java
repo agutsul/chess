@@ -4,7 +4,7 @@ import com.agutsul.chess.player.Player;
 import com.agutsul.chess.state.State;
 
 public interface PlayerState
-        extends State<Player>, Playable {
+        extends State<Player> {
 
     enum Type {
         ACTIVE,

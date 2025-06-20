@@ -21,16 +21,16 @@ import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
-import com.agutsul.chess.player.Player;
+import com.agutsul.chess.player.UserPlayer;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
 
 @ExtendWith(MockitoExtension.class)
 public class PlayableGameBuilderTest {
 
     @Mock
-    Player whitePlayer;
+    UserPlayer whitePlayer;
     @Mock
-    Player blackPlayer;
+    UserPlayer blackPlayer;
 
     @BeforeEach
     void setUp() {

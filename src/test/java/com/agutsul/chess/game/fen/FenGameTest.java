@@ -13,18 +13,18 @@ import com.agutsul.chess.TestFileReader;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.fen.FenGame.FenJournal;
-import com.agutsul.chess.player.Player;
+import com.agutsul.chess.player.UserPlayer;
 
 @ExtendWith(MockitoExtension.class)
 public class FenGameTest implements TestFileReader {
 
     @Test
     void testFenGameCreation() {
-        var player1 = mock(Player.class);
+        var player1 = mock(UserPlayer.class);
         when(player1.getColor())
             .thenReturn(Colors.WHITE);
 
-        var player2 = mock(Player.class);
+        var player2 = mock(UserPlayer.class);
         when(player2.getColor())
             .thenReturn(Colors.BLACK);
 
@@ -47,11 +47,11 @@ public class FenGameTest implements TestFileReader {
 
     @Test
     void testFenGameCreationWithEnPassant() {
-        var player1 = mock(Player.class);
+        var player1 = mock(UserPlayer.class);
         when(player1.getColor())
             .thenReturn(Colors.WHITE);
 
-        var player2 = mock(Player.class);
+        var player2 = mock(UserPlayer.class);
         when(player2.getColor())
             .thenReturn(Colors.BLACK);
 
