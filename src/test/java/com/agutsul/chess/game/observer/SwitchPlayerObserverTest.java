@@ -46,8 +46,8 @@ public class SwitchPlayerObserverTest {
         assertEquals(PlayerState.Type.LOCKED, blackPlayer.getState().getType());
         assertEquals(PlayerState.Type.ACTIVE, whitePlayer.getState().getType());
 
-        verify(blackPlayer, times(1)).idle();
-        verify(whitePlayer, times(1)).activate();
+        verify(blackPlayer, times(1)).disable();
+        verify(whitePlayer, times(1)).enable();
     }
 
     private static Player createPlayer(String name, Color color) {

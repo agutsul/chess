@@ -28,8 +28,8 @@ public class SwitchPlayerObserver
                 format(game.getCurrentPlayer()), format(game.getOpponentPlayer())
         );
 
-        game.getOpponentPlayer().idle();
-        game.getCurrentPlayer().activate();
+        game.getOpponentPlayer().disable();
+        game.getCurrentPlayer().enable();
     }
 
     private static String format(Player player) {

@@ -8,6 +8,6 @@ public interface Player {
     Color getColor();
     PlayerState getState();
 
-    void activate();
-    void idle();
+    void enable();
+    void disable();
 }

@@ -67,12 +67,12 @@ public abstract class AbstractPlayer
     }
 
     @Override
-    public void activate() {
+    public void enable() {
         setState(ACTIVE_STATE);
     }
 
     @Override
-    public void idle() {
+    public void disable() {
         setState(LOCKED_STATE);
     }
 
