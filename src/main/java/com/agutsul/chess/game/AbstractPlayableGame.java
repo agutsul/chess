@@ -130,12 +130,6 @@ public abstract class AbstractPlayableGame
     }
 
     @Override
-    public final void setCurrentPlayer(Player player) {
-        super.setCurrentPlayer(player);
-        notifyObservers(new SwitchPlayerEvent());
-    }
-
-    @Override
     public final boolean hasNext() {
         logger.info("Checking board state ...");
 
@@ -179,6 +173,12 @@ public abstract class AbstractPlayableGame
 
             setCurrentPlayer(next());
         }
+    }
+
+    @Override
+    protected final void setCurrentPlayer(Player player) {
+        super.setCurrentPlayer(player);
+        notifyObservers(new SwitchPlayerEvent());
     }
 
     protected final BoardState evaluateBoardState(Player player) {

@@ -77,8 +77,20 @@ public abstract class AbstractGame
         return this.finishedAt;
     }
 
-    public void setCurrentPlayer(Player player) {
-        this.currentPlayer = player;
+    @Override
+    public final GameState getState() {
+        if (isNull(getFinishedAt())) {
+            return new DefaultGameState();
+        }
+
+        var state = Stream.of(getWinnerPlayer())
+                .flatMap(Optional::stream)
+                .findFirst()
+                .map(Player::getColor)
+                .map(winnerColor -> WIN_STATES.get(winnerColor))
+                .orElse(new DrawnGameState());
+
+        return state;
     }
 
     @Override
@@ -98,23 +110,11 @@ public abstract class AbstractGame
         return Optional.ofNullable(this.winnerPlayer);
     }
 
-    public void setWinnerPlayer(Player player) {
+    protected void setWinnerPlayer(Player player) {
         this.winnerPlayer = player;
     }
 
-    @Override
-    public final GameState getState() {
-        if (isNull(getFinishedAt())) {
-            return new DefaultGameState();
-        }
-
-        var state = Stream.of(getWinnerPlayer())
-                .flatMap(Optional::stream)
-                .findFirst()
-                .map(Player::getColor)
-                .map(winnerColor -> WIN_STATES.get(winnerColor))
-                .orElse(new DrawnGameState());
-
-        return state;
+    protected void setCurrentPlayer(Player player) {
+        this.currentPlayer = player;
     }
 }
