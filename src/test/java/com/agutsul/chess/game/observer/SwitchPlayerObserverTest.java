@@ -2,7 +2,6 @@ package com.agutsul.chess.game.observer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -52,15 +51,6 @@ public class SwitchPlayerObserverTest {
     }
 
     private static Player createPlayer(String name, Color color) {
-        var player = spy(new UserPlayer(name, color));
-
-        doCallRealMethod()
-            .when(player).getName();
-        doCallRealMethod()
-            .when(player).getColor();
-        doCallRealMethod()
-            .when(player).getState();
-
-        return player;
+        return spy(new UserPlayer(name, color));
     }
 }
