@@ -32,9 +32,6 @@ public final class FenGame<T extends Game & Observable>
                    Board board, Color color, int halfMoves, int fullMoves) {
 
         super(createGame(whitePlayer, blackPlayer, board, new FenJournal(Map.of(
-                // 'full move' means 'completed turn' and is calculated only after black piece move.
-                // At that time white pieces already moved but counter not yet increased
-                // So, increment by one for white color
                 Colors.WHITE, Colors.WHITE.equals(color) ? fullMoves : fullMoves + 1,
                 Colors.BLACK, fullMoves)),
                 System.in, color
