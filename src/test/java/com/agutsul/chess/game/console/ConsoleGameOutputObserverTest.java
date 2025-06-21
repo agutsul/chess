@@ -111,7 +111,7 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
     void testProcessGameOverDrawEvent() throws URISyntaxException, IOException {
         when(game.getBoard())
             .thenReturn(STANDARD_BOARD);
-        when(game.getWinner())
+        when(game.getWinnerPlayer())
             .thenReturn(Optional.empty());
         when(game.getJournal())
             .thenReturn(new JournalImpl());
@@ -128,7 +128,7 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
     void testProcessGameOverWinEvent() throws URISyntaxException, IOException {
         when(game.getBoard())
             .thenReturn(STANDARD_BOARD);
-        when(game.getWinner())
+        when(game.getWinnerPlayer())
             .thenReturn(Optional.of(PLAYER));
         when(game.getJournal())
             .thenReturn(new JournalImpl());

@@ -36,7 +36,7 @@ public abstract class AbstractGame
     private LocalDateTime finishedAt;
 
     private Player currentPlayer;
-    private Player winner;
+    private Player winnerPlayer;
 
     AbstractGame(Logger logger, Player whitePlayer, Player blackPlayer) {
         this.logger = logger;
@@ -94,12 +94,12 @@ public abstract class AbstractGame
     }
 
     @Override
-    public final Optional<Player> getWinner() {
-        return Optional.ofNullable(this.winner);
+    public final Optional<Player> getWinnerPlayer() {
+        return Optional.ofNullable(this.winnerPlayer);
     }
 
-    public void setWinner(Player player) {
-        this.winner = player;
+    public void setWinnerPlayer(Player player) {
+        this.winnerPlayer = player;
     }
 
     @Override
@@ -108,7 +108,7 @@ public abstract class AbstractGame
             return new DefaultGameState();
         }
 
-        var state = Stream.of(getWinner())
+        var state = Stream.of(getWinnerPlayer())
                 .flatMap(Optional::stream)
                 .findFirst()
                 .map(Player::getColor)

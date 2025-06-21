@@ -28,5 +28,5 @@ public interface Game extends Runnable {
     GameState getState();
 
     Journal<ActionMemento<?,?>> getJournal();
-    Optional<Player> getWinner();
+    Optional<Player> getWinnerPlayer();
 }

@@ -242,7 +242,7 @@ public class GameImplTest {
 
         game.run();
 
-        var winner = game.getWinner();
+        var winner = game.getWinnerPlayer();
 
         assertTrue(winner.isPresent());
         assertEquals(whitePlayer, winner.get());
@@ -271,7 +271,7 @@ public class GameImplTest {
 
         game.run();
 
-        var winner = game.getWinner();
+        var winner = game.getWinnerPlayer();
         assertTrue(winner.isEmpty());
     }
 
@@ -298,7 +298,7 @@ public class GameImplTest {
 
         game.run();
 
-        var winner = game.getWinner();
+        var winner = game.getWinnerPlayer();
         assertTrue(winner.isPresent());
         assertEquals(blackPlayer, winner.get());
     }
@@ -371,7 +371,7 @@ public class GameImplTest {
         game.run();
 
         assertEquals(2, game.getJournal().size());
-        assertTrue(game.getWinner().isEmpty());
+        assertTrue(game.getWinnerPlayer().isEmpty());
 
         verify(whitePlayer, times(1)).notifyObservers(any());
         verify(blackPlayer, times(1)).notifyObservers(any());
@@ -436,7 +436,7 @@ public class GameImplTest {
 
         assertEquals(2, cancelledColors.size());
         assertEquals(2, game.getJournal().size());
-        assertTrue(game.getWinner().isEmpty());
+        assertTrue(game.getWinnerPlayer().isEmpty());
 
         verify(whitePlayer, times(2)).notifyObservers(any());
         verify(blackPlayer, times(2)).notifyObservers(any());
@@ -498,7 +498,7 @@ public class GameImplTest {
         game.run();
 
         assertEquals(2, game.getJournal().size());
-        assertTrue(game.getWinner().isEmpty());
+        assertTrue(game.getWinnerPlayer().isEmpty());
 
         verify(whitePlayer, times(1)).notifyObservers(any());
         verify(blackPlayer, times(1)).notifyObservers(any());
@@ -578,7 +578,7 @@ public class GameImplTest {
 
         assertEquals(1, game.getJournal().size());
 
-        var winner = game.getWinner();
+        var winner = game.getWinnerPlayer();
         assertTrue(winner.isEmpty());
 
         verify(whitePlayer, times(1)).notifyObservers(any());
@@ -644,7 +644,7 @@ public class GameImplTest {
 
         assertEquals(1, journal.size());
 
-        var winner = game.getWinner();
+        var winner = game.getWinnerPlayer();
         assertTrue(winner.isEmpty());
 
         verify(whitePlayer, times(1)).notifyObservers(any());
@@ -725,7 +725,7 @@ public class GameImplTest {
 
         assertEquals(1, game.getJournal().size());
 
-        var winner = game.getWinner();
+        var winner = game.getWinnerPlayer();
         assertTrue(winner.isPresent());
         assertEquals(whitePlayer, winner.get());
 
@@ -792,7 +792,7 @@ public class GameImplTest {
 
         assertEquals(1, journal.size());
 
-        var winner = game.getWinner();
+        var winner = game.getWinnerPlayer();
         assertTrue(winner.isEmpty());
 
         verify(whitePlayer, times(1)).notifyObservers(any());

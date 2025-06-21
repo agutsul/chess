@@ -56,7 +56,7 @@ public class TimeoutGameTest {
 
         game.run();
 
-        var winner = game.getWinner();
+        var winner = game.getWinnerPlayer();
         assertTrue(winner.isPresent());
         assertEquals(blackPlayer, winner.get());
     }

@@ -78,8 +78,8 @@ public abstract class AbstractGameProxy<GAME extends Game & Observable>
     }
 
     @Override
-    public Optional<Player> getWinner() {
-        return this.game.getWinner();
+    public Optional<Player> getWinnerPlayer() {
+        return this.game.getWinnerPlayer();
     }
 
     @Override

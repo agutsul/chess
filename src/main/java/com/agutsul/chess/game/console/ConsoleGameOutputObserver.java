@@ -110,7 +110,7 @@ public final class ConsoleGameOutputObserver
             displayJournal(game.getJournal());
 
             System.out.println(LINE);
-            displayWinner(game.getWinner());
+            displayWinner(game.getWinnerPlayer());
 
             var finishedAt = defaultIfNull(game.getFinishedAt(), now());
             displayDuration(Duration.between(game.getStartedAt(), finishedAt));
