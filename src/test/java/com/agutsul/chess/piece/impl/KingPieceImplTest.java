@@ -1,9 +1,12 @@
 package com.agutsul.chess.piece.impl;
 
+import static java.time.Instant.now;
+import static org.apache.commons.lang3.StringUtils.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
+import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
@@ -30,6 +34,7 @@ import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.Piece.Type;
 import com.agutsul.chess.piece.QueenPiece;
+import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 
 @ExtendWith(MockitoExtension.class)
@@ -430,5 +435,44 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .toList();
 
         assertTrue(illegalMovePositions.isEmpty());
+    }
+
+    @Test
+    void testProhibitedDispose() {
+        var kingPiece = new KingPieceImpl<Color>(mock(AbstractBoard.class),
+                Colors.WHITE, "", mock(Position.class), 1);
+
+        var thrown = assertThrows(
+                UnsupportedOperationException.class,
+                () -> kingPiece.dispose(now())
+        );
+
+        assertTrue(startsWith(thrown.getMessage(), "Unable to dispose KING piece at"));
+    }
+
+    @Test
+    void testProhibitedRestore() {
+        var kingPiece = new KingPieceImpl<Color>(mock(AbstractBoard.class),
+                Colors.WHITE, "", mock(Position.class), 1);
+
+        var thrown = assertThrows(
+                UnsupportedOperationException.class,
+                () -> kingPiece.restore()
+        );
+
+        assertEquals("Unable to restore KING piece", thrown.getMessage());
+    }
+
+    @Test
+    void testProhibitedCreateDisposedPieceState() {
+        var kingPiece = new KingPieceImpl<Color>(mock(AbstractBoard.class),
+                Colors.WHITE, "", mock(Position.class), 1);
+
+        var thrown = assertThrows(
+                UnsupportedOperationException.class,
+                () -> kingPiece.createDisposedPieceState(now())
+        );
+
+        assertTrue(startsWith(thrown.getMessage(), "Unable to dispose KING piece at"));
     }
 }
