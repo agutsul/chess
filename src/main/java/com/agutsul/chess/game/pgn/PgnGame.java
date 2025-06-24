@@ -83,7 +83,7 @@ public final class PgnGame<T extends Game & Observable>
                                           IntFunction<Boolean> filterFunction) {
 
         var playerActions = range(0, allActions.size())
-                .filter(index -> filterFunction.apply(index))
+                .filter(filterFunction::apply)
                 .mapToObj(index -> allActions.get(index))
                 .toList();
 

@@ -39,9 +39,13 @@ public final class ConsoleGame<T extends Game & Observable>
                                                               Board board, InputStream inputStream,
                                                               Long actionTimeout, Long gameTimeout) {
 
+        var context = new GameContext(new ForkJoinPool());
+        context.setActionTimeout(actionTimeout);
+        context.setGameTimeout(gameTimeout);
+
         var game = new PlayableGameBuilder<>(whitePlayer, blackPlayer)
                 .withBoard(board)
-                .withContext(new GameContext(new ForkJoinPool(), actionTimeout, gameTimeout))
+                .withContext(context)
                 .build();
 
         var observableBoard = (Observable) board;

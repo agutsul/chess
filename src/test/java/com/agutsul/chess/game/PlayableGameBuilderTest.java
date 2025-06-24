@@ -66,9 +66,13 @@ public class PlayableGameBuilderTest {
 
     @Test
     void testTimeoutGameBuild() {
-        var gameBuilder = new PlayableGameBuilder<>(whitePlayer, blackPlayer);
-        var context = new GameContext(mock(ForkJoinPool.class), 10000L, 20000L);
-        var game = gameBuilder.withContext(context).build();
+        var context = new GameContext(mock(ForkJoinPool.class));
+        context.setActionTimeout(10000L);
+        context.setGameTimeout(20000L);
+
+        var game = new PlayableGameBuilder<>(whitePlayer, blackPlayer)
+                .withContext(context)
+                .build();
 
         assertNotNull(game);
         assertTrue(game instanceof TimeoutGame);
