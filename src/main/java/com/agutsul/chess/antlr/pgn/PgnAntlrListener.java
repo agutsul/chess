@@ -1,5 +1,7 @@
 package com.agutsul.chess.antlr.pgn;
 
+import static org.apache.commons.lang3.StringUtils.strip;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,7 @@ final class PgnAntlrListener
     private static final String WHITE_TAG = "White";
     private static final String BLACK_TAG = "Black";
     private static final String TERMINATION_TAG = "Termination";
+    private static final String TIME_CONTROL = "TimeControl";
 
     private final List<PgnGame<?>> games = new ArrayList<>();
     private PgnGameBuilder gameBuilder;
@@ -50,27 +53,21 @@ final class PgnAntlrListener
 
     @Override
     public void enterTag_pair(PGNParser.Tag_pairContext ctx) {
-        var tagName = ctx.tag_name().getText();
-        var tagValueRaw = ctx.tag_value().getText();
+        var tagName = strip(ctx.tag_name().getText());
+        var tagValueRaw = strip(ctx.tag_value().getText());
 
         // STRING tokens starts and ends with " (a quote character)
         var tagValue = tagValueRaw.substring(1, tagValueRaw.length() - 1);
 
         switch (tagName) {
-        case EVENT_TAG:
-            this.gameBuilder.withEvent(tagValue); break;
-        case SITE_TAG:
-            this.gameBuilder.withSite(tagValue); break;
-        case ROUND_TAG:
-            this.gameBuilder.withRound(tagValue); break;
-        case WHITE_TAG:
-            this.gameBuilder.withWhitePlayer(tagValue); break;
-        case BLACK_TAG:
-            this.gameBuilder.withBlackPlayer(tagValue); break;
-        case TERMINATION_TAG:
-            this.gameBuilder.withGameTermination(tagValue); break;
-        default:
-            this.gameBuilder.addTag(tagName, tagValue);
+        case EVENT_TAG -> this.gameBuilder.withEvent(tagValue);
+        case SITE_TAG -> this.gameBuilder.withSite(tagValue);
+        case ROUND_TAG -> this.gameBuilder.withRound(tagValue);
+        case WHITE_TAG -> this.gameBuilder.withWhitePlayer(tagValue);
+        case BLACK_TAG -> this.gameBuilder.withBlackPlayer(tagValue);
+        case TERMINATION_TAG -> this.gameBuilder.withGameTermination(tagValue);
+        case TIME_CONTROL -> this.gameBuilder.withTimeControl(tagValue);
+        default -> this.gameBuilder.addTag(tagName, tagValue);
         }
     }
 
@@ -91,11 +88,11 @@ final class PgnAntlrListener
             return;
         }
 
-        this.gameBuilder.addAction(ctx.getText());
+        this.gameBuilder.addAction(strip(ctx.getText()));
     }
 
     @Override
     public void enterGame_termination(PGNParser.Game_terminationContext ctx) {
-        this.gameBuilder.withGameState(ctx.getText());
+        this.gameBuilder.withGameState(strip(ctx.getText()));
    }
 }

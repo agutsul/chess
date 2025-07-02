@@ -5,7 +5,10 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
+
+import com.agutsul.chess.timeout.Timeout;
 
 public final class GameContext implements Closeable {
 
@@ -18,17 +21,15 @@ public final class GameContext implements Closeable {
     // milliseconds
     private Long actionTimeout;
     private Long gameTimeout;
+    private Long extraActionTime;
+    private Integer totalActions;
+
+    private Optional<Timeout> timeout;
 
     public GameContext() {}
 
     public GameContext(ForkJoinPool forkJoinPool) {
-        this(forkJoinPool, null, null);
-    }
-
-    public GameContext(ForkJoinPool forkJoinPool, Long actionTimeoutMillis, Long gameTimeoutMillis) {
-        this.forkJoinPool  = forkJoinPool;
-        this.actionTimeout = actionTimeoutMillis;
-        this.gameTimeout   = gameTimeoutMillis;
+        this.forkJoinPool = forkJoinPool;
     }
 
     public String getEvent() {
@@ -49,6 +50,20 @@ public final class GameContext implements Closeable {
     public void setRound(String round) {
         this.round = round;
     }
+    public ForkJoinPool getForkJoinPool() {
+        return forkJoinPool;
+    }
+    public void setForkJoinPool(ForkJoinPool forkJoinPool) {
+        this.forkJoinPool = forkJoinPool;
+    }
+    public Optional<Timeout> getTimeout() {
+        return timeout;
+    }
+    public void setTimeout(Optional<Timeout> timeout) {
+        this.timeout = timeout;
+    }
+
+/**/
     public Long getActionTimeout() {
         return actionTimeout;
     }
@@ -61,13 +76,19 @@ public final class GameContext implements Closeable {
     public void setGameTimeout(Long gameTimeout) {
         this.gameTimeout = gameTimeout;
     }
-    public ForkJoinPool getForkJoinPool() {
-        return forkJoinPool;
+    public Long getExtraActionTime() {
+        return extraActionTime;
     }
-    public void setForkJoinPool(ForkJoinPool forkJoinPool) {
-        this.forkJoinPool = forkJoinPool;
+    public void setExtraActionTime(Long extraActionTime) {
+        this.extraActionTime = extraActionTime;
     }
-
+    public Integer getTotalActions() {
+        return totalActions;
+    }
+    public void setTotalActions(Integer totalActions) {
+        this.totalActions = totalActions;
+    }
+/**/
     @Override
     public void close() throws IOException {
         if (!isNull(getForkJoinPool())) {

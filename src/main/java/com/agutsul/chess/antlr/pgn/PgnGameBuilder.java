@@ -1,5 +1,7 @@
 package com.agutsul.chess.antlr.pgn;
 
+import static org.apache.commons.lang3.StringUtils.lowerCase;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +12,7 @@ import com.agutsul.chess.game.GameBuilder;
 import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.game.pgn.PgnGame;
 import com.agutsul.chess.game.pgn.PgnTermination;
+import com.agutsul.chess.game.pgn.PgnTimeControl;
 import com.agutsul.chess.game.state.BlackWinGameState;
 import com.agutsul.chess.game.state.DefaultGameState;
 import com.agutsul.chess.game.state.DrawnGameState;
@@ -30,6 +33,7 @@ final class PgnGameBuilder
     private String blackPlayer;
     private String gameState;
     private String terminationType;
+    private String timeControl;
 
     @Override
     public PgnGame<?> build() {
@@ -41,6 +45,8 @@ final class PgnGameBuilder
         context.setEvent(event);
         context.setSite(site);
         context.setRound(round);
+
+        context.setTimeout(PgnTimeControl.timeoutOf(lowerCase(timeControl)));
 
         var game = new PgnGame<>(player1, player2, tags, actions, context);
 
@@ -82,6 +88,11 @@ final class PgnGameBuilder
 
     GameBuilder<PgnGame<?>> withGameTermination(String terminationType) {
         this.terminationType = terminationType;
+        return this;
+    }
+
+    GameBuilder<PgnGame<?>> withTimeControl(String timeControl) {
+        this.timeControl = timeControl;
         return this;
     }
 

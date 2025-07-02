@@ -27,7 +27,7 @@ public class PgnGameParserTest implements TestFileReader {
     @Test
     void testParsingBlackWinsGameFile() throws URISyntaxException, IOException {
         var games = parseGames("chess_black.pgn", 1);
-        assertGame(games.getFirst(), GameState.Type.BLACK_WIN, 90, 10);
+        assertGame(games.getFirst(), GameState.Type.BLACK_WIN, 90, 9);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class PgnGameParserTest implements TestFileReader {
         assertFalse(games.isEmpty());
         assertEquals(1, games.size());
 
-        assertGame(games.getFirst(), GameState.Type.BLACK_WIN, 26, 10);
+        assertGame(games.getFirst(), GameState.Type.BLACK_WIN, 26, 9);
     }
 
     private static void assertGame(PgnGame<?> game, GameState.Type expectedGameState,

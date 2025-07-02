@@ -27,7 +27,7 @@ public final class PgnGameTest extends AbstractPgnGameTest {
     @Test
     void testPgnGameFileBlackWins() throws URISyntaxException, IOException {
         var game = parseGame(readFileContent("chess_black.pgn"));
-        assertGame(game, GameState.Type.BLACK_WIN, 90, 10);
+        assertGame(game, GameState.Type.BLACK_WIN, 90, 9);
     }
 
     @Test
@@ -65,7 +65,7 @@ public final class PgnGameTest extends AbstractPgnGameTest {
 
         assertEquals(140, game.getParsedActions().size());
         assertEquals(GameState.Type.BLACK_WIN, game.getParsedGameState().getType());
-        assertEquals(10, game.getParsedTags().size());
+        assertEquals(9, game.getParsedTags().size());
 
         game.run();
 
@@ -86,7 +86,7 @@ public final class PgnGameTest extends AbstractPgnGameTest {
 
         assertEquals(93, game.getParsedActions().size());
         assertEquals(GameState.Type.WHITE_WIN, game.getParsedGameState().getType());
-        assertEquals(10, game.getParsedTags().size());
+        assertEquals(9, game.getParsedTags().size());
 
         game.run();
 
@@ -106,7 +106,7 @@ public final class PgnGameTest extends AbstractPgnGameTest {
 
         assertEquals(255, game.getParsedActions().size());
         assertEquals(GameState.Type.DRAWN_GAME, game.getParsedGameState().getType());
-        assertEquals(10, game.getParsedTags().size());
+        assertEquals(9, game.getParsedTags().size());
 
         game.run();
 
