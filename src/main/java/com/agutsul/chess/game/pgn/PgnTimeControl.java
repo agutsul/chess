@@ -56,7 +56,7 @@ public enum PgnTimeControl {
             return createGameTimeout(toMilliseconds(text));
         }
     },
-    // "4500+60" - min number in seconds per action plus extra seconds after each action => action timeout
+    // "4500+60" - min number in seconds per action plus extra seconds after each action
     INCREMENTAL {
 
         @Override
@@ -68,7 +68,7 @@ public enum PgnTimeControl {
             var incrementalTimeout = Stream.of(strings[0])
                     .map(PgnTimeControl::timeoutOf)
                     .flatMap(Optional::stream)
-                    .filter(Objects::nonNull)                    // skip NO_TIME_CONTROL
+                    .filter(Objects::nonNull)          // skip NO_TIME_CONTROL
                     .filter(not(Timeout::isUnknown))   // skip UNKNOWN
                     .map(timeout -> createIncrementalTimeout(timeout, toMilliseconds(strings[1])))
                     .findFirst()
