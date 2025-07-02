@@ -36,7 +36,7 @@ public class PgnTimeControlTest {
     }
 
     @ParameterizedTest(name = "{index}. testUnknownTimeControl({0})")
-    @ValueSource(strings = { "?", "?:-" })
+    @ValueSource(strings = { "?", "?:-", "?:-:" })
     void testUnknownTimeControl(String timeControl) {
         var parsedTimeout = PgnTimeControl.timeoutOf(timeControl);
         assertTrue(parsedTimeout.isPresent());
@@ -165,7 +165,7 @@ public class PgnTimeControlTest {
     }
 
     @ParameterizedTest(name = "{index}. testCompositeTimeControl({0})")
-    @ValueSource(strings = { "40/5400+30:1800+30", "40/5400:*300", "5400:*300" })
+    @ValueSource(strings = { "40/5400+30:1800+30", "40/5400:*300", "5400:*300", "5400+30:*300", "5400:*300+30" })
     void testCompositeTimeControl(String timeControl) {
         var optionalTimeout = PgnTimeControl.timeoutOf(timeControl);
         assertTrue(optionalTimeout.isPresent());
