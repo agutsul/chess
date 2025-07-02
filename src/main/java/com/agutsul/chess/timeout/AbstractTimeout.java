@@ -1,9 +1,9 @@
 package com.agutsul.chess.timeout;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 abstract class AbstractTimeout implements Timeout {
 
@@ -40,6 +40,6 @@ abstract class AbstractTimeout implements Timeout {
 
     @Override
     public boolean isAnyType(Type type, Type... additionalTypes) {
-        return isType(type) || List.of(additionalTypes).contains(this.type);
+        return isType(type) || Stream.of(additionalTypes).anyMatch(this::isType);
     }
 }
