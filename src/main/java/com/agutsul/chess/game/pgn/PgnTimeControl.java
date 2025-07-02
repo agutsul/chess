@@ -110,15 +110,13 @@ public enum PgnTimeControl {
                 .filter(Objects::nonNull)
                 .toList();
 
-        if (timeouts.isEmpty()) {
-            return Optional.empty();
-        }
+        var result = switch (timeouts.size()) {
+        case 0  -> null;
+        case 1  -> timeouts.getFirst();
+        default -> new CompositeTimeout(timeouts);
+        };
 
-        if (timeouts.size() == 1) {
-            return Optional.of(timeouts.getFirst());
-        }
-
-        return Optional.of(new CompositeTimeout(timeouts));
+        return Optional.ofNullable(result);
     }
 
     private static boolean isActionsPerPeriod(String str, String searched) {
