@@ -18,7 +18,7 @@ public interface Timeout {
     Type getType();
 
     boolean isType(Type type);
-    boolean isAnyType(Type type, Type... additionalTypes);
+    boolean isAnyType(Type type, Type... types);
 
     // utilities
 
@@ -26,39 +26,39 @@ public interface Timeout {
         return isGeneric(timeout.getType());
     }
 
-    static boolean isGeneric(Timeout.Type type) {
-        return Timeout.Type.GENERIC.equals(type);
+    static boolean isGeneric(Type type) {
+        return Type.GENERIC.equals(type);
     }
 
     static boolean isActionsPerPeriod(Timeout timeout) {
         return isActionsPerPeriod(timeout.getType());
     }
 
-    static boolean isActionsPerPeriod(Timeout.Type type) {
-        return Timeout.Type.ACTIONS_PER_PERIOD.equals(type);
+    static boolean isActionsPerPeriod(Type type) {
+        return Type.ACTIONS_PER_PERIOD.equals(type);
     }
 
     static boolean isIncremental(Timeout timeout) {
         return isIncremental(timeout.getType());
     }
 
-    static boolean isIncremental(Timeout.Type type) {
-        return Timeout.Type.INCREMENTAL.equals(type);
+    static boolean isIncremental(Type type) {
+        return Type.INCREMENTAL.equals(type);
     }
 
     static boolean isSandclock(Timeout timeout) {
         return isSandclock(timeout.getType());
     }
 
-    static boolean isSandclock(Timeout.Type type) {
-        return Timeout.Type.SANDCLOCK.equals(type);
+    static boolean isSandclock(Type type) {
+        return Type.SANDCLOCK.equals(type);
     }
 
     static boolean isUnknown(Timeout timeout) {
         return isUnknown(timeout.getType());
     }
 
-    static boolean isUnknown(Timeout.Type type) {
-        return Timeout.Type.UNKNOWN.equals(type);
+    static boolean isUnknown(Type type) {
+        return Type.UNKNOWN.equals(type);
     }
 }

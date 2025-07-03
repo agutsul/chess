@@ -39,7 +39,7 @@ abstract class AbstractTimeout implements Timeout {
     }
 
     @Override
-    public boolean isAnyType(Type type, Type... additionalTypes) {
-        return isType(type) || Stream.of(additionalTypes).anyMatch(this::isType);
+    public boolean isAnyType(Type type, Type... types) {
+        return isType(type) || Stream.of(types).anyMatch(this::isType);
     }
 }

@@ -17,20 +17,20 @@ final class IncrementalTimeoutImpl
     }
 
     @Override
+    public Duration getExtraDuration() {
+        return extraDuration;
+    }
+
+    @Override
     public boolean isType(Type type) {
         return timeout.isType(type)
                 || super.isType(type);
     }
 
     @Override
-    public boolean isAnyType(Type type, Type... additionalTypes) {
-        return timeout.isAnyType(type, additionalTypes)
-                || super.isAnyType(type, additionalTypes);
-    }
-
-    @Override
-    public Duration getExtraDuration() {
-        return extraDuration;
+    public boolean isAnyType(Type type, Type... types) {
+        return timeout.isAnyType(type, types)
+                || super.isAnyType(type, types);
     }
 
     @Override
