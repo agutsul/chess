@@ -38,6 +38,13 @@ final class ActionsGameTimeoutImpl<GT extends Timeout & GameTimeout, AT extends 
     }
 
     @Override
+    public boolean isAnyType(Type type, Type... additionalTypes) {
+        return this.gameTimeout.isAnyType(type, additionalTypes)
+                || this.actionTimeout.isAnyType(type, additionalTypes)
+                || super.isAnyType(type, additionalTypes);
+    }
+
+    @Override
     public Optional<Duration> getDuration() {
         return Optional.of(getGameDuration());
     }
