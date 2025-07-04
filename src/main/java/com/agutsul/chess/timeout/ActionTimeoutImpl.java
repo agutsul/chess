@@ -14,4 +14,9 @@ final class ActionTimeoutImpl
     public Duration getActionDuration() {
         return super.getDuration().get();
     }
+
+    @Override
+    public String toString() {
+        return String.format("*%d", getActionDuration().toSeconds());
+    }
 }

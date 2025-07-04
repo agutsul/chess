@@ -42,4 +42,9 @@ final class IncrementalTimeoutImpl
     public Timeout getTimeout() {
         return timeout;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s+%d", getTimeout(), getExtraDuration().toSeconds());
+    }
 }

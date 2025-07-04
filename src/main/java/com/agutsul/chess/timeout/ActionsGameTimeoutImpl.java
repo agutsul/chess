@@ -64,6 +64,11 @@ final class ActionsGameTimeoutImpl<GT extends Timeout & GameTimeout, AT extends 
         return this.actionCounter;
     }
 
+    @Override
+    public String toString() {
+        return String.format("%d/%d", getActionsCounter(), getGameDuration().toSeconds());
+    }
+
     private static long calculateActionTimeout(long durationMillis, int actionCounter) {
         var halfActionMillis = durationMillis / 2;
         return halfActionMillis / actionCounter;

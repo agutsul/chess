@@ -14,4 +14,9 @@ final class GameTimeoutImpl
     public Duration getGameDuration() {
         return super.getDuration().get();
     }
+
+    @Override
+    public String toString() {
+        return String.format("%d", getGameDuration().toSeconds());
+    }
 }

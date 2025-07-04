@@ -19,8 +19,8 @@ final class PgnAntlrListener
     private static final String ROUND_TAG = "Round";
     private static final String WHITE_TAG = "White";
     private static final String BLACK_TAG = "Black";
-    private static final String TERMINATION_TAG = "Termination";
-    private static final String TIME_CONTROL = "TimeControl";
+    private static final String TERMINATION_TAG  = "Termination";
+    private static final String TIME_CONTROL_TAG = "TimeControl";
 
     private final List<PgnGame<?>> games = new ArrayList<>();
     private PgnGameBuilder gameBuilder;
@@ -60,14 +60,14 @@ final class PgnAntlrListener
         var tagValue = tagValueRaw.substring(1, tagValueRaw.length() - 1);
 
         switch (tagName) {
-        case EVENT_TAG -> this.gameBuilder.withEvent(tagValue);
-        case SITE_TAG -> this.gameBuilder.withSite(tagValue);
-        case ROUND_TAG -> this.gameBuilder.withRound(tagValue);
-        case WHITE_TAG -> this.gameBuilder.withWhitePlayer(tagValue);
-        case BLACK_TAG -> this.gameBuilder.withBlackPlayer(tagValue);
-        case TERMINATION_TAG -> this.gameBuilder.withGameTermination(tagValue);
-        case TIME_CONTROL -> this.gameBuilder.withTimeControl(tagValue);
-        default -> this.gameBuilder.addTag(tagName, tagValue);
+        case EVENT_TAG        -> this.gameBuilder.withEvent(tagValue);
+        case SITE_TAG         -> this.gameBuilder.withSite(tagValue);
+        case ROUND_TAG        -> this.gameBuilder.withRound(tagValue);
+        case WHITE_TAG        -> this.gameBuilder.withWhitePlayer(tagValue);
+        case BLACK_TAG        -> this.gameBuilder.withBlackPlayer(tagValue);
+        case TERMINATION_TAG  -> this.gameBuilder.withGameTermination(tagValue);
+        case TIME_CONTROL_TAG -> this.gameBuilder.withTimeControl(tagValue);
+        default               -> this.gameBuilder.addTag(tagName, tagValue);
         }
     }
 

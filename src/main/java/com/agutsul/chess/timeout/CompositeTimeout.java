@@ -1,5 +1,6 @@
 package com.agutsul.chess.timeout;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.summingLong;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
@@ -37,7 +38,7 @@ public final class CompositeTimeout implements Timeout {
     @Override
     public Optional<Duration> getDuration() {
         var totalMillis = this.timeouts.stream()
-                .filter(Timeout::isGeneric)
+                .filter(timeout -> timeout.isType(Type.GENERIC))
                 .map(Timeout::getDuration)
                 .flatMap(Optional::stream)
                 .collect(summingLong(Duration::toMillis));
@@ -63,5 +64,16 @@ public final class CompositeTimeout implements Timeout {
     public boolean isAnyType(Type type, Type... types) {
         return this.timeouts.stream()
                 .anyMatch(timeout -> timeout.isAnyType(type, types));
+    }
+
+    public Collection<Timeout> getTimeouts() {
+        return this.timeouts;
+    }
+
+    @Override
+    public String toString() {
+        return this.timeouts.stream()
+                .map(String::valueOf)
+                .collect(joining(":"));
     }
 }

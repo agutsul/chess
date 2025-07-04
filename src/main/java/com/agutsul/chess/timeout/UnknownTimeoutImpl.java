@@ -4,7 +4,14 @@ final class UnknownTimeoutImpl
         extends AbstractTimeout
         implements UnknownTimeout {
 
+    private static final String UNKNOWN_SYMBOL = "?";
+
     UnknownTimeoutImpl() {
         super(Timeout.Type.UNKNOWN);
+    }
+
+    @Override
+    public String toString() {
+        return UNKNOWN_SYMBOL;
     }
 }

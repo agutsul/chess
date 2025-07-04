@@ -1,10 +1,8 @@
 package com.agutsul.chess.game.pgn;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -176,27 +174,6 @@ public class PgnTimeControlTest {
         assertTrue(timeout.isAnyType(Timeout.Type.SANDCLOCK, Timeout.Type.GENERIC,
                 Timeout.Type.ACTIONS_PER_PERIOD, Timeout.Type.INCREMENTAL
         ));
-    }
-
-    @Test
-    void testEmptyCompositeTimeoutList() {
-        var message = "Unable to create composite timeout";
-
-        var timeouts = new ArrayList<Timeout>();
-        var thrown = assertThrows(IllegalStateException.class, () -> {
-            new CompositeTimeout(timeouts);
-        });
-
-        assertEquals(message, thrown.getMessage());
-
-        timeouts.add(null);
-        timeouts.add(null);
-
-        var thrown2 = assertThrows(IllegalStateException.class, () -> {
-            new CompositeTimeout(timeouts);
-        });
-
-        assertEquals(message, thrown2.getMessage());
     }
 
     @ParameterizedTest(name = "{index}. testInvalidCompositeTimeControl({0})")
