@@ -11,7 +11,7 @@ final class IncrementalTimeoutImpl
     private final Duration extraDuration;
 
     IncrementalTimeoutImpl(Timeout timeout, long extraMillis) {
-        super(Timeout.Type.INCREMENTAL);
+        super(Type.INCREMENTAL);
         this.timeout = timeout;
         this.extraDuration = Duration.ofMillis(extraMillis);
     }

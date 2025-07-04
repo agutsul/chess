@@ -23,7 +23,7 @@ final class ActionsGameTimeoutImpl<GT extends Timeout & GameTimeout, AT extends 
     }
 
     private ActionsGameTimeoutImpl(GT gameTimeout, AT actionTimeout, int actionCounter) {
-        super(Timeout.Type.ACTIONS_PER_PERIOD);
+        super(Type.ACTIONS_PER_PERIOD);
 
         this.gameTimeout = gameTimeout;
         this.actionTimeout = actionTimeout;

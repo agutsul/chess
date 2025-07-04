@@ -7,7 +7,7 @@ final class GameTimeoutImpl
         implements GameTimeout {
 
     GameTimeoutImpl(long millis) {
-        super(Timeout.Type.GENERIC, millis);
+        super(Type.GENERIC, millis);
     }
 
     @Override

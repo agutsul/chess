@@ -7,7 +7,7 @@ final class ActionTimeoutImpl
         implements ActionTimeout {
 
     ActionTimeoutImpl(long millis) {
-        super(Timeout.Type.SANDCLOCK, millis);
+        super(Type.SANDCLOCK, millis);
     }
 
     @Override

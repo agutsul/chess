@@ -7,7 +7,7 @@ final class UnknownTimeoutImpl
     private static final String UNKNOWN_SYMBOL = "?";
 
     UnknownTimeoutImpl() {
-        super(Timeout.Type.UNKNOWN);
+        super(Type.UNKNOWN);
     }
 
     @Override
