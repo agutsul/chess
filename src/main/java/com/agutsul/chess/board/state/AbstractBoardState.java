@@ -1,8 +1,6 @@
 package com.agutsul.chess.board.state;
 
 import java.util.Collection;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -40,16 +38,6 @@ abstract class AbstractBoardState
     @Override
     public Type getType() {
         return type;
-    }
-
-    @Override
-    public boolean isType(Type type) {
-        return Objects.equals(this.type, type);
-    }
-
-    @Override
-    public boolean isAnyType(Type type, Type... additionalTypes) {
-        return isType(type) || Stream.of(additionalTypes).anyMatch(this::isType);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.agutsul.chess.board.state;
 
 import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Rankable;
 import com.agutsul.chess.activity.action.Action;
@@ -50,8 +52,13 @@ public interface BoardState
 
     Type getType();
 
-    boolean isType(Type type);
-    boolean isAnyType(Type type, Type... types);
+    default boolean isType(Type type) {
+        return Objects.equals(getType(), type);
+    }
+
+    default boolean isAnyType(Type type, Type... additionalTypes) {
+        return isType(type) || Stream.of(additionalTypes).anyMatch(this::isType);
+    }
 
     default boolean isTerminal() {
         return getType().isTerminal();
