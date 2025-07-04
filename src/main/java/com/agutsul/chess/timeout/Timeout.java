@@ -1,7 +1,9 @@
 package com.agutsul.chess.timeout;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public interface Timeout {
 
@@ -17,8 +19,13 @@ public interface Timeout {
 
     Type getType();
 
-    boolean isType(Type type);
-    boolean isAnyType(Type type, Type... types);
+    default boolean isType(Type type) {
+        return Objects.equals(getType(), type);
+    }
+
+    default boolean isAnyType(Type type, Type... types) {
+        return isType(type) || Stream.of(types).anyMatch(this::isType);
+    }
 
     // utilities
 
