@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,7 +54,7 @@ public class ConsolePlayerInputObserverTest {
             .when(game).notifyObservers(any());
 
         when(context.getActionTimeout())
-            .thenReturn(null);
+            .thenReturn(Optional.empty());
 
         when(game.getContext())
             .thenReturn(context);
@@ -73,7 +74,7 @@ public class ConsolePlayerInputObserverTest {
             .when(game).notifyObservers(any());
 
         when(context.getActionTimeout())
-            .thenReturn(null);
+            .thenReturn(Optional.empty());
 
         when(game.getContext())
             .thenReturn(context);
@@ -98,7 +99,7 @@ public class ConsolePlayerInputObserverTest {
     @Test
     void testGetActionCommandValidCommandWithoutTimeout() throws IOException {
         when(context.getActionTimeout())
-            .thenReturn(null);
+            .thenReturn(Optional.empty());
 
         when(game.getContext())
             .thenReturn(context);
@@ -113,7 +114,7 @@ public class ConsolePlayerInputObserverTest {
     @Test
     void testGetActionCommandWithRuntimeException() throws IOException {
         when(context.getActionTimeout())
-            .thenReturn(null);
+            .thenReturn(Optional.empty());
 
         when(game.getContext())
             .thenReturn(context);
@@ -130,7 +131,7 @@ public class ConsolePlayerInputObserverTest {
     @Test
     void testGetActionCommandValidCommandWithTimeout() throws IOException {
         when(context.getActionTimeout())
-            .thenReturn(1000L);
+            .thenReturn(Optional.of(1000L));
 
         when(game.getContext())
             .thenReturn(context);
@@ -145,7 +146,7 @@ public class ConsolePlayerInputObserverTest {
     @Test
     void testGetActionCommandWithBlankCommand() throws IOException {
         when(context.getActionTimeout())
-            .thenReturn(null);
+            .thenReturn(Optional.empty());
 
         when(game.getContext())
             .thenReturn(context);
@@ -165,7 +166,7 @@ public class ConsolePlayerInputObserverTest {
     @Test
     void testGetActionCommandWithWinCommand() throws IOException {
         when(context.getActionTimeout())
-            .thenReturn(null);
+            .thenReturn(Optional.empty());
 
         when(game.getContext())
             .thenReturn(context);
@@ -185,7 +186,7 @@ public class ConsolePlayerInputObserverTest {
     @Test
     void testGetPromotionPieceTypeWithoutTimeout() throws IOException {
         when(context.getActionTimeout())
-            .thenReturn(null);
+            .thenReturn(Optional.empty());
 
         when(game.getContext())
             .thenReturn(context);
@@ -200,7 +201,7 @@ public class ConsolePlayerInputObserverTest {
     @Test
     void testGetPromotionPieceTypeWithBlankCommand() throws IOException {
         when(context.getActionTimeout())
-            .thenReturn(null);
+            .thenReturn(Optional.empty());
 
         when(game.getContext())
             .thenReturn(context);
@@ -221,7 +222,7 @@ public class ConsolePlayerInputObserverTest {
     @Test
     void testGetPromotionPieceTypeWithTimeout() throws IOException {
         when(context.getActionTimeout())
-            .thenReturn(10 * 60 * 1000L);
+            .thenReturn(Optional.of(10 * 60 * 1000L));
 
         when(game.getContext())
             .thenReturn(context);

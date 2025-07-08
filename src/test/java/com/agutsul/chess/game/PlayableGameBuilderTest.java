@@ -1,6 +1,7 @@
 package com.agutsul.chess.game;
 
 import static com.agutsul.chess.board.state.BoardStateFactory.staleMatedBoardState;
+import static com.agutsul.chess.timeout.TimeoutFactory.createGameTimeout;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -67,8 +68,7 @@ public class PlayableGameBuilderTest {
     @Test
     void testTimeoutGameBuild() {
         var context = new GameContext(mock(ForkJoinPool.class));
-        context.setActionTimeout(10000L);
-        context.setGameTimeout(20000L);
+        context.setTimeout(createGameTimeout(20000L));
 
         var game = new PlayableGameBuilder<>(whitePlayer, blackPlayer)
                 .withContext(context)

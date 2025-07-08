@@ -1,5 +1,6 @@
 package com.agutsul.chess.game.observer;
 
+import static com.agutsul.chess.timeout.TimeoutFactory.createGameTimeout;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -25,7 +26,7 @@ public class GameTimeoutTerminationObserverTest {
         var blackPlayer = new UserPlayer(UUID.randomUUID().toString(), Colors.BLACK);
 
         var context = new GameContext();
-        context.setGameTimeout(10000L);
+        context.setTimeout(createGameTimeout(10000L));
 
         var game = new PlayableGameBuilder<>(whitePlayer, blackPlayer)
                 .withContext(context)

@@ -1,4 +1,5 @@
 package com.agutsul.chess.game.console;
+import static java.time.Instant.now;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.apache.commons.lang3.StringUtils.strip;
@@ -9,8 +10,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
+import java.util.Optional;
+import java.util.stream.Stream;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.event.CompositeEventObserver;
@@ -52,18 +54,20 @@ public class ConsolePlayerInputObserver
         LOGGER.info("{}: '{}' move:", this.player.getColor(), this.player);
 
         var context = this.game.getContext();
+        var timeout = Stream.of(context.getActionTimeout())
+                .flatMap(Optional::stream)
+                .findFirst();
 
-        var timeoutMillis = context.getActionTimeout();
-        if (timeoutMillis != null) {
-            this.actionStarted = Instant.now();
+        if (timeout.isPresent()) {
+            this.actionStarted = now();
         }
 
-        var actionCommand = strip(lowerCase(readConsoleInput(timeoutMillis)));
+        var actionCommand = strip(lowerCase(readConsoleInput(timeout)));
         if (isEmpty(actionCommand)) {
             throw new IllegalActionException(EMPTY_LINE_MESSAGE);
         }
 
-        if (StringUtils.equalsIgnoreCase(PlayerCommand.WIN.code(), actionCommand)) {
+        if (PlayerCommand.WIN.code().equals(actionCommand)) {
             throw new IllegalActionException(String.format("%s: '%s'",
                     UNSUPPORTED_COMMAND_MESSAGE, actionCommand
             ));
@@ -83,12 +87,14 @@ public class ConsolePlayerInputObserver
         );
 
         var context = this.game.getContext();
+        var timeout = Stream.of(context.getActionTimeout())
+                .flatMap(Optional::stream)
+                .findFirst();
 
-        var timeoutMillis = context.getActionTimeout();
-        if (timeoutMillis != null && this.actionStarted != null) {
+        if (timeout.isPresent() && this.actionStarted != null) {
             // calculate remaining timeout for promotion piece type selection
-            var generalTimeout = this.actionStarted.toEpochMilli() + timeoutMillis;
-            timeoutMillis = generalTimeout - Instant.now().toEpochMilli();
+            var generalTimeout = this.actionStarted.toEpochMilli() + timeout.get();
+            timeout = Optional.of(generalTimeout - now().toEpochMilli());
 
             // prevent re-usage of already set timestamp
             // because promotion happens only after some actual action like move or capture
@@ -96,7 +102,7 @@ public class ConsolePlayerInputObserver
             this.actionStarted = null;
         }
 
-        var input = trimToEmpty(readConsoleInput(timeoutMillis));
+        var input = trimToEmpty(readConsoleInput(timeout));
         if (isEmpty(input)) {
             throw new IllegalActionException(EMPTY_LINE_MESSAGE);
         }
@@ -109,10 +115,13 @@ public class ConsolePlayerInputObserver
         return pieceTypeCode;
     }
 
-    private String readConsoleInput(Long timeoutMillis) {
-        var consoleInputReader = timeoutMillis != null
-                ? new TimeoutConsoleInputReader(this.player, this.inputStream, timeoutMillis)
-                : new ConsoleInputScanner(this.player, this.inputStream);
+    private String readConsoleInput(Optional<Long> timeout) {
+        var consoleInputReader = Stream.of(timeout)
+                .flatMap(Optional::stream)
+                .map(timeoutMillis -> new TimeoutConsoleInputReader(this.player, this.inputStream, timeoutMillis))
+                .map(timeoutReader -> (ConsoleInputReader) timeoutReader)
+                .findFirst()
+                .orElse(new ConsoleInputScanner(this.player, this.inputStream));
 
         try {
             return consoleInputReader.read();

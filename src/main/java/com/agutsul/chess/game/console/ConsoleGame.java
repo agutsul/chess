@@ -12,23 +12,24 @@ import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.game.PlayableGameBuilder;
 import com.agutsul.chess.game.ai.SimulationActionInputObserver;
 import com.agutsul.chess.player.Player;
+import com.agutsul.chess.timeout.Timeout;
 
 public final class ConsoleGame<T extends Game & Observable>
         extends AbstractGameProxy<T> {
 
-    private static final long TEN_MINUTES = 10 * 60 * 1000; // milliseconds
+//    private static final long TEN_MINUTES = 10 * 60 * 1000; // milliseconds
 
     public ConsoleGame(Player whitePlayer, Player blackPlayer) {
         super(createGame(whitePlayer, blackPlayer,
-                new StandardBoard(), System.in, TEN_MINUTES, null
+                new StandardBoard(), System.in, null
         ));
 
         addObserver(new ConsoleGameOutputObserver(game));
     }
 
-    public ConsoleGame(Player whitePlayer, Player blackPlayer, Long actionTimeout, Long gameTimeout) {
+    public ConsoleGame(Player whitePlayer, Player blackPlayer, Timeout timeout) {
         super(createGame(whitePlayer, blackPlayer,
-                new StandardBoard(), System.in, actionTimeout, gameTimeout
+                new StandardBoard(), System.in, timeout
         ));
 
         addObserver(new ConsoleGameOutputObserver(game));
@@ -37,11 +38,10 @@ public final class ConsoleGame<T extends Game & Observable>
     @SuppressWarnings("unchecked")
     private static <T extends Game & Observable> T createGame(Player whitePlayer, Player blackPlayer,
                                                               Board board, InputStream inputStream,
-                                                              Long actionTimeout, Long gameTimeout) {
+                                                              Timeout timeout) {
 
         var context = new GameContext(new ForkJoinPool());
-        context.setActionTimeout(actionTimeout);
-        context.setGameTimeout(gameTimeout);
+        context.setTimeout(timeout);
 
         var game = new PlayableGameBuilder<>(whitePlayer, blackPlayer)
                 .withBoard(board)

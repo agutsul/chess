@@ -5,10 +5,17 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Stream;
 
+import com.agutsul.chess.timeout.ActionTimeout;
+import com.agutsul.chess.timeout.ActionsGameTimeout;
+import com.agutsul.chess.timeout.GameTimeout;
+import com.agutsul.chess.timeout.IncrementalTimeout;
 import com.agutsul.chess.timeout.Timeout;
+import com.agutsul.chess.timeout.Timeout.Type;
 
 public final class GameContext implements Closeable {
 
@@ -17,13 +24,6 @@ public final class GameContext implements Closeable {
     private String round;
 
     private ForkJoinPool forkJoinPool;
-
-    // milliseconds
-    private Long actionTimeout;
-    private Long gameTimeout;
-    private Long extraActionTime;
-    private Integer totalActions;
-
     private Optional<Timeout> timeout;
 
     public GameContext() {}
@@ -59,36 +59,57 @@ public final class GameContext implements Closeable {
     public Optional<Timeout> getTimeout() {
         return timeout;
     }
-    public void setTimeout(Optional<Timeout> timeout) {
-        this.timeout = timeout;
+    public void setTimeout(Timeout timeout) {
+        this.timeout = Optional.ofNullable(timeout);
     }
 
-/**/
-    public Long getActionTimeout() {
-        return actionTimeout;
+    public Optional<Long> getActionTimeout() {
+        return Stream.ofNullable(this.timeout)
+                .flatMap(Optional::stream)
+                .map(timeout -> timeout.isType(Type.INCREMENTAL)
+                            ? ((IncrementalTimeout) timeout).getTimeout()
+                            : timeout
+                )
+                .map(GameContext::getActionTimeout)
+                .flatMap(Optional::stream)
+                .map(ActionTimeout::getActionDuration)
+                .map(Duration::toMillis)
+                .findFirst();
     }
-    public void setActionTimeout(Long actionTimeout) {
-        this.actionTimeout = actionTimeout;
+
+    public Optional<Long> getGameTimeout() {
+        return Stream.ofNullable(this.timeout)
+                .flatMap(Optional::stream)
+                .map(timeout -> timeout.isType(Type.INCREMENTAL)
+                            ? ((IncrementalTimeout) timeout).getTimeout()
+                            : timeout
+                )
+                .map(GameContext::getGameTimeout)
+                .flatMap(Optional::stream)
+                .map(GameTimeout::getGameDuration)
+                .map(Duration::toMillis)
+                .findFirst();
     }
-    public Long getGameTimeout() {
-        return gameTimeout;
+
+    public Optional<Long> getExtraActionTime() {
+        return Stream.ofNullable(this.timeout)
+                .flatMap(Optional::stream)
+                .map(GameContext::getIncrementalTimeout)
+                .flatMap(Optional::stream)
+                .map(IncrementalTimeout::getExtraDuration)
+                .map(Duration::toMillis)
+                .findFirst();
     }
-    public void setGameTimeout(Long gameTimeout) {
-        this.gameTimeout = gameTimeout;
+
+    public Optional<Integer> getTotalActions() {
+        return Stream.ofNullable(this.timeout)
+                .flatMap(Optional::stream)
+                .map(GameContext::getActionsGamedTimeout)
+                .flatMap(Optional::stream)
+                .map(ActionsGameTimeout::getActionsCounter)
+                .findFirst();
     }
-    public Long getExtraActionTime() {
-        return extraActionTime;
-    }
-    public void setExtraActionTime(Long extraActionTime) {
-        this.extraActionTime = extraActionTime;
-    }
-    public Integer getTotalActions() {
-        return totalActions;
-    }
-    public void setTotalActions(Integer totalActions) {
-        this.totalActions = totalActions;
-    }
-/**/
+
     @Override
     public void close() throws IOException {
         if (!isNull(getForkJoinPool())) {
@@ -105,5 +126,33 @@ public final class GameContext implements Closeable {
         } catch (InterruptedException e) {
             forkJoinPool.shutdownNow();
         }
+    }
+
+    private static Optional<GameTimeout> getGameTimeout(Timeout timeout) {
+        return Optional.ofNullable(timeout.isAnyType(Type.GENERIC, Type.ACTIONS_PER_PERIOD)
+            ? (GameTimeout) timeout
+            : null
+        );
+    }
+
+    private static Optional<ActionTimeout> getActionTimeout(Timeout timeout) {
+        return Optional.ofNullable(timeout.isAnyType(Type.SANDCLOCK, Type.ACTIONS_PER_PERIOD)
+            ? (ActionTimeout) timeout
+            : null
+        );
+    }
+
+    private static Optional<IncrementalTimeout> getIncrementalTimeout(Timeout timeout) {
+        return Optional.ofNullable(timeout.isType(Type.INCREMENTAL)
+            ? (IncrementalTimeout) timeout
+            : null
+        );
+    }
+
+    private static Optional<ActionsGameTimeout> getActionsGamedTimeout(Timeout timeout) {
+        return Optional.ofNullable(timeout.isType(Type.ACTIONS_PER_PERIOD)
+            ? (ActionsGameTimeout) timeout
+            : null
+        );
     }
 }

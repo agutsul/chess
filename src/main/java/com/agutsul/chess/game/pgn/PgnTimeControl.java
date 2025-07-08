@@ -18,7 +18,6 @@ import static org.apache.commons.lang3.StringUtils.startsWith;
 
 import java.time.Duration;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.timeout.CompositeTimeout;
@@ -67,7 +66,6 @@ public enum PgnTimeControl {
             // ( SANDCLOCK or ACTIONS_PER_PERIOD or GENERAL )
             var incrementalTimeout = Stream.of(strings[0])
                     .map(PgnTimeControl::timeoutOf)
-                    .flatMap(Optional::stream)
                     .filter(Objects::nonNull)          // skip NO_TIME_CONTROL
                     .filter(not(Timeout::isUnknown))   // skip UNKNOWN
                     .map(timeout -> createIncrementalTimeout(timeout, toMilliseconds(strings[1])))
@@ -88,9 +86,9 @@ public enum PgnTimeControl {
 
     protected abstract Timeout parse(String text);
 
-    public static Optional<Timeout> timeoutOf(String text) {
+    public static Timeout timeoutOf(String text) {
         if (isBlank(text)) {
-            return Optional.empty();
+            return null;
         }
 
         var timeouts = Stream.of(split(text, ":"))
@@ -116,7 +114,7 @@ public enum PgnTimeControl {
         default -> new CompositeTimeout(timeouts);
         };
 
-        return Optional.ofNullable(timeout);
+        return timeout;
     }
 
     private static boolean isActionsPerPeriod(String str, String searched) {

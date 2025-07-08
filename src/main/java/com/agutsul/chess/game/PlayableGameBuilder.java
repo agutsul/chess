@@ -3,6 +3,9 @@ package com.agutsul.chess.game;
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.StandardBoard;
@@ -58,7 +61,6 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public GAME build() {
         var board   = defaultIfNull(this.board,   new StandardBoard());
         var journal = defaultIfNull(this.journal, new JournalImpl());
@@ -78,10 +80,14 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
             board.setState(game.evaluateBoardState(game.getCurrentPlayer()));
         }
 
-        var resultGame = isNull(context.getGameTimeout())
-                ? game
-                : new TimeoutGame(game, context.getGameTimeout());
+        @SuppressWarnings("unchecked")
+        var resultGame = Stream.of(context.getGameTimeout())
+                .flatMap(Optional::stream)
+                .map(timeout -> new TimeoutGame(game, timeout))
+                .map(timeoutGame -> (GAME) timeoutGame)
+                .findFirst()
+                .orElse((GAME) game);
 
-        return (GAME) resultGame;
+        return resultGame;
     }
 }
