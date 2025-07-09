@@ -24,7 +24,7 @@ public final class GameContext implements Closeable {
     private String round;
 
     private ForkJoinPool forkJoinPool;
-    private Optional<Timeout> timeout;
+    private Timeout timeout;
 
     public GameContext() {}
 
@@ -57,14 +57,14 @@ public final class GameContext implements Closeable {
         this.forkJoinPool = forkJoinPool;
     }
     public Optional<Timeout> getTimeout() {
-        return timeout;
+        return Optional.ofNullable(timeout);
     }
     public void setTimeout(Timeout timeout) {
-        this.timeout = Optional.ofNullable(timeout);
+        this.timeout = timeout;
     }
 
     public Optional<Long> getActionTimeout() {
-        return Stream.ofNullable(this.timeout)
+        return Stream.ofNullable(getTimeout())
                 .flatMap(Optional::stream)
                 .map(timeout -> timeout.isType(Type.INCREMENTAL)
                             ? ((IncrementalTimeout) timeout).getTimeout()
@@ -78,7 +78,7 @@ public final class GameContext implements Closeable {
     }
 
     public Optional<Long> getGameTimeout() {
-        return Stream.ofNullable(this.timeout)
+        return Stream.ofNullable(getTimeout())
                 .flatMap(Optional::stream)
                 .map(timeout -> timeout.isType(Type.INCREMENTAL)
                             ? ((IncrementalTimeout) timeout).getTimeout()
@@ -92,7 +92,7 @@ public final class GameContext implements Closeable {
     }
 
     public Optional<Long> getExtraActionTime() {
-        return Stream.ofNullable(this.timeout)
+        return Stream.ofNullable(getTimeout())
                 .flatMap(Optional::stream)
                 .map(GameContext::getIncrementalTimeout)
                 .flatMap(Optional::stream)
@@ -102,9 +102,9 @@ public final class GameContext implements Closeable {
     }
 
     public Optional<Integer> getTotalActions() {
-        return Stream.ofNullable(this.timeout)
+        return Stream.ofNullable(getTimeout())
                 .flatMap(Optional::stream)
-                .map(GameContext::getActionsGamedTimeout)
+                .map(GameContext::getActionsGameTimeout)
                 .flatMap(Optional::stream)
                 .map(ActionsGameTimeout::getActionsCounter)
                 .findFirst();
@@ -149,7 +149,7 @@ public final class GameContext implements Closeable {
         );
     }
 
-    private static Optional<ActionsGameTimeout> getActionsGamedTimeout(Timeout timeout) {
+    private static Optional<ActionsGameTimeout> getActionsGameTimeout(Timeout timeout) {
         return Optional.ofNullable(timeout.isType(Type.ACTIONS_PER_PERIOD)
             ? (ActionsGameTimeout) timeout
             : null
