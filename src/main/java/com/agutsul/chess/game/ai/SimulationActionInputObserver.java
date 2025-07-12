@@ -2,6 +2,8 @@ package com.agutsul.chess.game.ai;
 
 import static com.agutsul.chess.activity.action.Action.isPromote;
 
+import java.util.Optional;
+
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.ActionAdapter;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
@@ -33,7 +35,7 @@ public final class SimulationActionInputObserver
     }
 
     @Override
-    protected String getActionCommand() {
+    protected String getActionCommand(Optional<Long> timeout) {
         var calculatedAction = this.actionStrategy.select(player.getColor());
         if (calculatedAction.isEmpty()) {
             return PlayerCommand.DEFEAT.code();
@@ -48,7 +50,7 @@ public final class SimulationActionInputObserver
     }
 
     @Override
-    protected String getPromotionPieceType() {
+    protected String getPromotionPieceType(Optional<Long> timeout) {
         if (this.promoteAction == null) {
             throw new IllegalStateException("Unknown promotion action");
         }

@@ -4,7 +4,9 @@ import static com.agutsul.chess.piece.Piece.Type.BISHOP;
 import static com.agutsul.chess.piece.Piece.Type.KNIGHT;
 import static com.agutsul.chess.piece.Piece.Type.QUEEN;
 import static com.agutsul.chess.piece.Piece.Type.ROOK;
+import static java.time.Instant.now;
 import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.summingLong;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.ArrayUtils.getLength;
 import static org.apache.commons.lang3.StringUtils.SPACE;
@@ -14,11 +16,14 @@ import static org.apache.commons.lang3.StringUtils.split;
 import static org.apache.commons.lang3.StringUtils.strip;
 import static org.apache.commons.lang3.StringUtils.upperCase;
 import static org.apache.commons.lang3.ThreadUtils.sleepQuietly;
+import static org.apache.commons.lang3.math.NumberUtils.LONG_ZERO;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -31,6 +36,7 @@ import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.ActionTimeoutException;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.Game;
+import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.game.event.GameTerminationEvent.Type;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
@@ -48,6 +54,8 @@ public abstract class AbstractPlayerInputObserver
         extends AbstractPlayerObserver {
 
     protected final Player player;
+
+    private Instant actionStarted;
 
     protected AbstractPlayerInputObserver(Player player, Game game) {
         super(game);
@@ -68,9 +76,9 @@ public abstract class AbstractPlayerInputObserver
         super.observe(event);
     }
 
-    protected abstract String getActionCommand();
+    protected abstract String getActionCommand(Optional<Long> timeout);
 
-    protected abstract String getPromotionPieceType();
+    protected abstract String getPromotionPieceType(Optional<Long> timeout);
 
     @Override
     protected Observer createObserver() {
@@ -86,6 +94,22 @@ public abstract class AbstractPlayerInputObserver
         sleepQuietly(Duration.ofMillis(1));
     }
 
+    Instant getActionStarted() {
+        return this.actionStarted;
+    }
+
+    void setActionStarted(Instant instant) {
+        this.actionStarted = instant;
+    }
+
+    private Optional<Long> getActionTimeout(GameContext context) {
+        var timeout = Stream.of(context.getActionTimeout(), player.getExtraTimeout())
+                .flatMap(Optional::stream)
+                .collect(summingLong(Long::longValue));
+
+        return Optional.ofNullable(LONG_ZERO.equals(timeout) ? null : timeout);
+    }
+
     protected class RequestPromotionPieceTypeObserver
             extends AbstractEventObserver<RequestPromotionPieceTypeEvent> {
 
@@ -98,11 +122,28 @@ public abstract class AbstractPlayerInputObserver
                 Stream.of(KNIGHT, BISHOP, ROOK, QUEEN)
                         .collect(toMap(Piece.Type::code, identity()));
 
-        public RequestPromotionPieceTypeObserver() {}
-
         @Override
         protected void process(RequestPromotionPieceTypeEvent event) {
-            var selectedType = upperCase(strip(getPromotionPieceType()));
+            var timeout = getActionTimeout(game.getContext());
+            if (timeout.isPresent() && getActionStarted() != null) {
+
+                // remaining = ( expected duration + action started) - current timestamp
+                var remainingTimeout = Stream.of(timeout.get(),
+                                getActionStarted().toEpochMilli(),
+                                -1 * now().toEpochMilli()
+                        )
+                        .collect(summingLong(Long::longValue));
+
+                timeout = Optional.of(remainingTimeout);
+
+                // prevent re-usage of already set timestamp
+                // because promotion happens only after some actual action like move or capture
+                // that should set 'actionStarted' field properly
+                setActionStarted(null);
+            }
+
+            var promotionType = getPromotionPieceType(timeout);
+            var selectedType  = upperCase(strip(promotionType));
 
             LOGGER.debug("Processing selected pawn promotion type '{}'", selectedType);
 
@@ -127,12 +168,15 @@ public abstract class AbstractPlayerInputObserver
         private static final String UNABLE_TO_PROCESS_MESSAGE = "Unable to process";
         private static final String INVALID_ACTION_FORMAT_MESSAGE = "Invalid action format";
 
-        public RequestPlayerActionObserver() {}
-
         @Override
         protected void process(RequestPlayerActionEvent event) {
+            var timeout = Stream.of(getActionTimeout(game.getContext()))
+                    .flatMap(Optional::stream)
+                    .peek(duration -> setActionStarted(now()))
+                    .findFirst();
+
             try {
-                var command = getActionCommand();
+                var command = getActionCommand(timeout);
 
                 var eventFactory = PlayerActionEventFactory.of(command);
                 if (eventFactory != null) {

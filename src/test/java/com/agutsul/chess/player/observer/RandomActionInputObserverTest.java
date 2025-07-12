@@ -11,6 +11,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
@@ -58,7 +59,7 @@ public class RandomActionInputObserverTest {
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
-        var command = inputObserver.getActionCommand();
+        var command = inputObserver.getActionCommand(Optional.empty());
         assertEquals("e3 e4", command);
     }
 
@@ -74,7 +75,7 @@ public class RandomActionInputObserverTest {
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
-        var command = inputObserver.getActionCommand();
+        var command = inputObserver.getActionCommand(Optional.empty());
         assertEquals("e7 e8", command);
     }
 
@@ -94,7 +95,7 @@ public class RandomActionInputObserverTest {
         when(random.nextInt(anyInt(), anyInt()))
             .thenReturn(0);
 
-        var command = inputObserver.getActionCommand();
+        var command = inputObserver.getActionCommand(Optional.empty());
         assertEquals("e4 f5", command);
     }
 
@@ -127,7 +128,7 @@ public class RandomActionInputObserverTest {
         when(game.getBoard())
             .thenReturn(board);
 
-        var command = inputObserver.getActionCommand();
+        var command = inputObserver.getActionCommand(Optional.empty());
         assertEquals("f4 e3", command);
     }
 
@@ -161,7 +162,7 @@ public class RandomActionInputObserverTest {
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
-        var command = inputObserver.getActionCommand();
+        var command = inputObserver.getActionCommand(Optional.empty());
         assertEquals("e1 g1", command);
     }
 
@@ -173,7 +174,7 @@ public class RandomActionInputObserverTest {
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
-        var command = inputObserver.getActionCommand();
+        var command = inputObserver.getActionCommand(Optional.empty());
         assertEquals(PlayerCommand.DEFEAT.toString(), command);
     }
 
@@ -182,7 +183,7 @@ public class RandomActionInputObserverTest {
         when(random.nextDouble())
             .thenReturn(0.0);
 
-        var command = inputObserver.getPromotionPieceType();
+        var command = inputObserver.getPromotionPieceType(Optional.empty());
         assertEquals(Piece.Type.ROOK.code(), command);
     }
 
@@ -191,7 +192,7 @@ public class RandomActionInputObserverTest {
         when(random.nextDouble())
             .thenReturn(0.3);
 
-        var command = inputObserver.getPromotionPieceType();
+        var command = inputObserver.getPromotionPieceType(Optional.empty());
         assertEquals(Piece.Type.KNIGHT.code(), command);
     }
 
@@ -200,7 +201,7 @@ public class RandomActionInputObserverTest {
         when(random.nextDouble())
             .thenReturn(0.6);
 
-        var command = inputObserver.getPromotionPieceType();
+        var command = inputObserver.getPromotionPieceType(Optional.empty());
         assertEquals(Piece.Type.BISHOP.code(), command);
     }
 
@@ -209,7 +210,7 @@ public class RandomActionInputObserverTest {
         when(random.nextDouble())
             .thenReturn(0.8);
 
-        var command = inputObserver.getPromotionPieceType();
+        var command = inputObserver.getPromotionPieceType(Optional.empty());
         assertEquals(Piece.Type.QUEEN.code(), command);
     }
 }

@@ -43,7 +43,7 @@ public class SimulationActionInputObserverTest {
 
         @SuppressWarnings("unchecked")
         var botObserver = new SimulationActionInputObserver(player, game, actionStrategy);
-        assertEquals("defeat", botObserver.getActionCommand());
+        assertEquals("defeat", botObserver.getActionCommand(Optional.empty()));
     }
 
     @Test
@@ -62,7 +62,7 @@ public class SimulationActionInputObserverTest {
 
         @SuppressWarnings("unchecked")
         var botObserver = new SimulationActionInputObserver(player, game, actionStrategy);
-        assertEquals("e4 e5", botObserver.getActionCommand());
+        assertEquals("e4 e5", botObserver.getActionCommand(Optional.empty()));
     }
 
     @Test
@@ -83,8 +83,8 @@ public class SimulationActionInputObserverTest {
 
         var botObserver = new SimulationActionInputObserver(player, game, actionStrategy);
 
-        assertEquals("e7 e8", botObserver.getActionCommand());
-        assertEquals("null", botObserver.getPromotionPieceType());
+        assertEquals("e7 e8", botObserver.getActionCommand(Optional.empty()));
+        assertEquals("null",  botObserver.getPromotionPieceType(Optional.empty()));
     }
 
     @Test
@@ -95,7 +95,7 @@ public class SimulationActionInputObserverTest {
         var botObserver = new SimulationActionInputObserver(player, game);
         var thrown = assertThrows(
                 IllegalStateException.class,
-                () -> botObserver.getPromotionPieceType()
+                () -> botObserver.getPromotionPieceType(Optional.empty())
         );
 
         assertEquals("Unknown promotion action", thrown.getMessage());

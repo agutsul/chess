@@ -98,31 +98,19 @@ public class ConsolePlayerInputObserverTest {
 
     @Test
     void testGetActionCommandValidCommandWithoutTimeout() throws IOException {
-        when(context.getActionTimeout())
-            .thenReturn(Optional.empty());
-
-        when(game.getContext())
-            .thenReturn(context);
-
         var command = String.format("e2 e4%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
             var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
-            assertEquals("e2 e4", playerInputObserver.getActionCommand());
+            assertEquals("e2 e4", playerInputObserver.getActionCommand(Optional.empty()));
         }
     }
 
     @Test
     void testGetActionCommandWithRuntimeException() throws IOException {
-        when(context.getActionTimeout())
-            .thenReturn(Optional.empty());
-
-        when(game.getContext())
-            .thenReturn(context);
-
         var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, null);
         var thrown = assertThrows(
                 IllegalActionException.class,
-                () -> playerInputObserver.getActionCommand()
+                () -> playerInputObserver.getActionCommand(Optional.empty())
         );
 
         assertEquals("WHITE: 'white_player' Reading action from console failed", thrown.getMessage());
@@ -130,33 +118,23 @@ public class ConsolePlayerInputObserverTest {
 
     @Test
     void testGetActionCommandValidCommandWithTimeout() throws IOException {
-        when(context.getActionTimeout())
-            .thenReturn(Optional.of(1000L));
-
-        when(game.getContext())
-            .thenReturn(context);
+        var timeout = 1000L;
 
         var command = String.format("e2 e4%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
             var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
-            assertEquals("e2 e4", playerInputObserver.getActionCommand());
+            assertEquals("e2 e4", playerInputObserver.getActionCommand(Optional.of(timeout)));
         }
     }
 
     @Test
     void testGetActionCommandWithBlankCommand() throws IOException {
-        when(context.getActionTimeout())
-            .thenReturn(Optional.empty());
-
-        when(game.getContext())
-            .thenReturn(context);
-
         var command = String.format("%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
             var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
             var thrown = assertThrows(
                     IllegalActionException.class,
-                    () -> playerInputObserver.getActionCommand()
+                    () -> playerInputObserver.getActionCommand(Optional.empty())
             );
 
             assertEquals("Unable to process an empty line", thrown.getMessage());
@@ -165,18 +143,12 @@ public class ConsolePlayerInputObserverTest {
 
     @Test
     void testGetActionCommandWithWinCommand() throws IOException {
-        when(context.getActionTimeout())
-            .thenReturn(Optional.empty());
-
-        when(game.getContext())
-            .thenReturn(context);
-
         var command = String.format("win%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
             var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
             var thrown = assertThrows(
                     IllegalActionException.class,
-                    () -> playerInputObserver.getActionCommand()
+                    () -> playerInputObserver.getActionCommand(Optional.empty())
             );
 
             assertEquals("Unsupported command: 'win'", thrown.getMessage());
@@ -185,34 +157,22 @@ public class ConsolePlayerInputObserverTest {
 
     @Test
     void testGetPromotionPieceTypeWithoutTimeout() throws IOException {
-        when(context.getActionTimeout())
-            .thenReturn(Optional.empty());
-
-        when(game.getContext())
-            .thenReturn(context);
-
         var command = String.format("q%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
             var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
-            assertEquals("Q", playerInputObserver.getPromotionPieceType());
+            assertEquals("Q", playerInputObserver.getPromotionPieceType(Optional.empty()));
         }
     }
 
     @Test
     void testGetPromotionPieceTypeWithBlankCommand() throws IOException {
-        when(context.getActionTimeout())
-            .thenReturn(Optional.empty());
-
-        when(game.getContext())
-            .thenReturn(context);
-
         var command = String.format("%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
             var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
 
             var thrown = assertThrows(
                     IllegalActionException.class,
-                    () -> playerInputObserver.getPromotionPieceType()
+                    () -> playerInputObserver.getPromotionPieceType(Optional.empty())
             );
 
             assertEquals("Unable to process an empty line", thrown.getMessage());
@@ -221,21 +181,17 @@ public class ConsolePlayerInputObserverTest {
 
     @Test
     void testGetPromotionPieceTypeWithTimeout() throws IOException {
-        when(context.getActionTimeout())
-            .thenReturn(Optional.of(10 * 60 * 1000L));
-
-        when(game.getContext())
-            .thenReturn(context);
+        var timeout = Optional.of(10 * 60 * 1000L);
 
         var moveCommand = String.format("e7 e8%s", lineSeparator());
         try (var inputStream = new ByteArrayInputStream(moveCommand.getBytes())) {
             var playerInputObserver = new TestConsolePlayerInputObserver(PLAYER, game, inputStream);
-            assertEquals("e7 e8", playerInputObserver.getActionCommand());
+            assertEquals("e7 e8", playerInputObserver.getActionCommand(timeout));
 
             var promotionTypeCommand = String.format("q%s", lineSeparator());
             try (var inputStream2 = new ByteArrayInputStream(promotionTypeCommand.getBytes())) {
                 playerInputObserver.setInputStream(inputStream2);
-                assertEquals("Q", playerInputObserver.getPromotionPieceType());
+                assertEquals("Q", playerInputObserver.getPromotionPieceType(timeout));
             }
         }
     }

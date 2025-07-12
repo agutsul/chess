@@ -246,6 +246,12 @@ public abstract class AbstractPlayableGame
             journal.add(memento);
             // recalculate board state to update journal records
             evaluateBoardState(getOpponentPlayer());
+
+            var extraTimeout = context.getExtraActionTime();
+            if (extraTimeout.isPresent()) {
+                var player = event.getPlayer();
+                player.setExtraTimeout(extraTimeout.get());
+            }
         }
     }
 

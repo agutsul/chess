@@ -1,5 +1,4 @@
 package com.agutsul.chess.game.console;
-import static java.time.Instant.now;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.apache.commons.lang3.StringUtils.strip;
@@ -9,7 +8,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Instant;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -34,7 +32,6 @@ public class ConsolePlayerInputObserver
     private static final String UNSUPPORTED_COMMAND_MESSAGE = "Unsupported command";
 
     protected InputStream inputStream;
-    protected Instant actionStarted;
 
     public ConsolePlayerInputObserver(Player player, Game game, InputStream inputStream) {
         super(player, game);
@@ -50,17 +47,8 @@ public class ConsolePlayerInputObserver
     }
 
     @Override
-    protected String getActionCommand() {
+    protected String getActionCommand(Optional<Long> timeout) {
         LOGGER.info("{}: '{}' move:", this.player.getColor(), this.player);
-
-        var context = this.game.getContext();
-        var timeout = Stream.of(context.getActionTimeout())
-                .flatMap(Optional::stream)
-                .findFirst();
-
-        if (timeout.isPresent()) {
-            this.actionStarted = now();
-        }
 
         var actionCommand = strip(lowerCase(readConsoleInput(timeout)));
         if (isEmpty(actionCommand)) {
@@ -81,26 +69,10 @@ public class ConsolePlayerInputObserver
     }
 
     @Override
-    protected String getPromotionPieceType() {
+    protected String getPromotionPieceType(Optional<Long> timeout) {
         LOGGER.info("{}: '{}' request promotion piece type",
                 this.player.getColor(), this.player
         );
-
-        var context = this.game.getContext();
-        var timeout = Stream.of(context.getActionTimeout())
-                .flatMap(Optional::stream)
-                .findFirst();
-
-        if (timeout.isPresent() && this.actionStarted != null) {
-            // calculate remaining timeout for promotion piece type selection
-            var generalTimeout = this.actionStarted.toEpochMilli() + timeout.get();
-            timeout = Optional.of(generalTimeout - now().toEpochMilli());
-
-            // prevent re-usage of already set timestamp
-            // because promotion happens only after some actual action like move or capture
-            // that should set 'actionStarted' field properly
-            this.actionStarted = null;
-        }
 
         var input = trimToEmpty(readConsoleInput(timeout));
         if (isEmpty(input)) {

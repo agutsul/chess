@@ -3,6 +3,7 @@ package com.agutsul.chess.game.pgn;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.agutsul.chess.antlr.pgn.action.PawnPromotionTypeAdapter;
 import com.agutsul.chess.antlr.pgn.action.PgnActionAdapter;
@@ -31,7 +32,7 @@ final class PgnPlayerInputObserver
     }
 
     @Override
-    protected String getActionCommand() {
+    protected String getActionCommand(Optional<Long> timeout) {
         if (!actionIterator.hasNext()) {
             return finalCommand();
         }
@@ -41,7 +42,7 @@ final class PgnPlayerInputObserver
     }
 
     @Override
-    protected String getPromotionPieceType() {
+    protected String getPromotionPieceType(Optional<Long> timeout) {
         var action = actionIterator.current();
         return promotionTypeAdapter.adapt(action);
     }

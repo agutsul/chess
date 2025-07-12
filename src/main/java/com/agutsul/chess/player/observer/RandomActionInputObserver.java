@@ -1,6 +1,7 @@
 package com.agutsul.chess.player.observer;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Random;
 
 import com.agutsul.chess.activity.action.ActionAdapter;
@@ -25,7 +26,7 @@ public final class RandomActionInputObserver
     }
 
     @Override
-    protected String getActionCommand() {
+    protected String getActionCommand(Optional<Long> timeout) {
         var board = this.game.getBoard();
 
         var pieces  = board.getPieces(player.getColor());
@@ -47,7 +48,7 @@ public final class RandomActionInputObserver
     }
 
     @Override
-    protected String getPromotionPieceType() {
+    protected String getPromotionPieceType(Optional<Long> timeout) {
         var value = this.random.nextDouble();
         if (value <= 0.25) {
             return Piece.Type.ROOK.code();

@@ -17,8 +17,6 @@ import com.agutsul.chess.timeout.Timeout;
 public final class ConsoleGame<T extends Game & Observable>
         extends AbstractGameProxy<T> {
 
-//    private static final long TEN_MINUTES = 10 * 60 * 1000; // milliseconds
-
     public ConsoleGame(Player whitePlayer, Player blackPlayer) {
         super(createGame(whitePlayer, blackPlayer,
                 new StandardBoard(), System.in, null

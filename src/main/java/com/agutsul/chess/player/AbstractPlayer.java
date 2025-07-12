@@ -1,6 +1,7 @@
 package com.agutsul.chess.player;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.agutsul.chess.color.Color;
@@ -23,6 +24,7 @@ public abstract class AbstractPlayer
     private final Color color;
 
     private PlayerState state;
+    private Long extraTimeout;
 
     public AbstractPlayer(String name, Color color) {
         this.name = name;
@@ -64,6 +66,16 @@ public abstract class AbstractPlayer
     @Override
     public String toString() {
         return getName();
+    }
+
+    @Override
+    public Optional<Long> getExtraTimeout() {
+        return Optional.ofNullable(this.extraTimeout);
+    }
+
+    @Override
+    public void setExtraTimeout(Long timeout) {
+        this.extraTimeout = timeout;
     }
 
     @Override

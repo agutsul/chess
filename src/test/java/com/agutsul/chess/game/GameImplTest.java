@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -814,7 +815,7 @@ public class GameImplTest {
         }
 
         @Override
-        protected String getActionCommand() {
+        protected String getActionCommand(Optional<Long> timeout) {
             return actionInterator.hasNext() ? actionInterator.next() : null;
         }
     }

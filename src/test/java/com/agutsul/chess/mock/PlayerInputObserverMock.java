@@ -1,5 +1,7 @@
 package com.agutsul.chess.mock;
 
+import java.util.Optional;
+
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
@@ -28,12 +30,12 @@ public class PlayerInputObserverMock
     }
 
     @Override
-    protected String getActionCommand() {
+    protected String getActionCommand(Optional<Long> timeout) {
         return actionCommand;
     }
 
     @Override
-    protected String getPromotionPieceType() {
+    protected String getPromotionPieceType(Optional<Long> timeout) {
         return promotionType;
     }
 }

@@ -25,6 +25,7 @@ import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.AbstractPlayableGame;
+import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.mock.PlayerInputObserverMock;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
@@ -74,6 +75,8 @@ public class PlayerInputObserverTest {
     @Test
     void testObservePlayerActionEvent() {
         var game = mock(AbstractPlayableGame.class);
+        when(game.getContext())
+            .thenReturn(new GameContext());
 
         var whitePlayer = mock(Player.class);
         when(whitePlayer.getColor())
@@ -92,6 +95,8 @@ public class PlayerInputObserverTest {
         var game = mock(AbstractPlayableGame.class);
         when(game.getBoard())
             .thenReturn(mock(AbstractBoard.class));
+        when(game.getContext())
+            .thenReturn(new GameContext());
 
         doAnswer(inv -> {
             var event = inv.getArgument(0, PlayerActionExceptionEvent.class);
@@ -115,6 +120,8 @@ public class PlayerInputObserverTest {
         var game = mock(AbstractPlayableGame.class);
         when(game.getBoard())
             .thenReturn(mock(AbstractBoard.class));
+        when(game.getContext())
+            .thenReturn(new GameContext());
 
         doAnswer(inv -> {
             var event = inv.getArgument(0, PlayerActionExceptionEvent.class);
@@ -136,6 +143,8 @@ public class PlayerInputObserverTest {
     @Test
     void testObservePlayerActionEventUndoAction() {
         var game = mock(AbstractPlayableGame.class);
+        when(game.getContext())
+            .thenReturn(new GameContext());
 
         var whitePlayer = mock(Player.class);
         when(whitePlayer.getColor())
@@ -152,6 +161,8 @@ public class PlayerInputObserverTest {
     @Test
     void testObservePlayerActionEventDrawAction() {
         var game = mock(AbstractPlayableGame.class);
+        when(game.getContext())
+            .thenReturn(new GameContext());
 
         var whitePlayer = mock(Player.class);
         when(whitePlayer.getColor())
@@ -198,6 +209,8 @@ public class PlayerInputObserverTest {
     @Test
     void testObservePlayerPromotionPieceTypeEventUnknowPromotionType() {
         var game = mock(AbstractPlayableGame.class);
+        when(game.getContext())
+            .thenReturn(new GameContext());
 
         var whitePlayer = mock(Player.class);
         when(whitePlayer.getColor())
