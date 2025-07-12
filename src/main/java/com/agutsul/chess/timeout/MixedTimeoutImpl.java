@@ -6,15 +6,15 @@ import static com.agutsul.chess.timeout.TimeoutFactory.createGameTimeout;
 import java.time.Duration;
 import java.util.Optional;
 
-final class ActionsGameTimeoutImpl<GT extends Timeout & GameTimeout, AT extends Timeout & ActionTimeout>
+final class MixedTimeoutImpl<GT extends Timeout & GameTimeout, AT extends Timeout & ActionTimeout>
         extends AbstractTimeout
-        implements ActionTimeout, GameTimeout, ActionsGameTimeout {
+        implements ActionTimeout, GameTimeout, MixedTimeout {
 
     private final GT gameTimeout;
     private final AT actionTimeout;
     private final int actionCounter;
 
-    ActionsGameTimeoutImpl(long durationMillis, int actionCounter) {
+    MixedTimeoutImpl(long durationMillis, int actionCounter) {
         this(
                 createGameTimeout(durationMillis),
                 createActionTimeout(calculateActionTimeout(durationMillis, actionCounter)),
@@ -22,7 +22,7 @@ final class ActionsGameTimeoutImpl<GT extends Timeout & GameTimeout, AT extends 
         );
     }
 
-    private ActionsGameTimeoutImpl(GT gameTimeout, AT actionTimeout, int actionCounter) {
+    private MixedTimeoutImpl(GT gameTimeout, AT actionTimeout, int actionCounter) {
         super(Type.ACTIONS_PER_PERIOD);
 
         this.gameTimeout = gameTimeout;

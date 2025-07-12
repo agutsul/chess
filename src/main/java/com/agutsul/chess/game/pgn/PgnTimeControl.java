@@ -1,7 +1,7 @@
 package com.agutsul.chess.game.pgn;
 
 import static com.agutsul.chess.timeout.TimeoutFactory.createActionTimeout;
-import static com.agutsul.chess.timeout.TimeoutFactory.createActionsGameTimeout;
+import static com.agutsul.chess.timeout.TimeoutFactory.createMixedTimeout;
 import static com.agutsul.chess.timeout.TimeoutFactory.createGameTimeout;
 import static com.agutsul.chess.timeout.TimeoutFactory.createIncrementalTimeout;
 import static com.agutsul.chess.timeout.TimeoutFactory.createUnknownTimeout;
@@ -44,7 +44,7 @@ public enum PgnTimeControl {
         @Override
         protected Timeout parse(String text) {
             var strings = split(text, "/");
-            return createActionsGameTimeout(toMilliseconds(strings[1]), parseInt(strings[0]));
+            return createMixedTimeout(toMilliseconds(strings[1]), parseInt(strings[0]));
         }
     },
     // "300" - 300 seconds for game => game timeout ( blitz )

@@ -11,7 +11,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.timeout.ActionTimeout;
-import com.agutsul.chess.timeout.ActionsGameTimeout;
+import com.agutsul.chess.timeout.MixedTimeout;
 import com.agutsul.chess.timeout.GameTimeout;
 import com.agutsul.chess.timeout.IncrementalTimeout;
 import com.agutsul.chess.timeout.Timeout;
@@ -105,8 +105,8 @@ public final class GameContext implements Closeable {
         return Stream.ofNullable(getTimeout())
                 .flatMap(Optional::stream)
                 .filter(timeout -> timeout.isType(Type.ACTIONS_PER_PERIOD))
-                .map(timeout -> (ActionsGameTimeout) timeout)
-                .map(ActionsGameTimeout::getActionsCounter)
+                .map(timeout -> (MixedTimeout) timeout)
+                .map(MixedTimeout::getActionsCounter)
                 .findFirst();
     }
 

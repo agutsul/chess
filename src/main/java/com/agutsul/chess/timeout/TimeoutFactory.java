@@ -13,8 +13,8 @@ public abstract class TimeoutFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static final <T extends Timeout & ActionsGameTimeout> T createActionsGameTimeout(long durationMillis, int actionCounter) {
-        return (T) new ActionsGameTimeoutImpl<>(durationMillis, actionCounter);
+    public static final <T extends Timeout & MixedTimeout> T createMixedTimeout(long durationMillis, int actionCounter) {
+        return (T) new MixedTimeoutImpl<>(durationMillis, actionCounter);
     }
 
     @SuppressWarnings("unchecked")

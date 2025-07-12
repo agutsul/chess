@@ -1,7 +1,7 @@
 package com.agutsul.chess.game;
 
 import static com.agutsul.chess.timeout.TimeoutFactory.createActionTimeout;
-import static com.agutsul.chess.timeout.TimeoutFactory.createActionsGameTimeout;
+import static com.agutsul.chess.timeout.TimeoutFactory.createMixedTimeout;
 import static com.agutsul.chess.timeout.TimeoutFactory.createGameTimeout;
 import static com.agutsul.chess.timeout.TimeoutFactory.createIncrementalTimeout;
 import static com.agutsul.chess.timeout.TimeoutFactory.createUnknownTimeout;
@@ -17,7 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.timeout.ActionTimeout;
-import com.agutsul.chess.timeout.ActionsGameTimeout;
+import com.agutsul.chess.timeout.MixedTimeout;
 import com.agutsul.chess.timeout.GameTimeout;
 import com.agutsul.chess.timeout.IncrementalTimeout;
 import com.agutsul.chess.timeout.Timeout.Type;
@@ -103,9 +103,9 @@ public class GameContextTest {
     }
 
     @Test
-    void testActionsPerPeriodTimeout() throws IOException {
+    void testMixedTimeout() throws IOException {
         try (var context = new GameContext()) {
-            context.setTimeout(createActionsGameTimeout(TEN_MINUTES, ACTIONS_COUNTER));
+            context.setTimeout(createMixedTimeout(TEN_MINUTES, ACTIONS_COUNTER));
 
             var optionalTimeout = context.getTimeout();
             assertTrue(optionalTimeout.isPresent());
@@ -166,7 +166,7 @@ public class GameContextTest {
 
     @Test
     void testActionTimeoutForIncrementalActionsPerPeriod() throws IOException {
-        var actionsPerPeriod = createActionsGameTimeout(TEN_MINUTES, ACTIONS_COUNTER);
+        var actionsPerPeriod = createMixedTimeout(TEN_MINUTES, ACTIONS_COUNTER);
         try (var context = new GameContext()) {
             context.setTimeout(createIncrementalTimeout(actionsPerPeriod, ONE_MINUTE));
 
@@ -183,7 +183,7 @@ public class GameContextTest {
 
             var originTimeout = incrementalTimeout.getTimeout();
             assertEquals(actionsPerPeriod, originTimeout);
-            assertEquals(ACTIONS_COUNTER, ((ActionsGameTimeout) originTimeout).getActionsCounter());
+            assertEquals(ACTIONS_COUNTER, ((MixedTimeout) originTimeout).getActionsCounter());
 
             var actionDuration = ((ActionTimeout) originTimeout).getActionDuration();
             assertEquals(TIMEOUT, actionDuration.toMillis());

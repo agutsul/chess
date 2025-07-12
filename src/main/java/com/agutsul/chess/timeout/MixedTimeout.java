@@ -1,5 +1,5 @@
 package com.agutsul.chess.timeout;
 
-public interface ActionsGameTimeout {
+public interface MixedTimeout {
     int getActionsCounter();
 }

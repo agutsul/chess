@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.timeout.ActionTimeout;
-import com.agutsul.chess.timeout.ActionsGameTimeout;
+import com.agutsul.chess.timeout.MixedTimeout;
 import com.agutsul.chess.timeout.CompositeTimeout;
 import com.agutsul.chess.timeout.GameTimeout;
 import com.agutsul.chess.timeout.IncrementalTimeout;
@@ -145,9 +145,9 @@ public class PgnTimeControlTest {
         assertEquals(300000L, gameTimeout.getGameDuration().toMillis());
 
         assertTrue(parsedTimeout.isType(Timeout.Type.ACTIONS_PER_PERIOD));
-        assertTrue(parsedTimeout instanceof ActionsGameTimeout);
+        assertTrue(parsedTimeout instanceof MixedTimeout);
 
-        var actionsGameTimeout = (ActionsGameTimeout) parsedTimeout;
+        var actionsGameTimeout = (MixedTimeout) parsedTimeout;
         assertEquals(10, actionsGameTimeout.getActionsCounter());
     }
 

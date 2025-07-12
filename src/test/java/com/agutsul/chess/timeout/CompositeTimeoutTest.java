@@ -16,7 +16,7 @@ public class CompositeTimeoutTest {
 
     @Test
     void testCompositeTimeoutToString() {
-        var actionsGameTimeout = new ActionsGameTimeoutImpl<>(30000, 10);
+        var actionsGameTimeout = new MixedTimeoutImpl<>(30000, 10);
         var incrementalTimeout = new IncrementalTimeoutImpl(actionsGameTimeout, 6000);
 
         var gameTimeout = new GameTimeoutImpl(3000);
@@ -98,7 +98,7 @@ public class CompositeTimeoutTest {
 
         var compositeTimeout = new CompositeTimeout(
                 gameTimeout,
-                new ActionsGameTimeoutImpl<>(3000, 20),
+                new MixedTimeoutImpl<>(3000, 20),
                 actionTimeout,
                 new IncrementalTimeoutImpl(actionTimeout, 600),
                 new IncrementalTimeoutImpl(gameTimeout, 600),
