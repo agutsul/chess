@@ -12,10 +12,6 @@ abstract class AbstractTimeout implements Timeout {
         this(type, null);
     }
 
-    AbstractTimeout(Type type, long milliseconds) {
-        this(type, Duration.ofMillis(milliseconds));
-    }
-
     AbstractTimeout(Type type, Duration duration) {
         this.type = type;
         this.duration = duration;

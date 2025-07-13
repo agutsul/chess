@@ -3,7 +3,7 @@ package com.agutsul.chess.timeout;
 import java.time.Duration;
 
 final class GameTimeoutImpl
-        extends AbstractTimeout
+        extends AbstractBaseTimeout
         implements GameTimeout {
 
     GameTimeoutImpl(long millis) {

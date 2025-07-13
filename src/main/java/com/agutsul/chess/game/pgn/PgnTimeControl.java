@@ -1,13 +1,12 @@
 package com.agutsul.chess.game.pgn;
 
 import static com.agutsul.chess.timeout.TimeoutFactory.createActionTimeout;
-import static com.agutsul.chess.timeout.TimeoutFactory.createMixedTimeout;
 import static com.agutsul.chess.timeout.TimeoutFactory.createGameTimeout;
 import static com.agutsul.chess.timeout.TimeoutFactory.createIncrementalTimeout;
+import static com.agutsul.chess.timeout.TimeoutFactory.createMixedTimeout;
 import static com.agutsul.chess.timeout.TimeoutFactory.createUnknownTimeout;
 import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
-import static java.util.function.Predicate.not;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.countMatches;
 import static org.apache.commons.lang3.StringUtils.endsWith;
@@ -20,6 +19,7 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.timeout.BaseTimeout;
 import com.agutsul.chess.timeout.CompositeTimeout;
 import com.agutsul.chess.timeout.Timeout;
 
@@ -66,8 +66,9 @@ public enum PgnTimeControl {
             // ( SANDCLOCK or ACTIONS_PER_PERIOD or GENERAL )
             var incrementalTimeout = Stream.of(strings[0])
                     .map(PgnTimeControl::timeoutOf)
-                    .filter(Objects::nonNull)          // skip NO_TIME_CONTROL
-                    .filter(not(Timeout::isUnknown))   // skip UNKNOWN
+                    .filter(Objects::nonNull)                          // skip NO_TIME_CONTROL
+                    .filter(timeout -> timeout instanceof BaseTimeout) // skip UNKNOWN & nested incremental
+                    .map(timeout -> (BaseTimeout) timeout)
                     .map(timeout -> createIncrementalTimeout(timeout, toMilliseconds(strings[1])))
                     .findFirst()
                     .orElse(null);

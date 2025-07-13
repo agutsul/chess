@@ -11,9 +11,9 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.timeout.ActionTimeout;
-import com.agutsul.chess.timeout.MixedTimeout;
 import com.agutsul.chess.timeout.GameTimeout;
 import com.agutsul.chess.timeout.IncrementalTimeout;
+import com.agutsul.chess.timeout.MixedTimeout;
 import com.agutsul.chess.timeout.Timeout;
 import com.agutsul.chess.timeout.Timeout.Type;
 
@@ -67,7 +67,7 @@ public final class GameContext implements Closeable {
         return Stream.ofNullable(getTimeout())
                 .flatMap(Optional::stream)
                 .map(timeout -> timeout.isType(Type.INCREMENTAL)
-                            ? ((IncrementalTimeout) timeout).getTimeout()
+                            ? ((IncrementalTimeout<?>) timeout).getTimeout()
                             : timeout
                 )
                 .filter(timeout -> timeout.isAnyType(Type.SANDCLOCK, Type.ACTIONS_PER_PERIOD))
@@ -81,7 +81,7 @@ public final class GameContext implements Closeable {
         return Stream.ofNullable(getTimeout())
                 .flatMap(Optional::stream)
                 .map(timeout -> timeout.isType(Type.INCREMENTAL)
-                            ? ((IncrementalTimeout) timeout).getTimeout()
+                            ? ((IncrementalTimeout<?>) timeout).getTimeout()
                             : timeout
                 )
                 .filter(timeout -> timeout.isAnyType(Type.GENERIC, Type.ACTIONS_PER_PERIOD))
@@ -95,7 +95,7 @@ public final class GameContext implements Closeable {
         return Stream.ofNullable(getTimeout())
                 .flatMap(Optional::stream)
                 .filter(timeout -> timeout.isType(Type.INCREMENTAL))
-                .map(timeout -> (IncrementalTimeout) timeout)
+                .map(timeout -> (IncrementalTimeout<?>) timeout)
                 .map(IncrementalTimeout::getExtraDuration)
                 .map(Duration::toMillis)
                 .findFirst();

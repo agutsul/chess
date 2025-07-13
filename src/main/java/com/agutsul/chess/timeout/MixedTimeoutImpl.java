@@ -7,7 +7,7 @@ import java.time.Duration;
 import java.util.Optional;
 
 final class MixedTimeoutImpl<GT extends Timeout & GameTimeout, AT extends Timeout & ActionTimeout>
-        extends AbstractTimeout
+        extends AbstractBaseTimeout
         implements ActionTimeout, GameTimeout, MixedTimeout {
 
     private final GT gameTimeout;
@@ -25,9 +25,24 @@ final class MixedTimeoutImpl<GT extends Timeout & GameTimeout, AT extends Timeou
     private MixedTimeoutImpl(GT gameTimeout, AT actionTimeout, int actionCounter) {
         super(Type.ACTIONS_PER_PERIOD);
 
-        this.gameTimeout = gameTimeout;
+        this.gameTimeout   = gameTimeout;
         this.actionTimeout = actionTimeout;
         this.actionCounter = actionCounter;
+    }
+
+    @Override
+    public Duration getGameDuration() {
+        return this.gameTimeout.getGameDuration();
+    }
+
+    @Override
+    public Duration getActionDuration() {
+        return this.actionTimeout.getActionDuration();
+    }
+
+    @Override
+    public int getActionsCounter() {
+        return this.actionCounter;
     }
 
     @Override
@@ -50,23 +65,10 @@ final class MixedTimeoutImpl<GT extends Timeout & GameTimeout, AT extends Timeou
     }
 
     @Override
-    public Duration getGameDuration() {
-        return this.gameTimeout.getGameDuration();
-    }
-
-    @Override
-    public Duration getActionDuration() {
-        return this.actionTimeout.getActionDuration();
-    }
-
-    @Override
-    public int getActionsCounter() {
-        return this.actionCounter;
-    }
-
-    @Override
     public String toString() {
-        return String.format("%d/%d", getActionsCounter(), getGameDuration().toSeconds());
+        return String.format("%d/%d",
+                getActionsCounter(), getGameDuration().toSeconds()
+        );
     }
 
     private static long calculateActionTimeout(long durationMillis, int actionCounter) {

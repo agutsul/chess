@@ -1,5 +1,10 @@
 package com.agutsul.chess.timeout;
 
+import static com.agutsul.chess.timeout.TimeoutFactory.createActionTimeout;
+import static com.agutsul.chess.timeout.TimeoutFactory.createGameTimeout;
+import static com.agutsul.chess.timeout.TimeoutFactory.createIncrementalTimeout;
+import static com.agutsul.chess.timeout.TimeoutFactory.createMixedTimeout;
+import static com.agutsul.chess.timeout.TimeoutFactory.createUnknownTimeout;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -16,24 +21,24 @@ public class CompositeTimeoutTest {
 
     @Test
     void testCompositeTimeoutToString() {
-        var actionsGameTimeout = new MixedTimeoutImpl<>(30000, 10);
-        var incrementalTimeout = new IncrementalTimeoutImpl(actionsGameTimeout, 6000);
+        var mixedTimeout = createMixedTimeout(30000, 10);
+        var incrementalTimeout = createIncrementalTimeout(mixedTimeout, 6000);
 
-        var gameTimeout = new GameTimeoutImpl(3000);
+        var gameTimeout = createGameTimeout(3000);
         var compositeTimeout = new CompositeTimeout(
                 gameTimeout,
-                actionsGameTimeout,
-                new IncrementalTimeoutImpl(gameTimeout, 6000),
+                mixedTimeout,
+                createIncrementalTimeout(gameTimeout, 6000),
                 incrementalTimeout
         );
 
         assertEquals("3:10/30:3+6:10/30+6", compositeTimeout.toString());
 
-        var actionTimeout = new ActionTimeoutImpl(1000);
+        var actionTimeout = createActionTimeout(1000);
         var compositeTimeout2 = new CompositeTimeout(
                 actionTimeout,
-                new IncrementalTimeoutImpl(actionTimeout, 6000),
-                actionsGameTimeout,
+                createIncrementalTimeout(actionTimeout, 6000),
+                mixedTimeout,
                 incrementalTimeout
         );
 
@@ -42,12 +47,12 @@ public class CompositeTimeoutTest {
 
     @Test
     void testCompositeTimeoutIsAnyType() {
-        var actionTimeout = new ActionTimeoutImpl(1000);
+        var actionTimeout = createActionTimeout(1000);
 
         var compositeTimeout = new CompositeTimeout(
                 actionTimeout,
-                new IncrementalTimeoutImpl(actionTimeout, 600),
-                new UnknownTimeoutImpl()
+                createIncrementalTimeout(actionTimeout, 600),
+                createUnknownTimeout()
         );
 
         assertTrue(compositeTimeout.isAnyType(
@@ -61,12 +66,12 @@ public class CompositeTimeoutTest {
 
     @Test
     void testCompositeTimeoutIsType() {
-        var actionTimeout = new ActionTimeoutImpl(1000);
+        var actionTimeout = createActionTimeout(1000);
 
         var compositeTimeout = new CompositeTimeout(
                 actionTimeout,
-                new IncrementalTimeoutImpl(actionTimeout, 600),
-                new UnknownTimeoutImpl()
+                createIncrementalTimeout(actionTimeout, 600),
+                createUnknownTimeout()
         );
 
         assertTrue(compositeTimeout.isType(Timeout.Type.SANDCLOCK));
@@ -79,12 +84,12 @@ public class CompositeTimeoutTest {
 
     @Test
     void testCompositeTimeoutDurationEmpty() {
-        var actionTimeout = new ActionTimeoutImpl(1000);
+        var actionTimeout = createActionTimeout(1000);
 
         var compositeTimeout = new CompositeTimeout(
                 actionTimeout,
-                new IncrementalTimeoutImpl(actionTimeout, 600),
-                new UnknownTimeoutImpl()
+                createIncrementalTimeout(actionTimeout, 600),
+                createUnknownTimeout()
         );
 
         var duration = compositeTimeout.getDuration();
@@ -93,16 +98,16 @@ public class CompositeTimeoutTest {
 
     @Test
     void testCompositeTimeoutDuration() {
-        var gameTimeout = new GameTimeoutImpl(3000);
-        var actionTimeout = new ActionTimeoutImpl(1000);
+        var gameTimeout   = createGameTimeout(3000);
+        var actionTimeout = createActionTimeout(1000);
 
         var compositeTimeout = new CompositeTimeout(
                 gameTimeout,
-                new MixedTimeoutImpl<>(3000, 20),
+                createMixedTimeout(3000, 20),
                 actionTimeout,
-                new IncrementalTimeoutImpl(actionTimeout, 600),
-                new IncrementalTimeoutImpl(gameTimeout, 600),
-                new UnknownTimeoutImpl()
+                createIncrementalTimeout(actionTimeout, 600),
+                createIncrementalTimeout(gameTimeout, 600),
+                createUnknownTimeout()
         );
 
         var duration = compositeTimeout.getDuration();

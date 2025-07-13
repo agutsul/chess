@@ -1,9 +1,9 @@
 package com.agutsul.chess.game;
 
 import static com.agutsul.chess.timeout.TimeoutFactory.createActionTimeout;
-import static com.agutsul.chess.timeout.TimeoutFactory.createMixedTimeout;
 import static com.agutsul.chess.timeout.TimeoutFactory.createGameTimeout;
 import static com.agutsul.chess.timeout.TimeoutFactory.createIncrementalTimeout;
+import static com.agutsul.chess.timeout.TimeoutFactory.createMixedTimeout;
 import static com.agutsul.chess.timeout.TimeoutFactory.createUnknownTimeout;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,9 +17,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.timeout.ActionTimeout;
-import com.agutsul.chess.timeout.MixedTimeout;
+//import com.agutsul.chess.timeout.BaseTimeout;
 import com.agutsul.chess.timeout.GameTimeout;
 import com.agutsul.chess.timeout.IncrementalTimeout;
+import com.agutsul.chess.timeout.MixedTimeout;
 import com.agutsul.chess.timeout.Timeout.Type;
 
 @ExtendWith(MockitoExtension.class)
@@ -142,7 +143,7 @@ public class GameContextTest {
             assertEquals(Type.INCREMENTAL, timeout.getType());
             assertTrue(timeout.isType(Type.SANDCLOCK));
 
-            var incrementalTimeout = (IncrementalTimeout) timeout;
+            var incrementalTimeout = (IncrementalTimeout<?>) timeout;
 
             var originTimeout = incrementalTimeout.getTimeout();
             assertEquals(actionTimeout, originTimeout);
@@ -179,7 +180,7 @@ public class GameContextTest {
             assertTrue(timeout.isType(Type.SANDCLOCK));
             assertTrue(timeout.isType(Type.GENERIC));
 
-            var incrementalTimeout = (IncrementalTimeout) timeout;
+            var incrementalTimeout = (IncrementalTimeout<?>) timeout;
 
             var originTimeout = incrementalTimeout.getTimeout();
             assertEquals(actionsPerPeriod, originTimeout);
@@ -214,7 +215,7 @@ public class GameContextTest {
             assertEquals(Type.INCREMENTAL, timeout.getType());
             assertTrue(timeout.isType(Type.GENERIC));
 
-            var incrementalTimeout = (IncrementalTimeout) timeout;
+            var incrementalTimeout = (IncrementalTimeout<?>) timeout;
 
             var originTimeout = incrementalTimeout.getTimeout();
             assertEquals(gameTimeout, originTimeout);

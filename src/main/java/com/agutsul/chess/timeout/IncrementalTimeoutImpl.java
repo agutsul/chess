@@ -3,14 +3,14 @@ package com.agutsul.chess.timeout;
 import java.time.Duration;
 import java.util.Optional;
 
-final class IncrementalTimeoutImpl
+final class IncrementalTimeoutImpl<TIMEOUT extends BaseTimeout>
         extends AbstractTimeout
-        implements IncrementalTimeout {
+        implements IncrementalTimeout<TIMEOUT> {
 
-    private final Timeout timeout;
+    private final TIMEOUT  timeout;
     private final Duration extraDuration;
 
-    IncrementalTimeoutImpl(Timeout timeout, long extraMillis) {
+    IncrementalTimeoutImpl(TIMEOUT timeout, long extraMillis) {
         super(Type.INCREMENTAL);
         this.timeout = timeout;
         this.extraDuration = Duration.ofMillis(extraMillis);
@@ -19,6 +19,11 @@ final class IncrementalTimeoutImpl
     @Override
     public Duration getExtraDuration() {
         return extraDuration;
+    }
+
+    @Override
+    public TIMEOUT getTimeout() {
+        return timeout;
     }
 
     @Override
@@ -39,12 +44,9 @@ final class IncrementalTimeoutImpl
     }
 
     @Override
-    public Timeout getTimeout() {
-        return timeout;
-    }
-
-    @Override
     public String toString() {
-        return String.format("%s+%d", getTimeout(), getExtraDuration().toSeconds());
+        return String.format("%s+%d",
+                getTimeout(), getExtraDuration().toSeconds()
+        );
     }
 }
