@@ -1,5 +1,7 @@
 package com.agutsul.chess.game.pgn;
 
+import static com.agutsul.chess.game.pgn.PgnTermination.TIME_FORFEIT;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -51,7 +53,7 @@ final class PgnPlayerInputObserver
     private String finalCommand() {
         var pgnGame = (PgnGame<?>) this.game;
 
-        if (PgnTermination.TIME_FORFEIT.equals(pgnGame.getParsedTermination())) {
+        if (TIME_FORFEIT.equals(pgnGame.getParsedTermination())) {
             throw new ActionTimeoutException(String.format(
                     "%s: '%s' entering action timeout",
                     this.player.getColor(), this.player
@@ -59,23 +61,19 @@ final class PgnPlayerInputObserver
         }
 
         var gameState = pgnGame.getParsedGameState();
-        switch (gameState.getType()) {
-        case WHITE_WIN:
-            return finalCommand(this.player, Colors.WHITE);
-        case BLACK_WIN:
-            return finalCommand(this.player, Colors.BLACK);
-        case DRAWN_GAME:
-            return PlayerCommand.DRAW.code();
-        default:
-            return PlayerCommand.EXIT.code();
-        }
-    }
-
-    private static String finalCommand(Player player, Color color) {
-        var command = Objects.equals(player.getColor(), color)
-                ? PlayerCommand.WIN
-                : PlayerCommand.DEFEAT;
+        var command = switch (gameState.getType()) {
+        case WHITE_WIN  -> finalCommand(this.player, Colors.WHITE);
+        case BLACK_WIN  -> finalCommand(this.player, Colors.BLACK);
+        case DRAWN_GAME -> PlayerCommand.DRAW;
+        default -> PlayerCommand.EXIT;
+        };
 
         return command.code();
+    }
+
+    private static PlayerCommand finalCommand(Player player, Color color) {
+        return Objects.equals(player.getColor(), color)
+                ? PlayerCommand.WIN
+                : PlayerCommand.DEFEAT;
     }
 }
