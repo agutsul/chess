@@ -70,4 +70,20 @@ public class CurrentIteratorImplTest {
 
         assertNull(iterator.next());
     }
+
+    @Test
+    void testHasCurrentWithNonEmptyIterator() {
+        var iterator = new CurrentIteratorImpl<Integer>(INT_LIST.iterator());
+        assertFalse(iterator.hasCurrent());
+
+        iterator.next();
+
+        assertTrue(iterator.hasCurrent());
+    }
+
+    @Test
+    void testHasCurrentWithEmptyIterator() {
+        var iterator = new CurrentIteratorImpl<Object>(EMPTY_LIST.iterator());
+        assertFalse(iterator.hasCurrent());
+    }
 }

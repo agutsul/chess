@@ -20,6 +20,11 @@ public class CurrentIteratorImpl<E>
     }
 
     @Override
+    public boolean hasCurrent() {
+        return this.current != null;
+    }
+
+    @Override
     public E current() {
         return this.current;
     }
@@ -35,4 +40,5 @@ public class CurrentIteratorImpl<E>
 
         return element;
     }
+
 }
