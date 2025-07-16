@@ -69,7 +69,7 @@ final class PgnPlayerInputObserver
         case WHITE_WIN  -> finalCommand(this.player, Colors.WHITE);
         case BLACK_WIN  -> finalCommand(this.player, Colors.BLACK);
         case DRAWN_GAME -> PlayerCommand.DRAW;
-        default -> PlayerCommand.EXIT;
+        default         -> PlayerCommand.EXIT;
         };
 
         return command.code();

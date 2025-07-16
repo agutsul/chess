@@ -64,7 +64,7 @@ public final class GameContext implements Closeable {
     }
 
     public Optional<Long> getActionTimeout() {
-        return Stream.ofNullable(getTimeout())
+        return Stream.of(getTimeout())
                 .flatMap(Optional::stream)
                 .map(timeout -> timeout.isType(Type.INCREMENTAL)
                             ? ((IncrementalTimeout<?>) timeout).getTimeout()
@@ -78,7 +78,7 @@ public final class GameContext implements Closeable {
     }
 
     public Optional<Long> getGameTimeout() {
-        return Stream.ofNullable(getTimeout())
+        return Stream.of(getTimeout())
                 .flatMap(Optional::stream)
                 .map(timeout -> timeout.isType(Type.INCREMENTAL)
                             ? ((IncrementalTimeout<?>) timeout).getTimeout()
@@ -92,7 +92,7 @@ public final class GameContext implements Closeable {
     }
 
     public Optional<Long> getExtraActionTime() {
-        return Stream.ofNullable(getTimeout())
+        return Stream.of(getTimeout())
                 .flatMap(Optional::stream)
                 .filter(timeout -> timeout.isType(Type.INCREMENTAL))
                 .map(timeout -> (IncrementalTimeout<?>) timeout)
@@ -102,7 +102,7 @@ public final class GameContext implements Closeable {
     }
 
     public Optional<Integer> getTotalActions() {
-        return Stream.ofNullable(getTimeout())
+        return Stream.of(getTimeout())
                 .flatMap(Optional::stream)
                 .filter(timeout -> timeout.isType(Type.ACTIONS_PER_PERIOD))
                 .map(timeout -> (MixedTimeout) timeout)

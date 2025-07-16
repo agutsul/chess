@@ -1,7 +1,7 @@
 package com.agutsul.chess.board.state;
 
 import static java.util.Collections.unmodifiableList;
-import static java.util.stream.Collectors.joining;
+import static org.apache.commons.lang3.StringUtils.join;
 
 import java.util.Collection;
 import java.util.List;
@@ -62,8 +62,6 @@ public final class CompositeBoardState
 
     @Override
     public String toString() {
-        return boardStates.stream()
-                .map(BoardState::toString)
-                .collect(joining(","));
+        return join(boardStates, ",");
     }
 }
