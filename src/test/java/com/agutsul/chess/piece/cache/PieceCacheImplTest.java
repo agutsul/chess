@@ -5,7 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
+import java.util.concurrent.ExecutorService;
 
+import org.junit.jupiter.api.AutoClose;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -18,11 +20,14 @@ import com.agutsul.chess.position.PositionFactory;
 @ExtendWith(MockitoExtension.class)
 public class PieceCacheImplTest {
 
+    @AutoClose
+    ExecutorService executorService = newSingleThreadExecutor();
+
     @Test
     void testGetActiveAllPieces() {
         var pieces = createPieces();
 
-        var cache = new PieceCacheImpl(pieces, newSingleThreadExecutor());
+        var cache = new PieceCacheImpl(pieces, executorService);
         cache.refresh();
 
         assertEquals(pieces.size(), cache.getActive().size());
@@ -30,7 +35,7 @@ public class PieceCacheImplTest {
 
     @Test
     void testGetActiveByColor() {
-        var cache = new PieceCacheImpl(createPieces(), newSingleThreadExecutor());
+        var cache = new PieceCacheImpl(createPieces(), executorService);
         cache.refresh();
 
         assertEquals(16, cache.getActive(Colors.WHITE).size());
@@ -39,7 +44,7 @@ public class PieceCacheImplTest {
 
     @Test
     void testGetActiveByPieceType() {
-        var cache = new PieceCacheImpl(createPieces(), newSingleThreadExecutor());
+        var cache = new PieceCacheImpl(createPieces(), executorService);
         cache.refresh();
 
         assertEquals(4, cache.getActive(Piece.Type.ROOK).size());
@@ -49,7 +54,7 @@ public class PieceCacheImplTest {
 
     @Test
     void testGetActiveByColorAndPieceType() {
-        var cache = new PieceCacheImpl(createPieces(), newSingleThreadExecutor());
+        var cache = new PieceCacheImpl(createPieces(), executorService);
         cache.refresh();
 
         for (var color : Colors.values()) {
@@ -64,7 +69,7 @@ public class PieceCacheImplTest {
 
     @Test
     void testGetActiveByPosition() {
-        var cache = new PieceCacheImpl(createPieces(), newSingleThreadExecutor());
+        var cache = new PieceCacheImpl(createPieces(), executorService);
         cache.refresh();
 
         var emptyPosition = PositionFactory.positionOf("e3");
