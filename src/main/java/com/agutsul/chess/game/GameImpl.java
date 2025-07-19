@@ -14,12 +14,12 @@ import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.event.GameTerminationEvent.Type;
+import com.agutsul.chess.game.event.GameWinnerEvent;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerTerminateActionEvent;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
-import com.agutsul.chess.rule.winner.ActionTimeoutWinnerEvaluator;
-import com.agutsul.chess.rule.winner.WinnerEvaluatorImpl;
+import com.agutsul.chess.rule.winner.WinnerEvaluator;
 
 class GameImpl extends AbstractPlayableGame {
 
@@ -30,7 +30,9 @@ class GameImpl extends AbstractPlayableGame {
              BoardStateEvaluator<BoardState> boardStateEvaluator,
              GameContext context) {
 
-        super(LOGGER, whitePlayer, blackPlayer, board, journal, boardStateEvaluator, context);
+        super(LOGGER, whitePlayer, blackPlayer,
+                board, journal, boardStateEvaluator, context
+        );
     }
 
     @Override
@@ -41,17 +43,17 @@ class GameImpl extends AbstractPlayableGame {
         try {
             execute();
 
-            setWinnerPlayer(evaluateWinner(new WinnerEvaluatorImpl()));
+            notifyObservers(new GameWinnerEvent(WinnerEvaluator.Type.STANDARD));
             notifyObservers(new GameOverEvent(this));
 
             logger.info("Game over");
         } catch (ActionTimeoutException e) {
-            notifyObservers(new PlayerTerminateActionEvent(getCurrentPlayer(), Type.TIMEOUT));
+            logger.info("Game over ( action timeout ): {}", e.getMessage());
 
-            setWinnerPlayer(evaluateWinner(new ActionTimeoutWinnerEvaluator()));
+            notifyObservers(new PlayerTerminateActionEvent(getCurrentPlayer(), Type.TIMEOUT));
+            notifyObservers(new GameWinnerEvent(WinnerEvaluator.Type.ACTION_TIMEOUT));
             notifyObservers(new GameOverEvent(this));
 
-            logger.info("Game over ( action timeout ): {}", e.getMessage());
         } catch (GameInterruptionException e) {
             logger.info("Game interrupted ( game timeout ): {}", e.getMessage());
         } catch (Throwable throwable) {

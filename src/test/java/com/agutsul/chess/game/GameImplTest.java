@@ -6,6 +6,7 @@ import static com.agutsul.chess.board.state.BoardStateFactory.checkMatedBoardSta
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.exitedBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.staleMatedBoardState;
+import static java.time.LocalDateTime.now;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,7 +20,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -112,7 +112,7 @@ public class GameImplTest {
             .thenReturn(Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer, board);
-        game.setFinishedAt(LocalDateTime.now());
+        game.setFinishedAt(now());
 
         var state = game.getState();
 
@@ -122,7 +122,7 @@ public class GameImplTest {
 
     @Test
     void testGetStateReturningWhiteWin() {
-        var board = mock(AbstractBoard.class);
+        var board = spy(new StandardBoard());
         when(board.getState())
             .thenReturn(checkMatedBoardState(board, Colors.WHITE));
 
@@ -136,15 +136,12 @@ public class GameImplTest {
 
         var journal = new JournalImpl();
 
-        var game = spy(new GameImpl(whitePlayer, blackPlayer, board, journal,
+        var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
                 new BoardStateEvaluatorImpl(board, journal),
                 new GameContext()
-        ));
+        );
 
-        when(game.hasNext())
-            .thenReturn(false);
-
-        game.setFinishedAt(LocalDateTime.now());
+        game.setFinishedAt(now());
         game.run();
 
         var state = game.getState();
@@ -174,7 +171,7 @@ public class GameImplTest {
                 new GameContext()
         );
 
-        game.setFinishedAt(LocalDateTime.now());
+        game.setFinishedAt(now());
         game.run();
 
         var state = game.getState();
@@ -204,15 +201,13 @@ public class GameImplTest {
         when(boardStateEvaluator.evaluate(any(Color.class)))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                if (Colors.WHITE.equals(color)) {
-                    return defaultBoardState(board, color);
-                }
-
-                return checkMatedBoardState(board, color);
+                return Colors.WHITE.equals(color)
+                    ? defaultBoardState(board, color)
+                    : checkMatedBoardState(board, color);
             });
 
-        var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
-                boardStateEvaluator, new GameContext()
+        var game = new GameImpl(whitePlayer, blackPlayer,
+                board, journal, boardStateEvaluator, new GameContext()
         );
         game.run();
 
@@ -226,25 +221,18 @@ public class GameImplTest {
         when(board.getState())
             .thenReturn(checkMatedBoardState(board, Colors.WHITE));
 
-        var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
-        doCallRealMethod().when(whitePlayer).getColor();
-
+        var whitePlayer = new UserPlayer("test1", Colors.WHITE);
         var blackPlayer = new UserPlayer("test2", Colors.BLACK);
-
         var journal = new JournalImpl();
 
-        var game = spy(new GameImpl(whitePlayer, blackPlayer, board, journal,
+        var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
                 new BoardStateEvaluatorImpl(board, journal),
                 new GameContext()
-        ));
-
-        when(game.hasNext())
-            .thenReturn(false);
+        );
 
         game.run();
 
         var winner = game.getWinnerPlayer();
-
         assertTrue(winner.isPresent());
         assertEquals(whitePlayer, winner.get());
     }
@@ -256,10 +244,10 @@ public class GameImplTest {
             .thenReturn(agreedDrawBoardState(board, Colors.WHITE));
 
         var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
-        doCallRealMethod().when(whitePlayer).getColor();
+        doCallRealMethod()
+            .when(whitePlayer).getColor();
 
         var blackPlayer = new UserPlayer("test2", Colors.BLACK);
-
         var journal = new JournalImpl();
 
         var game = spy(new GameImpl(whitePlayer, blackPlayer, board, journal,
@@ -278,24 +266,18 @@ public class GameImplTest {
 
     @Test
     void testGetWinnerByExit() {
-        var board = mock(AbstractBoard.class);
+        var board = spy(new StandardBoard());
         when(board.getState())
             .thenReturn(exitedBoardState(board, Colors.WHITE));
 
-        var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
-        doCallRealMethod().when(whitePlayer).getColor();
-
+        var whitePlayer = new UserPlayer("test1", Colors.WHITE);
         var blackPlayer = new UserPlayer("test2", Colors.BLACK);
-
         var journal = new JournalImpl();
 
-        var game = spy(new GameImpl(whitePlayer, blackPlayer, board, journal,
+        var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
                 new BoardStateEvaluatorImpl(board, journal),
                 new GameContext()
-        ));
-
-        when(game.hasNext())
-            .thenReturn(false);
+        );
 
         game.run();
 
@@ -308,7 +290,8 @@ public class GameImplTest {
     @SuppressWarnings("unchecked")
     void testPositiveGameFlow() {
         var board = spy(new StandardBoard());
-        doCallRealMethod().when(board).notifyObservers(any());
+        doCallRealMethod()
+            .when(board).notifyObservers(any());
 
         var journal = new JournalImpl();
 
@@ -316,21 +299,21 @@ public class GameImplTest {
         when(boardStateEvaluator.evaluate(any()))
             .then(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                if (journal.size() < 2) {
-                    return defaultBoardState(board, color);
-                }
-
-                return staleMatedBoardState(board, color);
+                return journal.size() < 2
+                    ? defaultBoardState(board, color)
+                    : staleMatedBoardState(board, color);
             });
 
         var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
-        doCallRealMethod().when(whitePlayer).notifyObservers(any());
+        doCallRealMethod()
+            .when(whitePlayer).notifyObservers(any());
 
         var blackPlayer = spy(new UserPlayer("test2", Colors.BLACK));
-        doCallRealMethod().when(blackPlayer).notifyObservers(any());
+        doCallRealMethod()
+            .when(blackPlayer).notifyObservers(any());
 
-        var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
-                boardStateEvaluator, new GameContext()
+        var game = new GameImpl(whitePlayer, blackPlayer,
+                board, journal, boardStateEvaluator, new GameContext()
         );
 
         board.addObserver(new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4"));
@@ -382,19 +365,23 @@ public class GameImplTest {
     @SuppressWarnings("unchecked")
     void testPositiveGameFlowWithWhiteUndo() {
         var board = spy(new StandardBoard());
-        doCallRealMethod().when(board).notifyObservers(any());
+        doCallRealMethod()
+            .when(board).notifyObservers(any());
 
         var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
-        doCallRealMethod().when(whitePlayer).notifyObservers(any());
+        doCallRealMethod()
+            .when(whitePlayer).notifyObservers(any());
 
         var blackPlayer = spy(new UserPlayer("test2", Colors.BLACK));
-        doCallRealMethod().when(blackPlayer).notifyObservers(any());
+        doCallRealMethod()
+            .when(blackPlayer).notifyObservers(any());
 
         var journal = new JournalImpl();
         var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
         var game = new GameImpl(whitePlayer, blackPlayer,
-                board, journal, boardStateEvaluator, new GameContext());
+                board, journal, boardStateEvaluator, new GameContext()
+        );
 
         var whitePlayerInputObserver = new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4", "undo", "d2 d4");
         var blackPlayerInputObserver = new PlayerInputObserverInteratorMock(blackPlayer, game, "e7 e5", "d7 d5");
@@ -447,18 +434,23 @@ public class GameImplTest {
     @SuppressWarnings("unchecked")
     void testNegativeGameFlowWithWhiteUndo() {
         var board = spy(new StandardBoard());
-        doCallRealMethod().when(board).notifyObservers(any());
+        doCallRealMethod()
+            .when(board).notifyObservers(any());
 
         var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
-        doCallRealMethod().when(whitePlayer).notifyObservers(any());
+        doCallRealMethod()
+            .when(whitePlayer).notifyObservers(any());
 
         var blackPlayer = spy(new UserPlayer("test2", Colors.BLACK));
-        doCallRealMethod().when(blackPlayer).notifyObservers(any());
+        doCallRealMethod()
+            .when(blackPlayer).notifyObservers(any());
 
         var journal = new JournalImpl();
         var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
-        var game = new GameImpl(whitePlayer, blackPlayer, board, journal, boardStateEvaluator, new GameContext());
+        var game = new GameImpl(whitePlayer, blackPlayer,
+                board, journal, boardStateEvaluator, new GameContext()
+        );
 
         var whitePlayerInputObserver = new PlayerInputObserverInteratorMock(
                 whitePlayer, game, "undo", "e2 e4"
@@ -860,6 +852,7 @@ public class GameImplTest {
                     new PlayerActionObserverMock(this),
                     new SwitchPlayerObserver(this),
                     new PostActionEventObserver(),
+                    new GameWinnerObserver(this),
                     new GameExceptionObserver()
             ).forEach(this::addObserver);
         }

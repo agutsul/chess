@@ -15,16 +15,16 @@ import org.slf4j.Logger;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 
-public final class WinnerEvaluatorImpl
+public final class StandardWinnerEvaluator
         extends AbstractWinnerEvaluator {
 
-    private static final Logger LOGGER = getLogger(WinnerEvaluatorImpl.class);
+    private static final Logger LOGGER = getLogger(StandardWinnerEvaluator.class);
 
-    public WinnerEvaluatorImpl() {
+    public StandardWinnerEvaluator() {
         this(new WinnerScoreEvaluator());
     }
 
-    WinnerEvaluatorImpl(WinnerEvaluator winnerScoreEvaluator) {
+    StandardWinnerEvaluator(WinnerEvaluator winnerScoreEvaluator) {
         super(winnerScoreEvaluator);
     }
 

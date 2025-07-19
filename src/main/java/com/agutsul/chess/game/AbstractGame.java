@@ -23,11 +23,6 @@ import com.agutsul.chess.player.Player;
 public abstract class AbstractGame
         implements Game {
 
-    private static final Map<Color,GameState> WIN_STATES = Map.of(
-            Colors.WHITE, new WhiteWinGameState(),
-            Colors.BLACK, new BlackWinGameState()
-    );
-
     private final Map<Color,Player> players;
 
     protected final Logger logger;
@@ -87,7 +82,7 @@ public abstract class AbstractGame
                 .flatMap(Optional::stream)
                 .findFirst()
                 .map(Player::getColor)
-                .map(winnerColor -> WIN_STATES.get(winnerColor))
+                .map(AbstractGame::winnerState)
                 .orElse(new DrawnGameState());
 
         return state;
@@ -116,5 +111,11 @@ public abstract class AbstractGame
 
     protected void setCurrentPlayer(Player player) {
         this.currentPlayer = player;
+    }
+
+    private static GameState winnerState(Color color) {
+        return Colors.WHITE.equals(color)
+                ? new WhiteWinGameState()
+                : new BlackWinGameState();
     }
 }

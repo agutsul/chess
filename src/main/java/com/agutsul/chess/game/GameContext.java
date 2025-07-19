@@ -17,7 +17,7 @@ import com.agutsul.chess.timeout.MixedTimeout;
 import com.agutsul.chess.timeout.Timeout;
 import com.agutsul.chess.timeout.Timeout.Type;
 
-public final class GameContext implements Closeable {
+public class GameContext implements Closeable {
 
     private String event;
     private String site;
@@ -30,6 +30,17 @@ public final class GameContext implements Closeable {
 
     public GameContext(ForkJoinPool forkJoinPool) {
         this.forkJoinPool = forkJoinPool;
+    }
+
+    public GameContext(GameContext context) {
+        this.event = context.getEvent();
+        this.site  = context.getSite();
+        this.round = context.getRound();
+        this.forkJoinPool = context.getForkJoinPool();
+        this.timeout = Stream.of(context.getTimeout())
+                .flatMap(Optional::stream)
+                .findFirst()
+                .orElse(null);
     }
 
     public String getEvent() {

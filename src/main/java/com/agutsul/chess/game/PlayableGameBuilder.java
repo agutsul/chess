@@ -11,11 +11,13 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.game.observer.GameTimeoutTerminationObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
+import com.agutsul.chess.timeout.CompositeTimeout;
 
 public final class PlayableGameBuilder<GAME extends Game & Playable>
         implements GameBuilder<GAME> {
@@ -61,6 +63,7 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public GAME build() {
         var board   = defaultIfNull(this.board,   new StandardBoard());
         var journal = defaultIfNull(this.journal, new JournalImpl());
@@ -80,14 +83,26 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
             board.setState(game.evaluateBoardState(game.getCurrentPlayer()));
         }
 
-        @SuppressWarnings("unchecked")
-        var resultGame = Stream.of(context.getGameTimeout())
+        var compositeGame = Stream.of(context.getTimeout())
                 .flatMap(Optional::stream)
-                .map(timeout -> new TimeoutGame(game, timeout))
+                .filter(timeout -> timeout instanceof CompositeTimeout)
+                .map(timeout -> (CompositeTimeout) timeout)
+                .map(timeout -> new CompositeGame<>(game, timeout.iterator()))
                 .map(timeoutGame -> (GAME) timeoutGame)
+                .findFirst();
+
+        if (compositeGame.isPresent()) {
+            return compositeGame.get();
+        }
+
+        var playableGame = Stream.of(context.getGameTimeout())
+                .flatMap(Optional::stream)
+                .map(timeoutMillis -> new TimeoutGame<>(game, timeoutMillis))
+                .peek(timeoutGame -> timeoutGame.addObserver(new GameTimeoutTerminationObserver()))
+                .map(timeoutGame  -> (GAME) timeoutGame)
                 .findFirst()
                 .orElse((GAME) game);
 
-        return resultGame;
+        return playableGame;
     }
 }

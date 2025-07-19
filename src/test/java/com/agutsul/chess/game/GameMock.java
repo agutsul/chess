@@ -67,6 +67,7 @@ public class GameMock
                 new PlayerActionObserverMock(this),
                 new SwitchPlayerObserver(this),
                 new PostActionEventObserver(),
+                new GameWinnerObserver(this),
                 new GameExceptionObserver()
         ).forEach(this::addObserver);
     }

@@ -43,7 +43,7 @@ public abstract class AbstractGameProxy<GAME extends Game & Observable>
     }
 
     @Override
-    public final GameContext getContext() {
+    public GameContext getContext() {
         return this.game.getContext();
     }
 

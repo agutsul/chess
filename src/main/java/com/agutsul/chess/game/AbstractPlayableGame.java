@@ -6,7 +6,9 @@ import static com.agutsul.chess.board.state.BoardState.Type.DEFAULT;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -27,6 +29,7 @@ import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.game.event.BoardStateNotificationEvent;
+import com.agutsul.chess.game.event.GameWinnerEvent;
 import com.agutsul.chess.game.event.SwitchPlayerEvent;
 import com.agutsul.chess.game.observer.CloseableGameOverObserver;
 import com.agutsul.chess.game.observer.GameExceptionObserver;
@@ -41,6 +44,9 @@ import com.agutsul.chess.player.observer.PlayableObserver;
 import com.agutsul.chess.player.observer.PlayerActionObserver;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
+import com.agutsul.chess.rule.winner.ActionTimeoutWinnerEvaluator;
+import com.agutsul.chess.rule.winner.GameTimeoutWinnerEvaluator;
+import com.agutsul.chess.rule.winner.StandardWinnerEvaluator;
 import com.agutsul.chess.rule.winner.WinnerEvaluator;
 
 public abstract class AbstractPlayableGame
@@ -53,6 +59,7 @@ public abstract class AbstractPlayableGame
     private final Journal<ActionMemento<?,?>> journal;
 
     private final BoardStateEvaluator<BoardState> boardStateEvaluator;
+
     private final GameContext context;
 
     public AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer, Board board) {
@@ -195,10 +202,6 @@ public abstract class AbstractPlayableGame
         return boardState;
     }
 
-    protected final Player evaluateWinner(WinnerEvaluator winnerEvaluator) {
-        return winnerEvaluator.evaluate(this);
-    }
-
     protected final void clearPieceData(Color color) {
         notifyBoardObservers(new ClearPieceDataEvent(color));
     }
@@ -215,6 +218,7 @@ public abstract class AbstractPlayableGame
                 new PlayerActionObserver(this),
                 new SwitchPlayerObserver(this),
                 new PostActionEventObserver(),
+                new GameWinnerObserver(this),
                 new GameExceptionObserver()
         ));
     }
@@ -247,11 +251,10 @@ public abstract class AbstractPlayableGame
             // recalculate board state to update journal records
             evaluateBoardState(getOpponentPlayer());
 
-            var extraTimeout = context.getExtraActionTime();
-            if (extraTimeout.isPresent()) {
-                var player = event.getPlayer();
-                player.setExtraTimeout(extraTimeout.get());
-            }
+            var player = event.getPlayer();
+            Stream.of(context.getExtraActionTime())
+                .flatMap(Optional::stream)
+                .forEach(extraTimeout -> player.setExtraTimeout(extraTimeout));
         }
     }
 
@@ -269,6 +272,27 @@ public abstract class AbstractPlayableGame
 
             clearPieceData(currentColor);
             board.setState(boardStateEvaluator.evaluate(currentColor));
+        }
+    }
+
+    final class GameWinnerObserver
+            extends AbstractEventObserver<GameWinnerEvent> {
+
+        private final Game game;
+
+        GameWinnerObserver(Game game) {
+            this.game = game;
+        }
+
+        @Override
+        protected void process(GameWinnerEvent event) {
+            WinnerEvaluator evaluator = switch (event.getType()) {
+            case ACTION_TIMEOUT -> new ActionTimeoutWinnerEvaluator();
+            case GAME_TIMEOUT   -> new GameTimeoutWinnerEvaluator();
+            case STANDARD       -> new StandardWinnerEvaluator();
+            };
+
+            setWinnerPlayer(evaluator.evaluate(this.game));
         }
     }
 }
