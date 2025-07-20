@@ -131,6 +131,7 @@
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-annotations</artifactId>
             <version>${spotbugs.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
