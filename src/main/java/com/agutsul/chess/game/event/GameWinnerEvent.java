@@ -1,14 +1,15 @@
 package com.agutsul.chess.game.event;
 
-import com.agutsul.chess.event.Event;
+import com.agutsul.chess.game.Game;
 import com.agutsul.chess.rule.winner.WinnerEvaluator.Type;
 
 public class GameWinnerEvent
-        implements Event {
+        extends AbstractGameEvent {
 
     private final Type type;
 
-    public GameWinnerEvent(Type type) {
+    public GameWinnerEvent(Game game, Type type) {
+        super(game);
         this.type = type;
     }
 

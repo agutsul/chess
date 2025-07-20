@@ -65,7 +65,7 @@ class TimeoutGame<GAME extends Game & Observable>
             LOGGER.info("Game over ( game timeout ): {}", e.getMessage());
 
             notifyObservers(new GameTimeoutTerminationEvent(this.game));
-            notifyObservers(new GameWinnerEvent(WinnerEvaluator.Type.GAME_TIMEOUT));
+            notifyObservers(new GameWinnerEvent(this.game, WinnerEvaluator.Type.GAME_TIMEOUT));
             notifyObservers(new GameOverEvent(this.game));
         } catch (Throwable throwable) {
             LOGGER.error("{}: Game exception, board state '{}': {}",
@@ -112,7 +112,7 @@ class TimeoutGame<GAME extends Game & Observable>
     }
 
     void evaluateWinner() {
-        notifyObservers(new GameWinnerEvent(WinnerEvaluator.Type.STANDARD));
+        notifyObservers(new GameWinnerEvent(this.game, WinnerEvaluator.Type.STANDARD));
         notifyObservers(new GameOverEvent(this.game));
     }
 }

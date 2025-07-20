@@ -852,7 +852,7 @@ public class GameImplTest {
                     new PlayerActionObserverMock(this),
                     new SwitchPlayerObserver(this),
                     new PostActionEventObserver(),
-                    new GameWinnerObserver(this),
+                    new GameWinnerObserver(),
                     new GameExceptionObserver()
             ).forEach(this::addObserver);
         }

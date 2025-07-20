@@ -218,7 +218,7 @@ public abstract class AbstractPlayableGame
                 new PlayerActionObserver(this),
                 new SwitchPlayerObserver(this),
                 new PostActionEventObserver(),
-                new GameWinnerObserver(this),
+                new GameWinnerObserver(),
                 new GameExceptionObserver()
         ));
     }
@@ -278,12 +278,6 @@ public abstract class AbstractPlayableGame
     final class GameWinnerObserver
             extends AbstractEventObserver<GameWinnerEvent> {
 
-        private final Game game;
-
-        GameWinnerObserver(Game game) {
-            this.game = game;
-        }
-
         @Override
         protected void process(GameWinnerEvent event) {
             WinnerEvaluator evaluator = switch (event.getType()) {
@@ -292,7 +286,7 @@ public abstract class AbstractPlayableGame
             case STANDARD       -> new StandardWinnerEvaluator();
             };
 
-            setWinnerPlayer(evaluator.evaluate(this.game));
+            setWinnerPlayer(evaluator.evaluate(event.getGame()));
         }
     }
 }

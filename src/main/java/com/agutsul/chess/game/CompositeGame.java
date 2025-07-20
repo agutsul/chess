@@ -72,7 +72,7 @@ final class CompositeGame<GAME extends Game & Observable>
                 }
             }
 
-            notifyObservers(new GameWinnerEvent(WinnerEvaluator.Type.STANDARD));
+            notifyObservers(new GameWinnerEvent(this.game, WinnerEvaluator.Type.STANDARD));
             notifyObservers(new GameOverEvent(this.game));
         } catch (Throwable throwable) {
             LOGGER.error("{}: Game exception, board state '{}': {}",
