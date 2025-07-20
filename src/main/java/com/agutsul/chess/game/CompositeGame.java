@@ -1,11 +1,21 @@
 package com.agutsul.chess.game;
 
+import static com.agutsul.chess.game.state.GameState.isUnknown;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
+import static org.slf4j.LoggerFactory.getLogger;
+
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+
 import com.agutsul.chess.event.Observable;
+import com.agutsul.chess.game.event.GameExceptionEvent;
+import com.agutsul.chess.game.event.GameOverEvent;
+import com.agutsul.chess.game.event.GameWinnerEvent;
 import com.agutsul.chess.game.observer.GameTimeoutTerminationObserver;
+import com.agutsul.chess.rule.winner.WinnerEvaluator;
 import com.agutsul.chess.timeout.MixedTimeout;
 import com.agutsul.chess.timeout.Timeout;
 import com.agutsul.chess.timeout.Timeout.Type;
@@ -14,50 +24,64 @@ final class CompositeGame<GAME extends Game & Observable>
         extends AbstractGameProxy<GAME>
         implements Playable {
 
+    private static final Logger LOGGER = getLogger(CompositeGame.class);
+
     private final Iterator<Timeout> iterator;
 
     CompositeGame(GAME game, Iterator<Timeout> iterator) {
         super(game);
         this.iterator = iterator;
-
-        addObserver(new GameTimeoutTerminationObserver());
     }
 
     @Override
     public void run() {
         // proxy game when iterator is empty ( without any timeout at all )
         if (!this.iterator.hasNext()) {
-            this.game.run();
+            super.run();
             return;
         }
 
-        // iterate over specified timeouts
-        for (int actionsCounter = 0; this.iterator.hasNext();) {
-            var timeout = this.iterator.next();
+        try {
+            // iterate over specified timeouts
+            for (int actionsCounter = 0; this.iterator.hasNext();) {
+                var timeout = this.iterator.next();
 
-            var context = new IterativeGameContext(getContext(), actionsCounter);
-            context.setTimeout(timeout.isType(Type.UNKNOWN) ? null : timeout);
+                var context = new IterativeGameContext(getContext(), actionsCounter);
+                context.setTimeout(timeout.isType(Type.UNKNOWN) ? null : timeout);
 
-            var iGame = new IterativeGame<>(this.game, context);
+                var iGame = new IterativeGame<>(this.game, context);
 
-            @SuppressWarnings("unchecked")
-            var playableGame = Stream.of(context.getGameTimeout())
-                    .flatMap(Optional::stream)
-                    .map(timeoutMillis -> new TimeoutGame<>(iGame, timeoutMillis))
-                    .map(timeoutGame -> (GAME) timeoutGame)
-                    .findFirst()
-                    .orElse((GAME) iGame);
+                @SuppressWarnings("unchecked")
+                var playableGame = Stream.of(context.getGameTimeout())
+                        .flatMap(Optional::stream)
+                        .map(timeoutMillis -> new IterativeTimeoutGame<>(iGame, timeoutMillis))
+                        .peek(timeoutGame -> timeoutGame.addObserver(new GameTimeoutTerminationObserver()))
+                        .map(timeoutGame -> (GAME) timeoutGame)
+                        .findFirst()
+                        .orElse((GAME) iGame);
 
-            playableGame.run();
+                playableGame.run();
 
-            var boardState = getBoard().getState();
-            if (boardState.isTerminal()) {
-                break;
+                var isGameFinished = !isUnknown(this.game.getState());
+                if (isGameFinished) {
+                    return;
+                }
+
+                if (timeout.isType(Type.ACTIONS_PER_PERIOD)) {
+                    actionsCounter += ((MixedTimeout) timeout).getActionsCounter();
+                }
             }
 
-            if (timeout.isType(Type.ACTIONS_PER_PERIOD)) {
-                actionsCounter += ((MixedTimeout) timeout).getActionsCounter();
-            }
+            notifyObservers(new GameWinnerEvent(WinnerEvaluator.Type.STANDARD));
+            notifyObservers(new GameOverEvent(this.game));
+        } catch (Throwable throwable) {
+            LOGGER.error("{}: Game exception, board state '{}': {}",
+                    getCurrentPlayer().getColor(), getBoard().getState(),
+                    getStackTrace(throwable)
+            );
+
+            notifyObservers(new GameExceptionEvent(this.game, throwable));
+            notifyObservers(new GameOverEvent(this.game));
         }
     }
 
@@ -75,6 +99,19 @@ final class CompositeGame<GAME extends Game & Observable>
         @Override
         public GameContext getContext() {
             return this.context;
+        }
+    }
+
+    private static final class IterativeTimeoutGame<GAME extends Game & Observable>
+            extends TimeoutGame<GAME> {
+
+        IterativeTimeoutGame(GAME game, long timeoutMillis) {
+            super(game, timeoutMillis);
+        }
+
+        @Override
+        void evaluateWinner() {
+            // prevent winner evaluation on specific iteration and apply it after the last iteration
         }
     }
 

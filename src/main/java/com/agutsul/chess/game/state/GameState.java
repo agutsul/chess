@@ -43,4 +43,38 @@ public interface GameState
     }
 
     Type getType();
+
+    // utilities
+
+    static boolean isUnknown(GameState gameState) {
+        return isUnknown(gameState.getType());
+    }
+
+    static boolean isUnknown(GameState.Type type) {
+        return GameState.Type.UNKNOWN.equals(type);
+    }
+
+    static boolean isWhiteWin(GameState gameState) {
+        return isWhiteWin(gameState.getType());
+    }
+
+    static boolean isWhiteWin(GameState.Type type) {
+        return GameState.Type.WHITE_WIN.equals(type);
+    }
+
+    static boolean isBlackWin(GameState gameState) {
+        return isWhiteWin(gameState.getType());
+    }
+
+    static boolean isBlackWin(GameState.Type type) {
+        return GameState.Type.BLACK_WIN.equals(type);
+    }
+
+    static boolean isDrawn(GameState gameState) {
+        return isUnknown(gameState.getType());
+    }
+
+    static boolean isDrawn(GameState.Type type) {
+        return GameState.Type.DRAWN_GAME.equals(type);
+    }
 }

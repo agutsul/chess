@@ -1,7 +1,5 @@
 package com.agutsul.chess.game;
 
-import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
-import static com.agutsul.chess.board.state.BoardStateFactory.timeoutBoardState;
 import static com.agutsul.chess.timeout.TimeoutFactory.createActionTimeout;
 import static com.agutsul.chess.timeout.TimeoutFactory.createGameTimeout;
 import static com.agutsul.chess.timeout.TimeoutFactory.createMixedTimeout;
@@ -12,14 +10,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.board.Board;
-import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.game.observer.GameTimeoutTerminationObserver;
+import com.agutsul.chess.game.state.DefaultGameState;
+import com.agutsul.chess.game.state.DrawnGameState;
+import com.agutsul.chess.game.state.WhiteWinGameState;
 import com.agutsul.chess.timeout.Timeout;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,23 +30,19 @@ public class CompositeGameTest {
     AbstractPlayableGame game;
 
     @Mock
-    Board board;
-
-    @Mock
     GameContext gameContext;
 
     @Test
     void testDefaultGameWithActionTimeout() {
-        when(board.getState())
-            .thenReturn(defaultBoardState(board, Colors.WHITE));
-        when(game.getBoard())
-            .thenReturn(board);
+        when(game.getState())
+            .thenReturn(new DefaultGameState());
         when(game.getContext())
             .thenReturn(gameContext);
 
         List<Timeout> timeouts = List.of(createActionTimeout(100L));
 
         var compositeGame = new CompositeGame<>(game, timeouts.iterator());
+        compositeGame.addObserver(new GameTimeoutTerminationObserver());
         compositeGame.run();
 
         verify(game, times(1)).run();
@@ -53,16 +50,15 @@ public class CompositeGameTest {
 
     @Test
     void testDefaultGameWithUnknownTimeout() {
-        when(board.getState())
-            .thenReturn(defaultBoardState(board, Colors.WHITE));
-        when(game.getBoard())
-            .thenReturn(board);
+        when(game.getState())
+            .thenReturn(new DefaultGameState());
         when(game.getContext())
             .thenReturn(gameContext);
 
         List<Timeout> timeouts = List.of(createUnknownTimeout());
 
         var compositeGame = new CompositeGame<>(game, timeouts.iterator());
+        compositeGame.addObserver(new GameTimeoutTerminationObserver());
         compositeGame.run();
 
         verify(game, times(1)).run();
@@ -80,16 +76,15 @@ public class CompositeGameTest {
 
     @Test
     void testTimeoutGameWithGenericTimeout() {
-        when(board.getState())
-            .thenReturn(timeoutBoardState(board, Colors.WHITE));
-        when(game.getBoard())
-            .thenReturn(board);
+        when(game.getState())
+            .thenReturn(new WhiteWinGameState());
         when(game.getContext())
             .thenReturn(gameContext);
 
         List<Timeout> timeouts = List.of(createGameTimeout(100));
 
         var compositeGame = new CompositeGame<>(game, timeouts.iterator());
+        compositeGame.addObserver(new GameTimeoutTerminationObserver());
         compositeGame.run();
 
         verify(game, times(1)).run();
@@ -97,18 +92,45 @@ public class CompositeGameTest {
 
     @Test
     void testTimeoutGameWithMixedTimeout() {
-        when(board.getState())
-            .thenReturn(defaultBoardState(board, Colors.WHITE));
-        when(game.getBoard())
-            .thenReturn(board);
+        when(game.getState())
+            .thenReturn(new DrawnGameState());
         when(game.getContext())
             .thenReturn(gameContext);
 
         List<Timeout> timeouts = List.of(createMixedTimeout(100L, 2));
 
         var compositeGame = new CompositeGame<>(game, timeouts.iterator());
+        compositeGame.addObserver(new GameTimeoutTerminationObserver());
         compositeGame.run();
 
         verify(game, times(1)).run();
+    }
+
+    @Test
+    void testTimeoutGameWithMultipleMixedTimeouts() {
+        var counter = new AtomicInteger();
+        counter.set(0);
+
+        when(game.getState())
+            .thenAnswer(inv -> {
+                var invocations = counter.get();
+                var state = invocations == 0
+                        ? new DefaultGameState()
+                        : new WhiteWinGameState();
+
+                counter.set(invocations++);
+                return state;
+            });
+
+        when(game.getContext())
+            .thenReturn(gameContext);
+
+        List<Timeout> timeouts = List.of(createMixedTimeout(100L, 2), createMixedTimeout(400L, 4));
+
+        var compositeGame = new CompositeGame<>(game, timeouts.iterator());
+        compositeGame.addObserver(new GameTimeoutTerminationObserver());
+        compositeGame.run();
+
+        verify(game, times(2)).run();
     }
 }

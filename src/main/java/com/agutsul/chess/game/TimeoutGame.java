@@ -20,7 +20,7 @@ import com.agutsul.chess.game.event.GameWinnerEvent;
 import com.agutsul.chess.rule.winner.WinnerEvaluator;
 import com.agutsul.chess.timeout.Timeout.Type;
 
-final class TimeoutGame<GAME extends Game & Observable>
+class TimeoutGame<GAME extends Game & Observable>
         extends AbstractGameProxy<GAME>
         implements Playable {
 
@@ -78,7 +78,7 @@ final class TimeoutGame<GAME extends Game & Observable>
         }
     }
 
-    private void processTimeout() {
+    void processTimeout() {
         var context = this.game.getContext();
         var isMixedTimeout = Stream.of(context.getTimeout())
                 .flatMap(Optional::stream)
@@ -107,5 +107,12 @@ final class TimeoutGame<GAME extends Game & Observable>
                     GAME_TIMEOUT_MESSAGE, journal.size(), expectedActions
             ));
         }
+
+        evaluateWinner();
+    }
+
+    void evaluateWinner() {
+        notifyObservers(new GameWinnerEvent(WinnerEvaluator.Type.STANDARD));
+        notifyObservers(new GameOverEvent(this.game));
     }
 }

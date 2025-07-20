@@ -3,6 +3,7 @@ package com.agutsul.chess.game;
 import static com.agutsul.chess.board.state.BoardStateFactory.staleMatedBoardState;
 import static com.agutsul.chess.timeout.TimeoutFactory.createActionTimeout;
 import static com.agutsul.chess.timeout.TimeoutFactory.createGameTimeout;
+import static com.agutsul.chess.timeout.TimeoutFactory.createIncrementalTimeout;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -131,7 +132,11 @@ public class PlayableGameBuilderTest {
     @Test
     void testGameBuildWithCompositeTimeout() {
         var context = new GameContext();
-        context.setTimeout(new CompositeTimeout(createGameTimeout(100L), createActionTimeout(100L)));
+        context.setTimeout(new CompositeTimeout(
+                createGameTimeout(100L),
+                createActionTimeout(100L),
+                createIncrementalTimeout(createGameTimeout(100L), 60L)
+        ));
 
         var gameBuilder = new PlayableGameBuilder<>(whitePlayer, blackPlayer);
         gameBuilder.withContext(context);
