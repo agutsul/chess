@@ -1,13 +1,13 @@
 package com.agutsul.chess.game;
 
 import static com.agutsul.chess.board.state.BoardStateFactory.staleMatedBoardState;
+import static com.agutsul.chess.timeout.TimeoutFactory.createActionTimeout;
 import static com.agutsul.chess.timeout.TimeoutFactory.createGameTimeout;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.util.concurrent.ForkJoinPool;
@@ -24,6 +24,7 @@ import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.UserPlayer;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
+import com.agutsul.chess.timeout.CompositeTimeout;
 
 @ExtendWith(MockitoExtension.class)
 public class PlayableGameBuilderTest {
@@ -99,7 +100,7 @@ public class PlayableGameBuilderTest {
     void testGameBuildWithCustomParams() {
         var gameBuilder = new PlayableGameBuilder<>(whitePlayer, blackPlayer);
 
-        var board = spy(StandardBoard.class);
+        var board = new StandardBoard();
         var journal = mock(Journal.class);
 
         var boardStateEvaluator = mock(BoardStateEvaluator.class);
@@ -125,5 +126,22 @@ public class PlayableGameBuilderTest {
 
         assertEquals(blackPlayer, game.getCurrentPlayer());
         assertEquals(whitePlayer, game.getOpponentPlayer());
+    }
+
+    @Test
+    void testGameBuildWithCompositeTimeout() {
+        var context = new GameContext();
+        context.setTimeout(new CompositeTimeout(createGameTimeout(100L), createActionTimeout(100L)));
+
+        var gameBuilder = new PlayableGameBuilder<>(whitePlayer, blackPlayer);
+        gameBuilder.withContext(context);
+
+        var game = gameBuilder.build();
+
+        assertNotNull(game);
+        assertTrue(game instanceof CompositeGame<?>);
+
+        assertEquals(whitePlayer, game.getCurrentPlayer());
+        assertEquals(blackPlayer, game.getOpponentPlayer());
     }
 }

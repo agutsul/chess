@@ -73,7 +73,10 @@ final class MixedTimeoutImpl<GT extends Timeout & GameTimeout, AT extends Timeou
 
     private static long calculateActionTimeout(long durationMillis, int actionCounter) {
         if (actionCounter == 0) {
-            throw new IllegalArgumentException("Illegal actions counter: 0");
+            throw new IllegalArgumentException(String.format(
+                    "Invalid actions counter: %d",
+                    actionCounter
+            ));
         }
 
         var halfActionMillis = durationMillis / 2;

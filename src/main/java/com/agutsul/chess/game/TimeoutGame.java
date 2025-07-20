@@ -88,11 +88,6 @@ final class TimeoutGame<GAME extends Game & Observable>
             throw new GameTimeoutException(GAME_TIMEOUT_MESSAGE);
         }
 
-        var expectedActions = Stream.of(context.getTotalActions())
-                .flatMap(Optional::stream)
-                .findFirst()
-                .orElse(0);
-
         var journal = this.game.getJournal();
         if (journal.isEmpty()) {
             throw new GameTimeoutException(String.format(
@@ -100,6 +95,11 @@ final class TimeoutGame<GAME extends Game & Observable>
                     GAME_TIMEOUT_MESSAGE
             ));
         }
+
+        var expectedActions = Stream.of(context.getTotalActions())
+                .flatMap(Optional::stream)
+                .findFirst()
+                .orElse(0);
 
         if (journal.size() < expectedActions) {
             throw new GameTimeoutException(String.format(

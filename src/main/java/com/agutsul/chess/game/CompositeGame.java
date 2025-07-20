@@ -24,7 +24,6 @@ final class CompositeGame<GAME extends Game & Observable>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void run() {
         // proxy game when iterator is empty ( without any timeout at all )
         if (!this.iterator.hasNext()) {
@@ -40,6 +39,8 @@ final class CompositeGame<GAME extends Game & Observable>
             context.setTimeout(timeout.isType(Type.UNKNOWN) ? null : timeout);
 
             var iGame = new IterativeGame<>(this.game, context);
+
+            @SuppressWarnings("unchecked")
             var playableGame = Stream.of(context.getGameTimeout())
                     .flatMap(Optional::stream)
                     .map(timeoutMillis -> new TimeoutGame<>(iGame, timeoutMillis))
