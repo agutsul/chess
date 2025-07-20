@@ -10,7 +10,7 @@ import static com.agutsul.chess.piece.Piece.Type.QUEEN;
 import static com.agutsul.chess.piece.Piece.Type.ROOK;
 import static java.lang.System.lineSeparator;
 import static java.time.LocalDateTime.now;
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang3.ObjectUtils.getIfNull;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 import java.time.Duration;
@@ -112,7 +112,7 @@ public final class ConsoleGameOutputObserver
             System.out.println(LINE);
             displayWinner(game.getWinnerPlayer());
 
-            var finishedAt = defaultIfNull(game.getFinishedAt(), now());
+            var finishedAt = getIfNull(game.getFinishedAt(), now());
             displayDuration(Duration.between(game.getStartedAt(), finishedAt));
         }
     }
@@ -312,7 +312,7 @@ public final class ConsoleGameOutputObserver
     // utilities
 
     private static void displayAction(Game game, Player player, Action<?> action) {
-        var actionPlayer = defaultIfNull(player, game.getCurrentPlayer());
+        var actionPlayer = getIfNull(player, game.getCurrentPlayer());
 
         var journal = game.getJournal();
         var number = (journal.size() / 2) + 1;

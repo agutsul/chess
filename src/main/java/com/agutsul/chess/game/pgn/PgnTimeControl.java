@@ -9,15 +9,15 @@ import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.countMatches;
-import static org.apache.commons.lang3.StringUtils.endsWith;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 import static org.apache.commons.lang3.StringUtils.split;
-import static org.apache.commons.lang3.StringUtils.startsWith;
 
 import java.time.Duration;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import org.apache.commons.lang3.Strings;
 
 import com.agutsul.chess.timeout.BaseTimeout;
 import com.agutsul.chess.timeout.CompositeTimeout;
@@ -123,11 +123,14 @@ public enum PgnTimeControl {
     }
 
     private static boolean isSandclock(String str, String searched) {
-        return containsOnce(str, searched) && startsWith(str, searched) && isNumeric(str.substring(1));
+        return containsOnce(str, searched)
+                && Strings.CS.startsWith(str, searched) && isNumeric(str.substring(1));
     }
 
     private static boolean containsIn(String str, String searched) {
-        return containsOnce(str, searched) && !startsWith(str, searched) && !endsWith(str, searched);
+        return containsOnce(str, searched)
+                && !Strings.CS.startsWith(str, searched)
+                && !Strings.CS.endsWith(str, searched);
     }
 
     private static boolean containsOnce(String str, String searched) {

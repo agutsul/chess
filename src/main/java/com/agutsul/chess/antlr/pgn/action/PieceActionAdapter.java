@@ -2,9 +2,10 @@ package com.agutsul.chess.antlr.pgn.action;
 
 import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter.CAPTURE_CODE;
 import static com.agutsul.chess.antlr.pgn.action.KingCastlingActionAdapter.CASTLING_SIDES;
-import static org.apache.commons.lang3.StringUtils.contains;
 import static org.apache.commons.lang3.StringUtils.isAllUpperCase;
 import static org.apache.commons.lang3.StringUtils.substring;
+
+import org.apache.commons.lang3.Strings;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -97,7 +98,7 @@ public final class PieceActionAdapter
 
     private String adaptPieceAction(String action) {
 
-        if (!contains(action, CAPTURE_CODE)) {
+        if (!Strings.CS.contains(action, CAPTURE_CODE)) {
             return adaptPieceMoveAction(action);
         }
 

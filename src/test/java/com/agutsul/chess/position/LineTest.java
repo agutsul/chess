@@ -1,11 +1,11 @@
 package com.agutsul.chess.position;
 
 import static com.agutsul.chess.position.PositionFactory.positionOf;
-import static org.apache.commons.lang3.StringUtils.contains;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,9 +21,9 @@ public class LineTest {
         var line3 = new Line(line1, line2);
         var positions = line3.toString();
 
-        assertTrue(contains(positions, "a1"));
-        assertTrue(contains(positions, "b2"));
-        assertTrue(contains(positions, "a8"));
-        assertTrue(contains(positions, "b7"));
+        assertTrue(Strings.CS.contains(positions, "a1"));
+        assertTrue(Strings.CS.contains(positions, "b2"));
+        assertTrue(Strings.CS.contains(positions, "a8"));
+        assertTrue(Strings.CS.contains(positions, "b7"));
     }
 }

@@ -5,7 +5,6 @@ import static java.nio.file.Files.isDirectory;
 import static java.nio.file.Files.list;
 import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.apache.commons.io.FilenameUtils.getExtension;
-import static org.apache.commons.lang3.StringUtils.contains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -16,6 +15,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -97,7 +97,7 @@ public class GameExceptionObserverTest implements TestFileReader {
     }
 
     private static boolean containsPlayerName(String fileName, Player player) {
-        return contains(fileName, player.getName());
+        return Strings.CS.contains(fileName, player.getName());
     }
 
     private static List<String> listFileNames(Path folder) throws IOException {

@@ -2,15 +2,15 @@ package com.agutsul.chess.antlr.pgn;
 
 import static java.lang.System.lineSeparator;
 import static java.util.regex.Pattern.compile;
-import static org.apache.commons.lang3.RegExUtils.removeAll;
-import static org.apache.commons.lang3.StringUtils.containsAny;
+import static org.apache.commons.lang3.RegExUtils.replaceAll;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
-import static org.apache.commons.lang3.StringUtils.remove;
 
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.builder.Builder;
 
 public final class PgnStringBuilder
@@ -63,21 +63,21 @@ public final class PgnStringBuilder
             return string;
         }
 
-        if (containsAny(string, "?!")) {
-            string = remove(remove(string, "?"), "!");
+        if (Strings.CS.containsAny(string, "?!")) {
+            string = Strings.CS.remove(Strings.CS.remove(string, "?"), "!");
         }
 
         //  check if string contains: ' { [%eval 0.53] }'
         var evalMatcher = evalPattern.matcher(string);
         if (evalMatcher.find()) {
-            string = removeAll(string, evalPattern);
-            string = remove(string, " { [] }");
+            string = replaceAll((CharSequence) string, evalPattern, StringUtils.EMPTY);
+            string = Strings.CS.remove(string, " { [] }");
         }
 
         //  check if string contains: '1...'
         var dotsMatcher = dotsPattern.matcher(string);
         if (dotsMatcher.find()) {
-            string = removeAll(string, dotsPattern);
+            string = replaceAll((CharSequence) string, dotsPattern, StringUtils.EMPTY);
         }
 
         return string;

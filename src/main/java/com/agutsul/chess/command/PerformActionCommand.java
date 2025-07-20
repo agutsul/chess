@@ -1,7 +1,7 @@
 package com.agutsul.chess.command;
 
 import static com.agutsul.chess.activity.action.memento.ActionMementoFactory.createMemento;
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang3.ObjectUtils.getIfNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -53,7 +53,7 @@ public final class PerformActionCommand
 
     @Override
     public String toString() {
-        return String.format("%s", defaultIfNull(this.action, EMPTY));
+        return String.format("%s", getIfNull(this.action, EMPTY));
     }
 
     public void setSource(String source) {

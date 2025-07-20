@@ -5,7 +5,6 @@ import static java.lang.System.currentTimeMillis;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
 import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
-import static org.apache.commons.lang3.StringUtils.remove;
 import static org.apache.commons.lang3.StringUtils.stripAccents;
 import static org.apache.commons.lang3.StringUtils.trim;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
@@ -14,6 +13,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.lang3.Strings;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.event.AbstractEventObserver;
@@ -71,6 +71,6 @@ public final class GameExceptionObserver
 
     private static String formatPlayer(Player player) {
         var name = deleteWhitespace(stripAccents(player.getName()));
-        return trim(remove(remove(name, ","), "'"));
+        return trim(Strings.CS.remove(Strings.CS.remove(name, ","), "'"));
     }
 }

@@ -4,7 +4,7 @@ import static com.agutsul.chess.piece.Piece.isPawn;
 import static java.util.Objects.nonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang3.ObjectUtils.getIfNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import java.util.EnumMap;
@@ -127,7 +127,7 @@ public enum StandardAlgebraicActionFormatter implements ActionFormatter {
     }
 
     private static String formatCode(String code) {
-        return defaultIfNull(code, EMPTY);
+        return getIfNull(code, EMPTY);
     }
 
     public static String format(ActionMemento<?,?> memento) {

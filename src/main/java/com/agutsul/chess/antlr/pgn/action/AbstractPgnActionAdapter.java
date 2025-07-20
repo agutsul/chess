@@ -7,13 +7,13 @@ import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActio
 import static com.agutsul.chess.piece.Piece.isKing;
 import static com.agutsul.chess.position.Position.codeOf;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
-import static org.apache.commons.lang3.StringUtils.contains;
-import static org.apache.commons.lang3.StringUtils.remove;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Optional;
+
+import org.apache.commons.lang3.Strings;
 
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
@@ -59,7 +59,7 @@ abstract class AbstractPgnActionAdapter
 
     Collection<Piece<Color>> findPieces(Piece.Type pieceType, String code) {
         var pieces = board.getPieces(color, pieceType).stream()
-                .filter(piece -> code == null || contains(codeOf(piece.getPosition()), code))
+                .filter(piece -> code == null || Strings.CS.contains(codeOf(piece.getPosition()), code))
                 .toList();
 
         return pieces;
@@ -158,7 +158,7 @@ abstract class AbstractPgnActionAdapter
     }
 
     static String prepare(String action) {
-        var command = remove(remove(action, CHECK_CODE), CHECKMATE_CODE);
-        return remove(remove(command, GOOD_MOVE_CODE), BAD_MOVE_CODE);
+        var command = Strings.CS.remove(Strings.CS.remove(action, CHECK_CODE), CHECKMATE_CODE);
+        return Strings.CS.remove(Strings.CS.remove(command, GOOD_MOVE_CODE), BAD_MOVE_CODE);
     }
 }

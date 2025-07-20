@@ -1,7 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
 import static java.time.Instant.now;
-import static org.apache.commons.lang3.StringUtils.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -11,6 +10,7 @@ import static org.mockito.Mockito.mock;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -447,7 +447,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 () -> kingPiece.dispose(now())
         );
 
-        assertTrue(startsWith(thrown.getMessage(), "Unable to dispose KING piece at"));
+        assertTrue(Strings.CS.startsWith(thrown.getMessage(), "Unable to dispose KING piece at"));
     }
 
     @Test
@@ -473,6 +473,6 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 () -> kingPiece.createDisposedPieceState(now())
         );
 
-        assertTrue(startsWith(thrown.getMessage(), "Unable to dispose KING piece at"));
+        assertTrue(Strings.CS.startsWith(thrown.getMessage(), "Unable to dispose KING piece at"));
     }
 }

@@ -1,7 +1,7 @@
 package com.agutsul.chess.game;
 
 import static java.util.Objects.isNull;
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang3.ObjectUtils.getIfNull;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -64,11 +64,11 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
 
     @Override
     public GAME build() {
-        var board   = defaultIfNull(this.board,   new StandardBoard());
-        var journal = defaultIfNull(this.journal, new JournalImpl());
-        var context = defaultIfNull(this.context, new GameContext());
+        var board   = getIfNull(this.board,   new StandardBoard());
+        var journal = getIfNull(this.journal, new JournalImpl());
+        var context = getIfNull(this.context, new GameContext());
 
-        var boardStateEvaluator = defaultIfNull(this.boardStateEvaluator,
+        var boardStateEvaluator = getIfNull(this.boardStateEvaluator,
                 new BoardStateEvaluatorImpl(board, journal, context.getForkJoinPool())
         );
 

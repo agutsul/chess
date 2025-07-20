@@ -10,7 +10,6 @@ import static java.util.stream.Collectors.summingLong;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.ArrayUtils.getLength;
 import static org.apache.commons.lang3.StringUtils.SPACE;
-import static org.apache.commons.lang3.StringUtils.contains;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.apache.commons.lang3.StringUtils.split;
 import static org.apache.commons.lang3.StringUtils.strip;
@@ -27,6 +26,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.Strings;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.event.AbstractEventObserver;
@@ -181,7 +181,7 @@ public abstract class AbstractPlayerInputObserver
                 var eventFactory = PlayerActionEventFactory.of(command);
                 if (eventFactory != null) {
                     notifyGameEvent(eventFactory.create(player));
-                } else if (contains(command, SPACE)) {
+                } else if (Strings.CS.contains(command, SPACE)) {
                     processActionCommand(command);
                 } else {
                     throw new IllegalActionException(String.format("%s: '%s'",

@@ -1,7 +1,7 @@
 package com.agutsul.chess.game.pgn;
 
 import static java.lang.System.lineSeparator;
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang3.ObjectUtils.getIfNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 
@@ -88,8 +88,8 @@ public class PgnGameFormatter {
 
     private static String format(String name, String value) {
         return String.format("[%s \"%s\"]%s",
-                defaultIfNull(name, EMPTY),
-                defaultIfNull(value, EMPTY),
+                getIfNull(name, EMPTY),
+                getIfNull(value, EMPTY),
                 lineSeparator()
         );
     }
