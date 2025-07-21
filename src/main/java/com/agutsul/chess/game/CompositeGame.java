@@ -14,7 +14,6 @@ import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameWinnerEvent;
-import com.agutsul.chess.game.observer.GameTimeoutTerminationObserver;
 import com.agutsul.chess.rule.winner.WinnerEvaluator;
 import com.agutsul.chess.timeout.MixedTimeout;
 import com.agutsul.chess.timeout.Timeout;
@@ -41,7 +40,6 @@ final class CompositeGame<GAME extends Game & Observable>
             return;
         }
 
-        var timeoutTerminationObserver = new GameTimeoutTerminationObserver();
         try {
             // iterate over specified timeouts
             for (int actionsCounter = 0; this.iterator.hasNext();) {
@@ -56,7 +54,6 @@ final class CompositeGame<GAME extends Game & Observable>
                 var playableGame = Stream.of(context.getGameTimeout())
                         .flatMap(Optional::stream)
                         .map(timeoutMillis -> new IterativeTimeoutGame<>(iGame, timeoutMillis))
-                        .peek(timeoutGame -> timeoutGame.addObserver(timeoutTerminationObserver))
                         .map(timeoutGame -> (GAME) timeoutGame)
                         .findFirst()
                         .orElse((GAME) iGame);
