@@ -102,7 +102,7 @@ public class GameContext implements Closeable {
                 .findFirst();
     }
 
-    public Optional<Long> getExtraActionTime() {
+    public Optional<Long> getExtraActionTimeout() {
         return Stream.of(getTimeout())
                 .flatMap(Optional::stream)
                 .filter(timeout -> timeout.isType(Type.INCREMENTAL))
@@ -112,7 +112,7 @@ public class GameContext implements Closeable {
                 .findFirst();
     }
 
-    public Optional<Integer> getTotalActions() {
+    public Optional<Integer> getExpectedActions() {
         return Stream.of(getTimeout())
                 .flatMap(Optional::stream)
                 .filter(timeout -> timeout.isType(Type.ACTIONS_PER_PERIOD))

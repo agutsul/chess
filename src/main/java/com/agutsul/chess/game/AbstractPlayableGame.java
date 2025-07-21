@@ -252,7 +252,7 @@ public abstract class AbstractPlayableGame
             evaluateBoardState(getOpponentPlayer());
 
             var player = event.getPlayer();
-            Stream.of(context.getExtraActionTime())
+            Stream.of(context.getExtraActionTimeout())
                 .flatMap(Optional::stream)
                 .forEach(extraTimeout -> player.setExtraTimeout(extraTimeout));
         }

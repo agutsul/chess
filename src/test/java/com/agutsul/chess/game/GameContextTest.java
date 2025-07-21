@@ -39,8 +39,8 @@ public class GameContextTest {
             assertEquals(Optional.empty(), context.getTimeout());
             assertEquals(Optional.empty(), context.getActionTimeout());
             assertEquals(Optional.empty(), context.getGameTimeout());
-            assertEquals(Optional.empty(), context.getExtraActionTime());
-            assertEquals(Optional.empty(), context.getTotalActions());
+            assertEquals(Optional.empty(), context.getExtraActionTimeout());
+            assertEquals(Optional.empty(), context.getExpectedActions());
         }
     }
 
@@ -58,8 +58,8 @@ public class GameContextTest {
 
             assertEquals(Optional.empty(), context.getActionTimeout());
             assertEquals(Optional.empty(), context.getGameTimeout());
-            assertEquals(Optional.empty(), context.getExtraActionTime());
-            assertEquals(Optional.empty(), context.getTotalActions());
+            assertEquals(Optional.empty(), context.getExtraActionTimeout());
+            assertEquals(Optional.empty(), context.getExpectedActions());
         }
     }
 
@@ -124,7 +124,7 @@ public class GameContextTest {
             var actionDuration = actionTimeout.getActionDuration();
             assertEquals(TIMEOUT, actionDuration.toMillis());
 
-            var totalActions = context.getTotalActions();
+            var totalActions = context.getExpectedActions();
             assertTrue(totalActions.isPresent());
             assertEquals(ACTIONS_COUNTER, totalActions.get());
         }
@@ -156,7 +156,7 @@ public class GameContextTest {
             assertNotNull(extraDuration);
             assertEquals(ONE_MINUTE, extraDuration.toMillis());
 
-            var durationMillis = context.getExtraActionTime();
+            var durationMillis = context.getExtraActionTimeout();
             assertEquals(ONE_MINUTE, durationMillis.get());
 
             var timeoutMillis = context.getActionTimeout();
@@ -197,7 +197,7 @@ public class GameContextTest {
             assertNotNull(extraDuration);
             assertEquals(ONE_MINUTE, extraDuration.toMillis());
 
-            var durationMillis = context.getExtraActionTime();
+            var durationMillis = context.getExtraActionTimeout();
             assertEquals(ONE_MINUTE, durationMillis.get());
         }
     }
@@ -228,7 +228,7 @@ public class GameContextTest {
             assertNotNull(extraDuration);
             assertEquals(ONE_MINUTE, extraDuration.toMillis());
 
-            var durationMillis = context.getExtraActionTime();
+            var durationMillis = context.getExtraActionTimeout();
             assertEquals(ONE_MINUTE, durationMillis.get());
         }
     }

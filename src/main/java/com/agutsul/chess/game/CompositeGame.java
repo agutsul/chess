@@ -126,8 +126,8 @@ final class CompositeGame<GAME extends Game & Observable>
         }
 
         @Override
-        public Optional<Integer> getTotalActions() {
-            return Stream.of(super.getTotalActions())
+        public Optional<Integer> getExpectedActions() {
+            return Stream.of(super.getExpectedActions())
                     .flatMap(Optional::stream)
                     .map(totalActions -> totalActions + this.actionsCounter)
                     .findFirst();

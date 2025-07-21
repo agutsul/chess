@@ -96,7 +96,7 @@ class TimeoutGame<GAME extends Game & Observable>
             ));
         }
 
-        var expectedActions = Stream.of(context.getTotalActions())
+        var expectedActions = Stream.of(context.getExpectedActions())
                 .flatMap(Optional::stream)
                 .findFirst()
                 .orElse(0);
