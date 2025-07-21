@@ -36,6 +36,7 @@ final class CompositeGame<GAME extends Game & Observable>
     public void run() {
         // proxy game when iterator is empty ( without any timeout at all )
         if (!this.iterator.hasNext()) {
+            LOGGER.info("Proxy game execution");
             super.run();
             return;
         }
@@ -43,6 +44,8 @@ final class CompositeGame<GAME extends Game & Observable>
         try {
             for (int actionsCounter = 0; this.iterator.hasNext();) {
                 var timeout = this.iterator.next();
+
+                LOGGER.info("Game iteration with timeout '{}' started", timeout);
 
                 var context = new IterativeGameContext(getContext(), actionsCounter);
                 context.setTimeout(timeout.isType(Type.UNKNOWN) ? null : timeout);
@@ -61,16 +64,21 @@ final class CompositeGame<GAME extends Game & Observable>
 
                 var isGameFinished = !isUnknown(this.game.getState());
                 if (isGameFinished) {
+                    LOGGER.info("Game iteration with timeout '{}' stopped", timeout);
                     return;
                 }
 
                 if (timeout.isType(Type.ACTIONS_PER_PERIOD)) {
                     actionsCounter += ((MixedTimeout) timeout).getActionsCounter();
                 }
+
+                LOGGER.info("Game iteration with timeout '{}' finished", timeout);
             }
 
             notifyObservers(new GameWinnerEvent(this.game, WinnerEvaluator.Type.STANDARD));
             notifyObservers(new GameOverEvent(this.game));
+
+            LOGGER.info("Game over ( composite )");
         } catch (Throwable throwable) {
             LOGGER.error("{}: Game exception, board state '{}': {}",
                     getCurrentPlayer().getColor(), getBoard().getState(),
