@@ -47,22 +47,10 @@ final class CompositeGame<GAME extends Game & Observable>
 
                 LOGGER.info("Game iteration with timeout '{}' started", timeout);
 
-                var context = new IterativeGameContext(getContext(), actionsCounter);
-                context.setTimeout(timeout.isType(Type.UNKNOWN) ? null : timeout);
-
-                var iGame = new IterativeGame<>(this.game, context);
-
-                @SuppressWarnings("unchecked")
-                var playableGame = Stream.of(context.getGameTimeout())
-                        .flatMap(Optional::stream)
-                        .map(timeoutMillis -> new IterativeTimeoutGame<>(iGame, timeoutMillis))
-                        .map(timeoutGame -> (GAME) timeoutGame)
-                        .findFirst()
-                        .orElse((GAME) iGame);
-
+                var playableGame = createIterativeGame(timeout, actionsCounter);
                 playableGame.run();
 
-                var isGameFinished = !isUnknown(this.game.getState());
+                var isGameFinished = !isUnknown(playableGame.getState());
                 if (isGameFinished) {
                     LOGGER.info("Game iteration with timeout '{}' stopped", timeout);
                     return;
@@ -88,6 +76,23 @@ final class CompositeGame<GAME extends Game & Observable>
             notifyObservers(new GameExceptionEvent(this.game, throwable));
             notifyObservers(new GameOverEvent(this.game));
         }
+    }
+
+    private GAME createIterativeGame(Timeout timeout, int actionsCounter) {
+        var context = new IterativeGameContext(getContext(), actionsCounter);
+        context.setTimeout(timeout.isType(Type.UNKNOWN) ? null : timeout);
+
+        var iGame = new IterativeGame<>(this.game, context);
+
+        @SuppressWarnings("unchecked")
+        var playableGame = Stream.of(context.getGameTimeout())
+                .flatMap(Optional::stream)
+                .map(timeoutMillis -> new IterativeTimeoutGame<>(iGame, timeoutMillis))
+                .map(timeoutGame -> (GAME) timeoutGame)
+                .findFirst()
+                .orElse((GAME) iGame);
+
+        return playableGame;
     }
 
     private static final class IterativeGame<GAME extends Game & Observable>
