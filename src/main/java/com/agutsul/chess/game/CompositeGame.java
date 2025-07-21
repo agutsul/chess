@@ -41,7 +41,6 @@ final class CompositeGame<GAME extends Game & Observable>
         }
 
         try {
-            // iterate over specified timeouts
             for (int actionsCounter = 0; this.iterator.hasNext();) {
                 var timeout = this.iterator.next();
 
