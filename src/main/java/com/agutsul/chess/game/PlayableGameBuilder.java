@@ -88,7 +88,6 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
                 .filter(timeout -> timeout instanceof CompositeTimeout)
                 .map(timeout -> (CompositeTimeout) timeout)
                 .map(timeout -> new CompositeGame<>(game, timeout.iterator()))
-                .peek(timeoutGame -> timeoutGame.addObserver(new GameTimeoutTerminationObserver()))
                 .map(timeoutGame -> (GAME) timeoutGame)
                 .findFirst();
 

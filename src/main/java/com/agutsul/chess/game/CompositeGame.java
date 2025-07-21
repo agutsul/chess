@@ -41,6 +41,7 @@ final class CompositeGame<GAME extends Game & Observable>
             return;
         }
 
+        var timeoutTerminationObserver = new GameTimeoutTerminationObserver();
         try {
             // iterate over specified timeouts
             for (int actionsCounter = 0; this.iterator.hasNext();) {
@@ -55,7 +56,7 @@ final class CompositeGame<GAME extends Game & Observable>
                 var playableGame = Stream.of(context.getGameTimeout())
                         .flatMap(Optional::stream)
                         .map(timeoutMillis -> new IterativeTimeoutGame<>(iGame, timeoutMillis))
-                        .peek(timeoutGame -> timeoutGame.addObserver(new GameTimeoutTerminationObserver()))
+                        .peek(timeoutGame -> timeoutGame.addObserver(timeoutTerminationObserver))
                         .map(timeoutGame -> (GAME) timeoutGame)
                         .findFirst()
                         .orElse((GAME) iGame);
