@@ -5,6 +5,9 @@ import static com.agutsul.chess.timeout.TimeoutFactory.createGameTimeout;
 import static com.agutsul.chess.timeout.TimeoutFactory.createMixedTimeout;
 import static com.agutsul.chess.timeout.TimeoutFactory.createUnknownTimeout;
 import static java.util.Collections.emptyList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -21,6 +24,7 @@ import com.agutsul.chess.game.observer.GameTimeoutTerminationObserver;
 import com.agutsul.chess.game.state.DefaultGameState;
 import com.agutsul.chess.game.state.DrawnGameState;
 import com.agutsul.chess.game.state.WhiteWinGameState;
+import com.agutsul.chess.timeout.CompositeTimeout;
 import com.agutsul.chess.timeout.Timeout;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,9 +43,10 @@ public class CompositeGameTest {
         when(game.getContext())
             .thenReturn(gameContext);
 
-        List<Timeout> timeouts = List.of(createActionTimeout(100L));
+        var compositeGame = new CompositeGame<>(game,
+                new CompositeTimeout(List.of(createActionTimeout(100L)))
+        );
 
-        var compositeGame = new CompositeGame<>(game, timeouts.iterator());
         compositeGame.addObserver(new GameTimeoutTerminationObserver());
         compositeGame.run();
 
@@ -55,9 +60,10 @@ public class CompositeGameTest {
         when(game.getContext())
             .thenReturn(gameContext);
 
-        List<Timeout> timeouts = List.of(createUnknownTimeout());
+        var compositeGame = new CompositeGame<>(game,
+                new CompositeTimeout(List.of(createUnknownTimeout()))
+        );
 
-        var compositeGame = new CompositeGame<>(game, timeouts.iterator());
         compositeGame.addObserver(new GameTimeoutTerminationObserver());
         compositeGame.run();
 
@@ -68,10 +74,14 @@ public class CompositeGameTest {
     void testDefaultGameWithoutAnyTimeout() {
         List<Timeout> timeouts = emptyList();
 
-        var compositeGame = new CompositeGame<>(game, timeouts.iterator());
-        compositeGame.run();
+        var thrown = assertThrows(
+                IllegalStateException.class,
+                () -> new CompositeGame<>(game, new CompositeTimeout(timeouts)).run()
+        );
 
-        verify(game, times(1)).run();
+        assertEquals("Unable to create composite timeout", thrown.getMessage());
+
+        verify(game, never()).run();
     }
 
     @Test
@@ -81,9 +91,10 @@ public class CompositeGameTest {
         when(game.getContext())
             .thenReturn(gameContext);
 
-        List<Timeout> timeouts = List.of(createGameTimeout(100));
+        var compositeGame = new CompositeGame<>(game,
+                new CompositeTimeout(List.of(createGameTimeout(100)))
+        );
 
-        var compositeGame = new CompositeGame<>(game, timeouts.iterator());
         compositeGame.addObserver(new GameTimeoutTerminationObserver());
         compositeGame.run();
 
@@ -97,9 +108,10 @@ public class CompositeGameTest {
         when(game.getContext())
             .thenReturn(gameContext);
 
-        List<Timeout> timeouts = List.of(createMixedTimeout(100L, 2));
+        var compositeGame = new CompositeGame<>(game,
+                new CompositeTimeout(List.of(createMixedTimeout(100L, 2)))
+        );
 
-        var compositeGame = new CompositeGame<>(game, timeouts.iterator());
         compositeGame.addObserver(new GameTimeoutTerminationObserver());
         compositeGame.run();
 
@@ -125,9 +137,12 @@ public class CompositeGameTest {
         when(game.getContext())
             .thenReturn(gameContext);
 
-        List<Timeout> timeouts = List.of(createMixedTimeout(100L, 2), createMixedTimeout(400L, 4));
+        var timeout = new CompositeTimeout(
+                createMixedTimeout(100L, 2),
+                createMixedTimeout(400L, 4)
+        );
 
-        var compositeGame = new CompositeGame<>(game, timeouts.iterator());
+        var compositeGame = new CompositeGame<>(game, timeout);
         compositeGame.addObserver(new GameTimeoutTerminationObserver());
         compositeGame.run();
 

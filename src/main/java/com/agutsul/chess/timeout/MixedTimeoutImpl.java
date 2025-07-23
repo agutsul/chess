@@ -10,8 +10,8 @@ final class MixedTimeoutImpl<GT extends Timeout & GameTimeout, AT extends Timeou
         extends AbstractBaseTimeout
         implements ActionTimeout, GameTimeout, MixedTimeout {
 
-    private final GT gameTimeout;
-    private final AT actionTimeout;
+    private final GT  gameTimeout;
+    private final AT  actionTimeout;
     private final int actionCounter;
 
     MixedTimeoutImpl(long durationMillis, int actionCounter) {

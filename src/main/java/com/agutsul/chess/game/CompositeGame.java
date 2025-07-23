@@ -15,6 +15,7 @@ import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameWinnerEvent;
 import com.agutsul.chess.rule.winner.WinnerEvaluator;
+import com.agutsul.chess.timeout.CompositeTimeout;
 import com.agutsul.chess.timeout.MixedTimeout;
 import com.agutsul.chess.timeout.Timeout;
 import com.agutsul.chess.timeout.Timeout.Type;
@@ -27,20 +28,17 @@ final class CompositeGame<GAME extends Game & Observable>
 
     private final Iterator<Timeout> iterator;
 
-    CompositeGame(GAME game, Iterator<Timeout> iterator) {
+    CompositeGame(GAME game, CompositeTimeout timeout) {
+        this(game, timeout.iterator());
+    }
+
+    private CompositeGame(GAME game, Iterator<Timeout> iterator) {
         super(game);
         this.iterator = iterator;
     }
 
     @Override
     public void run() {
-        // proxy game when iterator is empty ( without any timeout at all )
-        if (!this.iterator.hasNext()) {
-            LOGGER.info("Proxy game execution");
-            super.run();
-            return;
-        }
-
         try {
             for (int actionsCounter = 0; this.iterator.hasNext();) {
                 var timeout = this.iterator.next();

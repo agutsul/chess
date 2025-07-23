@@ -87,8 +87,7 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
         var compositeGame = Stream.of(context.getTimeout())
                 .flatMap(Optional::stream)
                 .filter(timeout -> timeout instanceof CompositeTimeout)
-                .map(timeout -> (CompositeTimeout) timeout)
-                .map(timeout -> new CompositeGame<>(game, timeout.iterator()))
+                .map(timeout -> new CompositeGame<>(game, (CompositeTimeout) timeout))
                 .peek(timeoutGame -> timeoutGame.addObserver(timeoutTerminationObserver))
                 .map(timeoutGame -> (GAME) timeoutGame)
                 .findFirst();
