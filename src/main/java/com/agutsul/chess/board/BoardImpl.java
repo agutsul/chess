@@ -134,8 +134,8 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     public int calculateValue(Color color) {
         LOGGER.info("'{}' value...", color);
 
-        var pieces = getPieces(color);
-        var value = pieces.stream()
+        var value = Stream.of(getPieces(color))
+                .flatMap(Collection::stream)
                 .mapToInt(Piece::getValue)
                 .sum();
 
@@ -177,10 +177,9 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     public <COLOR extends Color> Collection<Piece<COLOR>> getPieces() {
         LOGGER.info("Getting all active pieces");
 
-        var allPieces = this.pieceCache.getActive();
-
         @SuppressWarnings("unchecked")
-        Collection<Piece<COLOR>> pieces = allPieces.stream()
+        Collection<Piece<COLOR>> pieces = Stream.of(pieceCache.getActive())
+                .flatMap(Collection::stream)
                 .map(piece -> (Piece<COLOR>) piece)
                 .toList();
 
@@ -191,10 +190,9 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color) {
         LOGGER.info("Getting pieces with '{}' color", color);
 
-        var piecesByColor = this.pieceCache.getActive(color);
-
         @SuppressWarnings("unchecked")
-        Collection<Piece<COLOR>> pieces = piecesByColor.stream()
+        Collection<Piece<COLOR>> pieces = Stream.of(pieceCache.getActive(color))
+                .flatMap(Collection::stream)
                 .map(piece -> (Piece<COLOR>) piece)
                 .toList();
 
@@ -205,10 +203,9 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Piece.Type pieceType) {
         LOGGER.info("Getting pieces with type '{}'", pieceType);
 
-        var piecesByType = this.pieceCache.getActive(pieceType);
-
         @SuppressWarnings("unchecked")
-        Collection<Piece<COLOR>> pieces = piecesByType.stream()
+        Collection<Piece<COLOR>> pieces = Stream.of(pieceCache.getActive(pieceType))
+                .flatMap(Collection::stream)
                 .map(piece -> (Piece<COLOR>) piece)
                 .toList();
 
@@ -218,15 +215,14 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     @Override
     public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color,
                                                                     Piece.Type pieceType) {
+
         LOGGER.info("Getting pieces with type '{}' and '{}' color",
-                pieceType,
-                color
+                pieceType, color
         );
 
-        var filteredPieces = this.pieceCache.getActive(color, pieceType);
-
         @SuppressWarnings("unchecked")
-        Collection<Piece<COLOR>> pieces = filteredPieces.stream()
+        Collection<Piece<COLOR>> pieces = Stream.of(pieceCache.getActive(color, pieceType))
+                .flatMap(Collection::stream)
                 .map(piece -> (Piece<COLOR>) piece)
                 .toList();
 
@@ -237,24 +233,20 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color,
                                                                     String position,
                                                                     String... positions) {
-        var allPositions = new ArrayList<String>();
-        allPositions.add(position);
-        allPositions.addAll(List.of(positions));
 
-        LOGGER.info("Getting pieces with type of '{}' color and locations '[{}]'",
-                color,
-                join(allPositions, ",")
-        );
-
-        var requestedPositions = allPositions.stream()
+        var requestedPositions = Stream.of(List.of(position), List.of(positions))
+                .flatMap(Collection::stream)
                 .map(this::getPosition)
                 .flatMap(Optional::stream)
                 .collect(toSet());
 
-        var piecesByColor = this.pieceCache.getActive(color);
+        LOGGER.info("Getting pieces with type of '{}' color and locations '[{}]'",
+                color, join(requestedPositions, ",")
+        );
 
         @SuppressWarnings("unchecked")
-        Collection<Piece<COLOR>> pieces = piecesByColor.stream()
+        Collection<Piece<COLOR>> pieces = Stream.of(pieceCache.getActive(color))
+                .flatMap(Collection::stream)
                 .filter(piece -> requestedPositions.contains(piece.getPosition()))
                 .map(piece -> (Piece<COLOR>) piece)
                 .toList();
@@ -265,40 +257,42 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     @Override
     public <COLOR extends Color> Optional<Piece<COLOR>> getPiece(Position position) {
         LOGGER.info("Getting piece at '{}'", position);
-        var cachedPiece = this.pieceCache.getActive(position);
 
         @SuppressWarnings("unchecked")
-        var foundPiece = cachedPiece.map(piece -> (Piece<COLOR>) piece);
-        return foundPiece;
+        var piece = Stream.of(pieceCache.getActive(position))
+                .flatMap(Optional::stream)
+                .map(p -> (Piece<COLOR>) p)
+                .findFirst();
+
+        return piece;
     }
 
     @Override
     public <COLOR extends Color> Optional<Piece<COLOR>> getPiece(String position) {
         LOGGER.info("Getting piece at '{}'", position);
 
-        var optionalPosition = getPosition(position);
-        if (optionalPosition.isEmpty()) {
-            return Optional.empty();
-        }
+        @SuppressWarnings("unchecked")
+        var piece = Stream.of(getPosition(position))
+                .flatMap(Optional::stream)
+                .map(this::getPiece)
+                .flatMap(Optional::stream)
+                .map(p -> (Piece<COLOR>) p)
+                .findFirst();
 
-        return getPiece(optionalPosition.get());
+        return piece;
     }
 
     @Override
     public <COLOR extends Color> Optional<Piece<COLOR>> getCapturedPiece(String position,
                                                                          Color color) {
+
         LOGGER.info("Getting captured piece at '{}'", position);
 
-        var optionalPosition = getPosition(position);
-        if (optionalPosition.isEmpty()) {
-            return Optional.empty();
-        }
-
-        var capturedPosition = optionalPosition.get();
-        var capturedPieces = this.pieceCache.getCaptured(color, capturedPosition);
-
         @SuppressWarnings("unchecked")
-        var capturedPiece = capturedPieces.stream()
+        var capturedPiece = Stream.of(getPosition(position))
+                .flatMap(Optional::stream)
+                .map(capturedPosition -> pieceCache.getCaptured(color, capturedPosition))
+                .flatMap(Collection::stream)
                 .filter(not(Piece::isActive))
                 .filter(piece -> nonNull(capturedAt(piece)))
                 .sorted(comparing(piece -> capturedAt((Piece<?>) piece)).reversed())
@@ -312,25 +306,24 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     public <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(Color color) {
         LOGGER.info("Getting king of '{}'", color);
 
-        var pieces = getPieces(color, Piece.Type.KING);
-        if (pieces.isEmpty()) {
-            return Optional.empty();
-        }
-
         @SuppressWarnings("unchecked")
-        var king = (KingPiece<COLOR>) pieces.iterator().next();
-        return Optional.ofNullable(king.isActive() ? king : null);
+        var king = Stream.of(getPieces(color, Piece.Type.KING))
+                .flatMap(Collection::stream)
+                .map(piece -> (KingPiece<COLOR>) piece)
+                .filter(KingPiece::isActive)
+                .findFirst();
+
+        return king;
     }
 
     @Override
     public boolean isAttacked(Position position, Color attackerColor) {
         LOGGER.info("Checking is position '{}' attacked by '{}'",
-                position,
-                attackerColor
+                position, attackerColor
         );
 
-        var attackerPieces = getPieces(attackerColor);
-        var isAttacked = attackerPieces.stream()
+        var isAttacked = Stream.of(getPieces(attackerColor))
+                .flatMap(Collection::stream)
                 .map(piece -> getImpacts(piece, Impact.Type.CONTROL))
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceControlImpact<?,?>) impact)
@@ -344,14 +337,13 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     public <COLOR extends Color> Collection<Piece<COLOR>> getAttackers(Piece<?> piece) {
         LOGGER.info("Get piece '{}' attackers", piece);
 
-        var pieces = getPieces(piece.getColor().invert());
-        var actions = pieces.stream()
-                .map(attacker -> getActions(attacker, Action.Type.CAPTURE))
-                .flatMap(Collection::stream)
-                .collect(toSet());
+        var attackerColor = piece.getColor().invert();
 
         @SuppressWarnings("unchecked")
-        Collection<Piece<COLOR>> attackers = actions.stream()
+        Collection<Piece<COLOR>> attackers = Stream.of(getPieces(attackerColor))
+                .flatMap(Collection::stream)
+                .map(attacker -> getActions(attacker, Action.Type.CAPTURE))
+                .flatMap(Collection::stream)
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), piece))
                 .map(AbstractCaptureAction::getSource)
@@ -364,12 +356,11 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     @Override
     public boolean isMonitored(Position position, Color attackerColor) {
         LOGGER.info("Checking if position '{}' is monitored by the other piece of '{}'",
-                position,
-                attackerColor
+                position, attackerColor
         );
 
-        var attackers = getPieces(attackerColor);
-        var isMonitored = attackers.stream()
+        var isMonitored = Stream.of(getPieces(attackerColor))
+                .flatMap(Collection::stream)
                 .map(piece -> getImpacts(piece, Impact.Type.MONITOR))
                 .flatMap(Collection::stream)
                 .map(Impact::getPosition)
@@ -379,15 +370,16 @@ final class BoardImpl extends AbstractBoard implements Closeable {
             return false;
         }
 
-        var optionalKing = getKing(attackerColor.invert());
+        var color = attackerColor.invert();
+
+        var optionalKing = getKing(color);
         if (optionalKing.isEmpty()) {
             return false;
         }
 
         var king = optionalKing.get();
-
-        var checkMakers = getAttackers(king);
-        var isCheckMakerMonitored = checkMakers.stream()
+        var isCheckMakerMonitored = Stream.of(getAttackers(king))
+                .flatMap(Collection::stream)
                 .map(piece -> getImpacts(piece, Impact.Type.MONITOR))
                 .flatMap(Collection::stream)
                 .map(Impact::getPosition)
@@ -400,14 +392,15 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         // check if there is pinned piece in between monitored position
         // and attacker monitoring that position.
         // So, actual attack is blocked and as result position should be available for move
-        var pinnedPieces = getPieces(attackerColor.invert()).stream()
+        var pinnedPieces = Stream.of(getPieces(color))
+                .flatMap(Collection::stream)
                 .filter(not(Piece::isKing))
                 .filter(piece -> ((Pinnable) piece).isPinned())
                 .toList();
 
         for (var piece : pinnedPieces) {
-            var pinImpacts = getImpacts(piece, Impact.Type.PIN);
-            var isBlocked = pinImpacts.stream()
+            var isBlocked = Stream.of(getImpacts(piece, Impact.Type.PIN))
+                    .flatMap(Collection::stream)
                     .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
                     .map(PiecePinImpact::getTarget)
                     .filter(checkImpact -> Objects.equals(checkImpact.getTarget(), king))
