@@ -5,6 +5,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 
@@ -31,8 +32,8 @@ final class DisposedPieceStateImpl<PIECE extends Piece<?> & Movable & Capturable
     }
 
     @Override
-    public Instant getDisposedAt() {
-        return this.disposedAt;
+    public Optional<Instant> getDisposedAt() {
+        return Optional.ofNullable(this.disposedAt);
     }
 
     @Override

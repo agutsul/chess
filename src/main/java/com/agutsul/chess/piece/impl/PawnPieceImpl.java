@@ -6,6 +6,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 
@@ -201,7 +202,7 @@ final class PawnPieceImpl<COLOR extends Color>
         }
 
         @Override
-        public Instant getDisposedAt() {
+        public Optional<Instant> getDisposedAt() {
             return this.disposedState.getDisposedAt();
         }
     }

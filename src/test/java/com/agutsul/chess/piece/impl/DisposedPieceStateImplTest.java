@@ -9,6 +9,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -30,7 +32,7 @@ public class DisposedPieceStateImplTest {
     void testGetDisposedAt() {
         var instant = now();
         var state = new DisposedPieceStateImpl<>(instant);
-        assertEquals(instant, state.getDisposedAt());
+        assertEquals(Optional.of(instant), state.getDisposedAt());
     }
 
     @Test

@@ -3,6 +3,7 @@ package com.agutsul.chess.board;
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
+import static java.util.Objects.nonNull;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.function.Predicate.not;
@@ -20,6 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -47,7 +49,6 @@ import com.agutsul.chess.piece.factory.PieceFactory;
 import com.agutsul.chess.piece.impl.BlackPieceFactory;
 import com.agutsul.chess.piece.impl.WhitePieceFactory;
 import com.agutsul.chess.piece.state.DisposedPieceState;
-import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
 final class BoardImpl extends AbstractBoard implements Closeable {
@@ -299,7 +300,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         @SuppressWarnings("unchecked")
         var capturedPiece = capturedPieces.stream()
                 .filter(not(Piece::isActive))
-                .filter(piece -> Objects.nonNull(capturedAt(piece)))
+                .filter(piece -> nonNull(capturedAt(piece)))
                 .sorted(comparing(piece -> capturedAt((Piece<?>) piece)).reversed())
                 .map(piece -> (Piece<COLOR>) piece)
                 .findFirst();
@@ -318,9 +319,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
         @SuppressWarnings("unchecked")
         var king = (KingPiece<COLOR>) pieces.iterator().next();
-        return king.isActive()
-                ? Optional.of(king)
-                : Optional.empty();
+        return Optional.ofNullable(king.isActive() ? king : null);
     }
 
     @Override
@@ -466,13 +465,13 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     }
 
     private static Instant capturedAt(Piece<?> piece) {
-        return capturedAt(piece.getState());
-    }
-
-    private static Instant capturedAt(PieceState<?> state) {
-        return state instanceof DisposedPieceState<?>
-            ? ((DisposedPieceState<?>) state).getDisposedAt()
-            : null;
+        return Stream.of(piece.getState())
+                .filter(state -> state instanceof DisposedPieceState<?>)
+                .map(state -> (DisposedPieceState<?>) state)
+                .map(DisposedPieceState::getDisposedAt)
+                .flatMap(Optional::stream)
+                .findFirst()
+                .orElse(null);
     }
 
     private final class RefreshBoardObserver

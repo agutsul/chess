@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
@@ -389,7 +390,7 @@ final class TransformablePieceImpl<COLOR extends Color,
         }
 
         @Override
-        public Instant getDisposedAt() {
+        public Optional<Instant> getDisposedAt() {
             return this.disposedState.getDisposedAt();
         }
     }

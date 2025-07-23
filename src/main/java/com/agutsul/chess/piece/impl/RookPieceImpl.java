@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 
@@ -110,7 +111,7 @@ final class RookPieceImpl<COLOR extends Color>
         }
 
         @Override
-        public Instant getDisposedAt() {
+        public Optional<Instant> getDisposedAt() {
             return this.disposedState.getDisposedAt();
         }
     }
