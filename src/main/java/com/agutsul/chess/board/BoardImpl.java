@@ -3,10 +3,11 @@ package com.agutsul.chess.board;
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
-import static java.util.Objects.nonNull;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.function.Function.identity;
 import static java.util.function.Predicate.not;
+import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -23,6 +24,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Pinnable;
@@ -288,14 +290,20 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
         LOGGER.info("Getting captured piece at '{}'", position);
 
-        @SuppressWarnings("unchecked")
-        var capturedPiece = Stream.of(getPosition(position))
+        var capturedPieces = Stream.of(getPosition(position))
                 .flatMap(Optional::stream)
                 .map(capturedPosition -> pieceCache.getCaptured(color, capturedPosition))
                 .flatMap(Collection::stream)
                 .filter(not(Piece::isActive))
-                .filter(piece -> nonNull(capturedAt(piece)))
-                .sorted(comparing(piece -> capturedAt((Piece<?>) piece)).reversed())
+                .collect(toMap(identity(), piece -> capturedAt(piece)));
+
+        @SuppressWarnings("unchecked")
+        var capturedPiece = Stream.of(capturedPieces.entrySet())
+                .flatMap(Collection::stream)
+                .filter(entry -> entry.getValue().isPresent())
+                .map(entry -> Pair.of(entry.getKey(), entry.getValue().get()))
+                .sorted(comparing(pair -> ((Pair<Piece<?>,Instant>) pair).getValue()).reversed())
+                .map(Pair::getKey)
                 .map(piece -> (Piece<COLOR>) piece)
                 .findFirst();
 
@@ -457,14 +465,13 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         this.pieceCache.refresh();
     }
 
-    private static Instant capturedAt(Piece<?> piece) {
+    private static Optional<Instant> capturedAt(Piece<?> piece) {
         return Stream.of(piece.getState())
                 .filter(state -> state instanceof DisposedPieceState<?>)
                 .map(state -> (DisposedPieceState<?>) state)
                 .map(DisposedPieceState::getDisposedAt)
                 .flatMap(Optional::stream)
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
     private final class RefreshBoardObserver
