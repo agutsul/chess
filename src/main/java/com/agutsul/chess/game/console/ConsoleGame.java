@@ -1,10 +1,7 @@
 package com.agutsul.chess.game.console;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ForkJoinPool;
-
-import org.apache.commons.io.IOUtils;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.StandardBoard;
@@ -14,6 +11,7 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.game.PlayableGameBuilder;
 import com.agutsul.chess.game.ai.SimulationActionInputObserver;
+import com.agutsul.chess.game.observer.CloseableGameOverObserver;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.timeout.Timeout;
 
@@ -37,13 +35,15 @@ public final class ConsoleGame<T extends Game & Observable>
                                                               Board board, InputStream inputStream,
                                                               Timeout timeout) {
 
-        var context = new ConsoleGameContext(new ForkJoinPool(), inputStream);
+        var context = new GameContext(new ForkJoinPool());
         context.setTimeout(timeout);
 
         var game = new PlayableGameBuilder<>(whitePlayer, blackPlayer)
                 .withBoard(board)
                 .withContext(context)
                 .build();
+
+        game.addObserver(new CloseableGameOverObserver(inputStream));
 
         var observableBoard = (Observable) board;
 
@@ -58,25 +58,5 @@ public final class ConsoleGame<T extends Game & Observable>
         observableBoard.addObserver(new SimulationActionInputObserver(blackPlayer, game));
 
         return (T) game;
-    }
-
-    private static final class ConsoleGameContext
-            extends GameContext {
-
-        private final InputStream inputStream;
-
-        public ConsoleGameContext(ForkJoinPool forkJoinPool, InputStream inputStream) {
-            super(forkJoinPool);
-            this.inputStream = inputStream;
-        }
-
-        @Override
-        public void close() throws IOException {
-            try {
-                IOUtils.close(this.inputStream);
-            } finally {
-                super.close();
-            }
-        }
     }
 }
