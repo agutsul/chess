@@ -63,15 +63,15 @@ public final class PgnStringBuilder
             return string;
         }
 
-        if (Strings.CS.containsAny(string, "?!")) {
-            string = Strings.CS.remove(Strings.CS.remove(string, "?"), "!");
+        if (Strings.CI.containsAny(string, "?!")) {
+            string = Strings.CI.remove(Strings.CI.remove(string, "?"), "!");
         }
 
         //  check if string contains: ' { [%eval 0.53] }'
         var evalMatcher = evalPattern.matcher(string);
         if (evalMatcher.find()) {
             string = replaceAll((CharSequence) string, evalPattern, StringUtils.EMPTY);
-            string = Strings.CS.remove(string, " { [] }");
+            string = Strings.CI.remove(string, " { [] }");
         }
 
         //  check if string contains: '1...'

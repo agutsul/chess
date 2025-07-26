@@ -98,7 +98,7 @@ public final class PieceActionAdapter
 
     private String adaptPieceAction(String action) {
 
-        if (!Strings.CS.contains(action, CAPTURE_CODE)) {
+        if (!Strings.CI.contains(action, CAPTURE_CODE)) {
             return adaptPieceMoveAction(action);
         }
 

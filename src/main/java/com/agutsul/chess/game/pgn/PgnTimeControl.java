@@ -124,13 +124,13 @@ public enum PgnTimeControl {
 
     private static boolean isSandclock(String str, String searched) {
         return containsOnce(str, searched)
-                && Strings.CS.startsWith(str, searched) && isNumeric(str.substring(1));
+                && Strings.CI.startsWith(str, searched) && isNumeric(str.substring(1));
     }
 
     private static boolean containsIn(String str, String searched) {
         return containsOnce(str, searched)
-                && !Strings.CS.startsWith(str, searched)
-                && !Strings.CS.endsWith(str, searched);
+                && !Strings.CI.startsWith(str, searched)
+                && !Strings.CI.endsWith(str, searched);
     }
 
     private static boolean containsOnce(String str, String searched) {

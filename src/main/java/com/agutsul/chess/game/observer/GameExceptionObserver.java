@@ -71,6 +71,6 @@ public final class GameExceptionObserver
 
     private static String formatPlayer(Player player) {
         var name = deleteWhitespace(stripAccents(player.getName()));
-        return trim(Strings.CS.remove(Strings.CS.remove(name, ","), "'"));
+        return trim(Strings.CI.remove(Strings.CI.remove(name, ","), "'"));
     }
 }
