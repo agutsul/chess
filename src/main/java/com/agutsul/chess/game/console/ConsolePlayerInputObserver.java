@@ -37,8 +37,6 @@ public class ConsolePlayerInputObserver
     public ConsolePlayerInputObserver(Player player, Game game, InputStream inputStream) {
         super(player, game);
         this.inputStream = inputStream;
-
-//        ((Observable) game).addObserver(new CloseableGameOverObserver(inputStream));
     }
 
     @Override
