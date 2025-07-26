@@ -1,10 +1,10 @@
 package com.agutsul.chess.game.console;
 
-import static org.apache.commons.io.IOUtils.close;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ForkJoinPool;
+
+import org.apache.commons.io.IOUtils;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.StandardBoard;
@@ -73,7 +73,7 @@ public final class ConsoleGame<T extends Game & Observable>
         @Override
         public void close() throws IOException {
             try {
-                close(this.inputStream);
+                IOUtils.close(this.inputStream);
             } finally {
                 super.close();
             }
