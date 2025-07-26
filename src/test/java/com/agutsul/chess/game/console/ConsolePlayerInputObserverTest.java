@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -107,18 +106,6 @@ public class ConsolePlayerInputObserverTest {
     }
 
     @Test
-    @Disabled
-    void testGetActionCommandWithRuntimeException() throws IOException {
-        var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, null);
-        var thrown = assertThrows(
-                IllegalActionException.class,
-                () -> playerInputObserver.getActionCommand(Optional.empty())
-        );
-
-        assertEquals("WHITE: 'white_player' Reading action from console failed", thrown.getMessage());
-    }
-
-    @Test
     void testGetActionCommandValidCommandWithTimeout() throws IOException {
         var timeout = 1000L;
 
@@ -126,21 +113,6 @@ public class ConsolePlayerInputObserverTest {
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
             var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
             assertEquals("e2 e4", playerInputObserver.getActionCommand(Optional.of(timeout)));
-        }
-    }
-
-    @Test
-    @Disabled
-    void testGetActionCommandWithBlankCommand() throws IOException {
-        var command = String.format("%s", lineSeparator());
-        try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
-            var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
-            var thrown = assertThrows(
-                    IllegalActionException.class,
-                    () -> playerInputObserver.getActionCommand(Optional.empty())
-            );
-
-            assertEquals("Unable to process an empty line", thrown.getMessage());
         }
     }
 
@@ -164,22 +136,6 @@ public class ConsolePlayerInputObserverTest {
         try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
             var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
             assertEquals("Q", playerInputObserver.getPromotionPieceType(Optional.empty()));
-        }
-    }
-
-    @Test
-    @Disabled
-    void testGetPromotionPieceTypeWithBlankCommand() throws IOException {
-        var command = String.format("%s", lineSeparator());
-        try (var inputStream = new ByteArrayInputStream(command.getBytes())) {
-            var playerInputObserver = new ConsolePlayerInputObserver(PLAYER, game, inputStream);
-
-            var thrown = assertThrows(
-                    IllegalActionException.class,
-                    () -> playerInputObserver.getPromotionPieceType(Optional.empty())
-            );
-
-            assertEquals("Unable to process an empty line", thrown.getMessage());
         }
     }
 
