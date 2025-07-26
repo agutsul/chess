@@ -24,7 +24,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
@@ -75,7 +74,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         this.blackPieceFactory = new BlackPieceFactory(this);
 
         this.executorService = new ThreadPoolExecutor(10, 10, 0L,
-                TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
+                MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
                 BasicThreadFactory.builder()
                     .namingPattern("BoardExecutorThread-%d")
                     .priority(Thread.MAX_PRIORITY)
