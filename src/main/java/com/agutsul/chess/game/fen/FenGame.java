@@ -15,6 +15,7 @@ import com.agutsul.chess.game.AbstractGameProxy;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.PlayableGameBuilder;
 import com.agutsul.chess.game.console.ConsolePlayerInputObserver;
+import com.agutsul.chess.game.observer.CloseableGameOverObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
@@ -82,7 +83,9 @@ public final class FenGame<T extends Game & Observable>
     private void setParsedHalfMoves(int parsedHalfMoves) {
         this.parsedHalfMoves = parsedHalfMoves;
 
-        ((Observable) getBoard()).notifyObservers(new SetActionCounterEvent(parsedHalfMoves));
+        ((Observable) getBoard()).notifyObservers(
+                new SetActionCounterEvent(parsedHalfMoves)
+        );
     }
 
     private void setParsedFullMoves(int parsedFullMoves) {
@@ -99,6 +102,8 @@ public final class FenGame<T extends Game & Observable>
                 .withJournal(journal)
                 .withActiveColor(color)
                 .build();
+
+        game.addObserver(new CloseableGameOverObserver(inputStream));
 
         var observableBoard = (Observable) board;
 
