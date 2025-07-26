@@ -1,14 +1,17 @@
 package com.agutsul.chess.game;
 
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.event.Observable;
@@ -42,23 +45,16 @@ class TimeoutGame<GAME extends Game & Observable>
                 throw new GameTimeoutException("Game timeout: invalid timeout value");
             }
 
-            var executor = newSingleThreadExecutor();
-            try {
+            try (var executor = newSingleThreadExecutor()) {
                 var future = executor.submit(this.game);
                 try {
                     future.get(this.timeout, TimeUnit.MILLISECONDS);
                 } catch (TimeoutException e) {
-                    future.cancel(true);
-                    processTimeout();
-                }
-            } finally {
-                try {
-                    executor.shutdown();
-                    if (!executor.awaitTermination(1, TimeUnit.MILLISECONDS)) {
-                        executor.shutdownNow();
+                    try {
+                        processTimeout();
+                    } finally {
+                        future.cancel(true);
                     }
-                } catch (InterruptedException e) {
-                    executor.shutdownNow();
                 }
             }
         } catch (GameTimeoutException e) {
@@ -114,5 +110,15 @@ class TimeoutGame<GAME extends Game & Observable>
     void evaluateWinner() {
         notifyObservers(new GameWinnerEvent(this.game, WinnerEvaluator.Type.STANDARD));
         notifyObservers(new GameOverEvent(this.game));
+    }
+
+    private static ExecutorService newSingleThreadExecutor() {
+        return new ThreadPoolExecutor(1, 1, 0L,
+                TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
+                BasicThreadFactory.builder()
+                    .namingPattern("TimeoutGameExecutorThread-%d")
+                    .priority(Thread.MAX_PRIORITY)
+                    .build()
+        );
     }
 }

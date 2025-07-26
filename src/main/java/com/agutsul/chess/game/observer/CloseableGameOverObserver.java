@@ -1,5 +1,7 @@
 package com.agutsul.chess.game.observer;
 
+import static org.apache.commons.io.IOUtils.close;
+import static org.apache.commons.lang3.ClassUtils.getName;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.Closeable;
@@ -23,12 +25,12 @@ public final class CloseableGameOverObserver
 
     @Override
     protected void process(GameOverEvent event) {
-        var source = this.closeable.getClass().getSimpleName();
-        LOGGER.debug("Closing '{}' started...", source);
+        var source = getName(this.closeable, Closeable.class.getName());
+        LOGGER.info("Closing '{}' started...", source);
 
         try {
-            this.closeable.close();
-            LOGGER.debug("Closing '{}' finished", source);
+            close(this.closeable);
+            LOGGER.info("Closing '{}' finished", source);
         } catch (IOException e) {
             LOGGER.error(String.format("Closing '%s' failed", source), e);
         }

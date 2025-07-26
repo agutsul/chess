@@ -29,7 +29,7 @@ public class TimeoutConsoleInputReaderTest {
                 () -> reader.read()
         );
 
-        assertEquals("WHITE: 'test' entering action timeout", thrown.getMessage());
+        assertEquals("WHITE: 'test' entering action timeout ( timeout < 0 )", thrown.getMessage());
     }
 
     @Test

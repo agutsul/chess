@@ -1,17 +1,15 @@
 package com.agutsul.chess.game.console;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.concurrent.Executors.newSingleThreadExecutor;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.time.Duration;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 import com.agutsul.chess.exception.ActionTimeoutException;
 import com.agutsul.chess.exception.GameInterruptionException;
@@ -25,7 +23,7 @@ final class TimeoutConsoleInputReader
     private final long timeout;
 
     TimeoutConsoleInputReader(Player player, InputStream inputStream, long timeoutMillis) {
-        this.reader = new TimeoutConsoleInputBufferedReader(player, inputStream);
+        this.reader = new ConsoleInputBufferedReader(player, inputStream);
         this.player = player;
         this.timeout = timeoutMillis;
     }
@@ -34,75 +32,45 @@ final class TimeoutConsoleInputReader
     public String read() throws IOException {
         if (this.timeout <= 0) {
             // it means that current timestamp is greater than overall action timeout
-            throw createTimeoutException(this.player);
+            throw new ActionTimeoutException(String.format(
+                    "%s: '%s' entering action timeout ( timeout < 0 )",
+                    player.getColor(), player
+            ));
         }
 
-        var executor = newSingleThreadExecutor();
-        try {
+        try (var executor = newSingleThreadExecutor()) {
             var future = executor.submit(() -> this.reader.read());
             try {
                 return future.get(this.timeout, TimeUnit.MILLISECONDS);
             } catch (TimeoutException e) {
                 future.cancel(true);
-                throw createTimeoutException(this.player);
+                throw new ActionTimeoutException(String.format(
+                        "%s: '%s' entering action timeout",
+                        player.getColor(), player
+                ));
             } catch (InterruptedException e) {
-                throw createInterruptionException(this.player);
+                throw new GameInterruptionException(String.format(
+                        "%s: '%s' entering action interrupted",
+                        player.getColor(), player
+                ));
             } catch (ExecutionException e) {
-                throw createIOException(this.player, "%s: '%s' failed to enter action", e.getCause());
-            }
-        } finally {
-            try {
-                executor.shutdown();
-                if (!executor.awaitTermination(1, TimeUnit.MILLISECONDS)) {
-                    executor.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                executor.shutdownNow();
+                var message = String.format(
+                        "%s: '%s' failed to enter action",
+                        player.getColor(), player
+                );
+
+                throw new IOException(message, e.getCause());
             }
         }
     }
 
-    private static ActionTimeoutException createTimeoutException(Player player) {
-        return new ActionTimeoutException(createMessage(player, "%s: '%s' entering action timeout"));
-    }
-
-    private static GameInterruptionException createInterruptionException(Player player) {
-        return new GameInterruptionException(createMessage(player, "%s: '%s' entering action interrupted"));
-    }
-
-    private static IOException createIOException(Player player, String messageFormat, Throwable t) {
-        return new IOException(createMessage(player, messageFormat), t);
-    }
-
-    private static String createMessage(Player player, String messageFormat) {
-        return String.format(messageFormat, player.getColor(), player);
-    }
-
-    private static final class TimeoutConsoleInputBufferedReader
-            extends AbstractConsoleInputReader {
-
-        TimeoutConsoleInputBufferedReader(Player player, InputStream inputStream) {
-            super(player, inputStream);
-        }
-
-        @Override
-        public String read() throws IOException {
-            String line = null;
-            try (var reader = new BufferedReader(new InputStreamReader(this.inputStream, UTF_8))) {
-                do {
-                    while (!reader.ready()) {
-                        Thread.sleep(Duration.ofMillis(10));
-                    }
-
-                    line = reader.readLine();
-                } while (isBlank(line));
-            } catch (InterruptedException e) {
-                throw createInterruptionException(player);
-            } catch (IOException e) {
-                throw createIOException(player, "%s: '%s' Reading action from console failed", e);
-            }
-
-            return line;
-        }
+    private static ExecutorService newSingleThreadExecutor() {
+        return new ThreadPoolExecutor(1, 1, 0L,
+                TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
+                BasicThreadFactory.builder()
+                    .namingPattern("TimeoutConsoleInputReaderThread-%d")
+                    .priority(Thread.MAX_PRIORITY)
+                    .build()
+        );
     }
 }

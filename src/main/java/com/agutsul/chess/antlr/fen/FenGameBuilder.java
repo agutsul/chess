@@ -187,9 +187,11 @@ final class FenGameBuilder
     private static void enableCastlings(Board board, String castling) {
         for (int i = 0; i < castling.length(); i++) {
             var code = String.valueOf(castling.charAt(i));
-            var color = isAllUpperCase(code) ? Colors.WHITE : Colors.BLACK;
-
-            toggleCastling(board, color, Castling.of(code).side(), true);
+            toggleCastling(board,
+                    isAllUpperCase(code) ? Colors.WHITE : Colors.BLACK,
+                    Castling.of(code).side(),
+                    true
+            );
         }
     }
 
@@ -204,7 +206,9 @@ final class FenGameBuilder
     private static void toggleCastling(Board board, Color color,
                                        Castlingable.Side side, boolean enabled) {
 
-        ((Observable) board).notifyObservers(new SetCastlingableSideEvent(color, side, enabled));
+        ((Observable) board).notifyObservers(
+                new SetCastlingableSideEvent(color, side, enabled)
+        );
     }
 
     private static void enableEnPassant(Game game, Color color, String positionCode) {

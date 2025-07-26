@@ -1,5 +1,8 @@
 package com.agutsul.chess.game.console;
 
+import static org.apache.commons.io.IOUtils.close;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ForkJoinPool;
 
@@ -18,11 +21,7 @@ public final class ConsoleGame<T extends Game & Observable>
         extends AbstractGameProxy<T> {
 
     public ConsoleGame(Player whitePlayer, Player blackPlayer) {
-        super(createGame(whitePlayer, blackPlayer,
-                new StandardBoard(), System.in, null
-        ));
-
-        addObserver(new ConsoleGameOutputObserver(game));
+        this(whitePlayer, blackPlayer, null);
     }
 
     public ConsoleGame(Player whitePlayer, Player blackPlayer, Timeout timeout) {
@@ -38,7 +37,7 @@ public final class ConsoleGame<T extends Game & Observable>
                                                               Board board, InputStream inputStream,
                                                               Timeout timeout) {
 
-        var context = new GameContext(new ForkJoinPool());
+        var context = new ConsoleGameContext(new ForkJoinPool(), inputStream);
         context.setTimeout(timeout);
 
         var game = new PlayableGameBuilder<>(whitePlayer, blackPlayer)
@@ -59,5 +58,25 @@ public final class ConsoleGame<T extends Game & Observable>
         observableBoard.addObserver(new SimulationActionInputObserver(blackPlayer, game));
 
         return (T) game;
+    }
+
+    private static final class ConsoleGameContext
+            extends GameContext {
+
+        private final InputStream inputStream;
+
+        public ConsoleGameContext(ForkJoinPool forkJoinPool, InputStream inputStream) {
+            super(forkJoinPool);
+            this.inputStream = inputStream;
+        }
+
+        @Override
+        public void close() throws IOException {
+            try {
+                close(this.inputStream);
+            } finally {
+                super.close();
+            }
+        }
     }
 }

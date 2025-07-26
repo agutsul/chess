@@ -33,7 +33,6 @@ import com.agutsul.chess.event.AbstractEventObserver;
 import com.agutsul.chess.event.CompositeEventObserver;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observer;
-import com.agutsul.chess.exception.ActionTimeoutException;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.GameContext;
@@ -149,7 +148,8 @@ public abstract class AbstractPlayerInputObserver
 
             var pieceType = PROMOTION_TYPES.get(selectedType);
             if (pieceType == null) {
-                throw new IllegalActionException(String.format("%s: '%s'",
+                throw new IllegalActionException(String.format(
+                        "%s: '%s'",
                         UNKNOWN_PROMOTION_PIECE_TYPE_MESSAGE, selectedType
                 ));
             }
@@ -181,20 +181,13 @@ public abstract class AbstractPlayerInputObserver
                 var eventFactory = PlayerActionEventFactory.of(command);
                 if (eventFactory != null) {
                     notifyGameEvent(eventFactory.create(player));
-                } else if (Strings.CS.contains(command, SPACE)) {
+                } else if (Strings.CI.contains(command, SPACE)) {
                     processActionCommand(command);
                 } else {
                     throw new IllegalActionException(String.format("%s: '%s'",
                             UNABLE_TO_PROCESS_MESSAGE, command
                     ));
                 }
-            } catch (ActionTimeoutException e) {
-                var message = String.format("%s: Player '%s' action timeout",
-                        player.getColor(), player
-                );
-
-                LOGGER.error(message, e);
-                throw e;
             } catch (IllegalActionException e) {
                 var message = String.format("%s: Player '%s' action failed",
                         player.getColor(), player

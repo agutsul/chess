@@ -1,9 +1,9 @@
 package com.agutsul.chess.board;
 
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
+import static java.lang.Thread.currentThread;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
-import static java.util.concurrent.Executors.newFixedThreadPool;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.function.Function.identity;
 import static java.util.function.Predicate.not;
@@ -22,8 +22,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 
@@ -70,7 +74,13 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         this.whitePieceFactory = new WhitePieceFactory(this);
         this.blackPieceFactory = new BlackPieceFactory(this);
 
-        this.executorService = newFixedThreadPool(10);
+        this.executorService = new ThreadPoolExecutor(10, 10, 0L,
+                TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
+                BasicThreadFactory.builder()
+                    .namingPattern("BoardExecutorThread-%d")
+                    .priority(Thread.MAX_PRIORITY)
+                    .build()
+        );
 
         this.observers = new CopyOnWriteArrayList<>();
         this.observers.add(new RefreshBoardObserver());
@@ -134,26 +144,26 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     @Override
     public int calculateValue(Color color) {
-        LOGGER.info("'{}' value...", color);
+        LOGGER.debug("'{}' value...", color);
 
         var value = Stream.of(getPieces(color))
                 .flatMap(Collection::stream)
                 .mapToInt(Piece::getValue)
                 .sum();
 
-        LOGGER.info("'{}' value: '{}'", color, value);
+        LOGGER.debug("'{}' value: '{}'", color, value);
         return value;
     }
 
     @Override
     public Collection<Action<?>> getActions(Piece<?> piece) {
-        LOGGER.info("Getting actions for '{}'", piece);
+        LOGGER.debug("Getting actions for '{}'", piece);
         return getState().getActions(piece);
     }
 
     @Override
     public Collection<Action<?>> getActions(Piece<?> piece, Action.Type actionType) {
-        LOGGER.info("Getting actions for '{}' and type '{}'",
+        LOGGER.debug("Getting actions for '{}' and type '{}'",
                 piece, actionType
         );
 
@@ -162,13 +172,13 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     @Override
     public Collection<Impact<?>> getImpacts(Piece<?> piece) {
-        LOGGER.info("Getting impacts for '{}'", piece);
+        LOGGER.debug("Getting impacts for '{}'", piece);
         return getState().getImpacts(piece);
     }
 
     @Override
     public Collection<Impact<?>> getImpacts(Piece<?> piece, Impact.Type impactType) {
-        LOGGER.info("Getting impacts for '{}' and type '{}'",
+        LOGGER.debug("Getting impacts for '{}' and type '{}'",
                 piece, impactType
         );
 
@@ -177,7 +187,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     @Override
     public <COLOR extends Color> Collection<Piece<COLOR>> getPieces() {
-        LOGGER.info("Getting all active pieces");
+        LOGGER.debug("Getting all active pieces");
 
         @SuppressWarnings("unchecked")
         Collection<Piece<COLOR>> pieces = Stream.of(pieceCache.getActive())
@@ -190,7 +200,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     @Override
     public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color) {
-        LOGGER.info("Getting pieces with '{}' color", color);
+        LOGGER.debug("Getting pieces with '{}' color", color);
 
         @SuppressWarnings("unchecked")
         Collection<Piece<COLOR>> pieces = Stream.of(pieceCache.getActive(color))
@@ -203,7 +213,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     @Override
     public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Piece.Type pieceType) {
-        LOGGER.info("Getting pieces with type '{}'", pieceType);
+        LOGGER.debug("Getting pieces with type '{}'", pieceType);
 
         @SuppressWarnings("unchecked")
         Collection<Piece<COLOR>> pieces = Stream.of(pieceCache.getActive(pieceType))
@@ -218,7 +228,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color,
                                                                     Piece.Type pieceType) {
 
-        LOGGER.info("Getting pieces with type '{}' and '{}' color",
+        LOGGER.debug("Getting pieces with type '{}' and '{}' color",
                 pieceType, color
         );
 
@@ -242,7 +252,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
                 .flatMap(Optional::stream)
                 .collect(toSet());
 
-        LOGGER.info("Getting pieces with type of '{}' color and locations '[{}]'",
+        LOGGER.debug("Getting pieces with type of '{}' color and locations '[{}]'",
                 color, join(requestedPositions, ",")
         );
 
@@ -258,7 +268,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     @Override
     public <COLOR extends Color> Optional<Piece<COLOR>> getPiece(Position position) {
-        LOGGER.info("Getting piece at '{}'", position);
+        LOGGER.debug("Getting piece at '{}'", position);
 
         @SuppressWarnings("unchecked")
         var piece = Stream.of(pieceCache.getActive(position))
@@ -271,7 +281,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     @Override
     public <COLOR extends Color> Optional<Piece<COLOR>> getPiece(String position) {
-        LOGGER.info("Getting piece at '{}'", position);
+        LOGGER.debug("Getting piece at '{}'", position);
 
         @SuppressWarnings("unchecked")
         var piece = Stream.of(getPosition(position))
@@ -288,7 +298,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     public <COLOR extends Color> Optional<Piece<COLOR>> getCapturedPiece(String position,
                                                                          Color color) {
 
-        LOGGER.info("Getting captured piece at '{}'", position);
+        LOGGER.debug("Getting captured piece at '{}'", position);
 
         var capturedPieces = Stream.of(getPosition(position))
                 .flatMap(Optional::stream)
@@ -312,7 +322,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     @Override
     public <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(Color color) {
-        LOGGER.info("Getting king of '{}'", color);
+        LOGGER.debug("Getting king of '{}'", color);
 
         @SuppressWarnings("unchecked")
         var king = Stream.of(getPieces(color, Piece.Type.KING))
@@ -326,7 +336,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     @Override
     public boolean isAttacked(Position position, Color attackerColor) {
-        LOGGER.info("Checking is position '{}' attacked by '{}'",
+        LOGGER.debug("Checking is position '{}' attacked by '{}'",
                 position, attackerColor
         );
 
@@ -343,7 +353,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     @Override
     public <COLOR extends Color> Collection<Piece<COLOR>> getAttackers(Piece<?> piece) {
-        LOGGER.info("Get piece '{}' attackers", piece);
+        LOGGER.debug("Get piece '{}' attackers", piece);
 
         var attackerColor = piece.getColor().invert();
 
@@ -363,7 +373,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     @Override
     public boolean isMonitored(Position position, Color attackerColor) {
-        LOGGER.info("Checking if position '{}' is monitored by the other piece of '{}'",
+        LOGGER.debug("Checking if position '{}' is monitored by the other piece of '{}'",
                 position, attackerColor
         );
 
@@ -432,7 +442,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     @Override
     public boolean isEmpty(Position position) {
-        LOGGER.info("Checking if position '{}' is empty", position);
+        LOGGER.debug("Checking if position '{}' is empty", position);
         return getPiece(position).isEmpty();
     }
 
@@ -440,11 +450,17 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     public void close() throws IOException {
         try {
             this.executorService.shutdown();
+
             if (!this.executorService.awaitTermination(1, MILLISECONDS)) {
                 this.executorService.shutdownNow();
+
+                if (!this.executorService.awaitTermination(1, MILLISECONDS)) {
+                    LOGGER.error("Board executor did not terminate");
+                }
             }
         } catch (InterruptedException e) {
             this.executorService.shutdownNow();
+            currentThread().interrupt();
         }
     }
 

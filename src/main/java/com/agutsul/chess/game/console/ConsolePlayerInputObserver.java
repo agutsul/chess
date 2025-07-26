@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.Strings;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.event.CompositeEventObserver;
@@ -36,6 +37,8 @@ public class ConsolePlayerInputObserver
     public ConsolePlayerInputObserver(Player player, Game game, InputStream inputStream) {
         super(player, game);
         this.inputStream = inputStream;
+
+//        ((Observable) game).addObserver(new CloseableGameOverObserver(inputStream));
     }
 
     @Override
@@ -55,7 +58,7 @@ public class ConsolePlayerInputObserver
             throw new IllegalActionException(EMPTY_LINE_MESSAGE);
         }
 
-        if (PlayerCommand.WIN.code().equals(actionCommand)) {
+        if (Strings.CI.equals(PlayerCommand.WIN.code(), actionCommand)) {
             throw new IllegalActionException(String.format("%s: '%s'",
                     UNSUPPORTED_COMMAND_MESSAGE, actionCommand
             ));
@@ -90,16 +93,23 @@ public class ConsolePlayerInputObserver
     private String readConsoleInput(Optional<Long> timeout) {
         var consoleInputReader = Stream.of(timeout)
                 .flatMap(Optional::stream)
-                .map(timeoutMillis -> new TimeoutConsoleInputReader(this.player, this.inputStream, timeoutMillis))
-                .map(timeoutReader -> (ConsoleInputReader) timeoutReader)
+                .map(this::createTimeoutConsoleInputReader)
                 .findFirst()
-                .orElse(new ConsoleInputScanner(this.player, this.inputStream));
+                .orElse(createConsoleInputReader());
 
         try {
             return consoleInputReader.read();
         } catch (IOException e) {
             throw new IllegalActionException(e.getMessage(), e);
         }
+    }
+
+    private ConsoleInputReader createTimeoutConsoleInputReader(long timeoutMillis) {
+        return new TimeoutConsoleInputReader(this.player, this.inputStream, timeoutMillis);
+    }
+
+    private ConsoleInputReader createConsoleInputReader() {
+        return new ConsoleInputBufferedReader(this.player, this.inputStream);
     }
 
     private final class RequestPlayerActionConsoleObserver

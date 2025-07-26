@@ -53,9 +53,8 @@ class GameImpl extends AbstractPlayableGame {
             notifyObservers(new PlayerTerminateActionEvent(getCurrentPlayer(), Type.TIMEOUT));
             notifyObservers(new GameWinnerEvent(this, WinnerEvaluator.Type.ACTION_TIMEOUT));
             notifyObservers(new GameOverEvent(this));
-
         } catch (GameInterruptionException e) {
-            logger.info("Game interrupted ( game timeout ): {}", e.getMessage());
+            logger.warn("Game interrupted ( game timeout ): {}", e.getMessage());
         } catch (Throwable throwable) {
             logger.error("{}: Game exception, board state '{}': {}",
                     getCurrentPlayer().getColor(), getBoard().getState(),

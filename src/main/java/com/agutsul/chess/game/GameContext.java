@@ -1,7 +1,9 @@
 package com.agutsul.chess.game;
 
+import static java.lang.Thread.currentThread;
 import static java.util.Objects.isNull;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -9,6 +11,8 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Stream;
+
+import org.slf4j.Logger;
 
 import com.agutsul.chess.timeout.ActionTimeout;
 import com.agutsul.chess.timeout.GameTimeout;
@@ -18,6 +22,8 @@ import com.agutsul.chess.timeout.Timeout;
 import com.agutsul.chess.timeout.Timeout.Type;
 
 public class GameContext implements Closeable {
+
+    private static final Logger LOGGER = getLogger(GameContext.class);
 
     private String event;
     private String site;
@@ -131,11 +137,17 @@ public class GameContext implements Closeable {
     private static void close(ForkJoinPool forkJoinPool) {
         try {
             forkJoinPool.shutdown();
+
             if (!forkJoinPool.awaitTermination(1, MILLISECONDS)) {
                 forkJoinPool.shutdownNow();
+
+                if (!forkJoinPool.awaitTermination(1, MILLISECONDS)) {
+                    LOGGER.error("Game context executor did not terminate");
+                }
             }
         } catch (InterruptedException e) {
             forkJoinPool.shutdownNow();
+            currentThread().interrupt();
         }
     }
 }
