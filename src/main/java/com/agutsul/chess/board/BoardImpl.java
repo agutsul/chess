@@ -73,13 +73,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         this.whitePieceFactory = new WhitePieceFactory(this);
         this.blackPieceFactory = new BlackPieceFactory(this);
 
-        this.executorService = new ThreadPoolExecutor(10, 10, 0L,
-                MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
-                BasicThreadFactory.builder()
-                    .namingPattern("BoardExecutorThread-%d")
-                    .priority(Thread.MAX_PRIORITY)
-                    .build()
-        );
+        this.executorService = newThreadExecutor(10);
 
         this.observers = new CopyOnWriteArrayList<>();
         this.observers.add(new RefreshBoardObserver());
@@ -478,6 +472,16 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     private void refresh() {
         this.pieceCache.refresh();
+    }
+
+    private static ExecutorService newThreadExecutor(int poolSize) {
+        return new ThreadPoolExecutor(poolSize, poolSize, 0L, MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(),
+                BasicThreadFactory.builder()
+                    .namingPattern("BoardExecutorThread-%d")
+                    .priority(Thread.MAX_PRIORITY)
+                    .build()
+        );
     }
 
     private static Optional<Instant> capturedAt(Piece<?> piece) {

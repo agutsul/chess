@@ -1,12 +1,13 @@
 package com.agutsul.chess.game.console;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
@@ -41,7 +42,7 @@ final class TimeoutConsoleInputReader
         try (var executor = newSingleThreadExecutor()) {
             var future = executor.submit(() -> this.reader.read());
             try {
-                return future.get(this.timeout, TimeUnit.MILLISECONDS);
+                return future.get(this.timeout, MILLISECONDS);
             } catch (TimeoutException e) {
                 future.cancel(true);
                 throw new ActionTimeoutException(String.format(
@@ -65,8 +66,8 @@ final class TimeoutConsoleInputReader
     }
 
     private static ExecutorService newSingleThreadExecutor() {
-        return new ThreadPoolExecutor(1, 1, 0L,
-                TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
+        return new ThreadPoolExecutor(1, 1, 0L, MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(),
                 BasicThreadFactory.builder()
                     .namingPattern("TimeoutConsoleInputReaderThread-%d")
                     .priority(Thread.MAX_PRIORITY)
