@@ -82,14 +82,13 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
             board.setState(game.evaluateBoardState(game.getCurrentPlayer()));
         }
 
-        var timeoutTerminationObserver = new GameTimeoutTerminationObserver();
         @SuppressWarnings("unchecked")
         var compositeGame = Stream.of(context.getTimeout())
                 .flatMap(Optional::stream)
                 .filter(timeout -> timeout instanceof CompositeTimeout)
                 .map(timeout -> new CompositeGame<>(game, (CompositeTimeout) timeout))
-                .peek(timeoutGame -> timeoutGame.addObserver(timeoutTerminationObserver))
-                .map(timeoutGame -> (GAME) timeoutGame)
+                .peek(comGame -> comGame.addObserver(new GameTimeoutTerminationObserver()))
+                .map(comGame -> (GAME) comGame)
                 .findFirst();
 
         if (compositeGame.isPresent()) {
@@ -100,7 +99,7 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
         var playableGame = Stream.of(context.getGameTimeout())
                 .flatMap(Optional::stream)
                 .map(timeoutMillis -> new TimeoutGame<>(game, timeoutMillis))
-                .peek(timeoutGame -> timeoutGame.addObserver(timeoutTerminationObserver))
+                .peek(timeoutGame -> timeoutGame.addObserver(new GameTimeoutTerminationObserver()))
                 .map(timeoutGame -> (GAME) timeoutGame)
                 .findFirst()
                 .orElse((GAME) game);
