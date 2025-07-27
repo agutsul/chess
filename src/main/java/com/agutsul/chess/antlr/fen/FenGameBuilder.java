@@ -54,12 +54,8 @@ final class FenGameBuilder
         var playerColor = resolveColor(activeColor);
 
         var game = new FenGame<>(
-                createPlayer(Colors.WHITE),
-                createPlayer(Colors.BLACK),
-                board,
-                playerColor,
-                halfMoveClock,
-                fullMoveClock
+                createPlayer(Colors.WHITE), createPlayer(Colors.BLACK),
+                board, playerColor, halfMoveClock, fullMoveClock
         );
 
         if (activeCastling != null) {
