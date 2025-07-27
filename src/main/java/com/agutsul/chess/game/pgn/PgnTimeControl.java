@@ -15,6 +15,7 @@ import static org.apache.commons.lang3.StringUtils.split;
 
 import java.time.Duration;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.Strings;
@@ -24,14 +25,14 @@ import com.agutsul.chess.timeout.CompositeTimeout;
 import com.agutsul.chess.timeout.Timeout;
 
 public enum PgnTimeControl {
-    UNKNOWN {
+    UNKNOWN(Timeout.Type.UNKNOWN) {
 
         @Override
         protected Timeout parse(String ignoredText) {
             return createUnknownTimeout();
         }
     },
-    NO_TIME_CONTROL {
+    NO_TIME_CONTROL(null) {
 
         @Override
         protected Timeout parse(String ignoredText) {
@@ -39,7 +40,7 @@ public enum PgnTimeControl {
         }
     },
     // "40/9000" - 40 actions in 9000 seconds => game timeout
-    ACTIONS_PER_PERIOD {
+    MIXED(Timeout.Type.ACTIONS_PER_PERIOD) {
 
         @Override
         protected Timeout parse(String text) {
@@ -48,7 +49,7 @@ public enum PgnTimeControl {
         }
     },
     // "300" - 300 seconds for game => game timeout ( blitz )
-    GENERAL {
+    GENERIC(Timeout.Type.GENERIC) {
 
         @Override
         protected Timeout parse(String text) {
@@ -56,7 +57,7 @@ public enum PgnTimeControl {
         }
     },
     // "4500+60" - min number in seconds per action plus extra seconds after each action
-    INCREMENTAL {
+    INCREMENTAL(Timeout.Type.INCREMENTAL) {
 
         @Override
         protected Timeout parse(String text) {
@@ -77,13 +78,23 @@ public enum PgnTimeControl {
         }
     },
     // "*180" - min number in seconds for each player => action timeout
-    SANDCLOCK {
+    ACTION(Timeout.Type.ACTIONS_PER_PERIOD) {
 
         @Override
         protected Timeout parse(String text) {
             return createActionTimeout(toMilliseconds(text.substring(1)));
         }
     };
+
+    private Timeout.Type type;
+
+    PgnTimeControl(Timeout.Type type) {
+        this.type = type;
+    }
+
+    public Optional<Timeout.Type> type() {
+        return Optional.ofNullable(type);
+    }
 
     protected abstract Timeout parse(String text);
 
@@ -93,19 +104,7 @@ public enum PgnTimeControl {
         }
 
         var timeouts = Stream.of(split(text, ":"))
-                .map(str -> {
-                    var timeout = switch (str) {
-                    case String s when "?".equals(s) -> UNKNOWN.parse(s);
-                    case String s when "-".equals(s) -> NO_TIME_CONTROL.parse(s);
-                    case String s when isNumeric(s)  -> GENERAL.parse(s);
-                    case String s when containsIn(s,  "+") -> INCREMENTAL.parse(s);
-                    case String s when isSandclock(s, "*") -> SANDCLOCK.parse(s);
-                    case String s when isActionsPerPeriod(s, "/") -> ACTIONS_PER_PERIOD.parse(s);
-                    default -> null;
-                    };
-
-                    return timeout;
-                })
+                .map(PgnTimeControl::toTimeout)
                 .filter(Objects::nonNull)
                 .toList();
 
@@ -118,13 +117,29 @@ public enum PgnTimeControl {
         return timeout;
     }
 
-    private static boolean isActionsPerPeriod(String str, String searched) {
-        return containsIn(str, searched) && isNumeric(str.replace(searched, EMPTY));
+    private static Timeout toTimeout(String timeControl) {
+        var timeout = switch (timeControl) {
+        case String str when "?".equals(str) -> UNKNOWN.parse(str);
+        case String str when "-".equals(str) -> NO_TIME_CONTROL.parse(str);
+        case String str when isNumeric(str)  -> GENERIC.parse(str);
+        case String str when containsIn(str,  "+") -> INCREMENTAL.parse(str);
+        case String str when isAction(str, "*") -> ACTION.parse(str);
+        case String str when isMixed(str,  "/") -> MIXED.parse(str);
+        default -> null;
+        };
+
+        return timeout;
     }
 
-    private static boolean isSandclock(String str, String searched) {
+    private static boolean isMixed(String str, String searched) {
+        return containsIn(str, searched)
+                && isNumeric(str.replace(searched, EMPTY));
+    }
+
+    private static boolean isAction(String str, String searched) {
         return containsOnce(str, searched)
-                && Strings.CI.startsWith(str, searched) && isNumeric(str.substring(1));
+                && Strings.CI.startsWith(str, searched)
+                && isNumeric(str.substring(1));
     }
 
     private static boolean containsIn(String str, String searched) {
