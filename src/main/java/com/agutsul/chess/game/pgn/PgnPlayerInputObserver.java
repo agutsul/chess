@@ -5,13 +5,15 @@ import static com.agutsul.chess.game.pgn.PgnTermination.TIME_FORFEIT;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.antlr.pgn.action.PawnPromotionTypeAdapter;
 import com.agutsul.chess.antlr.pgn.action.PgnActionAdapter;
 import com.agutsul.chess.antlr.pgn.action.PieceActionAdapter;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.exception.AbstractTimeoutException;
 import com.agutsul.chess.exception.ActionTimeoutException;
+import com.agutsul.chess.exception.GameTimeoutException;
 import com.agutsul.chess.iterator.CurrentIterator;
 import com.agutsul.chess.iterator.CurrentIteratorImpl;
 import com.agutsul.chess.player.Player;
@@ -57,22 +59,38 @@ final class PgnPlayerInputObserver
     private String finalCommand() {
         var pgnGame = (PgnGame<?>) this.game;
 
+        var gameState  = pgnGame.getParsedGameState();
+        var winnerType = gameState.getType();
+
         if (TIME_FORFEIT.equals(pgnGame.getParsedTermination())) {
-            throw new ActionTimeoutException(String.format(
-                    "%s: '%s' entering action timeout",
-                    this.player.getColor(), this.player
-            ));
+            throw createTimeoutException(winnerType.color());
         }
 
-        var gameState = pgnGame.getParsedGameState();
-        var command = switch (gameState.getType()) {
-        case WHITE_WIN  -> finalCommand(this.player, Colors.WHITE);
-        case BLACK_WIN  -> finalCommand(this.player, Colors.BLACK);
+        var command = switch (winnerType) {
+        case WHITE_WIN, BLACK_WIN -> finalCommand(this.player, winnerType.color().get());
         case DRAWN_GAME -> PlayerCommand.DRAW;
-        default         -> PlayerCommand.EXIT;
+        default -> PlayerCommand.EXIT;
         };
 
         return command.code();
+    }
+
+    private AbstractTimeoutException createTimeoutException(Optional<Color> winnerColor) {
+        var contextTimeout = game.getContext().getTimeout();
+        if (contextTimeout.isEmpty()) {
+            throw new IllegalStateException("Timeout configuration missed");
+        }
+
+        // TODO: create exception based on Timeout.Type
+        var timeoutException = Stream.of(winnerColor)
+                .flatMap(Optional::stream)
+                .filter(color -> !Objects.equals(player.getColor(), color))
+                .map(color -> new GameTimeoutException(player))
+                .map(exception -> (AbstractTimeoutException) exception)
+                .findFirst()
+                .orElse(new ActionTimeoutException(player));
+
+        return timeoutException;
     }
 
     private static PlayerCommand finalCommand(Player player, Color color) {

@@ -118,7 +118,7 @@ final class CompositeGame<GAME extends Game & Observable>
         }
 
         @Override
-        void evaluateWinner() {
+        protected void evaluateWinner() {
             // prevent winner evaluation on specific iteration and apply it after the last iteration
         }
     }

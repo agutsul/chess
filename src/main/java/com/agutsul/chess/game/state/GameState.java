@@ -5,8 +5,11 @@ import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.color.Color;
+import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.state.State;
 
@@ -14,18 +17,24 @@ public interface GameState
         extends State<Game> {
 
     enum Type {
-        UNKNOWN("*"),
-        WHITE_WIN("1-0"),
-        BLACK_WIN("0-1"),
-        DRAWN_GAME("1/2-1/2");
+        UNKNOWN("*", null),
+        WHITE_WIN("1-0", Colors.WHITE),
+        BLACK_WIN("0-1", Colors.BLACK),
+        DRAWN_GAME("1/2-1/2", null);
 
         private static final Map<String,Type> CODES = Stream.of(values())
                 .collect(toMap(Type::code, identity()));
 
         private String code;
+        private Color color;    // winner color
 
-        Type(String code) {
+        Type(String code, Color color) {
             this.code = code;
+            this.color = color;
+        }
+
+        public Optional<Color> color() {
+            return Optional.ofNullable(color);
         }
 
         public String code() {

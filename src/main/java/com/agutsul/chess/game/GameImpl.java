@@ -10,6 +10,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.exception.ActionTimeoutException;
 import com.agutsul.chess.exception.GameInterruptionException;
+import com.agutsul.chess.exception.GameTimeoutException;
 import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
@@ -55,6 +56,8 @@ class GameImpl extends AbstractPlayableGame {
             notifyObservers(new GameOverEvent(this));
         } catch (GameInterruptionException e) {
             logger.warn("Game interrupted ( game timeout ): {}", e.getMessage());
+        } catch (GameTimeoutException e) {
+            throw e;
         } catch (Throwable throwable) {
             logger.error("{}: Game exception, board state '{}': {}",
                     getCurrentPlayer().getColor(), getBoard().getState(),

@@ -1,13 +1,14 @@
 package com.agutsul.chess.game;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
 
@@ -15,6 +16,7 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.event.Observable;
+import com.agutsul.chess.exception.GameInterruptionException;
 import com.agutsul.chess.exception.GameTimeoutException;
 import com.agutsul.chess.game.event.GameExceptionEvent;
 import com.agutsul.chess.game.event.GameOverEvent;
@@ -48,13 +50,18 @@ class TimeoutGame<GAME extends Game & Observable>
             try (var executor = newSingleThreadExecutor()) {
                 var future = executor.submit(this.game);
                 try {
-                    future.get(this.timeout, TimeUnit.MILLISECONDS);
+                    future.get(this.timeout, MILLISECONDS);
                 } catch (TimeoutException e) {
                     try {
                         processTimeout();
                     } finally {
                         future.cancel(true);
                     }
+                } catch (ExecutionException e) {
+                    // re-throw origin exception. It is expected to be GameTimeoutException
+                    throw e.getCause();
+                } catch (InterruptedException e) {
+                    throw new GameInterruptionException("Timeout game interrupted");
                 }
             }
         } catch (GameTimeoutException e) {
@@ -74,7 +81,7 @@ class TimeoutGame<GAME extends Game & Observable>
         }
     }
 
-    void processTimeout() {
+    protected void processTimeout() {
         var context = this.game.getContext();
         var isMixedTimeout = Stream.of(context.getTimeout())
                 .flatMap(Optional::stream)
@@ -107,14 +114,14 @@ class TimeoutGame<GAME extends Game & Observable>
         evaluateWinner();
     }
 
-    void evaluateWinner() {
+    protected void evaluateWinner() {
         notifyObservers(new GameWinnerEvent(this.game, WinnerEvaluator.Type.STANDARD));
         notifyObservers(new GameOverEvent(this.game));
     }
 
     private static ExecutorService newSingleThreadExecutor() {
-        return new ThreadPoolExecutor(1, 1, 0L,
-                TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(),
+        return new ThreadPoolExecutor(1, 1, 0L, MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(),
                 BasicThreadFactory.builder()
                     .namingPattern("TimeoutGameExecutorThread-%d")
                     .priority(Thread.MAX_PRIORITY)
