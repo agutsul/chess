@@ -76,7 +76,7 @@ final class PgnPlayerInputObserver
     }
 
     private AbstractTimeoutException createTimeoutException(Optional<Color> winnerColor) {
-        var contextTimeout = game.getContext().getTimeout();
+        var contextTimeout = this.game.getContext().getTimeout();
         if (contextTimeout.isEmpty()) {
             throw new IllegalStateException("Timeout configuration missed");
         }
@@ -84,11 +84,11 @@ final class PgnPlayerInputObserver
         // TODO: create exception based on Timeout.Type
         var timeoutException = Stream.of(winnerColor)
                 .flatMap(Optional::stream)
-                .filter(color -> !Objects.equals(player.getColor(), color))
-                .map(color -> new GameTimeoutException(player))
+                .filter(color -> !Objects.equals(this.player.getColor(), color))
+                .map(color -> new GameTimeoutException(this.player))
                 .map(exception -> (AbstractTimeoutException) exception)
                 .findFirst()
-                .orElse(new ActionTimeoutException(player));
+                .orElse(new ActionTimeoutException(this.player));
 
         return timeoutException;
     }
