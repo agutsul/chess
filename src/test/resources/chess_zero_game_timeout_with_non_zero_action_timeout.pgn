@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "0-1"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:00:39"]
+[WhiteElo "1652"]
+[BlackElo "1344"]
+[WhiteRatingDiff "-147"]
+[BlackRatingDiff "+17"]
+[ECO "B07"]
+[Opening "King's Pawn Game: Maroczy Defense"]
+[TimeControl "0+3"]
+[Termination "Normal"]
+
+1. e4  e5 2. d4  d6 3. d5  Nf6 4. Nc3  Be7 5. g3  O-O 6. Bg2  Bg4 7. Nge2  h6 8. h3  Bh5 9. g4  Bg6 10. O-O  Nh7 11. b3  Ng5 12. h4  Nxe4 13. Bxe4  Bxh4 14. Bxg6  fxg6 15. f3  Bg5 16. Bxg5  Qxg5 17. Ne4  Qh4 18. Rf2  Na6 19. N2c3  Nc5 20. Nxc5  b6 21. Ne6  Rf7 22. Nxc7  Rc8 23. Ne6  Rxc3 24. Nxg7  Kxg7 25. Kf1  Qh3+ 26. Ke1  Rcxf3 27. Rxf3  Rxf3 28. Kd2  Qh2+ 29. Kc1  Qg2 30. Kb2  Qxg4 31. Qe1  Qd4+ 32. Kb1  h5 33. c3  Qxc3 34. Qxc3  Rxc3 35. Kb2  Rd3 36. a4  Rxd5 37. Rc1  Rc5 38. Rf1  e4 39. b4  Re5 40. Rc1  e3 41. Rc7+  Kh6 42. Rxa7  e2 43. Rc7  e1=Q 44. Rc1  Re2+ 45. Kb1  Qxb4+ 0-1

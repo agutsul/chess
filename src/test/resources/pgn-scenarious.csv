@@ -44,3 +44,4 @@ chess_timeout_composite_board_state.pgn,DRAWN_GAME,83,9
 chess_timeout_insufficient_material_king_knight_vs_king_queen.pgn,DRAWN_GAME,110,9
 chess_timeout_three_fold_repetition_opposite_color.pgn,DRAWN_GAME,83,9
 chess_timeout_composite_checked_board_state.pgn,DRAWN_GAME,118,9
+chess_zero_game_timeout_with_non_zero_action_timeout.pgn,BLACK_WIN,90,9
