@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1-0"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:20:14"]
+[WhiteElo "1269"]
+[BlackElo "1500"]
+[WhiteRatingDiff "+67"]
+[BlackRatingDiff "-305"]
+[ECO "C30"]
+[Opening "King's Gambit Declined, Petrov's Defense"]
+[TimeControl "0+2"]
+[Termination "Time forfeit"]
+
+1. e4 e5 2. f4 Nf6 3. g4 1-0
