@@ -79,17 +79,13 @@ final class PgnPlayerInputObserver
         var timeoutException = Stream.of(winnerColor)
                 .flatMap(Optional::stream)
                 .filter(color -> !Objects.equals(this.player.getColor(), color))
-                .map(color -> {
-                    var gameTimeout = Stream.of(this.game.getContext().getGameTimeout())
-                            .flatMap(Optional::stream)
-                            .findFirst()
-                            .orElse(0L)
-                            .longValue();
-
-                    return gameTimeout > 0
-                            ? new GameTimeoutException(this.player)
-                            : new ActionTimeoutException(this.player);
-                })
+                .map(color -> Stream.of(this.game.getContext().getGameTimeout())
+                        .flatMap(Optional::stream)
+                        .findFirst()
+                        .map(t -> new GameTimeoutException(this.player))
+                        .map(te -> (AbstractTimeoutException) te)
+                        .orElse(new ActionTimeoutException(this.player))
+                )
                 .findFirst()
                 .orElse(new ActionTimeoutException(this.player));
 

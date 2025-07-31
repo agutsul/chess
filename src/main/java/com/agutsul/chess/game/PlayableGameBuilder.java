@@ -98,7 +98,6 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
         @SuppressWarnings("unchecked")
         var playableGame = Stream.of(context.getGameTimeout())
                 .flatMap(Optional::stream)
-                .filter(timeoutMillis -> timeoutMillis > 0)
                 .map(timeoutMillis -> new TimeoutGame<>(game, timeoutMillis))
                 .peek(timeoutGame -> timeoutGame.addObserver(new GameTimeoutTerminationObserver()))
                 .map(timeoutGame -> (GAME) timeoutGame)

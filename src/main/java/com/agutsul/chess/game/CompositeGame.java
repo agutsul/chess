@@ -85,7 +85,6 @@ final class CompositeGame<GAME extends Game & Observable>
         @SuppressWarnings("unchecked")
         var playableGame = Stream.of(context.getGameTimeout())
                 .flatMap(Optional::stream)
-                .filter(timeoutMillis -> timeoutMillis > 0)
                 .map(timeoutMillis -> new IterativeTimeoutGame<>(iGame, timeoutMillis))
                 .map(timeoutGame -> (GAME) timeoutGame)
                 .findFirst()
