@@ -91,6 +91,7 @@ public class GameContext implements Closeable {
                 .map(timeout -> (ActionTimeout) timeout)
                 .map(ActionTimeout::getActionDuration)
                 .map(Duration::toMillis)
+                .filter(timeout -> timeout > 0)
                 .findFirst();
     }
 
@@ -116,6 +117,7 @@ public class GameContext implements Closeable {
                 .map(timeout -> (IncrementalTimeout<?>) timeout)
                 .map(IncrementalTimeout::getExtraDuration)
                 .map(Duration::toMillis)
+                .filter(timeout -> timeout > 0)
                 .findFirst();
     }
 
