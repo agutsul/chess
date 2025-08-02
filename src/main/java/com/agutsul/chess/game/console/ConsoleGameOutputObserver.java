@@ -10,6 +10,7 @@ import static com.agutsul.chess.piece.Piece.Type.QUEEN;
 import static com.agutsul.chess.piece.Piece.Type.ROOK;
 import static java.lang.System.lineSeparator;
 import static java.time.LocalDateTime.now;
+import static java.util.stream.Collectors.joining;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 import java.time.Duration;
@@ -24,10 +25,13 @@ import com.agutsul.chess.activity.action.event.ActionExecutionEvent;
 import com.agutsul.chess.activity.action.event.ActionPerformedEvent;
 import com.agutsul.chess.activity.action.event.ActionTerminatedEvent;
 import com.agutsul.chess.activity.action.event.ActionTerminationEvent;
-import com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.board.state.CompositeBoardState;
+import com.agutsul.chess.board.state.FoldRepetitionBoardState;
+import com.agutsul.chess.board.state.InsufficientMaterialBoardState;
+import com.agutsul.chess.board.state.MovesBoardState;
 import com.agutsul.chess.event.AbstractEventObserver;
 import com.agutsul.chess.event.AbstractObserverProxy;
 import com.agutsul.chess.event.CompositeEventObserver;
@@ -322,7 +326,7 @@ public final class ConsoleGameOutputObserver
         var number = (journal.size() / 2) + 1;
 
         var formattedAction = isCastling(action)
-                ? StandardAlgebraicActionFormatter.format(createMemento(game.getBoard(), action))
+                ? format(createMemento(game.getBoard(), action))
                 : String.valueOf(action);
 
         System.out.println(String.format("%d. %s %s: '%s': %s",
@@ -342,7 +346,7 @@ public final class ConsoleGameOutputObserver
         System.out.println(String.format("%s: %s: %s",
                 boardState.getColor(),
                 BOARD_STATE_MESSAGE,
-                boardState.getType()
+                formatBoardState(boardState)
         ));
     }
 
@@ -372,5 +376,23 @@ public final class ConsoleGameOutputObserver
         return String.format("%s wins! Congratulations, '%s' !!!",
                 player.getColor(), player
         );
+    }
+
+    private static String formatBoardState(BoardState boardState) {
+        return switch (boardState) {
+        case FoldRepetitionBoardState bs -> String.format("%s(%s)",
+                boardState.getType(), format(bs.getActionMemento())
+        );
+        case MovesBoardState bs -> String.valueOf(boardState.getType());
+        case InsufficientMaterialBoardState bs -> String.format("%s(%s)",
+                boardState.getType(), bs.getPattern()
+        );
+        case CompositeBoardState bs -> String.format("(%s)",
+                bs.getBoardStates().stream()
+                    .map(ConsoleGameOutputObserver::formatBoardState)
+                    .collect(joining(","))
+        );
+        default -> String.valueOf(boardState.getType());
+        };
     }
 }
