@@ -253,9 +253,7 @@ public abstract class BoardStateFactory {
 
         @Override
         public String toString() {
-            return String.format("%s(%s: %s)",
-                    super.toString(), getColor(), getPattern()
-            );
+            return String.format("%s(%s)", super.toString(), getPattern());
         }
     }
 

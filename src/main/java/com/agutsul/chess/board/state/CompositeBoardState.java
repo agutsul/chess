@@ -62,6 +62,6 @@ public final class CompositeBoardState
 
     @Override
     public String toString() {
-        return join(boardStates, ",");
+        return String.format("(%s):%s", join(boardStates, ","), getColor());
     }
 }

@@ -71,7 +71,7 @@ public final class PgnGameTest extends AbstractPgnGameTest {
 
         var boardState = game.getBoard().getState();
         assertTrue(boardState.isType(BoardState.Type.FIVE_FOLD_REPETITION));
-        assertEquals("FIVE_FOLD_REPETITION(WHITE: Ke2)", boardState.toString());
+        assertEquals("FIVE_FOLD_REPETITION:WHITE(Ke2)", boardState.toString());
 
         // NOTE: actual state differs from expected because of five repetitions rule ('Ke2')
         // Looks like this rule was not applied while performing this game.
@@ -92,7 +92,7 @@ public final class PgnGameTest extends AbstractPgnGameTest {
 
         var boardState = game.getBoard().getState();
         assertTrue(boardState.isType(BoardState.Type.FIVE_FOLD_REPETITION));
-        assertEquals("FIVE_FOLD_REPETITION(WHITE: Bb3)", boardState.toString());
+        assertEquals("FIVE_FOLD_REPETITION:WHITE(Bb3)", boardState.toString());
 
         // NOTE: actual state differs from expected because of five repetitions rule ('Ke2')
         // Looks like this rule was not applied while performing this game.

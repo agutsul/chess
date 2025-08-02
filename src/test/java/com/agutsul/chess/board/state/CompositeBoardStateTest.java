@@ -20,6 +20,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.piece.Piece;
 
 @ExtendWith(MockitoExtension.class)
@@ -203,6 +205,9 @@ public class CompositeBoardStateTest {
 
     @Test
     void testToString() {
+        when(color.toString())
+            .thenReturn(Colors.WHITE.toString());
+
         var checkedBoardState = checkedBoardState(board, color);
         var fiftyMovesBoardState = fiftyMovesBoardState(board, color);
 
@@ -211,6 +216,6 @@ public class CompositeBoardStateTest {
                 fiftyMovesBoardState
         ));
 
-        assertEquals("CHECKED,FIFTY_MOVES", compositeBoardState.toString());
+        assertEquals("(CHECKED:WHITE,FIFTY_MOVES:WHITE):WHITE", compositeBoardState.toString());
     }
 }

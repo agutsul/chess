@@ -58,7 +58,7 @@ public class InsufficientMaterialBoardStateTest {
                 ((InsufficientMaterialBoardState) whiteBoardState).getPattern()
         );
 
-        assertEquals("INSUFFICIENT_MATERIAL(WHITE: SINGLE_KING)", whiteBoardState.toString());
+        assertEquals("INSUFFICIENT_MATERIAL:WHITE(SINGLE_KING)", whiteBoardState.toString());
 
         var blackBoardState = evaluator.evaluate(Colors.BLACK);
         assertEquals(BoardState.Type.INSUFFICIENT_MATERIAL, blackBoardState.getType());
@@ -66,6 +66,6 @@ public class InsufficientMaterialBoardStateTest {
                 ((InsufficientMaterialBoardState) blackBoardState).getPattern()
         );
 
-        assertEquals("INSUFFICIENT_MATERIAL(BLACK: KING_AND_BLOCKED_PAWNS)", blackBoardState.toString());
+        assertEquals("INSUFFICIENT_MATERIAL:BLACK(KING_AND_BLOCKED_PAWNS)", blackBoardState.toString());
     }
 }

@@ -11,8 +11,8 @@ interface FoldRepetitionBoardState
     ActionMemento<?,?> getActionMemento();
 
     static <BS extends FoldRepetitionBoardState & BoardState> String format(BS boardState) {
-        return String.format("%s(%s: %s)",
-                boardState.getType().name(),
+        return String.format("%s:%s(%s)",
+                boardState.getType(),
                 boardState.getColor(),
                 StandardAlgebraicActionFormatter.format(boardState.getActionMemento())
         );

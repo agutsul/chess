@@ -283,7 +283,7 @@ public abstract class AbstractPlayableGame
             WinnerEvaluator evaluator = switch (event.getType()) {
             case ACTION_TIMEOUT -> new ActionTimeoutWinnerEvaluator();
             case GAME_TIMEOUT   -> new GameTimeoutWinnerEvaluator();
-            case STANDARD       -> new StandardWinnerEvaluator();
+            default             -> new StandardWinnerEvaluator();
             };
 
             setWinnerPlayer(evaluator.evaluate(event.getGame()));

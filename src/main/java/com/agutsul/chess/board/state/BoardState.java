@@ -46,6 +46,11 @@ public interface BoardState
         public int rank() {
             return values().length - ordinal();
         }
+
+        @Override
+        public String toString() {
+            return name();
+        }
     }
 
     Collection<Action<?>> getActions(Piece<?> piece);

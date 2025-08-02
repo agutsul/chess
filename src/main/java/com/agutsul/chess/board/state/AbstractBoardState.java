@@ -42,6 +42,6 @@ abstract class AbstractBoardState
 
     @Override
     public String toString() {
-        return type.name();
+        return String.format("%s:%s", getType(), getColor());
     }
 }
