@@ -26,7 +26,7 @@ final class CompositeGame<GAME extends Game & Observable>
 
     private static final Logger LOGGER = getLogger(CompositeGame.class);
 
-    private final Iterator<Timeout> iterator;
+    private final Iterator<Timeout> timeoutIterator;
 
     CompositeGame(GAME game, CompositeTimeout timeout) {
         this(game, timeout.iterator());
@@ -34,14 +34,14 @@ final class CompositeGame<GAME extends Game & Observable>
 
     private CompositeGame(GAME game, Iterator<Timeout> iterator) {
         super(game);
-        this.iterator = iterator;
+        this.timeoutIterator = iterator;
     }
 
     @Override
     public void run() {
         try {
-            for (int actionsCounter = 0; this.iterator.hasNext();) {
-                var timeout = this.iterator.next();
+            for (int actionsCounter = 0; this.timeoutIterator.hasNext();) {
+                var timeout = this.timeoutIterator.next();
 
                 LOGGER.info("Game iteration with timeout '{}' started", timeout);
 
