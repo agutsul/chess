@@ -65,7 +65,7 @@ public final class ActionTimeoutWinnerEvaluator
 
                 if (opponentCheckMateAction.isEmpty()) {
                     // so opponent is unable to win and the best result is a draw
-                    LOGGER.info("{} Player '{}' unable to checkmate",
+                    LOGGER.info("{} Player '{}' unable to checkmate: draw",
                             opponentPlayer.getColor(), opponentPlayer.getName()
                     );
 
