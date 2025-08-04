@@ -46,12 +46,14 @@ class TimeoutGame<GAME extends Game & Observable>
 
     @Override
     public void run() {
-        var timeoutGame = this.timeoutMillis != 0
+        // There is valid case when game timeout is zero but game still should be executed.
+        // So, in such case potential GameTimeoutException can be thrown and it should be intercepted below
+        var tGame = this.timeoutMillis != 0
                 ? new TimeoutGameImpl<>(this.game, this.timeoutMillis, this.evaluateWinner)
-                : new TimeoutGameProxy<>(this.game);
+                : this.game;
 
         try {
-            timeoutGame.run();
+            tGame.run();
         } catch (GameTimeoutException e) {
             LOGGER.info("Game over ( game timeout ): {}", e.getMessage());
 
@@ -69,9 +71,7 @@ class TimeoutGame<GAME extends Game & Observable>
         }
     }
 
-    // implementations
-
-    private static class TimeoutGameImpl<G extends Game & Observable>
+    private static final class TimeoutGameImpl<G extends Game & Observable>
             extends AbstractGameProxy<G>
             implements Playable {
 
@@ -161,20 +161,6 @@ class TimeoutGame<GAME extends Game & Observable>
                         .priority(Thread.MAX_PRIORITY)
                         .build()
             );
-        }
-    }
-
-    private static class TimeoutGameProxy<G extends Game & Observable>
-            extends AbstractGameProxy<G>
-            implements Playable {
-
-        TimeoutGameProxy(G game) {
-            super(game);
-        }
-
-        @Override
-        public void run() {
-            this.game.run();
         }
     }
 }
