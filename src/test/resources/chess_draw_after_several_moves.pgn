@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/v75GENeL"]
+[White "hugostereo666"]
+[Black "carlosin_d"]
+[Result "1/2-1/2"]
+[UTCDate "2014.07.01"]
+[UTCTime "01:46:13"]
+[WhiteElo "1520"]
+[BlackElo "1295"]
+[WhiteRatingDiff "-7"]
+[BlackRatingDiff "+11"]
+[ECO "D00"]
+[Opening "Queen's Pawn Game: Levitsky Attack"]
+[TimeControl "300+5"]
+[Termination "Time forfeit"]
+
+1. d4 d5 2. Bg5 Nc6 3. e3 Bf5 4. c3 e5 5. Bxd8 1/2-1/2

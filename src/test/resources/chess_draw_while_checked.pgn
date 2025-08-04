@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1/2-1/2"]
+[UTCDate "2014.06.30"]
+[UTCTime "23:38:01"]
+[WhiteElo "1562"]
+[BlackElo "1751"]
+[WhiteRatingDiff "+9"]
+[BlackRatingDiff "-7"]
+[ECO "C35"]
+[Opening "King's Gambit Accepted: Cunningham, Bertin Gambit"]
+[TimeControl "540+3"]
+[Termination "Time forfeit"]
+
+1. e4 e5 2. f4 exf4 3. Nf3 Be7 4. Bc4 Bh4+ 5. g3 fxg3 6. Nxh4 Qxh4 7. Qf3 g2+ 8. Qg3 gxh1=Q+ 1/2-1/2

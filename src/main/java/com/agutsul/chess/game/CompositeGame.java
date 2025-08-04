@@ -45,7 +45,10 @@ final class CompositeGame<GAME extends Game & Observable>
 
                 LOGGER.info("Game iteration with timeout '{}' started", timeout);
 
-                var playableGame = createIterativeGame(timeout, actionsCounter);
+                var playableGame = createIterativeGame(
+                        timeout, actionsCounter, !this.timeoutIterator.hasNext()
+                );
+
                 playableGame.run();
 
                 var isGameFinished = !isUnknown(playableGame.getState());
@@ -76,7 +79,7 @@ final class CompositeGame<GAME extends Game & Observable>
         }
     }
 
-    private GAME createIterativeGame(Timeout timeout, int actionsCounter) {
+    private GAME createIterativeGame(Timeout timeout, int actionsCounter, boolean evaluateWinner) {
         var context = new IterativeGameContext(getContext(), actionsCounter);
         context.setTimeout(timeout.isType(Type.UNKNOWN) ? null : timeout);
 
@@ -85,7 +88,7 @@ final class CompositeGame<GAME extends Game & Observable>
         @SuppressWarnings("unchecked")
         var playableGame = Stream.of(context.getGameTimeout())
                 .flatMap(Optional::stream)
-                .map(timeoutMillis -> new IterativeTimeoutGame<>(iGame, timeoutMillis))
+                .map(timeoutMillis -> new TimeoutGame<>(iGame, timeoutMillis, evaluateWinner))
                 .map(timeoutGame -> (GAME) timeoutGame)
                 .findFirst()
                 .orElse((GAME) iGame);
@@ -107,19 +110,6 @@ final class CompositeGame<GAME extends Game & Observable>
         @Override
         public GameContext getContext() {
             return this.context;
-        }
-    }
-
-    private static final class IterativeTimeoutGame<GAME extends Game & Observable>
-            extends TimeoutGame<GAME> {
-
-        IterativeTimeoutGame(GAME game, long timeoutMillis) {
-            super(game, timeoutMillis);
-        }
-
-        @Override
-        protected void evaluateWinner() {
-            // prevent winner evaluation on specific iteration and apply it after the last iteration
         }
     }
 

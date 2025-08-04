@@ -31,39 +31,27 @@ class TimeoutGame<GAME extends Game & Observable>
 
     private static final Logger LOGGER = getLogger(TimeoutGame.class);
 
-    private static final String GAME_TIMEOUT_MESSAGE = "Game timeout exceeded";
-
-    private final long timeout;
+    private final long timeoutMillis;
+    private final boolean evaluateWinner;
 
     TimeoutGame(GAME game, long timeoutMillis) {
+        this(game, timeoutMillis, true);
+    }
+
+    TimeoutGame(GAME game, long timeoutMillis, boolean evaluateWinner) {
         super(game);
-        this.timeout = timeoutMillis;
+        this.timeoutMillis = timeoutMillis;
+        this.evaluateWinner = evaluateWinner;
     }
 
     @Override
     public void run() {
-        try {
-            if (this.timeout <= 0) {
-                throw new GameTimeoutException("Game timeout: invalid timeout value");
-            }
+        var timeoutGame = this.timeoutMillis != 0
+                ? new TimeoutGameImpl<>(this.game, this.timeoutMillis, this.evaluateWinner)
+                : new TimeoutGameProxy<>(this.game);
 
-            try (var executor = newSingleThreadExecutor()) {
-                var future = executor.submit(this.game);
-                try {
-                    future.get(this.timeout, MILLISECONDS);
-                } catch (TimeoutException e) {
-                    try {
-                        processTimeout();
-                    } finally {
-                        future.cancel(true);
-                    }
-                } catch (ExecutionException e) {
-                    // re-throw origin exception. It is expected to be GameTimeoutException
-                    throw e.getCause();
-                } catch (InterruptedException e) {
-                    throw new GameInterruptionException("Timeout game interrupted");
-                }
-            }
+        try {
+            timeoutGame.run();
         } catch (GameTimeoutException e) {
             LOGGER.info("Game over ( game timeout ): {}", e.getMessage());
 
@@ -81,51 +69,112 @@ class TimeoutGame<GAME extends Game & Observable>
         }
     }
 
-    protected void processTimeout() {
-        var context = this.game.getContext();
-        var isMixedTimeout = Stream.of(context.getTimeout())
-                .flatMap(Optional::stream)
-                .anyMatch(timeout -> timeout.isType(Type.ACTIONS_PER_PERIOD));
+    // implementations
 
-        if (!isMixedTimeout) {
-            throw new GameTimeoutException(GAME_TIMEOUT_MESSAGE);
+    private static class TimeoutGameImpl<G extends Game & Observable>
+            extends AbstractGameProxy<G>
+            implements Playable {
+
+        private static final String GAME_TIMEOUT_MESSAGE = "Game timeout exceeded";
+
+        private static final int POOL_SIZE = 1;
+
+        private final long timeout;
+        private final boolean evaluateWinner;
+
+        TimeoutGameImpl(G game, long timeout, boolean evaluateWinner) {
+            super(game);
+            this.timeout = timeout;
+            this.evaluateWinner = evaluateWinner;
         }
 
-        var journal = this.game.getJournal();
-        if (journal.isEmpty()) {
-            throw new GameTimeoutException(String.format(
-                    "%s: no actions performed",
-                    GAME_TIMEOUT_MESSAGE
-            ));
+        @Override
+        public void run() {
+            if (this.timeout < 0) {
+                throw new GameTimeoutException("Game timeout: invalid timeout value");
+            }
+
+            try (var executor = newThreadExecutor(POOL_SIZE)) {
+                var future = executor.submit(this.game);
+                try {
+                    future.get(this.timeout, MILLISECONDS);
+                } catch (TimeoutException e) {
+                    try {
+                        timeout();
+                    } finally {
+                        future.cancel(true);
+                    }
+                } catch (ExecutionException e) {
+                    // re-throw origin exception. It is expected to be GameTimeoutException
+                    throw e.getCause();
+                } catch (InterruptedException e) {
+                    throw new GameInterruptionException("Timeout game interrupted");
+                }
+            } catch (GameTimeoutException | GameInterruptionException e) {
+                throw e;
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
         }
 
-        var expectedActions = Stream.of(context.getExpectedActions())
-                .flatMap(Optional::stream)
-                .findFirst()
-                .orElse(0);
+        private void timeout() {
+            var context = this.game.getContext();
+            var isMixedTimeout = Stream.of(context.getTimeout())
+                    .flatMap(Optional::stream)
+                    .anyMatch(timeout -> timeout.isType(Type.ACTIONS_PER_PERIOD));
 
-        if (journal.size() < expectedActions) {
-            throw new GameTimeoutException(String.format(
-                    "%s and actual actions '%d' less than expected actions '%d'",
-                    GAME_TIMEOUT_MESSAGE, journal.size(), expectedActions
-            ));
+            if (!isMixedTimeout) {
+                throw new GameTimeoutException(GAME_TIMEOUT_MESSAGE);
+            }
+
+            var journal = this.game.getJournal();
+            if (journal.isEmpty()) {
+                throw new GameTimeoutException(String.format(
+                        "%s: no actions performed",
+                        GAME_TIMEOUT_MESSAGE
+                ));
+            }
+
+            var expectedActions = Stream.of(context.getExpectedActions())
+                    .flatMap(Optional::stream)
+                    .findFirst()
+                    .orElse(0);
+
+            if (journal.size() < expectedActions) {
+                throw new GameTimeoutException(String.format(
+                        "%s and actual actions '%d' less than expected actions '%d'",
+                        GAME_TIMEOUT_MESSAGE, journal.size(), expectedActions
+                ));
+            }
+
+            if (this.evaluateWinner) {
+                notifyObservers(new GameWinnerEvent(this.game, WinnerEvaluator.Type.STANDARD));
+                notifyObservers(new GameOverEvent(this.game));
+            }
         }
 
-        evaluateWinner();
+        private static ExecutorService newThreadExecutor(int poolSize) {
+            return new ThreadPoolExecutor(poolSize, poolSize, 0L, MILLISECONDS,
+                    new LinkedBlockingQueue<Runnable>(),
+                    BasicThreadFactory.builder()
+                        .namingPattern("TimeoutGameExecutorThread-%d")
+                        .priority(Thread.MAX_PRIORITY)
+                        .build()
+            );
+        }
     }
 
-    protected void evaluateWinner() {
-        notifyObservers(new GameWinnerEvent(this.game, WinnerEvaluator.Type.STANDARD));
-        notifyObservers(new GameOverEvent(this.game));
-    }
+    private static class TimeoutGameProxy<G extends Game & Observable>
+            extends AbstractGameProxy<G>
+            implements Playable {
 
-    private static ExecutorService newSingleThreadExecutor() {
-        return new ThreadPoolExecutor(1, 1, 0L, MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(),
-                BasicThreadFactory.builder()
-                    .namingPattern("TimeoutGameExecutorThread-%d")
-                    .priority(Thread.MAX_PRIORITY)
-                    .build()
-        );
+        TimeoutGameProxy(G game) {
+            super(game);
+        }
+
+        @Override
+        public void run() {
+            this.game.run();
+        }
     }
 }

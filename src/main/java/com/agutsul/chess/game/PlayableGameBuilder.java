@@ -63,7 +63,7 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
 
     @Override
     public GAME build() {
-        var board   = this.board != null ? this.board : new StandardBoard();
+        var board   = this.board   != null ? this.board   : new StandardBoard();
         var journal = this.journal != null ? this.journal : new JournalImpl();
         var context = this.context != null ? this.context : new GameContext();
 
@@ -86,7 +86,7 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
         var compositeGame = Stream.of(context.getTimeout())
                 .flatMap(Optional::stream)
                 .filter(timeout -> timeout instanceof CompositeTimeout)
-                .map(timeout -> new CompositeGame<>(game, (CompositeTimeout) timeout))
+                .map(timeout  -> new CompositeGame<>(game, (CompositeTimeout) timeout))
                 .peek(comGame -> comGame.addObserver(new GameTimeoutTerminationObserver()))
                 .map(comGame -> (GAME) comGame)
                 .findFirst();

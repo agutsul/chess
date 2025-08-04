@@ -106,7 +106,6 @@ public class GameContext implements Closeable {
                 .map(timeout -> (GameTimeout) timeout)
                 .map(GameTimeout::getGameDuration)
                 .map(Duration::toMillis)
-                .filter(timeout -> timeout > 0)
                 .findFirst();
     }
 

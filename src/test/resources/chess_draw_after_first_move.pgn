@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1/2-1/2"]
+[UTCDate "2014.07.01"]
+[UTCTime "07:57:11"]
+[WhiteElo "1779"]
+[BlackElo "1661"]
+[WhiteRatingDiff "-4"]
+[BlackRatingDiff "+4"]
+[ECO "A04"]
+[Opening "Zukertort Opening: Black Mustang Defense"]
+[TimeControl "300+8"]
+[Termination "Time forfeit"]
+
+1. Nf3 Nc6 1/2-1/2

@@ -43,7 +43,7 @@ import com.agutsul.chess.timeout.Timeout;
 public class TimeoutGameTest {
 
     @ParameterizedTest(name = "{index}. testInvalidTimeoutValue({0})")
-    @ValueSource(ints = { 0, -1 })
+    @ValueSource(ints = { -1 })
     void testInvalidTimeoutValue(int timeout) {
         var originGame = mock(AbstractPlayableGame.class);
 

@@ -1,14 +1,18 @@
 package com.agutsul.chess.rule.winner;
 
+import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.INSUFFICIENT_MATERIAL;
 import static com.agutsul.chess.board.state.BoardState.Type.TIMEOUT;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.ai.ActionSelectionStrategy;
+import com.agutsul.chess.ai.SelectionStrategy;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.CompositeBoardState;
 import com.agutsul.chess.board.state.InsufficientMaterialBoardState;
@@ -20,12 +24,6 @@ public final class ActionTimeoutWinnerEvaluator
         extends AbstractWinnerEvaluator {
 
     private static final Logger LOGGER = getLogger(ActionTimeoutWinnerEvaluator.class);
-
-    private static final List<Pattern> INSUFFICIENT_MATERIAL_PATTERNS = List.of(
-            Pattern.SINGLE_KING,
-            Pattern.KING_AND_KNIGHT_VS_KING_AND_QUEEN,
-            Pattern.BISHOP_POSITION_COLOR_VS_KING_POSITION_COLOR
-    );
 
     public ActionTimeoutWinnerEvaluator() {
         this(new WinnerScoreEvaluator());
@@ -44,13 +42,41 @@ public final class ActionTimeoutWinnerEvaluator
             var opponentPlayer = game.getOpponentPlayer();
 
             var opponentBoardState = board.getState(opponentPlayer.getColor());
-            if (opponentBoardState == null || isInsufficientMaterial(opponentBoardState)) {
-                // so opponent is unable to win and the best result is a draw
+            if (opponentBoardState == null) {
+                LOGGER.info("No opponent action performed: draw");
+                return null;
+            }
+
+            // opponent quick check if it there is material for a checkmate
+            if (isInsufficientMaterial(opponentBoardState)) {
                 LOGGER.info("No winner found for board state '{}': draw", board.getState());
                 return null;
             }
 
-            LOGGER.info("{} wins. Player '{}'", opponentPlayer.getColor(), opponentPlayer.getName());
+            try (var forkJoinPool = new ForkJoinPool()) {
+                var selectionStrategy = new ActionSelectionStrategy(
+                        board, game.getJournal(), forkJoinPool, SelectionStrategy.Type.ALPHA_BETA
+                );
+
+                // check if any opponent's checkmate action flow exists
+                var opponentCheckMateAction = selectionStrategy.select(
+                        opponentPlayer.getColor(), CHECK_MATED
+                );
+
+                if (opponentCheckMateAction.isEmpty()) {
+                    // so opponent is unable to win and the best result is a draw
+                    LOGGER.info("{} Player '{}' unable to checkmate",
+                            opponentPlayer.getColor(), opponentPlayer.getName()
+                    );
+
+                    return null;
+                }
+            }
+
+            LOGGER.info("{} wins. Player '{}'",
+                    opponentPlayer.getColor(), opponentPlayer.getName()
+            );
+
             return opponentPlayer;
         }
 
@@ -59,7 +85,7 @@ public final class ActionTimeoutWinnerEvaluator
     }
 
     private static boolean isInsufficientMaterial(BoardState boardState) {
-        return INSUFFICIENT_MATERIAL_PATTERNS.stream()
+        return Stream.of(Pattern.values())
                 .anyMatch(pattern -> isInsufficientMaterial(boardState, pattern));
     }
 
