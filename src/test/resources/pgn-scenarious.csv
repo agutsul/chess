@@ -49,3 +49,6 @@ chess_action_timeout_instead_game_timeout.pgn,WHITE_WIN,5,9
 chess_drawn_while_checked.pgn,DRAWN_GAME,16,9
 chess_drawn_after_first_move.pgn,DRAWN_GAME,2,9
 chess_drawn_after_several_moves.pgn,DRAWN_GAME,9,9
+chess_white_move_and_exit_timeout.pgn,BLACK_WIN,39,9
+chess_white_move_and_exit_timeout2.pgn,BLACK_WIN,11,9
+chess_white_move_and_exit_timeout3.pgn,BLACK_WIN,53,9

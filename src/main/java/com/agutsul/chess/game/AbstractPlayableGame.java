@@ -281,8 +281,8 @@ public abstract class AbstractPlayableGame
         @Override
         protected void process(GameWinnerEvent event) {
             WinnerEvaluator evaluator = switch (event.getType()) {
-            case ACTION_TIMEOUT -> new ActionTimeoutWinnerEvaluator();
-            case GAME_TIMEOUT   -> new GameTimeoutWinnerEvaluator();
+            case ACTION_TIMEOUT -> new ActionTimeoutWinnerEvaluator(event.getPlayer());
+            case GAME_TIMEOUT   -> new GameTimeoutWinnerEvaluator(event.getPlayer());
             default             -> new StandardWinnerEvaluator();
             };
 

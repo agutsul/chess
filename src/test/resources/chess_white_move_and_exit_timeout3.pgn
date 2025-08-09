@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "0-1"]
+[UTCDate "2014.07.01"]
+[UTCTime "07:59:07"]
+[WhiteElo "1504"]
+[BlackElo "1387"]
+[WhiteRatingDiff "-57"]
+[BlackRatingDiff "+17"]
+[ECO "C02"]
+[Opening "French Defense: Advance Variation #2"]
+[TimeControl "300+0"]
+[Termination "Time forfeit"]
+
+1. e4  e6 2. d4  d5 3. e5  c5 4. c3  cxd4 5. cxd4  Nc6 6. Nf3  Bb4+ 7. Bd2  Bxd2+ 8. Qxd2  Nge7 9. Bb5  O-O 10. O-O  Nf5 11. Bxc6  bxc6 12. Rc1  Qb6 13. Na3  a6 14. Rc5  a5 15. Rac1  Bb7 16. h3  a4 17. g4  Ne7 18. Ne1  Ng6 19. Nd3  Rac8 20. Nc2  Ba6 21. Ndb4  Bb5 22. a3  Nh4 23. Qe3  Qd8 24. Qg3  Ng6 25. Ne3  Qg5 26. Nxc6  Nf4 27. R1c2 0-1

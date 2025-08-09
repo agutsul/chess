@@ -11,7 +11,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -39,18 +38,24 @@ public class ActionTimeoutWinnerEvaluatorTest {
 
     @BeforeEach
     void setUp() {
+        when(whitePlayer.getColor())
+            .thenReturn(Colors.WHITE);
+
+        when(blackPlayer.getColor())
+            .thenReturn(Colors.BLACK);
+
         when(game.getBoard())
             .thenReturn(board);
+
+        when(game.getPlayer(any(Color.class)))
+            .thenAnswer(inv -> Colors.WHITE.equals(inv.getArgument(0))
+                    ? whitePlayer
+                    : blackPlayer
+            );
     }
 
     @Test
     void testTimeoutGameStateWithoutOpponentState() {
-        when(blackPlayer.getColor())
-            .thenReturn(Colors.BLACK);
-
-        when(game.getOpponentPlayer())
-            .thenReturn(blackPlayer);
-
         when(board.getState())
             .thenReturn(timeoutBoardState(board, Colors.WHITE));
         when(board.getState(any(Color.class)))
@@ -59,22 +64,12 @@ public class ActionTimeoutWinnerEvaluatorTest {
                 return null;
             });
 
-        var evaluator = new ActionTimeoutWinnerEvaluator(winnerEvaluator);
+        var evaluator = new ActionTimeoutWinnerEvaluator(winnerEvaluator, whitePlayer);
         assertNull(evaluator.evaluate(game));
     }
 
     @Test
     void testTimeoutGameStateWithDefaultOpponentState() {
-//        when(whitePlayer.getColor())
-//            .thenReturn(Colors.WHITE);
-        when(blackPlayer.getColor())
-            .thenReturn(Colors.BLACK);
-
-//        when(game.getCurrentPlayer())
-//            .thenReturn(whitePlayer);
-        when(game.getOpponentPlayer())
-            .thenReturn(blackPlayer);
-
         when(board.getState())
             .thenReturn(timeoutBoardState(board, Colors.WHITE));
         when(board.getState(any(Color.class)))
@@ -86,19 +81,12 @@ public class ActionTimeoutWinnerEvaluatorTest {
                 return defaultBoardState(board, color);
             });
 
-        var evaluator = new ActionTimeoutWinnerEvaluator(winnerEvaluator);
+        var evaluator = new ActionTimeoutWinnerEvaluator(winnerEvaluator, whitePlayer);
         assertNull(evaluator.evaluate(game));
     }
 
     @Test
-    @Disabled
     void testTimeoutGameStateWithUnsupportedInsufficientMaterialOpponentState() {
-        when(blackPlayer.getColor())
-            .thenReturn(Colors.BLACK);
-
-        when(game.getOpponentPlayer())
-            .thenReturn(blackPlayer);
-
         when(board.getState())
             .thenReturn(timeoutBoardState(board, Colors.WHITE));
         when(board.getState(any(Color.class)))
@@ -110,20 +98,12 @@ public class ActionTimeoutWinnerEvaluatorTest {
                 return insufficientMaterialBoardState(board, color, KING_VS_KING);
             });
 
-        var evaluator = new ActionTimeoutWinnerEvaluator(winnerEvaluator);
-        var winner = evaluator.evaluate(game);
-
-        assertEquals(blackPlayer, winner);
+        var evaluator = new ActionTimeoutWinnerEvaluator(winnerEvaluator, whitePlayer);
+        assertNull(evaluator.evaluate(game));
     }
 
     @Test
     void testTimeoutGameStateWithInsufficientMaterialOpponentState() {
-        when(blackPlayer.getColor())
-            .thenReturn(Colors.BLACK);
-
-        when(game.getOpponentPlayer())
-            .thenReturn(blackPlayer);
-
         when(board.getState())
             .thenReturn(timeoutBoardState(board, Colors.WHITE));
         when(board.getState(any(Color.class)))
@@ -135,7 +115,7 @@ public class ActionTimeoutWinnerEvaluatorTest {
                 return insufficientMaterialBoardState(board, color, SINGLE_KING);
             });
 
-        var evaluator = new ActionTimeoutWinnerEvaluator(winnerEvaluator);
+        var evaluator = new ActionTimeoutWinnerEvaluator(winnerEvaluator, whitePlayer);
         assertNull(evaluator.evaluate(game));
     }
 }

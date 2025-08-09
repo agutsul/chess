@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -42,15 +43,19 @@ public class GameTimeoutWinnerEvaluatorTest {
 
     @Test
     void testTimeoutGameStateWithOpponentWinner() {
+        when(whitePlayer.getColor())
+            .thenReturn(Colors.WHITE);
+
+        when(game.getPlayer(eq(Colors.BLACK)))
+            .thenReturn(blackPlayer);
+
         when(game.getCurrentPlayer())
             .thenReturn(whitePlayer);
-        when(game.getOpponentPlayer())
-            .thenReturn(blackPlayer);
 
         when(board.getState())
             .thenReturn(timeoutBoardState(board, Colors.WHITE));
 
-        var evaluator = new GameTimeoutWinnerEvaluator(mock(WinnerEvaluator.class));
+        var evaluator = new GameTimeoutWinnerEvaluator(mock(WinnerEvaluator.class), whitePlayer);
         var winner = evaluator.evaluate(game);
 
         assertNotNull(winner);
@@ -66,7 +71,7 @@ public class GameTimeoutWinnerEvaluatorTest {
             .thenReturn(exitedBoardState(board, Colors.WHITE));
 
         var scoreEvaluator = mock(WinnerEvaluator.class);
-        var evaluator = new GameTimeoutWinnerEvaluator(scoreEvaluator);
+        var evaluator = new GameTimeoutWinnerEvaluator(scoreEvaluator, whitePlayer);
 
         assertNull(evaluator.evaluate(game));
         verify(scoreEvaluator, times(1)).evaluate(any());

@@ -1,6 +1,7 @@
 package com.agutsul.chess.game.event;
 
 import com.agutsul.chess.game.Termination;
+import com.agutsul.chess.player.Player;
 
 public interface GameTerminationEvent
         extends Termination {
@@ -14,4 +15,6 @@ public interface GameTerminationEvent
     }
 
     Type getType();
+
+    Player getPlayer();
 }

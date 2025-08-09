@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "0-1"]
+[UTCDate "2014.07.01"]
+[UTCTime "06:47:39"]
+[WhiteElo "1500"]
+[BlackElo "1581"]
+[WhiteRatingDiff "-141"]
+[BlackRatingDiff "+21"]
+[ECO "B50"]
+[Opening "Sicilian Defense"]
+[TimeControl "10800+0"]
+[Termination "Time forfeit"]
+
+1. e4 c5 2. Nf3 d6 3. Nc3 Nf6 4. d3 g6 5. Bg5 Bg7 6. Be2 0-1

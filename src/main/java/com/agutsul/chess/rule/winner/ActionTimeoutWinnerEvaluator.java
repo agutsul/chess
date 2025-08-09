@@ -25,12 +25,15 @@ public final class ActionTimeoutWinnerEvaluator
 
     private static final Logger LOGGER = getLogger(ActionTimeoutWinnerEvaluator.class);
 
-    public ActionTimeoutWinnerEvaluator() {
-        this(new WinnerScoreEvaluator());
+    private final Player player;
+
+    public ActionTimeoutWinnerEvaluator(Player player) {
+        this(new WinnerScoreEvaluator(), player);
     }
 
-    ActionTimeoutWinnerEvaluator(WinnerEvaluator winnerScoreEvaluator) {
-        super(winnerScoreEvaluator);
+    ActionTimeoutWinnerEvaluator(WinnerEvaluator winnerEvaluator, Player player) {
+        super(winnerEvaluator);
+        this.player = player;
     }
 
     @Override
@@ -39,7 +42,7 @@ public final class ActionTimeoutWinnerEvaluator
         var boardState = board.getState();
 
         if (boardState.isType(TIMEOUT)) {
-            var opponentPlayer = game.getOpponentPlayer();
+            var opponentPlayer = game.getPlayer(this.player.getColor().invert());
 
             var opponentBoardState = board.getState(opponentPlayer.getColor());
             if (opponentBoardState == null) {

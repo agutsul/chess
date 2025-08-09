@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "0-1"]
+[UTCDate "2014.07.01"]
+[UTCTime "06:12:28"]
+[WhiteElo "1112"]
+[BlackElo "1410"]
+[WhiteRatingDiff "-20"]
+[BlackRatingDiff "+4"]
+[ECO "C00"]
+[Opening "French Defense #2"]
+[TimeControl "900+0"]
+[Termination "Time forfeit"]
+
+1. e4  e6 2. Bc4  Nf6 3. d3  d5 4. exd5  exd5 5. Bb5+  c6 6. Ba4  b5 7. Bb3  a5 8. a3  a4 9. Ba2  Na6 10. h3  h6 11. Be3  Qe7 12. Nf3  g5 13. Nd4  Bd7 14. Nd2  g4 15. h4  g3 16. Qf3  gxf2+ 17. Qxf2  Ng4 18. Qg3  Nxe3 19. N2f3  Nxc2+ 20. Kd2 0-1

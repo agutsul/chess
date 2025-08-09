@@ -34,7 +34,7 @@ public class GameTimeoutTerminationObserverTest {
 
         var initialBoardState = game.getBoard().getState();
 
-        game.notifyObservers(new GameTimeoutTerminationEvent(game));
+        game.notifyObservers(new GameTimeoutTerminationEvent(game, whitePlayer));
 
         var currentBoardState = game.getBoard().getState();
 

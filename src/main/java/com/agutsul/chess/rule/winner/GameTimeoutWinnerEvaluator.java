@@ -13,12 +13,15 @@ public final class GameTimeoutWinnerEvaluator
 
     private static final Logger LOGGER = getLogger(GameTimeoutWinnerEvaluator.class);
 
-    public GameTimeoutWinnerEvaluator() {
-        this(new WinnerScoreEvaluator());
+    private final Player player;
+
+    public GameTimeoutWinnerEvaluator(Player player) {
+        this(new WinnerScoreEvaluator(), player);
     }
 
-    GameTimeoutWinnerEvaluator(WinnerEvaluator winnerEvaluator) {
+    GameTimeoutWinnerEvaluator(WinnerEvaluator winnerEvaluator, Player player) {
         super(winnerEvaluator);
+        this.player = player;
     }
 
     @Override
@@ -30,7 +33,7 @@ public final class GameTimeoutWinnerEvaluator
                 game.getCurrentPlayer(), boardState.getColor(), boardState.getType());
 
         var winner = boardState.isType(TIMEOUT)
-                ? game.getOpponentPlayer()
+                ? game.getPlayer(player.getColor().invert())
                 : super.evaluate(game);
 
         if (winner != null) {

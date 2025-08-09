@@ -14,6 +14,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.exception.AbstractTimeoutException;
 import com.agutsul.chess.exception.ActionTimeoutException;
 import com.agutsul.chess.exception.GameTimeoutException;
+import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.iterator.CurrentIterator;
 import com.agutsul.chess.iterator.CurrentIteratorImpl;
 import com.agutsul.chess.player.Player;
@@ -76,20 +77,29 @@ final class PgnPlayerInputObserver
     }
 
     private AbstractTimeoutException createTimeoutException(Optional<Color> winnerColor) {
+        if (winnerColor.isEmpty()) {
+            return new ActionTimeoutException(this.player);
+        }
+
         var timeoutException = Stream.of(winnerColor)
                 .flatMap(Optional::stream)
-                .filter(color -> !Objects.equals(this.player.getColor(), color))
-                .map(color -> Stream.of(this.game.getContext().getGameTimeout())
-                        .flatMap(Optional::stream)
-                        .findFirst()
-                        .map(t -> new GameTimeoutException(this.player))
-                        .map(te -> (AbstractTimeoutException) te)
-                        .orElse(new ActionTimeoutException(this.player))
-                )
+                .filter(color -> Objects.equals(this.player.getColor(), color))
+                .map(Color::invert)
+                .map(opponentColor  -> this.game.getPlayer(opponentColor))
+                .map(opponentPlayer -> createTimeoutException(this.game.getContext(), opponentPlayer))
                 .findFirst()
-                .orElse(new ActionTimeoutException(this.player));
+                .orElse(createTimeoutException(this.game.getContext(), this.player));
 
         return timeoutException;
+    }
+
+    private static AbstractTimeoutException createTimeoutException(GameContext context, Player player) {
+        return Stream.of(context.getGameTimeout())
+                .flatMap(Optional::stream)
+                .findFirst()
+                .map(timeout -> new GameTimeoutException(player))
+                .map(exception -> (AbstractTimeoutException) exception)
+                .orElse(new ActionTimeoutException(player));
     }
 
     private static PlayerCommand finalCommand(Player player, Color color) {
