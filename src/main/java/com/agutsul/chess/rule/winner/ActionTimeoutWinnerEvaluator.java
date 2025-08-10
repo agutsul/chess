@@ -21,19 +21,16 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.player.Player;
 
 public final class ActionTimeoutWinnerEvaluator
-        extends AbstractWinnerEvaluator {
+        extends AbstractTimeoutWinnerEvaluator {
 
     private static final Logger LOGGER = getLogger(ActionTimeoutWinnerEvaluator.class);
 
-    private final Player player;
-
     public ActionTimeoutWinnerEvaluator(Player player) {
-        this(new WinnerScoreEvaluator(), player);
+        super(player);
     }
 
     ActionTimeoutWinnerEvaluator(WinnerEvaluator winnerEvaluator, Player player) {
-        super(winnerEvaluator);
-        this.player = player;
+        super(winnerEvaluator, player);
     }
 
     @Override

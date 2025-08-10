@@ -48,7 +48,8 @@ public class ActionTimeoutWinnerEvaluatorTest {
             .thenReturn(board);
 
         when(game.getPlayer(any(Color.class)))
-            .thenAnswer(inv -> Colors.WHITE.equals(inv.getArgument(0))
+            .thenAnswer(inv ->
+                Colors.WHITE.equals(inv.getArgument(0))
                     ? whitePlayer
                     : blackPlayer
             );
