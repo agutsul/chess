@@ -11,7 +11,7 @@ final class PieceMoveActionAdapter
         extends AbstractPgnActionAdapter {
 
     private static final String MOVE_PATTERN =
-            "([N,B,R,Q,K]){1}([a-h,1-8]){0,1}([a-h]{1}[1-8]{1}){1}";
+            "([N,B,R,Q,K]){1}([a-h]{0,1}[1-8]{0,1}){0,1}([a-h]{1}[1-8]{1}){1}";
 
     PieceMoveActionAdapter(Board board, Color color) {
         super(board, color);

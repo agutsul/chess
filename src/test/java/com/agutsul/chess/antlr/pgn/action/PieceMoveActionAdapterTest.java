@@ -29,7 +29,7 @@ public class PieceMoveActionAdapterTest {
     void testAdaptInvalidPieceMoveAction() {
         var adapter = new PieceMoveActionAdapter(board, Colors.WHITE);
 
-        for (var action : List.of("Wz9", "Ba0", "Q12a", "Ac2", "Aa2", "Ba11", "cxb3", "Ke2e2")) {
+        for (var action : List.of("Wz9", "Ba0", "Q12a", "Ac2", "Aa2", "Ba11", "cxb3")) {
             var thrown = assertThrows(
                     IllegalActionException.class,
                     () -> adapter.adapt(action)

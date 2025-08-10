@@ -52,3 +52,4 @@ chess_drawn_after_several_moves.pgn,DRAWN_GAME,9,9
 chess_white_move_and_exit_timeout.pgn,BLACK_WIN,39,9
 chess_white_move_and_exit_timeout2.pgn,BLACK_WIN,11,9
 chess_white_move_and_exit_timeout3.pgn,BLACK_WIN,53,9
+chess_multiple_piece_of_same_type_action.pgn,WHITE_WIN,151,9

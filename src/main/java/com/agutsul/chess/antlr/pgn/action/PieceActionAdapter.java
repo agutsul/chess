@@ -76,6 +76,9 @@ public final class PieceActionAdapter
         case 4:
             return adaptPieceAction(command);
         case 5:
+            return Strings.CI.contains(command, CAPTURE_CODE)
+                    ? adaptPieceCaptureAction(command)
+                    : adaptPieceMoveAction(command);
         case 6:
             return adaptPieceCaptureAction(command);
         default:
