@@ -14,6 +14,7 @@ import static java.util.stream.Collectors.joining;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 import java.time.Duration;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -385,7 +386,7 @@ public final class ConsoleGameOutputObserver
         case FiveFoldRepetitionBoardState bs -> formatBoardState(bs);
         case ThreeFoldRepetitionBoardState bs -> formatBoardState(bs);
         case InsufficientMaterialBoardState bs -> formatBoardState(bs);
-        case CompositeBoardState bs -> formatBoardState(bs);
+        case CompositeBoardState bs -> formatBoardState(bs.getBoardStates());
         case BoardStateProxy bs -> formatBoardState(bs.getOrigin());
         default -> String.valueOf(boardState.getType());
         };
@@ -405,11 +406,11 @@ public final class ConsoleGameOutputObserver
         );
     }
 
-    private static String formatBoardState(CompositeBoardState boardState) {
-        return String.format("(%s)",
-                boardState.getBoardStates().stream()
-                    .map(ConsoleGameOutputObserver::formatBoardState)
-                    .collect(joining(","))
-        );
+    private static String formatBoardState(Collection<BoardState> boardStates) {
+        var states = boardStates.stream()
+                .map(ConsoleGameOutputObserver::formatBoardState)
+                .collect(joining(","));
+
+        return String.format("(%s)", states);
     }
 }
