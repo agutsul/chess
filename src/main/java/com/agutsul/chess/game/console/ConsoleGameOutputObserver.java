@@ -28,9 +28,12 @@ import com.agutsul.chess.activity.action.event.ActionTerminationEvent;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.board.state.BoardStateProxy;
 import com.agutsul.chess.board.state.CompositeBoardState;
+import com.agutsul.chess.board.state.FiveFoldRepetitionBoardState;
 import com.agutsul.chess.board.state.FoldRepetitionBoardState;
 import com.agutsul.chess.board.state.InsufficientMaterialBoardState;
+import com.agutsul.chess.board.state.ThreeFoldRepetitionBoardState;
 import com.agutsul.chess.event.AbstractEventObserver;
 import com.agutsul.chess.event.AbstractObserverProxy;
 import com.agutsul.chess.event.CompositeEventObserver;
@@ -379,18 +382,34 @@ public final class ConsoleGameOutputObserver
 
     private static String formatBoardState(BoardState boardState) {
         return switch (boardState) {
-        case FoldRepetitionBoardState bs -> String.format("%s(%s)",
-                boardState.getType(), format(bs.getActionMemento())
+        case FiveFoldRepetitionBoardState bs -> formatBoardState(bs);
+        case ThreeFoldRepetitionBoardState bs -> formatBoardState(bs);
+        case InsufficientMaterialBoardState bs -> formatBoardState(bs);
+        case CompositeBoardState bs -> formatBoardState(bs);
+        case BoardStateProxy bs -> formatBoardState(bs.getOrigin());
+        default -> String.valueOf(boardState.getType());
+        };
+    }
+
+    private static String formatBoardState(FoldRepetitionBoardState boardState) {
+        return String.format("%s(%s)",
+                ((BoardState) boardState).getType(),
+                format(boardState.getActionMemento())
         );
-        case InsufficientMaterialBoardState bs -> String.format("%s(%s)",
-                boardState.getType(), bs.getPattern()
+    }
+
+    private static String formatBoardState(InsufficientMaterialBoardState boardState) {
+        return String.format("%s(%s)",
+                ((BoardState) boardState).getType(),
+                boardState.getPattern()
         );
-        case CompositeBoardState bs -> String.format("(%s)",
-                bs.getBoardStates().stream()
+    }
+
+    private static String formatBoardState(CompositeBoardState boardState) {
+        return String.format("(%s)",
+                boardState.getBoardStates().stream()
                     .map(ConsoleGameOutputObserver::formatBoardState)
                     .collect(joining(","))
         );
-        default -> String.valueOf(boardState.getType());
-        };
     }
 }
