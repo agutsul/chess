@@ -53,3 +53,4 @@ chess_white_move_and_exit_timeout.pgn,BLACK_WIN,39,9
 chess_white_move_and_exit_timeout2.pgn,BLACK_WIN,11,9
 chess_white_move_and_exit_timeout3.pgn,BLACK_WIN,53,9
 chess_multiple_piece_of_same_type_action.pgn,WHITE_WIN,151,9
+chess_capture_checkmaker_by_pinned_piece.pgn,WHITE_WIN,119,9

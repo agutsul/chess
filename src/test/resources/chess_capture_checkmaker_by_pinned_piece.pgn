@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1-0"]
+[UTCDate "2014.07.04"]
+[UTCTime "23:15:56"]
+[WhiteElo "1522"]
+[BlackElo "1712"]
+[WhiteRatingDiff "+16"]
+[BlackRatingDiff "-17"]
+[ECO "B01"]
+[Opening "Scandinavian Defense"]
+[TimeControl "300+0"]
+[Termination "Normal"]
+
+1. e4  d5 2. e5  d4 3. f4  Bf5 4. Nf3  e6 5. Bc4  Bc5 6. d3  a6 7. a3  b5 8. Ba2  Ba7 9. c4  c5 10. Nbd2  Ne7 11. O-O  Nbc6 12. Ne4  O-O 13. Nd6  Bg6 14. cxb5  axb5 15. Nxb5  Bb6 16. Qe2  Nf5 17. g4  Ra5 18. gxf5  Rxb5 19. fxg6  fxg6 20. Bxe6+  Kh8 21. Ng5  Qe7 22. Qg4  h6 23. Bc4  Ra5 24. Ne6  Rf5 25. Qxg6  Nxe5 26. Qxf5  Nxc4 27. dxc4  Ra4 28. Qf8+  Qxf8 29. Nxf8  Rxc4 30. Ng6+  Kh7 31. Ne5  Rc2 32. Rf2  Rxf2 33. Kxf2  Ba7 34. Ke2  Kg8 35. Kd3  Kf8 36. Bd2  Ke7 37. Ba5  Ke6 38. Rc1  Kd5 39. b4  cxb4 40. Bxb4  h5 41. Nc6  Bb6 42. Ne7+  Ke6 43. Ng6  Kf5 44. Ne7+  Kxf4 45. Rf1+  Kg4 46. Ng6  Kg5 47. Ne5  g6 48. Be7+  Kh6 49. a4  h4 50. a5  Bxa5 51. Kxd4  Kh5 52. Ke4  g5 53. Kf5  Bd2 54. Bf8  h3 55. Rf3  Kh4 56. Ng6+  Kh5 57. Ne5  g4 58. Nxg4  Be1 59. Rxh3+  Bh4 60. Nf6# 1-0

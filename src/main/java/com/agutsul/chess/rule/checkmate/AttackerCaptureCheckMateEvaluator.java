@@ -14,6 +14,7 @@ import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
+import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
@@ -74,6 +75,10 @@ final class AttackerCaptureCheckMateEvaluator
 
         boolean isCapturable = attackers.stream()
                 .filter(not(Piece::isKing))
+                .filter(attacker -> {
+                    var pinImpacts = board.getImpacts(attacker, Impact.Type.PIN);
+                    return pinImpacts.isEmpty();
+                })
                 .map(attacker -> board.getActions(attacker, Action.Type.CAPTURE))
                 .flatMap(Collection::stream)
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
