@@ -2,12 +2,12 @@ package com.agutsul.chess.player.observer;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,15 +26,20 @@ public class PlayableObserverTest {
 
     @Mock
     AbstractBoard board;
+    @Mock
+    AbstractPlayer player;
 
     @InjectMocks
     PlayableObserver playableObserver;
 
-    @Test
-    void testObserveActivePlayerEvent() {
-        var player = mock(AbstractPlayer.class);
+    @BeforeEach
+    void setUp() {
         when(player.getColor())
             .thenReturn(Colors.WHITE);
+    }
+
+    @Test
+    void testObserveActivePlayerEvent() {
         when(player.getState())
             .thenReturn(new ActivePlayerState());
 
@@ -49,9 +54,6 @@ public class PlayableObserverTest {
 
     @Test
     void testObserveLockedPlayerEvent() {
-        var player = mock(AbstractPlayer.class);
-        when(player.getColor())
-            .thenReturn(Colors.WHITE);
         when(player.getState())
             .thenReturn(new LockedPlayerState());
 

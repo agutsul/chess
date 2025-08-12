@@ -1,8 +1,8 @@
 package com.agutsul.chess.game.observer;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.nio.file.Files.isDirectory;
 import static java.nio.file.Files.list;
+import static java.util.function.Predicate.not;
 import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.apache.commons.io.FilenameUtils.getExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
@@ -102,7 +103,7 @@ public class GameExceptionObserverTest implements TestFileReader {
 
     private static List<String> listFileNames(Path folder) throws IOException {
         try (Stream<Path> stream = list(tempDir)) {
-            return stream.filter(file -> !isDirectory(file))
+            return stream.filter(not(Files::isDirectory))
                     .map(Path::getFileName)
                     .map(Path::toString)
                     .sorted()

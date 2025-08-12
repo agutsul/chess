@@ -8,7 +8,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -17,8 +16,11 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.action.Action;
@@ -32,7 +34,6 @@ import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
-import com.agutsul.chess.event.Event;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.event.GameTerminationEvent.Type;
 import com.agutsul.chess.journal.Journal;
@@ -52,13 +53,18 @@ import com.agutsul.chess.position.Position;
 @ExtendWith(MockitoExtension.class)
 public class PlayerActionObserverTest {
 
-    @Test
-    void testNoProcessingEvent() {
-        var game = mock(AbstractPlayableGame.class);
-        var observer = new PlayerActionObserver(game);
-        observer.observe(mock(Event.class));
+    @Mock
+    AbstractPlayableGame game;
+    @Mock
+    AbstractBoard board;
 
-        verify(game, never()).notifyObservers(any());
+    @InjectMocks
+    PlayerActionObserver observer;
+
+    @BeforeEach
+    void setUp() {
+        when(game.getBoard())
+            .thenReturn(board);
     }
 
     @Test
@@ -80,7 +86,6 @@ public class PlayerActionObserverTest {
         doCallRealMethod()
             .when(action).getSource();
 
-        var board = mock(AbstractBoard.class);
         when(board.getPiece(anyString()))
             .thenReturn(Optional.of(piece));
         when(board.getPosition(anyString()))
@@ -88,11 +93,6 @@ public class PlayerActionObserverTest {
         when(board.getActions(any()))
             .thenReturn(List.of(action));
 
-        var game = mock(AbstractPlayableGame.class);
-        when(game.getBoard())
-            .thenReturn(board);
-
-        var observer = new PlayerActionObserver(game);
         observer.observe(new PlayerActionEvent(mock(Player.class), "a2", "a3"));
 
         verify(game, times(2)).notifyObservers(any());
@@ -100,15 +100,9 @@ public class PlayerActionObserverTest {
 
     @Test
     void testPlayerActionEventException() {
-        var board = mock(AbstractBoard.class);
         when(board.getPiece(anyString()))
             .thenReturn(Optional.empty());
 
-        var game = mock(AbstractPlayableGame.class);
-        when(game.getBoard())
-            .thenReturn(board);
-
-        var observer = new PlayerActionObserver(game);
         observer.observe(new PlayerActionEvent(mock(Player.class), "a2", "a3"));
 
         verify(game, times(1)).notifyObservers(any(PlayerActionExceptionEvent.class));
@@ -122,19 +116,13 @@ public class PlayerActionObserverTest {
         when(journal.isEmpty())
             .thenReturn(true);
 
-        var game = mock(AbstractPlayableGame.class);
         when(game.getJournal())
             .thenReturn(journal);
-
-        var board = mock(AbstractBoard.class);
-        when(game.getBoard())
-            .thenReturn(board);
 
         var player = mock(Player.class);
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
-        var observer = new PlayerActionObserver(game);
         observer.observe(new PlayerCancelActionEvent(player));
 
         verify(game, times(1)).notifyObservers(any(PlayerCancelActionExceptionEvent.class));
@@ -144,7 +132,6 @@ public class PlayerActionObserverTest {
     @Test
     @SuppressWarnings("unchecked")
     void testPlayerCancelActionEvent() {
-        var board = mock(AbstractBoard.class);
         when(board.getPiece(anyString()))
             .thenReturn(Optional.of(mock(PawnPiece.class)));
         when(board.getPosition(anyString()))
@@ -154,9 +141,6 @@ public class PlayerActionObserverTest {
         journal.add(mockActionMemento(Colors.WHITE));
         journal.add(mockActionMemento(Colors.BLACK));
 
-        var game = mock(AbstractPlayableGame.class);
-        when(game.getBoard())
-            .thenReturn(board);
         when(game.getJournal())
             .thenReturn(journal);
 
@@ -173,7 +157,6 @@ public class PlayerActionObserverTest {
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
-        var observer = new PlayerActionObserver(game);
         observer.observe(new PlayerCancelActionEvent(player));
 
         verify(game, atLeast(2)).notifyObservers(any());
@@ -181,7 +164,6 @@ public class PlayerActionObserverTest {
 
     @Test
     void testPlayerDrawActionEvent() {
-        var board = mock(AbstractBoard.class);
         doAnswer(inv -> {
             var state = inv.getArgument(0, BoardState.class);
             assertEquals(BoardState.Type.AGREED_DRAW, state.getType());
@@ -189,15 +171,10 @@ public class PlayerActionObserverTest {
             return null;
         }).when(board).setState(any());
 
-        var game = mock(AbstractPlayableGame.class);
-        when(game.getBoard())
-            .thenReturn(board);
-
         var player = mock(Player.class);
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
-        var observer = new PlayerActionObserver(game);
         observer.observe(new PlayerTerminateActionEvent(player, Type.DRAW));
 
         verify(game, times(1)).notifyObservers(any(ActionTerminationEvent.class));
@@ -206,19 +183,13 @@ public class PlayerActionObserverTest {
 
     @Test
     void testPlayerDrawActionExceptionEvent() {
-        var board = mock(AbstractBoard.class);
         doThrow(RuntimeException.class)
             .when(board).setState(any());
-
-        var game = mock(AbstractPlayableGame.class);
-        when(game.getBoard())
-            .thenReturn(board);
 
         var player = mock(Player.class);
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
-        var observer = new PlayerActionObserver(game);
         observer.observe(new PlayerTerminateActionEvent(player, Type.DRAW));
 
         verify(game, times(1)).notifyObservers(any(PlayerTerminateActionExceptionEvent.class));

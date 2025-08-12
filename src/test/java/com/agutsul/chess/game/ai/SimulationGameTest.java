@@ -43,8 +43,7 @@ public class SimulationGameTest {
 
         var exception = new RuntimeException("test");
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        var action = new PieceMoveAction(pawnPiece, position);
+        var action = new PieceMoveAction<>(pawnPiece, position);
         try (var game = spy(new SimulationGame(board, journal, forkJoinPool, Colors.WHITE, action))) {
             doThrow(exception)
                 .when(game).hasNext();
@@ -93,8 +92,7 @@ public class SimulationGameTest {
         var pawnPiece = (PawnPiece<?>) board.getPiece("e2").get();
         var position  = board.getPosition("e4").get();
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        var action = new PieceMoveAction(pawnPiece, position);
+        var action = new PieceMoveAction<>(pawnPiece, position);
         try (var game = new SimulationGame(board, journal, forkJoinPool, Colors.WHITE, action)) {
             assertEquals(Colors.WHITE, game.getCurrentPlayer().getColor());
 

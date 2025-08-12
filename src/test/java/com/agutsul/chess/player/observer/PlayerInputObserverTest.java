@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.action.PieceMoveAction;
@@ -42,10 +43,11 @@ import com.agutsul.chess.position.Position;
 @ExtendWith(MockitoExtension.class)
 public class PlayerInputObserverTest {
 
+    @Mock
+    AbstractPlayableGame game;
+
     @Test
     void testObserveNonRequestEvent() {
-        var game = mock(AbstractPlayableGame.class);
-
         var observer = new PlayerInputObserverMock(mock(Player.class), game);
         observer.observe(mock(Event.class));
 
@@ -54,8 +56,6 @@ public class PlayerInputObserverTest {
 
     @Test
     void testObserveOpponentPlayerEvent() {
-        var game = mock(AbstractPlayableGame.class);
-
         var whitePlayer = mock(Player.class);
         when(whitePlayer.getColor())
             .thenReturn(Colors.WHITE);
@@ -74,7 +74,6 @@ public class PlayerInputObserverTest {
 
     @Test
     void testObservePlayerActionEvent() {
-        var game = mock(AbstractPlayableGame.class);
         when(game.getContext())
             .thenReturn(new GameContext());
 
@@ -92,7 +91,6 @@ public class PlayerInputObserverTest {
 
     @Test
     void testObservePlayerActionEventInvalidAction() {
-        var game = mock(AbstractPlayableGame.class);
         when(game.getBoard())
             .thenReturn(mock(AbstractBoard.class));
         when(game.getContext())
@@ -117,7 +115,6 @@ public class PlayerInputObserverTest {
 
     @Test
     void testObservePlayerActionEventUnknownAction() {
-        var game = mock(AbstractPlayableGame.class);
         when(game.getBoard())
             .thenReturn(mock(AbstractBoard.class));
         when(game.getContext())
@@ -142,7 +139,6 @@ public class PlayerInputObserverTest {
 
     @Test
     void testObservePlayerActionEventUndoAction() {
-        var game = mock(AbstractPlayableGame.class);
         when(game.getContext())
             .thenReturn(new GameContext());
 
@@ -160,7 +156,6 @@ public class PlayerInputObserverTest {
 
     @Test
     void testObservePlayerActionEventDrawAction() {
-        var game = mock(AbstractPlayableGame.class);
         when(game.getContext())
             .thenReturn(new GameContext());
 
@@ -208,7 +203,6 @@ public class PlayerInputObserverTest {
 
     @Test
     void testObservePlayerPromotionPieceTypeEventUnknowPromotionType() {
-        var game = mock(AbstractPlayableGame.class);
         when(game.getContext())
             .thenReturn(new GameContext());
 

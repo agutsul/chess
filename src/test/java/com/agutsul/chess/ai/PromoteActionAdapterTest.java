@@ -8,12 +8,14 @@ import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.ai.PromoteActionAdapter.SimulatedPiecePromoteAction;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
@@ -23,11 +25,16 @@ import com.agutsul.chess.position.Position;
 @ExtendWith(MockitoExtension.class)
 public class PromoteActionAdapterTest {
 
+    @Mock
+    PawnPiece<Color> pawnPiece;
+    @Mock
+    Observable observable;
+
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     void testPiecePromoteActionAdaptForMoveAction() {
-        var moveAction = new PieceMoveAction(mock(PawnPiece.class), mock(Position.class));
-        var promoteAction = new PiecePromoteAction(moveAction, mock(Observable.class));
+        var moveAction = new PieceMoveAction(pawnPiece, mock(Position.class));
+        var promoteAction = new PiecePromoteAction(moveAction, observable);
 
         var adapter = new PromoteActionAdapter();
 
@@ -50,8 +57,8 @@ public class PromoteActionAdapterTest {
     @Test
     @SuppressWarnings({ "unchecked", "rawtypes" })
     void testPiecePromoteActionAdaptForCaptureAction() {
-        var captureAction = new PieceCaptureAction(mock(PawnPiece.class), mock(RookPiece.class));
-        var promoteAction = new PiecePromoteAction(captureAction, mock(Observable.class));
+        var captureAction = new PieceCaptureAction(pawnPiece, mock(RookPiece.class));
+        var promoteAction = new PiecePromoteAction(captureAction, observable);
 
         var adapter = new PromoteActionAdapter();
 

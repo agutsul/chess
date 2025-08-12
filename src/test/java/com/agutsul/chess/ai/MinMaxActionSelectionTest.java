@@ -42,7 +42,7 @@ public class MinMaxActionSelectionTest {
         var blackPlayer = new UserPlayer(randomUUID().toString(), Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer,
-                board, new JournalImpl(), new ForkJoinPool(2)
+                board, new JournalImpl(), forkJoinPool
         );
 
         var strategy = new ActionSelectionStrategy(game, SelectionStrategy.Type.MIN_MAX);
@@ -61,7 +61,7 @@ public class MinMaxActionSelectionTest {
             .thenReturn(emptyList());
 
         var game = new GameMock(whitePlayer, blackPlayer,
-                board, new JournalImpl(), new ForkJoinPool(2)
+                board, new JournalImpl(), forkJoinPool
         );
 
         var strategy = new ActionSelectionStrategy(game, SelectionStrategy.Type.MIN_MAX);
@@ -91,7 +91,7 @@ public class MinMaxActionSelectionTest {
         var blackPlayer = new UserPlayer(randomUUID().toString(), Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer,
-                board, new JournalImpl(), new ForkJoinPool(2)
+                board, new JournalImpl(), forkJoinPool
         );
 
         var strategy = new ActionSelectionStrategy(game, SelectionStrategy.Type.MIN_MAX);
@@ -123,7 +123,7 @@ public class MinMaxActionSelectionTest {
         var blackPlayer = new UserPlayer(randomUUID().toString(), Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer,
-                board, new JournalImpl(), new ForkJoinPool(2)
+                board, new JournalImpl(), forkJoinPool
         );
 
         var strategy = new ActionSelectionStrategy(game, SelectionStrategy.Type.MIN_MAX);

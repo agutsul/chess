@@ -9,9 +9,11 @@ import java.util.concurrent.ForkJoinPool;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.CommandException;
@@ -20,11 +22,17 @@ import com.agutsul.chess.journal.Journal;
 @ExtendWith(MockitoExtension.class)
 public class SimulateGameActionCommandTest {
 
+    @Mock
+    Board board;
+    @Mock
+    Journal<ActionMemento<?,?>> journal;
+    @Mock
+    Action<?> action;
+
     @Test
-    @SuppressWarnings("unchecked")
     void testPreExecute() throws CommandException, IOException {
-        try (var command = new SimulateGameActionCommand<>(mock(Board.class), mock(Journal.class),
-                mock(ForkJoinPool.class), Colors.WHITE, mock(Action.class))) {
+        try (var command = new SimulateGameActionCommand<>(board, journal,
+                mock(ForkJoinPool.class), Colors.WHITE, action)) {
 
             var thrown = assertThrows(
                     IllegalStateException.class,

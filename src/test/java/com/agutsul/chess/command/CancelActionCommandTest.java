@@ -5,17 +5,18 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
+import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.activity.action.memento.ActionMementoMock;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
@@ -30,14 +31,15 @@ import com.agutsul.chess.piece.Piece;
 @ExtendWith(MockitoExtension.class)
 public class CancelActionCommandTest {
 
+    @Mock
+    AbstractPlayableGame game;
+    @Mock
+    Journal<ActionMemento<?,?>> journal;
+
     @Test
-    @SuppressWarnings("unchecked")
     void testNoActionToCancelException() {
-        var journal = mock(Journal.class);
         when(journal.isEmpty())
             .thenReturn(true);
-
-        var game = mock(AbstractPlayableGame.class);
         when(game.getJournal())
             .thenReturn(journal);
 
@@ -52,8 +54,6 @@ public class CancelActionCommandTest {
 
     @Test
     void testWrongPlayerActionException() {
-        var game = mock(AbstractPlayableGame.class);
-
         var journal = new JournalImpl();
         journal.add(new ActionMementoMock<>(
                 Colors.BLACK,
@@ -77,8 +77,6 @@ public class CancelActionCommandTest {
 
     @Test
     void testCancelActionCommandWithExecutionException() {
-        var game = mock(AbstractPlayableGame.class);
-
         var journal = new JournalImpl();
         journal.add(new ActionMementoMock<>(
                 Colors.WHITE,
@@ -115,8 +113,6 @@ public class CancelActionCommandTest {
 
     @Test
     void testCancelActionCommand() {
-        var game = mock(AbstractPlayableGame.class);
-
         var journal = new JournalImpl();
         journal.add(new ActionMementoMock<>(
                 Colors.WHITE,

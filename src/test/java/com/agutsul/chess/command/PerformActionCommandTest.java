@@ -41,12 +41,12 @@ import com.agutsul.chess.position.Position;
 public class PerformActionCommandTest {
 
     @Mock
+    Player player;
+    @Mock
     Observable observable;
 
     @Test
     void testValidationOfMissedSourcePiece() {
-        var player = mock(Player.class);
-
         var board = new LabeledBoardBuilder().build();
         var command = new PerformActionCommand(player, board, observable);
 
@@ -60,8 +60,6 @@ public class PerformActionCommandTest {
 
     @Test
     void testValidationOfSourcePosition() {
-        var player = mock(Player.class);
-
         var board = new LabeledBoardBuilder().build();
         var command = new PerformActionCommand(player, board, observable);
 
@@ -75,8 +73,6 @@ public class PerformActionCommandTest {
 
     @Test
     void testValidationOfTargetPosition() {
-        var player = mock(Player.class);
-
         var board = new LabeledBoardBuilder().build();
         var command = new PerformActionCommand(player, board, observable);
 
@@ -90,7 +86,6 @@ public class PerformActionCommandTest {
 
     @Test
     void testInvalidAction() {
-        var player = mock(Player.class);
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
@@ -113,7 +108,6 @@ public class PerformActionCommandTest {
     @Test
     @SuppressWarnings("unchecked")
     void testActionCommandException() {
-        var player = mock(Player.class);
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
@@ -168,7 +162,6 @@ public class PerformActionCommandTest {
 
     @Test
     void testPerformAction() {
-        var player = mock(Player.class);
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
@@ -206,7 +199,6 @@ public class PerformActionCommandTest {
 
     @Test
     void testPerformActionByOpponentPiece() {
-        var player = mock(Player.class);
         when(player.getColor())
             .thenReturn(Colors.BLACK);
 
