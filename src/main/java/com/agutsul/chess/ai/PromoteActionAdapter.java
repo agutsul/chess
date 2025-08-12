@@ -38,14 +38,22 @@ final class PromoteActionAdapter
         return create((Action<?>) action.getSource(), action.getObservable(), pieceType);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     private static PiecePromoteAction<?,?> create(Action<?> action, Observable observable,
                                                   Piece.Type pieceType) {
         switch (action.getType()) {
         case Action.Type.MOVE:
-            return new SimulatedPiecePromoteAction((PieceMoveAction<?,?>) action, observable, pieceType);
+            return new SimulatedPiecePromoteAction<>(
+                    (PieceMoveAction<Color,PawnPiece<Color>>) action,
+                    observable,
+                    pieceType
+            );
         case Action.Type.CAPTURE:
-            return new SimulatedPiecePromoteAction((PieceCaptureAction<?,?,?,?>) action, observable, pieceType);
+            return new SimulatedPiecePromoteAction<>(
+                    (PieceCaptureAction<Color,Color,PawnPiece<Color>,Piece<Color>>) action,
+                    observable,
+                    pieceType
+            );
         default:
             throw new IllegalStateException(String.format(
                     "Unsupported promotion action source: %s",
@@ -58,7 +66,8 @@ final class PromoteActionAdapter
                                                    PIECE1 extends PawnPiece<COLOR1>>
             extends PiecePromoteAction<COLOR1,PIECE1> {
 
-        SimulatedPiecePromoteAction(PieceMoveAction<COLOR1,PIECE1> action, Observable observable,
+        SimulatedPiecePromoteAction(PieceMoveAction<COLOR1,PIECE1> action,
+                                    Observable observable,
                                     Piece.Type promotedPieceType) {
 
             super(action, observable);
@@ -66,7 +75,8 @@ final class PromoteActionAdapter
         }
 
         <COLOR2 extends Color,PIECE2 extends Piece<COLOR2>> SimulatedPiecePromoteAction(
-                PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2> action, Observable observable,
+                PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2> action,
+                Observable observable,
                 Piece.Type promotedPieceType) {
 
             super(action, observable);
