@@ -3,10 +3,10 @@ package com.agutsul.chess.antlr.pgn.action;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -21,19 +21,18 @@ public class PawnPromotionTypeAdapterTest {
     @Mock
     Board board;
 
-    @Test
-    void testAdaptInvalidPawnPromotionTypeAction() {
+    @ParameterizedTest(name = "{index}. testAdaptInvalidPawnPromotionTypeAction({0})")
+    @ValueSource(strings = { "z9Q", "a0R", "2aQ", "A2r", "Aa22", "a11", "cxb3", "e4e4" })
+    void testAdaptInvalidPawnPromotionTypeAction(String action) {
         var adapter = new PawnPromotionTypeAdapter(board, Colors.WHITE);
 
-        for (var action : List.of("z9Q", "a0R", "2aQ", "A2r", "Aa22", "a11", "cxb3", "e4e4")) {
-            var thrown = assertThrows(
-                    IllegalActionException.class,
-                    () -> adapter.adapt(action)
-            );
+        var thrown = assertThrows(
+                IllegalActionException.class,
+                () -> adapter.adapt(action)
+        );
 
-            var expectedMessage = String.format("Invalid action format: '%s'", action);
-            assertEquals(expectedMessage, thrown.getMessage());
-        }
+        var expectedMessage = String.format("Invalid action format: '%s'", action);
+        assertEquals(expectedMessage, thrown.getMessage());
     }
 
     @Test

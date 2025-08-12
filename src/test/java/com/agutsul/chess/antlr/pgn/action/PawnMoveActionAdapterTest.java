@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -25,19 +25,18 @@ public class PawnMoveActionAdapterTest {
     @Mock
     Board board;
 
-    @Test
-    void testAdaptInvalidPawnMoveAction() {
+    @ParameterizedTest(name = "{index}. testAdaptInvalidPawnMoveAction({0})")
+    @ValueSource(strings = { "z9", "a0", "2a", "A2", "Aa", "a11", "cxb3", "e4e4" })
+    void testAdaptInvalidPawnMoveAction(String action) {
         var adapter = new PawnMoveActionAdapter(board, Colors.WHITE);
 
-        for (var action : List.of("z9", "a0", "2a", "A2", "Aa", "a11", "cxb3", "e4e4")) {
-            var thrown = assertThrows(
-                    IllegalActionException.class,
-                    () -> adapter.adapt(action)
-            );
+        var thrown = assertThrows(
+                IllegalActionException.class,
+                () -> adapter.adapt(action)
+        );
 
-            var expectedMessage = String.format("Invalid action format: '%s'", action);
-            assertEquals(expectedMessage, thrown.getMessage());
-        }
+        var expectedMessage = String.format("Invalid action format: '%s'", action);
+        assertEquals(expectedMessage, thrown.getMessage());
     }
 
     @Test

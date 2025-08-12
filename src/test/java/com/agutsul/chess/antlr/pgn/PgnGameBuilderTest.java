@@ -48,7 +48,10 @@ public class PgnGameBuilderTest {
     }
 
     @ParameterizedTest(name = "{index}. testPgnGameBuildWithTimeControl({0})")
-    @CsvSource({ "?,true", "-,false", "40/9000,true", "300,true", "4500+60,true", "*180,true" })
+    @CsvSource({
+        "?,true", "-,false", "40/9000,true", "300,true", "*180,true",
+        "40/9000+0,true", "4500+60,true", "*180+2,true"
+    })
     void testPgnGameBuildWithTimeControl(String timeControl, String expected) {
         var builder = new PgnGameBuilder();
 
