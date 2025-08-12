@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.action.Action;
@@ -31,12 +32,18 @@ import com.agutsul.chess.piece.Piece;
 @ExtendWith(MockitoExtension.class)
 public class ActionSelectionStrategyTest {
 
+    @Mock
+    Piece<Color> piece;
+    @Mock
+    Action<?> action;
+    @Mock
+    Board board;
+    @Mock
+    Journal<ActionMemento<?,?>> journal;
+
     @Test
-    @SuppressWarnings("unchecked")
     void testSelectActionWithNullExecutor() {
-        var selectionStrategy = new ActionSelectionStrategy(
-                mock(Board.class), mock(Journal.class), null, ALPHA_BETA
-        );
+        var selectionStrategy = new ActionSelectionStrategy(board, journal, null, ALPHA_BETA);
 
         var thrown = assertThrows(
                 IllegalStateException.class,
@@ -50,38 +57,27 @@ public class ActionSelectionStrategyTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testSelectionWithoutAnyActionFound() {
-        var piece = mock(Piece.class);
-
-        var board = mock(Board.class);
         when(board.getPieces(any(Color.class)))
             .thenReturn(List.of(piece));
         when(board.getActions(any(Piece.class)))
             .thenReturn(emptyList());
 
         var selectionStrategy = new ActionSelectionStrategy(
-                board, mock(Journal.class), mock(ForkJoinPool.class), ALPHA_BETA
+                board, journal, mock(ForkJoinPool.class), ALPHA_BETA
         );
 
         var result = selectionStrategy.select(Colors.WHITE);
         assertTrue(result.isEmpty());
     }
 
-    @ParameterizedTest
-    @SuppressWarnings("unchecked")
+    @ParameterizedTest(name = "{index}. testSelectionActionFound({0})")
     @EnumSource(SelectionStrategy.Type.class)
     void testSelectionActionFound(SelectionStrategy.Type type) {
-        var action = mock(Action.class);
-        var piece = mock(Piece.class);
-
-        var board = mock(Board.class);
         when(board.getPieces(any(Color.class)))
             .thenReturn(List.of(piece));
         when(board.getActions(any(Piece.class)))
             .thenReturn(List.of(action));
-
-        var journal = mock(Journal.class);
 
         var forkJoinPool = mock(ForkJoinPool.class);
         when(forkJoinPool.invoke(any()))
@@ -95,18 +91,11 @@ public class ActionSelectionStrategyTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testSelectionActionException() {
-        var action = mock(Action.class);
-        var piece = mock(Piece.class);
-
-        var board = mock(Board.class);
         when(board.getPieces(any(Color.class)))
             .thenReturn(List.of(piece));
         when(board.getActions(any(Piece.class)))
             .thenReturn(List.of(action));
-
-        var journal = mock(Journal.class);
 
         var forkJoinPool = mock(ForkJoinPool.class);
         when(forkJoinPool.invoke(any()))
@@ -125,11 +114,8 @@ public class ActionSelectionStrategyTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testSearchActionWithNullExecutor() {
-        var selectionStrategy = new ActionSelectionStrategy(
-                mock(Board.class), mock(Journal.class), null, ALPHA_BETA
-        );
+        var selectionStrategy = new ActionSelectionStrategy(board, journal, null, ALPHA_BETA);
 
         var thrown = assertThrows(
                 IllegalStateException.class,
@@ -143,32 +129,24 @@ public class ActionSelectionStrategyTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testSearchWithoutAnyActionFound() {
-        var piece = mock(Piece.class);
-
-        var board = mock(Board.class);
         when(board.getPieces(any(Color.class)))
             .thenReturn(List.of(piece));
         when(board.getActions(any(Piece.class)))
             .thenReturn(emptyList());
 
         var selectionStrategy = new ActionSelectionStrategy(
-                board, mock(Journal.class), mock(ForkJoinPool.class), ALPHA_BETA
+                board, journal, mock(ForkJoinPool.class), ALPHA_BETA
         );
 
         var result = selectionStrategy.select(Colors.WHITE, BoardState.Type.CHECK_MATED);
         assertTrue(result.isEmpty());
     }
 
-    @ParameterizedTest
     @SuppressWarnings("unchecked")
+    @ParameterizedTest(name = "{index}. testSearchActionFound({0})")
     @EnumSource(SelectionStrategy.Type.class)
     void testSearchActionFound(SelectionStrategy.Type type) {
-        var action = mock(Action.class);
-        var piece = mock(Piece.class);
-
-        var board = mock(Board.class);
         when(board.getPieces(any(Color.class)))
             .thenReturn(List.of(piece));
         when(board.getActions(any(Piece.class)))
@@ -180,7 +158,6 @@ public class ActionSelectionStrategyTest {
         when(memento.getColor())
             .thenReturn(Colors.WHITE);
 
-        var journal = mock(Journal.class);
         when(journal.getLast())
             .thenReturn(memento);
 
@@ -195,14 +172,10 @@ public class ActionSelectionStrategyTest {
         assertEquals(action, result.get());
     }
 
-    @ParameterizedTest
     @SuppressWarnings("unchecked")
+    @ParameterizedTest(name = "{index}. testSearchActionNotFound({0})")
     @EnumSource(SelectionStrategy.Type.class)
     void testSearchActionNotFound(SelectionStrategy.Type type) {
-        var action = mock(Action.class);
-        var piece = mock(Piece.class);
-
-        var board = mock(Board.class);
         when(board.getPieces(any(Color.class)))
             .thenReturn(List.of(piece));
         when(board.getActions(any(Piece.class)))
@@ -214,7 +187,6 @@ public class ActionSelectionStrategyTest {
         when(memento.getColor())
             .thenReturn(Colors.BLACK);
 
-        var journal = mock(Journal.class);
         when(journal.getLast())
             .thenReturn(memento);
 
@@ -229,18 +201,11 @@ public class ActionSelectionStrategyTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testSearchActionException() {
-        var action = mock(Action.class);
-        var piece = mock(Piece.class);
-
-        var board = mock(Board.class);
         when(board.getPieces(any(Color.class)))
             .thenReturn(List.of(piece));
         when(board.getActions(any(Piece.class)))
             .thenReturn(List.of(action));
-
-        var journal = mock(Journal.class);
 
         var forkJoinPool = mock(ForkJoinPool.class);
         when(forkJoinPool.invoke(any()))
