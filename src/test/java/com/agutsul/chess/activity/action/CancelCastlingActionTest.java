@@ -11,24 +11,26 @@ import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.activity.action.CancelCastlingAction.UncastlingMoveAction;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
+import com.agutsul.chess.piece.KingPiece;
+import com.agutsul.chess.piece.RookPiece;
 
 @ExtendWith(MockitoExtension.class)
 public class CancelCastlingActionTest {
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     void testCancelCastlingAction() {
         var board = new LabeledBoardBuilder()
                 .withWhiteKing("e1")
                 .withWhiteRook("h1")
                 .build();
 
-        var king = board.getPiece("e1").get();
+        var king = (KingPiece<Color>) board.getPiece("e1").get();
         var kingSourcePosition = king.getPosition();
 
-        var rook = board.getPiece("h1").get();
+        var rook = (RookPiece<Color>) board.getPiece("h1").get();
         var rookSourcePosition = rook.getPosition();
 
         var actions = board.getActions(king);
@@ -53,10 +55,10 @@ public class CancelCastlingActionTest {
         assertEquals(rookTargetPosition, rook.getPosition());
         assertTrue(board.isEmpty(rookSourcePosition));
 
-        var kingAction = new UncastlingMoveAction(king, kingSourcePosition);
-        var rookAction = new UncastlingMoveAction(rook, rookSourcePosition);
+        var kingAction = new UncastlingMoveAction<>(king, kingSourcePosition);
+        var rookAction = new UncastlingMoveAction<>(rook, rookSourcePosition);
 
-        var cancelAction = new CancelCastlingAction(Castlingable.Side.KING, kingAction, rookAction);
+        var cancelAction = new CancelCastlingAction<>(Castlingable.Side.KING, kingAction, rookAction);
         cancelAction.execute();
 
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));

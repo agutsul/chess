@@ -54,8 +54,7 @@ public class CancelEnPassantActionTest {
         assertEquals(targetPosition, whitePawn.getPosition());
         assertFalse(blackPawn.isActive());
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        var cancelAction = new CancelEnPassantAction(whitePawn, blackPawn);
+        var cancelAction = new CancelEnPassantAction<>(whitePawn, blackPawn);
         cancelAction.execute();
 
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));

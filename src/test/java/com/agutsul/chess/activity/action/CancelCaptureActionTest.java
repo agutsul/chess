@@ -10,8 +10,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
+import com.agutsul.chess.piece.BishopPiece;
+import com.agutsul.chess.piece.PawnPiece;
 
 @ExtendWith(MockitoExtension.class)
 public class CancelCaptureActionTest {
@@ -23,8 +26,8 @@ public class CancelCaptureActionTest {
                 .withBlackPawn("h3")
                 .build();
 
-        var whiteBishop = board.getPiece("f1").get();
-        var blackPawn = board.getPiece("h3").get();
+        var whiteBishop = (BishopPiece<Color>) board.getPiece("f1").get();
+        var blackPawn = (PawnPiece<Color>) board.getPiece("h3").get();
 
         var sourcePosition = whiteBishop.getPosition();
         var targetPosition = blackPawn.getPosition();
@@ -42,8 +45,7 @@ public class CancelCaptureActionTest {
         assertFalse(blackPawn.isActive());
         assertEquals(targetPosition, whiteBishop.getPosition());
 
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        var cancelAction = new CancelCaptureAction(whiteBishop, blackPawn);
+        var cancelAction = new CancelCaptureAction<>(whiteBishop, blackPawn);
         cancelAction.execute();
 
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));

@@ -12,15 +12,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.mock.PieceTypeRequestObserverMock;
+import com.agutsul.chess.piece.PawnPiece;
+import com.agutsul.chess.piece.QueenPiece;
 
 @ExtendWith(MockitoExtension.class)
 public class CancelPromoteActionTest {
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     void testCancelPawnPromotionBasedOnMove() {
         var board = new LabeledBoardBuilder()
                 .withWhitePawn("a7")
@@ -28,7 +30,7 @@ public class CancelPromoteActionTest {
 
         ((Observable) board).addObserver(new PieceTypeRequestObserverMock());
 
-        var pawn = board.getPiece("a7").get();
+        var pawn = (PawnPiece<Color>) board.getPiece("a7").get();
         var pawnSourcePosition = pawn.getPosition();
 
         var actions = board.getActions(pawn);
@@ -55,8 +57,8 @@ public class CancelPromoteActionTest {
         var promotedPiece = board.getPiece(targetPosition).get();
         assertTrue(isQueen(promotedPiece));
 
-        var cancelAction = new CancelPromoteAction(
-                new CancelMoveAction(promotedPiece, pawnSourcePosition)
+        var cancelAction = new CancelPromoteAction<>(
+                new CancelMoveAction<>((QueenPiece<Color>) promotedPiece, pawnSourcePosition)
         );
 
         cancelAction.execute();

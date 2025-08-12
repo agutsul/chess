@@ -10,8 +10,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
+import com.agutsul.chess.piece.PawnPiece;
 
 @ExtendWith(MockitoExtension.class)
 public class CancelBigMoveActionTest {
@@ -22,7 +24,7 @@ public class CancelBigMoveActionTest {
                 .withWhitePawn("e2")
                 .build();
 
-        var whitePawn = board.getPiece("e2").get();
+        var whitePawn = (PawnPiece<Color>) board.getPiece("e2").get();
         var actions = board.getActions(whitePawn);
 
         var sourcePosition = whitePawn.getPosition();
@@ -37,8 +39,7 @@ public class CancelBigMoveActionTest {
 
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        var cancelAction = new CancelBigMoveAction(whitePawn, sourcePosition);
+        var cancelAction = new CancelBigMoveAction<>(whitePawn, sourcePosition);
         cancelAction.execute();
 
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
