@@ -68,7 +68,7 @@ public class ActionSelectionStrategyTest {
             .thenReturn(emptyList());
 
         var selectionStrategy = new ActionSelectionStrategy(
-                board, journal, mock(ForkJoinPool.class), ALPHA_BETA
+                board, journal, forkJoinPool, ALPHA_BETA
         );
 
         var result = selectionStrategy.select(Colors.WHITE);
@@ -83,7 +83,6 @@ public class ActionSelectionStrategyTest {
         when(board.getActions(any(Piece.class)))
             .thenReturn(List.of(action));
 
-        var forkJoinPool = mock(ForkJoinPool.class);
         when(forkJoinPool.invoke(any()))
             .thenReturn(new ActionSimulationResult<>(board, journal, action, null, 0));
 
