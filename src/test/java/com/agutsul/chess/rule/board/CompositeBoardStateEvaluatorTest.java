@@ -41,36 +41,43 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Mock
     Board board;
+    @Mock
+    CheckedBoardStateEvaluator checkedEvaluator;
+    @Mock
+    CheckMatedBoardStateEvaluator checkMatedEvaluator;
+    @Mock
+    StaleMatedBoardStateEvaluator staleMatedEvaluator;
+    @Mock
+    FoldRepetitionBoardStateEvaluator foldRepetitionEvaluator;
+    @Mock
+    MovesBoardStateEvaluator movesEvaluator;
+    @Mock
+    InsufficientMaterialBoardStateEvaluator insufficientMaterialEvaluator;
+
+    CompositeBoardStateEvaluator evaluator;
 
     @BeforeEach
+    @SuppressWarnings("unchecked")
     void setUp() {
         when(board.getExecutorService())
             .thenReturn(executorService);
+
+        evaluator = new CompositeBoardStateEvaluator(board,
+                checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
+                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
+        );
     }
 
     @Test
     void evaluateCheckedBoardState() {
-        var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
                 return Optional.of(checkedBoardState(board, color));
             });
 
-        var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         when(checkMatedEvaluator.evaluate(any()))
             .thenReturn(Optional.empty());
-
-        var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
-        var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
-        var movesEvaluator = mock(MovesBoardStateEvaluator.class);
-        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
-
-        @SuppressWarnings("unchecked")
-        var evaluator = new CompositeBoardStateEvaluator(board,
-                checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
-        );
 
         var boardStates = evaluator.evaluate(Colors.WHITE);
         assertFalse(boardStates.isEmpty());
@@ -86,30 +93,17 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateCheckMatedBoardState() {
-        var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
                 return Optional.of(checkedBoardState(board, color));
             });
 
-        var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         when(checkMatedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
                 return Optional.of(checkMatedBoardState(board, color));
             });
-
-        var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
-        var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
-        var movesEvaluator = mock(MovesBoardStateEvaluator.class);
-        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
-
-        @SuppressWarnings("unchecked")
-        var evaluator = new CompositeBoardStateEvaluator(board,
-                checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
-        );
 
         var boardStates = evaluator.evaluate(Colors.BLACK);
         assertFalse(boardStates.isEmpty());
@@ -126,27 +120,14 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateStaleMatedBoardState() {
-        var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         when(checkedEvaluator.evaluate(any()))
             .thenReturn(Optional.empty());
 
-        var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
-        var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
-        var movesEvaluator = mock(MovesBoardStateEvaluator.class);
-        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
-
-        var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
         when(staleMatedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
                 return Optional.of(staleMatedBoardState(board, color));
             });
-
-        @SuppressWarnings("unchecked")
-        var evaluator = new CompositeBoardStateEvaluator(board,
-                checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
-        );
 
         var boardStates = evaluator.evaluate(Colors.BLACK);
         assertFalse(boardStates.isEmpty());
@@ -162,13 +143,6 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateFoldRepetitionBoardState() {
-        var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
-        var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
-        var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
-        var movesEvaluator = mock(MovesBoardStateEvaluator.class);
-        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
-
-        var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
         when(foldRepetitionEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
@@ -177,14 +151,9 @@ public class CompositeBoardStateEvaluatorTest {
                 when(actionMemento.getColor())
                     .thenReturn(color);
 
-                return Optional.of(threeFoldRepetitionBoardState(board, actionMemento));
+                var state = threeFoldRepetitionBoardState(board, actionMemento);
+                return Optional.of(state);
             });
-
-        @SuppressWarnings("unchecked")
-        var evaluator = new CompositeBoardStateEvaluator(board,
-                checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
-        );
 
         var boardStates = evaluator.evaluate(Colors.WHITE);
         assertFalse(boardStates.isEmpty());
@@ -200,21 +169,8 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateMovesBoardState() {
-        var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
-        var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
-        var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
-        var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
-        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
-
-        var movesEvaluator = mock(MovesBoardStateEvaluator.class);
         when(movesEvaluator.evaluate(any()))
             .thenReturn(Optional.of(fiftyMovesBoardState(board, Colors.WHITE)));
-
-        @SuppressWarnings("unchecked")
-        var evaluator = new CompositeBoardStateEvaluator(board,
-                checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
-        );
 
         var boardStates = evaluator.evaluate(Colors.WHITE);
         assertFalse(boardStates.isEmpty());
@@ -230,7 +186,6 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateCheckMatedAndFoldRepetitionBoardState() {
-        var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
@@ -238,7 +193,6 @@ public class CompositeBoardStateEvaluatorTest {
                 return Optional.of(state);
             });
 
-        var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
         when(checkMatedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
@@ -246,9 +200,6 @@ public class CompositeBoardStateEvaluatorTest {
                 return Optional.of(state);
             });
 
-        var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
-
-        var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
         when(foldRepetitionEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
@@ -257,17 +208,8 @@ public class CompositeBoardStateEvaluatorTest {
                 when(actionMemento.getColor())
                     .thenReturn(color);
 
-                return Optional.of(threeFoldRepetitionBoardState(board, actionMemento));
-            });
-
-        var movesEvaluator = mock(MovesBoardStateEvaluator.class);
-        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
-
-        @SuppressWarnings("unchecked")
-        var evaluator = new CompositeBoardStateEvaluator(board,
-                checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
-        );
+                var state = threeFoldRepetitionBoardState(board, actionMemento);
+                return Optional.of(state);            });
 
         var boardStates = evaluator.evaluate(Colors.WHITE);
         assertFalse(boardStates.isEmpty());
@@ -285,7 +227,6 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateCheckedAndFoldRepetitionBoardState() {
-        var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
@@ -293,10 +234,6 @@ public class CompositeBoardStateEvaluatorTest {
                 return Optional.of(state);
             });
 
-        var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
-        var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
-
-        var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
         when(foldRepetitionEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
@@ -305,17 +242,9 @@ public class CompositeBoardStateEvaluatorTest {
                 when(actionMemento.getColor())
                     .thenReturn(color);
 
-                return Optional.of(threeFoldRepetitionBoardState(board, actionMemento));
+                var state = threeFoldRepetitionBoardState(board, actionMemento);
+                return Optional.of(state);
             });
-
-        var movesEvaluator = mock(MovesBoardStateEvaluator.class);
-        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
-
-        @SuppressWarnings("unchecked")
-        var evaluator = new CompositeBoardStateEvaluator(board,
-                checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
-        );
 
         var boardStates = evaluator.evaluate(Colors.WHITE);
         assertFalse(boardStates.isEmpty());
@@ -326,12 +255,6 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateMultipleNonTerminalBoardStates() {
-        var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
-        var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
-        var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
-        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
-
-        var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
         when(foldRepetitionEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
@@ -340,22 +263,16 @@ public class CompositeBoardStateEvaluatorTest {
                 when(actionMemento.getColor())
                     .thenReturn(color);
 
-                return Optional.of(threeFoldRepetitionBoardState(board, actionMemento));
+                var state = threeFoldRepetitionBoardState(board, actionMemento);
+                return Optional.of(state);
             });
 
-        var movesEvaluator = mock(MovesBoardStateEvaluator.class);
         when(movesEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
                 var state = fiftyMovesBoardState(board, color);
                 return Optional.of(state);
             });
-
-        @SuppressWarnings("unchecked")
-        var evaluator = new CompositeBoardStateEvaluator(board,
-                checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
-        );
 
         var boardStates = evaluator.evaluate(Colors.WHITE);
         assertFalse(boardStates.isEmpty());
@@ -372,12 +289,6 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateMultipleTerminalStates() {
-        var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
-        var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
-        var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
-        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
-
-        var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
         when(foldRepetitionEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
@@ -386,22 +297,16 @@ public class CompositeBoardStateEvaluatorTest {
                 when(actionMemento.getColor())
                     .thenReturn(color);
 
-                return Optional.of(fiveFoldRepetitionBoardState(board, actionMemento));
+                var state = fiveFoldRepetitionBoardState(board, actionMemento);
+                return Optional.of(state);
             });
 
-        var movesEvaluator = mock(MovesBoardStateEvaluator.class);
         when(movesEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
                 var state = seventyFiveMovesBoardState(board, color);
                 return Optional.of(state);
             });
-
-        @SuppressWarnings("unchecked")
-        var evaluator = new CompositeBoardStateEvaluator(board,
-                checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
-        );
 
         var boardStates = evaluator.evaluate(Colors.WHITE);
         assertFalse(boardStates.isEmpty());
@@ -418,7 +323,6 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Test
     void evaluateMultipleTerminalStatesAndCheckedState() {
-        var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
@@ -426,11 +330,6 @@ public class CompositeBoardStateEvaluatorTest {
                 return Optional.of(state);
             });
 
-        var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
-        var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
-        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
-
-        var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
         when(foldRepetitionEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
@@ -439,22 +338,16 @@ public class CompositeBoardStateEvaluatorTest {
                 when(actionMemento.getColor())
                     .thenReturn(color);
 
-                return Optional.of(fiveFoldRepetitionBoardState(board, actionMemento));
+                var state = fiveFoldRepetitionBoardState(board, actionMemento);
+                return Optional.of(state);
             });
 
-        var movesEvaluator = mock(MovesBoardStateEvaluator.class);
         when(movesEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
                 var state = seventyFiveMovesBoardState(board, color);
                 return Optional.of(state);
             });
-
-        @SuppressWarnings("unchecked")
-        var evaluator = new CompositeBoardStateEvaluator(board,
-                checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
-        );
 
         var boardStates = evaluator.evaluate(Colors.WHITE);
         assertFalse(boardStates.isEmpty());
@@ -471,31 +364,14 @@ public class CompositeBoardStateEvaluatorTest {
     }
 
     @Test
-    void evaluateDefaultBoardState() {
-        var checkedEvaluator = mock(CheckedBoardStateEvaluator.class);
+    void evaluateEmptyBoardState() {
         when(checkedEvaluator.evaluate(any()))
             .thenReturn(Optional.empty());
 
-        var checkMatedEvaluator = mock(CheckMatedBoardStateEvaluator.class);
-        var foldRepetitionEvaluator = mock(FoldRepetitionBoardStateEvaluator.class);
-        var movesEvaluator = mock(MovesBoardStateEvaluator.class);
-        var insufficientMaterialEvaluator = mock(InsufficientMaterialBoardStateEvaluator.class);
-
-        var staleMatedEvaluator = mock(StaleMatedBoardStateEvaluator.class);
         when(staleMatedEvaluator.evaluate(any()))
             .thenReturn(Optional.empty());
 
-        @SuppressWarnings("unchecked")
-        var evaluator = new CompositeBoardStateEvaluator(board,
-                checkedEvaluator, checkMatedEvaluator, staleMatedEvaluator,
-                foldRepetitionEvaluator, movesEvaluator, insufficientMaterialEvaluator
-        );
-
         var boardStates = evaluator.evaluate(Colors.WHITE);
         assertTrue(boardStates.isEmpty());
-
-//        var boardState = boardStates.getFirst();
-//        assertTrue(boardState instanceof DefaultBoardState);
-//        assertEquals(Colors.WHITE, boardState.getColor());
     }
 }

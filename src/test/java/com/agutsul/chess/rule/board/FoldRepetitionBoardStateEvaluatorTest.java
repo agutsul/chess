@@ -4,14 +4,16 @@ import static com.agutsul.chess.activity.action.memento.ActionMementoFactory.cre
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.action.PieceMoveAction;
+import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.state.BoardState;
@@ -19,27 +21,30 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
+import com.agutsul.chess.piece.PawnPiece;
+import com.agutsul.chess.piece.RookPiece;
 
 @ExtendWith(MockitoExtension.class)
 public class FoldRepetitionBoardStateEvaluatorTest {
 
-    @Test
-    @SuppressWarnings("unchecked")
-    void testFoldRepetitionForEmptyJournal() {
-        var board = mock(Board.class);
+    @Mock
+    Board board;
+    @Mock
+    Journal<ActionMemento<?,?>> journal;
 
-        var journal = mock(Journal.class);
+    @InjectMocks
+    FoldRepetitionBoardStateEvaluator evaluator;
+
+    @Test
+    void testFoldRepetitionForEmptyJournal() {
         when(journal.size(any(Color.class)))
             .thenReturn(0);
 
-        var evaluator = new FoldRepetitionBoardStateEvaluator(board, journal);
         var boardState = evaluator.evaluate(Colors.WHITE);
-
         assertTrue(boardState.isEmpty());
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     void testFoldRepetitionForNonEmptyJournal() {
         var board = new LabeledBoardBuilder()
                 .withWhitePawn("e2")
@@ -50,21 +55,21 @@ public class FoldRepetitionBoardStateEvaluatorTest {
                 .withBlackKing("e8")
                 .build();
 
-        var whiteRook = board.getPiece("a1").get();
-        var whitePawn = board.getPiece("e2").get();
+        var whiteRook = (RookPiece<Color>) board.getPiece("a1").get();
+        var whitePawn = (PawnPiece<Color>) board.getPiece("e2").get();
 
-        var moveAction1 = new PieceMoveAction(whiteRook, board.getPosition("b1").get());
-        var moveAction2 = new PieceMoveAction(whiteRook, board.getPosition("a1").get());
-        var moveAction3 = new PieceMoveAction(whitePawn, board.getPosition("e3").get());
+        var moveAction1 = new PieceMoveAction<>(whiteRook, board.getPosition("b1").get());
+        var moveAction2 = new PieceMoveAction<>(whiteRook, board.getPosition("a1").get());
+        var moveAction3 = new PieceMoveAction<>(whitePawn, board.getPosition("e3").get());
 
         var memento1 = createMemento(board, moveAction1);
         var memento2 = createMemento(board, moveAction2);
         var memento3 = createMemento(board, moveAction3);
 
-        var blackRook = board.getPiece("h8").get();
+        var blackRook = (RookPiece<Color>) board.getPiece("h8").get();
 
-        var moveAction4 = new PieceMoveAction(blackRook, board.getPosition("h7").get());
-        var moveAction5 = new PieceMoveAction(blackRook, board.getPosition("h8").get());
+        var moveAction4 = new PieceMoveAction<>(blackRook, board.getPosition("h7").get());
+        var moveAction5 = new PieceMoveAction<>(blackRook, board.getPosition("h8").get());
 
         var memento4 = createMemento(board, moveAction4);
         var memento5 = createMemento(board, moveAction5);
@@ -85,7 +90,6 @@ public class FoldRepetitionBoardStateEvaluatorTest {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     void testFoldRepetitionForWithThreeRepetitions() {
         var board = new LabeledBoardBuilder()
                 .withWhitePawn("e2")
@@ -96,21 +100,21 @@ public class FoldRepetitionBoardStateEvaluatorTest {
                 .withBlackKing("e8")
                 .build();
 
-        var whiteRook = board.getPiece("a1").get();
-        var whitePawn = board.getPiece("e2").get();
+        var whiteRook = (RookPiece<Color>) board.getPiece("a1").get();
+        var whitePawn = (PawnPiece<Color>) board.getPiece("e2").get();
 
-        var moveAction1 = new PieceMoveAction(whiteRook, board.getPosition("b1").get());
-        var moveAction2 = new PieceMoveAction(whiteRook, board.getPosition("c1").get());
-        var moveAction3 = new PieceMoveAction(whitePawn, board.getPosition("e3").get());
+        var moveAction1 = new PieceMoveAction<>(whiteRook, board.getPosition("b1").get());
+        var moveAction2 = new PieceMoveAction<>(whiteRook, board.getPosition("c1").get());
+        var moveAction3 = new PieceMoveAction<>(whitePawn, board.getPosition("e3").get());
 
         var memento1 = createMemento(board, moveAction1);
         var memento2 = createMemento(board, moveAction2);
         var memento3 = createMemento(board, moveAction3);
 
-        var blackRook = board.getPiece("h8").get();
+        var blackRook = (RookPiece<Color>) board.getPiece("h8").get();
 
-        var moveAction4 = new PieceMoveAction(blackRook, board.getPosition("h7").get());
-        var moveAction5 = new PieceMoveAction(blackRook, board.getPosition("h6").get());
+        var moveAction4 = new PieceMoveAction<>(blackRook, board.getPosition("h7").get());
+        var moveAction5 = new PieceMoveAction<>(blackRook, board.getPosition("h6").get());
 
         var memento4 = createMemento(board, moveAction4);
         var memento5 = createMemento(board, moveAction5);
@@ -136,7 +140,6 @@ public class FoldRepetitionBoardStateEvaluatorTest {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     void testFoldRepetitionForWithFiveRepetitions() {
         var board = new LabeledBoardBuilder()
                 .withWhitePawn("e2")
@@ -147,21 +150,21 @@ public class FoldRepetitionBoardStateEvaluatorTest {
                 .withBlackKing("e8")
                 .build();
 
-        var whiteRook = board.getPiece("a1").get();
-        var whitePawn = board.getPiece("e2").get();
+        var whiteRook = (RookPiece<Color>) board.getPiece("a1").get();
+        var whitePawn = (PawnPiece<Color>) board.getPiece("e2").get();
 
-        var moveAction1 = new PieceMoveAction(whiteRook, board.getPosition("b1").get());
-        var moveAction2 = new PieceMoveAction(whiteRook, board.getPosition("c1").get());
-        var moveAction3 = new PieceMoveAction(whitePawn, board.getPosition("e3").get());
+        var moveAction1 = new PieceMoveAction<>(whiteRook, board.getPosition("b1").get());
+        var moveAction2 = new PieceMoveAction<>(whiteRook, board.getPosition("c1").get());
+        var moveAction3 = new PieceMoveAction<>(whitePawn, board.getPosition("e3").get());
 
         var memento1 = createMemento(board, moveAction1);
         var memento2 = createMemento(board, moveAction2);
         var memento3 = createMemento(board, moveAction3);
 
-        var blackRook = board.getPiece("h8").get();
+        var blackRook = (RookPiece<Color>) board.getPiece("h8").get();
 
-        var moveAction4 = new PieceMoveAction(blackRook, board.getPosition("h7").get());
-        var moveAction5 = new PieceMoveAction(blackRook, board.getPosition("h6").get());
+        var moveAction4 = new PieceMoveAction<>(blackRook, board.getPosition("h7").get());
+        var moveAction5 = new PieceMoveAction<>(blackRook, board.getPosition("h6").get());
 
         var memento4 = createMemento(board, moveAction4);
         var memento5 = createMemento(board, moveAction5);

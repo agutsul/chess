@@ -15,6 +15,8 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.Board;
@@ -25,18 +27,22 @@ import com.agutsul.chess.color.Colors;
 @ExtendWith(MockitoExtension.class)
 public class BoardStatisticStateEvaluatorTest {
 
+    @Mock
+    BoardState boardState;
+    @Mock
+    BoardStateEvaluator<Optional<BoardState>> eval;
+
+    @InjectMocks
+    BoardStatisticStateEvaluator evaluator;
+
     @Test
     void testTerminalBoardStateForRequstedColor() {
-        var boardState = mock(BoardState.class);
         when(boardState.isTerminal())
             .thenReturn(true);
 
-        @SuppressWarnings("unchecked")
-        BoardStateEvaluator<Optional<BoardState>> eval = mock(BoardStateEvaluator.class);
         when(eval.evaluate(any(Color.class)))
             .thenReturn(Optional.of(boardState));
 
-        var evaluator = new BoardStatisticStateEvaluator(eval);
         var result = evaluator.evaluate(Colors.WHITE);
 
         assertTrue(result.isPresent());
@@ -47,17 +53,15 @@ public class BoardStatisticStateEvaluatorTest {
 
     @Test
     void testBoardStateForOpponentColor() {
-        @SuppressWarnings("unchecked")
-        BoardStateEvaluator<Optional<BoardState>> eval = mock(BoardStateEvaluator.class);
         when(eval.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                return Objects.equals(Colors.WHITE, color)
-                        ? Optional.empty()
-                        : Optional.of(defaultBoardState(mock(Board.class), color));
+                return Optional.ofNullable(Objects.equals(Colors.WHITE, color)
+                        ? null
+                        : defaultBoardState(mock(Board.class), color)
+                );
             });
 
-        var evaluator = new BoardStatisticStateEvaluator(eval);
         var result = evaluator.evaluate(Colors.WHITE);
 
         assertTrue(result.isPresent());
@@ -68,21 +72,18 @@ public class BoardStatisticStateEvaluatorTest {
 
     @Test
     void testNonTerminalBoardStateForRequstedColor() {
-        var boardState = mock(BoardState.class);
         when(boardState.isTerminal())
             .thenReturn(false);
 
-        @SuppressWarnings("unchecked")
-        BoardStateEvaluator<Optional<BoardState>> eval = mock(BoardStateEvaluator.class);
         when(eval.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                return Objects.equals(Colors.WHITE, color)
-                        ? Optional.of(boardState)
-                        : Optional.empty();
+                return Optional.ofNullable(Objects.equals(Colors.WHITE, color)
+                        ? boardState
+                        : null
+                );
             });
 
-        var evaluator = new BoardStatisticStateEvaluator(eval);
         var result = evaluator.evaluate(Colors.WHITE);
 
         assertTrue(result.isPresent());
@@ -101,17 +102,15 @@ public class BoardStatisticStateEvaluatorTest {
         when(blackBoardState.isTerminal())
             .thenReturn(false);
 
-        @SuppressWarnings("unchecked")
-        BoardStateEvaluator<Optional<BoardState>> eval = mock(BoardStateEvaluator.class);
         when(eval.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                return Objects.equals(Colors.WHITE, color)
-                        ? Optional.of(whiteBoardState)
-                        : Optional.of(blackBoardState);
+                return Optional.of(Objects.equals(Colors.WHITE, color)
+                        ? whiteBoardState
+                        : blackBoardState
+                );
             });
 
-        var evaluator = new BoardStatisticStateEvaluator(eval);
         var result = evaluator.evaluate(Colors.WHITE);
 
         assertTrue(result.isPresent());
@@ -132,17 +131,14 @@ public class BoardStatisticStateEvaluatorTest {
         when(blackBoardState.isTerminal())
             .thenReturn(true);
 
-        @SuppressWarnings("unchecked")
-        BoardStateEvaluator<Optional<BoardState>> eval = mock(BoardStateEvaluator.class);
         when(eval.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                return Objects.equals(Colors.WHITE, color)
-                        ? Optional.of(whiteBoardState)
-                        : Optional.of(blackBoardState);
+                return Optional.of(Objects.equals(Colors.WHITE, color)
+                        ? whiteBoardState
+                        : blackBoardState
+                );
             });
-
-        var evaluator = new BoardStatisticStateEvaluator(eval);
 
         var result = evaluator.evaluate(Colors.WHITE);
         assertTrue(result.isPresent());

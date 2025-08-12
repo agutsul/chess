@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -40,7 +39,8 @@ public class CompositeBoardStateTest {
 
     @Mock
     Board board;
-
+    @Mock
+    Piece<Color> piece;
     @Mock
     Color color;
 
@@ -78,7 +78,8 @@ public class CompositeBoardStateTest {
     void testGetColor() {
         var checkedBoardState = checkedBoardState(board, color);
         var checkedBoardStateMock = spy(checkedBoardState);
-        doCallRealMethod().when(checkedBoardStateMock).getColor();
+        doCallRealMethod()
+            .when(checkedBoardStateMock).getColor();
 
         var fiftyMovesBoardState = fiftyMovesBoardState(board, color);
         var fiftyMovesBoardStateMock = spy(fiftyMovesBoardState);
@@ -98,7 +99,8 @@ public class CompositeBoardStateTest {
     void testGetType() {
         var checkedBoardState = checkedBoardState(board, color);
         var checkedBoardStateMock = spy(checkedBoardState);
-        doCallRealMethod().when(checkedBoardStateMock).getType();
+        doCallRealMethod()
+            .when(checkedBoardStateMock).getType();
 
         var fiftyMovesBoardState = fiftyMovesBoardState(board, color);
         var fiftyMovesBoardStateMock = spy(fiftyMovesBoardState);
@@ -118,11 +120,13 @@ public class CompositeBoardStateTest {
     void testIsType() {
         var checkedBoardState = checkedBoardState(board, color);
         var checkedBoardStateMock = spy(checkedBoardState);
-        doCallRealMethod().when(checkedBoardStateMock).isType(any());
+        doCallRealMethod()
+            .when(checkedBoardStateMock).isType(any());
 
         var fiftyMovesBoardState = fiftyMovesBoardState(board, color);
         var fiftyMovesBoardStateMock = spy(fiftyMovesBoardState);
-        doCallRealMethod().when(fiftyMovesBoardStateMock).isType(any());
+        doCallRealMethod()
+            .when(fiftyMovesBoardStateMock).isType(any());
 
         var compositeBoardState = new CompositeBoardState(List.of(
                 checkedBoardStateMock,
@@ -143,11 +147,13 @@ public class CompositeBoardStateTest {
     void testIsAnyType() {
         var checkedBoardState = checkedBoardState(board, color);
         var checkedBoardStateMock = spy(checkedBoardState);
-        doCallRealMethod().when(checkedBoardStateMock).isAnyType(any(),any());
+        doCallRealMethod()
+            .when(checkedBoardStateMock).isAnyType(any(),any());
 
         var fiftyMovesBoardState = fiftyMovesBoardState(board, color);
         var fiftyMovesBoardStateMock = spy(fiftyMovesBoardState);
-        doCallRealMethod().when(fiftyMovesBoardStateMock).isAnyType(any(),any());
+        doCallRealMethod()
+            .when(fiftyMovesBoardStateMock).isAnyType(any(),any());
 
         var compositeBoardState = new CompositeBoardState(List.of(
                 checkedBoardStateMock,
@@ -167,7 +173,8 @@ public class CompositeBoardStateTest {
     void testGetActions() {
         var checkedBoardState = checkedBoardState(board, color);
         var checkedBoardStateMock = spy(checkedBoardState);
-        doCallRealMethod().when(checkedBoardStateMock).getActions(any());
+        doCallRealMethod()
+            .when(checkedBoardStateMock).getActions(any());
 
         var fiftyMovesBoardState = fiftyMovesBoardState(board, color);
         var fiftyMovesBoardStateMock = spy(fiftyMovesBoardState);
@@ -177,7 +184,7 @@ public class CompositeBoardStateTest {
                 fiftyMovesBoardStateMock
         ));
 
-        assertTrue(compositeBoardState.getActions(mock(Piece.class)).isEmpty());
+        assertTrue(compositeBoardState.getActions(piece).isEmpty());
 
         verify(checkedBoardStateMock, times(1)).getActions(any());
         verify(fiftyMovesBoardStateMock, never()).getActions(any());
@@ -187,7 +194,8 @@ public class CompositeBoardStateTest {
     void testGetImpacts() {
         var checkedBoardState = checkedBoardState(board, color);
         var checkedBoardStateMock = spy(checkedBoardState);
-        doCallRealMethod().when(checkedBoardStateMock).getImpacts(any());
+        doCallRealMethod()
+            .when(checkedBoardStateMock).getImpacts(any());
 
         var fiftyMovesBoardState = fiftyMovesBoardState(board, color);
         var fiftyMovesBoardStateMock = spy(fiftyMovesBoardState);
@@ -197,7 +205,7 @@ public class CompositeBoardStateTest {
                 fiftyMovesBoardStateMock
         ));
 
-        assertTrue(compositeBoardState.getImpacts(mock(Piece.class)).isEmpty());
+        assertTrue(compositeBoardState.getImpacts(piece).isEmpty());
 
         verify(checkedBoardStateMock, times(1)).getImpacts(any());
         verify(fiftyMovesBoardStateMock, never()).getImpacts(any());
@@ -208,14 +216,14 @@ public class CompositeBoardStateTest {
         when(color.toString())
             .thenReturn(Colors.WHITE.toString());
 
-        var checkedBoardState = checkedBoardState(board, color);
-        var fiftyMovesBoardState = fiftyMovesBoardState(board, color);
-
         var compositeBoardState = new CompositeBoardState(List.of(
-                checkedBoardState,
-                fiftyMovesBoardState
+                checkedBoardState(board, color),
+                fiftyMovesBoardState(board, color)
         ));
 
-        assertEquals("(CHECKED:WHITE,FIFTY_MOVES:WHITE):WHITE", compositeBoardState.toString());
+        assertEquals(
+                "(CHECKED:WHITE,FIFTY_MOVES:WHITE):WHITE",
+                compositeBoardState.toString()
+        );
     }
 }
