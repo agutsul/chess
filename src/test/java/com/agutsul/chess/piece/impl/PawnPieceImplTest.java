@@ -450,14 +450,13 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertEquals(actions.size(), expectedMovePromotePositions.size() + expectedCapturePromotePositions.size());
 
         if (!expectedMovePromotePositions.isEmpty()) {
-            @SuppressWarnings("rawtypes")
             var promotePositions = actions.stream()
                     .filter(Action::isPromote)
-                    .map(action -> (PiecePromoteAction) action)
+                    .map(action -> (PiecePromoteAction<?,?>) action)
                     .map(PiecePromoteAction::getSource)
-                    .map(action -> (Action) action)
+                    .map(action -> (Action<?>) action)
                     .filter(Action::isMove)
-                    .map(action -> (PieceMoveAction) action)
+                    .map(action -> (PieceMoveAction<?,?>) action)
                     .map(PieceMoveAction::getTarget)
                     .map(String::valueOf)
                     .toList();
@@ -466,16 +465,15 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         }
 
         if (!expectedCapturePromotePositions.isEmpty()) {
-            @SuppressWarnings("rawtypes")
             var promotePositions = actions.stream()
                     .filter(Action::isPromote)
-                    .map(action -> (PiecePromoteAction) action)
+                    .map(action -> (PiecePromoteAction<?,?>) action)
                     .map(PiecePromoteAction::getSource)
-                    .map(action -> (Action) action)
+                    .map(action -> (Action<?>) action)
                     .filter(Action::isCapture)
-                    .map(action -> (PieceCaptureAction) action)
+                    .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                     .map(PieceCaptureAction::getTarget)
-                    .map(enemyPiece -> (Piece) enemyPiece)
+                    .map(enemyPiece -> (Piece<?>) enemyPiece)
                     .map(Piece::getPosition)
                     .map(String::valueOf)
                     .toList();

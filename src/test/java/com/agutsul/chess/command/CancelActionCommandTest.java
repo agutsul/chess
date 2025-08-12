@@ -26,6 +26,7 @@ import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
+import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 
 @ExtendWith(MockitoExtension.class)
@@ -132,12 +133,11 @@ public class CancelActionCommandTest {
         when(game.getBoard())
             .thenReturn(board);
 
-        var pawn = board.getPiece("e2").get();
+        var pawn = (PawnPiece<?>) board.getPiece("e2").get();
         var sourcePosition = board.getPosition("e2").get();
         var targetPosition = board.getPosition("e4").get();
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
-        var moveAction = new PieceMoveAction(pawn, targetPosition);
+        var moveAction = new PieceMoveAction<>(pawn, targetPosition);
         moveAction.execute();
 
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));

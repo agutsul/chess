@@ -20,6 +20,7 @@ import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
+import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.PawnPiece;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,8 +32,8 @@ public class ActionMementoFactoryTest {
                 .withWhitePawn("e2")
                 .build();
 
-        var pawn = board.getPiece("e2");
-        var actions = board.getActions(pawn.get(), Action.Type.MOVE);
+        var pawn = (PawnPiece<Color>) board.getPiece("e2").get();
+        var actions = board.getActions(pawn, Action.Type.MOVE);
 
         var memento = createMemento(board, actions.iterator().next());
 
@@ -47,8 +48,8 @@ public class ActionMementoFactoryTest {
                 .withBlackPawn("d3")
                 .build();
 
-        var pawn = board.getPiece("e2");
-        var actions = board.getActions(pawn.get(), Action.Type.CAPTURE);
+        var pawn = (PawnPiece<Color>) board.getPiece("e2").get();
+        var actions = board.getActions(pawn, Action.Type.CAPTURE);
 
         var memento = createMemento(board, actions.iterator().next());
 
@@ -63,8 +64,8 @@ public class ActionMementoFactoryTest {
                 .withWhiteRook("h1")
                 .build();
 
-        var king = board.getPiece("e1");
-        var actions = board.getActions(king.get(), Action.Type.CASTLING);
+        var king = (KingPiece<Color>) board.getPiece("e1").get();
+        var actions = board.getActions(king, Action.Type.CASTLING);
 
         var memento = createMemento(board, actions.iterator().next());
 
@@ -78,8 +79,8 @@ public class ActionMementoFactoryTest {
                 .withWhitePawn("e7")
                 .build();
 
-        var pawn = board.getPiece("e7");
-        var actions = board.getActions(pawn.get(), Action.Type.PROMOTE);
+        var pawn = (PawnPiece<Color>) board.getPiece("e7").get();
+        var actions = board.getActions(pawn, Action.Type.PROMOTE);
 
         var action = spy(actions.iterator().next());
         var memento = createMemento(board, action);

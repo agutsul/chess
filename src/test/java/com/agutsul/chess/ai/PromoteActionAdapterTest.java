@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,19 +25,21 @@ import com.agutsul.chess.position.Position;
 public class PromoteActionAdapterTest {
 
     @Mock
+    Position position;
+    @Mock
     PawnPiece<Color> pawnPiece;
+    @Mock
+    RookPiece<Color> rookPiece;
     @Mock
     Observable observable;
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     void testPiecePromoteActionAdaptForMoveAction() {
-        var moveAction = new PieceMoveAction(pawnPiece, mock(Position.class));
-        var promoteAction = new PiecePromoteAction(moveAction, observable);
+        var moveAction = new PieceMoveAction<>(pawnPiece, position);
 
         var adapter = new PromoteActionAdapter();
 
-        var actions = adapter.adapt(promoteAction);
+        var actions = adapter.adapt(new PiecePromoteAction<>(moveAction, observable));
         assertEquals(4, actions.size());
 
         for (var action : actions) {
@@ -55,14 +56,12 @@ public class PromoteActionAdapterTest {
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     void testPiecePromoteActionAdaptForCaptureAction() {
-        var captureAction = new PieceCaptureAction(pawnPiece, mock(RookPiece.class));
-        var promoteAction = new PiecePromoteAction(captureAction, observable);
+        var captureAction = new PieceCaptureAction<>(pawnPiece, rookPiece);
 
         var adapter = new PromoteActionAdapter();
 
-        var actions = adapter.adapt(promoteAction);
+        var actions = adapter.adapt(new PiecePromoteAction<>(captureAction, observable));
         assertEquals(4, actions.size());
 
         for (var action : actions) {
