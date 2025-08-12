@@ -29,10 +29,12 @@ import com.agutsul.chess.position.Position;
 public class KingPieceProxyTest {
 
     @Mock
-    private KingPiece<Color> piece;
+    KingPiece<Color> piece;
+    @Mock
+    PieceState<Piece<Color>> pieceState;
 
     @InjectMocks
-    private KingPieceProxy<?> proxy;
+    KingPieceProxy<?> proxy;
 
     @Test
     void testGetType() {
@@ -80,11 +82,9 @@ public class KingPieceProxyTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testGetActions() {
         Collection<Action<?>> actions = emptyList();
 
-        var pieceState = mock(PieceState.class);
         when(pieceState.calculateActions(any())).thenReturn(actions);
 
         when(piece.getState()).thenReturn(pieceState);

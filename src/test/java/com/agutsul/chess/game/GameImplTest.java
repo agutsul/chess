@@ -26,8 +26,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.AutoClose;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
@@ -80,10 +82,18 @@ import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 @ExtendWith(MockitoExtension.class)
 public class GameImplTest {
 
+    @AutoClose
+    GameContext context = new GameContext();
+
+    @Mock
+    AbstractBoard board;
+    @Mock
+    Journal<ActionMemento<?,?>> journal;
+    @Mock
+    BoardStateEvaluator<BoardState> boardStateEvaluator;
+
     @Test
     void testGetStateReturningDefault() {
-        var board = mock(AbstractBoard.class);
-
         var whitePlayer = mock(UserPlayer.class);
         when(whitePlayer.getColor())
             .thenReturn(Colors.WHITE);
@@ -101,8 +111,6 @@ public class GameImplTest {
 
     @Test
     void testGetStateReturningDrawn() {
-        var board = mock(AbstractBoard.class);
-
         var whitePlayer = mock(UserPlayer.class);
         when(whitePlayer.getColor())
             .thenReturn(Colors.WHITE);
@@ -138,7 +146,7 @@ public class GameImplTest {
 
         var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
                 new BoardStateEvaluatorImpl(board, journal),
-                new GameContext()
+                context
         );
 
         game.setFinishedAt(now());
@@ -152,7 +160,6 @@ public class GameImplTest {
 
     @Test
     void testGetStateReturningBlackWin() {
-        var board = mock(AbstractBoard.class);
         when(board.getState())
             .thenReturn(agreedDefeatBoardState(board, Colors.BLACK));
 
@@ -168,7 +175,7 @@ public class GameImplTest {
 
         var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
                 new BoardStateEvaluatorImpl(board, journal),
-                new GameContext()
+                context
         );
 
         game.setFinishedAt(now());
@@ -181,9 +188,7 @@ public class GameImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testPlayerAskedAction() {
-        var board = mock(AbstractBoard.class);
         when(board.getState())
             .thenReturn(defaultBoardState(board, Colors.WHITE));
 
@@ -195,9 +200,6 @@ public class GameImplTest {
         when(blackPlayer.getColor())
             .thenReturn(Colors.BLACK);
 
-        var journal = mock(Journal.class);
-
-        var boardStateEvaluator = mock(BoardStateEvaluator.class);
         when(boardStateEvaluator.evaluate(any(Color.class)))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
@@ -207,7 +209,7 @@ public class GameImplTest {
             });
 
         var game = new GameImpl(whitePlayer, blackPlayer,
-                board, journal, boardStateEvaluator, new GameContext()
+                board, journal, boardStateEvaluator, context
         );
         game.run();
 
@@ -217,7 +219,6 @@ public class GameImplTest {
 
     @Test
     void testGetWinnerByCheckMate() {
-        var board = mock(AbstractBoard.class);
         when(board.getState())
             .thenReturn(checkMatedBoardState(board, Colors.WHITE));
 
@@ -227,7 +228,7 @@ public class GameImplTest {
 
         var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
                 new BoardStateEvaluatorImpl(board, journal),
-                new GameContext()
+                context
         );
 
         game.run();
@@ -239,7 +240,6 @@ public class GameImplTest {
 
     @Test
     void testGetWinnerByAgreedDraw() {
-        var board = mock(AbstractBoard.class);
         when(board.getState())
             .thenReturn(agreedDrawBoardState(board, Colors.WHITE));
 
@@ -252,7 +252,7 @@ public class GameImplTest {
 
         var game = spy(new GameImpl(whitePlayer, blackPlayer, board, journal,
                 new BoardStateEvaluatorImpl(board, journal),
-                new GameContext()
+                context
         ));
 
         when(game.hasNext())
@@ -276,7 +276,7 @@ public class GameImplTest {
 
         var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
                 new BoardStateEvaluatorImpl(board, journal),
-                new GameContext()
+                context
         );
 
         game.run();
@@ -287,7 +287,6 @@ public class GameImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testPositiveGameFlow() {
         var board = spy(new StandardBoard());
         doCallRealMethod()
@@ -295,7 +294,6 @@ public class GameImplTest {
 
         var journal = new JournalImpl();
 
-        var boardStateEvaluator = mock(BoardStateEvaluator.class);
         when(boardStateEvaluator.evaluate(any()))
             .then(inv -> {
                 var color = inv.getArgument(0, Color.class);
@@ -313,7 +311,7 @@ public class GameImplTest {
             .when(blackPlayer).notifyObservers(any());
 
         var game = new GameImpl(whitePlayer, blackPlayer,
-                board, journal, boardStateEvaluator, new GameContext()
+                board, journal, boardStateEvaluator, context
         );
 
         board.addObserver(new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4"));
@@ -362,7 +360,6 @@ public class GameImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testPositiveGameFlowWithWhiteUndo() {
         var board = spy(new StandardBoard());
         doCallRealMethod()
@@ -377,14 +374,15 @@ public class GameImplTest {
             .when(blackPlayer).notifyObservers(any());
 
         var journal = new JournalImpl();
-        var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
         var game = new GameImpl(whitePlayer, blackPlayer,
-                board, journal, boardStateEvaluator, new GameContext()
+                board, journal, boardStateEvaluator, context
         );
 
-        var whitePlayerInputObserver = new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4", "undo", "d2 d4");
-        var blackPlayerInputObserver = new PlayerInputObserverInteratorMock(blackPlayer, game, "e7 e5", "d7 d5");
+        var whitePlayerInputObserver =
+                new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4", "undo", "d2 d4");
+        var blackPlayerInputObserver =
+                new PlayerInputObserverInteratorMock(blackPlayer, game, "e7 e5", "d7 d5");
 
         board.addObserver(whitePlayerInputObserver);
         board.addObserver(blackPlayerInputObserver);
@@ -431,7 +429,6 @@ public class GameImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testNegativeGameFlowWithWhiteUndo() {
         var board = spy(new StandardBoard());
         doCallRealMethod()
@@ -446,15 +443,13 @@ public class GameImplTest {
             .when(blackPlayer).notifyObservers(any());
 
         var journal = new JournalImpl();
-        var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
         var game = new GameImpl(whitePlayer, blackPlayer,
-                board, journal, boardStateEvaluator, new GameContext()
+                board, journal, boardStateEvaluator, context
         );
 
-        var whitePlayerInputObserver = new PlayerInputObserverInteratorMock(
-                whitePlayer, game, "undo", "e2 e4"
-        );
+        var whitePlayerInputObserver =
+                new PlayerInputObserverInteratorMock(whitePlayer, game, "undo", "e2 e4");
 
         board.addObserver(whitePlayerInputObserver);
         board.addObserver(new PlayerInputObserverInteratorMock(blackPlayer, game, "e7 ", "e7 e5"));
@@ -498,7 +493,6 @@ public class GameImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testPositiveGameDrawFlow() {
         var board = spy(new StandardBoard());
         doCallRealMethod()
@@ -515,10 +509,9 @@ public class GameImplTest {
             .when(blackPlayer).notifyObservers(any());
 
         var journal = new JournalImpl();
-        var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
         var game = new GameImpl(whitePlayer, blackPlayer,
-                board, journal, boardStateEvaluator, new GameContext()
+                board, journal, boardStateEvaluator, context
         );
 
         var whitePlayerInputObserver =
@@ -579,7 +572,6 @@ public class GameImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testNegativeGameDrawFlow() {
         var board = spy(new StandardBoard());
 
@@ -602,9 +594,10 @@ public class GameImplTest {
             .when(blackPlayer).notifyObservers(any());
 
         var journal = new JournalImpl();
-        var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
-        var game = new GameExceptionMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
+        var game = new GameExceptionMock(
+                whitePlayer, blackPlayer, board, journal, boardStateEvaluator
+        );
 
         var whitePlayerInputObserver =
                 new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4");
@@ -645,7 +638,6 @@ public class GameImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testPositiveGameExitFlow() {
         var board = spy(new StandardBoard());
         doCallRealMethod()
@@ -662,10 +654,9 @@ public class GameImplTest {
             .when(blackPlayer).notifyObservers(any());
 
         var journal = new JournalImpl();
-        var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
-        var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
-                boardStateEvaluator, new GameContext()
+        var game = new GameImpl(whitePlayer, blackPlayer,
+                board, journal, boardStateEvaluator, context
         );
 
         var whitePlayerInputObserver =
@@ -727,7 +718,6 @@ public class GameImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testNegativeGameExitFlow() {
         var board = spy(new StandardBoard());
 
@@ -750,9 +740,10 @@ public class GameImplTest {
             .when(blackPlayer).notifyObservers(any());
 
         var journal = new JournalImpl();
-        var boardStateEvaluator = mock(BoardStateEvaluator.class);
 
-        var game = new GameExceptionMock(whitePlayer, blackPlayer, board, journal, boardStateEvaluator);
+        var game = new GameExceptionMock(whitePlayer, blackPlayer,
+                board, journal, boardStateEvaluator
+        );
 
         var whitePlayerInputObserver =
                 new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4");
@@ -837,10 +828,13 @@ public class GameImplTest {
     private static class GameExceptionMock
             extends GameImpl {
 
-        GameExceptionMock(Player whitePlayer, Player blackPlayer, Board board, Journal<ActionMemento<?, ?>> journal,
-                BoardStateEvaluator<BoardState> boardStateEvaluator) {
+        GameExceptionMock(Player whitePlayer, Player blackPlayer,
+                          Board board, Journal<ActionMemento<?,?>> journal,
+                          BoardStateEvaluator<BoardState> boardStateEvaluator) {
 
-            super(whitePlayer, blackPlayer, board, journal, boardStateEvaluator, new GameContext());
+            super(whitePlayer, blackPlayer,
+                    board, journal, boardStateEvaluator, new GameContext()
+            );
         }
 
         @Override

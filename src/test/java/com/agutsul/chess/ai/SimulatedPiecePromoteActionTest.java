@@ -1,7 +1,6 @@
 package com.agutsul.chess.ai;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,7 +10,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.ai.PromoteActionAdapter.SimulatedPiecePromoteAction;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Observable;
+import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.Piece.Type;
 
@@ -22,12 +23,15 @@ public class SimulatedPiecePromoteActionTest {
 
     @Mock
     Observable observable;
+    @Mock
+    PieceMoveAction<Color,PawnPiece<Color>> moveAction;
+    @Mock
+    PieceCaptureAction<Color,Color,PawnPiece<Color>,?> captureAction;
 
     @Test
     void testPromoteMoveAction() {
-        @SuppressWarnings("unchecked")
         var promoteAction = new SimulatedPiecePromoteAction<>(
-                mock(PieceMoveAction.class),
+                moveAction,
                 observable,
                 QUEEN_PIECE_TYPE
         );
@@ -37,9 +41,8 @@ public class SimulatedPiecePromoteActionTest {
 
     @Test
     void testPromoteCaptureAction() {
-        @SuppressWarnings("unchecked")
         var promoteAction = new SimulatedPiecePromoteAction<>(
-                mock(PieceCaptureAction.class),
+                captureAction,
                 observable,
                 QUEEN_PIECE_TYPE
         );

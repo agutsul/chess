@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.concurrent.ForkJoinPool;
@@ -19,7 +18,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.StandardBoard;
+import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
@@ -34,6 +35,12 @@ public class PlayableGameBuilderTest {
     UserPlayer whitePlayer;
     @Mock
     UserPlayer blackPlayer;
+    @Mock
+    BoardStateEvaluator<BoardState> boardStateEvaluator;
+    @Mock
+    Journal<ActionMemento<?,?>> journal;
+    @Mock
+    ForkJoinPool forkJoinPool;
 
     @BeforeEach
     void setUp() {
@@ -69,7 +76,7 @@ public class PlayableGameBuilderTest {
 
     @Test
     void testTimeoutGameBuild() {
-        var context = new GameContext(mock(ForkJoinPool.class));
+        var context = new GameContext(forkJoinPool);
         context.setTimeout(createGameTimeout(20000L));
 
         var game = new PlayableGameBuilder<>(whitePlayer, blackPlayer)
@@ -97,14 +104,11 @@ public class PlayableGameBuilderTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testGameBuildWithCustomParams() {
         var gameBuilder = new PlayableGameBuilder<>(whitePlayer, blackPlayer);
 
         var board = new StandardBoard();
-        var journal = mock(Journal.class);
 
-        var boardStateEvaluator = mock(BoardStateEvaluator.class);
         when(boardStateEvaluator.evaluate(any()))
             .thenReturn(staleMatedBoardState(board, Colors.BLACK));
 

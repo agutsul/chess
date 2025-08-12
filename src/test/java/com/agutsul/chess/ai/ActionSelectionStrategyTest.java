@@ -37,9 +37,13 @@ public class ActionSelectionStrategyTest {
     @Mock
     Action<?> action;
     @Mock
+    ActionMemento<?,?> memento;
+    @Mock
     Board board;
     @Mock
     Journal<ActionMemento<?,?>> journal;
+    @Mock
+    ForkJoinPool forkJoinPool;
 
     @Test
     void testSelectActionWithNullExecutor() {
@@ -97,7 +101,6 @@ public class ActionSelectionStrategyTest {
         when(board.getActions(any(Piece.class)))
             .thenReturn(List.of(action));
 
-        var forkJoinPool = mock(ForkJoinPool.class);
         when(forkJoinPool.invoke(any()))
             .thenThrow(new RuntimeException("test"));
 
@@ -136,14 +139,13 @@ public class ActionSelectionStrategyTest {
             .thenReturn(emptyList());
 
         var selectionStrategy = new ActionSelectionStrategy(
-                board, journal, mock(ForkJoinPool.class), ALPHA_BETA
+                board, journal, forkJoinPool, ALPHA_BETA
         );
 
         var result = selectionStrategy.select(Colors.WHITE, BoardState.Type.CHECK_MATED);
         assertTrue(result.isEmpty());
     }
 
-    @SuppressWarnings("unchecked")
     @ParameterizedTest(name = "{index}. testSearchActionFound({0})")
     @EnumSource(SelectionStrategy.Type.class)
     void testSearchActionFound(SelectionStrategy.Type type) {
@@ -154,14 +156,12 @@ public class ActionSelectionStrategyTest {
         when(board.getState())
             .thenReturn(checkMatedBoardState(board, Colors.WHITE));
 
-        var memento = mock(ActionMemento.class);
         when(memento.getColor())
             .thenReturn(Colors.WHITE);
 
         when(journal.getLast())
-            .thenReturn(memento);
+            .thenAnswer(inv -> memento);
 
-        var forkJoinPool = mock(ForkJoinPool.class);
         when(forkJoinPool.invoke(any()))
             .thenReturn(new ActionSimulationResult<>(board, journal, action, Colors.WHITE, 0));
 
@@ -172,7 +172,6 @@ public class ActionSelectionStrategyTest {
         assertEquals(action, result.get());
     }
 
-    @SuppressWarnings("unchecked")
     @ParameterizedTest(name = "{index}. testSearchActionNotFound({0})")
     @EnumSource(SelectionStrategy.Type.class)
     void testSearchActionNotFound(SelectionStrategy.Type type) {
@@ -188,9 +187,8 @@ public class ActionSelectionStrategyTest {
             .thenReturn(Colors.BLACK);
 
         when(journal.getLast())
-            .thenReturn(memento);
+            .thenAnswer(inv -> memento);
 
-        var forkJoinPool = mock(ForkJoinPool.class);
         when(forkJoinPool.invoke(any()))
             .thenReturn(new ActionSimulationResult<>(board, journal, action, Colors.WHITE, 0));
 
@@ -207,7 +205,6 @@ public class ActionSelectionStrategyTest {
         when(board.getActions(any(Piece.class)))
             .thenReturn(List.of(action));
 
-        var forkJoinPool = mock(ForkJoinPool.class);
         when(forkJoinPool.invoke(any()))
             .thenThrow(new RuntimeException("test"));
 

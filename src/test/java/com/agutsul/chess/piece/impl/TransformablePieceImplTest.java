@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -40,34 +39,41 @@ import com.agutsul.chess.position.Position;
 public class TransformablePieceImplTest {
 
     @Mock
-    private AbstractBoard board;
+    Position position;
     @Mock
-    private PawnPiece<Color> pawn;
+    AbstractBoard board;
     @Mock
-    private PieceFactory<Color> pieceFactory;
+    QueenPiece<Color> queenPiece;
+    @Mock
+    RookPiece<Color> rookPiece;
+    @Mock
+    KnightPiece<Color> knightPiece;
+    @Mock
+    BishopPiece<Color> bishopPiece;
+    @Mock
+    PawnPiece<Color> pawnPiece;
+    @Mock
+    PieceFactory<Color> pieceFactory;
 
-    private TransformablePieceImpl<?,?> proxy;
+    TransformablePieceImpl<?,?> proxy;
 
     @BeforeEach
     public void setUp() {
-        this.proxy = new TransformablePieceImpl<>(board, pieceFactory, pawn, 7);
+        this.proxy = new TransformablePieceImpl<>(board, pieceFactory, pawnPiece, 7);
     }
 
     @Test
     void testGetPosiotionsNonPromotedPawn() {
-        assertEquals(pawn.getPositions(), proxy.getPositions());
+        assertEquals(pawnPiece.getPositions(), proxy.getPositions());
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testGetPosiotionsForPromotedPawn() {
-        var position = mock(Position.class);
-
-        when(pawn.getPositions())
+        when(pawnPiece.getPositions())
             .thenReturn(List.of(position));
 
         doNothing()
-            .when(pawn).dispose(any());
+            .when(pawnPiece).dispose(any());
 
         when(board.getActions(any(), eq(Action.Type.PROMOTE)))
             .then(inv -> {
@@ -78,23 +84,20 @@ public class TransformablePieceImplTest {
             });
 
         when(pieceFactory.createBishop(eq(position)))
-            .thenReturn(mock(BishopPiece.class));
+            .thenReturn(bishopPiece);
 
         proxy.promote(position, Piece.Type.BISHOP);
 
         var promotedPositions = proxy.getPositions();
-        var pawnPositions = pawn.getPositions();
+        var pawnPositions = pawnPiece.getPositions();
 
         assertTrue(promotedPositions.containsAll(pawnPositions));
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testPromoteToBishop() {
-        var position = mock(Position.class);
-
         doNothing()
-            .when(pawn).dispose(any());
+            .when(pawnPiece).dispose(any());
 
         when(board.getActions(any(), eq(Action.Type.PROMOTE)))
             .then(inv -> {
@@ -105,9 +108,9 @@ public class TransformablePieceImplTest {
             });
 
         when(pieceFactory.createBishop(eq(position)))
-            .thenReturn(mock(BishopPiece.class));
+            .thenReturn(bishopPiece);
 
-        var origin = (PawnPiece<Color>) proxy.origin;
+        var origin = (PawnPiece<?>) proxy.origin;
 
         proxy.promote(position, Piece.Type.BISHOP);
 
@@ -118,12 +121,9 @@ public class TransformablePieceImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testPromoteToKnight() {
-        var position = mock(Position.class);
-
         doNothing()
-            .when(pawn).dispose(any());
+            .when(pawnPiece).dispose(any());
 
         when(board.getActions(any(), eq(Action.Type.PROMOTE)))
             .then(inv -> {
@@ -134,9 +134,9 @@ public class TransformablePieceImplTest {
             });
 
         when(pieceFactory.createKnight(eq(position)))
-            .thenReturn(mock(KnightPiece.class));
+            .thenReturn(knightPiece);
 
-        var origin = (PawnPiece<Color>) proxy.origin;
+        var origin = (PawnPiece<?>) proxy.origin;
 
         proxy.promote(position, Piece.Type.KNIGHT);
 
@@ -147,12 +147,9 @@ public class TransformablePieceImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testPromoteToQueen() {
-        var position = mock(Position.class);
-
         doNothing()
-            .when(pawn).dispose(any());
+            .when(pawnPiece).dispose(any());
 
         when(board.getActions(any(), eq(Action.Type.PROMOTE)))
             .then(inv -> {
@@ -163,9 +160,9 @@ public class TransformablePieceImplTest {
             });
 
         when(pieceFactory.createQueen(eq(position)))
-            .thenReturn(mock(QueenPiece.class));
+            .thenReturn(queenPiece);
 
-        var origin = (PawnPiece<Color>) proxy.origin;
+        var origin = (PawnPiece<?>) proxy.origin;
 
         proxy.promote(position, Piece.Type.QUEEN);
 
@@ -176,12 +173,9 @@ public class TransformablePieceImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testPromoteToRook() {
-        var position = mock(Position.class);
-
         doNothing()
-            .when(pawn).dispose(any());
+            .when(pawnPiece).dispose(any());
 
         when(board.getActions(any(), eq(Action.Type.PROMOTE)))
             .then(inv -> {
@@ -192,9 +186,9 @@ public class TransformablePieceImplTest {
             });
 
         when(pieceFactory.createRook(eq(position)))
-            .thenReturn(mock(RookPiece.class));
+            .thenReturn(rookPiece);
 
-        var origin = (PawnPiece<Color>) proxy.origin;
+        var origin = (PawnPiece<?>) proxy.origin;
 
         proxy.promote(position, Piece.Type.ROOK);
 
@@ -206,8 +200,6 @@ public class TransformablePieceImplTest {
 
     @Test
     void testUnsupportedPromotionType() {
-        var position = mock(Position.class);
-
         when(board.getActions(any(), eq(Action.Type.PROMOTE)))
             .then(inv -> {
                 var piece = inv.getArgument(0, PawnPiece.class);
@@ -232,9 +224,9 @@ public class TransformablePieceImplTest {
     @Test
     void testIsMoved() {
         var moved = false;
-        when(pawn.isMoved()).thenReturn(moved);
+        when(pawnPiece.isMoved()).thenReturn(moved);
 
         assertEquals(proxy.isMoved(), moved);
-        verify(pawn, times(1)).isMoved();
+        verify(pawnPiece, times(1)).isMoved();
     }
 }

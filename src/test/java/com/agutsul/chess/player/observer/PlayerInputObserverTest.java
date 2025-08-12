@@ -13,6 +13,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.AutoClose;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -21,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.board.AbstractBoard;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
@@ -43,12 +45,27 @@ import com.agutsul.chess.position.Position;
 @ExtendWith(MockitoExtension.class)
 public class PlayerInputObserverTest {
 
+    @AutoClose
+    GameContext context = new GameContext();
+
+    @Mock
+    Position position;
+    @Mock
+    Player player;
+    @Mock
+    AbstractBoard board;
     @Mock
     AbstractPlayableGame game;
+    @Mock
+    Observable observable;
+    @Mock
+    PawnPiece<Color> pawnPiece;
+    @Mock
+    PieceMoveAction<Color,PawnPiece<Color>> moveAction;
 
     @Test
     void testObserveNonRequestEvent() {
-        var observer = new PlayerInputObserverMock(mock(Player.class), game);
+        var observer = new PlayerInputObserverMock(player, game);
         observer.observe(mock(Event.class));
 
         verify(game, never()).notifyObservers(any());
@@ -64,10 +81,8 @@ public class PlayerInputObserverTest {
         when(blackPlayer.getColor())
             .thenReturn(Colors.BLACK);
 
-        var event = new RequestPlayerActionEvent(blackPlayer);
-
         var observer = new PlayerInputObserverMock(whitePlayer, game);
-        observer.observe(event);
+        observer.observe(new RequestPlayerActionEvent(blackPlayer));
 
         verify(game, never()).notifyObservers(any());
     }
@@ -75,16 +90,14 @@ public class PlayerInputObserverTest {
     @Test
     void testObservePlayerActionEvent() {
         when(game.getContext())
-            .thenReturn(new GameContext());
+            .thenReturn(context);
 
         var whitePlayer = mock(Player.class);
         when(whitePlayer.getColor())
             .thenReturn(Colors.WHITE);
 
-        var event = new RequestPlayerActionEvent(whitePlayer);
-
         var observer = new PlayerInputObserverMock(whitePlayer, game, "e2 e4");
-        observer.observe(event);
+        observer.observe(new RequestPlayerActionEvent(whitePlayer));
 
         verify(game, times(1)).notifyObservers(any(PlayerActionEvent.class));
     }
@@ -94,7 +107,7 @@ public class PlayerInputObserverTest {
         when(game.getBoard())
             .thenReturn(mock(AbstractBoard.class));
         when(game.getContext())
-            .thenReturn(new GameContext());
+            .thenReturn(context);
 
         doAnswer(inv -> {
             var event = inv.getArgument(0, PlayerActionExceptionEvent.class);
@@ -118,7 +131,7 @@ public class PlayerInputObserverTest {
         when(game.getBoard())
             .thenReturn(mock(AbstractBoard.class));
         when(game.getContext())
-            .thenReturn(new GameContext());
+            .thenReturn(context);
 
         doAnswer(inv -> {
             var event = inv.getArgument(0, PlayerActionExceptionEvent.class);
@@ -140,16 +153,14 @@ public class PlayerInputObserverTest {
     @Test
     void testObservePlayerActionEventUndoAction() {
         when(game.getContext())
-            .thenReturn(new GameContext());
+            .thenReturn(context);
 
         var whitePlayer = mock(Player.class);
         when(whitePlayer.getColor())
             .thenReturn(Colors.WHITE);
 
-        var event = new RequestPlayerActionEvent(whitePlayer);
-
         var observer = new PlayerInputObserverMock(whitePlayer, game, "undo");
-        observer.observe(event);
+        observer.observe(new RequestPlayerActionEvent(whitePlayer));
 
         verify(game, times(1)).notifyObservers(any(PlayerCancelActionEvent.class));
     }
@@ -157,54 +168,48 @@ public class PlayerInputObserverTest {
     @Test
     void testObservePlayerActionEventDrawAction() {
         when(game.getContext())
-            .thenReturn(new GameContext());
+            .thenReturn(context);
 
         var whitePlayer = mock(Player.class);
         when(whitePlayer.getColor())
             .thenReturn(Colors.WHITE);
 
-        var event = new RequestPlayerActionEvent(whitePlayer);
-
         var observer = new PlayerInputObserverMock(whitePlayer, game, "draw");
-        observer.observe(event);
+        observer.observe(new RequestPlayerActionEvent(whitePlayer));
 
         verify(game, times(1)).notifyObservers(any(PlayerTerminateActionEvent.class));
     }
 
     @Test
     void testObservePlayerPromotionPieceTypeEvent() {
-        var observable = mock(Observable.class);
         doAnswer(inv -> {
             var promotionRequestEvent = inv.getArgument(0, RequestPromotionPieceTypeEvent.class);
             var observer = promotionRequestEvent.getObserver();
 
-            observer.observe(new PromotionPieceTypeEvent(mock(Player.class), Piece.Type.QUEEN));
+            observer.observe(new PromotionPieceTypeEvent(player, Piece.Type.QUEEN));
 
             return null;
         }).when(observable).notifyObservers(any());
 
-        var piece = mock(PawnPiece.class);
-        when(piece.getColor())
+        when(pawnPiece.getColor())
             .thenReturn(Colors.WHITE);
 
-        var moveAction = mock(PieceMoveAction.class);
         when(moveAction.getSource())
-            .thenReturn(piece);
+            .thenReturn(pawnPiece);
         when(moveAction.getPosition())
-            .thenReturn(mock(Position.class));
+            .thenReturn(position);
 
-        @SuppressWarnings("unchecked")
         var action = spy(new PiecePromoteAction<>(moveAction, observable));
         action.execute();
 
         verify(action, times(2)).getPiece();
-        verify(piece,  times(1)).promote(any(), eq(Piece.Type.QUEEN));
+        verify(pawnPiece,  times(1)).promote(any(), eq(Piece.Type.QUEEN));
     }
 
     @Test
     void testObservePlayerPromotionPieceTypeEventUnknowPromotionType() {
         when(game.getContext())
-            .thenReturn(new GameContext());
+            .thenReturn(context);
 
         var whitePlayer = mock(Player.class);
         when(whitePlayer.getColor())

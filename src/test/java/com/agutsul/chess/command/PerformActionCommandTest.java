@@ -28,6 +28,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.IllegalActionException;
@@ -41,9 +42,13 @@ import com.agutsul.chess.position.Position;
 public class PerformActionCommandTest {
 
     @Mock
+    Board board;
+    @Mock
     Player player;
     @Mock
     Observable observable;
+    @Mock
+    PawnPiece<Color> pawnPiece;
 
     @Test
     void testValidationOfMissedSourcePiece() {
@@ -106,30 +111,25 @@ public class PerformActionCommandTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testActionCommandException() {
         when(player.getColor())
             .thenReturn(Colors.WHITE);
 
-        var board = mock(Board.class);
-
-        var sourcePosition = mock(Position.class);
-        var piece = mock(PawnPiece.class);
-        when(piece.getColor())
+        when(pawnPiece.getColor())
             .thenReturn(Colors.WHITE);
-        when(piece.getPosition())
-            .thenReturn(sourcePosition);
-        when(piece.getType())
+        when(pawnPiece.getPosition())
+            .thenReturn(mock(Position.class));
+        when(pawnPiece.getType())
             .thenReturn(Piece.Type.PAWN);
 
         when(board.getPiece(anyString()))
-            .thenReturn(Optional.of(piece));
+            .thenReturn(Optional.of(pawnPiece));
 
         var targetPosition = mock(Position.class);
         when(board.getPosition(anyString()))
             .thenReturn(Optional.of(targetPosition));
 
-        var targetAction = spy(new PieceMoveAction<>(piece, targetPosition));
+        var targetAction = spy(new PieceMoveAction<>(pawnPiece, targetPosition));
         doCallRealMethod()
             .when(targetAction).getType();
         doCallRealMethod()

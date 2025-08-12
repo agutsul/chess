@@ -3,30 +3,43 @@ package com.agutsul.chess.ai;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.agutsul.chess.activity.action.Action;
 
 @ExtendWith(MockitoExtension.class)
 public class CompositeResultMatcherTest {
 
-    @Test
+    @Mock
+    TaskResult<Action<?>,Integer> taskResult;
+    @Mock
+    ResultMatcher<Action<?>,Integer,TaskResult<Action<?>,Integer>> matcher1;
+    @Mock
+    ResultMatcher<Action<?>,Integer,TaskResult<Action<?>,Integer>> matcher2;
+
+    CompositeResultMatcher<Action<?>,Integer,TaskResult<Action<?>,Integer>> matcher;
+
+    @BeforeEach
     @SuppressWarnings("unchecked")
+    void setUp() {
+        matcher = new CompositeResultMatcher<>(matcher1, matcher2);
+    }
+
+    @Test
     void testFirstMatcherMatch() {
-        var matcher1 = mock(ResultMatcher.class);
         when(matcher1.match(any()))
             .thenReturn(true);
 
-        var matcher2 = mock(ResultMatcher.class);
-
-        var matcher = new CompositeResultMatcher<>(matcher1, matcher2);
-        var result = matcher.match(mock(TaskResult.class));
+        var result = matcher.match(taskResult);
         assertTrue(result);
 
         verify(matcher1, times(1)).match(any());
@@ -34,18 +47,14 @@ public class CompositeResultMatcherTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testSecondMatcherMatch() {
-        var matcher1 = mock(ResultMatcher.class);
         when(matcher1.match(any()))
             .thenReturn(false);
 
-        var matcher2 = mock(ResultMatcher.class);
         when(matcher2.match(any()))
             .thenReturn(true);
 
-        var matcher = new CompositeResultMatcher<>(matcher1, matcher2);
-        var result = matcher.match(mock(TaskResult.class));
+        var result = matcher.match(taskResult);
         assertTrue(result);
 
         verify(matcher1, times(1)).match(any());
@@ -53,18 +62,14 @@ public class CompositeResultMatcherTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testNoMatcherMatch() {
-        var matcher1 = mock(ResultMatcher.class);
         when(matcher1.match(any()))
             .thenReturn(false);
 
-        var matcher2 = mock(ResultMatcher.class);
         when(matcher2.match(any()))
             .thenReturn(false);
 
-        var matcher = new CompositeResultMatcher<>(matcher1, matcher2);
-        var result = matcher.match(mock(TaskResult.class));
+        var result = matcher.match(taskResult);
         assertFalse(result);
 
         verify(matcher1, times(1)).match(any());

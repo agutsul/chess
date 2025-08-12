@@ -1,6 +1,7 @@
 package com.agutsul.chess.piece.cache;
 
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -79,11 +80,9 @@ public class PieceCacheImplTest {
         assertTrue(cache.getActive(nonEmptyPosition).isPresent());
     }
 
-    @SuppressWarnings("unchecked")
     private static Collection<Piece<?>> createPieces() {
         var board = new StandardBoard();
-        Collection<?> pieces = board.getPieces();
-
-        return (Collection<Piece<?>>) pieces;
-    }
+        return board.getPieces().stream()
+                .collect(toList());
+        }
 }
