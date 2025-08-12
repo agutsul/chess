@@ -84,5 +84,5 @@ public class PieceCacheImplTest {
         var board = new StandardBoard();
         return board.getPieces().stream()
                 .collect(toList());
-        }
+    }
 }
