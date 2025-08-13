@@ -10,7 +10,6 @@ import org.junit.jupiter.api.AutoClose;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -24,20 +23,21 @@ import com.agutsul.chess.journal.Journal;
 public class BoardStateEvaluatorImplTest {
 
     @AutoClose
-    ExecutorService executor = Executors.newFixedThreadPool(10);
+    ExecutorService executor = Executors.newFixedThreadPool(2);
 
     @Mock
     AbstractBoard board;
     @Mock
     Journal<ActionMemento<?,?>> journal;
 
-    @InjectMocks
-    BoardStateEvaluatorImpl boardStateEvaluator;
+    BoardStateEvaluator<BoardState> boardStateEvaluator;
 
     @BeforeEach
     void setUp() {
         when(board.getExecutorService())
             .thenReturn(executor);
+
+        boardStateEvaluator = new BoardStateEvaluatorImpl(board, journal);
     }
 
     @Test
