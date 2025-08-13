@@ -5,6 +5,8 @@ import static com.agutsul.chess.activity.action.Action.isCastling;
 import static com.agutsul.chess.activity.action.Action.isEnPassant;
 import static com.agutsul.chess.activity.action.Action.isMove;
 import static com.agutsul.chess.activity.action.Action.isPromote;
+import static com.agutsul.chess.activity.action.memento.ActionMementoFactory.createMemento;
+import static com.agutsul.chess.activity.action.memento.CancelActionMementoFactory.createAction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -50,13 +52,13 @@ public class CancelActionMementoFactoryTest {
                 .findFirst()
                 .get();
 
-        var memento = ActionMementoFactory.createMemento(board, moveAction);
+        var memento = createMemento(board, moveAction);
 
         moveAction.execute();
 
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
-        var cancelAction = CancelActionMementoFactory.createAction(board, memento);
+        var cancelAction = createAction(board, memento);
 
         assertTrue(isMove(cancelAction));
         assertEquals(sourcePosition, cancelAction.getPosition());
@@ -82,13 +84,13 @@ public class CancelActionMementoFactoryTest {
                 .findFirst()
                 .get();
 
-        var memento = ActionMementoFactory.createMemento(board, captureAction);
+        var memento = createMemento(board, captureAction);
 
         captureAction.execute();
 
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
 
-        var cancelAction = CancelActionMementoFactory.createAction(board, memento);
+        var cancelAction = createAction(board, memento);
 
         assertTrue(isCapture(cancelAction));
         assertEquals(targetPosition, cancelAction.getPosition());
@@ -112,7 +114,7 @@ public class CancelActionMementoFactoryTest {
                 .findFirst()
                 .get();
 
-        var memento = ActionMementoFactory.createMemento(board, promoteAction);
+        var memento = createMemento(board, promoteAction);
 
         promoteAction.execute();
 
@@ -120,7 +122,7 @@ public class CancelActionMementoFactoryTest {
 
         var queen = board.getPiece(targetPosition).get();
 
-        var cancelAction = CancelActionMementoFactory.createAction(board, memento);
+        var cancelAction = createAction(board, memento);
 
         assertTrue(isPromote(cancelAction));
         assertEquals(sourcePosition, cancelAction.getPosition());
@@ -151,7 +153,7 @@ public class CancelActionMementoFactoryTest {
                 .findFirst()
                 .get();
 
-        var memento = ActionMementoFactory.createMemento(board, promoteAction);
+        var memento = createMemento(board, promoteAction);
 
         promoteAction.execute();
 
@@ -162,7 +164,7 @@ public class CancelActionMementoFactoryTest {
         var queen = board.getPiece(targetPosition).get();
         assertTrue(queen.isActive());
 
-        var cancelAction = CancelActionMementoFactory.createAction(board, memento);
+        var cancelAction = createAction(board, memento);
 
         assertTrue(isPromote(cancelAction));
         assertTrue(isCapture((Action<?>) cancelAction.getSource()));
@@ -186,13 +188,13 @@ public class CancelActionMementoFactoryTest {
                 .findFirst()
                 .get();
 
-        var memento = ActionMementoFactory.createMemento(board, castlingAction);
+        var memento = createMemento(board, castlingAction);
 
         castlingAction.execute();
 
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
-        var cancelAction = CancelActionMementoFactory.createAction(board, memento);
+        var cancelAction = createAction(board, memento);
 
         assertTrue(isCastling(cancelAction));
         assertEquals(Castlingable.Side.KING.name(), cancelAction.getCode());
@@ -221,13 +223,13 @@ public class CancelActionMementoFactoryTest {
                 .findFirst()
                 .get();
 
-        var memento = ActionMementoFactory.createMemento(board, enPassantAction);
+        var memento = createMemento(board, enPassantAction);
 
         enPassantAction.execute();
 
         ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
 
-        var cancelAction = CancelActionMementoFactory.createAction(board, memento);
+        var cancelAction = createAction(board, memento);
 
         assertTrue(isEnPassant(cancelAction));
 

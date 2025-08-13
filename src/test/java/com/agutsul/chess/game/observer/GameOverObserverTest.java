@@ -1,17 +1,16 @@
 package com.agutsul.chess.game.observer;
 
+import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.StandardBoard;
@@ -23,12 +22,14 @@ import com.agutsul.chess.player.UserPlayer;
 @ExtendWith(MockitoExtension.class)
 public class GameOverObserverTest {
 
+    @Spy
+    StandardBoard board = new StandardBoard();
+
     @Test
     void testGameOverEvent() {
-        var whitePlayer = new UserPlayer(UUID.randomUUID().toString(), Colors.WHITE);
-        var blackPlayer = new UserPlayer(UUID.randomUUID().toString(), Colors.BLACK);
+        var whitePlayer = new UserPlayer(String.valueOf(randomUUID()), Colors.WHITE);
+        var blackPlayer = new UserPlayer(String.valueOf(randomUUID()), Colors.BLACK);
 
-        var board = spy(new StandardBoard());
         doCallRealMethod()
             .when(board).notifyObservers(any());
 

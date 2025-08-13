@@ -2,11 +2,11 @@ package com.agutsul.chess.board.state;
 
 import static com.agutsul.chess.board.state.BoardStateFactory.threeFoldRepetitionBoardState;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.action.memento.ActionMemento;
@@ -16,13 +16,15 @@ import com.agutsul.chess.color.Colors;
 @ExtendWith(MockitoExtension.class)
 public class ThreeFoldRepetitionBoardStateTest {
 
+    @Mock
+    ActionMemento<?,?> actionMemento;
+
     @Test
     void testGetActions() {
         var board = new LabeledBoardBuilder()
                 .withWhitePawn("a2")
                 .build();
 
-        var actionMemento = mock(ActionMemento.class);
         when(actionMemento.getColor())
             .thenReturn(Colors.WHITE);
 
@@ -38,7 +40,6 @@ public class ThreeFoldRepetitionBoardStateTest {
                 .withWhitePawn("a2")
                 .build();
 
-        var actionMemento = mock(ActionMemento.class);
         when(actionMemento.getColor())
             .thenReturn(Colors.WHITE);
 

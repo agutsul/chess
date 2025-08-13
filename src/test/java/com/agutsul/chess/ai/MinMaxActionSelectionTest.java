@@ -5,7 +5,6 @@ import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.concurrent.ForkJoinPool;
@@ -13,6 +12,7 @@ import java.util.concurrent.ForkJoinPool;
 import org.junit.jupiter.api.AutoClose;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.AbstractBoard;
@@ -28,6 +28,9 @@ public class MinMaxActionSelectionTest {
 
     @AutoClose
     ForkJoinPool forkJoinPool = new ForkJoinPool(2);
+
+    @Mock
+    AbstractBoard board;
 
     @Test
     void testActionSelection() {
@@ -56,7 +59,6 @@ public class MinMaxActionSelectionTest {
         var whitePlayer = new UserPlayer(randomUUID().toString(), Colors.WHITE);
         var blackPlayer = new UserPlayer(randomUUID().toString(), Colors.BLACK);
 
-        var board = mock(AbstractBoard.class);
         when(board.getPieces(any(Color.class)))
             .thenReturn(emptyList());
 

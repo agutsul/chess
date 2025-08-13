@@ -46,6 +46,8 @@ public class JournalImplTest implements TestFileReader {
 
     @Mock
     Board board;
+    @Mock
+    Observable observable;
 
     @Test
     void testAddMemento() {
@@ -148,7 +150,7 @@ public class JournalImplTest implements TestFileReader {
         var position = positionOf("e8");
         var action = new PiecePromoteAction<>(
                 new PieceMoveAction<>(pawn, position),
-                mock(Observable.class)
+                observable
         );
 
         var memento = spy(createMemento(board, action));

@@ -1,6 +1,7 @@
 package com.agutsul.chess.activity.action;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Objects;
 
@@ -34,6 +35,8 @@ public class CancelBigMoveActionTest {
                 .filter(Action::isBigMove)
                 .filter(action -> Objects.equals(action.getPosition(), targetPosition))
                 .findFirst();
+
+        assertTrue(bigMoveAction.isPresent());
 
         bigMoveAction.get().execute();
 

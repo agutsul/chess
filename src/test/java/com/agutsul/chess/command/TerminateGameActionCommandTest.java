@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.action.event.ActionTerminatedEvent;
@@ -27,10 +28,12 @@ import com.agutsul.chess.player.UserPlayer;
 @ExtendWith(MockitoExtension.class)
 public class TerminateGameActionCommandTest {
 
+    @Mock
+    AbstractPlayableGame game;
+
     @Test
     void testTerminateGameCommand() {
         var board = new LabeledBoardBuilder().build();
-        var game = mock(AbstractPlayableGame.class);
         when(game.getBoard())
             .thenReturn(board);
 
@@ -54,7 +57,6 @@ public class TerminateGameActionCommandTest {
         doThrow(new RuntimeException("test"))
             .when(board).setState(any());
 
-        var game = mock(AbstractPlayableGame.class);
         when(game.getBoard())
             .thenReturn(board);
 

@@ -4,7 +4,6 @@ import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -35,6 +34,8 @@ public class SimulationActionInputObserverTest {
     Game game;
     @Mock
     Player player;
+    @Mock
+    Observable observable;
     @Mock
     SelectionStrategy<Action<?>> selectionStrategy;
 
@@ -71,7 +72,7 @@ public class SimulationActionInputObserverTest {
         var piece = (PawnPiece<Color>) board.getPiece("e7").get();
         var promoteAction = new PiecePromoteAction<>(
                 new PieceMoveAction<>(piece, positionOf("e8")),
-                mock(Observable.class)
+                observable
         );
 
         when(selectionStrategy.select(any()))

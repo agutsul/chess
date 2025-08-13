@@ -2,7 +2,6 @@ package com.agutsul.chess.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.util.concurrent.ForkJoinPool;
@@ -28,11 +27,13 @@ public class SimulateGameActionCommandTest {
     Journal<ActionMemento<?,?>> journal;
     @Mock
     Action<?> action;
+    @Mock
+    ForkJoinPool forkJoinPool;
 
     @Test
     void testPreExecute() throws CommandException, IOException {
         try (var command = new SimulateGameActionCommand<>(board, journal,
-                mock(ForkJoinPool.class), Colors.WHITE, action)) {
+                forkJoinPool, Colors.WHITE, action)) {
 
             var thrown = assertThrows(
                     IllegalStateException.class,

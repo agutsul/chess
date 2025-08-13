@@ -39,8 +39,7 @@ public class CompositeResultMatcherTest {
         when(matcher1.match(any()))
             .thenReturn(true);
 
-        var result = matcher.match(taskResult);
-        assertTrue(result);
+        assertTrue(matcher.match(taskResult));
 
         verify(matcher1, times(1)).match(any());
         verify(matcher2, never()).match(any());
@@ -54,8 +53,7 @@ public class CompositeResultMatcherTest {
         when(matcher2.match(any()))
             .thenReturn(true);
 
-        var result = matcher.match(taskResult);
-        assertTrue(result);
+        assertTrue(matcher.match(taskResult));
 
         verify(matcher1, times(1)).match(any());
         verify(matcher2, times(1)).match(any());
@@ -69,8 +67,7 @@ public class CompositeResultMatcherTest {
         when(matcher2.match(any()))
             .thenReturn(false);
 
-        var result = matcher.match(taskResult);
-        assertFalse(result);
+        assertFalse(matcher.match(taskResult));
 
         verify(matcher1, times(1)).match(any());
         verify(matcher2, times(1)).match(any());

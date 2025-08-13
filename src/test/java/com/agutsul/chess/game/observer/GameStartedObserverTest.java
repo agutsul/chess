@@ -1,9 +1,8 @@
 package com.agutsul.chess.game.observer;
 
+import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-
-import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,8 +21,8 @@ public class GameStartedObserverTest {
 
     @Test
     void testGameStartedEvent() {
-        var whitePlayer = new UserPlayer(UUID.randomUUID().toString(), Colors.WHITE);
-        var blackPlayer = new UserPlayer(UUID.randomUUID().toString(), Colors.BLACK);
+        var whitePlayer = new UserPlayer(String.valueOf(randomUUID()), Colors.WHITE);
+        var blackPlayer = new UserPlayer(String.valueOf(randomUUID()), Colors.BLACK);
 
         var game = new InitialGameMock(whitePlayer, blackPlayer, new StandardBoard());
 

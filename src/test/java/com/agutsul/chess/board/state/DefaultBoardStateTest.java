@@ -19,7 +19,8 @@ public class DefaultBoardStateTest {
                 .withWhitePawn("a2")
                 .build();
 
-        assertTrue(board.getState() instanceof DefaultBoardState);
+        var boardState = board.getState();
+        assertTrue(boardState instanceof DefaultBoardState);
 
         var whitePawn = board.getPiece("a2").get();
         var pawnActions = board.getActions(whitePawn);
