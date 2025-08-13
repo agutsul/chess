@@ -44,14 +44,8 @@ public class PromoteActionAdapterTest {
 
         for (var action : actions) {
             assertEquals(moveAction, action.getSource());
-
             assertTrue(action instanceof SimulatedPiecePromoteAction<?,?>);
-
-            var simulatedAction = (SimulatedPiecePromoteAction<?,?>) action;
-
-            assertNotNull(simulatedAction.getPieceType());
-            assertNotEquals(Piece.Type.PAWN, simulatedAction.getPieceType());
-            assertNotEquals(Piece.Type.KING, simulatedAction.getPieceType());
+            assertSimulatedAction((SimulatedPiecePromoteAction<?,?>) action);
         }
     }
 
@@ -66,14 +60,15 @@ public class PromoteActionAdapterTest {
 
         for (var action : actions) {
             assertEquals(captureAction, action.getSource());
-
             assertTrue(action instanceof SimulatedPiecePromoteAction<?,?>);
-
-            var simulatedAction = (SimulatedPiecePromoteAction<?,?>) action;
-
-            assertNotNull(simulatedAction.getPieceType());
-            assertNotEquals(Piece.Type.PAWN, simulatedAction.getPieceType());
-            assertNotEquals(Piece.Type.KING, simulatedAction.getPieceType());
+            assertSimulatedAction((SimulatedPiecePromoteAction<?,?>) action);
         }
+    }
+
+    private static void assertSimulatedAction(SimulatedPiecePromoteAction<?,?> action) {
+        assertNotNull(action.getPieceType());
+
+        assertNotEquals(Piece.Type.PAWN, action.getPieceType());
+        assertNotEquals(Piece.Type.KING, action.getPieceType());
     }
 }
