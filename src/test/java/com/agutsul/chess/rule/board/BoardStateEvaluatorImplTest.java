@@ -23,7 +23,7 @@ import com.agutsul.chess.journal.Journal;
 public class BoardStateEvaluatorImplTest {
 
     @AutoClose
-    ExecutorService executor = Executors.newSingleThreadExecutor();
+    ExecutorService executor = Executors.newFixedThreadPool(2);
 
     @Mock
     AbstractBoard board;
