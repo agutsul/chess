@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.winner;
 
+import static com.agutsul.chess.ai.SelectionStrategy.Type.ALPHA_BETA;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.INSUFFICIENT_MATERIAL;
 import static com.agutsul.chess.board.state.BoardState.Type.TIMEOUT;
@@ -12,7 +13,6 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.ai.ActionSelectionStrategy;
-import com.agutsul.chess.ai.SelectionStrategy;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.CompositeBoardState;
 import com.agutsul.chess.board.state.InsufficientMaterialBoardState;
@@ -39,7 +39,7 @@ public final class ActionTimeoutWinnerEvaluator
         var boardState = board.getState();
 
         if (boardState.isType(TIMEOUT)) {
-            var opponentPlayer = game.getPlayer(this.player.getColor().invert());
+            var opponentPlayer = game.getPlayer(player.getColor().invert());
 
             var opponentBoardState = board.getState(opponentPlayer.getColor());
             if (opponentBoardState == null) {
@@ -53,24 +53,14 @@ public final class ActionTimeoutWinnerEvaluator
                 return null;
             }
 
-            try (var forkJoinPool = new ForkJoinPool()) {
-                var selectionStrategy = new ActionSelectionStrategy(
-                        board, game.getJournal(), forkJoinPool, SelectionStrategy.Type.ALPHA_BETA
+            // check if any opponent's checkmate action flow exists
+            if (!isCheckMateAvailable(game, opponentPlayer)) {
+                // so opponent is unable to win and the best result is a draw
+                LOGGER.info("{} Player '{}' unable to checkmate: draw",
+                        opponentPlayer.getColor(), opponentPlayer.getName()
                 );
 
-                // check if any opponent's checkmate action flow exists
-                var opponentCheckMateAction = selectionStrategy.select(
-                        opponentPlayer.getColor(), CHECK_MATED
-                );
-
-                if (opponentCheckMateAction.isEmpty()) {
-                    // so opponent is unable to win and the best result is a draw
-                    LOGGER.info("{} Player '{}' unable to checkmate: draw",
-                            opponentPlayer.getColor(), opponentPlayer.getName()
-                    );
-
-                    return null;
-                }
+                return null;
             }
 
             LOGGER.info("{} wins. Player '{}'",
@@ -100,5 +90,16 @@ public final class ActionTimeoutWinnerEvaluator
                 && Objects.equals(((InsufficientMaterialBoardState) boardState).getPattern(), pattern);
 
         return isInsufficientMaterial;
+    }
+
+    private static boolean isCheckMateAvailable(Game game, Player player) {
+        try (var forkJoinPool = new ForkJoinPool()) {
+            var selectionStrategy = new ActionSelectionStrategy(
+                    game.getBoard(), game.getJournal(), forkJoinPool, ALPHA_BETA
+            );
+
+            var checkMateAction = selectionStrategy.select(player.getColor(), CHECK_MATED);
+            return checkMateAction.isPresent();
+        }
     }
 }
