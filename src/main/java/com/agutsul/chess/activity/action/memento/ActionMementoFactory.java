@@ -5,8 +5,10 @@ import static java.util.function.Function.identity;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toMap;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -25,7 +27,7 @@ public enum ActionMementoFactory {
     INSTANCE;
 
     public static ActionMemento<?,?> createMemento(Board board, Action<?> action) {
-        var memento = FactoryMode.MODES.get(action.getType()).apply(action);
+        ActionMemento<?,?> memento = FactoryMode.MODES.get(action.getType()).apply(action);
         if (isCastling(action)) {
             return memento;
         }
@@ -36,32 +38,21 @@ public enum ActionMementoFactory {
 
         var sourcePiece = action.getPiece();
 
-        var allPieces = board.getPieces(sourcePiece.getColor(), sourcePiece.getType());
-        if (allPieces.size() == 1) {
+        var similarPieces = board.getPieces(sourcePiece.getColor(), sourcePiece.getType());
+        if (similarPieces.size() == 1) {
             return memento;
         }
 
         var targetPosition = action.getPosition();
-        var optionalMemento = allPieces.stream()
+        Optional<ActionMemento<?,?>> decoratedMemento = similarPieces.stream()
                 .filter(piece -> !Objects.equals(piece, sourcePiece))
-                .filter(piece -> {
-                    var actions = board.getActions(piece);
-                    var isFound = actions.stream()
-                            .filter(not(Action::isCastling))
-                            .map(Action::getPosition)
-                            .anyMatch(position -> Objects.equals(position, targetPosition));
+                .filter(piece -> isPositionAccessible(board.getActions(piece), targetPosition))
+                .map(piece -> createCode(sourcePiece, piece.getPosition()))
+                .map(code -> new ActionMementoDecorator<>(memento, code))
+                .findFirst()
+                .map(actionMemento -> (ActionMemento<?,?>) actionMemento);
 
-                    return isFound;
-                })
-                .map(piece -> new ActionMementoDecorator<>(
-                        memento,
-                        createCode(sourcePiece, piece.getPosition())
-                ))
-                .findFirst();
-
-        return optionalMemento.isPresent()
-                ? optionalMemento.get()
-                : memento;
+        return decoratedMemento.orElse(memento);
     }
 
     private static String createCode(Piece<?> piece, Position position) {
@@ -73,6 +64,18 @@ public enum ActionMementoFactory {
                 : label.charAt(0); // x
 
         return String.valueOf(code);
+    }
+
+    private static boolean isPositionAccessible(Collection<Action<?>> actions,
+                                                Position targetPosition) {
+
+        var isAccessible = Stream.of(actions)
+                .flatMap(Collection::stream)
+                .filter(not(Action::isCastling))
+                .map(Action::getPosition)
+                .anyMatch(position -> Objects.equals(position, targetPosition));
+
+        return isAccessible;
     }
 
     private enum FactoryMode implements Function<Action<?>,ActionMemento<?,?>> {
