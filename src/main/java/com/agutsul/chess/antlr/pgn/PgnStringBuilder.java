@@ -3,13 +3,13 @@ package com.agutsul.chess.antlr.pgn;
 import static java.lang.System.lineSeparator;
 import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.RegExUtils.replaceAll;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.builder.Builder;
 
@@ -70,14 +70,14 @@ public final class PgnStringBuilder
         //  check if string contains: ' { [%eval 0.53] }'
         var evalMatcher = evalPattern.matcher(string);
         if (evalMatcher.find()) {
-            string = replaceAll((CharSequence) string, evalPattern, StringUtils.EMPTY);
+            string = replaceAll((CharSequence) string, evalPattern, EMPTY);
             string = Strings.CI.remove(string, " { [] }");
         }
 
         //  check if string contains: '1...'
         var dotsMatcher = dotsPattern.matcher(string);
         if (dotsMatcher.find()) {
-            string = replaceAll((CharSequence) string, dotsPattern, StringUtils.EMPTY);
+            string = replaceAll((CharSequence) string, dotsPattern, EMPTY);
         }
 
         return string;
