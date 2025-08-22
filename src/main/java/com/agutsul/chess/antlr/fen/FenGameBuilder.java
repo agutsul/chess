@@ -2,6 +2,7 @@ package com.agutsul.chess.antlr.fen;
 
 import static com.agutsul.chess.position.Position.codeOf;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isAllLowerCase;
 import static org.apache.commons.lang3.StringUtils.isAllUpperCase;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
@@ -11,6 +12,7 @@ import static org.apache.commons.lang3.math.NumberUtils.toInt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.board.Board;
@@ -35,7 +37,7 @@ import com.agutsul.chess.rule.action.AbstractCastlingActionRule.Castling;
 final class FenGameBuilder
         implements GameBuilder<FenGame<?>> {
 
-    private static final String DISABLE_ALL_SYMBOL = "-";
+    static final String DISABLE_ALL_SYMBOL = "-";
 
     private List<String> parsedBoardLines = new ArrayList<>();
 
@@ -51,7 +53,7 @@ final class FenGameBuilder
     public FenGame<?> build() {
         // reverse parsed lines to process board from position(0,0) and up to position(7,7)
         var board = createBoard(parsedBoardLines.reversed());
-        var playerColor = resolveColor(activeColor);
+        var playerColor = resolveColor(activeColor != null ? activeColor : EMPTY);
 
         var game = new FenGame<>(
                 createPlayer(Colors.WHITE), createPlayer(Colors.BLACK),
@@ -147,42 +149,41 @@ final class FenGameBuilder
     }
 
     private static Piece.Type resolvePieceType(String pieceCode) {
-        switch (lowerCase(pieceCode)) {
-        case "p":
-            return Piece.Type.PAWN;
-        case "n":
-            return Piece.Type.KNIGHT;
-        case "r":
-            return Piece.Type.ROOK;
-        case "b":
-            return Piece.Type.BISHOP;
-        case "q":
-            return Piece.Type.QUEEN;
-        case "k":
-            return Piece.Type.KING;
-        default:
+        return switch (lowerCase(pieceCode)) {
+        case "p" -> Piece.Type.PAWN;
+        case "n" -> Piece.Type.KNIGHT;
+        case "r" -> Piece.Type.ROOK;
+        case "b" -> Piece.Type.BISHOP;
+        case "q" -> Piece.Type.QUEEN;
+        case "k" -> Piece.Type.KING;
+        default  ->
             throw new IllegalArgumentException(String.format(
                     "Unsupported piece type: '%s'", pieceCode
             ));
-        }
+        };
     }
 
     private static Color resolveColor(String colorCode) {
-        switch (lowerCase(colorCode)) {
-        case "b":
-            return Colors.BLACK;
-        case "w":
-            return Colors.WHITE;
-        default:
+        return switch (lowerCase(colorCode)) {
+        case "b" -> Colors.BLACK;
+        case "w" -> Colors.WHITE;
+        default  ->
             throw new IllegalArgumentException(String.format(
                     "Unsupported player color: '%s'", colorCode
             ));
-        }
+        };
     }
 
     private static void enableCastlings(Board board, String castling) {
+        var allowedCastlings = List.of("k", "q", "K", "Q");
         for (int i = 0; i < castling.length(); i++) {
             var code = String.valueOf(castling.charAt(i));
+            if (!allowedCastlings.contains(code)) {
+                throw new IllegalArgumentException(String.format(
+                        "Unsupported castling: '%s'", code
+                ));
+            }
+
             toggleCastling(board,
                     isAllUpperCase(code) ? Colors.WHITE : Colors.BLACK,
                     Castling.of(code).side(),
@@ -208,6 +209,15 @@ final class FenGameBuilder
     }
 
     private static void enableEnPassant(Game game, Color color, String positionCode) {
+        var pattern = Pattern.compile("([a-h]{1}[3,6]{1}){1}");
+        var matcher = pattern.matcher(positionCode);
+
+        if (!matcher.matches()) {
+            throw new IllegalArgumentException(String.format(
+                    "Unsupported en-passante position: '%s'", positionCode
+            ));
+        }
+
         var board = game.getBoard();
 
         // en-passant selected position

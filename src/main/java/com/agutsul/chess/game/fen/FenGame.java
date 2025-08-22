@@ -32,10 +32,13 @@ public final class FenGame<T extends Game & Observable>
     public FenGame(Player whitePlayer, Player blackPlayer,
                    Board board, Color color, int halfMoves, int fullMoves) {
 
-        super(createGame(whitePlayer, blackPlayer, board, new FenJournal(Map.of(
-                Colors.WHITE, Colors.WHITE.equals(color) ? fullMoves : fullMoves + 1,
-                Colors.BLACK, fullMoves)),
-                System.in, color
+        super(createGame(whitePlayer, blackPlayer, board,
+                new FenJournal(Map.of(
+                        Colors.WHITE, Colors.WHITE.equals(color) ? fullMoves : fullMoves + 1,
+                        Colors.BLACK, fullMoves
+                )),
+                System.in,
+                color
         ));
 
         setParsedHalfMoves(halfMoves);
