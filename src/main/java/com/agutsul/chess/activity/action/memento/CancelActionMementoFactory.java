@@ -26,8 +26,7 @@ import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
-public enum CancelActionMementoFactory {
-    INSTANCE;
+public abstract class CancelActionMementoFactory {
 
     public static Action<?> createAction(Board board, ActionMemento<?,?> memento) {
         return FactoryMode.MODES.get(memento.getActionType()).apply(board, memento);

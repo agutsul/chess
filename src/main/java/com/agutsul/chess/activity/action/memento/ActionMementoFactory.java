@@ -23,8 +23,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
-public enum ActionMementoFactory {
-    INSTANCE;
+public abstract class ActionMementoFactory {
 
     public static ActionMemento<?,?> createMemento(Board board, Action<?> action) {
         ActionMemento<?,?> memento = FactoryMode.MODES.get(action.getType()).apply(action);
