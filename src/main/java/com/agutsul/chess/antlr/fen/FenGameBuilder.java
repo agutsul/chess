@@ -6,6 +6,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isAllLowerCase;
 import static org.apache.commons.lang3.StringUtils.isAllUpperCase;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
+import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.apache.commons.lang3.math.NumberUtils.toInt;
 
@@ -37,9 +38,13 @@ import com.agutsul.chess.rule.action.AbstractCastlingActionRule.Castling;
 final class FenGameBuilder
         implements GameBuilder<FenGame<?>> {
 
+    private static final String BOARD_LINE_PATTERN = "([p,P,n,N,b,B,r,R,q,Q,k,K,1-8]){1,8}";
+    private static final String CASTLING_PATTERN   = "([q,Q,k,K]){1,4}";
+    private static final String ENPASSANT_PATTERN  = "([a-h]{1}[3,6]{1}){1}";
+
     static final String DISABLE_ALL_SYMBOL = "-";
 
-    private List<String> parsedBoardLines = new ArrayList<>();
+    private final List<String> parsedBoardLines = new ArrayList<>();
 
     private String activeColor;
     private String activeCastling;
@@ -126,9 +131,26 @@ final class FenGameBuilder
     }
 
     private static Board createBoard(List<String> lines) {
+        if (lines.size() != Position.MAX) {
+            throw new IllegalArgumentException(String.format(
+                    "Unsupported board lines number: '%s'",
+                    join(lines, "/")
+            ));
+        }
+
+        var linePattern = Pattern.compile(BOARD_LINE_PATTERN);
+
         var boardBuilder = new PositionedBoardBuilder();
         for (int i = 0; i < lines.size(); i++) {
             var line = lines.get(i);
+
+            var matcher = linePattern.matcher(line);
+            if (!matcher.matches()) {
+                throw new IllegalArgumentException(String.format(
+                        "Unsupported board line: '%s'",
+                        line
+                ));
+            }
 
             for (int j = 0, k = 0; j < line.length() && k < Position.MAX; j++) {
                 var symbol = String.valueOf(line.charAt(j));
@@ -175,10 +197,12 @@ final class FenGameBuilder
     }
 
     private static void enableCastlings(Board board, String castling) {
-        var allowedCastlings = List.of("k", "q", "K", "Q");
+        var pattern = Pattern.compile(CASTLING_PATTERN);
         for (int i = 0; i < castling.length(); i++) {
             var code = String.valueOf(castling.charAt(i));
-            if (!allowedCastlings.contains(code)) {
+
+            var matcher = pattern.matcher(code);
+            if (!matcher.matches()) {
                 throw new IllegalArgumentException(String.format(
                         "Unsupported castling: '%s'", code
                 ));
@@ -209,7 +233,7 @@ final class FenGameBuilder
     }
 
     private static void enableEnPassant(Game game, Color color, String positionCode) {
-        var pattern = Pattern.compile("([a-h]{1}[3,6]{1}){1}");
+        var pattern = Pattern.compile(ENPASSANT_PATTERN);
         var matcher = pattern.matcher(positionCode);
 
         if (!matcher.matches()) {

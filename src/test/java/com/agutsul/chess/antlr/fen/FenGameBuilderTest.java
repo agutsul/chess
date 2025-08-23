@@ -2,6 +2,7 @@ package com.agutsul.chess.antlr.fen;
 
 import static com.agutsul.chess.antlr.fen.FenGameBuilder.DISABLE_ALL_SYMBOL;
 import static java.util.stream.Collectors.summingInt;
+import static org.apache.commons.lang3.StringUtils.reverse;
 import static org.apache.commons.lang3.StringUtils.split;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -84,6 +85,49 @@ public class FenGameBuilderTest implements TestFileReader {
         var actual = outputStream.toString();
 
         assertEquals(expected, actual);
+    }
+
+    @ParameterizedTest(name = "{index}. testInvalidBoardSize({0})")
+    @ValueSource(strings = { "", " / ", "8/8/8/8/8/8/8/8/8", "1/X", "1/0", "9/R" })
+    void testInvalidBoardSize(String boardLine) {
+        var builder = new FenGameBuilder();
+
+        Stream.of(split(boardLine, "/"))
+            .forEach(line -> builder.addBoardLine(line));
+
+        var thrown = assertThrows(
+                IllegalArgumentException.class,
+                () -> builder.build()
+        );
+
+        var expectedMessage = String.format(
+                "Unsupported board lines number: '%s'",
+                reverse(boardLine)
+        );
+
+        assertEquals(expectedMessage, thrown.getMessage());
+    }
+
+    @ParameterizedTest(name = "{index}. testInvalidBoardLine({0})")
+    @ValueSource(strings = { BOARD_LINE + "9", BOARD_LINE + "X" })
+    void testInvalidBoardLine(String boardLine) {
+        var builder = new FenGameBuilder();
+
+        var lines = split(boardLine, "/");
+        Stream.of(lines)
+            .forEach(line -> builder.addBoardLine(line));
+
+        var thrown = assertThrows(
+                IllegalArgumentException.class,
+                () -> builder.build()
+        );
+
+        var expectedMessage = String.format(
+                "Unsupported board line: '%s'",
+                lines[lines.length - 1]
+        );
+
+        assertEquals(expectedMessage, thrown.getMessage());
     }
 
     @ParameterizedTest(name = "{index}. testValidActiveColor({0})")
@@ -170,7 +214,7 @@ public class FenGameBuilderTest implements TestFileReader {
         assertEquals(expectedMessage, thrown.getMessage());
     }
 
-    @ParameterizedTest(name = "{index}. testValidEnPassant({1})")
+    @ParameterizedTest(name = "{index}. testValidEnPassant({1},{2})")
     @CsvSource({
         "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR,b,e3",
         "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR,w,c6"
