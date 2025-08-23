@@ -1,5 +1,6 @@
 package com.agutsul.chess.antlr.fen;
 
+import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.lang3.math.NumberUtils.toInt;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ final class FenAntlrListener
 
     @Override
     public List<FenGame<?>> getGames() {
-        return this.games;
+        return unmodifiableList(this.games);
     }
 
     @Override

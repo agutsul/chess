@@ -1,5 +1,6 @@
 package com.agutsul.chess.antlr.pgn;
 
+import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.lang3.StringUtils.strip;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ final class PgnAntlrListener
 
     @Override
     public List<PgnGame<?>> getGames() {
-        return this.games;
+        return unmodifiableList(this.games);
     }
 
     /**
