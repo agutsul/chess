@@ -2,6 +2,7 @@ package com.agutsul.chess.antlr.fen;
 
 import static com.agutsul.chess.position.Position.codeOf;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
+import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isAllLowerCase;
 import static org.apache.commons.lang3.StringUtils.isAllUpperCase;
@@ -13,7 +14,6 @@ import static org.apache.commons.lang3.math.NumberUtils.toInt;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.board.Board;
@@ -138,7 +138,7 @@ final class FenGameBuilder
             ));
         }
 
-        var linePattern = Pattern.compile(BOARD_LINE_PATTERN);
+        var linePattern = compile(BOARD_LINE_PATTERN);
 
         var boardBuilder = new PositionedBoardBuilder();
         for (int i = 0; i < lines.size(); i++) {
@@ -180,7 +180,8 @@ final class FenGameBuilder
         case "k" -> Piece.Type.KING;
         default  ->
             throw new IllegalArgumentException(String.format(
-                    "Unsupported piece type: '%s'", pieceCode
+                    "Unsupported piece type: '%s'",
+                    pieceCode
             ));
         };
     }
@@ -191,20 +192,22 @@ final class FenGameBuilder
         case "w" -> Colors.WHITE;
         default  ->
             throw new IllegalArgumentException(String.format(
-                    "Unsupported player color: '%s'", colorCode
+                    "Unsupported player color: '%s'",
+                    colorCode
             ));
         };
     }
 
     private static void enableCastlings(Board board, String castling) {
-        var pattern = Pattern.compile(CASTLING_PATTERN);
+        var pattern = compile(CASTLING_PATTERN);
         for (int i = 0; i < castling.length(); i++) {
             var code = String.valueOf(castling.charAt(i));
 
             var matcher = pattern.matcher(code);
             if (!matcher.matches()) {
                 throw new IllegalArgumentException(String.format(
-                        "Unsupported castling: '%s'", code
+                        "Unsupported castling: '%s'",
+                        code
                 ));
             }
 
@@ -233,12 +236,13 @@ final class FenGameBuilder
     }
 
     private static void enableEnPassant(Game game, Color color, String positionCode) {
-        var pattern = Pattern.compile(ENPASSANT_PATTERN);
+        var pattern = compile(ENPASSANT_PATTERN);
         var matcher = pattern.matcher(positionCode);
 
         if (!matcher.matches()) {
             throw new IllegalArgumentException(String.format(
-                    "Unsupported en-passante position: '%s'", positionCode
+                    "Unsupported en-passante position: '%s'",
+                    positionCode
             ));
         }
 
