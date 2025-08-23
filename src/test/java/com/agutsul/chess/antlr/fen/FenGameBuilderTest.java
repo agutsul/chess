@@ -259,4 +259,25 @@ public class FenGameBuilderTest implements TestFileReader {
         var expectedMessage = String.format("Unsupported en-passante position: '%s'", enPassant);
         assertEquals(expectedMessage, thrown.getMessage());
     }
+
+    @Test
+    void testUnsetEnPassant() {
+        var builder = new FenGameBuilder();
+
+        Stream.of(split("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR", "/"))
+            .forEach(line -> builder.addBoardLine(line));
+
+        builder.withActiveColor("w");
+        builder.withCastling(DISABLE_ALL_SYMBOL);
+        builder.withEnPassant("e3");
+        builder.withHalfMoves(0);
+        builder.withFullMoves(1);
+
+        var thrown = assertThrows(
+                IllegalArgumentException.class,
+                () -> builder.build()
+        );
+
+        assertEquals("En-passant enabled but not set", thrown.getMessage());
+    }
 }

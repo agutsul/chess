@@ -78,6 +78,10 @@ final class FenGameBuilder
         }
 
         if (activeEnPassant != null && !DISABLE_ALL_SYMBOL.equals(activeEnPassant)) {
+            if (enPassantPosition == null) {
+                throw new IllegalArgumentException("En-passant enabled but not set");
+            }
+
             // reset piece position and perform piece 'big move' action
             // to fill journal properly because en-passant action is based on journal
             enableEnPassant(game, playerColor.invert(), enPassantPosition);
