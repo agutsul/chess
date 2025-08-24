@@ -2,6 +2,7 @@ package com.agutsul.chess.antlr.pgn;
 
 import static java.lang.System.lineSeparator;
 import static org.apache.commons.lang3.StringUtils.join;
+import static org.apache.commons.lang3.StringUtils.split;
 import static org.apache.commons.lang3.StringUtils.strip;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -33,7 +34,7 @@ public final class PgnGameParser
         var gameStrings = new ArrayList<String>();
 
         var builder = new PgnStringBuilder();
-        for (var line : string.split(lineSeparator())) {
+        for (var line : split(string, lineSeparator())) {
             builder.append(strip(line));
 
             if (builder.isReady()) {
