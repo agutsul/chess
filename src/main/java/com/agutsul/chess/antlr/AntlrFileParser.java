@@ -20,7 +20,7 @@ public class AntlrFileParser<T extends Game>
 
     private static final Logger LOGGER = getLogger(AntlrFileParser.class);
 
-    private final AntlrParser<T,String> parser;
+    protected final AntlrParser<T,String> parser;
 
     public AntlrFileParser(AntlrParser<T,String> parser) {
         this.parser = parser;

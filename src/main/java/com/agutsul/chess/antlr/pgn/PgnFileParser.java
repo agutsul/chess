@@ -12,22 +12,20 @@ import java.util.List;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.antlr.AntlrParser;
+import com.agutsul.chess.antlr.AntlrFileParser;
 import com.agutsul.chess.game.pgn.PgnGame;
 
 public final class PgnFileParser
-        implements AntlrParser<PgnGame<?>,File> {
+        extends AntlrFileParser<PgnGame<?>> {
 
     private static final Logger LOGGER = getLogger(PgnFileParser.class);
-
-    private final AntlrParser<PgnGame<?>,String> parser;
 
     public PgnFileParser() {
         this(new PgnGameParser());
     }
 
     PgnFileParser(PgnGameParser parser) {
-        this.parser = parser;
+        super(parser);
     }
 
     @Override
