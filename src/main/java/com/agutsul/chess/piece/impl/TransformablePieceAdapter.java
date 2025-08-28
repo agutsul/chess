@@ -1,6 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
-import com.agutsul.chess.Stagnantable;
+import com.agutsul.chess.Stagnatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Demotable;
@@ -55,7 +55,7 @@ final class TransformablePieceAdapter<COLOR extends Color,
 
     @Override
     public boolean isStagnant() {
-        return ((Stagnantable) this.origin).isStagnant();
+        return ((Stagnatable) this.origin).isStagnant();
     }
 
     @Override

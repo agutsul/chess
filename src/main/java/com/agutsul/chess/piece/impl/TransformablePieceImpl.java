@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.Stagnantable;
+import com.agutsul.chess.Stagnatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Demotable;
@@ -178,7 +178,7 @@ final class TransformablePieceImpl<COLOR extends Color,
 
     @Override
     public boolean isStagnant() {
-        return ((Stagnantable) this.origin).isStagnant();
+        return ((Stagnatable) this.origin).isStagnant();
     }
 
     private void setState(PieceState<?> state) {

@@ -1,5 +1,5 @@
 package com.agutsul.chess;
 
-public interface Stagnantable {
+public interface Stagnatable {
     boolean isStagnant();
 }
