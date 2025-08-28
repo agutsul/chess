@@ -10,7 +10,7 @@ import java.util.concurrent.ForkJoinPool;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.Blockable;
+import com.agutsul.chess.Stagnantable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
@@ -159,7 +159,7 @@ final class InsufficientMaterialBoardStateEvaluator
         }
 
         private static boolean isLocked(Piece<?> piece) {
-            return ((Blockable) piece).isBlocked() || ((Pinnable) piece).isPinned();
+            return ((Stagnantable) piece).isStagnant() || ((Pinnable) piece).isPinned();
         }
     }
 

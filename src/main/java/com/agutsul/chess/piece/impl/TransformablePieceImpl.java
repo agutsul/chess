@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.Blockable;
+import com.agutsul.chess.Stagnantable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Demotable;
@@ -177,8 +177,8 @@ final class TransformablePieceImpl<COLOR extends Color,
     }
 
     @Override
-    public boolean isBlocked() {
-        return ((Blockable) this.origin).isBlocked();
+    public boolean isStagnant() {
+        return ((Stagnantable) this.origin).isStagnant();
     }
 
     private void setState(PieceState<?> state) {

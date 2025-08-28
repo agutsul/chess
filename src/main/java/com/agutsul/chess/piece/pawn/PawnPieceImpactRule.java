@@ -23,7 +23,7 @@ public final class PawnPieceImpactRule<COLOR extends Color,
                 new PawnProtectImpactRule<>(board, captureAlgo),
 //                new PawnMonitorImpactRule<>(board, captureAlgo),
                 new PawnControlImpactRule<>(board, captureAlgo),
-                new PawnBlockImpactRule<>(board, promotionLine),
+                new PawnStagnantImpactRule<>(board, promotionLine),
                 new PiecePinImpactRule<>(board)
             )
         );

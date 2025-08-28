@@ -10,7 +10,7 @@ public interface Impact<SOURCE>
         CONTROL,
         PROTECT,
         MONITOR,
-        BLOCK,
+        STAGNANT,
         PIN,
         CHECK
     }

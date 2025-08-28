@@ -10,29 +10,29 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 import com.agutsul.chess.activity.impact.Impact;
-import com.agutsul.chess.activity.impact.PieceBlockImpact;
+import com.agutsul.chess.activity.impact.PieceStagnantImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.AbstractRule;
-import com.agutsul.chess.rule.impact.BlockImpactRule;
+import com.agutsul.chess.rule.impact.StagnantImpactRule;
 
-class PawnBlockImpactRule<COLOR extends Color,
-                          PAWN extends PawnPiece<COLOR>,
-                          PIECE extends Piece<Color>>
-        extends AbstractRule<PAWN,PieceBlockImpact<COLOR,PAWN,PIECE>,Impact.Type>
-        implements BlockImpactRule<COLOR,PAWN,PIECE,PieceBlockImpact<COLOR,PAWN,PIECE>> {
+class PawnStagnantImpactRule<COLOR extends Color,
+                             PAWN extends PawnPiece<COLOR>,
+                             PIECE extends Piece<Color>>
+        extends AbstractRule<PAWN,PieceStagnantImpact<COLOR,PAWN,PIECE>,Impact.Type>
+        implements StagnantImpactRule<COLOR,PAWN,PIECE,PieceStagnantImpact<COLOR,PAWN,PIECE>> {
 
     private final int promotionLine;
 
-    public PawnBlockImpactRule(Board board, int promotionLine) {
-        super(board, Impact.Type.BLOCK);
+    public PawnStagnantImpactRule(Board board, int promotionLine) {
+        super(board, Impact.Type.STAGNANT);
         this.promotionLine = promotionLine;
     }
 
     @Override
-    public Collection<PieceBlockImpact<COLOR,PAWN,PIECE>> evaluate(PAWN pawn) {
+    public Collection<PieceStagnantImpact<COLOR,PAWN,PIECE>> evaluate(PAWN pawn) {
         var pawnPosition = pawn.getPosition();
 
         var possibleMovePositions = IntStream.rangeClosed(
@@ -46,7 +46,7 @@ class PawnBlockImpactRule<COLOR extends Color,
         var sameColorBlockImpacts = board.getPieces(pawn.getColor()).stream()
                 .filter(piece -> !Objects.equals(piece, pawn))
                 .filter(piece -> possibleMovePositions.contains(piece.getPosition()))
-                .map(piece -> new PieceBlockImpact<>(pawn, (PIECE) piece))
+                .map(piece -> new PieceStagnantImpact<>(pawn, (PIECE) piece))
                 .toList();
 
         @SuppressWarnings("unchecked")
@@ -62,10 +62,10 @@ class PawnBlockImpactRule<COLOR extends Color,
 
                     return isBlocked;
                 })
-                .map(piece -> new PieceBlockImpact<>(pawn, (PIECE) piece))
+                .map(piece -> new PieceStagnantImpact<>(pawn, (PIECE) piece))
                 .toList();
 
-        var impacts = new ArrayList<PieceBlockImpact<COLOR,PAWN,PIECE>>();
+        var impacts = new ArrayList<PieceStagnantImpact<COLOR,PAWN,PIECE>>();
 
         impacts.addAll(sameColorBlockImpacts);
         impacts.addAll(attackerBlockImpacts);
