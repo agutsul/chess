@@ -9,7 +9,7 @@ import com.agutsul.chess.position.Position;
 public class PieceProtectImpact<COLOR extends Color,
                                 PIECE1 extends Piece<COLOR> & Capturable,
                                 PIECE2 extends Piece<COLOR>>
-        extends AbstractTargetActivity<Impact.Type,PIECE1, PIECE2>
+        extends AbstractTargetActivity<Impact.Type,PIECE1,PIECE2>
         implements Impact<PIECE1> {
 
     public PieceProtectImpact(PIECE1 source, PIECE2 target) {
