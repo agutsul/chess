@@ -124,20 +124,19 @@ abstract class AbstractPgnActionAdapter
     boolean isActionAvailable(Piece<?> piece, String position) {
         // check if pinned piece action is inside checker's attack line
         var impacts = board.getImpacts(piece, Impact.Type.PIN);
-        var checkImpact = impacts.stream()
+        var pinImpact = impacts.stream()
                 .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
-                .map(PiecePinImpact::getTarget)
+                .filter(impact -> impact.isMode(PiecePinImpact.Mode.ABSOLUTE))
                 .findFirst()
                 .get();
 
-        var checkLine = checkImpact.getLine();
-        if (checkLine.isPresent()) {
-            var line = checkLine.get();
-            return line.contains(positionOf(position));
+        var checkLine = pinImpact.getLine();
+        if (checkLine != null) {
+            return checkLine.contains(positionOf(position));
         }
 
         // check if pinned piece action is capturing checker piece
-        var attacker = checkImpact.getSource();
+        var attacker = pinImpact.getAttacker();
         var pieceActions = piece.getActions(Action.Type.CAPTURE);
 
         // TODO: confirm that targetPiece is related to provided position

@@ -1,6 +1,8 @@
 package com.agutsul.chess.piece.impl;
 
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -9,8 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.board.StandardBoard;
+import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PiecePartialPinImpact;
+import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
+import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.Piece.Type;
@@ -106,5 +111,40 @@ public class QueenPieceImplTest extends AbstractPieceTest {
                 List.of("g7", "e7", "d6", "c5", "b4", "a3", "f7", "f6", "f5", "g8",
                         "f4", "f3", "f2", "f1", "a8", "b8", "c8", "d8", "e8", "h8"),
                 List.of("h6"));
+    }
+
+    @Test
+    void testQueenPartialPinImpact() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("f1")
+                .withWhiteRook("e1")
+                .withWhiteBishop("b2")
+                .withWhitePawn("d3")
+                .withBlackKing("e8")
+                .withBlackQueen("e4")
+                .withBlackBishop("c4")
+                .withBlackPawn("b7")
+                .build();
+
+        var blackQueen = board.getPiece("e4").get();
+        var pinImpacts  = board.getImpacts(blackQueen, Impact.Type.PIN);
+        assertFalse(pinImpacts.isEmpty());
+
+        var partialPinImpacts = pinImpacts.stream()
+                .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
+                .filter(PiecePinImpact::isPartial)
+                .map(impact -> (PiecePartialPinImpact<?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertFalse(partialPinImpacts.isEmpty());
+
+        var partialPinImpact = partialPinImpacts.getFirst();
+        assertTrue(partialPinImpact.isMode(PiecePinImpact.Mode.ABSOLUTE));
+
+        var blackKing = board.getPiece("e8").get();
+        var whiteRook = board.getPiece("e1").get();
+
+        assertEquals(blackKing, partialPinImpact.getDefended());
+        assertEquals(whiteRook, partialPinImpact.getAttacker());
     }
 }

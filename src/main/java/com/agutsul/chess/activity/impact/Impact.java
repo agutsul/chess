@@ -12,6 +12,7 @@ public interface Impact<SOURCE>
         MONITOR,
         STAGNANT,
         PIN,
-        CHECK
+        CHECK,
+        ATTACK
     }
 }

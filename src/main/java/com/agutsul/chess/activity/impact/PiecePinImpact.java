@@ -1,34 +1,63 @@
 package com.agutsul.chess.activity.impact;
 
+import java.util.Objects;
+
 import com.agutsul.chess.Capturable;
-import com.agutsul.chess.activity.AbstractTargetActivity;
+import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Line;
-import com.agutsul.chess.position.Position;
 
-public class PiecePinImpact<COLOR1 extends Color,
-                            COLOR2 extends Color,
-                            PIECE extends Piece<COLOR1>,
-                            KING extends KingPiece<COLOR1>,
-                            ATTACKER extends Piece<COLOR2> & Capturable>
-        extends AbstractTargetActivity<Impact.Type,
-                                       PIECE,
-                                       PieceCheckImpact<COLOR2,COLOR1,ATTACKER,KING>>
-        implements Impact<PIECE> {
+public interface PiecePinImpact<COLOR1 extends Color,
+                                COLOR2 extends Color,
+                                PINNED extends Piece<COLOR1> & Pinnable,
+                                DEFENDED extends Piece<COLOR1>,
+                                ATTACKER extends Piece<COLOR2> & Capturable>
+        extends Impact<PINNED> {
 
-    public PiecePinImpact(PIECE piece, KING king, ATTACKER attacker, Line line) {
-        super(Impact.Type.PIN, piece, new PieceCheckImpact<>(attacker, king, line));
+    enum Mode {
+        ABSOLUTE,
+        RELATIVE,
+        PARTIAL
     }
 
-    @Override
-    public final String toString() {
-        return String.format("%s{%s}", getSource(), getTarget());
+    default boolean isMode(Mode mode) {
+        return Objects.equals(getMode(), mode);
     }
 
-    @Override
-    public final Position getPosition() {
-        return getSource().getPosition();
+    Mode getMode();
+
+    Line getLine();
+
+    ATTACKER getAttacker();
+
+    PINNED getPinned();
+
+    DEFENDED getDefended();
+
+    // utilities
+
+    static boolean isAbsolute(PiecePinImpact<?,?,?,?,?> impact) {
+        return isAbsolute(impact.getMode());
+    }
+
+    static boolean isAbsolute(PiecePinImpact.Mode mode) {
+        return PiecePinImpact.Mode.ABSOLUTE.equals(mode);
+    }
+
+    static boolean isRelative(PiecePinImpact<?,?,?,?,?> impact) {
+        return isRelative(impact.getMode());
+    }
+
+    static boolean isRelative(PiecePinImpact.Mode mode) {
+        return PiecePinImpact.Mode.RELATIVE.equals(mode);
+    }
+
+    static boolean isPartial(PiecePinImpact<?,?,?,?,?> impact) {
+        return isPartial(impact.getMode());
+    }
+
+    static boolean isPartial(PiecePinImpact.Mode mode) {
+        return PiecePinImpact.Mode.PARTIAL.equals(mode);
     }
 }

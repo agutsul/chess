@@ -3,6 +3,7 @@ package com.agutsul.chess.piece.impl;
 import static com.agutsul.chess.piece.Piece.isPawn;
 import static com.agutsul.chess.piece.Piece.isQueen;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -21,6 +22,9 @@ import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
+import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PiecePartialPinImpact;
+import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
@@ -394,6 +398,41 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
         assertTrue(board2.getActions(blackPawn).isEmpty());
         assertTrue(board2.getImpacts(blackPawn).isEmpty());
+    }
+
+    @Test
+    void testPawnPartialPinImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e8")
+                .withBlackQueen("e4")
+                .withBlackBishop("c4")
+                .withBlackPawn("b7")
+                .withWhiteKing("f1")
+                .withWhiteRook("e1")
+                .withWhiteBishop("b2")
+                .withWhitePawn("d3")
+                .build();
+
+        var whitePawn = board.getPiece("d3").get();
+        var pinImpacts  = board.getImpacts(whitePawn, Impact.Type.PIN);
+        assertFalse(pinImpacts.isEmpty());
+
+        var partialPinImpacts = pinImpacts.stream()
+                .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
+                .filter(PiecePinImpact::isPartial)
+                .map(impact -> (PiecePartialPinImpact<?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertFalse(partialPinImpacts.isEmpty());
+
+        var partialPinImpact = partialPinImpacts.getFirst();
+        assertTrue(partialPinImpact.isMode(PiecePinImpact.Mode.ABSOLUTE));
+
+        var whiteKing   = board.getPiece("f1").get();
+        var blackBishop = board.getPiece("c4").get();
+
+        assertEquals(whiteKing,   partialPinImpact.getDefended());
+        assertEquals(blackBishop, partialPinImpact.getAttacker());
     }
 
     static void assertPawnEnPassantActions(Board board, Color color, Piece.Type type,

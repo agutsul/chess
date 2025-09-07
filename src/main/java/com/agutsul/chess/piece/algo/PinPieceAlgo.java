@@ -24,10 +24,10 @@ public final class PinPieceAlgo<COLOR extends Color,
     public PinPieceAlgo(Board board) {
         super(board);
         this.algo = new CompositePieceAlgo<>(board,
-                        new PinLineAlgo<>(board, new HorizontalLineAlgo<>(board)),
-                        new PinLineAlgo<>(board, new VerticalLineAlgo<>(board)),
-                        new PinDiagonalLineAlgo<>(board, new DiagonalLineAlgo<>(board))
-                    );
+                new PinLineAlgo<>(board, new HorizontalLineAlgo<>(board)),
+                new PinLineAlgo<>(board, new VerticalLineAlgo<>(board)),
+                new PinDiagonalLineAlgo<>(board, new DiagonalLineAlgo<>(board))
+        );
     }
 
     @Override

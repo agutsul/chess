@@ -35,17 +35,17 @@ public abstract class AbstractMonitorLineImpactRule<COLOR extends Color,
 
         var monitorLines = new ArrayList<Calculated>();
         for (var line : lines) {
-            var monitorPositions = new ArrayList<Position>();
+            var monitoredPositions = new ArrayList<Position>();
 
+            // positions behind opponent king
             var isKingFound = false;
-
             for (var position : line) {
-                var optionalPiece = board.getPiece(position);
-                if (!isKingFound && optionalPiece.isEmpty()) {
-                    continue;
-                }
-
                 if (!isKingFound) {
+                    var optionalPiece = board.getPiece(position);
+                    if (optionalPiece.isEmpty()) {
+                        continue;
+                    }
+
                     var foundPiece = optionalPiece.get();
                     if (foundPiece.getColor() != piece.getColor()) {
                         isKingFound = isKing(foundPiece);
@@ -54,11 +54,11 @@ public abstract class AbstractMonitorLineImpactRule<COLOR extends Color,
                     }
                 }
 
-                monitorPositions.add(position);
+                monitoredPositions.add(position);
             }
 
-            if (!monitorPositions.isEmpty()) {
-                monitorLines.add(new Line(monitorPositions));
+            if (!monitoredPositions.isEmpty()) {
+                monitorLines.add(new Line(monitoredPositions));
             }
         }
 

@@ -3,7 +3,10 @@ package com.agutsul.chess.position;
 import static org.apache.commons.lang3.StringUtils.join;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import org.apache.commons.collections4.CollectionUtils;
 
 public class Line
         extends ArrayList<Position>
@@ -19,6 +22,10 @@ public class Line
 
     public Line(List<Position> positions) {
         super(positions);
+    }
+
+    public boolean containsAny(Collection<Position> positions) {
+        return CollectionUtils.containsAny(this, positions);
     }
 
     @Override

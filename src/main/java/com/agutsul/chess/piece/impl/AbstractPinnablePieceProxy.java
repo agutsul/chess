@@ -4,6 +4,8 @@ import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -16,7 +18,6 @@ import com.agutsul.chess.Restorable;
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
-import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -58,6 +59,7 @@ abstract class AbstractPinnablePieceProxy<COLOR extends Color,
 
         var optionalPinImpact = pinImpacts.stream()
                 .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
+                .filter(impact -> impact.isMode(PiecePinImpact.Mode.ABSOLUTE))
                 .findFirst();
 
         if (optionalPinImpact.isEmpty()) {
@@ -66,9 +68,13 @@ abstract class AbstractPinnablePieceProxy<COLOR extends Color,
 
         logger.info("Filter pinned line actions for piece '{}'", this);
 
-        var pinImpact = optionalPinImpact.get();
         // return actions the on pinned line
-        var allowedActions = filter(actions, pinImpact.getTarget());
+        var allowedActions = Stream.of(optionalPinImpact)
+                .flatMap(Optional::stream)
+                .map(PiecePinImpact::getLine)
+                .flatMap(line -> actions.stream().filter(action -> line.contains(action.getPosition())))
+                .toList();
+
         if (!allowedActions.isEmpty()) {
             return allowedActions;
         }
@@ -90,23 +96,14 @@ abstract class AbstractPinnablePieceProxy<COLOR extends Color,
         var impacts = super.getImpacts(Impact.Type.PIN);
         var isPinned = impacts.stream()
                 .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
-                .anyMatch(impact -> Objects.equals(impact.getSource(), this));
+                .filter(impact -> impact.isMode(PiecePinImpact.Mode.ABSOLUTE))
+                .map(Impact::getSource)
+                .anyMatch(piece -> Objects.equals(piece, this));
 
         return isPinned;
     }
 
     // utility methods
-
-    private static Collection<Action<?>> filter(Collection<Action<?>> actions,
-                                                PieceCheckImpact<?,?,?,?> impact) {
-
-        var pinnedLine = impact.getLine();
-        var filtered = pinnedLine.stream()
-                .flatMap(line -> actions.stream().filter(action -> line.contains(action.getPosition())))
-                .toList();
-
-        return filtered;
-    }
 
     private static Collection<Action<?>> filter(Collection<Action<?>> actions, KingPiece<?> king) {
         Collection<Action<?>> checkActions = actions.stream()

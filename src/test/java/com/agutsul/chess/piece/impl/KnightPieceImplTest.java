@@ -1,6 +1,8 @@
 package com.agutsul.chess.piece.impl;
 
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -9,6 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PieceAbsolutePinImpact;
+import com.agutsul.chess.activity.impact.PiecePinImpact;
+import com.agutsul.chess.activity.impact.PieceRelativePinImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Colors;
@@ -83,5 +89,71 @@ public class KnightPieceImplTest extends AbstractPieceTest {
                 .build();
 
         assertPieceActions(board2, Colors.BLACK, KNIGHT_TYPE, "g8", List.of("f6", "e7"), List.of("h6"));
+    }
+
+    @Test
+    void testKnightRelativePinImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackRook("b8")
+                .withBlackKing("c8")
+                .withBlackKnight("e6")
+                .withWhiteKnight("b4")
+                .withWhiteQueen("b1")
+                .withWhiteBishop("f5")
+                .withWhiteKing("d1")
+                .build();
+
+        var whiteKnight = board.getPiece("b4").get();
+        var pinImpacts  = board.getImpacts(whiteKnight, Impact.Type.PIN);
+        assertFalse(pinImpacts.isEmpty());
+
+        var relativePinImpacts = pinImpacts.stream()
+                .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
+                .filter(PiecePinImpact::isRelative)
+                .map(impact -> (PieceRelativePinImpact<?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertFalse(relativePinImpacts.isEmpty());
+
+        var whiteQueen = board.getPiece("b1").get();
+        var blackRook  = board.getPiece("b8").get();
+
+        var relativePinImpact = relativePinImpacts.getFirst();
+
+        assertEquals(whiteQueen, relativePinImpact.getDefended());
+        assertEquals(blackRook,  relativePinImpact.getAttacker());
+    }
+
+    @Test
+    void testKnightAbsolutePinImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackRook("b8")
+                .withBlackKing("c8")
+                .withBlackKnight("e6")
+                .withWhiteKnight("b4")
+                .withWhiteQueen("b1")
+                .withWhiteBishop("f5")
+                .withWhiteKing("d1")
+                .build();
+
+        var blackKnight = board.getPiece("e6").get();
+        var pinImpacts  = board.getImpacts(blackKnight, Impact.Type.PIN);
+        assertFalse(pinImpacts.isEmpty());
+
+        var absolutePinImpacts = pinImpacts.stream()
+                .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
+                .filter(PiecePinImpact::isAbsolute)
+                .map(impact -> (PieceAbsolutePinImpact<?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertFalse(absolutePinImpacts.isEmpty());
+
+        var whiteBishop = board.getPiece("f5").get();
+        var blackKing   = board.getPiece("c8").get();
+
+        var relativePinImpact = absolutePinImpacts.getFirst();
+
+        assertEquals(blackKing,   relativePinImpact.getDefended());
+        assertEquals(whiteBishop, relativePinImpact.getAttacker());
     }
 }

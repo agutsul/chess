@@ -34,7 +34,6 @@ import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
-import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.activity.impact.PieceControlImpact;
 import com.agutsul.chess.activity.impact.PieceMonitorImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
@@ -413,17 +412,14 @@ final class BoardImpl extends AbstractBoard implements Closeable {
             var isBlocked = Stream.of(getImpacts(piece, Impact.Type.PIN))
                     .flatMap(Collection::stream)
                     .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
-                    .map(PiecePinImpact::getTarget)
-                    .filter(checkImpact -> Objects.equals(checkImpact.getTarget(), king))
-                    .map(PieceCheckImpact::getSource)
-                    .anyMatch(attacker -> {
-                        var monitoredPositions = getImpacts(attacker, Impact.Type.MONITOR).stream()
-                                .map(impact -> (PieceMonitorImpact<?,?>) impact)
-                                .map(PieceMonitorImpact::getPosition)
-                                .toList();
-
-                        return monitoredPositions.contains(position);
-                    });
+                    .filter(impact -> impact.isMode(PiecePinImpact.Mode.ABSOLUTE))
+                    .filter(impact -> Objects.equals(impact.getDefended(), king))
+                    .map(PiecePinImpact::getAttacker)
+                    .map(attacker -> getImpacts(attacker, Impact.Type.MONITOR))
+                    .flatMap(Collection::stream)
+                    .map(impact -> (PieceMonitorImpact<?,?>) impact)
+                    .map(PieceMonitorImpact::getPosition)
+                    .anyMatch(monitoredPosition -> Objects.equals(monitoredPosition, position));
 
             if (isBlocked) {
                 return false;
