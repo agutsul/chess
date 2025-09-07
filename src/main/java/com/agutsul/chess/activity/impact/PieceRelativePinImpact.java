@@ -12,10 +12,10 @@ public final class PieceRelativePinImpact<COLOR1 extends Color,
                                           DEFENDED extends Piece<COLOR1>,
                                           ATTACKER extends Piece<COLOR2> & Capturable>
         extends AbstractPiecePinImpact<COLOR1,COLOR2,PINNED,DEFENDED,ATTACKER,
-                                       PieceHiddenAttackImpact<COLOR2,COLOR1,ATTACKER,DEFENDED>> {
+                                       PieceAttackImpact<COLOR2,COLOR1,ATTACKER,DEFENDED>> {
 
     public PieceRelativePinImpact(PINNED piece, DEFENDED target, ATTACKER attacker, Line line) {
-        super(Mode.RELATIVE, piece, new PieceHiddenAttackImpact<>(attacker, target, line));
+        super(Mode.RELATIVE, piece, new PieceAttackImpact<>(attacker, target, line, true));
     }
 
     @Override
