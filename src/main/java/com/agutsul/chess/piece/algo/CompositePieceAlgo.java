@@ -1,8 +1,8 @@
 package com.agutsul.chess.piece.algo;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -13,21 +13,21 @@ public final class CompositePieceAlgo<COLOR extends Color,
                                       RESULT>
         extends AbstractAlgo<SOURCE,RESULT> {
 
-    private final List<Algo<SOURCE,Collection<RESULT>>> algos = new ArrayList<>();
+    private final List<Algo<SOURCE,Collection<RESULT>>> algos;
 
     @SuppressWarnings("unchecked")
     public CompositePieceAlgo(Board board,
                               Algo<SOURCE,Collection<RESULT>> algo,
                               Algo<SOURCE,Collection<RESULT>>... additionalAlgos) {
         super(board);
-
-        algos.add(algo);
-        algos.addAll(List.of(additionalAlgos));
+        this.algos = Stream.of(List.of(algo), List.of(additionalAlgos))
+                .flatMap(Collection::stream)
+                .toList();
     }
 
     @Override
     public Collection<RESULT> calculate(SOURCE source) {
-        var results = algos.stream()
+        var results = this.algos.stream()
                 .map(algo -> algo.calculate(source))
                 .flatMap(Collection::stream)
                 .toList();
