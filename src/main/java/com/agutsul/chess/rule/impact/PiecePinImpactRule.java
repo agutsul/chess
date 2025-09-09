@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Pinnable;
@@ -48,13 +49,14 @@ public class PiecePinImpactRule<COLOR1 extends Color,
 
     @Override
     public Collection<IMPACT> evaluate(PINNED piece) {
-        var pinImpacts = rule.evaluate(piece);
-        var positions = piece.getActions().stream()
+        var positions = Stream.of(piece.getActions())
+                .flatMap(Collection::stream)
                 .map(Action::getPosition)
                 .collect(toSet());
 
         @SuppressWarnings("unchecked")
-        Collection<IMPACT> impacts = pinImpacts.stream()
+        Collection<IMPACT> impacts = Stream.of(rule.evaluate(piece))
+                .flatMap(Collection::stream)
                 .map(impact -> {
                     var line = impact.getLine();
                     return line.containsAny(positions)
