@@ -6,6 +6,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.BishopPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.impact.PieceForkImpactRule;
 import com.agutsul.chess.rule.impact.PiecePinImpactRule;
 
 public final class BishopPieceImpactRule<COLOR extends Color,
@@ -23,7 +24,8 @@ public final class BishopPieceImpactRule<COLOR extends Color,
                 new BishopProtectImpactRule<>(board, algo),
                 new BishopMonitorImpactRule<>(board, algo),
                 new BishopControlImpactRule<>(board, algo),
-                new PiecePinImpactRule<>(board)
+                new PiecePinImpactRule<>(board),
+                new PieceForkImpactRule<>(board, algo)
             )
         );
     }

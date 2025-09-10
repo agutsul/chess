@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.piece.Piece.isQueen;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -12,8 +13,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PiecePartialPinImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
+import com.agutsul.chess.activity.impact.PieceRelativeForkImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Colors;
@@ -146,5 +149,52 @@ public class QueenPieceImplTest extends AbstractPieceTest {
 
         assertEquals(blackKing, partialPinImpact.getDefended());
         assertEquals(whiteRook, partialPinImpact.getAttacker());
+    }
+
+    @Test
+    void testQueenRelativeForkImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("g8")
+                .withBlackQueen("d7")
+                .withBlackRook("c8")
+                .withBlackKnight("b6")
+                .withBlackPawns("a6","b7","d5","f7","g7","h7")
+                .withWhiteKing("g1")
+                .withWhiteQueen("d4")
+                .withWhiteBishop("b2")
+                .withWhiteRook("e1")
+                .withWhitePawns("a2","b3","c2","f2","g2","h2")
+                .build();
+
+        var whiteQueen = board.getPiece("d4").get();
+        var forkImpacts = board.getImpacts(whiteQueen, Impact.Type.FORK);
+        assertFalse(forkImpacts.isEmpty());
+
+        var relativeForkImpacts = forkImpacts.stream()
+                .map(impact -> (PieceForkImpact<?,?,?,?>) impact)
+                .filter(PieceForkImpact::isRelative)
+                .map(impact -> (PieceRelativeForkImpact<?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertFalse(relativeForkImpacts.isEmpty());
+
+        assertEquals(1, relativeForkImpacts.size());
+
+        var relativeForkImpact = relativeForkImpacts.getFirst();
+
+        var forkedImpacts = relativeForkImpact.getTarget();
+        assertEquals(whiteQueen, relativeForkImpact.getSource());
+        assertEquals(3, forkedImpacts.size());
+
+        var attackedPieceTypes = List.of(Piece.Type.PAWN, Piece.Type.KNIGHT);
+        forkedImpacts.forEach(impact -> {
+            assertTrue(Impact.Type.ATTACK.equals(impact.getType()));
+            assertEquals(whiteQueen.getPosition(), impact.getPosition());
+
+            assertTrue(isQueen(impact.getSource()));
+            assertTrue(attackedPieceTypes.contains(impact.getTarget().getType()));
+
+            assertTrue(!impact.getLine().isEmpty());
+        });
     }
 }

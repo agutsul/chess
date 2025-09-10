@@ -6,6 +6,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.impact.PieceForkImpactRule;
 import com.agutsul.chess.rule.impact.PiecePinImpactRule;
 
 public final class QueenPieceImpactRule<COLOR extends Color,PIECE extends QueenPiece<COLOR>>
@@ -22,7 +23,8 @@ public final class QueenPieceImpactRule<COLOR extends Color,PIECE extends QueenP
                 new QueenProtectImpactRule<>(board, algo),
                 new QueenMonitorImpactRule<>(board, algo),
                 new QueenControlImpactRule<>(board, algo),
-                new PiecePinImpactRule<>(board)
+                new PiecePinImpactRule<>(board),
+                new PieceForkImpactRule<>(board, algo)
             )
         );
     }

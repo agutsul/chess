@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.piece.Piece.isBishop;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,8 +12,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.board.StandardBoard;
+import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
+import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
+import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.piece.BishopPiece;
@@ -137,5 +142,54 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         var whiteBishop = board.getPiece("e4").get();
         var bishopActions = board.getActions(whiteBishop);
         assertTrue(bishopActions.isEmpty());
+    }
+
+    @Test
+    void testBishopRelativeForkImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("h8")
+                .withBlackQueen("d7")
+                .withBlackRook("c8")
+                .withBlackKnight("b6")
+                .withBlackPawns("a6","b7","d5","f7","g6","h7")
+                .withWhiteKing("g1")
+                .withWhiteQueen("b2")
+                .withWhiteBishop("d4")
+                .withWhiteRook("e1")
+                .withWhitePawns("a2","b3","c2","f2","g2","h2")
+                .build();
+
+        var whiteBishop = board.getPiece("d4").get();
+        var forkImpacts = board.getImpacts(whiteBishop, Impact.Type.FORK);
+        assertFalse(forkImpacts.isEmpty());
+
+        var absoluteForkImpacts = forkImpacts.stream()
+                .map(impact -> (PieceForkImpact<?,?,?,?>) impact)
+                .filter(PieceForkImpact::isAbsolute)
+                .map(impact -> (PieceAbsoluteForkImpact<?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertFalse(absoluteForkImpacts.isEmpty());
+
+        assertEquals(1, absoluteForkImpacts.size());
+
+        var abssoluteForkImpact = absoluteForkImpacts.getFirst();
+
+        var forkedImpacts = abssoluteForkImpact.getTarget();
+        assertEquals(whiteBishop, abssoluteForkImpact.getSource());
+        assertEquals(2, forkedImpacts.size());
+
+        var attackedPieceTypes = List.of(Piece.Type.KING, Piece.Type.KNIGHT);
+        var impactTypes = List.of(Impact.Type.ATTACK, Impact.Type.CHECK);
+
+        forkedImpacts.forEach(impact -> {
+            assertTrue(impactTypes.contains(impact.getType()));
+            assertEquals(whiteBishop.getPosition(), impact.getPosition());
+
+            assertTrue(isBishop(impact.getSource()));
+            assertTrue(attackedPieceTypes.contains(impact.getTarget().getType()));
+
+            assertTrue(!impact.getLine().isEmpty());
+        });
     }
 }

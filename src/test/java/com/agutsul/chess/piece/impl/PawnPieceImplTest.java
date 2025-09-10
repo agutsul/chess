@@ -2,6 +2,7 @@ package com.agutsul.chess.piece.impl;
 
 import static com.agutsul.chess.piece.Piece.isPawn;
 import static com.agutsul.chess.piece.Piece.isQueen;
+import static com.agutsul.chess.piece.Piece.isRook;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,8 +24,10 @@ import com.agutsul.chess.activity.action.PieceEnPassantAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PiecePartialPinImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
+import com.agutsul.chess.activity.impact.PieceRelativeForkImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
@@ -433,6 +436,47 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
         assertEquals(whiteKing,   partialPinImpact.getDefended());
         assertEquals(blackBishop, partialPinImpact.getAttacker());
+    }
+
+    @Test
+    void testPawnRelativeForkImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("d7")
+                .withBlackRook("a8")
+                .withBlackPawn("g4")
+                .withWhiteKing("c1")
+                .withWhiteKnight("b6")
+                .withWhiteRooks("f3","h3")
+                .build();
+
+        var blackPawn = board.getPiece("g4").get();
+
+        var forkImpacts = board.getImpacts(blackPawn, Impact.Type.FORK);
+        assertFalse(forkImpacts.isEmpty());
+
+        var relativeForkImpacts = forkImpacts.stream()
+                .map(impact -> (PieceForkImpact<?,?,?,?>) impact)
+                .filter(PieceForkImpact::isRelative)
+                .map(impact -> (PieceRelativeForkImpact<?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertEquals(1, relativeForkImpacts.size());
+
+        var relativeForkImpact = relativeForkImpacts.getFirst();
+
+        var forkedImpacts = relativeForkImpact.getTarget();
+        assertEquals(blackPawn, relativeForkImpact.getSource());
+        assertEquals(2, forkedImpacts.size());
+
+        forkedImpacts.forEach(impact -> {
+            assertTrue(Impact.Type.ATTACK.equals(impact.getType()));
+            assertEquals(blackPawn.getPosition(), impact.getPosition());
+
+            assertTrue(isPawn(impact.getSource()));
+            assertTrue(isRook(impact.getTarget()));
+
+            assertTrue(impact.getLine().isEmpty());
+        });
     }
 
     static void assertPawnEnPassantActions(Board board, Color color, Piece.Type type,

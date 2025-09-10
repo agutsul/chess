@@ -13,6 +13,7 @@ public interface Impact<SOURCE>
         STAGNANT,
         PIN,
         CHECK,
-        ATTACK
+        ATTACK,
+        FORK
     }
 }

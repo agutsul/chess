@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.piece.Piece.isKnight;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -12,7 +13,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
 import com.agutsul.chess.activity.impact.PieceAbsolutePinImpact;
+import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.activity.impact.PieceRelativePinImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
@@ -155,5 +158,47 @@ public class KnightPieceImplTest extends AbstractPieceTest {
 
         assertEquals(blackKing,   relativePinImpact.getDefended());
         assertEquals(whiteBishop, relativePinImpact.getAttacker());
+    }
+
+    @Test
+    void testKnightAbsoluteForkImpact() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("c1")
+                .withWhiteKnight("b6")
+                .withWhiteRooks("f3","h3")
+                .withBlackKing("d7")
+                .withBlackRook("a8")
+                .withBlackPawn("g4")
+                .build();
+
+        var whiteKnight = board.getPiece("b6").get();
+
+        var forkImpacts = board.getImpacts(whiteKnight, Impact.Type.FORK);
+        assertFalse(forkImpacts.isEmpty());
+
+        var absoluteForkImpacts = forkImpacts.stream()
+                .map(impact -> (PieceForkImpact<?,?,?,?>) impact)
+                .filter(PieceForkImpact::isAbsolute)
+                .map(impact -> (PieceAbsoluteForkImpact<?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertEquals(1, absoluteForkImpacts.size());
+
+        var absoluteForkImpact = absoluteForkImpacts.getFirst();
+
+        var forkedImpacts = absoluteForkImpact.getTarget();
+        assertEquals(whiteKnight, absoluteForkImpact.getSource());
+        assertEquals(2, forkedImpacts.size());
+
+        var attackedPieceTypes = List.of(Piece.Type.KING, Piece.Type.ROOK);
+        var impactTypes = List.of(Impact.Type.ATTACK, Impact.Type.CHECK);
+
+        forkedImpacts.forEach(impact -> {
+            assertTrue(impactTypes.contains(impact.getType()));
+            assertEquals(whiteKnight.getPosition(), impact.getPosition());
+            assertTrue(isKnight(impact.getSource()));
+            assertTrue(attackedPieceTypes.contains(impact.getTarget().getType()));
+            assertTrue(impact.getLine().isEmpty());
+        });
     }
 }
