@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.piece.Piece.isRook;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -12,14 +14,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.Castlingable;
-import com.agutsul.chess.board.StandardBoard;
+import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
+import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
+import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.piece.Piece.Type;
+import com.agutsul.chess.piece.RookPiece;
 
 @ExtendWith(MockitoExtension.class)
 public class RookPieceImplTest extends AbstractPieceTest {
@@ -230,5 +235,45 @@ public class RookPieceImplTest extends AbstractPieceTest {
 
         assertTrue(board2.getActions(blackRook).isEmpty());
         assertTrue(board2.getImpacts(blackRook).isEmpty());
+    }
+
+    @Test
+    void testRookAbsoluteForkImpact() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("f6")
+                .withWhiteKnight("b6")
+                .withBlackKing("g3")
+                .withBlackRooks("d1","d6")
+                .build();
+
+        var blackRook = board.getPiece("d6").get();
+
+        var forkImpacts = board.getImpacts(blackRook, Impact.Type.FORK);
+        assertFalse(forkImpacts.isEmpty());
+
+        var absoluteForkImpacts = forkImpacts.stream()
+                .map(impact -> (PieceForkImpact<?,?,?,?>) impact)
+                .filter(PieceForkImpact::isAbsolute)
+                .map(impact -> (PieceAbsoluteForkImpact<?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertEquals(1, absoluteForkImpacts.size());
+
+        var absoluteForkImpact = absoluteForkImpacts.getFirst();
+
+        var forkedImpacts = absoluteForkImpact.getTarget();
+        assertEquals(blackRook, absoluteForkImpact.getSource());
+        assertEquals(2, forkedImpacts.size());
+
+        var attackedPieceTypes = List.of(Piece.Type.KING, Piece.Type.KNIGHT);
+        var impactTypes = List.of(Impact.Type.ATTACK, Impact.Type.CHECK);
+
+        forkedImpacts.forEach(impact -> {
+            assertTrue(impactTypes.contains(impact.getType()));
+            assertEquals(blackRook.getPosition(), impact.getPosition());
+            assertTrue(isRook(impact.getSource()));
+            assertTrue(attackedPieceTypes.contains(impact.getTarget().getType()));
+            assertTrue(!impact.getLine().isEmpty());
+        });
     }
 }
