@@ -191,20 +191,16 @@ public class PieceForkImpactRule<COLOR1 extends Color,
             var impacts = Stream.of(next)
                     .flatMap(Collection::stream)
                     .map(calculated -> (Line) calculated)
-                    .map(line -> {
-                        var optionalPiece = board.getPiece(line.getLast());
-                        if (optionalPiece.isPresent()) {
-                            var attackedPiece = optionalPiece.get();
-                            if (!Objects.equals(attackedPiece.getColor(), piece.getColor())) {
-                                return isKing(attackedPiece)
-                                        ? new PieceCheckImpact<>(piece, (KingPiece<Color>) attackedPiece, line)
-                                        : new PieceAttackImpact<>(piece, attackedPiece, line);
-                            }
-                        }
-
-                        return null;
-                    })
-                    .filter(Objects::nonNull)
+                    .map(line -> Stream.of(board.getPiece(line.getLast()))
+                            .flatMap(Optional::stream)
+                            .filter(attackedPiece -> !Objects.equals(attackedPiece.getColor(), piece.getColor()))
+                            .map(attackedPiece -> isKing(attackedPiece)
+                                    ? new PieceCheckImpact<>(piece, (KingPiece<Color>) attackedPiece, line)
+                                    : new PieceAttackImpact<>(piece, attackedPiece, line)
+                            )
+                            .findFirst()
+                    )
+                    .flatMap(Optional::stream)
                     .map(impact -> (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,PIECE>) impact)
                     .collect(toList());
 
