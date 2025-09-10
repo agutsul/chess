@@ -1,6 +1,8 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.piece.Piece.isKing;
 import static java.time.Instant.now;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -18,6 +20,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
+import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PieceForkImpact;
+import com.agutsul.chess.activity.impact.PieceRelativeForkImpact;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
@@ -474,5 +479,46 @@ public class KingPieceImplTest extends AbstractPieceTest {
         );
 
         assertTrue(Strings.CS.startsWith(thrown.getMessage(), "Unable to dispose KING piece at"));
+    }
+
+    @Test
+    void testKingRelativeForkImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("a5")
+                .withBlackBishop("d6")
+                .withBlackKnight("e6")
+                .withWhiteKing("d5")
+                .build();
+
+        var whiteKing = board.getPiece("d5").get();
+        var forkImpacts = board.getImpacts(whiteKing, Impact.Type.FORK);
+        assertFalse(forkImpacts.isEmpty());
+
+        var relativeForkImpacts = forkImpacts.stream()
+                .map(impact -> (PieceForkImpact<?,?,?,?>) impact)
+                .filter(PieceForkImpact::isRelative)
+                .map(impact -> (PieceRelativeForkImpact<?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertFalse(relativeForkImpacts.isEmpty());
+
+        assertEquals(1, relativeForkImpacts.size());
+
+        var relativeForkImpact = relativeForkImpacts.getFirst();
+
+        var forkedImpacts = relativeForkImpact.getTarget();
+        assertEquals(whiteKing, relativeForkImpact.getSource());
+        assertEquals(2, forkedImpacts.size());
+
+        var attackedPieceTypes = List.of(Piece.Type.BISHOP, Piece.Type.KNIGHT);
+        forkedImpacts.forEach(impact -> {
+            assertTrue(Impact.Type.ATTACK.equals(impact.getType()));
+            assertEquals(whiteKing.getPosition(), impact.getPosition());
+
+            assertTrue(isKing(impact.getSource()));
+            assertTrue(attackedPieceTypes.contains(impact.getTarget().getType()));
+
+            assertTrue(impact.getLine().isEmpty());
+        });
     }
 }
