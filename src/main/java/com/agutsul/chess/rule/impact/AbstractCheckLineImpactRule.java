@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.impact;
 
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public abstract class AbstractCheckLineImpactRule<COLOR1 extends Color,
         Collection<Calculated> checkLines = lines.stream()
                 .filter(line -> line.contains(king.getPosition()))
                 .map(line -> findCheckPositions(line, king))
-                .filter(positions -> !positions.isEmpty())
+                .filter(not(Collection::isEmpty))
                 .map(Line::new)
                 .collect(toList());
 
@@ -64,18 +65,17 @@ public abstract class AbstractCheckLineImpactRule<COLOR1 extends Color,
         var positions = new ArrayList<Position>();
         for (var position : line) {
             var optionalPiece = board.getPiece(position);
-            if (optionalPiece.isEmpty()) {
-                positions.add(position);
-                continue;
+            if (optionalPiece.isPresent()) {
+                if (Objects.equals(optionalPiece.get(), king)) {
+                    positions.add(position);
+                } else {
+                    positions.clear();
+                }
+
+                break;
             }
 
-            if (Objects.equals(optionalPiece.get(), king)) {
-                positions.add(position);
-                break;
-            } else {
-                positions.clear();
-                break;
-            }
+            positions.add(position);
         }
 
         return positions;
