@@ -20,6 +20,7 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.rule.AbstractRule;
 
+//https://en.wikipedia.org/wiki/Fork_(chess)
 abstract class AbstractForkImpactRule<COLOR1 extends Color,
                                       COLOR2 extends Color,
                                       ATTACKER extends Piece<COLOR1> & Capturable,
