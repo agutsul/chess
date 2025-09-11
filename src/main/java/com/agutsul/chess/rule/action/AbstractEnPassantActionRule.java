@@ -37,28 +37,25 @@ public abstract class AbstractEnPassantActionRule<COLOR1 extends Color,
 
         var actions = Stream.of(nextPositions)
                 .flatMap(Collection::stream)
-                .map(attackedPosition -> {
-                    var optionalPawn = findOpponentPawn(pawn, attackedPosition);
-                    if (optionalPawn.isEmpty()) {
-                        return null;
-                    }
+                .map(attackedPosition -> Stream.of(findOpponentPawn(pawn, attackedPosition))
+                        .flatMap(Optional::stream)
+                        .map(opponentPawn -> {
+                            // check if it was a big move for 2 positions
+                            var isBigStepAction = Stream.of(opponentPawn.getPositions())
+                                    .filter(visitedPositions -> visitedPositions.size() >= 2)
+                                    .map(visitedPositions -> visitedPositions.get(visitedPositions.size() - 2))
+                                    .map(previousPosition -> Math.abs(previousPosition.y() - opponentPawn.getPosition().y()))
+                                    .anyMatch(moveLength -> moveLength == PawnPiece.BIG_STEP_MOVE);
 
-                    var opponentPawn = optionalPawn.get();
-                    var visitedPositions = opponentPawn.getPositions();
-                    if (visitedPositions.size() < 2) {
-                        return null;
-                    }
-
-                    var previousPosition = visitedPositions.get(visitedPositions.size() - 2);
-                    var moveLength = Math.abs(previousPosition.y() - opponentPawn.getPosition().y());
-                    // check if it was a big move for 2 positions
-                    if (moveLength != PawnPiece.BIG_STEP_MOVE) {
-                        return null;
-                    }
-
-                    return createAction(pawn, opponentPawn, attackedPosition);
-                })
-                .filter(Objects::nonNull)
+                            return Optional.ofNullable(isBigStepAction
+                                   ? createAction(pawn, opponentPawn, attackedPosition)
+                                   : null
+                            );
+                        })
+                        .flatMap(Optional::stream)
+                        .findFirst()
+                )
+                .flatMap(Optional::stream)
                 .toList();
 
         return actions;
