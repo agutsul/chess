@@ -26,9 +26,9 @@ import com.agutsul.chess.position.Position;
 public final class PieceForkLineImpactRule<COLOR1 extends Color,
                                            COLOR2 extends Color,
                                            ATTACKER extends Piece<COLOR1> & Capturable,
-                                           PIECE extends Piece<COLOR2>,
-                                           IMPACT extends PieceForkImpact<COLOR1,COLOR2,ATTACKER,PIECE>>
-        extends AbstractForkImpactRule<COLOR1,COLOR2,ATTACKER,PIECE,IMPACT> {
+                                           PIECE extends Piece<COLOR2>>
+        extends AbstractForkImpactRule<COLOR1,COLOR2,ATTACKER,PIECE,
+                                       PieceForkImpact<COLOR1,COLOR2,ATTACKER,PIECE>> {
 
     private final CapturePieceAlgo<COLOR1,ATTACKER,Line> algo;
 

@@ -55,7 +55,7 @@ public class PiecePinImpactRule<COLOR1 extends Color,
                 .collect(toSet());
 
         @SuppressWarnings("unchecked")
-        Collection<IMPACT> impacts = Stream.of(rule.evaluate(piece))
+        var impacts = Stream.of(rule.evaluate(piece))
                 .flatMap(Collection::stream)
                 .map(impact -> {
                     var line = impact.getLine();

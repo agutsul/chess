@@ -60,7 +60,7 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
             return emptyList();
         }
 
-        Collection<PiecePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>> impacts =
+        var impacts =
                 impactLines.entries().stream()
                     .map(entry -> {
                         var line = entry.getKey();
@@ -96,6 +96,7 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
                         return impact;
                     })
                     .filter(Objects::nonNull)
+                    .map(impact -> (PiecePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>) impact)
                     .collect(toList());
 
         return impacts;

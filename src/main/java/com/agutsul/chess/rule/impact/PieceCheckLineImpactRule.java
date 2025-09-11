@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.PieceCheckImpact;
@@ -19,17 +20,17 @@ import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 
-public abstract class AbstractCheckLineImpactRule<COLOR1 extends Color,
-                                                  COLOR2 extends Color,
-                                                  ATTACKER extends Piece<COLOR1> & Capturable,
-                                                  KING extends KingPiece<COLOR2>,
-                                                  IMPACT extends PieceCheckImpact<COLOR1,COLOR2,ATTACKER,KING>>
-        extends AbstractCheckImpactRule<COLOR1,COLOR2,ATTACKER,KING,IMPACT> {
+public class PieceCheckLineImpactRule<COLOR1 extends Color,
+                                      COLOR2 extends Color,
+                                      ATTACKER extends Piece<COLOR1> & Capturable,
+                                      KING extends KingPiece<COLOR2>>
+        extends AbstractCheckImpactRule<COLOR1,COLOR2,ATTACKER,KING,
+                                        PieceCheckImpact<COLOR1,COLOR2,ATTACKER,KING>> {
 
-    protected final CapturePieceAlgo<COLOR1,ATTACKER,Line> algo;
+    private final CapturePieceAlgo<COLOR1,ATTACKER,Line> algo;
 
-    protected AbstractCheckLineImpactRule(Board board,
-                                          CapturePieceAlgo<COLOR1,ATTACKER,Line> algo) {
+    public PieceCheckLineImpactRule(Board board,
+                                    CapturePieceAlgo<COLOR1,ATTACKER,Line> algo) {
         super(board);
         this.algo = algo;
     }
@@ -49,17 +50,17 @@ public abstract class AbstractCheckLineImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    protected Collection<IMPACT> createImpacts(ATTACKER attacker, KING king,
-                                               Collection<Calculated> calculatedLines) {
+    protected Collection<PieceCheckImpact<COLOR1,COLOR2,ATTACKER,KING>>
+            createImpacts(ATTACKER attacker, KING king, Collection<Calculated> lines) {
 
-        var impacts = calculatedLines.stream()
-                .map(line -> createImpact(attacker, king, (Line) line))
+        var impacts = Stream.of(lines)
+                .flatMap(Collection::stream)
+                .map(calculated -> (Line) calculated)
+                .map(line -> new PieceCheckImpact<>(attacker, king, line))
                 .toList();
 
         return impacts;
     }
-
-    protected abstract IMPACT createImpact(ATTACKER attacker, KING king, Line line);
 
     private List<Position> findCheckPositions(Line line, KING king) {
         var positions = new ArrayList<Position>();

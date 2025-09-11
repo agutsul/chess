@@ -6,8 +6,11 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.impact.PieceCheckPositionImpactRule;
+import com.agutsul.chess.rule.impact.PieceControlPositionImpactRule;
 import com.agutsul.chess.rule.impact.PieceForkPositionImpactRule;
 import com.agutsul.chess.rule.impact.PiecePinImpactRule;
+import com.agutsul.chess.rule.impact.PieceProtectPositionImpactRule;
 
 public final class PawnPieceImpactRule<COLOR extends Color,
                                        PAWN extends PawnPiece<COLOR>>
@@ -20,10 +23,9 @@ public final class PawnPieceImpactRule<COLOR extends Color,
     @SuppressWarnings("unchecked")
     private PawnPieceImpactRule(Board board, PawnCaptureAlgo<COLOR,PAWN> captureAlgo, int promotionLine) {
         super(new CompositePieceRule<>(
-                new PawnCheckImpactRule<>(board, captureAlgo),
-                new PawnProtectImpactRule<>(board, captureAlgo),
-//                new PawnMonitorImpactRule<>(board, captureAlgo),
-                new PawnControlImpactRule<>(board, captureAlgo),
+                new PieceCheckPositionImpactRule<>(board, captureAlgo),
+                new PieceProtectPositionImpactRule<>(board, captureAlgo),
+                new PieceControlPositionImpactRule<>(board, captureAlgo),
                 new PawnStagnantImpactRule<>(board, promotionLine),
                 new PiecePinImpactRule<>(board),
                 new PieceForkPositionImpactRule<>(board, captureAlgo)

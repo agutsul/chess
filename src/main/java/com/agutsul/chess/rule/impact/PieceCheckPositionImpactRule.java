@@ -17,17 +17,17 @@ import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Position;
 
-public abstract class AbstractCheckPositionImpactRule<COLOR1 extends Color,
-                                                      COLOR2 extends Color,
-                                                      ATTACKER extends Piece<COLOR1> & Capturable,
-                                                      KING extends KingPiece<COLOR2>,
-                                                      IMPACT extends PieceCheckImpact<COLOR1,COLOR2,ATTACKER,KING>>
-        extends AbstractCheckImpactRule<COLOR1,COLOR2,ATTACKER,KING,IMPACT> {
+public class PieceCheckPositionImpactRule<COLOR1 extends Color,
+                                          COLOR2 extends Color,
+                                          ATTACKER extends Piece<COLOR1> & Capturable,
+                                          KING extends KingPiece<COLOR2>>
+        extends AbstractCheckImpactRule<COLOR1,COLOR2,ATTACKER,KING,
+                                        PieceCheckImpact<COLOR1,COLOR2,ATTACKER,KING>> {
 
-    protected final CapturePieceAlgo<COLOR1,ATTACKER,Position> algo;
+    private final CapturePieceAlgo<COLOR1,ATTACKER,Position> algo;
 
-    protected AbstractCheckPositionImpactRule(Board board,
-                                              CapturePieceAlgo<COLOR1,ATTACKER,Position> algo) {
+    public PieceCheckPositionImpactRule(Board board,
+                                        CapturePieceAlgo<COLOR1,ATTACKER,Position> algo) {
         super(board);
         this.algo = algo;
     }
@@ -43,18 +43,17 @@ public abstract class AbstractCheckPositionImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    protected Collection<IMPACT> createImpacts(ATTACKER attacker, KING king,
-                                               Collection<Calculated> positions) {
-        var impacts = new ArrayList<IMPACT>();
+    protected Collection<PieceCheckImpact<COLOR1,COLOR2,ATTACKER,KING>>
+            createImpacts(ATTACKER attacker, KING king, Collection<Calculated> positions) {
+
+        var impacts = new ArrayList<PieceCheckImpact<COLOR1,COLOR2,ATTACKER,KING>>();
         for (var position : positions) {
             if (Objects.equals(position, king.getPosition())) {
-                impacts.add(createImpact(attacker, king));
+                impacts.add(new PieceCheckImpact<>(attacker, king));
                 break;
             }
         }
 
         return impacts;
     }
-
-    protected abstract IMPACT createImpact(ATTACKER attacker, KING king);
 }

@@ -1,10 +1,11 @@
 package com.agutsul.chess.rule.impact;
 
 import static com.agutsul.chess.piece.Piece.isKing;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.PieceMonitorImpact;
@@ -16,15 +17,15 @@ import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 
-public abstract class AbstractMonitorLineImpactRule<COLOR extends Color,
-                                                    PIECE extends Piece<COLOR> & Capturable,
-                                                    IMPACT extends PieceMonitorImpact<COLOR,PIECE>>
-        extends AbstractMonitorImpactRule<COLOR,PIECE,IMPACT> {
+public class PieceMonitorLineImpactRule<COLOR extends Color,
+                                        PIECE extends Piece<COLOR> & Capturable>
+        extends AbstractMonitorImpactRule<COLOR,PIECE,
+                                          PieceMonitorImpact<COLOR,PIECE>> {
 
-    protected final CapturePieceAlgo<COLOR,PIECE,Line> algo;
+    private final CapturePieceAlgo<COLOR,PIECE,Line> algo;
 
-    protected AbstractMonitorLineImpactRule(Board board,
-                                            CapturePieceAlgo<COLOR,PIECE,Line> algo) {
+    public PieceMonitorLineImpactRule(Board board,
+                                      CapturePieceAlgo<COLOR,PIECE,Line> algo) {
         super(board);
         this.algo = algo;
     }
@@ -66,20 +67,16 @@ public abstract class AbstractMonitorLineImpactRule<COLOR extends Color,
     }
 
     @Override
-    protected Collection<IMPACT> createImpacts(PIECE piece,
-                                               Collection<Calculated> calculatedLines) {
+    protected Collection<PieceMonitorImpact<COLOR,PIECE>>
+            createImpacts(PIECE piece, Collection<Calculated> lines) {
 
-        var impacts = new ArrayList<IMPACT>();
-        for (var line : calculatedLines) {
-            @SuppressWarnings("unchecked")
-            var positions = (List<Position>) line;
-            for (var position : positions) {
-                impacts.add(createImpact(piece, position));
-            }
-        }
+        var impacts = Stream.of(lines)
+                .flatMap(Collection::stream)
+                .map(calculated -> (Line) calculated)
+                .flatMap(Collection::stream)
+                .map(position -> new PieceMonitorImpact<>(piece, position))
+                .collect(toList());
 
         return impacts;
     }
-
-    protected abstract IMPACT createImpact(PIECE piece, Position position);
 }

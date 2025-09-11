@@ -6,8 +6,12 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.impact.PieceCheckLineImpactRule;
+import com.agutsul.chess.rule.impact.PieceControlLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceForkLineImpactRule;
+import com.agutsul.chess.rule.impact.PieceMonitorLineImpactRule;
 import com.agutsul.chess.rule.impact.PiecePinImpactRule;
+import com.agutsul.chess.rule.impact.PieceProtectLineImpactRule;
 
 public final class RookPieceImpactRule<COLOR extends Color,PIECE extends RookPiece<COLOR>>
         extends AbstractPieceRule<Impact<?>,Impact.Type> {
@@ -19,10 +23,10 @@ public final class RookPieceImpactRule<COLOR extends Color,PIECE extends RookPie
     @SuppressWarnings("unchecked")
     private RookPieceImpactRule(Board board, RookPieceAlgo<COLOR,PIECE> algo) {
         super(new CompositePieceRule<>(
-                new RookCheckImpactRule<>(board, algo),
-                new RookProtectImpactRule<>(board, algo),
-                new RookMonitorImpactRule<>(board, algo),
-                new RookControlImpactRule<>(board, algo),
+                new PieceCheckLineImpactRule<>(board, algo),
+                new PieceProtectLineImpactRule<>(board, algo),
+                new PieceMonitorLineImpactRule<>(board, algo),
+                new PieceControlLineImpactRule<>(board, algo),
                 new PiecePinImpactRule<>(board),
                 new PieceForkLineImpactRule<>(board, algo)
             )

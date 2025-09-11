@@ -1,9 +1,12 @@
 package com.agutsul.chess.rule.impact;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.PieceProtectImpact;
@@ -15,16 +18,16 @@ import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 
-public abstract class AbstractProtectLineImpactRule<COLOR extends Color,
-                                                    PIECE1 extends Piece<COLOR> & Capturable,
-                                                    PIECE2 extends Piece<COLOR>,
-                                                    IMPACT extends PieceProtectImpact<COLOR,PIECE1,PIECE2>>
-        extends AbstractProtectImpactRule<COLOR,PIECE1,PIECE2,IMPACT> {
+public class PieceProtectLineImpactRule<COLOR extends Color,
+                                        PIECE1 extends Piece<COLOR> & Capturable,
+                                        PIECE2 extends Piece<COLOR>>
+        extends AbstractProtectImpactRule<COLOR,PIECE1,PIECE2,
+                                          PieceProtectImpact<COLOR,PIECE1,PIECE2>> {
 
-    protected final CapturePieceAlgo<COLOR,PIECE1,Line> algo;
+    private final CapturePieceAlgo<COLOR,PIECE1,Line> algo;
 
-    protected AbstractProtectLineImpactRule(Board board,
-                                            CapturePieceAlgo<COLOR,PIECE1,Line> algo) {
+    public PieceProtectLineImpactRule(Board board,
+                                      CapturePieceAlgo<COLOR,PIECE1,Line> algo) {
         super(board);
         this.algo = algo;
     }
@@ -57,24 +60,21 @@ public abstract class AbstractProtectLineImpactRule<COLOR extends Color,
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    protected Collection<IMPACT> createImpacts(PIECE1 piece,
-                                               Collection<Calculated> calculatedLines) {
-        var impacts = new ArrayList<IMPACT>();
-        for (var line : calculatedLines) {
+    protected Collection<PieceProtectImpact<COLOR,PIECE1,PIECE2>>
+            createImpacts(PIECE1 piece, Collection<Calculated> lines) {
 
-            var positions = (List<Position>) line;
-            for (var position : positions) {
-                var optionalPiece = board.getPiece(position);
-                if (optionalPiece.isPresent()) {
-                    var piece2 = (PIECE2) optionalPiece.get();
-                    impacts.add(createImpact(piece, piece2));
-                }
-            }
-        }
+        @SuppressWarnings("unchecked")
+        var impacts = Stream.of(lines)
+                .flatMap(Collection::stream)
+                .map(calculated -> (Line) calculated)
+                .flatMap(Collection::stream)
+                .map(position -> board.getPiece(position))
+                .flatMap(Optional::stream)
+                .filter(protectedPiece -> Objects.equals(protectedPiece.getColor(), piece.getColor()))
+                .map(protectedPiece -> (PIECE2) protectedPiece)
+                .map(protectedPiece -> new PieceProtectImpact<>(piece, protectedPiece))
+                .collect(toList());
 
         return impacts;
     }
-
-    protected abstract IMPACT createImpact(PIECE1 piece1, PIECE2 piece2);
 }

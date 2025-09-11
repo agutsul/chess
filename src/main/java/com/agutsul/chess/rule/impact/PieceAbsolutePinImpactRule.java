@@ -51,7 +51,7 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
             return emptyList();
         }
 
-        Collection<PiecePinImpact<COLOR1,COLOR2,PINNED,KING,ATTACKER>> impacts = impactLines.stream()
+        var impacts = impactLines.stream()
                 .map(line -> {
                     var linePieces = line.stream()
                             .map(position -> board.getPiece(position))
@@ -92,6 +92,7 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
                     return impact;
                 })
                 .filter(Objects::nonNull)
+                .map(impact -> (PiecePinImpact<COLOR1,COLOR2,PINNED,KING,ATTACKER>) impact)
                 .collect(toList());
 
         return impacts;

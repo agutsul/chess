@@ -6,8 +6,12 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.BishopPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.impact.PieceCheckLineImpactRule;
+import com.agutsul.chess.rule.impact.PieceControlLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceForkLineImpactRule;
+import com.agutsul.chess.rule.impact.PieceMonitorLineImpactRule;
 import com.agutsul.chess.rule.impact.PiecePinImpactRule;
+import com.agutsul.chess.rule.impact.PieceProtectLineImpactRule;
 
 public final class BishopPieceImpactRule<COLOR extends Color,
                                          PIECE extends BishopPiece<COLOR>>
@@ -20,10 +24,10 @@ public final class BishopPieceImpactRule<COLOR extends Color,
     @SuppressWarnings("unchecked")
     private BishopPieceImpactRule(Board board, BishopPieceAlgo<COLOR,PIECE> algo) {
         super(new CompositePieceRule<>(
-                new BishopCheckImpactRule<>(board, algo),
-                new BishopProtectImpactRule<>(board, algo),
-                new BishopMonitorImpactRule<>(board, algo),
-                new BishopControlImpactRule<>(board, algo),
+                new PieceCheckLineImpactRule<>(board, algo),
+                new PieceProtectLineImpactRule<>(board, algo),
+                new PieceMonitorLineImpactRule<>(board, algo),
+                new PieceControlLineImpactRule<>(board, algo),
                 new PiecePinImpactRule<>(board),
                 new PieceForkLineImpactRule<>(board, algo)
             )
