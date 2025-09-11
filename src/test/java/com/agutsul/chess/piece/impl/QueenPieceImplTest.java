@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -182,18 +183,17 @@ public class QueenPieceImplTest extends AbstractPieceTest {
 
         var relativeForkImpact = relativeForkImpacts.getFirst();
 
-        var forkedImpacts = relativeForkImpact.getTarget();
+        var forkedImpacts = new ArrayList<>(relativeForkImpact.getTarget());
         assertEquals(whiteQueen, relativeForkImpact.getSource());
         assertEquals(3, forkedImpacts.size());
 
-        var attackedPieceTypes = List.of(Piece.Type.PAWN, Piece.Type.KNIGHT);
+        assertEquals(Piece.Type.KNIGHT, forkedImpacts.getFirst().getTarget().getType());
+        assertEquals(Piece.Type.PAWN, forkedImpacts.getLast().getTarget().getType());
+
         forkedImpacts.forEach(impact -> {
             assertTrue(Impact.Type.ATTACK.equals(impact.getType()));
             assertEquals(whiteQueen.getPosition(), impact.getPosition());
-
             assertTrue(isQueen(impact.getSource()));
-            assertTrue(attackedPieceTypes.contains(impact.getTarget().getType()));
-
             assertTrue(!impact.getLine().isEmpty());
         });
     }

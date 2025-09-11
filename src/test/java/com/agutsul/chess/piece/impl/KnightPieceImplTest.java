@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -186,18 +187,19 @@ public class KnightPieceImplTest extends AbstractPieceTest {
 
         var absoluteForkImpact = absoluteForkImpacts.getFirst();
 
-        var forkedImpacts = absoluteForkImpact.getTarget();
+        var forkedImpacts = new ArrayList<>(absoluteForkImpact.getTarget());
         assertEquals(whiteKnight, absoluteForkImpact.getSource());
         assertEquals(2, forkedImpacts.size());
 
-        var attackedPieceTypes = List.of(Piece.Type.KING, Piece.Type.ROOK);
+        assertEquals(Piece.Type.KING, forkedImpacts.getFirst().getTarget().getType());
+        assertEquals(Piece.Type.ROOK, forkedImpacts.getLast().getTarget().getType());
+
         var impactTypes = List.of(Impact.Type.ATTACK, Impact.Type.CHECK);
 
         forkedImpacts.forEach(impact -> {
             assertTrue(impactTypes.contains(impact.getType()));
             assertEquals(whiteKnight.getPosition(), impact.getPosition());
             assertTrue(isKnight(impact.getSource()));
-            assertTrue(attackedPieceTypes.contains(impact.getTarget().getType()));
             assertTrue(impact.getLine().isEmpty());
         });
     }

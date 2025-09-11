@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -261,18 +262,19 @@ public class RookPieceImplTest extends AbstractPieceTest {
 
         var absoluteForkImpact = absoluteForkImpacts.getFirst();
 
-        var forkedImpacts = absoluteForkImpact.getTarget();
+        var forkedImpacts = new ArrayList<>(absoluteForkImpact.getTarget());
         assertEquals(blackRook, absoluteForkImpact.getSource());
         assertEquals(2, forkedImpacts.size());
 
-        var attackedPieceTypes = List.of(Piece.Type.KING, Piece.Type.KNIGHT);
+        assertEquals(Piece.Type.KING,   forkedImpacts.getFirst().getTarget().getType());
+        assertEquals(Piece.Type.KNIGHT, forkedImpacts.getLast().getTarget().getType());
+
         var impactTypes = List.of(Impact.Type.ATTACK, Impact.Type.CHECK);
 
         forkedImpacts.forEach(impact -> {
             assertTrue(impactTypes.contains(impact.getType()));
             assertEquals(blackRook.getPosition(), impact.getPosition());
             assertTrue(isRook(impact.getSource()));
-            assertTrue(attackedPieceTypes.contains(impact.getTarget().getType()));
             assertTrue(!impact.getLine().isEmpty());
         });
     }

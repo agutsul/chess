@@ -1,6 +1,8 @@
 package com.agutsul.chess.rule.impact;
 
 import static java.util.Collections.emptyList;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,9 +40,23 @@ abstract class AbstractForkImpactRule<COLOR1 extends Color,
         }
 
         var impacts = createAttackImpacts(piece, next);
-        return impacts.size() >= 2
-                ? createForkImpacts(piece, impacts)
-                : emptyList();
+        if (impacts.size() < 2) {
+            return emptyList();
+        }
+
+        // sort impacts to make most valuable targets first
+        var sortedImpacts = impacts.stream()
+                .sorted(comparing(
+                        AbstractPieceAttackImpact::getTarget,
+                        (piece1,piece2) -> Integer.compare(
+                                piece2.getType().rank(),
+                                piece1.getType().rank()
+                        )
+                    )
+                )
+                .collect(toList());
+
+        return createForkImpacts(piece, sortedImpacts);
     }
 
     protected abstract Collection<Calculated> calculate(ATTACKER piece);
