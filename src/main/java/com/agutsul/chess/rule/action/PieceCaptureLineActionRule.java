@@ -14,17 +14,17 @@ import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 
-public abstract class AbstractCaptureLineActionRule<COLOR1 extends Color,
+public class PieceCaptureLineActionRule<COLOR1 extends Color,
                                                     COLOR2 extends Color,
                                                     PIECE1 extends Piece<COLOR1> & Capturable,
-                                                    PIECE2 extends Piece<COLOR2>,
-                                                    ACTION extends PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>>
-        extends AbstractCaptureActionRule<COLOR1,COLOR2,PIECE1,PIECE2,ACTION> {
+                                                    PIECE2 extends Piece<COLOR2>>
+        extends AbstractCaptureActionRule<COLOR1,COLOR2,PIECE1,PIECE2,
+                                          PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>> {
 
-    protected final CapturePieceAlgo<COLOR1,PIECE1,Line> algo;
+    private final CapturePieceAlgo<COLOR1,PIECE1,Line> algo;
 
-    protected AbstractCaptureLineActionRule(Board board,
-                                            CapturePieceAlgo<COLOR1,PIECE1,Line> algo) {
+    public PieceCaptureLineActionRule(Board board,
+                                      CapturePieceAlgo<COLOR1,PIECE1,Line> algo) {
         super(board);
         this.algo = algo;
     }
@@ -59,9 +59,10 @@ public abstract class AbstractCaptureLineActionRule<COLOR1 extends Color,
     }
 
     @Override
-    protected Collection<ACTION> createActions(PIECE1 piece,
-                                               Collection<Calculated> calculatedLines) {
-        var actions = new ArrayList<ACTION>();
+    protected Collection<PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>>
+            createActions(PIECE1 piece, Collection<Calculated> calculatedLines) {
+
+        var actions = new ArrayList<PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>>();
         for (var calculatedLine : calculatedLines) {
             var line = (Line) calculatedLine;
 
@@ -70,12 +71,10 @@ public abstract class AbstractCaptureLineActionRule<COLOR1 extends Color,
             if (optionalPiece.isPresent()) {
                 @SuppressWarnings("unchecked")
                 var piece2 = (PIECE2) optionalPiece.get();
-                actions.add(createAction(piece, piece2, line));
+                actions.add(new PieceCaptureAction<>(piece, piece2, line));
             }
         }
 
         return actions;
     }
-
-    protected abstract ACTION createAction(PIECE1 piece1, PIECE2 piece2, Line line);
 }

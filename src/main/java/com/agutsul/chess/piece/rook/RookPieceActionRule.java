@@ -6,6 +6,8 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.action.PieceCaptureLineActionRule;
+import com.agutsul.chess.rule.action.PieceMoveLineActionRule;
 
 public final class RookPieceActionRule<COLOR extends Color,PIECE extends RookPiece<COLOR>>
         extends AbstractPieceRule<Action<?>,Action.Type> {
@@ -17,8 +19,8 @@ public final class RookPieceActionRule<COLOR extends Color,PIECE extends RookPie
     @SuppressWarnings("unchecked")
     private RookPieceActionRule(Board board, RookPieceAlgo<COLOR,PIECE> algo) {
         super(new CompositePieceRule<>(
-                new RookCaptureActionRule<>(board, algo),
-                new RookMoveActionRule<>(board, algo),
+                new PieceCaptureLineActionRule<>(board, algo),
+                new PieceMoveLineActionRule<>(board, algo),
                 new RookCastlingActionRule<>(board)
             )
         );

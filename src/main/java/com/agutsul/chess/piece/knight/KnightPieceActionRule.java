@@ -6,6 +6,8 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KnightPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.action.PieceCapturePositionActionRule;
+import com.agutsul.chess.rule.action.PieceMovePositionActionRule;
 
 public final class KnightPieceActionRule<COLOR extends Color,PIECE extends KnightPiece<COLOR>>
         extends AbstractPieceRule<Action<?>,Action.Type> {
@@ -17,8 +19,8 @@ public final class KnightPieceActionRule<COLOR extends Color,PIECE extends Knigh
     @SuppressWarnings("unchecked")
     private KnightPieceActionRule(Board board, KnightPieceAlgo<COLOR,PIECE> algo) {
         super(new CompositePieceRule<>(
-                new KnightCaptureActionRule<>(board, algo),
-                new KnightMoveActionRule<>(board, algo)
+                new PieceCapturePositionActionRule<>(board, algo),
+                new PieceMovePositionActionRule<>(board, algo)
             )
         );
     }

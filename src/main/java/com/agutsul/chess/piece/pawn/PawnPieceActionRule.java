@@ -11,6 +11,7 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.action.PieceCapturePositionActionRule;
 
 public final class PawnPieceActionRule<COLOR extends Color,
                                        PAWN extends PawnPiece<COLOR>>
@@ -52,7 +53,7 @@ public final class PawnPieceActionRule<COLOR extends Color,
                                                                  PawnPromoteAlgo<COLOR,PAWN> promoteAlgo) {
 
         var moveActionRule = new PawnMoveActionRule<>(board, moveAlgo);
-        var captureActionRule = new PawnCaptureActionRule<>(board, captureAlgo);
+        var captureActionRule = new PieceCapturePositionActionRule<>(board, captureAlgo);
 
         return new CompositePieceRule<>(
                 new PawnEnPassantActionRule<>(board, new PawnEnPassantAlgo<>(board, captureAlgo)),

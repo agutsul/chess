@@ -6,6 +6,8 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.action.PieceCaptureLineActionRule;
+import com.agutsul.chess.rule.action.PieceMoveLineActionRule;
 
 public final class QueenPieceActionRule<COLOR extends Color,PIECE extends QueenPiece<COLOR>>
         extends AbstractPieceRule<Action<?>,Action.Type> {
@@ -17,8 +19,8 @@ public final class QueenPieceActionRule<COLOR extends Color,PIECE extends QueenP
     @SuppressWarnings("unchecked")
     private QueenPieceActionRule(Board board, QueenPieceAlgo<COLOR,PIECE> algo) {
         super(new CompositePieceRule<>(
-                new QueenCaptureActionRule<>(board, algo),
-                new QueenMoveActionRule<>(board, algo)
+                new PieceCaptureLineActionRule<>(board, algo),
+                new PieceMoveLineActionRule<>(board, algo)
             )
         );
     }

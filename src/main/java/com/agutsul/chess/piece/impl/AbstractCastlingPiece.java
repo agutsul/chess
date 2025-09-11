@@ -100,7 +100,9 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     }
 
     private Collection<Action<?>> filterEnabledActions(Collection<Action<?>> actions) {
-        var filteredActions = actions.stream()
+        var filteredActions = Stream.of(actions)
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
                 .filter(action -> {
                     if (!isCastling(action)) {
                         // return all non-castling related actions

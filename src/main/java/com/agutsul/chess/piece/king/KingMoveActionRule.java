@@ -11,20 +11,21 @@ import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.action.AbstractMovePositionActionRule;
+import com.agutsul.chess.rule.action.PieceMovePositionActionRule;
 
 class KingMoveActionRule<COLOR extends Color,
                          KING extends KingPiece<COLOR>>
-        extends AbstractMovePositionActionRule<COLOR,KING,PieceMoveAction<COLOR,KING>> {
+        extends PieceMovePositionActionRule<COLOR,KING> {
 
     KingMoveActionRule(Board board,
                        MovePieceAlgo<COLOR,KING,Position> algo) {
+
         super(Action.Type.MOVE, board, algo);
     }
 
     @Override
-    protected Collection<PieceMoveAction<COLOR,KING>> createActions(KING king,
-                                                                    Collection<Calculated> nextPositions) {
+    protected Collection<PieceMoveAction<COLOR,KING>>
+            createActions(KING king, Collection<Calculated> nextPositions) {
 
         var attackerColor = king.getColor().invert();
 
@@ -40,14 +41,9 @@ class KingMoveActionRule<COLOR extends Color,
                 continue;
             }
 
-            actions.add(createAction(king, position));
+            actions.add(new PieceMoveAction<>(king, position));
         }
 
         return actions;
-    }
-
-    @Override
-    protected PieceMoveAction<COLOR,KING> createAction(KING piece, Position position) {
-        return new PieceMoveAction<>(piece, position);
     }
 }

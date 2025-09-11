@@ -15,16 +15,23 @@ import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Position;
 
-public abstract class AbstractMovePositionActionRule<COLOR extends Color,
-                                                     PIECE extends Piece<COLOR> & Movable,
-                                                     ACTION extends PieceMoveAction<COLOR,PIECE>>
-        extends AbstractMoveActionRule<COLOR,PIECE,ACTION> {
+public class PieceMovePositionActionRule<COLOR extends Color,
+                                         PIECE extends Piece<COLOR> & Movable>
+        extends AbstractMoveActionRule<COLOR,PIECE,
+                                       PieceMoveAction<COLOR,PIECE>> {
 
     protected final MovePieceAlgo<COLOR,PIECE,Position> algo;
 
-    protected AbstractMovePositionActionRule(Action.Type type, Board board,
-                                             MovePieceAlgo<COLOR,PIECE,Position> algo) {
-        super(type, board);
+    public PieceMovePositionActionRule(Board board,
+                                       MovePieceAlgo<COLOR,PIECE,Position> algo) {
+
+        this(Action.Type.MOVE, board, algo);
+    }
+
+    public PieceMovePositionActionRule(Action.Type type, Board board,
+                                       MovePieceAlgo<COLOR,PIECE,Position> algo) {
+
+        super(board, type);
         this.algo = algo;
     }
 
@@ -37,9 +44,10 @@ public abstract class AbstractMovePositionActionRule<COLOR extends Color,
     }
 
     @Override
-    protected Collection<ACTION> createActions(PIECE piece,
-                                               Collection<Calculated> next) {
-        var actions = new ArrayList<ACTION>();
+    protected Collection<PieceMoveAction<COLOR,PIECE>>
+            createActions(PIECE piece, Collection<Calculated> next) {
+
+        var actions = new ArrayList<PieceMoveAction<COLOR,PIECE>>();
         for (var entry : next) {
             actions.add(createAction(piece, (Position) entry));
         }
@@ -47,5 +55,7 @@ public abstract class AbstractMovePositionActionRule<COLOR extends Color,
         return actions;
     }
 
-    protected abstract ACTION createAction(PIECE piece, Position position);
+    protected PieceMoveAction<COLOR,PIECE> createAction(PIECE piece, Position position) {
+        return new PieceMoveAction<>(piece, position);
+    }
 }

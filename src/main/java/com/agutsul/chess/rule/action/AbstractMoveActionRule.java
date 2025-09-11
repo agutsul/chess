@@ -19,7 +19,7 @@ abstract class AbstractMoveActionRule<COLOR extends Color,
         extends AbstractRule<PIECE,ACTION,Action.Type>
         implements MoveActionRule<COLOR,PIECE,ACTION> {
 
-    protected AbstractMoveActionRule(Action.Type type, Board board) {
+    protected AbstractMoveActionRule(Board board, Action.Type type) {
         super(board, type);
     }
 

@@ -6,6 +6,8 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.BishopPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.action.PieceCaptureLineActionRule;
+import com.agutsul.chess.rule.action.PieceMoveLineActionRule;
 
 public final class BishopPieceActionRule<COLOR extends Color,
                                          PIECE extends BishopPiece<COLOR>>
@@ -18,8 +20,8 @@ public final class BishopPieceActionRule<COLOR extends Color,
     @SuppressWarnings("unchecked")
     private BishopPieceActionRule(Board board, BishopPieceAlgo<COLOR,PIECE> algo) {
         super(new CompositePieceRule<>(
-                new BishopCaptureActionRule<>(board, algo),
-                new BishopMoveActionRule<>(board, algo)
+                new PieceCaptureLineActionRule<>(board, algo),
+                new PieceMoveLineActionRule<>(board, algo)
             )
         );
     }

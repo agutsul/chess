@@ -15,16 +15,15 @@ import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 
-public abstract class AbstractMoveLineActionRule<COLOR extends Color,
-                                                 PIECE extends Piece<COLOR> & Movable,
-                                                 ACTION extends PieceMoveAction<COLOR,PIECE>>
-        extends AbstractMoveActionRule<COLOR,PIECE,ACTION> {
+public class PieceMoveLineActionRule<COLOR extends Color,
+                                     PIECE extends Piece<COLOR> & Movable>
+        extends AbstractMoveActionRule<COLOR,PIECE,
+                                       PieceMoveAction<COLOR,PIECE>> {
 
-    protected final MovePieceAlgo<COLOR,PIECE,Line> algo;
+    private final MovePieceAlgo<COLOR,PIECE,Line> algo;
 
-    protected AbstractMoveLineActionRule(Board board,
-                                         MovePieceAlgo<COLOR,PIECE,Line> algo) {
-        super(Action.Type.MOVE, board);
+    public PieceMoveLineActionRule(Board board, MovePieceAlgo<COLOR,PIECE,Line> algo) {
+        super(board, Action.Type.MOVE);
         this.algo = algo;
     }
 
@@ -51,19 +50,18 @@ public abstract class AbstractMoveLineActionRule<COLOR extends Color,
     }
 
     @Override
-    protected Collection<ACTION> createActions(PIECE piece,
-                                               Collection<Calculated> lines) {
-        var actions = new ArrayList<ACTION>();
+    protected Collection<PieceMoveAction<COLOR,PIECE>>
+            createActions(PIECE piece, Collection<Calculated> lines) {
+
+        var actions = new ArrayList<PieceMoveAction<COLOR,PIECE>>();
         for (var line : lines) {
             @SuppressWarnings("unchecked")
             var positions = (List<Position>) line;
             for (var position : positions) {
-                actions.add(createAction(piece, position));
+                actions.add(new PieceMoveAction<>(piece, position));
             }
         }
 
         return actions;
     }
-
-    protected abstract ACTION createAction(PIECE piece, Position position);
 }
