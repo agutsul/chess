@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -475,6 +476,51 @@ public class PawnPieceImplTest extends AbstractPieceTest {
             assertTrue(isPawn(impact.getSource()));
             assertTrue(isRook(impact.getTarget()));
 
+            assertTrue(impact.getLine().isEmpty());
+        });
+    }
+
+    @Test
+    void testPawnRelativeForkImpactWithEnPassant() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e8")
+                .withBlackKnight("f6")
+                .withBlackPawn("d7")
+                .withWhiteKing("e1")
+                .withWhitePawn("e5")
+                .build();
+
+        var blackPawn = (PawnPiece<Color>) board.getPiece("d7").get();
+        blackPawn.move(board.getPosition("d5").get());
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+
+        var whitePawn = board.getPiece("e5").get();
+
+        var forkImpacts = board.getImpacts(whitePawn, Impact.Type.FORK);
+        assertFalse(forkImpacts.isEmpty());
+
+        var relativeForkImpacts = forkImpacts.stream()
+                .map(impact -> (PieceForkImpact<?,?,?,?>) impact)
+                .filter(PieceForkImpact::isRelative)
+                .map(impact -> (PieceRelativeForkImpact<?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertEquals(1, relativeForkImpacts.size());
+
+        var relativeForkImpact = relativeForkImpacts.getFirst();
+
+        var forkedImpacts = new ArrayList<>(relativeForkImpact.getTarget());
+        assertEquals(whitePawn, relativeForkImpact.getSource());
+        assertEquals(2, forkedImpacts.size());
+
+        assertEquals(Piece.Type.KNIGHT, forkedImpacts.getFirst().getTarget().getType());
+        assertEquals(Piece.Type.PAWN, forkedImpacts.getLast().getTarget().getType());
+
+        forkedImpacts.forEach(impact -> {
+            assertTrue(Impact.Type.ATTACK.equals(impact.getType()));
+            assertEquals(whitePawn.getPosition(), impact.getPosition());
+            assertTrue(isPawn(impact.getSource()));
             assertTrue(impact.getLine().isEmpty());
         });
     }

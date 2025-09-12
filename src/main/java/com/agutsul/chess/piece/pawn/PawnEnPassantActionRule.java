@@ -1,39 +1,49 @@
 package com.agutsul.chess.piece.pawn;
 
-import java.util.Collection;
+import static java.util.stream.Collectors.toList;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
-import com.agutsul.chess.piece.algo.EnPassantPieceAlgo;
-import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.action.AbstractEnPassantActionRule;
+import com.agutsul.chess.rule.AbstractRule;
+import com.agutsul.chess.rule.action.EnPassantActionRule;
 
 class PawnEnPassantActionRule<COLOR1 extends Color,
                               COLOR2 extends Color,
                               PAWN1 extends PawnPiece<COLOR1>,
                               PAWN2 extends PawnPiece<COLOR2>>
-        extends AbstractEnPassantActionRule<COLOR1,COLOR2,PAWN1,PAWN2,
-                                            PieceEnPassantAction<COLOR1,COLOR2,PAWN1,PAWN2>> {
+        extends AbstractRule<PAWN1,PieceEnPassantAction<COLOR1,COLOR2,PAWN1,PAWN2>,Action.Type>
+        implements EnPassantActionRule<COLOR1,COLOR2,PAWN1,PAWN2,
+                                       PieceEnPassantAction<COLOR1,COLOR2,PAWN1,PAWN2>> {
 
-    private final EnPassantPieceAlgo<COLOR1,PAWN1,Position> algo;
+    private final PawnEnPassantAlgo<COLOR1,PAWN1> algo;
 
     PawnEnPassantActionRule(Board board,
-                            EnPassantPieceAlgo<COLOR1,PAWN1,Position> algo) {
-        super(board);
+                            PawnEnPassantAlgo<COLOR1,PAWN1> algo) {
+
+        super(board, Action.Type.EN_PASSANT);
         this.algo = algo;
     }
 
     @Override
-    protected Collection<Position> calculatePositions(PAWN1 piece) {
-        return algo.calculate(piece);
-    }
+    public Collection<PieceEnPassantAction<COLOR1,COLOR2,PAWN1,PAWN2>> evaluate(PAWN1 pawn) {
+        var data = algo.calculateData(pawn);
 
-    @Override
-    protected PieceEnPassantAction<COLOR1,COLOR2,PAWN1,PAWN2> createAction(PAWN1 pawn1,
-                                                                           PAWN2 pawn2,
-                                                                           Position position) {
-        return new PieceEnPassantAction<>(pawn1, pawn2, position);
+        @SuppressWarnings("unchecked")
+        var actions = Stream.of(data)
+                .map(Map::entrySet)
+                .flatMap(Collection::stream)
+                .map(entry -> new PieceEnPassantAction<>(
+                        pawn, (PAWN2) entry.getValue(), entry.getKey()
+                ))
+                .collect(toList());
+
+        return actions;
     }
 }

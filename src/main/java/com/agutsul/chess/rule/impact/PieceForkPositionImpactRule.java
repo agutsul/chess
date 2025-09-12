@@ -21,16 +21,17 @@ import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Position;
 
-public final class PieceForkPositionImpactRule<COLOR1 extends Color,
-                                               COLOR2 extends Color,
-                                               ATTACKER extends Piece<COLOR1> & Capturable,
-                                               PIECE extends Piece<COLOR2>>
+public class PieceForkPositionImpactRule<COLOR1 extends Color,
+                                         COLOR2 extends Color,
+                                         ATTACKER extends Piece<COLOR1> & Capturable,
+                                         PIECE extends Piece<COLOR2>>
             extends AbstractForkImpactRule<COLOR1,COLOR2,ATTACKER,PIECE,
                                            PieceForkImpact<COLOR1,COLOR2,ATTACKER,PIECE>> {
 
     private final CapturePieceAlgo<COLOR1,ATTACKER,Position> algo;
 
-    public PieceForkPositionImpactRule(Board board, CapturePieceAlgo<COLOR1,ATTACKER,Position> algo) {
+    public PieceForkPositionImpactRule(Board board,
+                                       CapturePieceAlgo<COLOR1,ATTACKER,Position> algo) {
         super(board);
         this.algo = algo;
     }
@@ -52,7 +53,8 @@ public final class PieceForkPositionImpactRule<COLOR1 extends Color,
                 .filter(attackedPiece -> !Objects.equals(attackedPiece.getColor(), piece.getColor()))
                 .map(attackedPiece -> isKing(attackedPiece)
                         ? new PieceCheckImpact<>(piece, (KingPiece<Color>) attackedPiece)
-                        : new PieceAttackImpact<>(piece, attackedPiece))
+                        : new PieceAttackImpact<>(piece, attackedPiece)
+                )
                 .map(impact -> (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,PIECE>) impact)
                 .collect(toList());
 
