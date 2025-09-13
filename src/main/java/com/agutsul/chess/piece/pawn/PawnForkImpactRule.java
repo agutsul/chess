@@ -12,14 +12,13 @@ import com.agutsul.chess.activity.impact.PieceAttackImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
-import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.rule.impact.PieceForkPositionImpactRule;
 
 class PawnForkImpactRule<COLOR1 extends Color,
                          COLOR2 extends Color,
                          ATTACKER extends PawnPiece<COLOR1>,
-                         PIECE extends Piece<COLOR2>>
+                         PIECE extends PawnPiece<COLOR2>>
         extends PieceForkPositionImpactRule<COLOR1,COLOR2,ATTACKER,PIECE> {
 
     private final PawnEnPassantAlgo<COLOR1,ATTACKER> enPassantAlgo;
@@ -34,20 +33,20 @@ class PawnForkImpactRule<COLOR1 extends Color,
 
     @Override
     protected Collection<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,PIECE>>
-            createAttackImpacts(ATTACKER piece, Collection<Calculated> next) {
+            createAttackImpacts(ATTACKER pawn, Collection<Calculated> next) {
 
         var impacts = new ArrayList<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,PIECE>>();
 
         // add all usual pawn capture impacts
-        impacts.addAll(super.createAttackImpacts(piece, next));
+        impacts.addAll(super.createAttackImpacts(pawn, next));
 
         // add en-passante impacts
         @SuppressWarnings("unchecked")
-        var enPassantAttackImpacts = Stream.of(enPassantAlgo.calculateData(piece))
+        var enPassantAttackImpacts = Stream.of(enPassantAlgo.calculateData(pawn))
                 .map(Map::entrySet)
                 .flatMap(Collection::stream)
                 .map(Map.Entry::getValue)
-                .map(opponentPawn -> new PieceAttackImpact<>(piece, (Piece<COLOR2>) opponentPawn))
+                .map(opponentPawn -> new PieceAttackImpact<>(pawn, (PIECE) opponentPawn))
                 .map(impact -> (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,PIECE>) impact)
                 .collect(toList());
 
