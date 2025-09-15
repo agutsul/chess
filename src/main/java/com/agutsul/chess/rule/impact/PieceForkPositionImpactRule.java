@@ -52,7 +52,7 @@ public class PieceForkPositionImpactRule<COLOR1 extends Color,
                 .flatMap(Optional::stream)
                 .filter(attackedPiece -> !Objects.equals(attackedPiece.getColor(), piece.getColor()))
                 .map(attackedPiece -> isKing(attackedPiece)
-                        ? new PieceCheckImpact<>(piece, (KingPiece<Color>) attackedPiece)
+                        ? new PieceCheckImpact<>(piece, (KingPiece<COLOR2>) attackedPiece)
                         : new PieceAttackImpact<>(piece, attackedPiece)
                 )
                 .map(impact -> (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,PIECE>) impact)

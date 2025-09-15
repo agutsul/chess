@@ -77,7 +77,7 @@ public class PieceForkLineImpactRule<COLOR1 extends Color,
                         .flatMap(Optional::stream)
                         .filter(attackedPiece -> !Objects.equals(attackedPiece.getColor(), piece.getColor()))
                         .map(attackedPiece -> isKing(attackedPiece)
-                                ? new PieceCheckImpact<>(piece, (KingPiece<Color>) attackedPiece, line)
+                                ? new PieceCheckImpact<>(piece, (KingPiece<COLOR2>) attackedPiece, line)
                                 : new PieceAttackImpact<>(piece, attackedPiece, line)
                         )
                         .findFirst()
