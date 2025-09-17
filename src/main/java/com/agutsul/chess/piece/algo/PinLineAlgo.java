@@ -77,11 +77,11 @@ public final class PinLineAlgo<COLOR extends Color,
     }
 
     private static class PinDiagonalLineAlgoAdapter<COLOR extends Color,
-                                             PIECE extends Piece<COLOR>>
+                                                    PIECE extends Piece<COLOR>>
             extends PinLineAlgoAdapter<COLOR,PIECE> {
 
         public PinDiagonalLineAlgoAdapter(Board board,
-                                   DiagonalLineAlgo<COLOR, PIECE> algo) {
+                                          DiagonalLineAlgo<COLOR,PIECE> algo) {
             super(board, algo);
         }
 
