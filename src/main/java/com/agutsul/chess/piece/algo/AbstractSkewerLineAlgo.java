@@ -33,15 +33,15 @@ public abstract class AbstractSkewerLineAlgo<COLOR extends Color,
         var lines = new LinkedHashSet<Line>();
 
         var pieceLines = algo.calculate(piece);
-        var allLines = calculateAllLines(piece);
+        var fullLines = calculateFullLines(piece);
 
-        for (var line : allLines) {
+        for (var fullLine : fullLines) {
             for (var pieceLine : pieceLines) {
-                if (line.containsAll(pieceLine)) {
+                if (fullLine.containsAll(pieceLine)) {
                     var positions = new ArrayList<Position>();
 
                     positions.add(piece.getPosition());
-                    positions.addAll(line);
+                    positions.addAll(fullLine);
 
                     sort(positions, COMPARATOR);
 
@@ -54,16 +54,16 @@ public abstract class AbstractSkewerLineAlgo<COLOR extends Color,
         return lines;
     }
 
-    protected Collection<Line> calculateAllLines(PIECE piece) {
+    protected Collection<Line> calculateFullLines(PIECE piece) {
         var singlePieceBoard = new PositionedBoardBuilder()
                 .withPiece(piece.getType(), piece.getColor(), piece.getPosition())
                 .build();
 
-        var allLinesAlgo = createPieceAlgo(singlePieceBoard);
+        var fullLinesAlgo = createPieceAlgo(singlePieceBoard);
 
         @SuppressWarnings("unchecked")
         var tmpPiece = (PIECE) singlePieceBoard.getPiece(piece.getPosition()).get();
-        return allLinesAlgo.calculate(tmpPiece);
+        return fullLinesAlgo.calculate(tmpPiece);
     }
 
     protected abstract Algo<PIECE,Collection<Line>> createPieceAlgo(Board board);
