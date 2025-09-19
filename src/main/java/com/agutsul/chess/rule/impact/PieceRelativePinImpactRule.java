@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.impact;
 
+import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static java.util.Collections.emptyList;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
@@ -43,7 +44,7 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
         var valuablePieces = board.getPieces(piece.getColor()).stream()
                 .filter(not(Piece::isKing))
                 .filter(vp -> !Objects.equals(piece, vp))
-                .filter(vp -> vp.getValue() > piece.getValue())
+                .filter(vp -> Math.abs(vp.getValue()) > Math.abs(piece.getValue()))
                 .map(vp -> (PIECE) vp)
                 .collect(toList());
 
@@ -78,6 +79,7 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
                         var impact = linePieces.stream()
                                 .filter(attacker -> attacker.getColor() != piece.getColor())
                                 .filter(attacker -> LINE_ATTACK_PIECE_TYPES.contains(attacker.getType()))
+                                // searched pattern: 'attacker - pinned piece - valuable piece' or reverse
                                 .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, valuablePiece)))
                                 .filter(attacker -> {
                                     // check if piece is attacked by line attacker

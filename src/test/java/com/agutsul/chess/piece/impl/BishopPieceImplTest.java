@@ -15,7 +15,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
+import com.agutsul.chess.activity.impact.PieceAbsoluteSkewerImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
+import com.agutsul.chess.activity.impact.PieceRelativeSkewerImpact;
+import com.agutsul.chess.activity.impact.PieceSkewerImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Color;
@@ -192,5 +195,100 @@ public class BishopPieceImplTest extends AbstractPieceTest {
             assertTrue(isBishop(impact.getSource()));
             assertTrue(!impact.getLine().isEmpty());
         });
+    }
+
+    @Test
+    void testBishopRelativeSkewerImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("c7")
+                .withBlackQueen("f7")
+                .withBlackRook("g8")
+                .withBlackKnight("g6")
+                .withBlackBishop("c6")
+                .withBlackPawns("a7","b6","f5")
+                .withWhiteKing("e1")
+                .withWhiteQueen("d1")
+                .withWhiteRook("d4")
+                .withWhiteBishops("c4","g5")
+                .withWhitePawns("a3","e3","g2","h4")
+                .build();
+
+        var whiteBishop = board.getPiece("c4").get();
+        var skewerImpacts = board.getImpacts(whiteBishop, Impact.Type.SKEWER);
+        assertFalse(skewerImpacts.isEmpty());
+
+        var relativeSkewerImpacts = skewerImpacts.stream()
+                .map(impact -> (PieceSkewerImpact<?,?,?,?,?>) impact)
+                .filter(PieceSkewerImpact::isRelative)
+                .map(impact -> (PieceRelativeSkewerImpact<?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertFalse(relativeSkewerImpacts.isEmpty());
+
+        assertEquals(1, relativeSkewerImpacts.size());
+
+        var relativeSkewerImpact = relativeSkewerImpacts.getFirst();
+        assertEquals(whiteBishop, relativeSkewerImpact.getAttacker());
+
+        var blackQueen = board.getPiece("f7").get();
+        assertEquals(blackQueen, relativeSkewerImpact.getSkewered());
+
+        var blackRook = board.getPiece("g8").get();
+        assertEquals(blackRook, relativeSkewerImpact.getDefended());
+    }
+
+    @Test
+    void testBishopAbsoluteSkewerImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e7")
+                .withBlackQueen("d7")
+                .withBlackBishop("d5")
+                .withWhiteKing("e4")
+                .withWhiteQueen("f3")
+                .withWhiteRook("f4")
+                .build();
+
+        var blackBishop = board.getPiece("d5").get();
+        var skewerImpacts = board.getImpacts(blackBishop, Impact.Type.SKEWER);
+        assertFalse(skewerImpacts.isEmpty());
+
+        var absoluteSkewerImpacts = skewerImpacts.stream()
+                .map(impact -> (PieceSkewerImpact<?,?,?,?,?>) impact)
+                .filter(PieceSkewerImpact::isAbsolute)
+                .map(impact -> (PieceAbsoluteSkewerImpact<?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertFalse(absoluteSkewerImpacts.isEmpty());
+
+        assertEquals(1, absoluteSkewerImpacts.size());
+
+        var absoluteSkewerImpact = absoluteSkewerImpacts.getFirst();
+        assertEquals(blackBishop, absoluteSkewerImpact.getAttacker());
+
+        var whiteKing = board.getPiece("e4").get();
+        assertEquals(whiteKing, absoluteSkewerImpact.getSkewered());
+
+        var whiteQueen = board.getPiece("f3").get();
+        assertEquals(whiteQueen, absoluteSkewerImpact.getDefended());
+    }
+
+    @Test
+    void testBishopNoRelativeSkewerImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("c7")
+                .withBlackRooks("g8","f7")
+                .withBlackKnight("g6")
+                .withBlackBishop("c6")
+                .withBlackPawns("a7","b6","f5")
+                .withWhiteKing("e1")
+                .withWhiteQueen("d1")
+                .withWhiteRook("d4")
+                .withWhiteBishops("c4","g5")
+                .withWhitePawns("a3","e3","g2","h4")
+                .build();
+
+        var whiteBishop = board.getPiece("c4").get();
+        var skewerImpacts = board.getImpacts(whiteBishop, Impact.Type.SKEWER);
+        assertTrue(skewerImpacts.isEmpty());
     }
 }

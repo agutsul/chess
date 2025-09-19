@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.impact;
 
+import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
@@ -65,6 +66,7 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
                     var impact = linePieces.stream()
                             .filter(attacker -> attacker.getColor() != piece.getColor())
                             .filter(attacker -> LINE_ATTACK_PIECE_TYPES.contains(attacker.getType()))
+                            // searched pattern: 'attacker - pinned piece - king' or reverse
                             .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, king)))
                             .filter(attacker -> {
                                 // check if piece is attacked by line attacker

@@ -14,6 +14,7 @@ public interface Impact<SOURCE>
         PIN,
         CHECK,
         ATTACK,
-        FORK
+        FORK,
+        SKEWER
     }
 }
