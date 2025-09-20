@@ -71,7 +71,7 @@ abstract class AbstractForkImpactRule<COLOR1 extends Color,
 
         var hasCheckImpact = Stream.of(impacts)
                 .flatMap(Collection::stream)
-                .anyMatch(impact -> Impact.Type.CHECK.equals(impact.getType()));
+                .anyMatch(Impact::isCheck);
 
         var impact = hasCheckImpact
                 ? new PieceAbsoluteForkImpact<>(piece, impacts)

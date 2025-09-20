@@ -17,4 +17,78 @@ public interface Impact<SOURCE>
         FORK,
         SKEWER
     }
+
+    // utilities
+
+    static boolean isControl(Impact<?> impact) {
+        return isControl(impact.getType());
+    }
+
+    static boolean isControl(Impact.Type impactType) {
+        return Impact.Type.CONTROL.equals(impactType);
+    }
+
+    static boolean isProtect(Impact<?> impact) {
+        return isProtect(impact.getType());
+    }
+
+    static boolean isProtect(Impact.Type impactType) {
+        return Impact.Type.PROTECT.equals(impactType);
+    }
+
+    static boolean isMonitor(Impact<?> impact) {
+        return isMonitor(impact.getType());
+    }
+
+    static boolean isMonitor(Impact.Type impactType) {
+        return Impact.Type.MONITOR.equals(impactType);
+    }
+
+    static boolean isStagnant(Impact<?> impact) {
+        return isStagnant(impact.getType());
+    }
+
+    static boolean isStagnant(Impact.Type impactType) {
+        return Impact.Type.STAGNANT.equals(impactType);
+    }
+
+    static boolean isPin(Impact<?> impact) {
+        return isPin(impact.getType());
+    }
+
+    static boolean isPin(Impact.Type impactType) {
+        return Impact.Type.PIN.equals(impactType);
+    }
+
+    static boolean isCheck(Impact<?> impact) {
+        return isCheck(impact.getType());
+    }
+
+    static boolean isCheck(Impact.Type impactType) {
+        return Impact.Type.CHECK.equals(impactType);
+    }
+
+    static boolean isAttack(Impact<?> impact) {
+        return isAttack(impact.getType());
+    }
+
+    static boolean isAttack(Impact.Type impactType) {
+        return Impact.Type.ATTACK.equals(impactType);
+    }
+
+    static boolean isFork(Impact<?> impact) {
+        return isFork(impact.getType());
+    }
+
+    static boolean isFork(Impact.Type impactType) {
+        return Impact.Type.FORK.equals(impactType);
+    }
+
+    static boolean isSkewer(Impact<?> impact) {
+        return isSkewer(impact.getType());
+    }
+
+    static boolean isSkewer(Impact.Type impactType) {
+        return Impact.Type.SKEWER.equals(impactType);
+    }
 }

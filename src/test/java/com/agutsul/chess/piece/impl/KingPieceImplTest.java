@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.activity.impact.Impact.isAttack;
 import static com.agutsul.chess.piece.Piece.isKing;
 import static java.time.Instant.now;
 import static java.util.stream.Collectors.toList;
@@ -512,7 +513,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
         var attackedPieceTypes = List.of(Piece.Type.BISHOP, Piece.Type.KNIGHT);
         forkedImpacts.forEach(impact -> {
-            assertTrue(Impact.Type.ATTACK.equals(impact.getType()));
+            assertTrue(isAttack(impact));
             assertEquals(whiteKing.getPosition(), impact.getPosition());
 
             assertTrue(isKing(impact.getSource()));

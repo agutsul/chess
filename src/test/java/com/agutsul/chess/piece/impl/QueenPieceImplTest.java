@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.activity.impact.Impact.isAttack;
 import static com.agutsul.chess.piece.Piece.isQueen;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -191,7 +192,7 @@ public class QueenPieceImplTest extends AbstractPieceTest {
         assertEquals(Piece.Type.PAWN, forkedImpacts.getLast().getTarget().getType());
 
         forkedImpacts.forEach(impact -> {
-            assertTrue(Impact.Type.ATTACK.equals(impact.getType()));
+            assertTrue(isAttack(impact));
             assertEquals(whiteQueen.getPosition(), impact.getPosition());
             assertTrue(isQueen(impact.getSource()));
             assertTrue(!impact.getLine().isEmpty());

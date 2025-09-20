@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.activity.impact.Impact.isAttack;
 import static com.agutsul.chess.piece.Piece.isPawn;
 import static com.agutsul.chess.piece.Piece.isQueen;
 import static com.agutsul.chess.piece.Piece.isRook;
@@ -470,7 +471,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertEquals(2, forkedImpacts.size());
 
         forkedImpacts.forEach(impact -> {
-            assertTrue(Impact.Type.ATTACK.equals(impact.getType()));
+            assertTrue(isAttack(impact));
             assertEquals(blackPawn.getPosition(), impact.getPosition());
 
             assertTrue(isPawn(impact.getSource()));
@@ -518,7 +519,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertEquals(Piece.Type.PAWN, forkedImpacts.getLast().getTarget().getType());
 
         forkedImpacts.forEach(impact -> {
-            assertTrue(Impact.Type.ATTACK.equals(impact.getType()));
+            assertTrue(isAttack(impact));
             assertEquals(whitePawn.getPosition(), impact.getPosition());
             assertTrue(isPawn(impact.getSource()));
             assertTrue(impact.getLine().isEmpty());
