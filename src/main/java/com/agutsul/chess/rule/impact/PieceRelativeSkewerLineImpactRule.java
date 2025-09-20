@@ -48,7 +48,7 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
                 .filter(not(Piece::isKing))
                 .collect(toList());
 
-        var attackerImpacts = piece.getImpacts(Impact.Type.CONTROL);
+        var attackerImpacts = board.getImpacts(piece, Impact.Type.CONTROL);
         var attackedPieces  = attackerImpacts.stream()
                 .map(Impact::getPosition)
                 .map(attackedPosition -> opponentPieces.stream()

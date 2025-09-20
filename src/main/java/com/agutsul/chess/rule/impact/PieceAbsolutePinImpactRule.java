@@ -70,7 +70,7 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
                             .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, king)))
                             .filter(attacker -> {
                                 // check if piece is attacked by line attacker
-                                var attackerImpacts = attacker.getImpacts(Impact.Type.CONTROL);
+                                var attackerImpacts = board.getImpacts(attacker, Impact.Type.CONTROL);
                                 var isPieceAttacked = attackerImpacts.stream()
                                         .map(Impact::getPosition)
                                         .anyMatch(position -> Objects.equals(position, piece.getPosition()));
@@ -79,7 +79,7 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
                             })
                             .filter(attacker -> {
                                 // check if king is monitored by line attacker
-                                var attackerImpacts = attacker.getImpacts(Impact.Type.MONITOR);
+                                var attackerImpacts = board.getImpacts(attacker, Impact.Type.MONITOR);
                                 var isKingMonitored = attackerImpacts.stream()
                                         .map(Impact::getPosition)
                                         .anyMatch(position -> Objects.equals(position, king.getPosition()));

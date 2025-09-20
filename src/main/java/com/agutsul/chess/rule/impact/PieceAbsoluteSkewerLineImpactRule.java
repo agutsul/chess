@@ -50,7 +50,7 @@ final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
         var king = (KING) optionalKing.get();
 
         // check if king is attacked by line attacker
-        var attackerImpacts = piece.getImpacts(Impact.Type.CONTROL);
+        var attackerImpacts = board.getImpacts(piece, Impact.Type.CONTROL);
         var isKingAttacked = attackerImpacts.stream()
                 .map(Impact::getPosition)
                 .anyMatch(position -> Objects.equals(position, king.getPosition()));
