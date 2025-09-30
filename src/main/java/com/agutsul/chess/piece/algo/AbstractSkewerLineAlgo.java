@@ -1,7 +1,9 @@
 package com.agutsul.chess.piece.algo;
 
 import static java.util.Collections.sort;
+import static org.apache.commons.io.IOUtils.closeQuietly;
 
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -59,11 +61,15 @@ public abstract class AbstractSkewerLineAlgo<COLOR extends Color,
                 .withPiece(piece.getType(), piece.getColor(), piece.getPosition())
                 .build();
 
-        var fullLinesAlgo = createPieceAlgo(singlePieceBoard);
+        try {
+            var fullLinesAlgo = createPieceAlgo(singlePieceBoard);
 
-        @SuppressWarnings("unchecked")
-        var tmpPiece = (PIECE) singlePieceBoard.getPiece(piece.getPosition()).get();
-        return fullLinesAlgo.calculate(tmpPiece);
+            @SuppressWarnings("unchecked")
+            var tmpPiece = (PIECE) singlePieceBoard.getPiece(piece.getPosition()).get();
+            return fullLinesAlgo.calculate(tmpPiece);
+        } finally {
+            closeQuietly((Closeable) singlePieceBoard);
+        }
     }
 
     protected abstract Algo<PIECE,Collection<Line>> createPieceAlgo(Board board);
