@@ -56,6 +56,7 @@ public abstract class AbstractSkewerLineAlgo<COLOR extends Color,
         return lines;
     }
 
+    @SuppressWarnings("unchecked")
     protected Collection<Line> calculateFullLines(PIECE piece) {
         var singlePieceBoard = new PositionedBoardBuilder()
                 .withPiece(piece.getType(), piece.getColor(), piece.getPosition())
@@ -63,10 +64,9 @@ public abstract class AbstractSkewerLineAlgo<COLOR extends Color,
 
         try {
             var fullLinesAlgo = createPieceAlgo(singlePieceBoard);
+            var tmpPiece = singlePieceBoard.getPiece(piece.getPosition());
 
-            @SuppressWarnings("unchecked")
-            var tmpPiece = (PIECE) singlePieceBoard.getPiece(piece.getPosition()).get();
-            return fullLinesAlgo.calculate(tmpPiece);
+            return fullLinesAlgo.calculate((PIECE) tmpPiece.get());
         } finally {
             closeQuietly((Closeable) singlePieceBoard);
         }
