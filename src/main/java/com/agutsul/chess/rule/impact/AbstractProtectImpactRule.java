@@ -20,7 +20,7 @@ abstract class AbstractProtectImpactRule<COLOR extends Color,
         extends AbstractRule<PIECE1,IMPACT,Impact.Type>
         implements ProtectImpactRule<COLOR,PIECE1,PIECE2,IMPACT> {
 
-    protected AbstractProtectImpactRule(Board board) {
+    AbstractProtectImpactRule(Board board) {
         super(board, Impact.Type.PROTECT);
     }
 

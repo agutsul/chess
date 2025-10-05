@@ -19,7 +19,7 @@ abstract class AbstractMonitorImpactRule<COLOR extends Color,
         extends AbstractRule<PIECE,IMPACT,Impact.Type>
         implements MonitorImpactRule<COLOR,PIECE,IMPACT> {
 
-    protected AbstractMonitorImpactRule(Board board) {
+    AbstractMonitorImpactRule(Board board) {
         super(board, Impact.Type.MONITOR);
     }
 

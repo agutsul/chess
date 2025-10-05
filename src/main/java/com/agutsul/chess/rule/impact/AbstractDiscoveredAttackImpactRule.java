@@ -22,7 +22,7 @@ abstract class AbstractDiscoveredAttackImpactRule<COLOR1 extends Color,
         extends AbstractRule<PIECE,IMPACT,Impact.Type>
         implements DiscoveredAttackImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,IMPACT> {
 
-    protected AbstractDiscoveredAttackImpactRule(Board board) {
+    AbstractDiscoveredAttackImpactRule(Board board) {
         super(board, Impact.Type.ATTACK);
     }
 

@@ -21,8 +21,7 @@ abstract class AbstractPieceDiscoveredAttackImpactRule<COLOR1 extends Color,
 
     private final Algo<PIECE,Collection<Line>> algo;
 
-    protected AbstractPieceDiscoveredAttackImpactRule(Board board,
-                                                      Algo<PIECE,Collection<Line>> algo) {
+    AbstractPieceDiscoveredAttackImpactRule(Board board, Algo<PIECE,Collection<Line>> algo) {
         super(board);
         this.algo = algo;
     }

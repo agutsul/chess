@@ -23,7 +23,7 @@ abstract class AbstractPinImpactRule<COLOR1 extends Color,
         extends AbstractRule<PINNED,IMPACT,Impact.Type>
         implements PinImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,IMPACT> {
 
-    protected AbstractPinImpactRule(Board board) {
+    AbstractPinImpactRule(Board board) {
         super(board, Impact.Type.PIN);
     }
 
