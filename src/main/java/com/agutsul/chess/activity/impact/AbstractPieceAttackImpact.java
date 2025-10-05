@@ -12,28 +12,28 @@ import com.agutsul.chess.position.Position;
 public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
                                                 COLOR2 extends Color,
                                                 ATTACKER extends Piece<COLOR1> & Capturable,
-                                                PIECE extends Piece<COLOR2>>
-        extends AbstractTargetActivity<Impact.Type,ATTACKER,PIECE>
+                                                ATTACKED extends Piece<COLOR2>>
+        extends AbstractTargetActivity<Impact.Type,ATTACKER,ATTACKED>
         implements Impact<ATTACKER> {
 
     private Line line;
     private boolean hidden;
 
-    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, PIECE piece) {
+    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece) {
         super(impactType, attacker, piece);
     }
 
-    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, PIECE piece, boolean hidden) {
+    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece, boolean hidden) {
         super(impactType, attacker, piece);
         this.hidden = hidden;
     }
 
-    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, PIECE piece, Line line) {
+    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece, Line line) {
         this(impactType, attacker, piece);
         this.line = line;
     }
 
-    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, PIECE piece, Line line, boolean hidden) {
+    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece, Line line, boolean hidden) {
         this(impactType, attacker, piece, line);
         this.hidden = hidden;
     }
@@ -43,7 +43,7 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
     }
 
     public final boolean isHidden() {
-        return hidden;
+        return this.hidden;
     }
 
     @Override

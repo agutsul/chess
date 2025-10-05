@@ -9,22 +9,22 @@ import com.agutsul.chess.position.Line;
 public class PieceCheckImpact<COLOR1 extends Color,
                               COLOR2 extends Color,
                               ATTACKER extends Piece<COLOR1> & Capturable,
-                              KING extends Piece<COLOR2> & Checkable>
-        extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,KING> {
+                              ATTACKED extends Piece<COLOR2> & Checkable>
+        extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
-    public PieceCheckImpact(ATTACKER attacker, KING king) {
+    public PieceCheckImpact(ATTACKER attacker, ATTACKED king) {
         super(Impact.Type.CHECK, attacker, king);
     }
 
-    public PieceCheckImpact(ATTACKER attacker, KING king, boolean hidden) {
+    public PieceCheckImpact(ATTACKER attacker, ATTACKED king, boolean hidden) {
         super(Impact.Type.CHECK, attacker, king, hidden);
     }
 
-    public PieceCheckImpact(ATTACKER attacker, KING king, Line line) {
+    public PieceCheckImpact(ATTACKER attacker, ATTACKED king, Line line) {
         super(Impact.Type.CHECK, attacker, king, line);
     }
 
-    public PieceCheckImpact(ATTACKER attacker, KING king, Line line, boolean hidden) {
+    public PieceCheckImpact(ATTACKER attacker, ATTACKED king, Line line, boolean hidden) {
         super(Impact.Type.CHECK, attacker, king, line, hidden);
     }
 

@@ -8,23 +8,23 @@ import com.agutsul.chess.position.Line;
 public class PieceAttackImpact<COLOR1 extends Color,
                                COLOR2 extends Color,
                                ATTACKER extends Piece<COLOR1> & Capturable,
-                               PIECE extends Piece<COLOR2>>
-        extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,PIECE> {
+                               ATTACKED extends Piece<COLOR2>>
+        extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
 
-    public PieceAttackImpact(ATTACKER attacker, PIECE piece) {
+    public PieceAttackImpact(ATTACKER attacker, ATTACKED piece) {
         this(attacker, piece, false);
     }
 
-    public PieceAttackImpact(ATTACKER attacker, PIECE piece, boolean hidden) {
+    public PieceAttackImpact(ATTACKER attacker, ATTACKED piece, boolean hidden) {
         super(Impact.Type.ATTACK, attacker, piece, hidden);
     }
 
-    public PieceAttackImpact(ATTACKER attacker, PIECE piece, Line line) {
+    public PieceAttackImpact(ATTACKER attacker, ATTACKED piece, Line line) {
         this(attacker, piece, line, false);
     }
 
-    public PieceAttackImpact(ATTACKER attacker, PIECE piece, Line line, boolean hidden) {
+    public PieceAttackImpact(ATTACKER attacker, ATTACKED piece, Line line, boolean hidden) {
         super(Impact.Type.ATTACK, attacker, piece, line, hidden);
     }
 
