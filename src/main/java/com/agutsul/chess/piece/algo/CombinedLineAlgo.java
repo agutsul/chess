@@ -58,10 +58,10 @@ public final class CombinedLineAlgo<COLOR extends Color,
 
         @Override
         public Collection<Line> calculate(PIECE piece) {
-            return combineLine(piece, origin.calculate(piece));
+            return combineLines(piece, origin.calculate(piece));
         }
 
-        protected Collection<Line> combineLine(PIECE piece, Collection<Line> lines) {
+        protected Collection<Line> combineLines(PIECE piece, Collection<Line> lines) {
             return List.of(createLine(piece, lines));
         }
 
@@ -86,7 +86,7 @@ public final class CombinedLineAlgo<COLOR extends Color,
         }
 
         @Override
-        protected Collection<Line> combineLine(PIECE piece, Collection<Line> lines) {
+        protected Collection<Line> combineLines(PIECE piece, Collection<Line> lines) {
             var list = new ArrayList<>(lines);
 
             var line1 = createLine(piece, List.of(list.get(0), list.get(1)));
