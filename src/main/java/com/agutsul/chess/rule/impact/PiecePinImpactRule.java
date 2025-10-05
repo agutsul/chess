@@ -23,12 +23,12 @@ import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.Rule;
 
 // https://en.wikipedia.org/wiki/Pin_(chess)
-public class PiecePinImpactRule<COLOR1 extends Color,
-                                COLOR2 extends Color,
-                                PINNED extends Piece<COLOR1> & Pinnable,
-                                PIECE  extends Piece<COLOR1>,
-                                ATTACKER extends Piece<COLOR2> & Capturable,
-                                IMPACT extends PiecePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>>
+public final class PiecePinImpactRule<COLOR1 extends Color,
+                                      COLOR2 extends Color,
+                                      PINNED extends Piece<COLOR1> & Pinnable,
+                                      PIECE  extends Piece<COLOR1>,
+                                      ATTACKER extends Piece<COLOR2> & Capturable,
+                                      IMPACT extends PiecePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>>
         extends AbstractRule<PINNED,IMPACT,Impact.Type>
         implements PinImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,IMPACT> {
 

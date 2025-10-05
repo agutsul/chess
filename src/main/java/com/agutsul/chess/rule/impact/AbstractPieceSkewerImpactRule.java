@@ -15,10 +15,10 @@ import com.agutsul.chess.position.Line;
 abstract class AbstractPieceSkewerImpactRule<COLOR1 extends Color,
                                              COLOR2 extends Color,
                                              ATTACKER extends Piece<COLOR1> & Capturable,
-                                             SKEWERED extends Piece<COLOR2>,
+                                             ATTACKED extends Piece<COLOR2>,
                                              DEFENDED extends Piece<COLOR2>,
-                                             IMPACT extends PieceSkewerImpact<COLOR1,COLOR2,ATTACKER,SKEWERED,DEFENDED>>
-        extends AbstractSkewerImpactRule<COLOR1,COLOR2,ATTACKER,SKEWERED,DEFENDED,IMPACT> {
+                                             IMPACT extends PieceSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>
+        extends AbstractSkewerImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,IMPACT> {
 
     private final Algo<ATTACKER,Collection<Line>> algo;
 

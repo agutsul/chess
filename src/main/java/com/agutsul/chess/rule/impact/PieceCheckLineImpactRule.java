@@ -20,10 +20,10 @@ import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 
-public class PieceCheckLineImpactRule<COLOR1 extends Color,
-                                      COLOR2 extends Color,
-                                      ATTACKER extends Piece<COLOR1> & Capturable,
-                                      KING extends KingPiece<COLOR2>>
+public final class PieceCheckLineImpactRule<COLOR1 extends Color,
+                                            COLOR2 extends Color,
+                                            ATTACKER extends Piece<COLOR1> & Capturable,
+                                            KING extends KingPiece<COLOR2>>
         extends AbstractCheckImpactRule<COLOR1,COLOR2,ATTACKER,KING,
                                         PieceCheckImpact<COLOR1,COLOR2,ATTACKER,KING>> {
 

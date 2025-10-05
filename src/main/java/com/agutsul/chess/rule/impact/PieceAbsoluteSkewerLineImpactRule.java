@@ -22,10 +22,10 @@ import com.agutsul.chess.position.Line;
 final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
                                               COLOR2 extends Color,
                                               ATTACKER extends Piece<COLOR1> & Capturable,
-                                              KING extends KingPiece<COLOR2>,
+                                              ATTACKED extends KingPiece<COLOR2>,
                                               DEFENDED extends Piece<COLOR2>>
-        extends AbstractPieceSkewerImpactRule<COLOR1,COLOR2,ATTACKER,KING,DEFENDED,
-                                              PieceAbsoluteSkewerImpact<COLOR1,COLOR2,ATTACKER,KING,DEFENDED>>
+        extends AbstractPieceSkewerImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,
+                                              PieceAbsoluteSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>
         implements LineImpactRule {
 
     PieceAbsoluteSkewerLineImpactRule(Board board, Algo<ATTACKER,Collection<Line>> algo) {
@@ -34,7 +34,7 @@ final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Collection<PieceAbsoluteSkewerImpact<COLOR1,COLOR2,ATTACKER,KING,DEFENDED>>
+    protected Collection<PieceAbsoluteSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>
             createImpacts(ATTACKER piece, Collection<Line> lines) {
 
         if (!LINE_ATTACK_PIECE_TYPES.contains(piece.getType())) {
@@ -47,7 +47,7 @@ final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
             return emptyList();
         }
 
-        var king = (KING) optionalKing.get();
+        var king = (ATTACKED) optionalKing.get();
 
         // check if king is attacked by line attacker
         var attackerImpacts = board.getImpacts(piece, Impact.Type.CONTROL);
@@ -77,8 +77,7 @@ final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
                             .filter(defended -> defended.getColor() != piece.getColor())
                             .filter(defended -> containsPattern(linePieces, List.of(piece, king, defended)))
                             .findFirst()
-                            .map(defended -> (DEFENDED) defended)
-                            .map(defended -> new PieceAbsoluteSkewerImpact<>(piece, king, defended, line))
+                            .map(defended -> new PieceAbsoluteSkewerImpact<>(piece, king, (DEFENDED) defended, line))
                             .orElse(null);
 
                     return impact;

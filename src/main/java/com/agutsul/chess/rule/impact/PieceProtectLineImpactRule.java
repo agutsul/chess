@@ -18,9 +18,9 @@ import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 
-public class PieceProtectLineImpactRule<COLOR extends Color,
-                                        PIECE1 extends Piece<COLOR> & Capturable,
-                                        PIECE2 extends Piece<COLOR>>
+public final class PieceProtectLineImpactRule<COLOR extends Color,
+                                              PIECE1 extends Piece<COLOR> & Capturable,
+                                              PIECE2 extends Piece<COLOR>>
         extends AbstractProtectImpactRule<COLOR,PIECE1,PIECE2,
                                           PieceProtectImpact<COLOR,PIECE1,PIECE2>> {
 
@@ -71,8 +71,7 @@ public class PieceProtectLineImpactRule<COLOR extends Color,
                 .map(position -> board.getPiece(position))
                 .flatMap(Optional::stream)
                 .filter(protectedPiece -> Objects.equals(protectedPiece.getColor(), piece.getColor()))
-                .map(protectedPiece -> (PIECE2) protectedPiece)
-                .map(protectedPiece -> new PieceProtectImpact<>(piece, protectedPiece))
+                .map(protectedPiece -> new PieceProtectImpact<>(piece, (PIECE2) protectedPiece))
                 .collect(toList());
 
         return impacts;

@@ -81,7 +81,7 @@ public final class CombinedLineAlgo<COLOR extends Color,
             extends CombinedLineAlgoAdapter<COLOR,PIECE> {
 
         public CombinedDiagonalLineAlgoAdapter(Board board,
-                                          DiagonalLineAlgo<COLOR,PIECE> algo) {
+                                               DiagonalLineAlgo<COLOR,PIECE> algo) {
             super(board, algo);
         }
 

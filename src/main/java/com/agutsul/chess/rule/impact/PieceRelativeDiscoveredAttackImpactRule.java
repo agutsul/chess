@@ -45,7 +45,7 @@ final class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
         var opponentPieces = Stream.of(board.getPieces(opponentColor))
                 .flatMap(Collection::stream)
                 .filter(not(Piece::isKing))
-                .map(vp -> (ATTACKED) vp)
+                .map(opponentPiece -> (ATTACKED) opponentPiece)
                 .collect(toList());
 
         MultiValuedMap<Line,ATTACKED> impactLines = new ArrayListValuedHashMap<>();
@@ -53,8 +53,8 @@ final class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
             .flatMap(Collection::stream)
             .filter(line  -> line.contains(piece.getPosition()))
             .forEach(line -> opponentPieces.stream()
-                    .filter(vp  -> line.contains(vp.getPosition()))
-                    .forEach(vp -> impactLines.put(line, vp))
+                    .filter(opponentPiece  -> line.contains(opponentPiece.getPosition()))
+                    .forEach(opponentPiece -> impactLines.put(line, opponentPiece))
             );
 
         if (impactLines.isEmpty()) {

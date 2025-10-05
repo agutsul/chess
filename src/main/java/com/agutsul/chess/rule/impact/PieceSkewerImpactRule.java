@@ -14,12 +14,12 @@ import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.Rule;
 
 // https://en.wikipedia.org/wiki/Skewer_(chess)
-public class PieceSkewerImpactRule<COLOR1 extends Color,
-                                   COLOR2 extends Color,
-                                   ATTACKER extends Piece<COLOR1> & Capturable,
-                                   SKEWERED extends Piece<COLOR2>,
-                                   DEFENDED extends Piece<COLOR2>,
-                                   IMPACT extends PieceSkewerImpact<COLOR1,COLOR2,ATTACKER,SKEWERED,DEFENDED>>
+public final class PieceSkewerImpactRule<COLOR1 extends Color,
+                                         COLOR2 extends Color,
+                                         ATTACKER extends Piece<COLOR1> & Capturable,
+                                         SKEWERED extends Piece<COLOR2>,
+                                         DEFENDED extends Piece<COLOR2>,
+                                         IMPACT extends PieceSkewerImpact<COLOR1,COLOR2,ATTACKER,SKEWERED,DEFENDED>>
         extends AbstractRule<ATTACKER,IMPACT,Impact.Type>
         implements SkewerImpactRule<COLOR1,COLOR2,ATTACKER,SKEWERED,DEFENDED,IMPACT> {
 

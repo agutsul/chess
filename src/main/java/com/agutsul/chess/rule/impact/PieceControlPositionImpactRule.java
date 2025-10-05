@@ -14,8 +14,8 @@ import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Position;
 
-public class PieceControlPositionImpactRule<COLOR extends Color,
-                                            PIECE extends Piece<COLOR> & Capturable>
+public final class PieceControlPositionImpactRule<COLOR extends Color,
+                                                  PIECE extends Piece<COLOR> & Capturable>
         extends AbstractControlImpactRule<COLOR,PIECE,
                                           PieceControlImpact<COLOR,PIECE>> {
 

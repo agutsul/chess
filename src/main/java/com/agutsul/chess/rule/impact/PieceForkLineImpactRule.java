@@ -23,10 +23,10 @@ import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 
-public class PieceForkLineImpactRule<COLOR1 extends Color,
-                                     COLOR2 extends Color,
-                                     ATTACKER extends Piece<COLOR1> & Capturable,
-                                     PIECE extends Piece<COLOR2>>
+public final class PieceForkLineImpactRule<COLOR1 extends Color,
+                                           COLOR2 extends Color,
+                                           ATTACKER extends Piece<COLOR1> & Capturable,
+                                           PIECE extends Piece<COLOR2>>
         extends AbstractForkImpactRule<COLOR1,COLOR2,ATTACKER,PIECE,
                                        PieceForkImpact<COLOR1,COLOR2,ATTACKER,PIECE>> {
 

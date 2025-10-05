@@ -23,10 +23,10 @@ import com.agutsul.chess.position.Line;
 final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
                                               COLOR2 extends Color,
                                               ATTACKER extends Piece<COLOR1> & Capturable,
-                                              SKEWERED extends Piece<COLOR2>,
+                                              ATTACKED extends Piece<COLOR2>,
                                               DEFENDED extends Piece<COLOR2>>
-        extends AbstractPieceSkewerImpactRule<COLOR1,COLOR2,ATTACKER,SKEWERED,DEFENDED,
-                                              PieceRelativeSkewerImpact<COLOR1,COLOR2,ATTACKER,SKEWERED,DEFENDED>>
+        extends AbstractPieceSkewerImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,
+                                              PieceRelativeSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>
         implements LineImpactRule {
 
     PieceRelativeSkewerLineImpactRule(Board board, Algo<ATTACKER,Collection<Line>> algo) {
@@ -35,7 +35,7 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Collection<PieceRelativeSkewerImpact<COLOR1,COLOR2,ATTACKER,SKEWERED,DEFENDED>>
+    protected Collection<PieceRelativeSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>
             createImpacts(ATTACKER piece, Collection<Line> lines) {
 
         if (!LINE_ATTACK_PIECE_TYPES.contains(piece.getType())) {
@@ -56,7 +56,7 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
                         .findFirst()
                 )
                 .flatMap(Optional::stream)
-                .map(attackedPiece -> (SKEWERED) attackedPiece)
+                .map(attackedPiece -> (ATTACKED) attackedPiece)
                 .collect(toList());
 
         if (attackedPieces.isEmpty()) {
@@ -83,7 +83,7 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
                        return null;
                    }
 
-                   var attackedPiece = (SKEWERED) optionalPiece.get();
+                   var attackedPiece = (ATTACKED) optionalPiece.get();
 
                    var impact = linePieces.stream()
                            .filter(defended -> !Objects.equals(piece, defended))
@@ -92,8 +92,7 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
                            .filter(defended -> containsPattern(linePieces, List.of(piece, attackedPiece, defended)))
                            .filter(defended -> Math.abs(defended.getValue()) < Math.abs(attackedPiece.getValue()))
                            .findFirst()
-                           .map(defended -> (DEFENDED) defended)
-                           .map(defended -> new PieceRelativeSkewerImpact<>(piece, attackedPiece, defended, line))
+                           .map(defended -> new PieceRelativeSkewerImpact<>(piece, attackedPiece, (DEFENDED) defended, line))
                            .orElse(null);
 
                    return impact;
