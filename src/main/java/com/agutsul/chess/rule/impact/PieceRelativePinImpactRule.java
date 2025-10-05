@@ -17,7 +17,6 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.impact.Impact;
-import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.activity.impact.PieceRelativePinImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -30,7 +29,8 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
                                        PINNED extends Piece<COLOR1> & Pinnable,
                                        PIECE  extends Piece<COLOR1>,
                                        ATTACKER extends Piece<COLOR2> & Capturable>
-        extends AbstractPiecePinImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER> {
+        extends AbstractPiecePinImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,
+                                           PieceRelativePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>> {
 
     PieceRelativePinImpactRule(Board board, Algo<PINNED,Collection<Line>> algo) {
         super(board, algo);
@@ -38,7 +38,7 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Collection<PiecePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>>
+    protected Collection<PieceRelativePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>>
             createImpacts(PINNED piece, Collection<Line> lines) {
 
         var valuablePieces = board.getPieces(piece.getColor()).stream()
@@ -91,14 +91,12 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
                                     return isPieceAttacked;
                                 })
                                 .findFirst()
-                                .map(attacker -> (ATTACKER) attacker)
-                                .map(attacker -> new PieceRelativePinImpact<>(piece, valuablePiece, attacker, line))
+                                .map(attacker -> new PieceRelativePinImpact<>(piece, valuablePiece, (ATTACKER) attacker, line))
                                 .orElse(null);
 
                         return impact;
                     })
                     .filter(Objects::nonNull)
-                    .map(impact -> (PiecePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>) impact)
                     .collect(toList());
 
         return impacts;

@@ -42,7 +42,8 @@ final class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
             createImpacts(PIECE piece, Collection<Line> lines) {
 
         var opponentColor = piece.getColor().invert();
-        var opponentPieces = board.getPieces(opponentColor).stream()
+        var opponentPieces = Stream.of(board.getPieces(opponentColor))
+                .flatMap(Collection::stream)
                 .filter(not(Piece::isKing))
                 .map(vp -> (ATTACKED) vp)
                 .collect(toList());

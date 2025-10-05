@@ -15,9 +15,9 @@ abstract class AbstractPiecePinImpactRule<COLOR1 extends Color,
                                           COLOR2 extends Color,
                                           PINNED extends Piece<COLOR1> & Pinnable,
                                           PIECE extends Piece<COLOR1>,
-                                          ATTACKER extends Piece<COLOR2> & Capturable>
-        extends AbstractPinImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,
-                                      PiecePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>>
+                                          ATTACKER extends Piece<COLOR2> & Capturable,
+                                          IMPACT extends PiecePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>>
+        extends AbstractPinImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,IMPACT>
         implements LineImpactRule {
 
     private final Algo<PINNED,Collection<Line>> algo;
