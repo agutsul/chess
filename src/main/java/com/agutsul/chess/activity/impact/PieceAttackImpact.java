@@ -11,15 +11,13 @@ public class PieceAttackImpact<COLOR1 extends Color,
                                PIECE extends Piece<COLOR2>>
         extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,PIECE> {
 
-    private boolean hidden;
 
     public PieceAttackImpact(ATTACKER attacker, PIECE piece) {
         this(attacker, piece, false);
     }
 
     public PieceAttackImpact(ATTACKER attacker, PIECE piece, boolean hidden) {
-        super(Impact.Type.ATTACK, attacker, piece);
-        this.hidden = hidden;
+        super(Impact.Type.ATTACK, attacker, piece, hidden);
     }
 
     public PieceAttackImpact(ATTACKER attacker, PIECE piece, Line line) {
@@ -27,12 +25,7 @@ public class PieceAttackImpact<COLOR1 extends Color,
     }
 
     public PieceAttackImpact(ATTACKER attacker, PIECE piece, Line line, boolean hidden) {
-        super(Impact.Type.ATTACK, attacker, piece, line);
-        this.hidden = hidden;
-    }
-
-    public boolean isHidden() {
-        return hidden;
+        super(Impact.Type.ATTACK, attacker, piece, line, hidden);
     }
 
     @Override

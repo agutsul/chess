@@ -16,7 +16,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.Algo;
-import com.agutsul.chess.piece.algo.PinLineAlgo;
+import com.agutsul.chess.piece.algo.CombinedLineAlgo;
 import com.agutsul.chess.position.Line;
 import com.agutsul.chess.rule.AbstractRule;
 import com.agutsul.chess.rule.CompositePieceRule;
@@ -35,7 +35,7 @@ public class PiecePinImpactRule<COLOR1 extends Color,
     private final Rule<Piece<?>,Collection<IMPACT>> rule;
 
     public PiecePinImpactRule(Board board) {
-        this(board, new PinLineAlgo<>(board));
+        this(board, new CombinedLineAlgo<>(board));
     }
 
     @SuppressWarnings("unchecked")

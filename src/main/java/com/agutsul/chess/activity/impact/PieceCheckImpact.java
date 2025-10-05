@@ -16,8 +16,16 @@ public class PieceCheckImpact<COLOR1 extends Color,
         super(Impact.Type.CHECK, attacker, king);
     }
 
+    public PieceCheckImpact(ATTACKER attacker, KING king, boolean hidden) {
+        super(Impact.Type.CHECK, attacker, king, hidden);
+    }
+
     public PieceCheckImpact(ATTACKER attacker, KING king, Line line) {
         super(Impact.Type.CHECK, attacker, king, line);
+    }
+
+    public PieceCheckImpact(ATTACKER attacker, KING king, Line line, boolean hidden) {
+        super(Impact.Type.CHECK, attacker, king, line, hidden);
     }
 
     @Override

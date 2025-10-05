@@ -14,9 +14,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PieceAbsoluteDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteSkewerImpact;
+import com.agutsul.chess.activity.impact.PieceDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
+import com.agutsul.chess.activity.impact.PieceRelativeDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeSkewerImpact;
 import com.agutsul.chess.activity.impact.PieceSkewerImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
@@ -290,5 +293,91 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         var whiteBishop = board.getPiece("c4").get();
         var skewerImpacts = board.getImpacts(whiteBishop, Impact.Type.SKEWER);
         assertTrue(skewerImpacts.isEmpty());
+    }
+
+    @Test
+    void testBishopDiscoveredCheckImpact() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("b2")
+                .withWhiteRook("e3")
+                .withWhiteBishop("e4")
+                .withWhitePawn("g2")
+                .withBlackKing("e5")
+                .withBlackQueen("e8")
+                .withBlackRook("g3")
+                .build();
+
+        var whiteBishop = board.getPiece("e4").get();
+        var discoveredAttackImpacts = board.getImpacts(whiteBishop, Impact.Type.ATTACK);
+        assertFalse(discoveredAttackImpacts.isEmpty());
+
+        var absoluteDiscoveredAttackImpacts = discoveredAttackImpacts.stream()
+                .map(impact -> (PieceDiscoveredAttackImpact<?,?>) impact)
+                .filter(PieceDiscoveredAttackImpact::isAbsolute)
+                .map(impact -> (PieceAbsoluteDiscoveredAttackImpact<?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertFalse(absoluteDiscoveredAttackImpacts.isEmpty());
+        assertEquals(1, absoluteDiscoveredAttackImpacts.size());
+
+        var absoluteDiscoveredAttackImpact = absoluteDiscoveredAttackImpacts.getFirst();
+        assertEquals(whiteBishop, absoluteDiscoveredAttackImpact.getSource());
+
+        var blackKing = board.getPiece("e5").get();
+
+        var checkImpact = absoluteDiscoveredAttackImpact.getTarget();
+        assertEquals(blackKing, checkImpact.getTarget());
+        assertTrue(checkImpact.isHidden());
+
+        var whiteRook = board.getPiece("e3").get();
+        assertEquals(whiteRook, checkImpact.getSource());
+
+        var line = checkImpact.getLine();
+
+        assertTrue(line.isPresent());
+        assertFalse(line.get().isEmpty());
+    }
+
+    @Test
+    void testBishopDiscoveredAttackImpact() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("c1")
+                .withWhiteRook("d1")
+                .withWhiteBishop("d2")
+                .withWhitePawns("a2","b2","c2")
+                .withBlackKing("g8")
+                .withBlackQueen("d6")
+                .withBlackPawns("f7","g7","h7")
+                .build();
+
+        var whiteBishop = board.getPiece("d2").get();
+        var discoveredAttackImpacts = board.getImpacts(whiteBishop, Impact.Type.ATTACK);
+        assertFalse(discoveredAttackImpacts.isEmpty());
+
+        var relativeDiscoveredAttackImpacts = discoveredAttackImpacts.stream()
+                .map(impact -> (PieceDiscoveredAttackImpact<?,?>) impact)
+                .filter(PieceDiscoveredAttackImpact::isRelative)
+                .map(impact -> (PieceRelativeDiscoveredAttackImpact<?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertFalse(relativeDiscoveredAttackImpacts.isEmpty());
+        assertEquals(1, relativeDiscoveredAttackImpacts.size());
+
+        var relativeDiscoveredAttackImpact = relativeDiscoveredAttackImpacts.getFirst();
+        assertEquals(whiteBishop, relativeDiscoveredAttackImpact.getSource());
+
+        var blackQueen = board.getPiece("d6").get();
+
+        var attackImpact = relativeDiscoveredAttackImpact.getTarget();
+        assertEquals(blackQueen, attackImpact.getTarget());
+        assertTrue(attackImpact.isHidden());
+
+        var whiteRook = board.getPiece("d1").get();
+        assertEquals(whiteRook, attackImpact.getSource());
+
+        var line = attackImpact.getLine();
+
+        assertTrue(line.isPresent());
+        assertFalse(line.get().isEmpty());
     }
 }

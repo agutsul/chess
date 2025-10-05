@@ -26,6 +26,8 @@ import com.agutsul.chess.activity.action.PieceEnPassantAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PieceAbsoluteDiscoveredAttackImpact;
+import com.agutsul.chess.activity.impact.PieceDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PiecePartialPinImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
@@ -524,6 +526,69 @@ public class PawnPieceImplTest extends AbstractPieceTest {
             assertTrue(isPawn(impact.getSource()));
             assertTrue(impact.getLine().isEmpty());
         });
+    }
+
+    @Test
+    void testPawnDiscoveredCheckImpactWithEnPassant() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("h1")
+                .withWhiteRook("h4")
+                .withWhiteBishop("f4")
+                .withWhitePawn("h5")
+                .withBlackKing("h6")
+                .withBlackPawn("g7")
+                .build();
+
+        var blackPawn = (PawnPiece<Color>) board.getPiece("g7").get();
+        blackPawn.move(board.getPosition("g5").get());
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+
+        var whitePawn = board.getPiece("h5").get();
+
+        var discoveredAttackImpacts = board.getImpacts(whitePawn, Impact.Type.ATTACK);
+        assertFalse(discoveredAttackImpacts.isEmpty());
+
+        var absoluteDiscoveredAttackImpacts = discoveredAttackImpacts.stream()
+                .map(impact -> (PieceDiscoveredAttackImpact<?,?>) impact)
+                .filter(PieceDiscoveredAttackImpact::isAbsolute)
+                .map(impact -> (PieceAbsoluteDiscoveredAttackImpact<?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertFalse(absoluteDiscoveredAttackImpacts.isEmpty());
+        assertEquals(1, absoluteDiscoveredAttackImpacts.size());
+
+        var absoluteDiscoveredAttackImpact = absoluteDiscoveredAttackImpacts.getFirst();
+        assertEquals(whitePawn, absoluteDiscoveredAttackImpact.getSource());
+
+        var blackKing = board.getPiece("h6").get();
+
+        var checkImpact = absoluteDiscoveredAttackImpact.getTarget();
+        assertEquals(blackKing, checkImpact.getTarget());
+        assertTrue(checkImpact.isHidden());
+
+        var whiteRook = board.getPiece("h4").get();
+        assertEquals(whiteRook, checkImpact.getSource());
+
+        var line = checkImpact.getLine();
+
+        assertTrue(line.isPresent());
+        assertFalse(line.get().isEmpty());
+    }
+
+    @Test
+    void testPawnWithoutDiscoveredAttackImpact() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("h1")
+                .withWhiteRook("h4")
+                .withWhitePawn("h7")
+                .withBlackKing("h8")
+                .build();
+
+        var whitePawn = board.getPiece("h7").get();
+
+        var discoveredAttackImpacts = board.getImpacts(whitePawn, Impact.Type.ATTACK);
+        assertTrue(discoveredAttackImpacts.isEmpty());
     }
 
     static void assertPawnEnPassantActions(Board board, Color color, Piece.Type type,

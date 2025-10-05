@@ -17,9 +17,15 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
         implements Impact<ATTACKER> {
 
     private Line line;
+    private boolean hidden;
 
     AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, PIECE piece) {
         super(impactType, attacker, piece);
+    }
+
+    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, PIECE piece, boolean hidden) {
+        super(impactType, attacker, piece);
+        this.hidden = hidden;
     }
 
     AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, PIECE piece, Line line) {
@@ -27,8 +33,17 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
         this.line = line;
     }
 
+    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, PIECE piece, Line line, boolean hidden) {
+        this(impactType, attacker, piece, line);
+        this.hidden = hidden;
+    }
+
     public final Optional<Line> getLine() {
         return Optional.ofNullable(this.line);
+    }
+
+    public final boolean isHidden() {
+        return hidden;
     }
 
     @Override

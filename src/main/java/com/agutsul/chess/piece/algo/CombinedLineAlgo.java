@@ -14,19 +14,19 @@ import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.position.PositionComparator;
 
-public final class PinLineAlgo<COLOR extends Color,
-                               PIECE extends Piece<COLOR>>
+public final class CombinedLineAlgo<COLOR extends Color,
+                                    PIECE extends Piece<COLOR>>
         extends AbstractAlgo<PIECE,Line> {
 
     private final CompositePieceAlgo<COLOR,PIECE,Line> algo;
 
     @SuppressWarnings("unchecked")
-    public PinLineAlgo(Board board) {
+    public CombinedLineAlgo(Board board) {
         super(board);
         this.algo = new CompositePieceAlgo<>(board,
-                new PinLineAlgoAdapter<>(board, new HorizontalLineAlgo<>(board)),
-                new PinLineAlgoAdapter<>(board, new VerticalLineAlgo<>(board)),
-                new PinDiagonalLineAlgoAdapter<>(board, new DiagonalLineAlgo<>(board))
+                new CombinedLineAlgoAdapter<>(board, new HorizontalLineAlgo<>(board)),
+                new CombinedLineAlgoAdapter<>(board, new VerticalLineAlgo<>(board)),
+                new CombinedDiagonalLineAlgoAdapter<>(board, new DiagonalLineAlgo<>(board))
         );
     }
 
@@ -35,33 +35,33 @@ public final class PinLineAlgo<COLOR extends Color,
         return algo.calculate(piece);
     }
 
-    private static class PinLineAlgoAdapter<COLOR extends Color,
-                                            PIECE extends Piece<COLOR>>
+    private static class CombinedLineAlgoAdapter<COLOR extends Color,
+                                                 PIECE extends Piece<COLOR>>
             extends AbstractLineAlgo<PIECE,Line> {
 
         private static final Comparator<Position> COMPARATOR = new PositionComparator();
 
         private final AbstractLineAlgo<PIECE,Line> origin;
 
-        public PinLineAlgoAdapter(Board board, HorizontalLineAlgo<COLOR,PIECE> algo) {
+        public CombinedLineAlgoAdapter(Board board, HorizontalLineAlgo<COLOR,PIECE> algo) {
             this(board, (AbstractLineAlgo<PIECE,Line>) algo);
         }
 
-        public PinLineAlgoAdapter(Board board, VerticalLineAlgo<COLOR,PIECE> algo) {
+        public CombinedLineAlgoAdapter(Board board, VerticalLineAlgo<COLOR,PIECE> algo) {
             this(board, (AbstractLineAlgo<PIECE,Line>) algo);
         }
 
-        private PinLineAlgoAdapter(Board board, AbstractLineAlgo<PIECE,Line> algo) {
+        private CombinedLineAlgoAdapter(Board board, AbstractLineAlgo<PIECE,Line> algo) {
             super(board);
             this.origin = algo;
         }
 
         @Override
         public Collection<Line> calculate(PIECE piece) {
-            return process(piece, origin.calculate(piece));
+            return combineLine(piece, origin.calculate(piece));
         }
 
-        protected Collection<Line> process(PIECE piece, Collection<Line> lines) {
+        protected Collection<Line> combineLine(PIECE piece, Collection<Line> lines) {
             return List.of(createLine(piece, lines));
         }
 
@@ -76,17 +76,17 @@ public final class PinLineAlgo<COLOR extends Color,
         }
     }
 
-    private static class PinDiagonalLineAlgoAdapter<COLOR extends Color,
-                                                    PIECE extends Piece<COLOR>>
-            extends PinLineAlgoAdapter<COLOR,PIECE> {
+    private static class CombinedDiagonalLineAlgoAdapter<COLOR extends Color,
+                                                         PIECE extends Piece<COLOR>>
+            extends CombinedLineAlgoAdapter<COLOR,PIECE> {
 
-        public PinDiagonalLineAlgoAdapter(Board board,
+        public CombinedDiagonalLineAlgoAdapter(Board board,
                                           DiagonalLineAlgo<COLOR,PIECE> algo) {
             super(board, algo);
         }
 
         @Override
-        protected Collection<Line> process(PIECE piece, Collection<Line> lines) {
+        protected Collection<Line> combineLine(PIECE piece, Collection<Line> lines) {
             var list = new ArrayList<>(lines);
 
             var line1 = createLine(piece, List.of(list.get(0), list.get(1)));
