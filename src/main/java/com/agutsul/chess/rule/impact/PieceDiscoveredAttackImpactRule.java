@@ -25,7 +25,7 @@ public final class PieceDiscoveredAttackImpactRule<COLOR1 extends Color,
                                                    ATTACKED extends Piece<COLOR2>,
                                                    IMPACT extends PieceDiscoveredAttackImpact<COLOR1,PIECE>>
         extends AbstractRule<PIECE,IMPACT,Impact.Type>
-        implements DiscoveredAttackImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,IMPACT> {
+        implements DiscoveredAttackImpactRule<COLOR1,PIECE,IMPACT> {
 
     private final Rule<Piece<?>,Collection<IMPACT>> rule;
 
