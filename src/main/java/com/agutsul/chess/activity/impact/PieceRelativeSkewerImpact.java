@@ -8,11 +8,11 @@ import com.agutsul.chess.position.Line;
 public final class PieceRelativeSkewerImpact<COLOR1 extends Color,
                                              COLOR2 extends Color,
                                              ATTACKER extends Piece<COLOR1> & Capturable,
-                                             SKEWERED extends Piece<COLOR2>,
+                                             ATTACKED extends Piece<COLOR2>,
                                              DEFENDED extends Piece<COLOR2>>
-        extends AbstractPieceSkewerImpact<COLOR1,COLOR2,ATTACKER,SKEWERED,DEFENDED> {
+        extends AbstractPieceSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED> {
 
-    public PieceRelativeSkewerImpact(ATTACKER attacker, SKEWERED skewered, DEFENDED defended, Line line) {
+    public PieceRelativeSkewerImpact(ATTACKER attacker, ATTACKED skewered, DEFENDED defended, Line line) {
         super(Mode.RELATIVE,
                 new PieceAttackImpact<>(attacker, skewered, line),
                 defended

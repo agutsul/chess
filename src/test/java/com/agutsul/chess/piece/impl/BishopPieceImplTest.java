@@ -234,7 +234,7 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         assertEquals(whiteBishop, relativeSkewerImpact.getAttacker());
 
         var blackQueen = board.getPiece("f7").get();
-        assertEquals(blackQueen, relativeSkewerImpact.getSkewered());
+        assertEquals(blackQueen, relativeSkewerImpact.getAttacked());
 
         var blackRook = board.getPiece("g8").get();
         assertEquals(blackRook, relativeSkewerImpact.getDefended());
@@ -269,7 +269,7 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         assertEquals(blackBishop, absoluteSkewerImpact.getAttacker());
 
         var whiteKing = board.getPiece("e4").get();
-        assertEquals(whiteKing, absoluteSkewerImpact.getSkewered());
+        assertEquals(whiteKing, absoluteSkewerImpact.getAttacked());
 
         var whiteQueen = board.getPiece("f3").get();
         assertEquals(whiteQueen, absoluteSkewerImpact.getDefended());

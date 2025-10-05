@@ -10,17 +10,17 @@ import com.agutsul.chess.position.Position;
 abstract class AbstractPieceSkewerImpact<COLOR1 extends Color,
                                          COLOR2 extends Color,
                                          ATTACKER extends Piece<COLOR1> & Capturable,
-                                         SKEWERED extends Piece<COLOR2>,
+                                         ATTACKED extends Piece<COLOR2>,
                                          DEFENDED extends Piece<COLOR2>>
         extends AbstractTargetActivity<Impact.Type,
-                                       AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,SKEWERED>,
+                                       AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>,
                                        DEFENDED>
-        implements PieceSkewerImpact<COLOR1,COLOR2,ATTACKER,SKEWERED,DEFENDED> {
+        implements PieceSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED> {
 
     private final Mode mode;
 
     AbstractPieceSkewerImpact(Mode mode,
-                              AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,SKEWERED> source,
+                              AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> source,
                               DEFENDED target) {
 
         super(Impact.Type.SKEWER, source, target);
@@ -48,7 +48,7 @@ abstract class AbstractPieceSkewerImpact<COLOR1 extends Color,
     }
 
     @Override
-    public final SKEWERED getSkewered() {
+    public final ATTACKED getAttacked() {
         return getSource().getTarget();
     }
 

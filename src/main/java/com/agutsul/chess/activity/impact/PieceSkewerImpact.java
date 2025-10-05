@@ -10,9 +10,9 @@ import com.agutsul.chess.position.Line;
 public interface PieceSkewerImpact<COLOR1 extends Color,
                                    COLOR2 extends Color,
                                    ATTACKER extends Piece<COLOR1> & Capturable,
-                                   SKEWERED extends Piece<COLOR2>,
+                                   ATTACKED extends Piece<COLOR2>,
                                    DEFENDED extends Piece<COLOR2>>
-        extends Impact<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,SKEWERED>> {
+        extends Impact<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>> {
 
     enum Mode {
         ABSOLUTE,
@@ -29,7 +29,7 @@ public interface PieceSkewerImpact<COLOR1 extends Color,
 
     ATTACKER getAttacker();
 
-    SKEWERED getSkewered();
+    ATTACKED getAttacked();
 
     DEFENDED getDefended();
 
