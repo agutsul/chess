@@ -17,11 +17,11 @@ import com.agutsul.chess.rule.Rule;
 public final class PieceSkewerImpactRule<COLOR1 extends Color,
                                          COLOR2 extends Color,
                                          ATTACKER extends Piece<COLOR1> & Capturable,
-                                         SKEWERED extends Piece<COLOR2>,
+                                         ATTACKED extends Piece<COLOR2>,
                                          DEFENDED extends Piece<COLOR2>,
-                                         IMPACT extends PieceSkewerImpact<COLOR1,COLOR2,ATTACKER,SKEWERED,DEFENDED>>
+                                         IMPACT extends PieceSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>
         extends AbstractRule<ATTACKER,IMPACT,Impact.Type>
-        implements SkewerImpactRule<COLOR1,COLOR2,ATTACKER,SKEWERED,DEFENDED,IMPACT> {
+        implements SkewerImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,IMPACT> {
 
     private final Rule<Piece<?>,Collection<IMPACT>> rule;
 
