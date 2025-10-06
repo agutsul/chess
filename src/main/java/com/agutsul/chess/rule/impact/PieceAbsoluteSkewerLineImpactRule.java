@@ -25,8 +25,7 @@ final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
                                               ATTACKED extends KingPiece<COLOR2>,
                                               DEFENDED extends Piece<COLOR2>>
         extends AbstractPieceSkewerImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,
-                                              PieceAbsoluteSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>
-        implements LineImpactRule {
+                                              PieceAbsoluteSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>> {
 
     PieceAbsoluteSkewerLineImpactRule(Board board, Algo<ATTACKER,Collection<Line>> algo) {
         super(board, algo);
@@ -36,10 +35,6 @@ final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
     @SuppressWarnings("unchecked")
     protected Collection<PieceAbsoluteSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>
             createImpacts(ATTACKER piece, Collection<Line> lines) {
-
-        if (!LINE_ATTACK_PIECE_TYPES.contains(piece.getType())) {
-            return emptyList();
-        }
 
         var opponentColor  = piece.getColor().invert();
         var optionalKing = board.getKing(opponentColor);

@@ -1,6 +1,6 @@
 package com.agutsul.chess.rule.impact;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.Collections.emptyList;
 
 import java.util.Collection;
 
@@ -18,7 +18,8 @@ abstract class AbstractPieceSkewerImpactRule<COLOR1 extends Color,
                                              ATTACKED extends Piece<COLOR2>,
                                              DEFENDED extends Piece<COLOR2>,
                                              IMPACT extends PieceSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>
-        extends AbstractSkewerImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,IMPACT> {
+        extends AbstractSkewerImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,IMPACT>
+        implements LineImpactRule {
 
     private final Algo<ATTACKER,Collection<Line>> algo;
 
@@ -29,6 +30,10 @@ abstract class AbstractPieceSkewerImpactRule<COLOR1 extends Color,
 
     @Override
     protected Collection<Line> calculate(ATTACKER piece) {
-        return algo.calculate(piece).stream().collect(toList());
+        if (!LINE_ATTACK_PIECE_TYPES.contains(piece.getType())) {
+            return emptyList();
+        }
+
+        return algo.calculate(piece);
     }
 }
