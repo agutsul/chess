@@ -10,7 +10,7 @@ public interface PieceDiscoveredAttackImpact<COLOR extends Color,
         extends Impact<PIECE> {
 
     enum Mode {
-        ABSOLUTE,
+        ABSOLUTE, // discovered check
         RELATIVE
     }
 

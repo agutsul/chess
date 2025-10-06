@@ -1,8 +1,14 @@
 package com.agutsul.chess.rule.impact;
 
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.PieceDiscoveredAttackImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -28,6 +34,24 @@ abstract class AbstractPieceDiscoveredAttackImpactRule<COLOR1 extends Color,
 
     @Override
     protected Collection<Line> calculate(PIECE piece) {
-        return algo.calculate(piece);
+        // find all possible action positions
+        var pieceActionPositions = Stream.of(board.getActions(piece))
+                .flatMap(Collection::stream)
+                .map(Action::getPosition)
+                .collect(toSet());
+
+        if (pieceActionPositions.isEmpty()) {
+            return emptyList();
+        }
+
+        var lines = Stream.of(algo.calculate(piece))
+                .flatMap(Collection::stream)
+                // check if there is piece action position outside line
+                .filter(line  -> !line.containsAll(pieceActionPositions))
+                // check if piece inside line
+                .filter(line  -> line.contains(piece.getPosition()))
+                .collect(toList());
+
+        return lines;
     }
 }

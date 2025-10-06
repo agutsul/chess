@@ -4,7 +4,6 @@ import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static java.util.Collections.emptyList;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +15,6 @@ import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
 import com.agutsul.chess.Capturable;
-import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceRelativeDiscoveredAttackImpact;
 import com.agutsul.chess.board.Board;
@@ -42,15 +40,6 @@ final class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
     protected Collection<PieceRelativeDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>>
             createImpacts(PIECE piece, Collection<Line> lines) {
 
-        var pieceActionPositions = Stream.of(board.getActions(piece))
-                .flatMap(Collection::stream)
-                .map(Action::getPosition)
-                .collect(toSet());
-
-        if (pieceActionPositions.isEmpty()) {
-            return emptyList();
-        }
-
         var opponentColor = piece.getColor().invert();
         var opponentPieces = Stream.of(board.getPieces(opponentColor))
                 .flatMap(Collection::stream)
@@ -61,10 +50,6 @@ final class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
         MultiValuedMap<Line,ATTACKED> impactLines = new ArrayListValuedHashMap<>();
         Stream.of(lines)
             .flatMap(Collection::stream)
-            // check if there is piece action position outside line
-            .filter(line  -> !line.containsAll(pieceActionPositions))
-            // check if piece inside line
-            .filter(line  -> line.contains(piece.getPosition()))
             .forEach(line -> opponentPieces.stream()
                     .filter(opponentPiece  -> line.contains(opponentPiece.getPosition()))
                     .forEach(opponentPiece -> impactLines.put(line, opponentPiece))
