@@ -3,13 +3,16 @@ package com.agutsul.chess.rule.impact;
 import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteDiscoveredAttackImpact;
 import com.agutsul.chess.board.Board;
@@ -36,15 +39,28 @@ final class PieceAbsoluteDiscoveredAttackImpactRule<COLOR1 extends Color,
     protected Collection<PieceAbsoluteDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>>
             createImpacts(PIECE piece, Collection<Line> lines) {
 
-        var optionalKing = board.getKing(piece.getColor().invert());
+        var opponentColor = piece.getColor().invert();
+        var optionalKing = board.getKing(opponentColor);
         if (optionalKing.isEmpty()) {
+            return emptyList();
+        }
+
+        var pieceActionPositions = Stream.of(board.getActions(piece))
+                .flatMap(Collection::stream)
+                .map(Action::getPosition)
+                .collect(toSet());
+
+        if (pieceActionPositions.isEmpty()) {
             return emptyList();
         }
 
         var opponentKing = (ATTACKED) optionalKing.get();
         var impacts = lines.stream()
                 .filter(line -> line.contains(opponentKing.getPosition()))
-                .filter(line -> line.contains(piece.getPosition()))
+                // check if there is piece action position outside line
+                .filter(line  -> !line.containsAll(pieceActionPositions))
+                // check if piece inside line
+                .filter(line  -> line.contains(piece.getPosition()))
                 .map(line -> {
                     var linePieces = line.stream()
                             .map(position -> board.getPiece(position))

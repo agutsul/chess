@@ -577,7 +577,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
     }
 
     @Test
-    void testPawnWithoutDiscoveredAttackImpact() {
+    void testPawnWithoutDiscoveredAttackImpactNoActionAvailable() {
         var board = new LabeledBoardBuilder()
                 .withWhiteKing("h1")
                 .withWhiteRook("h4")
@@ -586,6 +586,21 @@ public class PawnPieceImplTest extends AbstractPieceTest {
                 .build();
 
         var whitePawn = board.getPiece("h7").get();
+
+        var discoveredAttackImpacts = board.getImpacts(whitePawn, Impact.Type.ATTACK);
+        assertTrue(discoveredAttackImpacts.isEmpty());
+    }
+
+    @Test
+    void testPawnWithoutDiscoveredAttackImpactActionAvailableInsideLine() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("h1")
+                .withWhiteRook("h4")
+                .withWhitePawn("h6")
+                .withBlackKing("h8")
+                .build();
+
+        var whitePawn = board.getPiece("h6").get();
 
         var discoveredAttackImpacts = board.getImpacts(whitePawn, Impact.Type.ATTACK);
         assertTrue(discoveredAttackImpacts.isEmpty());

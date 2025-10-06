@@ -1,7 +1,5 @@
 package com.agutsul.chess.rule.impact;
 
-import static java.util.Collections.emptyList;
-
 import java.util.Collection;
 
 import com.agutsul.chess.Capturable;
@@ -44,11 +42,6 @@ public final class PieceDiscoveredAttackImpactRule<COLOR1 extends Color,
 
     @Override
     public Collection<IMPACT> evaluate(PIECE piece) {
-        var actions = board.getActions(piece);
-        if (actions.isEmpty()) {
-            return emptyList();
-        }
-
         return rule.evaluate(piece);
     }
 }
