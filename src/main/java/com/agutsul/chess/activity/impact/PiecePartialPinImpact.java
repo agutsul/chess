@@ -2,40 +2,60 @@ package com.agutsul.chess.activity.impact;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Pinnable;
+import com.agutsul.chess.activity.AbstractSourceActivity;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Line;
+import com.agutsul.chess.position.Position;
 
 public final class PiecePartialPinImpact<COLOR1 extends Color,
                                          COLOR2 extends Color,
                                          PINNED extends Piece<COLOR1> & Pinnable,
                                          DEFENDED extends Piece<COLOR1>,
                                          ATTACKER extends Piece<COLOR2> & Capturable>
-        extends AbstractPiecePinImpact<COLOR1,COLOR2,PINNED,DEFENDED,ATTACKER,
-                                       PiecePinImpact<COLOR1,COLOR2,PINNED,DEFENDED,ATTACKER>> {
+        extends AbstractSourceActivity<Impact.Type,PINNED>
+        implements PiecePinImpact<COLOR1,COLOR2,PINNED,DEFENDED,ATTACKER> {
+
+    private PiecePinImpact<COLOR1,COLOR2,PINNED,DEFENDED,ATTACKER> impact;
 
     public PiecePartialPinImpact(PiecePinImpact<COLOR1,COLOR2,PINNED,DEFENDED,ATTACKER> impact) {
-        super(Mode.PARTIAL, impact.getPinned(), impact);
+        super(Impact.Type.PIN, impact.getSource());
+        this.impact = impact;
+    }
+
+    @Override
+    public Mode getMode() {
+        return Mode.PARTIAL;
     }
 
     @Override
     public boolean isMode(Mode mode) {
-        return super.isMode(mode)
-                || getTarget().isMode(mode);
+        return PiecePinImpact.super.isMode(mode)
+                || impact.isMode(mode);
+    }
+
+    @Override
+    public PINNED getPinned() {
+        return impact.getSource();
     }
 
     @Override
     public ATTACKER getAttacker() {
-        return getTarget().getAttacker();
+        return impact.getAttacker();
     }
 
     @Override
     public DEFENDED getDefended() {
-        return getTarget().getDefended();
+        return impact.getDefended();
     }
 
     @Override
     public Line getLine() {
-        return getTarget().getLine();
+        return impact.getLine();
+    }
+
+    @Override
+    public Position getPosition() {
+        return impact.getSource().getPosition();
     }
 }
