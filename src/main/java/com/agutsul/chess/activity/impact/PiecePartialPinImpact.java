@@ -36,7 +36,7 @@ public final class PiecePartialPinImpact<COLOR1 extends Color,
 
     @Override
     public PINNED getPinned() {
-        return impact.getSource();
+        return impact.getPinned();
     }
 
     @Override
@@ -56,6 +56,11 @@ public final class PiecePartialPinImpact<COLOR1 extends Color,
 
     @Override
     public Position getPosition() {
-        return impact.getSource().getPosition();
+        return impact.getPosition();
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(impact);
     }
 }

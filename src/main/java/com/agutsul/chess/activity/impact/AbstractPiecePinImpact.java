@@ -12,7 +12,7 @@ abstract class AbstractPiecePinImpact<COLOR1 extends Color,
                                       PINNED extends Piece<COLOR1> & Pinnable,
                                       DEFENDED extends Piece<COLOR1>,
                                       ATTACKER extends Piece<COLOR2> & Capturable,
-                                      IMPACT extends Impact<?>>
+                                      IMPACT extends AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,DEFENDED>>
         extends AbstractTargetActivity<Impact.Type,PINNED,IMPACT>
         implements PiecePinImpact<COLOR1,COLOR2,PINNED,DEFENDED,ATTACKER> {
 
