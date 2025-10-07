@@ -11,7 +11,8 @@ public final class PieceAbsoluteSkewerImpact<COLOR1 extends Color,
                                              ATTACKER extends Piece<COLOR1> & Capturable,
                                              ATTACKED extends KingPiece<COLOR2>,
                                              DEFENDED extends Piece<COLOR2>>
-        extends AbstractPieceSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED> {
+        extends AbstractPieceSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,
+                                          PieceCheckImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>> {
 
     public PieceAbsoluteSkewerImpact(ATTACKER attacker, ATTACKED king, DEFENDED defended, Line line) {
         super(Mode.ABSOLUTE,

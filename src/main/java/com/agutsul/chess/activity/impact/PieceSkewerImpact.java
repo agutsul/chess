@@ -12,7 +12,7 @@ public interface PieceSkewerImpact<COLOR1 extends Color,
                                    ATTACKER extends Piece<COLOR1> & Capturable,
                                    ATTACKED extends Piece<COLOR2>,
                                    DEFENDED extends Piece<COLOR2>>
-        extends Impact<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>> {
+        extends Impact<ATTACKER> {
 
     enum Mode {
         ABSOLUTE,

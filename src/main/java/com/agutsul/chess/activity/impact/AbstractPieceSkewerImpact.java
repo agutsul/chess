@@ -11,20 +11,18 @@ abstract class AbstractPieceSkewerImpact<COLOR1 extends Color,
                                          COLOR2 extends Color,
                                          ATTACKER extends Piece<COLOR1> & Capturable,
                                          ATTACKED extends Piece<COLOR2>,
-                                         DEFENDED extends Piece<COLOR2>>
-        extends AbstractTargetActivity<Impact.Type,
-                                       AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>,
-                                       DEFENDED>
+                                         DEFENDED extends Piece<COLOR2>,
+                                         IMPACT extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
+        extends AbstractTargetActivity<Impact.Type,ATTACKER,DEFENDED>
         implements PieceSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED> {
 
     private final Mode mode;
+    private final IMPACT impact;
 
-    AbstractPieceSkewerImpact(Mode mode,
-                              AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> source,
-                              DEFENDED target) {
-
-        super(Impact.Type.SKEWER, source, target);
+    AbstractPieceSkewerImpact(Mode mode, IMPACT impact, DEFENDED target) {
+        super(Impact.Type.SKEWER, impact.getSource(), target);
         this.mode = mode;
+        this.impact = impact;
     }
 
     @Override
@@ -34,22 +32,22 @@ abstract class AbstractPieceSkewerImpact<COLOR1 extends Color,
 
     @Override
     public final Position getPosition() {
-        return getSource().getPosition();
+        return getAttacker().getPosition();
     }
 
     @Override
     public final Line getLine() {
-        return getSource().getLine().get();
+        return impact.getLine().get();
     }
 
     @Override
     public final ATTACKER getAttacker() {
-        return getSource().getSource();
+        return impact.getSource();
     }
 
     @Override
     public final ATTACKED getAttacked() {
-        return getSource().getTarget();
+        return impact.getTarget();
     }
 
     @Override
