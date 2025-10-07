@@ -17,7 +17,7 @@ abstract class AbstractPieceDiscoveredAttackImpact<COLOR1 extends Color,
 
     private final Mode mode;
 
-    protected AbstractPieceDiscoveredAttackImpact(Mode mode, PIECE piece, IMPACT discoveredAttack) {
+    AbstractPieceDiscoveredAttackImpact(Mode mode, PIECE piece, IMPACT discoveredAttack) {
         super(Impact.Type.ATTACK, piece, discoveredAttack);
         this.mode = mode;
     }

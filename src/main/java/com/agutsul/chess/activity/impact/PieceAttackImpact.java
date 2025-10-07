@@ -11,7 +11,6 @@ public class PieceAttackImpact<COLOR1 extends Color,
                                ATTACKED extends Piece<COLOR2>>
         extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
-
     public PieceAttackImpact(ATTACKER attacker, ATTACKED piece) {
         this(attacker, piece, false);
     }
