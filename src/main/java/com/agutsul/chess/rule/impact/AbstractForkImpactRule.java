@@ -24,10 +24,10 @@ import com.agutsul.chess.rule.AbstractRule;
 abstract class AbstractForkImpactRule<COLOR1 extends Color,
                                       COLOR2 extends Color,
                                       ATTACKER extends Piece<COLOR1> & Capturable,
-                                      PIECE  extends Piece<COLOR2>,
-                                      IMPACT extends PieceForkImpact<COLOR1,COLOR2,ATTACKER,PIECE>>
+                                      ATTACKED extends Piece<COLOR2>,
+                                      IMPACT extends PieceForkImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
         extends AbstractRule<ATTACKER,IMPACT,Impact.Type>
-        implements ForkImpactRule<COLOR1,COLOR2,ATTACKER,PIECE,IMPACT> {
+        implements ForkImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,IMPACT> {
 
     AbstractForkImpactRule(Board board) {
         super(board, Impact.Type.FORK);
@@ -62,12 +62,12 @@ abstract class AbstractForkImpactRule<COLOR1 extends Color,
 
     protected abstract Collection<Calculated> calculate(ATTACKER piece);
 
-    protected abstract Collection<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,PIECE>>
+    protected abstract Collection<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
             createAttackImpacts(ATTACKER piece, Collection<Calculated> next);
 
     @SuppressWarnings("unchecked")
     private Collection<IMPACT> createForkImpacts(ATTACKER piece,
-                                                 Collection<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,PIECE>> impacts) {
+                                                 Collection<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>> impacts) {
 
         var hasCheckImpact = Stream.of(impacts)
                 .flatMap(Collection::stream)

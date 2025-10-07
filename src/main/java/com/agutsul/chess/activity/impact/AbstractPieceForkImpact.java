@@ -11,10 +11,10 @@ import com.agutsul.chess.position.Position;
 abstract class AbstractPieceForkImpact<COLOR1 extends Color,
                                        COLOR2 extends Color,
                                        ATTACKER extends Piece<COLOR1> & Capturable,
-                                       FORKED extends Piece<COLOR2>,
-                                       IMPACT extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,FORKED>>
+                                       ATTACKED extends Piece<COLOR2>,
+                                       IMPACT extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
         extends AbstractTargetActivity<Impact.Type,ATTACKER,Collection<IMPACT>>
-        implements PieceForkImpact<COLOR1,COLOR2,ATTACKER,FORKED> {
+        implements PieceForkImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
     private final Mode mode;
 

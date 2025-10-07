@@ -24,9 +24,9 @@ import com.agutsul.chess.position.Position;
 public class PieceForkPositionImpactRule<COLOR1 extends Color,
                                          COLOR2 extends Color,
                                          ATTACKER extends Piece<COLOR1> & Capturable,
-                                         PIECE extends Piece<COLOR2>>
-            extends AbstractForkImpactRule<COLOR1,COLOR2,ATTACKER,PIECE,
-                                           PieceForkImpact<COLOR1,COLOR2,ATTACKER,PIECE>> {
+                                         ATTACKED extends Piece<COLOR2>>
+            extends AbstractForkImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,
+                                           PieceForkImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>> {
 
     private final CapturePieceAlgo<COLOR1,ATTACKER,Position> algo;
 
@@ -42,7 +42,7 @@ public class PieceForkPositionImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    protected Collection<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,PIECE>>
+    protected Collection<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
             createAttackImpacts(ATTACKER piece, Collection<Calculated> next) {
 
         @SuppressWarnings("unchecked")
@@ -55,7 +55,7 @@ public class PieceForkPositionImpactRule<COLOR1 extends Color,
                         ? new PieceCheckImpact<>(piece, (KingPiece<COLOR2>) attackedPiece)
                         : new PieceAttackImpact<>(piece, attackedPiece)
                 )
-                .map(impact -> (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,PIECE>) impact)
+                .map(impact -> (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) impact)
                 .collect(toList());
 
         return impacts;

@@ -18,8 +18,8 @@ import com.agutsul.chess.rule.impact.PieceForkPositionImpactRule;
 class PawnForkImpactRule<COLOR1 extends Color,
                          COLOR2 extends Color,
                          ATTACKER extends PawnPiece<COLOR1>,
-                         PIECE extends PawnPiece<COLOR2>>
-        extends PieceForkPositionImpactRule<COLOR1,COLOR2,ATTACKER,PIECE> {
+                         ATTACKED extends PawnPiece<COLOR2>>
+        extends PieceForkPositionImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
     private final PawnEnPassantAlgo<COLOR1,ATTACKER> enPassantAlgo;
 
@@ -32,10 +32,10 @@ class PawnForkImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    protected Collection<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,PIECE>>
+    protected Collection<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
             createAttackImpacts(ATTACKER pawn, Collection<Calculated> next) {
 
-        var impacts = new ArrayList<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,PIECE>>();
+        var impacts = new ArrayList<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>();
 
         // add all usual pawn capture impacts
         impacts.addAll(super.createAttackImpacts(pawn, next));
@@ -46,8 +46,8 @@ class PawnForkImpactRule<COLOR1 extends Color,
                 .map(Map::entrySet)
                 .flatMap(Collection::stream)
                 .map(Map.Entry::getValue)
-                .map(opponentPawn -> new PieceAttackImpact<>(pawn, (PIECE) opponentPawn))
-                .map(impact -> (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,PIECE>) impact)
+                .map(opponentPawn -> new PieceAttackImpact<>(pawn, (ATTACKED) opponentPawn))
+                .map(impact -> (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) impact)
                 .collect(toList());
 
         impacts.addAll(enPassantAttackImpacts);

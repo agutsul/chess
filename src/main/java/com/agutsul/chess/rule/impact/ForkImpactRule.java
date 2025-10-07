@@ -11,8 +11,8 @@ import com.agutsul.chess.rule.Rule;
 public interface ForkImpactRule<COLOR1 extends Color,
                                 COLOR2 extends Color,
                                 ATTACKER extends Piece<COLOR1> & Capturable,
-                                PIECE extends Piece<COLOR2>,
-                                IMPACT extends PieceForkImpact<COLOR1,COLOR2,ATTACKER,PIECE>>
+                                ATTACKED extends Piece<COLOR2>,
+                                IMPACT extends PieceForkImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
         extends Rule<ATTACKER,Collection<IMPACT>> {
 
 }

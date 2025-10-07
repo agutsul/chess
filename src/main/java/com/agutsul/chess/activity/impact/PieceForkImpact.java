@@ -9,7 +9,7 @@ import com.agutsul.chess.piece.Piece;
 public interface PieceForkImpact<COLOR1 extends Color,
                                  COLOR2 extends Color,
                                  ATTACKER extends Piece<COLOR1> & Capturable,
-                                 FORKED extends Piece<COLOR2>>
+                                 ATTACKED extends Piece<COLOR2>>
         extends Impact<ATTACKER> {
 
     enum Mode {
