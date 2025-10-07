@@ -32,7 +32,7 @@ abstract class AbstractPieceSkewerImpact<COLOR1 extends Color,
 
     @Override
     public final Position getPosition() {
-        return getAttacker().getPosition();
+        return impact.getPosition();
     }
 
     @Override
