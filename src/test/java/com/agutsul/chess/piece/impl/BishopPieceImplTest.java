@@ -22,6 +22,7 @@ import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeSkewerImpact;
 import com.agutsul.chess.activity.impact.PieceSkewerImpact;
+import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Color;
@@ -379,5 +380,33 @@ public class BishopPieceImplTest extends AbstractPieceTest {
 
         assertTrue(line.isPresent());
         assertFalse(line.get().isEmpty());
+    }
+
+    @Test
+    void testBishopUnderminingImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e8")
+                .withBlackKnights("f7","h7")
+                .withBlackPawn("g5")
+                .withWhiteKing("e1")
+                .withWhiteBishop("g6")
+                .build();
+
+        var whiteBishop = board.getPiece("g6").get();
+        var underminingImpacts = board.getImpacts(whiteBishop, Impact.Type.UNDERMINING);
+
+        assertFalse(underminingImpacts.isEmpty());
+        assertEquals(underminingImpacts.size(), 2);
+
+        var blackKnights = board.getPieces(Colors.BLACK, Piece.Type.KNIGHT);
+        underminingImpacts.stream()
+            .map(impact -> (PieceUnderminingImpact<?,?,?,?>) impact)
+            .forEach(underminingImpact -> {
+                assertEquals(whiteBishop, underminingImpact.getAttacker());
+                assertTrue(blackKnights.contains(underminingImpact.getAttacked()));
+
+                assertEquals(whiteBishop.getPosition(), underminingImpact.getPosition());
+                assertTrue(underminingImpact.getLine().isPresent());
+            });
     }
 }
