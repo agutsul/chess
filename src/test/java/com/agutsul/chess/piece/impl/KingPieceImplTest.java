@@ -488,6 +488,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
     void testKingRelativeForkImpact() {
         var board = new LabeledBoardBuilder()
                 .withBlackKing("a5")
+                .withBlackRook("e4")
                 .withBlackBishop("d6")
                 .withBlackKnight("e6")
                 .withWhiteKing("d5")
@@ -513,7 +514,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
         assertEquals(whiteKing, relativeForkImpact.getSource());
         assertEquals(2, forkedImpacts.size());
 
-        var attackedPieceTypes = List.of(Piece.Type.BISHOP, Piece.Type.KNIGHT);
+        var attackedPieceTypes = List.of(Piece.Type.BISHOP, Piece.Type.ROOK);
         forkedImpacts.forEach(impact -> {
             assertTrue(isAttack(impact));
             assertEquals(whiteKing.getPosition(), impact.getPosition());
