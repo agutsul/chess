@@ -1,6 +1,5 @@
 package com.agutsul.chess.rule.impact;
 
-import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
-import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceUnderminingAttackImpact;
 import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
 import com.agutsul.chess.board.Board;
@@ -73,13 +71,8 @@ public final class PieceUnderminingLineImpactRule<COLOR1 extends Color,
                 .map(calculated -> (Line) calculated)
                 .map(line -> Stream.of(board.getPiece(line.getLast()))
                         .flatMap(Optional::stream)
-                        .filter(not(Piece::isKing))
                         .filter(attackedPiece -> !Objects.equals(attackedPiece.getColor(), piece.getColor()))
-                        .filter(attackedPiece -> {
-                            // check if attackedPiece protects any other opponent's piece
-                            var protectImpacts = board.getImpacts(attackedPiece, Impact.Type.PROTECT);
-                            return !protectImpacts.isEmpty();
-                        })
+                        .filter(attackedPiece -> isPieceAttackable(attackedPiece))
                         .map(attackedPiece -> new PieceUnderminingAttackImpact<>(piece, (ATTACKED) attackedPiece, line))
                         .findFirst()
                 )

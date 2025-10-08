@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.impact;
 
+import static com.agutsul.chess.piece.Piece.isKing;
 import static java.util.Collections.emptyList;
 
 import java.util.Collection;
@@ -39,4 +40,14 @@ abstract class AbstractUnderminingImpactRule<COLOR1 extends Color,
     protected abstract Collection<Calculated> calculate(ATTACKER piece);
 
     protected abstract Collection<IMPACT> createImpacts(ATTACKER piece, Collection<Calculated> next);
+
+    protected boolean isPieceAttackable(Piece<Color> piece) {
+        if (isKing(piece)) {
+            return false;
+        }
+
+        // check if piece protects any other opponent's piece
+        var protectImpacts = board.getImpacts(piece, Impact.Type.PROTECT);
+        return !protectImpacts.isEmpty();
+    }
 }
