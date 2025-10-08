@@ -17,11 +17,20 @@ public final class PawnPieceImpactRule<COLOR extends Color,
         extends AbstractPieceRule<Impact<?>,Impact.Type> {
 
     public PawnPieceImpactRule(Board board, int step, int promotionLine) {
-        this(board, new PawnCaptureAlgo<>(board, step), promotionLine);
+        this(board, promotionLine, new PawnCaptureAlgo<>(board, step));
+    }
+
+    private PawnPieceImpactRule(Board board, int promotionLine,
+                                PawnCaptureAlgo<COLOR,PAWN> captureAlgo) {
+
+        this(board, promotionLine, captureAlgo, new PawnEnPassantAlgo<>(board, captureAlgo));
     }
 
     @SuppressWarnings("unchecked")
-    private PawnPieceImpactRule(Board board, PawnCaptureAlgo<COLOR,PAWN> captureAlgo, int promotionLine) {
+    private PawnPieceImpactRule(Board board, int promotionLine,
+                                PawnCaptureAlgo<COLOR,PAWN> captureAlgo,
+                                PawnEnPassantAlgo<COLOR,PAWN> enPassantAlgo) {
+
         super(new CompositePieceRule<>(
                 new PieceCheckPositionImpactRule<>(board, captureAlgo),
                 new PieceProtectPositionImpactRule<>(board, captureAlgo),
@@ -29,7 +38,8 @@ public final class PawnPieceImpactRule<COLOR extends Color,
                 new PawnStagnantImpactRule<>(board, promotionLine),
                 new PiecePinImpactRule<>(board),
                 new PieceDiscoveredAttackImpactRule<>(board),
-                new PawnForkImpactRule<>(board, captureAlgo, new PawnEnPassantAlgo<>(board, captureAlgo))
+                new PawnForkImpactRule<>(board, captureAlgo, enPassantAlgo),
+                new PawnUnderminingImpactRule<>(board, captureAlgo, enPassantAlgo)
             )
         );
     }

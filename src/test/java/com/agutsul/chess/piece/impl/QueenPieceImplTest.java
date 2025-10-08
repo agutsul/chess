@@ -19,6 +19,7 @@ import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PiecePartialPinImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeForkImpact;
+import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Colors;
@@ -197,5 +198,36 @@ public class QueenPieceImplTest extends AbstractPieceTest {
             assertTrue(isQueen(impact.getSource()));
             assertTrue(!impact.getLine().isEmpty());
         });
+    }
+
+    @Test
+    // https://www.chess.com/blog/Win_Like_McEntee/removing-the-defender
+    void testQueenUnderminingImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("g8")
+                .withBlackQueen("f8")
+                .withBlackKnight("f2")
+                .withBlackPawns("a7","g7","b6","h6")
+                .withWhiteKing("h2")
+                .withWhiteQueen("d6")
+                .withWhiteRook("b2")
+                .withWhitePawns("g2","h3")
+                .build();
+
+        var whiteQueen = board.getPiece("d6").get();
+
+        var underminingImpacts = new ArrayList<>(board.getImpacts(whiteQueen, Impact.Type.UNDERMINING));
+        assertFalse(underminingImpacts.isEmpty());
+        assertEquals(underminingImpacts.size(), 1);
+
+        var underminingImpact = (PieceUnderminingImpact<?,?,?,?>) underminingImpacts.getFirst();
+
+        assertEquals(whiteQueen, underminingImpact.getAttacker());
+
+        var blackQueen = board.getPiece("f8").get();
+        assertEquals(blackQueen, underminingImpact.getAttacked());
+
+        assertEquals(whiteQueen.getPosition(), underminingImpact.getPosition());
+        assertTrue(underminingImpact.getLine().isPresent());
     }
 }

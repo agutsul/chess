@@ -25,7 +25,8 @@ public final class KingPieceImpactRule<COLOR extends Color,
                 new PieceProtectPositionImpactRule<>(board, algo),
                 new PieceControlPositionImpactRule<>(board, algo),
                 new PieceForkPositionImpactRule<>(board, algo),
-                new PieceDiscoveredAttackImpactRule<>(board)
+                new PieceDiscoveredAttackImpactRule<>(board),
+                new KingUnderminingImpactRule<>(board, algo)
             )
         );
     }

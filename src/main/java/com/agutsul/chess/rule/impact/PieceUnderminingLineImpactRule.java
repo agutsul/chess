@@ -1,0 +1,91 @@
+package com.agutsul.chess.rule.impact;
+
+import static java.util.function.Predicate.not;
+import static java.util.stream.Collectors.toList;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import com.agutsul.chess.Capturable;
+import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PieceUnderminingAttackImpact;
+import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
+import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
+import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.CapturePieceAlgo;
+import com.agutsul.chess.position.Calculated;
+import com.agutsul.chess.position.Line;
+import com.agutsul.chess.position.Position;
+
+public final class PieceUnderminingLineImpactRule<COLOR1 extends Color,
+                                                  COLOR2 extends Color,
+                                                  ATTACKER extends Piece<COLOR1> & Capturable,
+                                                  ATTACKED extends Piece<COLOR2>>
+        extends AbstractUnderminingImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,
+                                              PieceUnderminingImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>> {
+
+    private final CapturePieceAlgo<COLOR1,ATTACKER,Line> algo;
+
+    public PieceUnderminingLineImpactRule(Board board,
+                                          CapturePieceAlgo<COLOR1,ATTACKER,Line> algo) {
+        super(board);
+        this.algo = algo;
+    }
+
+    @Override
+    protected Collection<Calculated> calculate(ATTACKER piece) {
+        var captureLines = new ArrayList<Calculated>();
+        for (var line : algo.calculate(piece)) {
+            var capturePositions = new ArrayList<Position>();
+            for (var position : line) {
+                var optionalPiece = board.getPiece(position);
+                if (optionalPiece.isPresent()) {
+                    var attackedPiece = optionalPiece.get();
+                    if (!Objects.equals(attackedPiece.getColor(), piece.getColor())) {
+                        capturePositions.add(position);
+                    }
+
+                    break;
+                }
+
+                capturePositions.add(position);
+            }
+
+            if (!capturePositions.isEmpty()) {
+                captureLines.add(new Line(capturePositions));
+            }
+        }
+
+        return captureLines;
+    }
+
+    @Override
+    protected Collection<PieceUnderminingImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
+            createImpacts(ATTACKER piece, Collection<Calculated> next) {
+
+        @SuppressWarnings("unchecked")
+        Collection<PieceUnderminingImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>> impacts = Stream.of(next)
+                .flatMap(Collection::stream)
+                .map(calculated -> (Line) calculated)
+                .map(line -> Stream.of(board.getPiece(line.getLast()))
+                        .flatMap(Optional::stream)
+                        .filter(not(Piece::isKing))
+                        .filter(attackedPiece -> !Objects.equals(attackedPiece.getColor(), piece.getColor()))
+                        .filter(attackedPiece -> {
+                            // check if attackedPiece protects any other opponent's piece
+                            var protectImpacts = board.getImpacts(attackedPiece, Impact.Type.PROTECT);
+                            return !protectImpacts.isEmpty();
+                        })
+                        .map(attackedPiece -> new PieceUnderminingAttackImpact<>(piece, (ATTACKED) attackedPiece, line))
+                        .findFirst()
+                )
+                .flatMap(Optional::stream)
+                .collect(toList());
+
+        return impacts;
+    }
+}

@@ -14,10 +14,10 @@ import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.rule.AbstractRule;
 import com.agutsul.chess.rule.action.EnPassantActionRule;
 
-class PawnEnPassantActionRule<COLOR1 extends Color,
-                              COLOR2 extends Color,
-                              PAWN1 extends PawnPiece<COLOR1>,
-                              PAWN2 extends PawnPiece<COLOR2>>
+final class PawnEnPassantActionRule<COLOR1 extends Color,
+                                    COLOR2 extends Color,
+                                    PAWN1 extends PawnPiece<COLOR1>,
+                                    PAWN2 extends PawnPiece<COLOR2>>
         extends AbstractRule<PAWN1,PieceEnPassantAction<COLOR1,COLOR2,PAWN1,PAWN2>,Action.Type>
         implements EnPassantActionRule<COLOR1,COLOR2,PAWN1,PAWN2,
                                        PieceEnPassantAction<COLOR1,COLOR2,PAWN1,PAWN2>> {
@@ -39,9 +39,7 @@ class PawnEnPassantActionRule<COLOR1 extends Color,
         var actions = Stream.of(data)
                 .map(Map::entrySet)
                 .flatMap(Collection::stream)
-                .map(entry -> new PieceEnPassantAction<>(
-                        pawn, (PAWN2) entry.getValue(), entry.getKey()
-                ))
+                .map(e -> new PieceEnPassantAction<>(pawn, (PAWN2) e.getValue(), e.getKey()))
                 .collect(toList());
 
         return actions;

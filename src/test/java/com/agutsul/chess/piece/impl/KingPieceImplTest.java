@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,6 +25,7 @@ import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeForkImpact;
+import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
@@ -521,5 +523,31 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
             assertTrue(impact.getLine().isEmpty());
         });
+    }
+
+    @Test
+    void testKingUnderminingImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e8")
+                .withBlackKnights("f7","h7")
+                .withBlackPawn("g5")
+                .withWhiteKing("g6")
+                .build();
+
+        var whiteKing = board.getPiece("g6").get();
+        var underminingImpacts = new ArrayList<>(board.getImpacts(whiteKing, Impact.Type.UNDERMINING));
+
+        assertFalse(underminingImpacts.isEmpty());
+        assertEquals(underminingImpacts.size(), 1);
+
+        var underminingImpact = (PieceUnderminingImpact<?,?,?,?>) underminingImpacts.getFirst();
+
+        assertEquals(whiteKing, underminingImpact.getAttacker());
+
+        var blackKnight = board.getPiece("h7").get();
+
+        assertEquals(blackKnight, underminingImpact.getAttacked());
+        assertEquals(whiteKing.getPosition(), underminingImpact.getPosition());
+        assertTrue(underminingImpact.getLine().isEmpty());
     }
 }

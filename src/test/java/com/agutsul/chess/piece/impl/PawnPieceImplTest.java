@@ -32,6 +32,7 @@ import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PiecePartialPinImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeForkImpact;
+import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
@@ -604,6 +605,37 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
         var discoveredAttackImpacts = board.getImpacts(whitePawn, Impact.Type.ATTACK);
         assertTrue(discoveredAttackImpacts.isEmpty());
+    }
+
+    @Test
+    void testPawnUnderminingImpact() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("h1")
+                .withWhitePawns("a4","b3","c3")
+                .withBlackKing("h8")
+                .withBlackPawns("b5","c4")
+                .build();
+
+        var whitePawn1 = board.getPiece("a4").get();
+        var underminingImpacts1 = new ArrayList<>(board.getImpacts(whitePawn1, Impact.Type.UNDERMINING));
+
+        assertFalse(underminingImpacts1.isEmpty());
+        assertEquals(underminingImpacts1.size(), 1);
+
+        var underminingImpact = (PieceUnderminingImpact<?,?,?,?>) underminingImpacts1.getFirst();
+
+        assertEquals(whitePawn1, underminingImpact.getAttacker());
+
+        var blackPawn = board.getPiece("b5").get();
+
+        assertEquals(blackPawn, underminingImpact.getAttacked());
+        assertEquals(whitePawn1.getPosition(), underminingImpact.getPosition());
+        assertTrue(underminingImpact.getLine().isEmpty());
+
+        var whitePawn2 = board.getPiece("b3").get();
+        var underminingImpacts2 = board.getImpacts(whitePawn2, Impact.Type.UNDERMINING);
+
+        assertTrue(underminingImpacts2.isEmpty());
     }
 
     static void assertPawnEnPassantActions(Board board, Color color, Piece.Type type,

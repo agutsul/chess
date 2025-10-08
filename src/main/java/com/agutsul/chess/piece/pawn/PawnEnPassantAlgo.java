@@ -19,8 +19,8 @@ import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.EnPassantPieceAlgo;
 import com.agutsul.chess.position.Position;
 
-class PawnEnPassantAlgo<COLOR extends Color,
-                        PAWN extends PawnPiece<COLOR>>
+final class PawnEnPassantAlgo<COLOR extends Color,
+                              PAWN extends PawnPiece<COLOR>>
         extends AbstractAlgo<PAWN,Position>
         implements EnPassantPieceAlgo<COLOR,PAWN,Position> {
 
