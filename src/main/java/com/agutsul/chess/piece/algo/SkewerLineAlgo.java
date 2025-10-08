@@ -3,8 +3,8 @@ package com.agutsul.chess.piece.algo;
 import static org.apache.commons.io.IOUtils.closeQuietly;
 
 import java.io.Closeable;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedHashSet;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.PositionedBoardBuilder;
@@ -27,10 +27,10 @@ public final class SkewerLineAlgo<COLOR extends Color,
     public Collection<Line> calculate(PIECE piece) {
         var pieceLines = algo.calculate(piece);
 
-        var lines = new LinkedHashSet<Line>();
+        var lines = new ArrayList<Line>();
         for (var fullLine : calculateFullLines(piece)) {
             for (var pieceLine : pieceLines) {
-                if (fullLine.containsAll(pieceLine)) {
+                if (fullLine.containsAll(pieceLine) && !lines.contains(fullLine)) {
                     lines.add(fullLine);
                     break;
                 }
@@ -45,9 +45,9 @@ public final class SkewerLineAlgo<COLOR extends Color,
                 .withPiece(piece.getType(), piece.getColor(), piece.getPosition())
                 .build();
 
-        var tmpPiece = singlePieceBoard.getPiece(piece.getPosition());
+        var fullLineAlgo = new CombinedLineAlgo<>(singlePieceBoard);
         try {
-            var fullLineAlgo = new CombinedLineAlgo<>(singlePieceBoard);
+            var tmpPiece = singlePieceBoard.getPiece(piece.getPosition());
             return fullLineAlgo.calculate(tmpPiece.get());
         } finally {
             closeQuietly((Closeable) singlePieceBoard);
