@@ -8,7 +8,7 @@ import com.agutsul.chess.activity.impact.PieceSkewerImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.AbstractSkewerLineAlgo;
+import com.agutsul.chess.piece.algo.SkewerLineAlgo;
 import com.agutsul.chess.rule.AbstractRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.Rule;
@@ -26,7 +26,7 @@ public final class PieceSkewerImpactRule<COLOR1 extends Color,
     private final Rule<Piece<?>,Collection<IMPACT>> rule;
 
     @SuppressWarnings("unchecked")
-    public PieceSkewerImpactRule(Board board, AbstractSkewerLineAlgo<COLOR1,ATTACKER> algo) {
+    public PieceSkewerImpactRule(Board board, SkewerLineAlgo<COLOR1,ATTACKER> algo) {
         super(board, Impact.Type.SKEWER);
         this.rule = new CompositePieceRule<>(
                 new PieceAbsoluteSkewerLineImpactRule<>(board, algo),
