@@ -17,7 +17,8 @@ import com.agutsul.chess.rule.impact.PieceProtectLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceSkewerImpactRule;
 import com.agutsul.chess.rule.impact.PieceUnderminingLineImpactRule;
 
-public final class QueenPieceImpactRule<COLOR extends Color,PIECE extends QueenPiece<COLOR>>
+public final class QueenPieceImpactRule<COLOR extends Color,
+                                        PIECE extends QueenPiece<COLOR>>
         extends AbstractPieceRule<Impact<?>,Impact.Type> {
 
     public QueenPieceImpactRule(Board board) {
@@ -33,8 +34,8 @@ public final class QueenPieceImpactRule<COLOR extends Color,PIECE extends QueenP
                 new PieceControlLineImpactRule<>(board, algo),
                 new PiecePinImpactRule<>(board),
                 new PieceDiscoveredAttackImpactRule<>(board),
-                new PieceForkLineImpactRule<>(board, algo),
                 new PieceSkewerImpactRule<>(board, new SkewerLineAlgo<>(board, algo)),
+                new PieceForkLineImpactRule<>(board, algo),
                 new PieceUnderminingLineImpactRule<>(board, algo)
             )
         );

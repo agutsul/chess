@@ -35,8 +35,8 @@ public final class BishopPieceImpactRule<COLOR extends Color,
                 new PiecePinImpactRule<>(board),
                 new PieceDiscoveredAttackImpactRule<>(board),
                 new PieceForkLineImpactRule<>(board, algo),
-                new PieceSkewerImpactRule<>(board, new SkewerLineAlgo<>(board, algo)),
-                new PieceUnderminingLineImpactRule<>(board, algo)
+                new PieceUnderminingLineImpactRule<>(board, algo),
+                new PieceSkewerImpactRule<>(board, new SkewerLineAlgo<>(board, algo))
             )
         );
     }
