@@ -36,7 +36,7 @@ final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
     protected Collection<PieceAbsoluteSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>
             createImpacts(ATTACKER piece, Collection<Line> lines) {
 
-        var opponentColor  = piece.getColor().invert();
+        var opponentColor = piece.getColor().invert();
         var optionalKing = board.getKing(opponentColor);
         if (optionalKing.isEmpty()) {
             return emptyList();

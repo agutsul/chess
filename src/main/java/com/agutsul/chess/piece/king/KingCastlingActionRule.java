@@ -1,7 +1,9 @@
 package com.agutsul.chess.piece.king;
 
-import java.util.ArrayList;
+import static java.util.stream.Collectors.toList;
+
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.activity.action.PieceCastlingAction;
 import com.agutsul.chess.board.Board;
@@ -12,9 +14,9 @@ import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.rule.action.AbstractCastlingActionRule;
 import com.agutsul.chess.rule.action.CastlingActionRule;
 
-class KingCastlingActionRule<COLOR extends Color,
-                             KING extends KingPiece<COLOR>,
-                             ROOK extends RookPiece<COLOR>>
+final class KingCastlingActionRule<COLOR extends Color,
+                                   KING extends KingPiece<COLOR>,
+                                   ROOK extends RookPiece<COLOR>>
         extends AbstractCastlingActionRule<COLOR,KING,ROOK,
                                            PieceCastlingAction<COLOR,KING,ROOK>>
         implements CastlingActionRule<COLOR,KING,ROOK,
@@ -26,23 +28,13 @@ class KingCastlingActionRule<COLOR extends Color,
 
     @Override
     public Collection<PieceCastlingAction<COLOR,KING,ROOK>> evaluate(KING king) {
-        var actions = new ArrayList<PieceCastlingAction<COLOR,KING,ROOK>>();
+        Collection<Piece<COLOR>> rooks = board.getPieces(king.getColor(), Piece.Type.ROOK);
 
-        Collection<Piece<COLOR>> rooks =
-                board.getPieces(king.getColor(), Piece.Type.ROOK);
-
-        for (var rook : rooks) {
-            var castlingActions = super.evaluate(
-                    (KingPiece<COLOR>) king,
-                    (RookPiece<COLOR>) rook
-            );
-
-            if (castlingActions.isEmpty()) {
-                continue;
-            }
-
-            actions.addAll(castlingActions);
-        }
+        var actions = Stream.of(rooks)
+                .flatMap(Collection::stream)
+                .map(rook -> super.evaluate((KingPiece<COLOR>) king, (RookPiece<COLOR>) rook))
+                .flatMap(Collection::stream)
+                .collect(toList());
 
         return actions;
     }

@@ -3,6 +3,7 @@ package com.agutsul.chess.rule.impact;
 import static com.agutsul.chess.piece.Piece.isKing;
 import static java.util.stream.Collectors.toList;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,7 +39,7 @@ public class PieceForkPositionImpactRule<COLOR1 extends Color,
 
     @Override
     protected Collection<Calculated> calculate(ATTACKER piece) {
-        return algo.calculate(piece).stream().collect(toList());
+        return new ArrayList<>(algo.calculate(piece));
     }
 
     @Override

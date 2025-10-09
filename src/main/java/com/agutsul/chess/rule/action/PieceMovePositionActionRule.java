@@ -2,8 +2,8 @@ package com.agutsul.chess.rule.action;
 
 import static java.util.stream.Collectors.toList;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.action.Action;
@@ -37,20 +37,22 @@ public class PieceMovePositionActionRule<COLOR extends Color,
 
     @Override
     protected Collection<Calculated> calculate(PIECE piece) {
-        var positions = algo.calculate(piece);
-        return positions.stream()
+        Collection<Calculated> positions = Stream.of(algo.calculate(piece))
+                .flatMap(Collection::stream)
                 .filter(position -> board.isEmpty(position))
                 .collect(toList());
+
+        return positions;
     }
 
     @Override
     protected Collection<PieceMoveAction<COLOR,PIECE>>
             createActions(PIECE piece, Collection<Calculated> next) {
 
-        var actions = new ArrayList<PieceMoveAction<COLOR,PIECE>>();
-        for (var entry : next) {
-            actions.add(createAction(piece, (Position) entry));
-        }
+        var actions = Stream.of(next)
+                .flatMap(Collection::stream)
+                .map(entry -> createAction(piece, (Position) entry))
+                .collect(toList());
 
         return actions;
     }

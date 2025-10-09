@@ -1,8 +1,12 @@
 package com.agutsul.chess.rule.action;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
@@ -60,20 +64,19 @@ public class PieceCaptureLineActionRule<COLOR1 extends Color,
 
     @Override
     protected Collection<PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>>
-            createActions(PIECE1 piece, Collection<Calculated> calculatedLines) {
+            createActions(PIECE1 piece, Collection<Calculated> next) {
 
-        var actions = new ArrayList<PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>>();
-        for (var calculatedLine : calculatedLines) {
-            var line = (Line) calculatedLine;
-
-            // get piece on the last position of the line
-            var optionalPiece = board.getPiece(line.getLast());
-            if (optionalPiece.isPresent()) {
-                @SuppressWarnings("unchecked")
-                var piece2 = (PIECE2) optionalPiece.get();
-                actions.add(new PieceCaptureAction<>(piece, piece2, line));
-            }
-        }
+        @SuppressWarnings("unchecked")
+        var actions = Stream.of(next)
+                .flatMap(Collection::stream)
+                .map(calculated -> (Line) calculated)
+                .map(line -> Stream.of(board.getPiece(line.getLast()))
+                        .flatMap(Optional::stream)
+                        .map(attackedPiece -> new PieceCaptureAction<>(piece, (PIECE2) attackedPiece, line))
+                        .findFirst()
+                )
+                .flatMap(Optional::stream)
+                .collect(toList());
 
         return actions;
     }

@@ -1,8 +1,11 @@
 package com.agutsul.chess.rule.action;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.action.Action;
@@ -53,14 +56,13 @@ public class PieceMoveLineActionRule<COLOR extends Color,
     protected Collection<PieceMoveAction<COLOR,PIECE>>
             createActions(PIECE piece, Collection<Calculated> lines) {
 
-        var actions = new ArrayList<PieceMoveAction<COLOR,PIECE>>();
-        for (var line : lines) {
-            @SuppressWarnings("unchecked")
-            var positions = (List<Position>) line;
-            for (var position : positions) {
-                actions.add(new PieceMoveAction<>(piece, position));
-            }
-        }
+        @SuppressWarnings("unchecked")
+        var actions = Stream.of(lines)
+                .flatMap(Collection::stream)
+                .map(calculated -> (List<Position>) calculated)
+                .flatMap(Collection::stream)
+                .map(position -> new PieceMoveAction<>(piece, position))
+                .collect(toList());
 
         return actions;
     }

@@ -1,6 +1,7 @@
 package com.agutsul.chess.piece.king;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.board.Board;
@@ -11,10 +12,10 @@ import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.action.PieceCapturePositionActionRule;
 
-class KingCaptureActionRule<COLOR1 extends Color,
-                            COLOR2 extends Color,
-                            KING extends KingPiece<COLOR1>,
-                            PIECE extends Piece<COLOR2>>
+final class KingCaptureActionRule<COLOR1 extends Color,
+                                  COLOR2 extends Color,
+                                  KING extends KingPiece<COLOR1>,
+                                  PIECE extends Piece<COLOR2>>
         extends PieceCapturePositionActionRule<COLOR1,COLOR2,KING,PIECE> {
 
     KingCaptureActionRule(Board board,
@@ -24,15 +25,11 @@ class KingCaptureActionRule<COLOR1 extends Color,
 
     @Override
     protected Optional<PIECE> getCapturePiece(KING attacker, Position position) {
-        var optionalPiece = super.getCapturePiece(attacker, position);
+        var attackedPiece = Stream.of(super.getCapturePiece(attacker, position))
+                .flatMap(Optional::stream)
+                .filter(piece -> !((Protectable) piece).isProtected())
+                .findFirst();
 
-        if (optionalPiece.isPresent()) {
-            var piece = optionalPiece.get();
-            if (((Protectable) piece).isProtected()) {
-                return Optional.empty();
-            }
-        }
-
-        return optionalPiece;
+        return attackedPiece;
     }
 }

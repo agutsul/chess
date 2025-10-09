@@ -2,6 +2,7 @@ package com.agutsul.chess.rule.impact;
 
 import static java.util.stream.Collectors.toList;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Stream;
 
@@ -29,7 +30,7 @@ public final class PieceControlPositionImpactRule<COLOR extends Color,
 
     @Override
     protected Collection<Calculated> calculate(PIECE piece) {
-        return algo.calculate(piece).stream().collect(toList());
+        return new ArrayList<>(algo.calculate(piece));
     }
 
     @Override
@@ -38,8 +39,7 @@ public final class PieceControlPositionImpactRule<COLOR extends Color,
 
         var impacts = Stream.of(positions)
                 .flatMap(Collection::stream)
-                .map(calculated -> (Position) calculated)
-                .map(position -> new PieceControlImpact<>(piece, position))
+                .map(calculated -> new PieceControlImpact<>(piece, (Position) calculated))
                 .collect(toList());
 
         return impacts;

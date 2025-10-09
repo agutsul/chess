@@ -42,7 +42,7 @@ public final class PieceSkewerImpactRule<COLOR1 extends Color,
 
     @SuppressWarnings("unchecked")
     private PieceSkewerImpactRule(Board board,
-                                  SkewerLineAlgo<COLOR1,ATTACKER> algo) {
+                                  Algo<ATTACKER,Collection<Line>> algo) {
 
         super(board, Impact.Type.SKEWER);
         this.rule = new CompositePieceRule<>(

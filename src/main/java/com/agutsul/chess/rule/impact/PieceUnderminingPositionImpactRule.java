@@ -2,6 +2,7 @@ package com.agutsul.chess.rule.impact;
 
 import static java.util.stream.Collectors.toList;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -34,7 +35,7 @@ public class PieceUnderminingPositionImpactRule<COLOR1 extends Color,
 
     @Override
     protected Collection<Calculated> calculate(ATTACKER piece) {
-        return algo.calculate(piece).stream().collect(toList());
+        return new ArrayList<>(algo.calculate(piece));
     }
 
     @Override
