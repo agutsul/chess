@@ -28,7 +28,9 @@ abstract class AbstractCheckImpactRule<COLOR1 extends Color,
 
     @Override
     public final Collection<IMPACT> evaluate(PIECE attacker) {
-        var optionalKing = board.getKing(attacker.getColor().invert());
+        var opponentColor = attacker.getColor().invert();
+
+        var optionalKing = board.getKing(opponentColor);
         if (optionalKing.isEmpty()) {
             return emptyList();
         }

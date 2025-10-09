@@ -17,7 +17,7 @@ public class Line
     private static final String COMMA_SEPARATOR = ",";
 
     public Line(Line line1, Line line2) {
-        this(getPositions(line1, line2));
+        this(combine(line1, line2));
     }
 
     public Line(List<Position> positions) {
@@ -33,7 +33,7 @@ public class Line
         return join(this, COMMA_SEPARATOR);
     }
 
-    private static List<Position> getPositions(Line line1, Line line2) {
+    private static List<Position> combine(Line line1, Line line2) {
         var positions = new ArrayList<Position>();
         positions.addAll(line1);
         positions.addAll(line2);

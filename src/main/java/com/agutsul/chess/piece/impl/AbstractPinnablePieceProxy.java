@@ -21,7 +21,6 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 
 abstract class AbstractPinnablePieceProxy<COLOR extends Color,
@@ -85,8 +84,17 @@ abstract class AbstractPinnablePieceProxy<COLOR extends Color,
         if (optionalKing.isEmpty()) {
             return actions;
         }
+
+        var king = optionalKing.get();
+
         // return actions to capture king's attacker
-        return filter(actions, optionalKing.get());
+        Collection<Action<?>> checkActions = actions.stream()
+                .filter(Action::isCapture)
+                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
+                .filter(action -> Objects.equals(action.getTarget(), king))
+                .collect(toSet());
+
+        return checkActions;
     }
 
     @Override
@@ -101,17 +109,5 @@ abstract class AbstractPinnablePieceProxy<COLOR extends Color,
                 .anyMatch(piece -> Objects.equals(piece, this));
 
         return isPinned;
-    }
-
-    // utility methods
-
-    private static Collection<Action<?>> filter(Collection<Action<?>> actions, KingPiece<?> king) {
-        Collection<Action<?>> checkActions = actions.stream()
-                .filter(Action::isCapture)
-                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                .filter(captureAction -> Objects.equals(captureAction.getTarget(), king))
-                .collect(toSet());
-
-        return checkActions;
     }
 }

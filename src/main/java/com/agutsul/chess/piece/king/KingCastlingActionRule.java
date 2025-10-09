@@ -28,9 +28,9 @@ final class KingCastlingActionRule<COLOR extends Color,
 
     @Override
     public Collection<PieceCastlingAction<COLOR,KING,ROOK>> evaluate(KING king) {
-        Collection<Piece<COLOR>> rooks = board.getPieces(king.getColor(), Piece.Type.ROOK);
 
-        var actions = Stream.of(rooks)
+        @SuppressWarnings("unchecked")
+        var actions = Stream.of(board.getPieces(king.getColor(), Piece.Type.ROOK))
                 .flatMap(Collection::stream)
                 .map(rook -> super.evaluate((KingPiece<COLOR>) king, (RookPiece<COLOR>) rook))
                 .flatMap(Collection::stream)

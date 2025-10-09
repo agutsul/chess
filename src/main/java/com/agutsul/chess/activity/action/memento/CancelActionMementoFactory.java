@@ -66,8 +66,8 @@ public abstract class CancelActionMementoFactory {
             implements BiFunction<Board,ActionMemento<?,?>,Action<?>> {
 
         @Override
-        @SuppressWarnings("unchecked")
         public final Action<?> apply(Board board, ActionMemento<?,?> memento) {
+            @SuppressWarnings("unchecked")
             var actionMemento = (ActionMemento<String,String>) memento;
 
             var piece = board.getPiece(actionMemento.getTarget());
@@ -108,8 +108,8 @@ public abstract class CancelActionMementoFactory {
             implements BiFunction<Board,ActionMemento<?,?>,Action<?>> {
 
         @Override
-        @SuppressWarnings("unchecked")
         public Action<?> apply(Board board, ActionMemento<?,?> memento) {
+            @SuppressWarnings("unchecked")
             var actionMemento = (ActionMemento<String,String>) memento;
 
             var predator = board.getPiece(actionMemento.getTarget());

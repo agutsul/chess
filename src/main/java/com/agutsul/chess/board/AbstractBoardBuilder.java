@@ -268,10 +268,9 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
         return board;
     }
 
-    @SuppressWarnings("unchecked")
     private PieceBuilderTask<COLOR,T> createPieceBuilderTask(PieceFactory<?> pieceFactory,
                                                              BoardContext<T> context) {
-
+        @SuppressWarnings("unchecked")
         var pieceFactoryAdapter = createPieceFactoryAdapter((PieceFactory<COLOR>) pieceFactory);
         return new PieceBuilderTask<>(pieceFactoryAdapter, context);
     }

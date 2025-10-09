@@ -62,6 +62,7 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public GAME build() {
         var board   = this.board   != null ? this.board   : new StandardBoard();
         var journal = this.journal != null ? this.journal : new JournalImpl();
@@ -82,7 +83,6 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
             board.setState(game.evaluateBoardState(game.getCurrentPlayer()));
         }
 
-        @SuppressWarnings("unchecked")
         var compositeGame = Stream.of(context.getTimeout())
                 .flatMap(Optional::stream)
                 .filter(timeout -> timeout instanceof CompositeTimeout)
@@ -95,7 +95,6 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
             return compositeGame.get();
         }
 
-        @SuppressWarnings("unchecked")
         var playableGame = Stream.of(context.getGameTimeout())
                 .flatMap(Optional::stream)
                 .map(timeoutMillis -> new TimeoutGame<>(game, timeoutMillis))

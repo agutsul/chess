@@ -4,7 +4,6 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Movable;
@@ -41,6 +40,7 @@ public class PieceMoveLineActionRule<COLOR extends Color,
                 if (!board.isEmpty(position)) {
                     break;
                 }
+
                 movePositions.add(position);
             }
 
@@ -56,10 +56,9 @@ public class PieceMoveLineActionRule<COLOR extends Color,
     protected Collection<PieceMoveAction<COLOR,PIECE>>
             createActions(PIECE piece, Collection<Calculated> lines) {
 
-        @SuppressWarnings("unchecked")
         var actions = Stream.of(lines)
                 .flatMap(Collection::stream)
-                .map(calculated -> (List<Position>) calculated)
+                .map(calculated -> (Line) calculated)
                 .flatMap(Collection::stream)
                 .map(position -> new PieceMoveAction<>(piece, position))
                 .collect(toList());

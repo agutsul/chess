@@ -51,7 +51,7 @@ public class PieceMovePositionActionRule<COLOR extends Color,
 
         var actions = Stream.of(next)
                 .flatMap(Collection::stream)
-                .map(entry -> createAction(piece, (Position) entry))
+                .map(calculated -> createAction(piece, (Position) calculated))
                 .collect(toList());
 
         return actions;

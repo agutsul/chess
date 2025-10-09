@@ -32,6 +32,7 @@ class PawnStagnantImpactRule<COLOR extends Color,
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Collection<PieceStagnantImpact<COLOR,PAWN,PIECE>> evaluate(PAWN pawn) {
         var pawnPosition = pawn.getPosition();
 
@@ -42,14 +43,12 @@ class PawnStagnantImpactRule<COLOR extends Color,
                 .mapToObj(y -> positionOf(pawnPosition.x(), y))
                 .toList();
 
-        @SuppressWarnings("unchecked")
         var sameColorBlockImpacts = board.getPieces(pawn.getColor()).stream()
                 .filter(piece -> !Objects.equals(piece, pawn))
                 .filter(piece -> possibleMovePositions.contains(piece.getPosition()))
                 .map(piece -> new PieceStagnantImpact<>(pawn, (PIECE) piece))
                 .toList();
 
-        @SuppressWarnings("unchecked")
         var attackerBlockImpacts = board.getPieces(pawn.getColor().invert()).stream()
                 .filter(piece -> {
                     var isBlocked = possibleMovePositions.contains(piece.getPosition());

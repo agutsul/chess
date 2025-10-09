@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -54,7 +55,7 @@ public class PieceCapturePositionActionRule<COLOR1 extends Color,
         @SuppressWarnings("unchecked")
         var capturedPiece = Stream.of(board.getPiece(position))
                 .flatMap(Optional::stream)
-                .filter(piece -> piece.getColor() != attacker.getColor())
+                .filter(piece -> !Objects.equals(piece.getColor(), attacker.getColor()))
                 .map(piece -> (PIECE2) piece)
                 .findFirst();
 
