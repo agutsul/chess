@@ -4,7 +4,6 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.BishopPiece;
-import com.agutsul.chess.piece.algo.SkewerLineAlgo;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.impact.PieceCheckLineImpactRule;
@@ -36,7 +35,7 @@ public final class BishopPieceImpactRule<COLOR extends Color,
                 new PieceDiscoveredAttackImpactRule<>(board),
                 new PieceForkLineImpactRule<>(board, algo),
                 new PieceUnderminingLineImpactRule<>(board, algo),
-                new PieceSkewerImpactRule<>(board, new SkewerLineAlgo<>(board, algo))
+                new PieceSkewerImpactRule<>(board, algo)
             )
         );
     }
