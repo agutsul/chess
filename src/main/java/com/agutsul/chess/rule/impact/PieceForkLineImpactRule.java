@@ -18,10 +18,10 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.CaptureLineAlgo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Line;
-import com.agutsul.chess.position.Position;
 
 public final class PieceForkLineImpactRule<COLOR1 extends Color,
                                            COLOR2 extends Color,
@@ -35,34 +35,12 @@ public final class PieceForkLineImpactRule<COLOR1 extends Color,
     public PieceForkLineImpactRule(Board board,
                                    CapturePieceAlgo<COLOR1,ATTACKER,Line> algo) {
         super(board);
-        this.algo = algo;
+        this.algo = new CaptureLineAlgo<>(board, algo);
     }
 
     @Override
     protected Collection<Calculated> calculate(ATTACKER piece) {
-        var captureLines = new ArrayList<Calculated>();
-        for (var line : algo.calculate(piece)) {
-            var capturePositions = new ArrayList<Position>();
-            for (var position : line) {
-                var optionalPiece = board.getPiece(position);
-                if (optionalPiece.isPresent()) {
-                    var attackedPiece = optionalPiece.get();
-                    if (!Objects.equals(attackedPiece.getColor(), piece.getColor())) {
-                        capturePositions.add(position);
-                    }
-
-                    break;
-                }
-
-                capturePositions.add(position);
-            }
-
-            if (!capturePositions.isEmpty()) {
-                captureLines.add(new Line(capturePositions));
-            }
-        }
-
-        return captureLines;
+        return new ArrayList<>(algo.calculate(piece));
     }
 
     @Override

@@ -46,7 +46,6 @@ abstract class AbstractUnderminingImpactRule<COLOR1 extends Color,
             return false;
         }
 
-        // check if piece protects any other opponent's piece
         var protectImpacts = board.getImpacts(piece, Impact.Type.PROTECT);
         return !protectImpacts.isEmpty();
     }
