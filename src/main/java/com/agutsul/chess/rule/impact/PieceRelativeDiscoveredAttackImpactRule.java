@@ -75,7 +75,7 @@ final class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
 
                         var opponentPiece = entry.getValue();
                         var impact = linePieces.stream()
-                                .filter(attacker -> attacker.getColor() == piece.getColor())
+                                .filter(attacker -> Objects.equals(piece.getColor(), attacker.getColor()))
                                 .filter(attacker -> LINE_ATTACK_PIECE_TYPES.contains(attacker.getType()))
                                 // searched pattern: 'attacker - piece - attacked piece' or reverse
                                 .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, opponentPiece)))
