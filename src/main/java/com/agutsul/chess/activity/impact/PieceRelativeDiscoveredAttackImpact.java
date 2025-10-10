@@ -15,7 +15,9 @@ public final class PieceRelativeDiscoveredAttackImpact<COLOR1 extends Color,
                                                     PieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>> {
 
     public PieceRelativeDiscoveredAttackImpact(PIECE piece, ATTACKER attacker, ATTACKED attacked, Line line) {
-        super(Mode.RELATIVE, piece, new PieceAttackImpact<>(attacker, attacked, line, true));
+        super(Mode.RELATIVE, piece,
+                new PieceAttackImpact<>(attacker, attacked, line, true)
+        );
     }
 
 }

@@ -313,7 +313,7 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         assertFalse(discoveredAttackImpacts.isEmpty());
 
         var absoluteDiscoveredAttackImpacts = discoveredAttackImpacts.stream()
-                .map(impact -> (PieceDiscoveredAttackImpact<?,?>) impact)
+                .map(impact -> (PieceDiscoveredAttackImpact<?,?,?,?,?>) impact)
                 .filter(PieceDiscoveredAttackImpact::isAbsolute)
                 .map(impact -> (PieceAbsoluteDiscoveredAttackImpact<?,?,?,?,?>) impact)
                 .collect(toList());
@@ -356,7 +356,7 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         assertFalse(discoveredAttackImpacts.isEmpty());
 
         var relativeDiscoveredAttackImpacts = discoveredAttackImpacts.stream()
-                .map(impact -> (PieceDiscoveredAttackImpact<?,?>) impact)
+                .map(impact -> (PieceDiscoveredAttackImpact<?,?,?,?,?>) impact)
                 .filter(PieceDiscoveredAttackImpact::isRelative)
                 .map(impact -> (PieceRelativeDiscoveredAttackImpact<?,?,?,?,?>) impact)
                 .collect(toList());

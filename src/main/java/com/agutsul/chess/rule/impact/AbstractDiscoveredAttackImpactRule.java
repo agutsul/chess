@@ -19,9 +19,9 @@ abstract class AbstractDiscoveredAttackImpactRule<COLOR1 extends Color,
                                                   PIECE extends Piece<COLOR1>,
                                                   ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
                                                   ATTACKED extends Piece<COLOR2>,
-                                                  IMPACT extends PieceDiscoveredAttackImpact<COLOR1,PIECE>>
+                                                  IMPACT extends PieceDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>>
         extends AbstractRule<PIECE,IMPACT,Impact.Type>
-        implements DiscoveredAttackImpactRule<COLOR1,PIECE,IMPACT> {
+        implements DiscoveredAttackImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,IMPACT> {
 
     AbstractDiscoveredAttackImpactRule(Board board) {
         super(board, Impact.Type.ATTACK);

@@ -22,7 +22,7 @@ abstract class AbstractPieceDiscoveredAttackImpactRule<COLOR1 extends Color,
                                                        PIECE extends Piece<COLOR1>,
                                                        ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
                                                        ATTACKED extends Piece<COLOR2>,
-                                                       IMPACT extends PieceDiscoveredAttackImpact<COLOR1,PIECE>>
+                                                       IMPACT extends PieceDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>>
         extends AbstractDiscoveredAttackImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,IMPACT>
         implements LineImpactRule {
 

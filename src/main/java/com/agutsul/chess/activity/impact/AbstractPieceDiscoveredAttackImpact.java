@@ -14,7 +14,7 @@ abstract class AbstractPieceDiscoveredAttackImpact<COLOR1 extends Color,
                                                    ATTACKED extends Piece<COLOR2>,
                                                    IMPACT extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
         extends AbstractTargetActivity<Impact.Type,PIECE,IMPACT>
-        implements PieceDiscoveredAttackImpact<COLOR1,PIECE> {
+        implements PieceDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED> {
 
     private final Mode mode;
 

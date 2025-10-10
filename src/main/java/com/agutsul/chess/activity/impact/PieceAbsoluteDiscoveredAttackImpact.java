@@ -16,7 +16,9 @@ public final class PieceAbsoluteDiscoveredAttackImpact<COLOR1 extends Color,
                                                     PieceCheckImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>> {
 
     public PieceAbsoluteDiscoveredAttackImpact(PIECE piece, ATTACKER attacker, ATTACKED king, Line line) {
-        super(Mode.ABSOLUTE, piece, new PieceCheckImpact<>(attacker, king, line, true));
+        super(Mode.ABSOLUTE, piece,
+                new PieceCheckImpact<>(attacker, king, line, true)
+        );
     }
 
 }

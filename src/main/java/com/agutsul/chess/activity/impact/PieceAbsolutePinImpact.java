@@ -17,7 +17,9 @@ public final class PieceAbsolutePinImpact<COLOR1 extends Color,
                                        PieceCheckImpact<COLOR2,COLOR1,ATTACKER,DEFENDED>> {
 
     public PieceAbsolutePinImpact(PINNED piece, DEFENDED king, ATTACKER attacker, Line line) {
-        super(Mode.ABSOLUTE, piece, new PieceCheckImpact<>(attacker, king, line));
+        super(Mode.ABSOLUTE, piece,
+                new PieceCheckImpact<>(attacker, king, line)
+        );
     }
 
     @Override

@@ -551,7 +551,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertFalse(discoveredAttackImpacts.isEmpty());
 
         var absoluteDiscoveredAttackImpacts = discoveredAttackImpacts.stream()
-                .map(impact -> (PieceDiscoveredAttackImpact<?,?>) impact)
+                .map(impact -> (PieceDiscoveredAttackImpact<?,?,?,?,?>) impact)
                 .filter(PieceDiscoveredAttackImpact::isAbsolute)
                 .map(impact -> (PieceAbsoluteDiscoveredAttackImpact<?,?,?,?,?>) impact)
                 .collect(toList());
