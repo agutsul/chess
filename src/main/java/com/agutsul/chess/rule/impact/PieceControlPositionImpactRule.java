@@ -2,8 +2,8 @@ package com.agutsul.chess.rule.impact;
 
 import static java.util.stream.Collectors.toList;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
@@ -30,7 +30,7 @@ public final class PieceControlPositionImpactRule<COLOR extends Color,
 
     @Override
     protected Collection<Calculated> calculate(PIECE piece) {
-        return new ArrayList<>(algo.calculate(piece));
+        return List.copyOf(algo.calculate(piece));
     }
 
     @Override

@@ -3,9 +3,10 @@ package com.agutsul.chess.rule.impact;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.PieceCheckImpact;
@@ -35,24 +36,20 @@ public final class PieceCheckPositionImpactRule<COLOR1 extends Color,
     @Override
     protected Collection<Calculated> calculate(ATTACKER attacker, KING king) {
         var positions = algo.calculate(attacker);
-        if (!positions.contains(king.getPosition())) {
-            return emptyList();
-        }
-
-        return positions.stream().collect(toList());
+        return positions.contains(king.getPosition())
+                ? List.copyOf(positions)
+                : emptyList();
     }
 
     @Override
     protected Collection<PieceCheckImpact<COLOR1,COLOR2,ATTACKER,KING>>
             createImpacts(ATTACKER attacker, KING king, Collection<Calculated> positions) {
 
-        var impacts = new ArrayList<PieceCheckImpact<COLOR1,COLOR2,ATTACKER,KING>>();
-        for (var position : positions) {
-            if (Objects.equals(position, king.getPosition())) {
-                impacts.add(new PieceCheckImpact<>(attacker, king));
-                break;
-            }
-        }
+        var impacts = Stream.of(positions)
+                .flatMap(Collection::stream)
+                .filter(position -> Objects.equals(position, king.getPosition()))
+                .map(position -> new PieceCheckImpact<>(attacker, king))
+                .collect(toList());
 
         return impacts;
     }
