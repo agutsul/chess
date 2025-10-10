@@ -15,6 +15,7 @@ import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceRelativePinImpact;
@@ -28,7 +29,7 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
                                        COLOR2 extends Color,
                                        PINNED extends Piece<COLOR1> & Pinnable,
                                        PIECE  extends Piece<COLOR1>,
-                                       ATTACKER extends Piece<COLOR2> & Capturable>
+                                       ATTACKER extends Piece<COLOR2> & Capturable & Lineable>
         extends AbstractPiecePinImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,
                                            PieceRelativePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>> {
 
@@ -78,7 +79,7 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
                         var valuablePiece = entry.getValue();
                         var impact = linePieces.stream()
                                 .filter(attacker -> attacker.getColor() != piece.getColor())
-                                .filter(attacker -> LINE_ATTACK_PIECE_TYPES.contains(attacker.getType()))
+                                .filter(attacker -> attacker instanceof Lineable)
                                 // searched pattern: 'attacker - pinned piece - valuable piece' or reverse
                                 .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, valuablePiece)))
                                 .filter(attacker -> {

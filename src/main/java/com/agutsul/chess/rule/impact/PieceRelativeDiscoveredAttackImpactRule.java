@@ -15,6 +15,7 @@ import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceRelativeDiscoveredAttackImpact;
 import com.agutsul.chess.board.Board;
@@ -26,7 +27,7 @@ import com.agutsul.chess.position.Line;
 final class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
                                                     COLOR2 extends Color,
                                                     PIECE extends Piece<COLOR1>,
-                                                    ATTACKER extends Piece<COLOR1> & Capturable,
+                                                    ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
                                                     ATTACKED extends Piece<COLOR2>>
         extends AbstractPieceDiscoveredAttackImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,
                                                         PieceRelativeDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>> {
@@ -76,7 +77,7 @@ final class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
                         var opponentPiece = entry.getValue();
                         var impact = linePieces.stream()
                                 .filter(attacker -> Objects.equals(piece.getColor(), attacker.getColor()))
-                                .filter(attacker -> LINE_ATTACK_PIECE_TYPES.contains(attacker.getType()))
+                                .filter(attacker -> attacker instanceof Lineable)
                                 // searched pattern: 'attacker - piece - attacked piece' or reverse
                                 .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, opponentPiece)))
                                 .filter(attacker -> {

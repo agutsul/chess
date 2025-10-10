@@ -5,6 +5,7 @@ import static java.util.Collections.emptyList;
 import java.util.Collection;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceSkewerImpact;
 import com.agutsul.chess.board.Board;
@@ -15,7 +16,7 @@ import com.agutsul.chess.rule.AbstractRule;
 
 abstract class AbstractSkewerImpactRule<COLOR1 extends Color,
                                         COLOR2 extends Color,
-                                        ATTACKER extends Piece<COLOR1> & Capturable,
+                                        ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
                                         ATTACKED extends Piece<COLOR2>,
                                         DEFENDED extends Piece<COLOR2>,
                                         IMPACT extends PieceSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>

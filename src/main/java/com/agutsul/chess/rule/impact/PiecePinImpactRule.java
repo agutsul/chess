@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
@@ -27,7 +28,7 @@ public final class PiecePinImpactRule<COLOR1 extends Color,
                                       COLOR2 extends Color,
                                       PINNED extends Piece<COLOR1> & Pinnable,
                                       PIECE  extends Piece<COLOR1>,
-                                      ATTACKER extends Piece<COLOR2> & Capturable,
+                                      ATTACKER extends Piece<COLOR2> & Capturable & Lineable,
                                       IMPACT extends PiecePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>>
         extends AbstractRule<PINNED,IMPACT,Impact.Type>
         implements PinImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,IMPACT> {
