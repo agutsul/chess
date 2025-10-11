@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
 import com.agutsul.chess.activity.impact.PieceAbsolutePinImpact;
+import com.agutsul.chess.activity.impact.PieceBlockImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.activity.impact.PieceRelativePinImpact;
@@ -202,5 +203,42 @@ public class KnightPieceImplTest extends AbstractPieceTest {
             assertTrue(isKnight(impact.getSource()));
             assertTrue(impact.getLine().isEmpty());
         });
+    }
+
+    @Test
+    void testKnightBlockImpact() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("g1")
+                .withWhiteRooks("e1","c7")
+                .withWhiteBishop("a5")
+                .withWhitePawns("f2","g2","h3")
+                .withBlackKing("g8")
+                .withBlackQueen("e5")
+                .withBlackRook("e8")
+                .withBlackKnight("c5")
+                .withBlackPawns("f7","g7","h7")
+                .build();
+
+        var blackKnight = board.getPiece("c5").get();
+        var blockImpacts = new ArrayList<>(board.getImpacts(blackKnight, Impact.Type.BLOCK));
+
+        assertFalse(blockImpacts.isEmpty());
+        assertEquals(2, blockImpacts.size());
+
+        var blockImpact = (PieceBlockImpact<?,?,?,?,?>) blockImpacts.getFirst();
+        assertEquals(blackKnight, blockImpact.getBlocker());
+
+        var whiteRook = board.getPiece("e1").get();
+        assertEquals(whiteRook, blockImpact.getAttacker());
+
+        var blackQueen = board.getPiece("e5").get();
+        assertEquals(blackQueen, blockImpact.getDefended());
+
+        var blockedLine = blockImpact.getLine();
+        assertFalse(blockedLine.isEmpty());
+
+        var position = board.getPosition("e4").get();
+        assertEquals(position, blockImpact.getPosition());
+        assertTrue(blockedLine.contains(position));
     }
 }

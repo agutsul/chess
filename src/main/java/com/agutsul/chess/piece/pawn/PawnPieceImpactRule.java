@@ -6,6 +6,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.impact.PieceBlockImpactRule;
 import com.agutsul.chess.rule.impact.PieceCheckPositionImpactRule;
 import com.agutsul.chess.rule.impact.PieceControlPositionImpactRule;
 import com.agutsul.chess.rule.impact.PieceDiscoveredAttackImpactRule;
@@ -38,6 +39,7 @@ public final class PawnPieceImpactRule<COLOR extends Color,
                 new PawnStagnantImpactRule<>(board, promotionLine),
                 new PiecePinImpactRule<>(board),
                 new PieceDiscoveredAttackImpactRule<>(board),
+                new PieceBlockImpactRule<>(board),
                 new PawnForkImpactRule<>(board, captureAlgo, enPassantAlgo),
                 new PawnUnderminingImpactRule<>(board, captureAlgo, enPassantAlgo)
             )

@@ -16,7 +16,8 @@ public interface Impact<SOURCE>
         ATTACK,
         FORK,
         SKEWER,
-        UNDERMINING
+        UNDERMINING,
+        BLOCK
     }
 
     // utilities
@@ -99,5 +100,13 @@ public interface Impact<SOURCE>
 
     static boolean isUndermining(Impact.Type impactType) {
         return Impact.Type.UNDERMINING.equals(impactType);
+    }
+
+    static boolean isBlock(Impact<?> impact) {
+        return isBlock(impact.getType());
+    }
+
+    static boolean isBlock(Impact.Type impactType) {
+        return Impact.Type.BLOCK.equals(impactType);
     }
 }
