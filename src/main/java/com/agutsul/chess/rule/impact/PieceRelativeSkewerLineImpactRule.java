@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
-import com.agutsul.chess.Lineable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceRelativeSkewerImpact;
 import com.agutsul.chess.board.Board;
@@ -23,7 +22,7 @@ import com.agutsul.chess.position.Line;
 
 final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
                                               COLOR2 extends Color,
-                                              ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
+                                              ATTACKER extends Piece<COLOR1> & Capturable,
                                               ATTACKED extends Piece<COLOR2>,
                                               DEFENDED extends Piece<COLOR2>>
         extends AbstractPieceSkewerImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,

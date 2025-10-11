@@ -3,7 +3,6 @@ package com.agutsul.chess.activity.impact;
 import java.util.Objects;
 
 import com.agutsul.chess.Capturable;
-import com.agutsul.chess.Lineable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
@@ -13,7 +12,7 @@ public interface PiecePinImpact<COLOR1 extends Color,
                                 COLOR2 extends Color,
                                 PINNED extends Piece<COLOR1> & Pinnable,
                                 DEFENDED extends Piece<COLOR1>,
-                                ATTACKER extends Piece<COLOR2> & Capturable & Lineable>
+                                ATTACKER extends Piece<COLOR2> & Capturable>
         extends Impact<PINNED> {
 
     enum Mode {

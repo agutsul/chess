@@ -10,7 +10,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.agutsul.chess.Capturable;
-import com.agutsul.chess.Lineable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteDiscoveredAttackImpact;
 import com.agutsul.chess.board.Board;
@@ -23,7 +22,7 @@ import com.agutsul.chess.position.Line;
 final class PieceAbsoluteDiscoveredAttackImpactRule<COLOR1 extends Color,
                                                     COLOR2 extends Color,
                                                     PIECE extends Piece<COLOR1>,
-                                                    ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
+                                                    ATTACKER extends Piece<COLOR1> & Capturable,
                                                     ATTACKED extends KingPiece<COLOR2>>
         extends AbstractPieceDiscoveredAttackImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,
                                                         PieceAbsoluteDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>> {
@@ -58,7 +57,7 @@ final class PieceAbsoluteDiscoveredAttackImpactRule<COLOR1 extends Color,
 
                     var impact = linePieces.stream()
                             .filter(attacker -> Objects.equals(piece.getColor(), attacker.getColor()))
-                            .filter(attacker -> attacker instanceof Lineable)
+                            .filter(attacker -> LINE_ATTACK_PIECE_TYPES.contains(attacker.getType()))
                             // searched pattern: 'attacker - piece - attacked king' or reverse
                             .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, opponentKing)))
                             .filter(attacker -> {

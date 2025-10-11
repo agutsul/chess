@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
-import com.agutsul.chess.Lineable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.PieceDiscoveredAttackImpact;
 import com.agutsul.chess.board.Board;
@@ -20,7 +19,7 @@ import com.agutsul.chess.position.Line;
 abstract class AbstractPieceDiscoveredAttackImpactRule<COLOR1 extends Color,
                                                        COLOR2 extends Color,
                                                        PIECE extends Piece<COLOR1>,
-                                                       ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
+                                                       ATTACKER extends Piece<COLOR1> & Capturable,
                                                        ATTACKED extends Piece<COLOR2>,
                                                        IMPACT extends PieceDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>>
         extends AbstractDiscoveredAttackImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,IMPACT>
