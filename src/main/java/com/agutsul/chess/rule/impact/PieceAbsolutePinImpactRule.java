@@ -65,7 +65,7 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
                     }
 
                     var impact = linePieces.stream()
-                            .filter(attacker -> attacker.getColor() != piece.getColor())
+                            .filter(attacker -> !Objects.equals(attacker.getColor(), piece.getColor()))
                             .filter(attacker -> LINE_ATTACK_PIECE_TYPES.contains(attacker.getType()))
                             // searched pattern: 'attacker - pinned piece - king' or reverse
                             .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, king)))

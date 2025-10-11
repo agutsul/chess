@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
@@ -48,7 +49,7 @@ public final class PieceMonitorLineImpactRule<COLOR extends Color,
                     }
 
                     var foundPiece = optionalPiece.get();
-                    if (foundPiece.getColor() != piece.getColor()) {
+                    if (!Objects.equals(foundPiece.getColor(), piece.getColor())) {
                         isKingFound = isKing(foundPiece);
                     } else {
                         break;
