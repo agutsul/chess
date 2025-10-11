@@ -69,7 +69,7 @@ final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
                     var impact = linePieces.stream()
                             .filter(defended -> !Objects.equals(king,  defended))
                             .filter(defended -> !Objects.equals(piece, defended))
-                            .filter(defended -> defended.getColor() != piece.getColor())
+                            .filter(defended -> !Objects.equals(defended.getColor(), piece.getColor()))
                             .filter(defended -> containsPattern(linePieces, List.of(piece, king, defended)))
                             .findFirst()
                             .map(defended -> new PieceAbsoluteSkewerImpact<>(piece, king, (DEFENDED) defended, line))

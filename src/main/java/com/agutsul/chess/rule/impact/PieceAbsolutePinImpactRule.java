@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.impact;
 
+import static com.agutsul.chess.rule.impact.LineImpactRule.LINE_ATTACK_PIECE_TYPES;
 import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;

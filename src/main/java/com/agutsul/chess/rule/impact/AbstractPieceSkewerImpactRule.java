@@ -16,8 +16,7 @@ abstract class AbstractPieceSkewerImpactRule<COLOR1 extends Color,
                                              ATTACKED extends Piece<COLOR2>,
                                              DEFENDED extends Piece<COLOR2>,
                                              IMPACT extends PieceSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>
-        extends AbstractSkewerImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,IMPACT>
-        implements LineImpactRule {
+        extends AbstractSkewerImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,IMPACT> {
 
     private final Algo<ATTACKER,Collection<Line>> algo;
 

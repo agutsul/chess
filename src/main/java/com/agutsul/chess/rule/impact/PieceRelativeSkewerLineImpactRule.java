@@ -83,7 +83,7 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
                    var impact = linePieces.stream()
                            .filter(defended -> !Objects.equals(piece, defended))
                            .filter(defended -> !attackedPieces.contains(defended))
-                           .filter(defended -> defended.getColor() != piece.getColor())
+                           .filter(defended -> !Objects.equals(defended.getColor(), piece.getColor()))
                            .filter(defended -> containsPattern(linePieces, List.of(piece, attackedPiece, defended)))
                            .filter(defended -> Math.abs(defended.getValue()) < Math.abs(attackedPiece.getValue()))
                            .findFirst()

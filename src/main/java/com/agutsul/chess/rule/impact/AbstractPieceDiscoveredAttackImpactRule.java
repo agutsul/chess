@@ -22,8 +22,7 @@ abstract class AbstractPieceDiscoveredAttackImpactRule<COLOR1 extends Color,
                                                        ATTACKER extends Piece<COLOR1> & Capturable,
                                                        ATTACKED extends Piece<COLOR2>,
                                                        IMPACT extends PieceDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>>
-        extends AbstractDiscoveredAttackImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,IMPACT>
-        implements LineImpactRule {
+        extends AbstractDiscoveredAttackImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,IMPACT> {
 
     private final Algo<PIECE,Collection<Line>> algo;
 

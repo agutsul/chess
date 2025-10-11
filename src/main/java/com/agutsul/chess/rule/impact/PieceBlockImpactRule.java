@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.impact;
 
+import static com.agutsul.chess.rule.impact.LineImpactRule.LINE_ATTACK_PIECE_TYPES;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -28,8 +29,7 @@ public final class PieceBlockImpactRule<COLOR1 extends Color,
                                         ATTACKER extends Piece<COLOR2> & Capturable,
                                         IMPACT extends PieceBlockImpact<COLOR1,COLOR2,BLOCKER,DEFENDED,ATTACKER>>
         extends AbstractRule<BLOCKER,IMPACT,Impact.Type>
-        implements BlockImpactRule<COLOR1,COLOR2,BLOCKER,DEFENDED,ATTACKER,IMPACT>,
-                   LineImpactRule {
+        implements BlockImpactRule<COLOR1,COLOR2,BLOCKER,DEFENDED,ATTACKER,IMPACT> {
 
     public PieceBlockImpactRule(Board board) {
         super(board, Impact.Type.BLOCK);
