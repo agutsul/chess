@@ -227,7 +227,6 @@ public class KnightPieceImplTest extends AbstractPieceTest {
         assertEquals(2, blockImpacts.size());
 
         var blockImpact = (PieceBlockImpact<?,?,?,?,?>) blockImpacts.getFirst();
-
         assertEquals(blackKnight, blockImpact.getBlocker());
 
         var whiteRook = board.getPiece("e1").get();
