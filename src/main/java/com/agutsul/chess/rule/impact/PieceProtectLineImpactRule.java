@@ -67,11 +67,15 @@ public final class PieceProtectLineImpactRule<COLOR extends Color,
         var impacts = Stream.of(lines)
                 .flatMap(Collection::stream)
                 .map(calculated -> (Line) calculated)
-                .flatMap(Collection::stream)
-                .map(position -> board.getPiece(position))
-                .flatMap(Optional::stream)
-                .filter(protectedPiece -> Objects.equals(protectedPiece.getColor(), piece.getColor()))
-                .map(protectedPiece -> new PieceProtectImpact<>(piece, (PIECE2) protectedPiece))
+                .flatMap(line -> Stream.of(line)
+                        .flatMap(Collection::stream)
+                        .map(position -> board.getPiece(position))
+                        .flatMap(Optional::stream)
+                        .filter(protectedPiece -> Objects.equals(protectedPiece.getColor(), piece.getColor()))
+                        .map(protectedPiece -> new PieceProtectImpact<>(
+                                piece, (PIECE2) protectedPiece, line
+                        ))
+                )
                 .collect(toList());
 
         return impacts;
