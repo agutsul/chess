@@ -94,7 +94,7 @@ abstract class AbstractBlockImpactRule<COLOR1 extends Color,
     }
 
     @SuppressWarnings("unchecked")
-    protected AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,ATTACKED>
+    private AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,ATTACKED>
             createAttackImpact(PieceCaptureAction<COLOR2,COLOR1,ATTACKER,ATTACKED> action) {
 
         var line = action.getLine().get();
