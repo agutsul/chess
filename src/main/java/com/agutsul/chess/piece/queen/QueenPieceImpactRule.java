@@ -6,7 +6,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
-import com.agutsul.chess.rule.impact.PieceBlockImpactRule;
+import com.agutsul.chess.rule.impact.PieceBlockLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceCheckLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceControlLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceDiscoveredAttackImpactRule;
@@ -34,7 +34,7 @@ public final class QueenPieceImpactRule<COLOR extends Color,
                 new PieceControlLineImpactRule<>(board, algo),
                 new PiecePinImpactRule<>(board),
                 new PieceDiscoveredAttackImpactRule<>(board),
-                new PieceBlockImpactRule<>(board),
+                new PieceBlockLineImpactRule<>(board, algo),
                 new PieceSkewerImpactRule<>(board, algo),
                 new PieceForkLineImpactRule<>(board, algo),
                 new PieceUnderminingLineImpactRule<>(board, algo)

@@ -1,14 +1,15 @@
 package com.agutsul.chess.activity.impact;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Movable;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Line;
 
 public interface PieceBlockImpact<COLOR1 extends Color,
                                   COLOR2 extends Color,
-                                  BLOCKER extends Piece<COLOR1>,
-                                  DEFENDED extends Piece<COLOR1>,
+                                  BLOCKER  extends Piece<COLOR1>& Movable,
+                                  ATTACKED extends Piece<COLOR1>,
                                   ATTACKER extends Piece<COLOR2> & Capturable>
         extends Impact<BLOCKER> {
 
@@ -16,7 +17,7 @@ public interface PieceBlockImpact<COLOR1 extends Color,
 
     BLOCKER getBlocker();
 
-    DEFENDED getDefended();
+    ATTACKED getAttacked();
 
     ATTACKER getAttacker();
 }

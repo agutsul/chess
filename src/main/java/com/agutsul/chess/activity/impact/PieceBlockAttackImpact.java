@@ -1,6 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
@@ -9,34 +10,29 @@ import com.agutsul.chess.position.Position;
 
 public final class PieceBlockAttackImpact<COLOR1 extends Color,
                                           COLOR2 extends Color,
-                                          BLOCKER extends Piece<COLOR1>,
+                                          BLOCKER  extends Piece<COLOR1> & Movable,
                                           DEFENDED extends Piece<COLOR1>,
                                           ATTACKER extends Piece<COLOR2> & Capturable>
-        extends AbstractTargetActivity<Impact.Type,BLOCKER,ATTACKER>
+        extends AbstractTargetActivity<Impact.Type,BLOCKER,Position>
         implements PieceBlockImpact<COLOR1,COLOR2,BLOCKER,DEFENDED,ATTACKER> {
 
-    private final DEFENDED defended;
-    private final Line line;
-    private final Position position;
+    private final AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,DEFENDED> attackImpact;
 
-    public PieceBlockAttackImpact(BLOCKER blocker, ATTACKER attacker, DEFENDED defended,
-                                  Line blockedLine, Position blockPosition) {
+    public PieceBlockAttackImpact(BLOCKER piece, Position position,
+                                  AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,DEFENDED> attackImpact) {
 
-        super(Impact.Type.BLOCK, blocker, attacker);
-
-        this.defended = defended;
-        this.line = blockedLine;
-        this.position = blockPosition;
+        super(Impact.Type.BLOCK, piece, position);
+        this.attackImpact = attackImpact;
     }
 
     @Override
     public Position getPosition() {
-        return position;
+        return getTarget();
     }
 
     @Override
     public Line getLine() {
-        return this.line;
+        return attackImpact.getLine().get();
     }
 
     @Override
@@ -45,12 +41,12 @@ public final class PieceBlockAttackImpact<COLOR1 extends Color,
     }
 
     @Override
-    public DEFENDED getDefended() {
-        return this.defended;
+    public DEFENDED getAttacked() {
+        return attackImpact.getTarget();
     }
 
     @Override
     public ATTACKER getAttacker() {
-        return getTarget();
+        return attackImpact.getSource();
     }
 }

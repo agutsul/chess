@@ -3,13 +3,14 @@ package com.agutsul.chess.rule.impact;
 import java.util.Collection;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.impact.PieceControlImpact;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.Rule;
 
 public interface ControlImpactRule<COLOR extends Color,
-                                   PIECE extends Piece<COLOR> & Capturable,
+                                   PIECE extends Piece<COLOR> & Capturable & Movable,
                                    IMPACT extends PieceControlImpact<COLOR,PIECE>>
         extends Rule<PIECE,Collection<IMPACT>> {
 

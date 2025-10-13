@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.impact.PieceControlImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -16,7 +17,7 @@ import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Position;
 
 public final class PieceControlPositionImpactRule<COLOR extends Color,
-                                                  PIECE extends Piece<COLOR> & Capturable>
+                                                  PIECE extends Piece<COLOR> & Capturable & Movable>
         extends AbstractControlImpactRule<COLOR,PIECE,
                                           PieceControlImpact<COLOR,PIECE>> {
 

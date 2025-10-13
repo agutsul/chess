@@ -18,9 +18,9 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.AbstractRule;
 import com.agutsul.chess.rule.impact.StagnantImpactRule;
 
-class PawnStagnantImpactRule<COLOR extends Color,
-                             PAWN extends PawnPiece<COLOR>,
-                             PIECE extends Piece<Color>>
+final class PawnStagnantImpactRule<COLOR extends Color,
+                                   PAWN extends PawnPiece<COLOR>,
+                                   PIECE extends Piece<Color>>
         extends AbstractRule<PAWN,PieceStagnantImpact<COLOR,PAWN,PIECE>,Impact.Type>
         implements StagnantImpactRule<COLOR,PAWN,PIECE,PieceStagnantImpact<COLOR,PAWN,PIECE>> {
 

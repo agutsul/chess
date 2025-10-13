@@ -15,10 +15,10 @@ import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.rule.impact.PieceForkPositionImpactRule;
 
-class PawnForkImpactRule<COLOR1 extends Color,
-                         COLOR2 extends Color,
-                         ATTACKER extends PawnPiece<COLOR1>,
-                         ATTACKED extends PawnPiece<COLOR2>>
+final class PawnForkImpactRule<COLOR1 extends Color,
+                               COLOR2 extends Color,
+                               ATTACKER extends PawnPiece<COLOR1>,
+                               ATTACKED extends PawnPiece<COLOR2>>
         extends PieceForkPositionImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
     private final PawnEnPassantAlgo<COLOR1,ATTACKER> enPassantAlgo;

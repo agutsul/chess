@@ -220,19 +220,21 @@ public class KnightPieceImplTest extends AbstractPieceTest {
                 .build();
 
         var blackKnight = board.getPiece("c5").get();
+
         var blockImpacts = new ArrayList<>(board.getImpacts(blackKnight, Impact.Type.BLOCK));
 
         assertFalse(blockImpacts.isEmpty());
         assertEquals(2, blockImpacts.size());
 
         var blockImpact = (PieceBlockImpact<?,?,?,?,?>) blockImpacts.getFirst();
+
         assertEquals(blackKnight, blockImpact.getBlocker());
 
         var whiteRook = board.getPiece("e1").get();
         assertEquals(whiteRook, blockImpact.getAttacker());
 
         var blackQueen = board.getPiece("e5").get();
-        assertEquals(blackQueen, blockImpact.getDefended());
+        assertEquals(blackQueen, blockImpact.getAttacked());
 
         var blockedLine = blockImpact.getLine();
         assertFalse(blockedLine.isEmpty());
