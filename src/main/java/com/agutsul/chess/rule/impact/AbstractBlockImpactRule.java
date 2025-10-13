@@ -74,6 +74,7 @@ abstract class AbstractBlockImpactRule<COLOR1 extends Color,
                         .filter(attackLine -> attackLine.containsAny(piecePositions))
                         .flatMap(attackLine -> Stream.of(intersection(attackLine, piecePositions))
                                 .flatMap(Collection::stream)
+                                .filter(blockPosition -> board.isEmpty(blockPosition))
                                 .map(blockPosition -> new PieceBlockAttackImpact<>(
                                         piece, blockPosition, createAttackImpact(action)
                                 ))
