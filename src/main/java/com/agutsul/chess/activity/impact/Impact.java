@@ -17,7 +17,8 @@ public interface Impact<SOURCE>
         FORK,
         SKEWER,
         UNDERMINING,
-        BLOCK
+        BLOCK,
+        INTERFERENCE
     }
 
     // utilities

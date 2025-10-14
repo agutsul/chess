@@ -18,6 +18,7 @@ import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
 import com.agutsul.chess.activity.impact.PieceAbsolutePinImpact;
 import com.agutsul.chess.activity.impact.PieceBlockImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
+import com.agutsul.chess.activity.impact.PieceInterferenceImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.activity.impact.PieceRelativePinImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
@@ -220,8 +221,9 @@ public class KnightPieceImplTest extends AbstractPieceTest {
                 .build();
 
         var blackKnight = board.getPiece("c5").get();
-
-        var blockImpacts = new ArrayList<>(board.getImpacts(blackKnight, Impact.Type.BLOCK));
+        var blockImpacts = new ArrayList<>(
+                board.getImpacts(blackKnight, Impact.Type.BLOCK)
+        );
 
         assertFalse(blockImpacts.isEmpty());
         assertEquals(2, blockImpacts.size());
@@ -241,5 +243,45 @@ public class KnightPieceImplTest extends AbstractPieceTest {
         var position = board.getPosition("e4").get();
         assertEquals(position, blockImpact.getPosition());
         assertTrue(blockedLine.contains(position));
+    }
+
+    @Test
+    void testKnightInterferenceImpact() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("g1")
+                .withWhiteQueen("e2")
+                .withWhiteRook("e1")
+                .withWhiteKnight("f5")
+                .withWhitePawns("a2","f2","g2","e5","h3")
+                .withBlackKing("c8")
+                .withBlackQueen("d2")
+                .withBlackRook("d8")
+                .withBlackBishop("f8")
+                .withBlackPawns("a7","b7","c7","h7","g6")
+                .build();
+
+        var whiteKnight = board.getPiece("f5").get();
+        var interImpacts = new ArrayList<>(
+                board.getImpacts(whiteKnight, Impact.Type.INTERFERENCE)
+        );
+
+        assertFalse(interImpacts.isEmpty());
+        assertEquals(2, interImpacts.size());
+
+        var interImpact = (PieceInterferenceImpact<?,?,?,?,?>) interImpacts.getFirst();
+        assertEquals(whiteKnight, interImpact.getInterferencor());
+
+        var blackRook = board.getPiece("d8").get();
+        assertEquals(blackRook, interImpact.getProtector());
+
+        var blackQueen = board.getPiece("d2").get();
+        assertEquals(blackQueen, interImpact.getProtected());
+
+        var interLine = interImpact.getLine();
+        assertFalse(interLine.isEmpty());
+
+        var position = board.getPosition("d6").get();
+        assertEquals(position, interImpact.getPosition());
+        assertTrue(interLine.contains(position));
     }
 }

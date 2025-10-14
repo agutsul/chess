@@ -49,6 +49,8 @@ public final class PieceProtectLineImpactRule<COLOR extends Color,
 
                     break;
                 }
+
+                protectPositions.add(position);
             }
 
             if (!protectPositions.isEmpty()) {
@@ -75,6 +77,7 @@ public final class PieceProtectLineImpactRule<COLOR extends Color,
                         .map(protectedPiece -> new PieceProtectImpact<>(
                                 piece, (PIECE2) protectedPiece, line
                         ))
+
                 )
                 .collect(toList());
 
