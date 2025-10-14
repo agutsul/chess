@@ -94,6 +94,7 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
                     return impact;
                 })
                 .filter(Objects::nonNull)
+                .distinct()
                 .collect(toList());
 
         return impacts;

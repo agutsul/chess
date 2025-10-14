@@ -89,6 +89,7 @@ abstract class AbstractBlockImpactRule<COLOR1 extends Color,
                     )
                 )
                 .map(impact -> (IMPACT) impact)
+                .distinct()
                 .collect(toList());
 
         return impacts;
