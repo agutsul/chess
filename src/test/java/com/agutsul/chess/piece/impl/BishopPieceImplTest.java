@@ -4,6 +4,7 @@ import static com.agutsul.chess.piece.Piece.isBishop;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteSkewerImpact;
+import com.agutsul.chess.activity.impact.PieceCheckImpact;
+import com.agutsul.chess.activity.impact.PieceDeflectionAttackImpact;
 import com.agutsul.chess.activity.impact.PieceDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeDiscoveredAttackImpact;
@@ -408,5 +411,49 @@ public class BishopPieceImplTest extends AbstractPieceTest {
                 assertEquals(whiteBishop.getPosition(), underminingImpact.getPosition());
                 assertTrue(underminingImpact.getLine().isPresent());
             });
+    }
+
+    @Test
+    void testBishopDeflectionImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e8")
+                .withBlackQueen("d8")
+                .withBlackBishops("c8","f8")
+                .withBlackKnights("b8","f6")
+                .withBlackRooks("a8","h8")
+                .withBlackPawns("a7","b7","e7","g6","h7")
+                .withWhiteKing("e1")
+                .withWhiteQueen("d1")
+                .withWhiteBishops("c1","f7")
+                .withWhiteKnights("c3","g1")
+                .withWhiteRooks("a1","h1")
+                .withWhitePawns("a2","b2","c2","c5","f2","g2","h2")
+                .build();
+
+        var whiteBishop = board.getPiece("f7").get();
+        var deflectionImpacts = new ArrayList<>(
+                board.getImpacts(whiteBishop, Impact.Type.DEFLECTION)
+        );
+
+        assertFalse(deflectionImpacts.isEmpty());
+        assertEquals(deflectionImpacts.size(), 1);
+
+        var deflectionImpact = (PieceDeflectionAttackImpact<?,?,?,?,?>) deflectionImpacts.getFirst();
+        assertEquals(whiteBishop, deflectionImpact.getAttacker());
+
+        var blackKing = board.getPiece("e8").get();
+        assertEquals(blackKing, deflectionImpact.getAttacked());
+
+        var blackQueen = board.getPiece("d8").get();
+        assertEquals(blackQueen, deflectionImpact.getDefended());
+
+        var attackImplact = deflectionImpact.getAttackImpact();
+
+        assertNotNull(attackImplact);
+        assertTrue(attackImplact instanceof PieceCheckImpact<?,?,?,?>);
+
+        assertEquals(blackKing, attackImplact.getTarget());
+        assertEquals(whiteBishop, attackImplact.getSource());
+        assertTrue(attackImplact.getLine().isPresent());
     }
 }

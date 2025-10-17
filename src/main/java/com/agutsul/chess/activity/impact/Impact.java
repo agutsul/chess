@@ -18,7 +18,8 @@ public interface Impact<SOURCE>
         SKEWER,
         UNDERMINING,
         BLOCK,
-        INTERFERENCE
+        INTERFERENCE,
+        DEFLECTION
     }
 
     // utilities
@@ -109,5 +110,13 @@ public interface Impact<SOURCE>
 
     static boolean isBlock(Impact.Type impactType) {
         return Impact.Type.BLOCK.equals(impactType);
+    }
+
+    static boolean isDeflection(Impact<?> impact) {
+        return isDeflection(impact.getType());
+    }
+
+    static boolean isDeflection(Impact.Type impactType) {
+        return Impact.Type.DEFLECTION.equals(impactType);
     }
 }
