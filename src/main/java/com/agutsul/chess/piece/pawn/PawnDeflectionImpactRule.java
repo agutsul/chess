@@ -52,12 +52,14 @@ public final class PawnDeflectionImpactRule<COLOR1 extends Color,
                         .flatMap(Collection::stream)
                         .map(impact -> (PieceProtectImpact<?,?,?>) impact)
                         .map(PieceProtectImpact::getTarget)
+                        .map(protectedPiece -> (DEFENDED) protectedPiece)
                         .filter(protectedPiece -> !board.getAttackers(protectedPiece).isEmpty())
                         // protected piece should be more valuable than attacker piece
                         .filter(protectedPiece -> protectedPiece.getType().rank() > piece.getType().rank())
+                        .filter(protectedPiece -> !confirmProtection(piece, attackedPiece, protectedPiece))
                         .map(protectedPiece -> new PieceDeflectionAttackImpact<>(
                                 createAttackImpact(piece, attackedPiece),
-                                (DEFENDED) protectedPiece
+                                protectedPiece
                         ))
                 )
                 .map(impact -> (PieceDeflectionImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>) impact)
