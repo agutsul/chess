@@ -67,7 +67,6 @@ public final class PawnDeflectionImpactRule<COLOR1 extends Color,
 
         var impacts = Stream.of(captureImpacts, enPassantImpacts)
                     .flatMap(Collection::stream)
-                    .map(impact -> impact)
                     .collect(toList());
 
         return impacts;
