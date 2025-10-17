@@ -12,13 +12,14 @@ import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
+import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.rule.impact.PieceUnderminingPositionImpactRule;
 
 final class PawnUnderminingImpactRule<COLOR1 extends Color,
                                       COLOR2 extends Color,
                                       ATTACKER extends PawnPiece<COLOR1>,
-                                      ATTACKED extends PawnPiece<COLOR2>>
+                                      ATTACKED extends Piece<COLOR2>>
         extends PieceUnderminingPositionImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
     private final PawnEnPassantAlgo<COLOR1,ATTACKER> enPassantAlgo;
