@@ -268,20 +268,23 @@ public class KnightPieceImplTest extends AbstractPieceTest {
         assertFalse(interImpacts.isEmpty());
         assertEquals(2, interImpacts.size());
 
-        var interImpact = (PieceInterferenceImpact<?,?,?,?,?>) interImpacts.getFirst();
-        assertEquals(whiteKnight, interImpact.getInterferencor());
-
         var blackRook = board.getPiece("d8").get();
-        assertEquals(blackRook, interImpact.getProtector());
-
         var blackQueen = board.getPiece("d2").get();
-        assertEquals(blackQueen, interImpact.getProtected());
 
-        var interLine = interImpact.getLine();
-        assertFalse(interLine.isEmpty());
+        var positions = List.of(
+                board.getPosition("d6").get(),
+                board.getPosition("d4").get()
+        );
 
-        var position = board.getPosition("d6").get();
-        assertEquals(position, interImpact.getPosition());
-        assertTrue(interLine.contains(position));
+        interImpacts.forEach(impact -> {
+                var interImpact = (PieceInterferenceImpact<?,?,?,?,?>) impact;
+
+                assertEquals(whiteKnight, interImpact.getInterferencor());
+                assertEquals(blackRook,   interImpact.getProtector());
+                assertEquals(blackQueen,  interImpact.getProtected());
+
+                assertTrue(positions.contains(interImpact.getPosition()));
+                assertFalse(interImpact.getLine().isEmpty());
+            });
     }
 }
