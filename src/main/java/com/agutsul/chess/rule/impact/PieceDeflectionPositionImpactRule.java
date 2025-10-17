@@ -80,7 +80,7 @@ public class PieceDeflectionPositionImpactRule<COLOR1 extends Color,
     protected AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>
             createAttackImpact(ATTACKER predator, ATTACKED victim) {
 
-        var attackImpact = isKing(predator)
+        var attackImpact = isKing(victim)
                 ? new PieceCheckImpact<>(predator, (KingPiece<COLOR2>) victim)
                 : new PieceAttackImpact<>(predator, victim);
 
