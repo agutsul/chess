@@ -204,7 +204,7 @@ public class RookPieceImplTest extends AbstractPieceTest {
                 () -> ((Castlingable) rook).castling(position)
         );
 
-        assertEquals(thrown.getMessage(), "Rh1 invalid castling to f2");
+        assertEquals("Rh1 invalid castling to f2", thrown.getMessage());
     }
 
     @Test

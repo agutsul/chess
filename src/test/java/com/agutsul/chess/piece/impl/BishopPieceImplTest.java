@@ -399,7 +399,7 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         var underminingImpacts = board.getImpacts(whiteBishop, Impact.Type.UNDERMINING);
 
         assertFalse(underminingImpacts.isEmpty());
-        assertEquals(underminingImpacts.size(), 2);
+        assertEquals(2, underminingImpacts.size());
 
         var blackKnights = board.getPieces(Colors.BLACK, Piece.Type.KNIGHT);
         underminingImpacts.stream()
@@ -436,7 +436,7 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         );
 
         assertFalse(deflectionImpacts.isEmpty());
-        assertEquals(deflectionImpacts.size(), 1);
+        assertEquals(1, deflectionImpacts.size());
 
         var deflectionImpact = (PieceDeflectionAttackImpact<?,?,?,?,?>) deflectionImpacts.getFirst();
         assertEquals(whiteBishop, deflectionImpact.getAttacker());

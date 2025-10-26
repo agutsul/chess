@@ -36,12 +36,12 @@ public class SimulateActionCommandTest {
         var command = new SimulateActionCommand(actionCommand, action);
 
         doAnswer(inv -> {
-            assertEquals(inv.getArgument(0), "e2");
+            assertEquals("e2", inv.getArgument(0));
             return null;
         }).when(actionCommand).setSource(anyString());
 
         doAnswer(inv -> {
-            assertEquals(inv.getArgument(0), "e4");
+            assertEquals("e4", inv.getArgument(0));
             return null;
         }).when(actionCommand).setTarget(anyString());
 

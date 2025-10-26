@@ -68,10 +68,11 @@ abstract class AbstractPieceTest {
 
         var actions = board.getActions(piece);
 
-        assertEquals(actions.size(),
-                expectedMovePositions.size()
+        assertEquals(expectedMovePositions.size()
                 + expectedCapturePositions.size()
-                + expectedCastlingPositions.size());
+                + expectedCastlingPositions.size(),
+                actions.size()
+        );
 
         if (!expectedMovePositions.isEmpty()) {
             var moveTypes = List.of(Action.Type.MOVE, Action.Type.BIG_MOVE);

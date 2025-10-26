@@ -41,7 +41,7 @@ public class KingPieceProxyTest {
         var pieceType = Piece.Type.KING;
         when(piece.getType()).thenReturn(pieceType);
 
-        assertEquals(proxy.getType(), pieceType);
+        assertEquals(pieceType, proxy.getType());
         verify(piece, times(1)).getType();
     }
 
@@ -50,7 +50,7 @@ public class KingPieceProxyTest {
         var color = Colors.WHITE;
         when(piece.getColor()).thenReturn(color);
 
-        assertEquals(proxy.getColor(), color);
+        assertEquals(color, proxy.getColor());
         verify(piece, times(1)).getColor();
     }
 
@@ -59,7 +59,7 @@ public class KingPieceProxyTest {
          var unicode = EMPTY;
          when(piece.getUnicode()).thenReturn(unicode);
 
-         assertEquals(proxy.getUnicode(), unicode);
+         assertEquals(unicode, proxy.getUnicode());
          verify(piece, times(1)).getUnicode();
     }
 
@@ -68,7 +68,7 @@ public class KingPieceProxyTest {
         var position = mock(Position.class);
         when(piece.getPosition()).thenReturn(position);
 
-        assertEquals(proxy.getPosition(), position);
+        assertEquals(position, proxy.getPosition());
         verify(piece, times(1)).getPosition();
     }
 
@@ -77,7 +77,7 @@ public class KingPieceProxyTest {
         var active = false;
         when(piece.isActive()).thenReturn(active);
 
-        assertEquals(proxy.isActive(), active);
+        assertEquals(active, proxy.isActive());
         verify(piece, times(1)).isActive();
     }
 
@@ -89,7 +89,7 @@ public class KingPieceProxyTest {
 
         when(piece.getState()).thenReturn(pieceState);
 
-        assertEquals(proxy.getActions(), actions);
+        assertEquals(actions, proxy.getActions());
         verify(pieceState, times(1)).calculateActions(any());
     }
 }

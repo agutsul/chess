@@ -102,7 +102,7 @@ public class SimulationGameTest {
             assertNotEquals(board,   game.getBoard());
             assertNotEquals(journal, game.getJournal());
 
-            assertEquals(pawnPiece.getPositions().size(), 1);
+            assertEquals(1, pawnPiece.getPositions().size());
 
             var simulationBoard = game.getBoard();
 
@@ -110,12 +110,12 @@ public class SimulationGameTest {
             assertFalse(simulationBoard.isEmpty(position));
 
             var simulatedPawn = simulationBoard.getPiece("e4").get();
-            assertEquals(simulatedPawn.getPositions().size(), 2);
+            assertEquals(2, simulatedPawn.getPositions().size());
 
             var simulatedJournal = game.getJournal();
 
             assertFalse(simulatedJournal.isEmpty());
-            assertEquals(simulatedJournal.size(), 1);
+            assertEquals(1, simulatedJournal.size());
 
             var simulatedActionMemento = simulatedJournal.getFirst();
 

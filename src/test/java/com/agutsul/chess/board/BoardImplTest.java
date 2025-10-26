@@ -38,14 +38,14 @@ public class BoardImplTest {
 
     @Test
     void testGetPiecesByColorAndNoPositions() {
-        assertEquals(board.getPieces(Colors.WHITE, "a1", "h2").size(), 2);
+        assertEquals(2, board.getPieces(Colors.WHITE, "a1", "h2").size());
     }
 
     @Test
     void testGetPieces() {
         assertNotNull(board);
         assertFalse(board.getPieces().isEmpty());
-        assertEquals(board.getPieces().size(), 32);
+        assertEquals(32, board.getPieces().size());
     }
 
     @Test
@@ -75,8 +75,8 @@ public class BoardImplTest {
 
     @Test
     void testInitialBoardSetup() {
-        assertEquals(board.getPieces(Colors.WHITE).size(), 16);
-        assertEquals(board.getPieces(Colors.BLACK).size(), 16);
+        assertEquals(16, board.getPieces(Colors.WHITE).size());
+        assertEquals(16, board.getPieces(Colors.BLACK).size());
     }
 
     @Test

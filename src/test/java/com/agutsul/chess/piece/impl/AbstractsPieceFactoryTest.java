@@ -17,7 +17,7 @@ abstract class AbstractsPieceFactoryTest {
 
     void assertPiece(Piece<?> piece, Piece.Type type, Color color) {
         assertNotNull(piece);
-        assertEquals(piece.getType(),  type);
-        assertEquals(piece.getColor(), color);
+        assertEquals(type,  piece.getType());
+        assertEquals(color, piece.getColor());
     }
 }

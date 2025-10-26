@@ -25,12 +25,12 @@ public class PositionedBoardBuilderTest {
                 .build();
 
         var bishops = new ArrayList<>(board.getPieces(Colors.BLACK, "c8", "f8"));
-        assertEquals(bishops.size(), 2);
+        assertEquals(2, bishops.size());
         assertTrue(isBishop(bishops.get(0)));
         assertTrue(isBishop(bishops.get(1)));
 
         var knights = new ArrayList<>(board.getPieces(Colors.BLACK, "b8", "g8"));
-        assertEquals(knights.size(), 2);
+        assertEquals(2, knights.size());
         assertTrue(isKnight(knights.get(0)));
         assertTrue(isKnight(knights.get(1)));
     }

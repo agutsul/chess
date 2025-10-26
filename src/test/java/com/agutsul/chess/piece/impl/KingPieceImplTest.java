@@ -379,7 +379,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 () -> king.castling(position)
         );
 
-        assertEquals(thrown.getMessage(), "Ke1 invalid castling to f2");
+        assertEquals("Ke1 invalid castling to f2", thrown.getMessage());
     }
 
     @Test
@@ -539,7 +539,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
         var underminingImpacts = new ArrayList<>(board.getImpacts(whiteKing, Impact.Type.UNDERMINING));
 
         assertFalse(underminingImpacts.isEmpty());
-        assertEquals(underminingImpacts.size(), 1);
+        assertEquals(1, underminingImpacts.size());
 
         var underminingImpact = (PieceUnderminingImpact<?,?,?,?>) underminingImpacts.getFirst();
 
