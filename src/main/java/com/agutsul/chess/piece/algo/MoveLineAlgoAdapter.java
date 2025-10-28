@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.algo;
 
+import static com.agutsul.chess.position.LineFactory.createLine;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -12,7 +14,7 @@ import com.agutsul.chess.position.Position;
 
 public final class MoveLineAlgoAdapter<COLOR extends Color,
                                        PIECE extends Piece<COLOR> & Movable>
-        extends AbstractAlgo<PIECE,Line>
+        extends AbstractLineAlgo<PIECE,Line>
         implements MovePieceAlgo<COLOR,PIECE,Line> {
 
     private final MovePieceAlgo<COLOR,PIECE,Line> algo;
@@ -25,22 +27,22 @@ public final class MoveLineAlgoAdapter<COLOR extends Color,
 
     @Override
     public Collection<Line> calculate(PIECE piece) {
-        var moveLines = new ArrayList<Line>();
+        var lines = new ArrayList<Line>();
         for (var line : algo.calculate(piece)) {
-            var movePositions = new ArrayList<Position>();
+            var positions = new ArrayList<Position>();
             for (var position : line) {
                 if (!board.isEmpty(position)) {
                     break;
                 }
 
-                movePositions.add(position);
+                positions.add(position);
             }
 
-            if (!movePositions.isEmpty()) {
-                moveLines.add(new Line(movePositions));
+            if (!positions.isEmpty()) {
+                lines.add(createLine(positions));
             }
         }
 
-        return moveLines;
+        return lines;
     }
 }

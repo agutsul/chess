@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.algo;
 
+import static com.agutsul.chess.position.LineFactory.createLine;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -20,8 +22,8 @@ public final class VerticalLineAlgo<COLOR extends Color,
     public Collection<Line> calculate(PIECE piece) {
         var currentPosition = piece.getPosition();
 
-        var line1 = calculateLine(currentPosition, 0, -1);
-        var line2 = calculateLine(currentPosition, 0,  1);
+        var line1 = createLine(board, currentPosition, 0, -1);
+        var line2 = createLine(board, currentPosition, 0,  1);
 
         return List.of(line1, line2);
     }

@@ -1,18 +1,14 @@
 package com.agutsul.chess.piece.algo;
 
-import static java.util.Collections.sort;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Line;
-import com.agutsul.chess.position.Position;
-import com.agutsul.chess.position.PositionComparator;
+import com.agutsul.chess.position.LineFactory;
 
 public final class CombinedLineAlgo<COLOR extends Color,
                                     PIECE extends Piece<COLOR>>
@@ -39,8 +35,6 @@ public final class CombinedLineAlgo<COLOR extends Color,
                                                  PIECE extends Piece<COLOR>>
             extends AbstractLineAlgo<PIECE,Line> {
 
-        private static final Comparator<Position> COMPARATOR = new PositionComparator();
-
         private final AbstractLineAlgo<PIECE,Line> origin;
 
         public CombinedLineAlgoAdapter(Board board, HorizontalLineAlgo<COLOR,PIECE> algo) {
@@ -66,13 +60,7 @@ public final class CombinedLineAlgo<COLOR extends Color,
         }
 
         protected Line createLine(PIECE piece, Collection<Line> lines) {
-            var positions = new ArrayList<Position>();
-            positions.add(piece.getPosition());
-
-            lines.forEach(line -> positions.addAll(line));
-
-            sort(positions, COMPARATOR);
-            return new Line(positions);
+            return LineFactory.createLine(piece.getPosition(), lines);
         }
     }
 

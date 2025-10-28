@@ -1,6 +1,6 @@
 package com.agutsul.chess.rule.impact;
 
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.stream.Stream;
@@ -37,7 +37,8 @@ public final class PieceBlockLineImpactRule<COLOR1 extends Color,
         Collection<Calculated> positions = Stream.of(algo.calculate(piece))
                 .flatMap(Collection::stream)
                 .flatMap(Collection::stream)
-                .collect(toSet());
+                .distinct()
+                .collect(toList());
 
         return positions;
     }

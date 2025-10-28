@@ -12,8 +12,9 @@ import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.CaptureLineAlgoAdapter;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
+import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter;
+import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter.Mode;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Line;
 
@@ -29,7 +30,7 @@ public final class PieceCaptureLineActionRule<COLOR1 extends Color,
     public PieceCaptureLineActionRule(Board board,
                                       CapturePieceAlgo<COLOR1,PIECE1,Line> algo) {
         super(board);
-        this.algo = new CaptureLineAlgoAdapter<>(board, algo);
+        this.algo = new SecureLineAlgoAdapter<>(Mode.OPPOSITE_COLORS, board, algo);
     }
 
     @Override

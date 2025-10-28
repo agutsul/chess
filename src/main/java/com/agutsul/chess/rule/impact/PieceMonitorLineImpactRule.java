@@ -1,6 +1,7 @@
 package com.agutsul.chess.rule.impact;
 
 import static com.agutsul.chess.piece.Piece.isKing;
+import static com.agutsul.chess.position.LineFactory.createLine;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public final class PieceMonitorLineImpactRule<COLOR extends Color,
             }
 
             if (!monitoredPositions.isEmpty()) {
-                monitorLines.add(new Line(monitoredPositions));
+                monitorLines.add(createLine(monitoredPositions));
             }
         }
 

@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.algo;
 
+import static com.agutsul.chess.position.LineFactory.createLine;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -12,9 +14,9 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 
-public final class CaptureLineAlgoAdapter<COLOR extends Color,
-                                          PIECE extends Piece<COLOR> & Capturable>
-        extends AbstractAlgo<PIECE,Line>
+public final class SecureLineAlgoAdapter<COLOR extends Color,
+                                         PIECE extends Piece<COLOR> & Capturable>
+        extends AbstractLineAlgo<PIECE,Line>
         implements CapturePieceAlgo<COLOR,PIECE,Line> {
 
     public enum Mode implements BiPredicate<Piece<?>,Piece<?>> {
@@ -36,14 +38,8 @@ public final class CaptureLineAlgoAdapter<COLOR extends Color,
     private final Mode mode;
     private final CapturePieceAlgo<COLOR,PIECE,Line> algo;
 
-    public CaptureLineAlgoAdapter(Board board,
-                                  CapturePieceAlgo<COLOR,PIECE,Line> algo) {
-
-        this(Mode.OPPOSITE_COLORS, board, algo);
-    }
-
-    public CaptureLineAlgoAdapter(Mode mode, Board board,
-                                  CapturePieceAlgo<COLOR,PIECE,Line> algo) {
+    public SecureLineAlgoAdapter(Mode mode, Board board,
+                                 CapturePieceAlgo<COLOR,PIECE,Line> algo) {
         super(board);
         this.mode = mode;
         this.algo = algo;
@@ -68,7 +64,7 @@ public final class CaptureLineAlgoAdapter<COLOR extends Color,
             }
 
             if (!positions.isEmpty()) {
-                lines.add(new Line(positions));
+                lines.add(createLine(positions));
             }
         }
 
