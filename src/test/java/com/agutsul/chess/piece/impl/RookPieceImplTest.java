@@ -2,13 +2,16 @@ package com.agutsul.chess.piece.impl;
 
 import static com.agutsul.chess.piece.Piece.isRook;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +21,7 @@ import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
+import com.agutsul.chess.activity.impact.PieceOverloadingImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Color;
@@ -277,5 +281,37 @@ public class RookPieceImplTest extends AbstractPieceTest {
             assertTrue(isRook(impact.getSource()));
             assertTrue(!impact.getLine().isEmpty());
         });
+    }
+
+    @Test
+    // https://usefulchess.com/tactics/overloaded-pieces.html
+    void testRookOverloadingImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("g8")
+                .withBlackRook("c8")
+                .withBlackBishop("c1")
+                .withBlackPawns("a5","e6","f7","g7","h7")
+                .withWhiteKing("g1")
+                .withWhiteRook("d1")
+                .withWhiteBishop("b7")
+                .withWhitePawns("a2","e2","f2","g3","h2")
+                .build();
+
+        var blackRook = board.getPiece("c8").get();
+        var overloadingImpacts = board.getImpacts(blackRook, Impact.Type.OVERLOADING);
+
+        assertFalse(overloadingImpacts.isEmpty());
+        assertEquals(4, overloadingImpacts.size());
+
+        var expectedPositions = List.of("a8","c1","c6","d8");
+        var overloadedPositions = Stream.of(overloadingImpacts)
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceOverloadingImpact<?,?>) impact)
+                .map(PieceOverloadingImpact::getPosition)
+                .map(String::valueOf)
+                .collect(toSet());
+
+        assertEquals(expectedPositions.size(), overloadedPositions.size());
+        assertTrue(overloadedPositions.containsAll(expectedPositions));
     }
 }

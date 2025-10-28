@@ -6,12 +6,14 @@ import static com.agutsul.chess.piece.Piece.isQueen;
 import static com.agutsul.chess.piece.Piece.isRook;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -29,6 +31,7 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
+import com.agutsul.chess.activity.impact.PieceOverloadingImpact;
 import com.agutsul.chess.activity.impact.PiecePartialPinImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeForkImpact;
@@ -617,13 +620,14 @@ public class PawnPieceImplTest extends AbstractPieceTest {
                 .build();
 
         var whitePawn1 = board.getPiece("a4").get();
-        var underminingImpacts1 = new ArrayList<>(board.getImpacts(whitePawn1, Impact.Type.UNDERMINING));
+        var underminingImpacts1 = new ArrayList<>(
+                board.getImpacts(whitePawn1, Impact.Type.UNDERMINING)
+        );
 
         assertFalse(underminingImpacts1.isEmpty());
-        assertEquals(underminingImpacts1.size(), 1);
+        assertEquals(1, underminingImpacts1.size());
 
         var underminingImpact = (PieceUnderminingImpact<?,?,?,?>) underminingImpacts1.getFirst();
-
         assertEquals(whitePawn1, underminingImpact.getAttacker());
 
         var blackPawn = board.getPiece("b5").get();
@@ -633,9 +637,45 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertTrue(underminingImpact.getLine().isEmpty());
 
         var whitePawn2 = board.getPiece("b3").get();
-        var underminingImpacts2 = board.getImpacts(whitePawn2, Impact.Type.UNDERMINING);
 
+        var underminingImpacts2 = board.getImpacts(whitePawn2, Impact.Type.UNDERMINING);
         assertTrue(underminingImpacts2.isEmpty());
+    }
+
+    @Test
+    // https://www.chess.com/terms/overloading-chess
+    void testPawnOverloadingImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("g8")
+                .withBlackQueen("e8")
+                .withBlackRooks("a8","f8")
+                .withBlackBishop("d5")
+                .withBlackKnight("f5")
+                .withBlackPawns("a7","b7","c7","e6","f7","g7","h7")
+                .withWhiteKing("g1")
+                .withWhiteQueen("e1")
+                .withWhiteRooks("a1","f1")
+                .withWhiteBishop("d3")
+                .withWhiteKnight("c3")
+                .withWhitePawns("a2","b2","c2","f2","g2","h2")
+                .build();
+
+        var blackPawn = board.getPiece("e6").get();
+        var overloadingImpacts = board.getImpacts(blackPawn, Impact.Type.OVERLOADING);
+
+        assertFalse(overloadingImpacts.isEmpty());
+        assertEquals(2, overloadingImpacts.size());
+
+        var expectedPositions = List.of("d5","f5");
+        var overloadedPositions = Stream.of(overloadingImpacts)
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceOverloadingImpact<?,?>) impact)
+                .map(PieceOverloadingImpact::getPosition)
+                .map(String::valueOf)
+                .collect(toSet());
+
+        assertEquals(expectedPositions.size(), overloadedPositions.size());
+        assertTrue(overloadedPositions.containsAll(expectedPositions));
     }
 
     static void assertPawnEnPassantActions(Board board, Color color, Piece.Type type,
@@ -646,12 +686,14 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertTrue(optionalPiece.isPresent());
 
         var piece = optionalPiece.get();
-        assertEquals(String.valueOf(piece.getPosition()), sourcePosition);
-        assertEquals(piece.getColor(), color);
-        assertEquals(piece.getType(), type);
+        assertEquals(sourcePosition, String.valueOf(piece.getPosition()));
+        assertEquals(color, piece.getColor());
+        assertEquals(type, piece.getType());
 
         var actions = piece.getActions();
-        assertEquals(actions.size(), expectedMovePositions.size() + expectedEnPassantPositions.size());
+        assertEquals(expectedMovePositions.size() + expectedEnPassantPositions.size(),
+                actions.size()
+        );
 
         if (!expectedMovePositions.isEmpty()) {
             var movePositions = actions.stream()
@@ -684,12 +726,14 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertTrue(optionalPiece.isPresent());
 
         var piece = optionalPiece.get();
-        assertEquals(String.valueOf(piece.getPosition()), sourcePosition);
-        assertEquals(piece.getColor(), color);
-        assertEquals(piece.getType(), type);
+        assertEquals(sourcePosition, String.valueOf(piece.getPosition()));
+        assertEquals(color, piece.getColor());
+        assertEquals(type, piece.getType());
 
         var actions = piece.getActions();
-        assertEquals(actions.size(), expectedMovePromotePositions.size() + expectedCapturePromotePositions.size());
+        assertEquals(expectedMovePromotePositions.size() + expectedCapturePromotePositions.size(),
+                actions.size()
+        );
 
         if (!expectedMovePromotePositions.isEmpty()) {
             var promotePositions = actions.stream()

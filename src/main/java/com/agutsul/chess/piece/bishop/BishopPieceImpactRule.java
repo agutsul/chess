@@ -14,6 +14,7 @@ import com.agutsul.chess.rule.impact.PieceDiscoveredAttackImpactRule;
 import com.agutsul.chess.rule.impact.PieceForkLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceInterferenceLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceMonitorLineImpactRule;
+import com.agutsul.chess.rule.impact.PieceOverloadingLineImpactRule;
 import com.agutsul.chess.rule.impact.PiecePinImpactRule;
 import com.agutsul.chess.rule.impact.PieceProtectLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceSkewerImpactRule;
@@ -36,6 +37,7 @@ public final class BishopPieceImpactRule<COLOR extends Color,
                 new PieceControlLineImpactRule<>(board, algo),
                 new PiecePinImpactRule<>(board),
                 new PieceDiscoveredAttackImpactRule<>(board),
+                new PieceOverloadingLineImpactRule<>(board, algo),
                 new PieceBlockLineImpactRule<>(board, algo),
                 new PieceForkLineImpactRule<>(board, algo),
                 new PieceUnderminingLineImpactRule<>(board, algo),

@@ -2,8 +2,8 @@ package com.agutsul.chess.rule.impact;
 
 import static java.util.stream.Collectors.toList;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -13,10 +13,10 @@ import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.CaptureLineAlgo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Line;
-import com.agutsul.chess.position.Position;
 
 public final class PieceProtectLineImpactRule<COLOR extends Color,
                                               PIECE1 extends Piece<COLOR> & Capturable,
@@ -29,36 +29,12 @@ public final class PieceProtectLineImpactRule<COLOR extends Color,
     public PieceProtectLineImpactRule(Board board,
                                       CapturePieceAlgo<COLOR,PIECE1,Line> algo) {
         super(board);
-        this.algo = algo;
+        this.algo = new CaptureLineAlgo<>(CaptureLineAlgo.Mode.SAME_COLORS, board, algo);
     }
 
     @Override
     protected Collection<Calculated> calculate(PIECE1 piece) {
-        var lines = algo.calculate(piece);
-
-        var protectLines = new ArrayList<Calculated>();
-        for (var line : lines) {
-            var protectPositions = new ArrayList<Position>();
-            for (var position : line) {
-                var optionalPiece = board.getPiece(position);
-                if (optionalPiece.isPresent()) {
-                    var otherPiece = optionalPiece.get();
-                    if (Objects.equals(piece.getColor(), otherPiece.getColor())) {
-                        protectPositions.add(position);
-                    }
-
-                    break;
-                }
-
-                protectPositions.add(position);
-            }
-
-            if (!protectPositions.isEmpty()) {
-                protectLines.add(new Line(protectPositions));
-            }
-        }
-
-        return protectLines;
+        return List.copyOf(algo.calculate(piece));
     }
 
     @Override
@@ -77,8 +53,8 @@ public final class PieceProtectLineImpactRule<COLOR extends Color,
                         .map(protectedPiece -> new PieceProtectImpact<>(
                                 piece, (PIECE2) protectedPiece, line
                         ))
-
                 )
+
                 .collect(toList());
 
         return impacts;

@@ -19,7 +19,8 @@ public interface Impact<SOURCE>
         UNDERMINING,
         BLOCK,
         INTERFERENCE,
-        DEFLECTION
+        DEFLECTION,
+        OVERLOADING
     }
 
     // utilities
@@ -118,5 +119,13 @@ public interface Impact<SOURCE>
 
     static boolean isDeflection(Impact.Type impactType) {
         return Impact.Type.DEFLECTION.equals(impactType);
+    }
+
+    static boolean isOverloading(Impact<?> impact) {
+        return isOverloading(impact.getType());
+    }
+
+    static boolean isOverloading(Impact.Type impactType) {
+        return Impact.Type.OVERLOADING.equals(impactType);
     }
 }

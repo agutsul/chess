@@ -3,12 +3,15 @@ package com.agutsul.chess.piece.impl;
 import static com.agutsul.chess.activity.impact.Impact.isAttack;
 import static com.agutsul.chess.piece.Piece.isQueen;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
+import com.agutsul.chess.activity.impact.PieceOverloadingImpact;
 import com.agutsul.chess.activity.impact.PiecePartialPinImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeForkImpact;
@@ -180,7 +184,6 @@ public class QueenPieceImplTest extends AbstractPieceTest {
                 .collect(toList());
 
         assertFalse(relativeForkImpacts.isEmpty());
-
         assertEquals(1, relativeForkImpacts.size());
 
         var relativeForkImpact = relativeForkImpacts.getFirst();
@@ -215,13 +218,14 @@ public class QueenPieceImplTest extends AbstractPieceTest {
                 .build();
 
         var whiteQueen = board.getPiece("d6").get();
+        var underminingImpacts = new ArrayList<>(
+                board.getImpacts(whiteQueen, Impact.Type.UNDERMINING)
+        );
 
-        var underminingImpacts = new ArrayList<>(board.getImpacts(whiteQueen, Impact.Type.UNDERMINING));
         assertFalse(underminingImpacts.isEmpty());
-        assertEquals(underminingImpacts.size(), 1);
+        assertEquals(1, underminingImpacts.size());
 
         var underminingImpact = (PieceUnderminingImpact<?,?,?,?>) underminingImpacts.getFirst();
-
         assertEquals(whiteQueen, underminingImpact.getAttacker());
 
         var blackQueen = board.getPiece("f8").get();
@@ -229,5 +233,39 @@ public class QueenPieceImplTest extends AbstractPieceTest {
 
         assertEquals(whiteQueen.getPosition(), underminingImpact.getPosition());
         assertTrue(underminingImpact.getLine().isPresent());
+    }
+
+    @Test
+    // https://www.chess.com/terms/overloading-chess
+    void testQueenOverloadingImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("h8")
+                .withBlackQueen("d8")
+                .withBlackRook("f2")
+                .withBlackBishop("e7")
+                .withBlackPawns("a7","b7","g7","h7","h2")
+                .withWhiteKing("h1")
+                .withWhiteQueen("g4")
+                .withWhiteRook("e4")
+                .withWhiteBishop("f4")
+                .withWhitePawns("a2","b4","c3","c5","g2")
+                .build();
+
+        var blackQueen = board.getPiece("d8").get();
+        var overloadingImpacts = board.getImpacts(blackQueen, Impact.Type.OVERLOADING);
+
+        assertFalse(overloadingImpacts.isEmpty());
+        assertEquals(11, overloadingImpacts.size());
+
+        var expectedPositions = List.of("d4","a5","b6","c7","b8","d6","c8","d2","d7","d1","e7");
+        var overloadedPositions = Stream.of(overloadingImpacts)
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceOverloadingImpact<?,?>) impact)
+                .map(PieceOverloadingImpact::getPosition)
+                .map(String::valueOf)
+                .collect(toSet());
+
+        assertEquals(expectedPositions.size(), overloadedPositions.size());
+        assertTrue(overloadedPositions.containsAll(expectedPositions));
     }
 }
