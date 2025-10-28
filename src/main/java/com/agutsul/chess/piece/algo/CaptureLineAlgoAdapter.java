@@ -12,8 +12,8 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 
-public final class CaptureLineAlgo<COLOR extends Color,
-                                   PIECE extends Piece<COLOR> & Capturable>
+public final class CaptureLineAlgoAdapter<COLOR extends Color,
+                                          PIECE extends Piece<COLOR> & Capturable>
         extends AbstractAlgo<PIECE,Line>
         implements CapturePieceAlgo<COLOR,PIECE,Line> {
 
@@ -36,14 +36,14 @@ public final class CaptureLineAlgo<COLOR extends Color,
     private final Mode mode;
     private final CapturePieceAlgo<COLOR,PIECE,Line> algo;
 
-    public CaptureLineAlgo(Board board,
-                           CapturePieceAlgo<COLOR,PIECE,Line> algo) {
+    public CaptureLineAlgoAdapter(Board board,
+                                  CapturePieceAlgo<COLOR,PIECE,Line> algo) {
 
         this(Mode.OPPOSITE_COLORS, board, algo);
     }
 
-    public CaptureLineAlgo(Mode mode, Board board,
-                           CapturePieceAlgo<COLOR,PIECE,Line> algo) {
+    public CaptureLineAlgoAdapter(Mode mode, Board board,
+                                  CapturePieceAlgo<COLOR,PIECE,Line> algo) {
         super(board);
         this.mode = mode;
         this.algo = algo;

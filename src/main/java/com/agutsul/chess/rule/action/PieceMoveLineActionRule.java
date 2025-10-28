@@ -12,7 +12,7 @@ import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.MoveLineAlgo;
+import com.agutsul.chess.piece.algo.MoveLineAlgoAdapter;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Line;
@@ -26,7 +26,7 @@ public class PieceMoveLineActionRule<COLOR extends Color,
 
     public PieceMoveLineActionRule(Board board, MovePieceAlgo<COLOR,PIECE,Line> algo) {
         super(board, Action.Type.MOVE);
-        this.algo = new MoveLineAlgo<>(board, algo);
+        this.algo = new MoveLineAlgoAdapter<>(board, algo);
     }
 
     @Override

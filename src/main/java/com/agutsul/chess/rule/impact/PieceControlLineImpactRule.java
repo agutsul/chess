@@ -11,7 +11,7 @@ import com.agutsul.chess.activity.impact.PieceControlImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.CaptureLineAlgo;
+import com.agutsul.chess.piece.algo.CaptureLineAlgoAdapter;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Line;
@@ -27,7 +27,7 @@ public final class PieceControlLineImpactRule<COLOR extends Color,
     public PieceControlLineImpactRule(Board board,
                                       CapturePieceAlgo<COLOR,PIECE,Line> algo) {
         super(board);
-        this.algo = new CaptureLineAlgo<>(board, algo);
+        this.algo = new CaptureLineAlgoAdapter<>(board, algo);
     }
 
     @Override

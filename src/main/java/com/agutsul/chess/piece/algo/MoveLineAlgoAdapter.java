@@ -10,15 +10,15 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 
-public final class MoveLineAlgo<COLOR extends Color,
-                                PIECE extends Piece<COLOR> & Movable>
+public final class MoveLineAlgoAdapter<COLOR extends Color,
+                                       PIECE extends Piece<COLOR> & Movable>
         extends AbstractAlgo<PIECE,Line>
         implements MovePieceAlgo<COLOR,PIECE,Line> {
 
     private final MovePieceAlgo<COLOR,PIECE,Line> algo;
 
-    public MoveLineAlgo(Board board,
-                        MovePieceAlgo<COLOR,PIECE,Line> algo) {
+    public MoveLineAlgoAdapter(Board board,
+                               MovePieceAlgo<COLOR,PIECE,Line> algo) {
         super(board);
         this.algo = algo;
     }

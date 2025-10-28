@@ -11,7 +11,7 @@ import com.agutsul.chess.activity.impact.PieceInterferenceImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.MoveLineAlgo;
+import com.agutsul.chess.piece.algo.MoveLineAlgoAdapter;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Line;
@@ -29,7 +29,7 @@ public final class PieceInterferenceLineImpactRule<COLOR1 extends Color,
     public PieceInterferenceLineImpactRule(Board board,
                                            MovePieceAlgo<COLOR1,PIECE,Line> algo) {
         super(board);
-        this.algo = new MoveLineAlgo<>(board, algo);
+        this.algo = new MoveLineAlgoAdapter<>(board, algo);
     }
 
     @Override
