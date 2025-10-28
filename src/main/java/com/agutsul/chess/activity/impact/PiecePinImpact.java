@@ -5,8 +5,8 @@ import java.util.Objects;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.position.Line;
 
 public interface PiecePinImpact<COLOR1 extends Color,
                                 COLOR2 extends Color,

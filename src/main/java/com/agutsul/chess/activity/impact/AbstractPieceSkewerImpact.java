@@ -3,8 +3,8 @@ package com.agutsul.chess.activity.impact;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 
 abstract class AbstractPieceSkewerImpact<COLOR1 extends Color,

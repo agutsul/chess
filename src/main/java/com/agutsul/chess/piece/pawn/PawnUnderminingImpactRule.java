@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Calculated;
 import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.rule.impact.PieceUnderminingPositionImpactRule;
 
 final class PawnUnderminingImpactRule<COLOR1 extends Color,

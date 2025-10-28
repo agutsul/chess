@@ -1,7 +1,10 @@
-package com.agutsul.chess.position;
+package com.agutsul.chess.line;
 
 import java.util.Collection;
 import java.util.List;
+
+import com.agutsul.chess.Calculated;
+import com.agutsul.chess.position.Position;
 
 public interface Line extends List<Position>, Calculated {
 

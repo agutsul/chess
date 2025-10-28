@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Calculated;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.AbstractPieceAttackImpact;
 import com.agutsul.chess.activity.impact.Impact;
@@ -17,7 +18,6 @@ import com.agutsul.chess.activity.impact.PieceRelativeForkImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.rule.AbstractRule;
 
 // https://en.wikipedia.org/wiki/Fork_(chess)

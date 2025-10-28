@@ -1,4 +1,4 @@
-package com.agutsul.chess.position;
+package com.agutsul.chess.line;
 
 import static java.util.Collections.sort;
 
@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.position.Position;
+import com.agutsul.chess.position.PositionComparator;
 
 public enum LineFactory {
     INSTANCE;

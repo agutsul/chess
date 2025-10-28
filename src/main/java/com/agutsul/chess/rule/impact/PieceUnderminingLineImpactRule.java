@@ -8,17 +8,17 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Calculated;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.PieceUnderminingAttackImpact;
 import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter;
 import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter.Mode;
-import com.agutsul.chess.position.Calculated;
-import com.agutsul.chess.position.Line;
 
 public final class PieceUnderminingLineImpactRule<COLOR1 extends Color,
                                                   COLOR2 extends Color,

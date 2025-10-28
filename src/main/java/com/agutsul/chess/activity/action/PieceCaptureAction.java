@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.position.Line;
 
 public class PieceCaptureAction<COLOR1 extends Color,
                                 COLOR2 extends Color,

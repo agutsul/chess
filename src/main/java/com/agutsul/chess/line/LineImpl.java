@@ -1,4 +1,4 @@
-package com.agutsul.chess.position;
+package com.agutsul.chess.line;
 
 import static org.apache.commons.lang3.StringUtils.join;
 
@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
+
+import com.agutsul.chess.position.Position;
 
 final class LineImpl extends ArrayList<Position> implements Line {
 

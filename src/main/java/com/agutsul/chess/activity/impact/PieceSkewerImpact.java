@@ -4,8 +4,8 @@ import java.util.Objects;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.position.Line;
 
 public interface PieceSkewerImpact<COLOR1 extends Color,
                                    COLOR2 extends Color,

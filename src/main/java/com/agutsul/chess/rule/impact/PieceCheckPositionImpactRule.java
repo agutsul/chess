@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Calculated;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.board.Board;
@@ -15,7 +16,6 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
-import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Position;
 
 public final class PieceCheckPositionImpactRule<COLOR1 extends Color,

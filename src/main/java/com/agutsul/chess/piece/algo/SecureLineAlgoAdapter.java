@@ -1,6 +1,6 @@
 package com.agutsul.chess.piece.algo;
 
-import static com.agutsul.chess.position.LineFactory.createLine;
+import static com.agutsul.chess.line.LineFactory.createLine;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,8 +10,8 @@ import java.util.function.BiPredicate;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 
 public final class SecureLineAlgoAdapter<COLOR extends Color,

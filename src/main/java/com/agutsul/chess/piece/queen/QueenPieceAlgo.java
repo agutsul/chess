@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.piece.algo.AbstractAlgo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
@@ -12,7 +13,6 @@ import com.agutsul.chess.piece.algo.DiagonalLineAlgo;
 import com.agutsul.chess.piece.algo.HorizontalLineAlgo;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.piece.algo.VerticalLineAlgo;
-import com.agutsul.chess.position.Line;
 
 final class QueenPieceAlgo<COLOR extends Color,
                            QUEEN extends QueenPiece<COLOR>>

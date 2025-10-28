@@ -4,6 +4,7 @@ import static java.util.Collections.emptyList;
 
 import java.util.Collection;
 
+import com.agutsul.chess.Calculated;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.impact.Impact;
@@ -11,7 +12,6 @@ import com.agutsul.chess.activity.impact.PieceControlImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.rule.AbstractRule;
 
 abstract class AbstractControlImpactRule<COLOR extends Color,

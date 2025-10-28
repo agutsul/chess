@@ -3,6 +3,7 @@ package com.agutsul.chess.rule.impact;
 import java.util.Collection;
 import java.util.List;
 
+import com.agutsul.chess.Calculated;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.impact.PieceInterferenceImpact;
@@ -10,7 +11,6 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
-import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Position;
 
 public class PieceInterferencePositionImpactRule<COLOR1 extends Color,

@@ -1,4 +1,4 @@
-package com.agutsul.chess.position;
+package com.agutsul.chess.line;
 
 import static org.apache.commons.lang3.StringUtils.join;
 
@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.stream.Stream;
+
+import com.agutsul.chess.position.Position;
+import com.agutsul.chess.position.PositionComparator;
 
 final class CompositeLine extends ArrayList<Position> implements Line {
 

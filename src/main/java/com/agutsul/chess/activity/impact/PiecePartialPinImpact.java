@@ -4,8 +4,8 @@ import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.AbstractSourceActivity;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 
 public final class PiecePartialPinImpact<COLOR1 extends Color,

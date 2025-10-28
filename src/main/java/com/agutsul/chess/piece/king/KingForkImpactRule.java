@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Calculated;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.impact.AbstractPieceAttackImpact;
 import com.agutsul.chess.activity.impact.PieceAttackImpact;
@@ -16,7 +17,6 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
-import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.PieceForkPositionImpactRule;
 

@@ -7,13 +7,13 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Calculated;
 import com.agutsul.chess.activity.impact.AbstractPieceAttackImpact;
 import com.agutsul.chess.activity.impact.PieceAttackImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.rule.impact.PieceForkPositionImpactRule;
 
 final class PawnForkImpactRule<COLOR1 extends Color,

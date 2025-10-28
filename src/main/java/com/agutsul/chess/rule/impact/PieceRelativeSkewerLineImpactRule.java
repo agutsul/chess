@@ -16,9 +16,9 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceRelativeSkewerImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.Algo;
-import com.agutsul.chess.position.Line;
 
 final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
                                               COLOR2 extends Color,

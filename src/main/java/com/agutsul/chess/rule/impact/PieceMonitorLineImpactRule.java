@@ -1,7 +1,7 @@
 package com.agutsul.chess.rule.impact;
 
+import static com.agutsul.chess.line.LineFactory.createLine;
 import static com.agutsul.chess.piece.Piece.isKing;
-import static com.agutsul.chess.position.LineFactory.createLine;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
@@ -9,14 +9,14 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Calculated;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.PieceMonitorImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
-import com.agutsul.chess.position.Calculated;
-import com.agutsul.chess.position.Line;
 import com.agutsul.chess.position.Position;
 
 public final class PieceMonitorLineImpactRule<COLOR extends Color,

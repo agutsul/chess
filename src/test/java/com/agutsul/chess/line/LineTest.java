@@ -1,6 +1,6 @@
-package com.agutsul.chess.position;
+package com.agutsul.chess.line;
 
-import static com.agutsul.chess.position.LineFactory.createLine;
+import static com.agutsul.chess.line.LineFactory.createLine;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

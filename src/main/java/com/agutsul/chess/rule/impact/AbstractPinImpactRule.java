@@ -10,8 +10,8 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.position.Line;
 import com.agutsul.chess.rule.AbstractRule;
 
 abstract class AbstractPinImpactRule<COLOR1 extends Color,

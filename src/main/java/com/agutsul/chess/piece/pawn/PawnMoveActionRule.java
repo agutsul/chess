@@ -3,12 +3,12 @@ package com.agutsul.chess.piece.pawn;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.agutsul.chess.Calculated;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
-import com.agutsul.chess.position.Calculated;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.action.PieceMovePositionActionRule;
 
