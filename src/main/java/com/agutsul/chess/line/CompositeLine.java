@@ -5,6 +5,7 @@ import static org.apache.commons.lang3.StringUtils.join;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.position.Position;
@@ -48,5 +49,29 @@ final class CompositeLine extends ArrayList<Position> implements Line {
     @Override
     public String toString() {
         return join(this, COMMA_SEPARATOR);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getLeft(), getRight());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        if (!(obj instanceof CompositeLine)) {
+            return false;
+        }
+
+        var other = (CompositeLine) obj;
+        return Objects.equals(getLeft(), other.getLeft())
+                && Objects.equals(getRight(), other.getRight());
     }
 }

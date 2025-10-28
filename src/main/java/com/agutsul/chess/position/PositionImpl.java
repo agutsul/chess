@@ -2,6 +2,8 @@ package com.agutsul.chess.position;
 
 import static com.agutsul.chess.position.Position.codeOf;
 
+import java.util.Objects;
+
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalPositionException;
@@ -56,5 +58,24 @@ final class PositionImpl
     @Override
     public String toString() {
         return getCode();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x(), y());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof Position)) {
+            return false;
+        }
+
+        var other = (Position) obj;
+        return x() == other.x() && y() == other.y();
     }
 }
