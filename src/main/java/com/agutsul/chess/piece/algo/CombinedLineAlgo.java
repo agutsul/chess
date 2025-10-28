@@ -1,14 +1,16 @@
 package com.agutsul.chess.piece.algo;
 
+import static com.agutsul.chess.position.LineFactory.createLine;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Line;
-import com.agutsul.chess.position.LineFactory;
 
 public final class CombinedLineAlgo<COLOR extends Color,
                                     PIECE extends Piece<COLOR>>
@@ -56,11 +58,16 @@ public final class CombinedLineAlgo<COLOR extends Color,
         }
 
         protected Collection<Line> combineLines(PIECE piece, Collection<Line> lines) {
-            return List.of(createLine(piece, lines));
+            var list = new ArrayList<>(lines);
+
+            var subLine1 = createSubLine(piece, list.getFirst());
+            var subLine2 = createSubLine(piece, list.getLast());
+
+            return List.of(createLine(subLine1, subLine2));
         }
 
-        protected Line createLine(PIECE piece, Collection<Line> lines) {
-            return LineFactory.createLine(piece.getPosition(), lines);
+        private Line createSubLine(PIECE piece, Line line) {
+            return createLine(piece.getPosition(), line);
         }
     }
 
@@ -77,10 +84,12 @@ public final class CombinedLineAlgo<COLOR extends Color,
         protected Collection<Line> combineLines(PIECE piece, Collection<Line> lines) {
             var list = new ArrayList<>(lines);
 
-            var line1 = createLine(piece, List.of(list.get(0), list.get(1)));
-            var line2 = createLine(piece, List.of(list.get(2), list.get(3)));
+            var diagonal1 = super.combineLines(piece, list.subList(0,2));
+            var diagonal2 = super.combineLines(piece, list.subList(2,4));
 
-            return List.of(line1, line2);
+            return Stream.of(diagonal1, diagonal2)
+                    .flatMap(Collection::stream)
+                    .toList();
         }
     }
 }

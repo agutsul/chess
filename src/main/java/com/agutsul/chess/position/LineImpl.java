@@ -12,8 +12,6 @@ final class LineImpl extends ArrayList<Position> implements Line {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String COMMA_SEPARATOR = ",";
-
     LineImpl(List<Position> positions) {
         super(positions);
     }
