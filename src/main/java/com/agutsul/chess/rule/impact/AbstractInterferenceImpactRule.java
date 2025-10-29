@@ -5,7 +5,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-import static org.apache.commons.collections4.CollectionUtils.intersection;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -72,7 +71,7 @@ abstract class AbstractInterferenceImpactRule<COLOR1 extends Color,
                 .flatMap(impact -> Stream.of(impact.getLine())
                         .flatMap(Optional::stream)
                         .filter(protectLine -> protectLine.containsAny(piecePositions))
-                        .flatMap(protectLine -> Stream.of(intersection(protectLine, piecePositions))
+                        .flatMap(protectLine -> Stream.of(protectLine.intersection(piecePositions))
                                 .flatMap(Collection::stream)
                                 .filter(interPosition -> board.isEmpty(interPosition))
                                 .map(interPosition -> new PieceInterferenceProtectImpact<>(

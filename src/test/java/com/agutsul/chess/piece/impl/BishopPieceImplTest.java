@@ -18,6 +18,7 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteSkewerImpact;
+import com.agutsul.chess.activity.impact.PieceBatteryImpact;
 import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.activity.impact.PieceDeflectionAttackImpact;
 import com.agutsul.chess.activity.impact.PieceDiscoveredAttackImpact;
@@ -455,5 +456,43 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         assertEquals(blackKing, attackImplact.getTarget());
         assertEquals(whiteBishop, attackImplact.getSource());
         assertTrue(attackImplact.getLine().isPresent());
+    }
+
+    @Test
+    // https://www.chess.com/terms/battery-chess
+    void testRookBatteryImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("g8")
+                .withBlackQueen("d8")
+                .withBlackRooks("c8","f8")
+                .withBlackBishops("b7","e7")
+                .withBlackKnights("d7","a5")
+                .withBlackPawns("a6","b5","c7","e6","f7","g7","h7")
+                .withWhiteKing("g1")
+                .withWhiteQueen("d3")
+                .withWhiteRooks("c1","f1")
+                .withWhiteBishops("b1","f4")
+                .withWhiteKnights("f3","c3")
+                .withWhitePawns("a3","b2","d4","e3","f2","g2","h3")
+                .build();
+
+        var whiteBishop1 = board.getPiece("b1").get();
+        var batteryImpacts1 = new ArrayList<>(
+                board.getImpacts(whiteBishop1, Impact.Type.BATTERY)
+        );
+
+        assertFalse(batteryImpacts1.isEmpty());
+        assertEquals(1, batteryImpacts1.size());
+
+        var whiteQueen = board.getPiece("d3").get();
+
+        var batteryImpact1 = (PieceBatteryImpact<?,?,?>) batteryImpacts1.getFirst();
+        assertEquals(whiteQueen, batteryImpact1.getTarget());
+
+        var line1 = batteryImpact1.getLine();
+        assertFalse(line1.isEmpty());
+
+        var blackPawnPosition = board.getPosition("h7").get();
+        assertEquals(blackPawnPosition, line1.getLast());
     }
 }

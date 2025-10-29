@@ -6,7 +6,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-import static org.apache.commons.collections4.CollectionUtils.intersection;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -72,7 +71,7 @@ abstract class AbstractBlockImpactRule<COLOR1 extends Color,
                 .flatMap(action -> Stream.of(action.getLine())
                         .flatMap(Optional::stream)
                         .filter(attackLine -> attackLine.containsAny(piecePositions))
-                        .flatMap(attackLine -> Stream.of(intersection(attackLine, piecePositions))
+                        .flatMap(attackLine -> Stream.of(attackLine.intersection(piecePositions))
                                 .flatMap(Collection::stream)
                                 .filter(blockPosition -> board.isEmpty(blockPosition))
                                 .map(blockPosition -> new PieceBlockAttackImpact<>(

@@ -20,7 +20,8 @@ public interface Impact<SOURCE>
         BLOCK,
         INTERFERENCE,
         DEFLECTION,
-        OVERLOADING
+        OVERLOADING,
+        BATTERY
     }
 
     // utilities
@@ -127,5 +128,13 @@ public interface Impact<SOURCE>
 
     static boolean isOverloading(Impact.Type impactType) {
         return Impact.Type.OVERLOADING.equals(impactType);
+    }
+
+    static boolean isBattery(Impact<?> impact) {
+        return isBattery(impact.getType());
+    }
+
+    static boolean isBattery(Impact.Type impactType) {
+        return Impact.Type.BATTERY.equals(impactType);
     }
 }

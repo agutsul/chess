@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
+import com.agutsul.chess.activity.impact.PieceBatteryImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PieceOverloadingImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
@@ -313,5 +314,56 @@ public class RookPieceImplTest extends AbstractPieceTest {
 
         assertEquals(expectedPositions.size(), overloadedPositions.size());
         assertTrue(overloadedPositions.containsAll(expectedPositions));
+    }
+
+    @Test
+    // https://en.wikipedia.org/wiki/Battery_(chess)
+    void testRookBatteryImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("d8")
+                .withBlackRooks("a8","h8")
+                .withBlackBishop("g7")
+                .withBlackKnight("c6")
+                .withBlackPawns("a7","b7","d7","f7","g6","h7")
+                .withWhiteKing("g1")
+                .withWhiteRooks("d1","d3")
+                .withWhiteKnights("c3","f3")
+                .withWhitePawns("a2","b2","c2","f2","g2","h2")
+                .build();
+
+        var whiteRook1 = board.getPiece("d1").get();
+        var batteryImpacts1 = new ArrayList<>(
+                board.getImpacts(whiteRook1, Impact.Type.BATTERY)
+        );
+
+        assertFalse(batteryImpacts1.isEmpty());
+        assertEquals(1, batteryImpacts1.size());
+
+        var whiteRook2 = board.getPiece("d3").get();
+
+        var batteryImpact1 = (PieceBatteryImpact<?,?,?>) batteryImpacts1.getFirst();
+        assertEquals(whiteRook2, batteryImpact1.getTarget());
+
+        var line1 = batteryImpact1.getLine();
+        assertFalse(line1.isEmpty());
+
+        var batteryImpacts2 = new ArrayList<>(
+                board.getImpacts(whiteRook2, Impact.Type.BATTERY)
+        );
+
+        assertFalse(batteryImpacts2.isEmpty());
+        assertEquals(1, batteryImpacts2.size());
+
+        var batteryImpact2 = (PieceBatteryImpact<?,?,?>) batteryImpacts2.getFirst();
+        assertEquals(whiteRook1, batteryImpact2.getTarget());
+
+        var line2 = batteryImpact2.getLine();
+        assertFalse(line2.isEmpty());
+
+        assertEquals(line1, line2);
+
+        var kingPosition = board.getPosition("d8").get();
+        assertEquals(kingPosition, line1.getLast());
+        assertEquals(kingPosition, line2.getLast());
     }
 }

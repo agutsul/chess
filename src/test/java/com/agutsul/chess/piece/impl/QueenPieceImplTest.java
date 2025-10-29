@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PieceBatteryImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PieceOverloadingImpact;
 import com.agutsul.chess.activity.impact.PiecePartialPinImpact;
@@ -267,5 +269,55 @@ public class QueenPieceImplTest extends AbstractPieceTest {
 
         assertEquals(expectedPositions.size(), overloadedPositions.size());
         assertTrue(overloadedPositions.containsAll(expectedPositions));
+    }
+
+    @Test
+    // https://en.wikipedia.org/wiki/Battery_(chess)
+    void testQueenBatteryImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e8")
+                .withBlackQueen("d8")
+                .withBlackRooks("a8","h8")
+                .withBlackBishop("g7")
+                .withBlackKnights("b8","f6")
+                .withBlackPawns("a7","b7","d6","e7","f7","g6","h7")
+                .withWhiteKing("c1")
+                .withWhiteQueen("e2")
+                .withWhiteRooks("e1","e3")
+                .withWhiteBishop("g2")
+                .withWhiteKnights("c3","f3")
+                .withWhitePawns("a2","b2","c2","d3","f4","g3","h2")
+                .build();
+
+        var whiteQueen = board.getPiece("e2").get();
+        var batteryImpacts = board.getImpacts(whiteQueen, Impact.Type.BATTERY);
+
+        assertFalse(batteryImpacts.isEmpty());
+        assertEquals(2, batteryImpacts.size());
+
+        var whiteRook1 = board.getPiece("e1").get();
+        var whiteRook2 = board.getPiece("e3").get();
+
+        var targetPieces = Stream.of(batteryImpacts)
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceBatteryImpact<?,?,?>) impact)
+                .map(PieceBatteryImpact::getTarget)
+                .toList();
+
+        assertTrue(targetPieces.containsAll(List.of(whiteRook1, whiteRook2)));
+
+        var targetLines = Stream.of(batteryImpacts)
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceBatteryImpact<?,?,?>) impact)
+                .map(PieceBatteryImpact::getLine)
+                .collect(Collectors.toSet());
+
+        assertFalse(targetLines.isEmpty());
+        assertEquals(1, targetLines.size());
+
+        var line = targetLines.iterator().next();
+
+        var blackKingPosition = board.getPosition("e8").get();
+        assertEquals(blackKingPosition, line.getLast());
     }
 }

@@ -1,17 +1,13 @@
 package com.agutsul.chess.line;
 
-import static org.apache.commons.lang3.StringUtils.join;
-
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.position.PositionComparator;
 
-final class CompositeLine extends ArrayList<Position> implements Line {
+final class CompositeLine extends AbstractLine {
 
     private static final Comparator<Position> COMPARATOR = new PositionComparator();
 
@@ -42,36 +38,16 @@ final class CompositeLine extends ArrayList<Position> implements Line {
 
     @Override
     public boolean containsAny(Collection<Position> positions) {
-        return left.containsAny(positions)
-                || right.containsAny(positions);
+        return Stream.of(left, right)
+                .anyMatch(line -> line.containsAny(positions));
     }
 
     @Override
-    public String toString() {
-        return join(this, COMMA_SEPARATOR);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getLeft(), getRight());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (!super.equals(obj)) {
-            return false;
-        }
-
-        if (!(obj instanceof CompositeLine)) {
-            return false;
-        }
-
-        var other = (CompositeLine) obj;
-        return Objects.equals(getLeft(), other.getLeft())
-                && Objects.equals(getRight(), other.getRight());
+    public Collection<Position> intersection(Collection<Position> positions) {
+        return Stream.of(left, right)
+                .map(line -> line.intersection(positions))
+                .flatMap(Collection::stream)
+                .distinct()
+                .toList();
     }
 }
