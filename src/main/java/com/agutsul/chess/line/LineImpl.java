@@ -1,7 +1,6 @@
 package com.agutsul.chess.line;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -11,7 +10,7 @@ final class LineImpl extends AbstractLine {
 
     private static final long serialVersionUID = 1L;
 
-    LineImpl(List<Position> positions) {
+    LineImpl(Collection<Position> positions) {
         super(positions);
     }
 

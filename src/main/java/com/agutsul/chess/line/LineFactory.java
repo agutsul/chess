@@ -3,6 +3,7 @@ package com.agutsul.chess.line;
 import static java.util.Collections.sort;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public enum LineFactory {
         return new CompositeLine(line1, line2);
     }
 
-    public static Line createLine(List<Position> positions) {
+    public static Line createLine(Collection<Position> positions) {
         return new LineImpl(positions);
     }
 
