@@ -18,8 +18,7 @@ import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter.Mode;
 
 public final class PieceOverloadingLineImpactRule<COLOR extends Color,
                                                   PIECE extends Piece<COLOR> & Capturable & Movable>
-        extends AbstractOverloadingImpactRule<COLOR,PIECE>
-        implements LineImpactRule {
+        extends AbstractOverloadingImpactRule<COLOR,PIECE> {
 
     private final CapturePieceAlgo<COLOR,PIECE,Line> algo;
 

@@ -17,8 +17,8 @@ public class LineTest {
     @Test
     void testCreateCombinedLine() {
         var line = createLine(
-                createLine(List.of(positionOf("a1"), positionOf("b2"))),
-                createLine(List.of(positionOf("a8"), positionOf("b7")))
+                createLine(List.of(positionOf("a1"), positionOf("b2"))), // subline1
+                createLine(List.of(positionOf("a8"), positionOf("b7")))  // subline2
         );
 
         var positions = line.toString();
