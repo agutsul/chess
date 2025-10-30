@@ -33,16 +33,13 @@ public enum LineFactory {
     }
 
     public static Line createLine(Board board, Position current, int xStep, int yStep) {
-        var positions = INSTANCE.calculate(board, current,
-                new ArrayList<Position>(),
-                xStep, yStep
+        return createLine(
+                INSTANCE.calculate(board, current, xStep, yStep, new ArrayList<Position>())
         );
-
-        return createLine(positions);
     }
 
-    private List<Position> calculate(Board board, Position current,
-                                     List<Position> positions, int x, int y) {
+    private List<Position> calculate(Board board, Position current, int x, int y,
+                                     List<Position> positions) {
 
         var optionalNext = board.getPosition(current.x() + x, current.y() + y);
         if (optionalNext.isEmpty()) {
@@ -52,6 +49,6 @@ public enum LineFactory {
         var nextPosition = optionalNext.get();
         positions.add(nextPosition);
 
-        return calculate(board, nextPosition, positions, x, y);
+        return calculate(board, nextPosition, x, y, positions);
     }
 }
