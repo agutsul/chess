@@ -38,14 +38,14 @@ public final class BishopPieceImpactRule<COLOR extends Color,
                 new PieceControlLineImpactRule<>(board, algo),
                 new PiecePinImpactRule<>(board),
                 new PieceDiscoveredAttackImpactRule<>(board),
-                new PieceSkewerImpactRule<>(board, algo),
-                new PieceBatteryImpactRule<>(board, algo),
                 new PieceOverloadingLineImpactRule<>(board, algo),
                 new PieceBlockLineImpactRule<>(board, algo),
-                new PieceForkLineImpactRule<>(board, algo),
                 new PieceUnderminingLineImpactRule<>(board, algo),
+                new PieceDeflectionLineImpactRule<>(board, algo),
+                new PieceForkLineImpactRule<>(board, algo),
                 new PieceInterferenceLineImpactRule<>(board, algo),
-                new PieceDeflectionLineImpactRule<>(board, algo)
+                new PieceSkewerImpactRule<>(board, algo),
+                new PieceBatteryImpactRule<>(board, algo)
             )
         );
     }

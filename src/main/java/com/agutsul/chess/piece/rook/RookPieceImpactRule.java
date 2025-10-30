@@ -40,12 +40,12 @@ public final class RookPieceImpactRule<COLOR extends Color,
                 new PieceDiscoveredAttackImpactRule<>(board),
                 new PieceSkewerImpactRule<>(board, algo),
                 new PieceBatteryImpactRule<>(board, algo),
-                new PieceOverloadingLineImpactRule<>(board, algo),
                 new PieceBlockLineImpactRule<>(board, algo),
-                new PieceUnderminingLineImpactRule<>(board, algo),
-                new PieceForkLineImpactRule<>(board, algo),
+                new PieceOverloadingLineImpactRule<>(board, algo),
                 new PieceInterferenceLineImpactRule<>(board, algo),
-                new PieceDeflectionLineImpactRule<>(board, algo)
+                new PieceDeflectionLineImpactRule<>(board, algo),
+                new PieceUnderminingLineImpactRule<>(board, algo),
+                new PieceForkLineImpactRule<>(board, algo)
             )
         );
     }
