@@ -460,7 +460,7 @@ public class BishopPieceImplTest extends AbstractPieceTest {
 
     @Test
     // https://www.chess.com/terms/battery-chess
-    void testRookBatteryImpact() {
+    void testBishopBatteryImpact() {
         var board = new LabeledBoardBuilder()
                 .withBlackKing("g8")
                 .withBlackQueen("d8")
@@ -494,5 +494,43 @@ public class BishopPieceImplTest extends AbstractPieceTest {
 
         var blackPawnPosition = board.getPosition("h7").get();
         assertEquals(blackPawnPosition, line1.getLast());
+    }
+
+    @Test
+    void testBishopNoBatteryImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("g8")
+                .withBlackQueen("d8")
+                .withBlackRooks("f8","g8")
+                .withBlackBishop("e7")
+                .withBlackKnights("c6","f6")
+                .withBlackPawns("a7","b7","c7","e6","f7","g7","h7")
+                .withWhiteKing("g1")
+                .withWhiteQueen("h4")
+                .withWhiteRooks("a1","f3")
+                .withWhiteBishops("e3","e4")
+                .withWhiteKnight("c3")
+                .withWhitePawns("a2","b2","c2","d4","g2","h2")
+                .build();
+
+        var whiteQueen = board.getPiece("h4").get();
+        var queenBatteryImpacts = board.getImpacts(whiteQueen, Impact.Type.BATTERY);
+        assertTrue(queenBatteryImpacts.isEmpty());
+
+        var whiteBishop1 = board.getPiece("e3").get();
+        var bishop1BatteryImpacts = board.getImpacts(whiteBishop1, Impact.Type.BATTERY);
+        assertTrue(bishop1BatteryImpacts.isEmpty());
+
+        var whiteBishop2 = board.getPiece("e4").get();
+        var bishop2BatteryImpacts = board.getImpacts(whiteBishop2, Impact.Type.BATTERY);
+        assertTrue(bishop2BatteryImpacts.isEmpty());
+
+        var whiteRook1 = board.getPiece("a1").get();
+        var rook1BatteryImpacts = board.getImpacts(whiteRook1, Impact.Type.BATTERY);
+        assertTrue(rook1BatteryImpacts.isEmpty());
+
+        var whiteRook2 = board.getPiece("f3").get();
+        var rook2BatteryImpacts = board.getImpacts(whiteRook2, Impact.Type.BATTERY);
+        assertTrue(rook2BatteryImpacts.isEmpty());
     }
 }
