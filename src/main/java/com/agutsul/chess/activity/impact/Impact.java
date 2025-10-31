@@ -21,7 +21,8 @@ public interface Impact<SOURCE>
         INTERFERENCE,
         DEFLECTION,
         OVERLOADING,
-        BATTERY
+        BATTERY,
+        OUTPOST
     }
 
     // utilities
@@ -136,5 +137,13 @@ public interface Impact<SOURCE>
 
     static boolean isBattery(Impact.Type impactType) {
         return Impact.Type.BATTERY.equals(impactType);
+    }
+
+    static boolean isOutpost(Impact<?> impact) {
+        return isOutpost(impact.getType());
+    }
+
+    static boolean isOutpost(Impact.Type impactType) {
+        return Impact.Type.OUTPOST.equals(impactType);
     }
 }

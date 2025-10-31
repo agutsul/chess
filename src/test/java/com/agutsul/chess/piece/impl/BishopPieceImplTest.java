@@ -533,4 +533,29 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         var rook2BatteryImpacts = board.getImpacts(whiteRook2, Impact.Type.BATTERY);
         assertTrue(rook2BatteryImpacts.isEmpty());
     }
+
+    @Test
+    void testBishopOutpostImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("g6")
+                .withBlackRooks("b5","e6")
+                .withBlackKnight("e8")
+                .withBlackPawns("a6","b4","c5","e5","f6","g5","h6")
+                .withWhiteKing("f2")
+                .withWhiteRooks("a7","d8")
+                .withWhiteBishop("e2")
+                .withWhitePawns("a5","b3","c2","f3","g2","h3")
+                .build();
+
+        var whiteBishop = board.getPiece("e2").get();
+        var outpostImpacts = new ArrayList<>(
+                board.getImpacts(whiteBishop, Impact.Type.OUTPOST)
+        );
+
+        assertFalse(outpostImpacts.isEmpty());
+        assertEquals(1, outpostImpacts.size());
+
+        var outpostImpact = outpostImpacts.getFirst();
+        assertEquals(board.getPosition("c4").get(), outpostImpact.getPosition());
+    }
 }

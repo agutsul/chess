@@ -277,14 +277,39 @@ public class KnightPieceImplTest extends AbstractPieceTest {
         );
 
         interImpacts.forEach(impact -> {
-                var interImpact = (PieceInterferenceImpact<?,?,?,?,?>) impact;
+            var interImpact = (PieceInterferenceImpact<?,?,?,?,?>) impact;
 
-                assertEquals(whiteKnight, interImpact.getInterferencor());
-                assertEquals(blackRook,   interImpact.getProtector());
-                assertEquals(blackQueen,  interImpact.getProtected());
+            assertEquals(whiteKnight, interImpact.getInterferencor());
+            assertEquals(blackRook,   interImpact.getProtector());
+            assertEquals(blackQueen,  interImpact.getProtected());
 
-                assertTrue(positions.contains(interImpact.getPosition()));
-                assertFalse(interImpact.getLine().isEmpty());
-            });
+            assertTrue(positions.contains(interImpact.getPosition()));
+            assertFalse(interImpact.getLine().isEmpty());
+        });
+    }
+
+    @Test
+    void testKnightOutpostImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("g6")
+                .withBlackRooks("b5","e6")
+                .withBlackKnight("e8")
+                .withBlackPawns("a6","b4","c5","e5","f6","g5","h6")
+                .withWhiteKing("f2")
+                .withWhiteRooks("a7","d8")
+                .withWhiteKnight("e3")
+                .withWhitePawns("a5","b3","c2","f3","g2","h3")
+                .build();
+
+        var whiteKnight = board.getPiece("e3").get();
+        var outpostImpacts = new ArrayList<>(
+                board.getImpacts(whiteKnight, Impact.Type.OUTPOST)
+        );
+
+        assertFalse(outpostImpacts.isEmpty());
+        assertEquals(1, outpostImpacts.size());
+
+        var outpostImpact = outpostImpacts.getFirst();
+        assertEquals(board.getPosition("c4").get(), outpostImpact.getPosition());
     }
 }

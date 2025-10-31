@@ -366,4 +366,30 @@ public class RookPieceImplTest extends AbstractPieceTest {
         assertEquals(kingPosition, line1.getLast());
         assertEquals(kingPosition, line2.getLast());
     }
+
+    @Test
+    // https://www.chess.com/terms/outpost-chess
+    void testRookOutpostImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("d8")
+                .withBlackRook("g4")
+                .withBlackBishop("c6")
+                .withBlackPawns("a6","b7","d5","f5")
+                .withWhiteKing("f6")
+                .withWhiteRook("h7")
+                .withWhiteKnight("d6")
+                .withWhitePawns("b6","e5")
+                .build();
+
+        var whiteRook = board.getPiece("h7").get();
+        var outpostImpacts = new ArrayList<>(
+                board.getImpacts(whiteRook, Impact.Type.OUTPOST)
+        );
+
+        assertFalse(outpostImpacts.isEmpty());
+        assertEquals(1, outpostImpacts.size());
+
+        var outpostImpact = outpostImpacts.getFirst();
+        assertEquals(board.getPosition("c7").get(), outpostImpact.getPosition());
+    }
 }

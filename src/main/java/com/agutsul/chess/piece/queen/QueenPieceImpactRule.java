@@ -15,6 +15,7 @@ import com.agutsul.chess.rule.impact.PieceDiscoveredAttackImpactRule;
 import com.agutsul.chess.rule.impact.PieceForkLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceInterferenceLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceMonitorLineImpactRule;
+import com.agutsul.chess.rule.impact.PieceOutpostLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceOverloadingLineImpactRule;
 import com.agutsul.chess.rule.impact.PiecePinImpactRule;
 import com.agutsul.chess.rule.impact.PieceProtectLineImpactRule;
@@ -45,7 +46,8 @@ public final class QueenPieceImpactRule<COLOR extends Color,
                 new PieceForkLineImpactRule<>(board, algo),
                 new PieceUnderminingLineImpactRule<>(board, algo),
                 new PieceInterferenceLineImpactRule<>(board, algo),
-                new PieceDeflectionLineImpactRule<>(board, algo)
+                new PieceDeflectionLineImpactRule<>(board, algo),
+                new PieceOutpostLineImpactRule<>(board, algo)
             )
         );
     }

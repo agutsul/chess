@@ -53,7 +53,8 @@ public final class PawnPieceImpactRule<COLOR extends Color,
                 new PawnForkImpactRule<>(board, captureAlgo, enPassantAlgo),
                 new PawnOverloadingImpactRule<>(board, captureAlgo, enPassantAlgo),
                 new PawnUnderminingImpactRule<>(board, captureAlgo, enPassantAlgo),
-                new PawnDeflectionImpactRule<>(board, captureAlgo, enPassantAlgo)
+                new PawnDeflectionImpactRule<>(board, captureAlgo, enPassantAlgo),
+                new PawnOutpostPositionImpactRule<>(board, moveAlgo, bigMoveAlgo, captureAlgo, enPassantAlgo)
             )
         );
     }
