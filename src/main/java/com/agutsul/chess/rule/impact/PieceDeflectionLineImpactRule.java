@@ -11,10 +11,7 @@ import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculated;
 import com.agutsul.chess.Capturable;
-import com.agutsul.chess.activity.impact.Impact;
-import com.agutsul.chess.activity.impact.PieceDeflectionAttackImpact;
 import com.agutsul.chess.activity.impact.PieceDeflectionImpact;
-import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
@@ -55,23 +52,11 @@ public final class PieceDeflectionLineImpactRule<COLOR1 extends Color,
                 .flatMap(line -> Stream.of(board.getPiece(line.getLast()))
                         .flatMap(Optional::stream)
                         .filter(attackedPiece -> !Objects.equals(attackedPiece.getColor(), piece.getColor()))
-                        .map(attackedPiece -> (ATTACKED) attackedPiece)
-                        .flatMap(attackedPiece -> Stream.of(board.getImpacts(attackedPiece, Impact.Type.PROTECT))
-                                .flatMap(Collection::stream)
-                                .map(impact -> (PieceProtectImpact<?,?,?>) impact)
-                                .map(PieceProtectImpact::getTarget)
-                                .map(protectedPiece -> (DEFENDED) protectedPiece)
-                                .filter(protectedPiece -> !board.getAttackers(protectedPiece).isEmpty())
-                                // protected piece should be more valuable than attacker piece
-                                .filter(protectedPiece -> protectedPiece.getType().rank() > piece.getType().rank())
-                                .filter(protectedPiece -> !confirmProtection(piece, attackedPiece, protectedPiece))
-                                .map(protectedPiece -> new PieceDeflectionAttackImpact<>(
-                                        createAttackImpact(piece, attackedPiece, line),
-                                        protectedPiece
-                                ))
-                        )
+                        .map(attackedPiece -> super.createImpacts(
+                                createAttackImpact(piece, (ATTACKED) attackedPiece, line)
+                        ))
                 )
-                .map(impact -> (PieceDeflectionImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>) impact)
+                .flatMap(Collection::stream)
                 .collect(toList());
 
         return impacts;

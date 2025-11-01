@@ -1,6 +1,7 @@
 package com.agutsul.chess.rule.impact;
 
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.io.IOUtils.closeQuietly;
 
 import java.io.Closeable;
@@ -11,7 +12,9 @@ import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculated;
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.activity.impact.AbstractPieceAttackImpact;
 import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PieceDeflectionAttackImpact;
 import com.agutsul.chess.activity.impact.PieceDeflectionImpact;
 import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.board.Board;
@@ -48,24 +51,48 @@ abstract class AbstractDeflectionImpactRule<COLOR1 extends Color,
 
     protected abstract Collection<IMPACT> createImpacts(ATTACKER piece, Collection<Calculated> next);
 
-    protected boolean confirmProtection(ATTACKER predator, ATTACKED victim, DEFENDED protectedPiece) {
+    protected Collection<IMPACT> createImpacts(AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> attackImpact) {
+
+        @SuppressWarnings("unchecked")
+        var impacts = Stream.of(board.getImpacts(attackImpact.getTarget(), Impact.Type.PROTECT))
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceProtectImpact<?,?,?>) impact)
+                .map(PieceProtectImpact::getTarget)
+                .map(protectedPiece -> (DEFENDED) protectedPiece)
+                .filter(protectedPiece -> !board.getAttackers(protectedPiece).isEmpty())
+                // protected piece should be more valuable than attacker piece
+                .filter(protectedPiece -> protectedPiece.getType().rank() > attackImpact.getSource().getType().rank())
+                .filter(protectedPiece -> !confirmProtection(attackImpact, protectedPiece))
+                .map(protectedPiece -> new PieceDeflectionAttackImpact<>(attackImpact, protectedPiece))
+                .map(impact -> (IMPACT) impact)
+                .collect(toList());
+
+        return impacts;
+    }
+
+    protected boolean confirmProtection(AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> attackImpact,
+                                        DEFENDED protectedPiece) {
         // skip adding predator on board to simulate its capture by victim piece
         var tmpBoardBuilder = new PositionedBoardBuilder();
         Stream.of(board.getPieces())
             .flatMap(Collection::stream)
-            .filter(piece -> !Objects.equals(piece, predator))
-            .filter(piece -> !Objects.equals(piece, victim))
+            .filter(piece -> !Objects.equals(piece, attackImpact.getSource()))
+            .filter(piece -> !Objects.equals(piece, attackImpact.getTarget()))
             .forEach(piece ->
                 tmpBoardBuilder.withPiece(piece.getType(), piece.getColor(), piece.getPosition())
             );
 
         // locate victim on predator's position
-        tmpBoardBuilder.withPiece(victim.getType(), victim.getColor(), predator.getPosition());
+        tmpBoardBuilder.withPiece(
+                attackImpact.getTarget().getType(),
+                attackImpact.getTarget().getColor(),
+                attackImpact.getSource().getPosition()
+        );
 
         var tmpBoard = tmpBoardBuilder.build();
         try {
             // check if protection from victim piece is still valid for protected piece
-            var isProtected = Stream.of(tmpBoard.getPiece(predator.getPosition()))
+            var isProtected = Stream.of(tmpBoard.getPiece(attackImpact.getSource().getPosition()))
                     .flatMap(Optional::stream)
                     .anyMatch(piece -> Stream.of(tmpBoard.getImpacts(piece, Impact.Type.PROTECT))
                             .flatMap(Collection::stream)
