@@ -1,6 +1,6 @@
 package com.agutsul.chess.rule.impact;
 
-import static com.agutsul.chess.piece.Piece.isKing;
+import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
@@ -11,16 +11,12 @@ import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculated;
 import com.agutsul.chess.Capturable;
-import com.agutsul.chess.activity.impact.AbstractPieceAttackImpact;
 import com.agutsul.chess.activity.impact.Impact;
-import com.agutsul.chess.activity.impact.PieceAttackImpact;
-import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.activity.impact.PieceDeflectionAttackImpact;
 import com.agutsul.chess.activity.impact.PieceDeflectionImpact;
 import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Position;
@@ -76,16 +72,5 @@ public class PieceDeflectionPositionImpactRule<COLOR1 extends Color,
                 .collect(toList());
 
         return impacts;
-    }
-
-    @SuppressWarnings("unchecked")
-    protected AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>
-            createAttackImpact(ATTACKER predator, ATTACKED victim) {
-
-        var attackImpact = isKing(victim)
-                ? new PieceCheckImpact<>(predator, (KingPiece<COLOR2>) victim)
-                : new PieceAttackImpact<>(predator, victim);
-
-        return (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) attackImpact;
     }
 }

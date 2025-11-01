@@ -1,6 +1,6 @@
 package com.agutsul.chess.rule.impact;
 
-import static com.agutsul.chess.piece.Piece.isKing;
+import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
@@ -12,12 +12,9 @@ import java.util.stream.Stream;
 import com.agutsul.chess.Calculated;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.AbstractPieceAttackImpact;
-import com.agutsul.chess.activity.impact.PieceAttackImpact;
-import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Position;
@@ -52,10 +49,7 @@ public class PieceForkPositionImpactRule<COLOR1 extends Color,
                 .map(calculated -> board.getPiece((Position) calculated))
                 .flatMap(Optional::stream)
                 .filter(attackedPiece -> !Objects.equals(attackedPiece.getColor(), piece.getColor()))
-                .map(attackedPiece -> isKing(attackedPiece)
-                        ? new PieceCheckImpact<>(piece, (KingPiece<COLOR2>) attackedPiece)
-                        : new PieceAttackImpact<>(piece, attackedPiece)
-                )
+                .map(attackedPiece -> createAttackImpact(piece, attackedPiece))
                 .map(impact -> (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) impact)
                 .collect(toList());
 
