@@ -70,8 +70,8 @@ abstract class AbstractDeflectionImpactRule<COLOR1 extends Color,
         return impacts;
     }
 
-    protected boolean confirmProtection(AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> attackImpact,
-                                        DEFENDED protectedPiece) {
+    private boolean confirmProtection(AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> attackImpact,
+                                      DEFENDED protectedPiece) {
         // skip adding predator on board to simulate its capture by victim piece
         var tmpBoardBuilder = new PositionedBoardBuilder();
         Stream.of(board.getPieces())

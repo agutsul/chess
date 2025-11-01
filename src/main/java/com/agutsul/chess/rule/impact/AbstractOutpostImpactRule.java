@@ -4,10 +4,10 @@ import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.Collections.emptyList;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 import java.util.Collection;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculated;
@@ -49,7 +49,7 @@ abstract class AbstractOutpostImpactRule<COLOR extends Color,
 
         var opponentPawns = Stream.of(board.getPieces(piece.getColor().invert(), Piece.Type.PAWN))
                 .flatMap(Collection::stream)
-                .collect(Collectors.toMap(pawn -> pawn.getPosition().x(), identity()));
+                .collect(toMap(pawn -> pawn.getPosition().x(), identity()));
 
         var attackedPositions = Stream.of(opponentPawns.values())
                 .flatMap(Collection::stream)
@@ -57,7 +57,7 @@ abstract class AbstractOutpostImpactRule<COLOR extends Color,
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceControlImpact<?,?>) impact)
                 .map(PieceControlImpact::getTarget)
-                .toList();
+                .collect(toList());
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(next)
