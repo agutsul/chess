@@ -39,7 +39,6 @@ public final class PgnGameParser
 
             if (builder.isReady()) {
                 gameStrings.add(builder.build());
-                builder.reset();
             }
         }
 

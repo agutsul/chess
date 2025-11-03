@@ -54,7 +54,11 @@ public final class PgnStringBuilder
 
     @Override
     public String build() {
-        return this.stringBuilder.toString();
+        try {
+            return this.stringBuilder.toString();
+        } finally {
+            reset();
+        }
     }
 
     private String prepare(String string) {

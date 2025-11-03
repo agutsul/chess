@@ -39,7 +39,6 @@ public final class PgnFileParser
 
                 if (builder.isReady()) {
                     games.addAll(parser.parse(builder.build()));
-                    builder.reset();
                 }
             }
         } catch (IOException e) {
