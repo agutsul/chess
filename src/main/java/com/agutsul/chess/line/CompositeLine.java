@@ -1,15 +1,11 @@
 package com.agutsul.chess.line;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.position.PositionComparator;
 
 final class CompositeLine extends AbstractLine {
-
-    private static final Comparator<Position> COMPARATOR = new PositionComparator();
 
     private static final long serialVersionUID = 1L;
 
@@ -17,12 +13,7 @@ final class CompositeLine extends AbstractLine {
     private final Line right;
 
     CompositeLine(Line left, Line right) {
-        super(Stream.of(left, right)
-                .flatMap(Collection::stream)
-                .distinct()
-                .sorted(COMPARATOR)
-                .toList()
-        );
+        super(new LineBuilder().append(left).append(right).sort().build());
 
         this.left  = left;
         this.right = right;

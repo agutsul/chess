@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
+import com.agutsul.chess.line.LineBuilder;
 import com.agutsul.chess.piece.Piece;
 
 public final class CombinedLineAlgo<COLOR extends Color,
@@ -67,7 +68,11 @@ public final class CombinedLineAlgo<COLOR extends Color,
         }
 
         private Line createSubLine(PIECE piece, Line line) {
-            return createLine(piece.getPosition(), line);
+            return new LineBuilder()
+                    .append(piece.getPosition())
+                    .append(line)
+                    .sort()
+                    .build();
         }
     }
 

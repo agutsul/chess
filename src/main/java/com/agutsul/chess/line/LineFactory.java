@@ -1,27 +1,34 @@
 package com.agutsul.chess.line;
 
-import static java.util.Collections.sort;
+import static com.agutsul.chess.line.Line.COMMA_SEPARATOR;
+import static com.agutsul.chess.position.Position.MAX;
+import static com.agutsul.chess.position.Position.MIN;
+import static com.agutsul.chess.position.PositionFactory.positionOf;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.position.PositionComparator;
 
 public enum LineFactory {
     INSTANCE;
 
-    private static final Comparator<Position> COMPARATOR = new PositionComparator();
+    private Map<String,Line> lines;
 
-    public static Line createLine(Position position, Line line) {
-        var positions = new ArrayList<Position>(line);
-        positions.add(position);
-
-        sort(positions, COMPARATOR);
-        return createLine(positions);
+    LineFactory() {
+        this.lines = Stream.of(initLines(), initDiagonals())
+                .flatMap(Collection::stream)
+                .map(line -> Pair.of(createKey(line), line))
+                .distinct()
+                .collect(toMap(Pair::getKey, Pair::getValue));
     }
 
     public static Line createLine(Line line1, Line line2) {
@@ -29,6 +36,11 @@ public enum LineFactory {
     }
 
     public static Line createLine(Collection<Position> positions) {
+        var line = INSTANCE.lines.get(createKey(positions));
+        if (line != null) {
+            return line;
+        }
+
         return new LineImpl(positions);
     }
 
@@ -50,5 +62,70 @@ public enum LineFactory {
         positions.add(nextPosition);
 
         return calculate(board, nextPosition, x, y, positions);
+    }
+
+    private Collection<Line> initLines() {
+        var lines = new ArrayList<Line>();
+        for (var i = MIN; i < MAX; i++) {
+            var horizontalPositions = new ArrayList<Position>();
+            var verticalPositions = new ArrayList<Position>();
+
+            for (var j = MIN; j < MAX; j++) {
+                horizontalPositions.add(positionOf(j,i));
+                verticalPositions.add(positionOf(i,j));
+            }
+
+            lines.add(new LineImpl(horizontalPositions));
+            lines.add(new LineImpl(verticalPositions));
+        }
+
+        return lines;
+    }
+
+    private Collection<Line> initDiagonals() {
+        var lines = new ArrayList<Line>();
+
+        // Iterate through diagonals: Diagonals from bottom-left to top-right
+        for (var sum = MIN; sum <= 2 * MAX - 2; sum++) {
+            var diagonalPositions1 = new ArrayList<Position>();
+            var diagonalPositions2 = new ArrayList<Position>();
+
+            for (var i = MIN; i < MAX; i++) {
+                var j = sum - i;
+                if (j >= MIN && j < MAX) {
+                    diagonalPositions1.add(positionOf(i,j));
+                    diagonalPositions2.add(positionOf(j,i));
+                }
+            }
+
+            lines.add(new LineImpl(diagonalPositions1));
+            lines.add(new LineImpl(diagonalPositions2));
+        }
+
+        // Iterate through diagonals: Diagonals from top-left to bottom-right
+        for (var diff = -(MAX - 1); diff < MAX; diff++) {
+            var diagonalPositions1 = new ArrayList<Position>();
+            var diagonalPositions2 = new ArrayList<Position>();
+
+            for (var i = MIN; i < MAX; i++) {
+                var j = i - diff;
+                if (j >= MIN && j < MAX) {
+                    diagonalPositions1.add(positionOf(i,j));
+                    diagonalPositions2.add(positionOf(j,i));
+                }
+            }
+
+            lines.add(new LineImpl(diagonalPositions1));
+            lines.add(new LineImpl(diagonalPositions2));
+        }
+
+        return lines;
+    }
+
+    private static String createKey(Collection<Position> positions) {
+        return Stream.of(positions)
+                .flatMap(Collection::stream)
+                .map(String::valueOf)
+                .collect(joining(COMMA_SEPARATOR));
     }
 }
