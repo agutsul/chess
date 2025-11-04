@@ -21,15 +21,11 @@ import com.agutsul.chess.position.Position;
 public enum LineFactory {
     INSTANCE;
 
-    private Map<String,Line> lines;
-
-    LineFactory() {
-        this.lines = Stream.of(initLines(), initDiagonals())
-                .flatMap(Collection::stream)
-                .map(line -> Pair.of(createKey(line), line))
-                .distinct()
-                .collect(toMap(Pair::getKey, Pair::getValue));
-    }
+    private Map<String,Line> lines = Stream.of(lines(), diagonals())
+            .flatMap(Collection::stream)
+            .map(line -> Pair.of(createKey(line), line))
+            .distinct()
+            .collect(toMap(Pair::getKey, Pair::getValue));
 
     public static Line createLine(Line line1, Line line2) {
         return new CompositeLine(line1, line2);
@@ -45,13 +41,11 @@ public enum LineFactory {
     }
 
     public static Line createLine(Board board, Position current, int xStep, int yStep) {
-        return createLine(
-                INSTANCE.calculate(board, current, xStep, yStep, new ArrayList<Position>())
-        );
+        return createLine(calculate(board, current, xStep, yStep, new ArrayList<Position>()));
     }
 
-    private List<Position> calculate(Board board, Position current, int x, int y,
-                                     List<Position> positions) {
+    private static List<Position> calculate(Board board, Position current, int x, int y,
+                                            List<Position> positions) {
 
         var optionalNext = board.getPosition(current.x() + x, current.y() + y);
         if (optionalNext.isEmpty()) {
@@ -64,7 +58,7 @@ public enum LineFactory {
         return calculate(board, nextPosition, x, y, positions);
     }
 
-    private Collection<Line> initLines() {
+    private static Collection<Line> lines() {
         var lines = new ArrayList<Line>();
         for (var i = MIN; i < MAX; i++) {
             var horizontalPositions = new ArrayList<Position>();
@@ -82,7 +76,7 @@ public enum LineFactory {
         return lines;
     }
 
-    private Collection<Line> initDiagonals() {
+    private static Collection<Line> diagonals() {
         var lines = new ArrayList<Line>();
 
         // Iterate through diagonals: Diagonals from bottom-left to top-right
