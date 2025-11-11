@@ -27,7 +27,8 @@ abstract class AbstractLine
     @Override
     public int hashCode() {
         return range(0, size())
-                .map(index -> get(index).hashCode())
+                .mapToObj(this::get)
+                .mapToInt(Position::hashCode)
                 .sum();
     }
 
