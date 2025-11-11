@@ -11,7 +11,7 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
 import com.agutsul.chess.piece.Piece;
 
-class PieceMultiMap implements PieceMap {
+final class PieceMultiMap implements PieceMap {
 
     private final MultiValuedMap<String,Collection<Piece<?>>> map;
 

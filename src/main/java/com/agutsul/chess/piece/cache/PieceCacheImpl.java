@@ -27,7 +27,7 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.Piece.Type;
 import com.agutsul.chess.position.Position;
 
-public class PieceCacheImpl implements PieceCache {
+public final class PieceCacheImpl implements PieceCache {
 
     private static final Logger LOGGER = getLogger(PieceCacheImpl.class);
 
@@ -93,13 +93,9 @@ public class PieceCacheImpl implements PieceCache {
 
     @Override
     public Optional<Piece<?>> getActive(Position position) {
-        var pieces = get(keyFactory.createKey(position));
-        if (pieces.isEmpty()) {
-            return Optional.empty();
-        }
-
-        var piece = pieces.iterator().next();
-        return Optional.of(piece);
+        return Stream.of(get(keyFactory.createKey(position)))
+                .flatMap(Collection::stream)
+                .findFirst();
     }
 
     @Override
@@ -108,8 +104,7 @@ public class PieceCacheImpl implements PieceCache {
     }
 
     private Collection<Piece<?>> get(String key) {
-        var pieces = this.pieceMap.getOrDefault(key, emptyList());
-        return unmodifiableCollection(pieces);
+        return unmodifiableCollection(pieceMap.getOrDefault(key, emptyList()));
     }
 
     interface KeyFactory {
