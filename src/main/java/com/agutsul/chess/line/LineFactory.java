@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -47,15 +48,12 @@ public enum LineFactory {
     private static List<Position> calculate(Board board, Position current, int x, int y,
                                             List<Position> positions) {
 
-        var optionalNext = board.getPosition(current.x() + x, current.y() + y);
-        if (optionalNext.isEmpty()) {
-            return positions;
-        }
-
-        var nextPosition = optionalNext.get();
-        positions.add(nextPosition);
-
-        return calculate(board, nextPosition, x, y, positions);
+        return Stream.of(board.getPosition(current.x() + x, current.y() + y))
+                .flatMap(Optional::stream)
+                .peek(nextPosition -> positions.add(nextPosition))
+                .map(nextPosition -> calculate(board, nextPosition, x, y, positions))
+                .findFirst()
+                .orElse(positions);
     }
 
     private static Collection<Line> lines() {
