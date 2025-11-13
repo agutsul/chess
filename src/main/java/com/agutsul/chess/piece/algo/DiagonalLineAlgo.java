@@ -1,6 +1,6 @@
 package com.agutsul.chess.piece.algo;
 
-import static com.agutsul.chess.line.LineFactory.createLine;
+import static com.agutsul.chess.line.LineFactory.lineOf;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,10 +22,10 @@ public final class DiagonalLineAlgo<COLOR extends Color,
     public Collection<Line> calculate(PIECE piece) {
         var currentPosition = piece.getPosition();
 
-        var line1 = createLine(board, currentPosition,  1,  1);
-        var line2 = createLine(board, currentPosition, -1, -1);
-        var line3 = createLine(board, currentPosition,  1, -1);
-        var line4 = createLine(board, currentPosition, -1,  1);
+        var line1 = lineOf(board, currentPosition,  1,  1);
+        var line2 = lineOf(board, currentPosition, -1, -1);
+        var line3 = lineOf(board, currentPosition,  1, -1);
+        var line4 = lineOf(board, currentPosition, -1,  1);
 
         return List.of(line1, line2, line3, line4);
     }

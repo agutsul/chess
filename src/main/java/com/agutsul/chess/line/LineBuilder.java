@@ -1,6 +1,6 @@
 package com.agutsul.chess.line;
 
-import static com.agutsul.chess.line.LineFactory.createLine;
+import static com.agutsul.chess.line.LineFactory.lineOf;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,7 +40,7 @@ public final class LineBuilder implements Builder<Line> {
     @Override
     public Line build() {
         try {
-            return createLine(this.positions.stream().distinct().toList());
+            return lineOf(this.positions.stream().distinct().toList());
         } finally {
             reset();
         }

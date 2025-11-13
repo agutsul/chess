@@ -1,6 +1,6 @@
 package com.agutsul.chess.line;
 
-import static com.agutsul.chess.line.LineFactory.createLine;
+import static com.agutsul.chess.line.LineFactory.lineOf;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -16,9 +16,9 @@ public class LineTest {
 
     @Test
     void testCreateCombinedLine() {
-        var line = createLine(
-                createLine(List.of(positionOf("a1"), positionOf("b2"))), // subline1
-                createLine(List.of(positionOf("a8"), positionOf("b7")))  // subline2
+        var line = lineOf(
+                lineOf(List.of(positionOf("a1"), positionOf("b2"))), // subline1
+                lineOf(List.of(positionOf("a8"), positionOf("b7")))  // subline2
         );
 
         var positions = line.toString();

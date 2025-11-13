@@ -1,6 +1,6 @@
 package com.agutsul.chess.piece.algo;
 
-import static com.agutsul.chess.line.LineFactory.createLine;
+import static com.agutsul.chess.line.LineFactory.lineOf;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,7 +64,7 @@ public final class CombinedLineAlgo<COLOR extends Color,
             var subLine1 = createSubLine(piece, list.getFirst());
             var subLine2 = createSubLine(piece, list.getLast());
 
-            return List.of(createLine(subLine1, subLine2));
+            return List.of(lineOf(subLine1, subLine2));
         }
 
         private Line createSubLine(PIECE piece, Line line) {

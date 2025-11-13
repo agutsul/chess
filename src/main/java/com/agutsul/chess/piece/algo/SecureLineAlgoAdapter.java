@@ -1,6 +1,6 @@
 package com.agutsul.chess.piece.algo;
 
-import static com.agutsul.chess.line.LineFactory.createLine;
+import static com.agutsul.chess.line.LineFactory.lineOf;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,7 +64,7 @@ public final class SecureLineAlgoAdapter<COLOR extends Color,
             }
 
             if (!positions.isEmpty()) {
-                lines.add(createLine(positions));
+                lines.add(lineOf(positions));
             }
         }
 

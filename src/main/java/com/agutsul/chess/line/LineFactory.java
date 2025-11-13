@@ -28,12 +28,8 @@ public enum LineFactory {
             .distinct()
             .collect(toMap(Pair::getKey, Pair::getValue));
 
-    public static Line createLine(Line line1, Line line2) {
-        return new CompositeLine(line1, line2);
-    }
-
-    public static Line createLine(Collection<Position> positions) {
-        var line = INSTANCE.lines.get(createKey(positions));
+    public Line create(Collection<Position> positions) {
+        var line = lines.get(createKey(positions));
         if (line != null) {
             return line;
         }
@@ -41,8 +37,20 @@ public enum LineFactory {
         return new LineImpl(positions);
     }
 
-    public static Line createLine(Board board, Position current, int xStep, int yStep) {
-        return createLine(calculate(board, current, xStep, yStep, new ArrayList<Position>()));
+    public Line create(Line line1, Line line2) {
+        return new CompositeLine(line1, line2);
+    }
+
+    public static Line lineOf(Line line1, Line line2) {
+        return INSTANCE.create(line1, line2);
+    }
+
+    public static Line lineOf(Collection<Position> positions) {
+        return INSTANCE.create(positions);
+    }
+
+    public static Line lineOf(Board board, Position current, int xStep, int yStep) {
+        return lineOf(calculate(board, current, xStep, yStep, new ArrayList<Position>()));
     }
 
     private static List<Position> calculate(Board board, Position current, int x, int y,
@@ -58,9 +66,10 @@ public enum LineFactory {
 
     private static Collection<Line> lines() {
         var lines = new ArrayList<Line>();
+
         for (var i = MIN; i < MAX; i++) {
             var horizontalPositions = new ArrayList<Position>();
-            var verticalPositions = new ArrayList<Position>();
+            var verticalPositions   = new ArrayList<Position>();
 
             for (var j = MIN; j < MAX; j++) {
                 horizontalPositions.add(positionOf(j,i));
