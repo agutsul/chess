@@ -28,6 +28,7 @@ import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.AbstractPlayableGame;
+import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.RookPiece;
@@ -139,7 +140,7 @@ public class RandomActionInputObserverTest {
                 .withWhiteRook("h1")
                 .build();
 
-        var whiteKing = board.getKing(Colors.WHITE).get();
+        var whiteKing = (KingPiece<Color>) board.getPiece("e1").get();
         var whiteRook = (RookPiece<Color>) board.getPiece("h1").get();
 
         var action = new PieceCastlingAction<>(

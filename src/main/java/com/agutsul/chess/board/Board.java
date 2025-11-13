@@ -32,17 +32,17 @@ public interface Board {
     <COLOR extends Color> Collection<Piece<COLOR>> getAttackers(Piece<?> piece);
 
     <COLOR extends Color> Collection<Piece<COLOR>> getPieces();
-    <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color);
+    <COLOR extends Color> Collection<Piece<COLOR>> getPieces(COLOR color);
     <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Piece.Type pieceType);
-    <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color, Piece.Type pieceType);
-    <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color, String position, String... positions);
+    <COLOR extends Color> Collection<Piece<COLOR>> getPieces(COLOR color, Piece.Type pieceType);
+    <COLOR extends Color> Collection<Piece<COLOR>> getPieces(COLOR color, String position, String... positions);
 
     <COLOR extends Color> Optional<Piece<COLOR>> getPiece(Position position);
     <COLOR extends Color> Optional<Piece<COLOR>> getPiece(String position);
 
-    <COLOR extends Color> Optional<Piece<COLOR>> getCapturedPiece(String position, Color color);
+    <COLOR extends Color> Optional<Piece<COLOR>> getCapturedPiece(String position, COLOR color);
 
-    <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(Color color);
+    <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(COLOR color);
 
     Optional<Position> getPosition(String code);
     Optional<Position> getPosition(int x, int y);

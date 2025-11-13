@@ -109,7 +109,7 @@ public final class StandardBoard
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color) {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(COLOR color) {
         return this.origin.getPieces(color);
     }
 
@@ -119,12 +119,12 @@ public final class StandardBoard
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color, Type pieceType) {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(COLOR color, Type pieceType) {
         return this.origin.getPieces(color, pieceType);
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color, String position, String... positions) {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(COLOR color, String position, String... positions) {
         return this.origin.getPieces(color, position, positions);
     }
 
@@ -139,12 +139,12 @@ public final class StandardBoard
     }
 
     @Override
-    public <COLOR extends Color> Optional<Piece<COLOR>> getCapturedPiece(String position, Color color) {
+    public <COLOR extends Color> Optional<Piece<COLOR>> getCapturedPiece(String position, COLOR color) {
         return this.origin.getCapturedPiece(position, color);
     }
 
     @Override
-    public <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(Color color) {
+    public <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(COLOR color) {
         return this.origin.getKing(color);
     }
 

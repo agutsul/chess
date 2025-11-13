@@ -191,7 +191,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color) {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(COLOR color) {
         LOGGER.debug("Getting pieces with '{}' color", color);
 
         @SuppressWarnings("unchecked")
@@ -217,7 +217,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color,
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(COLOR color,
                                                                     Piece.Type pieceType) {
 
         LOGGER.debug("Getting pieces with type '{}' and '{}' color",
@@ -234,7 +234,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color,
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(COLOR color,
                                                                     String position,
                                                                     String... positions) {
 
@@ -288,7 +288,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     @Override
     public <COLOR extends Color> Optional<Piece<COLOR>> getCapturedPiece(String position,
-                                                                         Color color) {
+                                                                         COLOR color) {
 
         LOGGER.debug("Getting captured piece at '{}'", position);
 
@@ -313,10 +313,9 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     }
 
     @Override
-    public <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(Color color) {
+    public <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(COLOR color) {
         LOGGER.debug("Getting king of '{}'", color);
 
-        @SuppressWarnings("unchecked")
         var king = Stream.of(getPieces(color, Piece.Type.KING))
                 .flatMap(Collection::stream)
                 .map(piece -> (KingPiece<COLOR>) piece)
