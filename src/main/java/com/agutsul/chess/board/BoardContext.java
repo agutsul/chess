@@ -4,57 +4,57 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-final class BoardContext<T>
+final class BoardContext<POSITION>
         implements Serializable {
 
     private static final long serialVersionUID = -111134609281991106L;
 
-    private List<T> kingPositions = new ArrayList<>();
-    private List<T> queenPositions = new ArrayList<>();
-    private List<T> bishopPositions = new ArrayList<>();
-    private List<T> knightPositions = new ArrayList<>();
-    private List<T> rookPositions = new ArrayList<>();
-    private List<T> pawnPositions = new ArrayList<>();
+    private List<POSITION> kingPositions = new ArrayList<>();
+    private List<POSITION> queenPositions = new ArrayList<>();
+    private List<POSITION> bishopPositions = new ArrayList<>();
+    private List<POSITION> knightPositions = new ArrayList<>();
+    private List<POSITION> rookPositions = new ArrayList<>();
+    private List<POSITION> pawnPositions = new ArrayList<>();
 
-    public void addKingPosition(T position) {
+    public void addKingPosition(POSITION position) {
         this.kingPositions.add(position);
     }
-    public List<T> getKingPositions() {
+    public List<POSITION> getKingPositions() {
         return kingPositions;
     }
 
-    public void addQueenPosition(T position) {
+    public void addQueenPosition(POSITION position) {
         this.queenPositions.add(position);
     }
-    public List<T> getQueenPositions() {
+    public List<POSITION> getQueenPositions() {
         return queenPositions;
     }
 
-    public void addBishopPosition(T position) {
+    public void addBishopPosition(POSITION position) {
         this.bishopPositions.add(position);
     }
-    public List<T> getBishopPositions() {
+    public List<POSITION> getBishopPositions() {
         return bishopPositions;
     }
 
-    public void addKnightPosition(T position) {
+    public void addKnightPosition(POSITION position) {
         this.knightPositions.add(position);
     }
-    public List<T> getKnightPositions() {
+    public List<POSITION> getKnightPositions() {
         return knightPositions;
     }
 
-    public void addRookPosition(T position) {
+    public void addRookPosition(POSITION position) {
         this.rookPositions.add(position);
     }
-    public List<T> getRookPositions() {
+    public List<POSITION> getRookPositions() {
         return rookPositions;
     }
 
-    public void addPawnPosition(T position) {
+    public void addPawnPosition(POSITION position) {
         this.pawnPositions.add(position);
     }
-    public List<T> getPawnPositions() {
+    public List<POSITION> getPawnPositions() {
         return pawnPositions;
     }
 }
