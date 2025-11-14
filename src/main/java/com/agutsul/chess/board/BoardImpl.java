@@ -1,6 +1,7 @@
 package com.agutsul.chess.board;
 
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
+import static com.agutsul.chess.line.Line.COMMA_SEPARATOR;
 import static java.lang.Thread.currentThread;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
@@ -219,7 +220,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     @Override
     public Collection<Piece<Color>> getPieces(Collection<Position> positions) {
         LOGGER.debug("Getting all active pieces for positions: {}",
-                join(positions, ",")
+                join(positions, COMMA_SEPARATOR)
         );
 
         @SuppressWarnings("unchecked")
@@ -261,7 +262,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
                 .collect(toSet());
 
         LOGGER.debug("Getting pieces with type of '{}' color and locations '[{}]'",
-                color, join(requestedPositions, ",")
+                color, join(requestedPositions, COMMA_SEPARATOR)
         );
 
         @SuppressWarnings("unchecked")
