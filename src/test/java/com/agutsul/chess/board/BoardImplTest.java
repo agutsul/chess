@@ -1,6 +1,7 @@
 package com.agutsul.chess.board;
 
 import static com.agutsul.chess.position.PositionFactory.positionOf;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -11,7 +12,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -77,6 +77,56 @@ public class BoardImplTest {
     void testInitialBoardSetup() {
         assertEquals(16, board.getPieces(Colors.WHITE).size());
         assertEquals(16, board.getPieces(Colors.BLACK).size());
+    }
+
+    @Test
+    void testGetLineByValidPositions() {
+        // vertical line
+        assertTrue(board.getLine(positionOf("a1"), positionOf("a3")).isPresent());
+        // diagonal lines
+        assertTrue(board.getLine(positionOf("a1"), positionOf("d4")).isPresent());
+        assertTrue(board.getLine(positionOf("h8"), positionOf("b2")).isPresent());
+        // horizontal line
+        assertTrue(board.getLine(positionOf("a8"), positionOf("h8")).isPresent());
+    }
+
+    @Test
+    void testGetLineBySamePositions() {
+        var position = positionOf("a8");
+        assertTrue(board.getLine(position, position).isEmpty());
+    }
+
+    @Test
+    void testGetLineByInvalidPositions() {
+        assertTrue(board.getLine(positionOf("a1"), positionOf("b3")).isEmpty());
+        assertTrue(board.getLine(positionOf("a1"), positionOf("c2")).isEmpty());
+        assertTrue(board.getLine(positionOf("a1"), positionOf("g4")).isEmpty());
+    }
+
+    @Test
+    void testGetLines() {
+        assertEquals(4, board.getLines(positionOf("d4")).size());
+        assertEquals(3, board.getLines(positionOf("a1")).size());
+    }
+
+    @Test
+    void testGetPiecesByLine() {
+        var pieces = board.getPieces(board.getLine("a1","a8").get());
+
+        assertFalse(pieces.isEmpty());
+        assertEquals(4, pieces.size());
+
+        var whiteRook = board.getPiece("a1").get();
+        assertTrue(pieces.contains(whiteRook));
+
+        var whitePawn = board.getPiece("a2").get();
+        assertTrue(pieces.contains(whitePawn));
+
+        var blackRook = board.getPiece("a8").get();
+        assertTrue(pieces.contains(blackRook));
+
+        var blackPawn = board.getPiece("a7").get();
+        assertTrue(pieces.contains(blackPawn));
     }
 
     @Test
@@ -174,7 +224,7 @@ public class BoardImplTest {
     private void testInitialBoardPieceSetup(Color color, Piece.Type pieceType, String... position) {
         var pieces = board.getPieces(color, pieceType);
         assertFalse(pieces.isEmpty());
-        assertEquals(pieces.size(), Arrays.asList(position).size());
+        assertEquals(pieces.size(), asList(position).size());
 
         var piecePositions = pieces.stream().map(Piece::getPosition).toList();
         var expectedPositions = Stream.of(position)

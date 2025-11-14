@@ -178,20 +178,20 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces() {
+    public Collection<Piece<Color>> getPieces() {
         LOGGER.debug("Getting all active pieces");
 
         @SuppressWarnings("unchecked")
-        Collection<Piece<COLOR>> pieces = Stream.of(pieceCache.getActive())
+        var pieces = Stream.of(pieceCache.getActive())
                 .flatMap(Collection::stream)
-                .map(piece -> (Piece<COLOR>) piece)
+                .map(piece -> (Piece<Color>) piece)
                 .toList();
 
         return pieces;
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(COLOR color) {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color) {
         LOGGER.debug("Getting pieces with '{}' color", color);
 
         @SuppressWarnings("unchecked")
@@ -204,20 +204,36 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Piece.Type pieceType) {
+    public Collection<Piece<Color>> getPieces(Piece.Type pieceType) {
         LOGGER.debug("Getting pieces with type '{}'", pieceType);
 
         @SuppressWarnings("unchecked")
-        Collection<Piece<COLOR>> pieces = Stream.of(pieceCache.getActive(pieceType))
+        var pieces = Stream.of(pieceCache.getActive(pieceType))
                 .flatMap(Collection::stream)
-                .map(piece -> (Piece<COLOR>) piece)
+                .map(piece -> (Piece<Color>) piece)
                 .toList();
 
         return pieces;
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(COLOR color,
+    public Collection<Piece<Color>> getPieces(Collection<Position> positions) {
+        LOGGER.debug("Getting all active pieces for positions: {}",
+                join(positions, ",")
+        );
+
+        @SuppressWarnings("unchecked")
+        var pieces = Stream.of(pieceCache.getActive())
+                .flatMap(Collection::stream)
+                .filter(piece -> positions.contains(piece.getPosition()))
+                .map(piece -> (Piece<Color>) piece)
+                .toList();
+
+        return pieces;
+    }
+
+    @Override
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color,
                                                                     Piece.Type pieceType) {
 
         LOGGER.debug("Getting pieces with type '{}' and '{}' color",
@@ -234,7 +250,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(COLOR color,
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color,
                                                                     String position,
                                                                     String... positions) {
 
@@ -288,7 +304,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     @Override
     public <COLOR extends Color> Optional<Piece<COLOR>> getCapturedPiece(String position,
-                                                                         COLOR color) {
+                                                                         Color color) {
 
         LOGGER.debug("Getting captured piece at '{}'", position);
 
@@ -313,9 +329,10 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     }
 
     @Override
-    public <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(COLOR color) {
+    public <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(Color color) {
         LOGGER.debug("Getting king of '{}'", color);
 
+        @SuppressWarnings("unchecked")
         var king = Stream.of(getPieces(color, Piece.Type.KING))
                 .flatMap(Collection::stream)
                 .map(piece -> (KingPiece<COLOR>) piece)

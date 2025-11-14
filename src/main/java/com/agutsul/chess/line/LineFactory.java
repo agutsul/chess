@@ -9,6 +9,7 @@ import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -54,7 +55,12 @@ public enum LineFactory {
 
     // returns full line for specified positions if there is any
     public static Optional<Line> lineOf(Position position1, Position position2) {
-        var positions = List.of(position1, position2);
+        var positions = new HashSet<>(List.of(position1, position2));
+        if (positions.size() == 1) {
+            // unable to select line to return ( horizontal or vertical or diagonal )
+            return Optional.empty();
+        }
+
         return Stream.of(INSTANCE.lines.values())
                 .flatMap(Collection::stream)
                 .filter(line -> line.containsAll(positions))
@@ -65,7 +71,7 @@ public enum LineFactory {
     public static Collection<Line> linesOf(Position position) {
         return Stream.of(INSTANCE.lines.values())
                 .flatMap(Collection::stream)
-                .filter(line -> line.contains(position))
+                .filter(line -> line.contains(position) && line.size() > 1)
                 .distinct()
                 .toList();
     }

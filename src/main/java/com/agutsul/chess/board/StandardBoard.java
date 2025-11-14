@@ -104,27 +104,32 @@ public final class StandardBoard
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces() {
+    public Collection<Piece<Color>> getPieces() {
         return this.origin.getPieces();
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(COLOR color) {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color) {
         return this.origin.getPieces(color);
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Type pieceType) {
+    public Collection<Piece<Color>> getPieces(Type pieceType) {
         return this.origin.getPieces(pieceType);
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(COLOR color, Type pieceType) {
+    public Collection<Piece<Color>> getPieces(Collection<Position> positions) {
+        return this.origin.getPieces(positions);
+    }
+
+    @Override
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color, Type pieceType) {
         return this.origin.getPieces(color, pieceType);
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(COLOR color, String position, String... positions) {
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color, String position, String... positions) {
         return this.origin.getPieces(color, position, positions);
     }
 
@@ -139,12 +144,12 @@ public final class StandardBoard
     }
 
     @Override
-    public <COLOR extends Color> Optional<Piece<COLOR>> getCapturedPiece(String position, COLOR color) {
+    public <COLOR extends Color> Optional<Piece<COLOR>> getCapturedPiece(String position, Color color) {
         return this.origin.getCapturedPiece(position, color);
     }
 
     @Override
-    public <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(COLOR color) {
+    public <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(Color color) {
         return this.origin.getKing(color);
     }
 

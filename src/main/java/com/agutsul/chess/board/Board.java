@@ -8,6 +8,7 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
@@ -31,18 +32,26 @@ public interface Board {
 
     <COLOR extends Color> Collection<Piece<COLOR>> getAttackers(Piece<?> piece);
 
-    <COLOR extends Color> Collection<Piece<COLOR>> getPieces();
-    <COLOR extends Color> Collection<Piece<COLOR>> getPieces(COLOR color);
-    <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Piece.Type pieceType);
-    <COLOR extends Color> Collection<Piece<COLOR>> getPieces(COLOR color, Piece.Type pieceType);
-    <COLOR extends Color> Collection<Piece<COLOR>> getPieces(COLOR color, String position, String... positions);
+    Collection<Piece<Color>> getPieces();
+    Collection<Piece<Color>> getPieces(Collection<Position> positions);
+    Collection<Piece<Color>> getPieces(Piece.Type pieceType);
+
+    <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color);
+    <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color, Piece.Type pieceType);
+    <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color, String position, String... positions);
 
     <COLOR extends Color> Optional<Piece<COLOR>> getPiece(Position position);
     <COLOR extends Color> Optional<Piece<COLOR>> getPiece(String position);
 
-    <COLOR extends Color> Optional<Piece<COLOR>> getCapturedPiece(String position, COLOR color);
+    <COLOR extends Color> Optional<Piece<COLOR>> getCapturedPiece(String position, Color color);
 
-    <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(COLOR color);
+    <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(Color color);
+
+    Collection<Line> getLines(Position position);
+    Collection<Line> getLines(String position);
+
+    Optional<Line> getLine(Position position1, Position position2);
+    Optional<Line> getLine(String position1, String position2);
 
     Optional<Position> getPosition(String code);
     Optional<Position> getPosition(int x, int y);
