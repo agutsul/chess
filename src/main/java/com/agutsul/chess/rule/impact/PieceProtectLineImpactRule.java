@@ -1,11 +1,10 @@
 package com.agutsul.chess.rule.impact;
 
+import static java.util.List.copyOf;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculated;
@@ -35,7 +34,7 @@ public final class PieceProtectLineImpactRule<COLOR extends Color,
 
     @Override
     protected Collection<Calculated> calculate(PIECE1 piece) {
-        return List.copyOf(algo.calculate(piece));
+        return copyOf(algo.calculate(piece));
     }
 
     @Override
@@ -46,16 +45,13 @@ public final class PieceProtectLineImpactRule<COLOR extends Color,
         var impacts = Stream.of(lines)
                 .flatMap(Collection::stream)
                 .map(calculated -> (Line) calculated)
-                .flatMap(line -> Stream.of(line)
+                .flatMap(line -> Stream.of(board.getPieces(line))
                         .flatMap(Collection::stream)
-                        .map(position -> board.getPiece(position))
-                        .flatMap(Optional::stream)
                         .filter(protectedPiece -> Objects.equals(protectedPiece.getColor(), piece.getColor()))
                         .map(protectedPiece -> new PieceProtectImpact<>(
                                 piece, (PIECE2) protectedPiece, line
                         ))
                 )
-
                 .collect(toList());
 
         return impacts;
