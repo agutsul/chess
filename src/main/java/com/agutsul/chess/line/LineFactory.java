@@ -41,16 +41,39 @@ public enum LineFactory {
         return new CompositeLine(line1, line2);
     }
 
+    // creates composite line
     public static Line lineOf(Line line1, Line line2) {
         return INSTANCE.create(line1, line2);
     }
 
+    // creates line based on provided positions
+    // checks existing full lines before creation
+    // new line is created for sub-line only
     public static Line lineOf(Collection<Position> positions) {
         return INSTANCE.create(positions);
     }
 
+    // creates line starting from some position based on provided steps: x and y
     public static Line lineOf(Board board, Position current, int xStep, int yStep) {
         return lineOf(calculate(board, current, xStep, yStep, new ArrayList<Position>()));
+    }
+
+    // returns full line for specified positions if there is any
+    public static Optional<Line> lineOf(Position position1, Position position2) {
+        var positions = List.of(position1, position2);
+        return Stream.of(INSTANCE.lines.values())
+                .flatMap(Collection::stream)
+                .filter(line -> line.containsAll(positions))
+                .findFirst();
+    }
+
+    // returns all full lines containing provided position
+    public static Collection<Line> linesOf(Position position) {
+        return Stream.of(INSTANCE.lines.values())
+                .flatMap(Collection::stream)
+                .filter(line -> line.contains(position))
+                .distinct()
+                .toList();
     }
 
     private static List<Position> calculate(Board board, Position current, int x, int y,
