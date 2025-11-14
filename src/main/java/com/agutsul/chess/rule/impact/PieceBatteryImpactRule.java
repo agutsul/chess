@@ -7,7 +7,6 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.collections4.CollectionUtils.intersection;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -22,7 +21,6 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.AbstractAlgo;
 import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.FullLineAlgo;
@@ -41,7 +39,7 @@ public class PieceBatteryImpactRule<COLOR extends Color,
     public PieceBatteryImpactRule(Board board,
                                   CapturePieceAlgo<COLOR,PIECE1,Line> algo) {
 
-        this(board, new BatteryLineAlgo<>(board, algo));
+        this(board, new FullLineAlgo<>(board, algo));
     }
 
     private PieceBatteryImpactRule(Board board,
@@ -117,37 +115,5 @@ public class PieceBatteryImpactRule<COLOR extends Color,
                 .collect(toList());
 
         return impacts;
-    }
-
-    private static final class BatteryLineAlgo<COLOR extends Color,
-                                               PIECE extends Piece<COLOR> & Capturable & Lineable>
-            extends AbstractAlgo<PIECE,Line> {
-
-        private final Algo<PIECE,Collection<Line>> pieceAlgo;
-        private final Algo<PIECE,Collection<Line>> fullLineAlgo;
-
-        BatteryLineAlgo(Board board, Algo<PIECE,Collection<Line>> pieceAlgo) {
-            super(board);
-
-            this.pieceAlgo = pieceAlgo;
-            this.fullLineAlgo = new FullLineAlgo<>();
-        }
-
-        @Override
-        public Collection<Line> calculate(PIECE piece) {
-            var pieceLines = pieceAlgo.calculate(piece);
-
-            var fullLines = new ArrayList<Line>();
-            for (var fullLine : fullLineAlgo.calculate(piece)) {
-                for (var pieceLine : pieceLines) {
-                    if (fullLine.containsAll(pieceLine) && !fullLines.contains(fullLine)) {
-                        fullLines.add(fullLine);
-                        break;
-                    }
-                }
-            }
-
-            return fullLines;
-        }
     }
 }
