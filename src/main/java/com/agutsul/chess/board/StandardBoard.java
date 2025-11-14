@@ -149,7 +149,7 @@ public final class StandardBoard
     }
 
     @Override
-    public <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(Color color) {
+    public <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(COLOR color) {
         return this.origin.getKing(color);
     }
 

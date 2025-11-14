@@ -45,7 +45,7 @@ public interface Board {
 
     <COLOR extends Color> Optional<Piece<COLOR>> getCapturedPiece(String position, Color color);
 
-    <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(Color color);
+    <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(COLOR color);
 
     Collection<Line> getLines(Position position);
     Collection<Line> getLines(String position);

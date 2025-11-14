@@ -330,7 +330,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     }
 
     @Override
-    public <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(Color color) {
+    public <COLOR extends Color> Optional<KingPiece<COLOR>> getKing(COLOR color) {
         LOGGER.debug("Getting king of '{}'", color);
 
         @SuppressWarnings("unchecked")
