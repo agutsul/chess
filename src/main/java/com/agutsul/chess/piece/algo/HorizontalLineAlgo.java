@@ -22,8 +22,8 @@ public final class HorizontalLineAlgo<COLOR extends Color,
     public Collection<Line> calculate(PIECE piece) {
         var currentPosition = piece.getPosition();
 
-        var line1 = lineOf(board, currentPosition,  1, 0);
-        var line2 = lineOf(board, currentPosition, -1, 0);
+        var line1 = lineOf(calculate(currentPosition,  1, 0));
+        var line2 = lineOf(calculate(currentPosition, -1, 0));
 
         return List.of(line1, line2);
     }

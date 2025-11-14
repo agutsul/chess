@@ -16,7 +16,6 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.agutsul.chess.board.Board;
 import com.agutsul.chess.position.Position;
 
 public enum LineFactory {
@@ -53,11 +52,6 @@ public enum LineFactory {
         return INSTANCE.create(positions);
     }
 
-    // creates line starting from some position based on provided steps: x and y
-    public static Line lineOf(Board board, Position current, int xStep, int yStep) {
-        return lineOf(calculate(board, current, xStep, yStep, new ArrayList<Position>()));
-    }
-
     // returns full line for specified positions if there is any
     public static Optional<Line> lineOf(Position position1, Position position2) {
         var positions = List.of(position1, position2);
@@ -74,17 +68,6 @@ public enum LineFactory {
                 .filter(line -> line.contains(position))
                 .distinct()
                 .toList();
-    }
-
-    private static List<Position> calculate(Board board, Position current, int x, int y,
-                                            List<Position> positions) {
-
-        return Stream.of(board.getPosition(current.x() + x, current.y() + y))
-                .flatMap(Optional::stream)
-                .peek(nextPosition -> positions.add(nextPosition))
-                .map(nextPosition -> calculate(board, nextPosition, x, y, positions))
-                .findFirst()
-                .orElse(positions);
     }
 
     private static Collection<Line> lines() {

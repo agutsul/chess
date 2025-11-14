@@ -22,10 +22,10 @@ public final class DiagonalLineAlgo<COLOR extends Color,
     public Collection<Line> calculate(PIECE piece) {
         var currentPosition = piece.getPosition();
 
-        var line1 = lineOf(board, currentPosition,  1,  1);
-        var line2 = lineOf(board, currentPosition, -1, -1);
-        var line3 = lineOf(board, currentPosition,  1, -1);
-        var line4 = lineOf(board, currentPosition, -1,  1);
+        var line1 = lineOf(calculate(currentPosition,  1,  1));
+        var line2 = lineOf(calculate(currentPosition, -1, -1));
+        var line3 = lineOf(calculate(currentPosition,  1, -1));
+        var line4 = lineOf(calculate(currentPosition, -1,  1));
 
         return List.of(line1, line2, line3, line4);
     }

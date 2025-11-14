@@ -22,8 +22,8 @@ public final class VerticalLineAlgo<COLOR extends Color,
     public Collection<Line> calculate(PIECE piece) {
         var currentPosition = piece.getPosition();
 
-        var line1 = lineOf(board, currentPosition, 0, -1);
-        var line2 = lineOf(board, currentPosition, 0,  1);
+        var line1 = lineOf(calculate(currentPosition, 0, -1));
+        var line2 = lineOf(calculate(currentPosition, 0,  1));
 
         return List.of(line1, line2);
     }
