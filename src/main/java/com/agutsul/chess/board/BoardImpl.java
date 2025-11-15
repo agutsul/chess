@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -55,10 +56,13 @@ import com.agutsul.chess.piece.impl.BlackPieceFactory;
 import com.agutsul.chess.piece.impl.WhitePieceFactory;
 import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.position.Position;
+import com.agutsul.chess.position.PositionComparator;
 
 final class BoardImpl extends AbstractBoard implements Closeable {
 
     private static final Logger LOGGER = getLogger(BoardImpl.class);
+
+    private static final Comparator<Position> COMPARATOR = new PositionComparator();
 
     private final PieceFactory<?> whitePieceFactory;
     private final PieceFactory<?> blackPieceFactory;
@@ -227,6 +231,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         var pieces = Stream.of(pieceCache.getActive())
                 .flatMap(Collection::stream)
                 .filter(piece -> positions.contains(piece.getPosition()))
+                .sorted(comparing(Piece::getPosition, COMPARATOR))
                 .map(piece -> (Piece<Color>) piece)
                 .toList();
 

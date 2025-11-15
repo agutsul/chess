@@ -9,7 +9,6 @@ import static java.util.stream.Collectors.toList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.apache.commons.collections4.MultiValuedMap;
@@ -67,11 +66,7 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
                     .map(entry -> {
                         var line = entry.getKey();
 
-                        var linePieces = line.stream()
-                                .map(position -> board.getPiece(position))
-                                .flatMap(Optional::stream)
-                                .toList();
-
+                        var linePieces = board.getPieces(line);
                         if (linePieces.size() < 3) {
                             return null;
                         }

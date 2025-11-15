@@ -8,7 +8,6 @@ import static java.util.stream.Collectors.toList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Pinnable;
@@ -55,11 +54,7 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
 
         var impacts = impactLines.stream()
                 .map(line -> {
-                    var linePieces = line.stream()
-                            .map(position -> board.getPiece(position))
-                            .flatMap(Optional::stream)
-                            .toList();
-
+                    var linePieces = board.getPieces(line);
                     if (linePieces.size() < 3) {
                         return null;
                     }

@@ -60,11 +60,7 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
 
         var impacts = lines.stream()
                .map(line -> {
-                   var linePieces = line.stream()
-                           .map(position -> board.getPiece(position))
-                           .flatMap(Optional::stream)
-                           .toList();
-
+                   var linePieces = board.getPieces(line);
                    if (linePieces.size() < 3) {
                        return null;
                    }

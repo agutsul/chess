@@ -7,7 +7,6 @@ import static java.util.stream.Collectors.toList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.Impact;
@@ -57,11 +56,7 @@ final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
         var expectedPieces = List.of(piece, king);
         var impacts = lines.stream()
                 .map(line -> {
-                    var linePieces = line.stream()
-                            .map(position -> board.getPiece(position))
-                            .flatMap(Optional::stream)
-                            .toList();
-
+                    var linePieces = board.getPieces(line);
                     if (linePieces.size() < 3 || !linePieces.containsAll(expectedPieces)) {
                         return null;
                     }
