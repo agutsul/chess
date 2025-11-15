@@ -14,7 +14,6 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.Algo;
 
 abstract class AbstractPieceDiscoveredAttackImpactRule<COLOR1 extends Color,
                                                        COLOR2 extends Color,
@@ -24,11 +23,8 @@ abstract class AbstractPieceDiscoveredAttackImpactRule<COLOR1 extends Color,
                                                        IMPACT extends PieceDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>>
         extends AbstractDiscoveredAttackImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,IMPACT> {
 
-    private final Algo<PIECE,Collection<Line>> algo;
-
-    AbstractPieceDiscoveredAttackImpactRule(Board board, Algo<PIECE,Collection<Line>> algo) {
+    AbstractPieceDiscoveredAttackImpactRule(Board board) {
         super(board);
-        this.algo = algo;
     }
 
     @Override
@@ -43,12 +39,10 @@ abstract class AbstractPieceDiscoveredAttackImpactRule<COLOR1 extends Color,
             return emptyList();
         }
 
-        var lines = Stream.of(algo.calculate(piece))
+        var lines = Stream.of(board.getLines(piece.getPosition()))
                 .flatMap(Collection::stream)
                 // check if there is piece action position outside line
                 .filter(line  -> !line.containsAll(pieceActionPositions))
-                // check if piece inside line
-                .filter(line  -> line.contains(piece.getPosition()))
                 .collect(toList());
 
         return lines;

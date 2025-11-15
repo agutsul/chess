@@ -14,10 +14,7 @@ import com.agutsul.chess.activity.impact.PiecePartialPinImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.Algo;
-import com.agutsul.chess.piece.algo.CombinedLineAlgo;
 import com.agutsul.chess.rule.AbstractRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.Rule;
@@ -34,16 +31,12 @@ public final class PiecePinImpactRule<COLOR1 extends Color,
 
     private final Rule<Piece<?>,Collection<IMPACT>> rule;
 
-    public PiecePinImpactRule(Board board) {
-        this(board, new CombinedLineAlgo<>(board));
-    }
-
     @SuppressWarnings("unchecked")
-    private PiecePinImpactRule(Board board, Algo<PINNED,Collection<Line>> algo) {
+    public PiecePinImpactRule(Board board) {
         super(board, Impact.Type.PIN);
         this.rule = new CompositePieceRule<>(
-                new PieceAbsolutePinImpactRule<>(board, algo),
-                new PieceRelativePinImpactRule<>(board, algo)
+                new PieceAbsolutePinImpactRule<>(board),
+                new PieceRelativePinImpactRule<>(board)
         );
     }
 

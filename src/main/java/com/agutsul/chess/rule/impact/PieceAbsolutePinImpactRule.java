@@ -18,7 +18,6 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.Algo;
 
 final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
                                        COLOR2 extends Color,
@@ -28,8 +27,8 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
         extends AbstractPiecePinImpactRule<COLOR1,COLOR2,PINNED,KING,ATTACKER,
                                            PieceAbsolutePinImpact<COLOR1,COLOR2,PINNED,KING,ATTACKER>> {
 
-    PieceAbsolutePinImpactRule(Board board, Algo<PINNED,Collection<Line>> algo) {
-        super(board, algo);
+    PieceAbsolutePinImpactRule(Board board) {
+        super(board);
     }
 
     @Override

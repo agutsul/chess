@@ -17,7 +17,6 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.Algo;
 
 final class PieceAbsoluteDiscoveredAttackImpactRule<COLOR1 extends Color,
                                                     COLOR2 extends Color,
@@ -27,8 +26,8 @@ final class PieceAbsoluteDiscoveredAttackImpactRule<COLOR1 extends Color,
         extends AbstractPieceDiscoveredAttackImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,
                                                         PieceAbsoluteDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>> {
 
-    PieceAbsoluteDiscoveredAttackImpactRule(Board board, Algo<PIECE,Collection<Line>> algo) {
-        super(board, algo);
+    PieceAbsoluteDiscoveredAttackImpactRule(Board board) {
+        super(board);
     }
 
     @Override

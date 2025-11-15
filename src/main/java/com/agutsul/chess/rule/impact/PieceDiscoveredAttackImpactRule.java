@@ -7,10 +7,7 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceDiscoveredAttackImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.Algo;
-import com.agutsul.chess.piece.algo.CombinedLineAlgo;
 import com.agutsul.chess.rule.AbstractRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.Rule;
@@ -27,16 +24,12 @@ public final class PieceDiscoveredAttackImpactRule<COLOR1 extends Color,
 
     private final Rule<Piece<?>,Collection<IMPACT>> rule;
 
-    public PieceDiscoveredAttackImpactRule(Board board) {
-        this(board, new CombinedLineAlgo<>(board));
-    }
-
     @SuppressWarnings("unchecked")
-    private PieceDiscoveredAttackImpactRule(Board board, Algo<PIECE,Collection<Line>> algo) {
+    public PieceDiscoveredAttackImpactRule(Board board) {
         super(board, Impact.Type.ATTACK);
         this.rule = new CompositePieceRule<>(
-                new PieceAbsoluteDiscoveredAttackImpactRule<>(board, algo),
-                new PieceRelativeDiscoveredAttackImpactRule<>(board, algo)
+                new PieceAbsoluteDiscoveredAttackImpactRule<>(board),
+                new PieceRelativeDiscoveredAttackImpactRule<>(board)
         );
     }
 

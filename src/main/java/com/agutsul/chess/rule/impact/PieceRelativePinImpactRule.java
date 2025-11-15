@@ -22,7 +22,6 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.Algo;
 
 final class PieceRelativePinImpactRule<COLOR1 extends Color,
                                        COLOR2 extends Color,
@@ -32,8 +31,8 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
         extends AbstractPiecePinImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,
                                            PieceRelativePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>> {
 
-    PieceRelativePinImpactRule(Board board, Algo<PINNED,Collection<Line>> algo) {
-        super(board, algo);
+    PieceRelativePinImpactRule(Board board) {
+        super(board);
     }
 
     @Override
