@@ -3,6 +3,7 @@ package com.agutsul.chess.board;
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static com.agutsul.chess.line.Line.COMMA_SEPARATOR;
 import static java.lang.Thread.currentThread;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Comparator.comparing;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -28,6 +29,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Stream;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -227,6 +229,10 @@ final class BoardImpl extends AbstractBoard implements Closeable {
                 join(positions, COMMA_SEPARATOR)
         );
 
+        if (CollectionUtils.isEmpty(positions)) {
+            return emptyList();
+        }
+
         @SuppressWarnings("unchecked")
         var pieces = Stream.of(pieceCache.getActive())
                 .flatMap(Collection::stream)
@@ -270,10 +276,15 @@ final class BoardImpl extends AbstractBoard implements Closeable {
                 color, join(requestedPositions, COMMA_SEPARATOR)
         );
 
+        if (CollectionUtils.isEmpty(requestedPositions)) {
+            return emptyList();
+        }
+
         @SuppressWarnings("unchecked")
         Collection<Piece<COLOR>> pieces = Stream.of(pieceCache.getActive(color))
                 .flatMap(Collection::stream)
                 .filter(piece -> requestedPositions.contains(piece.getPosition()))
+                .sorted(comparing(Piece::getPosition, COMPARATOR))
                 .map(piece -> (Piece<COLOR>) piece)
                 .toList();
 

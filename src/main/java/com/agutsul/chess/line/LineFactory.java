@@ -4,14 +4,17 @@ import static com.agutsul.chess.line.Line.COMMA_SEPARATOR;
 import static com.agutsul.chess.position.Position.MAX;
 import static com.agutsul.chess.position.Position.MIN;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
+import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -22,6 +25,8 @@ import com.agutsul.chess.position.Position;
 public enum LineFactory {
     INSTANCE;
 
+    private static final Line EMPTY_LINE = new EmptyLine();
+
     private Map<String,Line> lines = Stream.of(lines(), diagonals())
             .flatMap(Collection::stream)
             .map(line -> Pair.of(createKey(line), line))
@@ -29,16 +34,20 @@ public enum LineFactory {
             .collect(toMap(Pair::getKey, Pair::getValue));
 
     public Line create(Collection<Position> positions) {
-        var line = lines.get(createKey(positions));
-        if (line != null) {
-            return line;
+        if (isEmpty(positions)) {
+            return EMPTY_LINE;
         }
 
-        return new LineImpl(positions);
+        var cachedLine = lines.get(createKey(positions));
+        return isEmpty(cachedLine)
+                ? new LineImpl(positions)
+                : cachedLine;
     }
 
     public Line create(Line line1, Line line2) {
-        return new CompositeLine(line1, line2);
+        return isEmpty(line1) && isEmpty(line2)
+            ? EMPTY_LINE
+            : new CompositeLine(line1, line2);
     }
 
     // creates composite line
@@ -55,8 +64,11 @@ public enum LineFactory {
 
     // returns full line for specified positions if there is any
     public static Optional<Line> lineOf(Position position1, Position position2) {
-        var positions = new HashSet<>(List.of(position1, position2));
-        if (positions.size() == 1) {
+        var positions = Stream.of(position1, position2)
+                .filter(Objects::nonNull)
+                .collect(toSet());
+
+        if (positions.size() <= 1) {
             // unable to select line to return ( horizontal or vertical or diagonal )
             return Optional.empty();
         }
@@ -69,6 +81,10 @@ public enum LineFactory {
 
     // returns all full lines containing provided position
     public static Collection<Line> linesOf(Position position) {
+        if (isNull(position)) {
+            return emptyList();
+        }
+
         return Stream.of(INSTANCE.lines.values())
                 .flatMap(Collection::stream)
                 .filter(line -> line.contains(position) && line.size() > 1)
@@ -140,5 +156,24 @@ public enum LineFactory {
                 .flatMap(Collection::stream)
                 .map(String::valueOf)
                 .collect(joining(COMMA_SEPARATOR));
+    }
+
+    private static final class EmptyLine extends AbstractLine {
+
+        private static final long serialVersionUID = 1L;
+
+        private EmptyLine() {
+            super(emptyList());
+        }
+
+        @Override
+        public boolean containsAny(Collection<Position> positions) {
+            return false;
+        }
+
+        @Override
+        public Collection<Position> intersection(Collection<Position> positions) {
+            return emptyList();
+        }
     }
 }

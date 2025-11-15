@@ -23,7 +23,6 @@ abstract class AbstractLine
         return join(this, COMMA_SEPARATOR);
     }
 
-
     @Override
     public int hashCode() {
         return range(0, size())
@@ -47,6 +46,7 @@ abstract class AbstractLine
             return false;
         }
 
-        return this.containsAll(other) && other.containsAll(this);
+        return containsAll(other)
+                && other.containsAll(this);
     }
 }

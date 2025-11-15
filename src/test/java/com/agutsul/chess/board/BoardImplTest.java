@@ -2,6 +2,7 @@ package com.agutsul.chess.board;
 
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -104,9 +106,25 @@ public class BoardImplTest {
     }
 
     @Test
+    void testGetLineByBothNullPositions() {
+        var position = (Position) null;
+        assertTrue(board.getLine(position, position).isEmpty());
+    }
+
+    @Test
+    void testGetLineByNullPositions() {
+        assertTrue(board.getLine((Position) null, positionOf("a1")).isEmpty());
+    }
+
+    @Test
     void testGetLines() {
         assertEquals(4, board.getLines(positionOf("d4")).size());
         assertEquals(3, board.getLines(positionOf("a1")).size());
+    }
+
+    @Test
+    void testGetLinesByNullPosition() {
+        assertTrue(board.getLines((Position) null).isEmpty());
     }
 
     @Test
@@ -127,6 +145,12 @@ public class BoardImplTest {
 
         var blackPawn = board.getPiece("a7").get();
         assertTrue(pieces.contains(blackPawn));
+    }
+
+    @Test
+    void testGetPieceByInvalidPositions() {
+        assertTrue(board.getPieces(emptyList()).isEmpty());
+        assertTrue(board.getPieces((List<Position>) null).isEmpty());
     }
 
     @Test

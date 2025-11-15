@@ -1,8 +1,11 @@
 package com.agutsul.chess.line;
 
 import static com.agutsul.chess.position.PositionFactory.positionOf;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -32,7 +35,7 @@ public class LineBuilderTest {
     @Test
     void testLineCreationWithPositions() {
         var builder = new LineBuilder();
-        builder.append(List.of(positionOf("b1"),positionOf("a2")));
+        builder.append(List.of(positionOf("b1"), positionOf("a2")));
 
         var line = builder.build();
 
@@ -47,7 +50,7 @@ public class LineBuilderTest {
     void testLineCreationWithCombo() {
         var builder = new LineBuilder();
         builder.append(positionOf("c1"));
-        builder.append(List.of(positionOf("b2"),positionOf("a3")));
+        builder.append(List.of(positionOf("b2"), positionOf("a3")));
 
         var line = builder.build();
 
@@ -63,7 +66,7 @@ public class LineBuilderTest {
     void testLineCreationWithComboAndSorting() {
         var builder = new LineBuilder();
         builder.append(positionOf("c1"));
-        builder.append(List.of(positionOf("b2"),positionOf("a3")));
+        builder.append(List.of(positionOf("b2"), positionOf("a3")));
 
         var line = builder.sort().build();
 
@@ -73,5 +76,21 @@ public class LineBuilderTest {
         assertEquals("a3", String.valueOf(line.getFirst()));
         assertEquals("b2", String.valueOf(line.get(1)));
         assertEquals("c1", String.valueOf(line.getLast()));
+    }
+
+    @Test
+    void testLineCreationWithEmptyPositions() {
+        var builder = new LineBuilder();
+        builder.append(emptyList());
+
+        var line = builder.build();
+
+        assertNotNull(line);
+        assertTrue(line.isEmpty());
+
+        var positions = List.of(positionOf("b2"), positionOf("a3"));
+
+        assertFalse(line.containsAny(positions));
+        assertTrue(line.intersection(positions).isEmpty());
     }
 }
