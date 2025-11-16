@@ -505,23 +505,27 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .collect(toList());
 
         assertFalse(relativeForkImpacts.isEmpty());
-
         assertEquals(1, relativeForkImpacts.size());
 
         var relativeForkImpact = relativeForkImpacts.getFirst();
 
-        var forkedImpacts = relativeForkImpact.getTarget();
+        var forkedImpacts = new ArrayList<>(relativeForkImpact.getTarget());
         assertEquals(whiteKing, relativeForkImpact.getSource());
         assertEquals(2, forkedImpacts.size());
 
-        var attackedPieceTypes = List.of(Piece.Type.BISHOP, Piece.Type.ROOK);
+        var blackRook = board.getPiece("e4").get();
+        var impact1 = forkedImpacts.getFirst();
+        assertEquals(blackRook, impact1.getTarget());
+        assertEquals(blackRook.getPosition(), impact1.getPosition());
+
+        var blackBishop = board.getPiece("d6").get();
+        var impact2 = forkedImpacts.getLast();
+        assertEquals(blackBishop, impact2.getTarget());
+        assertEquals(blackBishop.getPosition(), impact2.getPosition());
+
         forkedImpacts.forEach(impact -> {
             assertTrue(isAttack(impact));
-            assertEquals(whiteKing.getPosition(), impact.getPosition());
-
             assertTrue(isKing(impact.getSource()));
-            assertTrue(attackedPieceTypes.contains(impact.getTarget().getType()));
-
             assertTrue(impact.getLine().isEmpty());
         });
     }
@@ -542,13 +546,11 @@ public class KingPieceImplTest extends AbstractPieceTest {
         assertEquals(1, underminingImpacts.size());
 
         var underminingImpact = (PieceUnderminingImpact<?,?,?,?>) underminingImpacts.getFirst();
-
         assertEquals(whiteKing, underminingImpact.getAttacker());
+        assertTrue(underminingImpact.getLine().isEmpty());
 
         var blackKnight = board.getPiece("h7").get();
-
         assertEquals(blackKnight, underminingImpact.getAttacked());
-        assertEquals(whiteKing.getPosition(), underminingImpact.getPosition());
-        assertTrue(underminingImpact.getLine().isEmpty());
+        assertEquals(blackKnight.getPosition(), underminingImpact.getPosition());
     }
 }

@@ -1,14 +1,18 @@
 package com.agutsul.chess.piece.impl;
 
 import static com.agutsul.chess.piece.Piece.isBishop;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -182,7 +186,6 @@ public class BishopPieceImplTest extends AbstractPieceTest {
                 .collect(toList());
 
         assertFalse(absoluteForkImpacts.isEmpty());
-
         assertEquals(1, absoluteForkImpacts.size());
 
         var absoluteForkImpact = absoluteForkImpacts.getFirst();
@@ -191,15 +194,19 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         assertEquals(whiteBishop, absoluteForkImpact.getSource());
         assertEquals(2, forkedImpacts.size());
 
-        assertEquals(Piece.Type.KING,   forkedImpacts.getFirst().getTarget().getType());
-        assertEquals(Piece.Type.KNIGHT, forkedImpacts.getLast().getTarget().getType());
+        var blackKing = board.getPiece("h8").get();
+        var impact1 = forkedImpacts.getFirst();
+        assertEquals(blackKing, impact1.getTarget());
+        assertEquals(blackKing.getPosition(), impact1.getPosition());
+
+        var blackKnight = board.getPiece("b6").get();
+        var impact2 = forkedImpacts.getLast();
+        assertEquals(blackKnight, impact2.getTarget());
+        assertEquals(blackKnight.getPosition(), impact2.getPosition());
 
         var impactTypes = List.of(Impact.Type.ATTACK, Impact.Type.CHECK);
-
         forkedImpacts.forEach(impact -> {
             assertTrue(impactTypes.contains(impact.getType()));
-            assertEquals(whiteBishop.getPosition(), impact.getPosition());
-
             assertTrue(isBishop(impact.getSource()));
             assertTrue(!impact.getLine().isEmpty());
         });
@@ -402,14 +409,16 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         assertFalse(underminingImpacts.isEmpty());
         assertEquals(2, underminingImpacts.size());
 
-        var blackKnights = board.getPieces(Colors.BLACK, Piece.Type.KNIGHT);
+        var blackKnights = Stream.of(board.getPieces(Colors.BLACK, Piece.Type.KNIGHT))
+                .flatMap(Collection::stream)
+                .collect(toMap(Piece::getPosition, identity()));
+
         underminingImpacts.stream()
             .map(impact -> (PieceUnderminingImpact<?,?,?,?>) impact)
             .forEach(underminingImpact -> {
                 assertEquals(whiteBishop, underminingImpact.getAttacker());
-                assertTrue(blackKnights.contains(underminingImpact.getAttacked()));
-
-                assertEquals(whiteBishop.getPosition(), underminingImpact.getPosition());
+                assertTrue(blackKnights.values().contains(underminingImpact.getAttacked()));
+                assertTrue(blackKnights.keySet().contains(underminingImpact.getPosition()));
                 assertTrue(underminingImpact.getLine().isPresent());
             });
     }

@@ -472,17 +472,24 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
         var relativeForkImpact = relativeForkImpacts.getFirst();
 
-        var forkedImpacts = relativeForkImpact.getTarget();
+        var forkedImpacts = new ArrayList<>(relativeForkImpact.getTarget());
         assertEquals(blackPawn, relativeForkImpact.getSource());
         assertEquals(2, forkedImpacts.size());
 
+        var blackRook1 = board.getPiece("h3").get();
+        var impact1 = forkedImpacts.getFirst();
+        assertEquals(blackRook1, impact1.getTarget());
+        assertEquals(blackRook1.getPosition(), impact1.getPosition());
+
+        var blackRook2 = board.getPiece("f3").get();
+        var impact2 = forkedImpacts.getLast();
+        assertEquals(blackRook2, impact2.getTarget());
+        assertEquals(blackRook2.getPosition(), impact2.getPosition());
+
         forkedImpacts.forEach(impact -> {
             assertTrue(isAttack(impact));
-            assertEquals(blackPawn.getPosition(), impact.getPosition());
-
             assertTrue(isPawn(impact.getSource()));
             assertTrue(isRook(impact.getTarget()));
-
             assertTrue(impact.getLine().isEmpty());
         });
     }
@@ -521,12 +528,17 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertEquals(whitePawn, relativeForkImpact.getSource());
         assertEquals(2, forkedImpacts.size());
 
-        assertEquals(Piece.Type.KNIGHT, forkedImpacts.getFirst().getTarget().getType());
-        assertEquals(Piece.Type.PAWN, forkedImpacts.getLast().getTarget().getType());
+        var blackKnight = board.getPiece("f6").get();
+        var impact1 = forkedImpacts.getFirst();
+        assertEquals(blackKnight, impact1.getTarget());
+        assertEquals(blackKnight.getPosition(), impact1.getPosition());
+
+        var impact2 = forkedImpacts.getLast();
+        assertEquals(blackPawn, impact2.getTarget());
+        assertEquals(blackPawn.getPosition(), impact2.getPosition());
 
         forkedImpacts.forEach(impact -> {
             assertTrue(isAttack(impact));
-            assertEquals(whitePawn.getPosition(), impact.getPosition());
             assertTrue(isPawn(impact.getSource()));
             assertTrue(impact.getLine().isEmpty());
         });
@@ -633,7 +645,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         var blackPawn = board.getPiece("b5").get();
 
         assertEquals(blackPawn, underminingImpact.getAttacked());
-        assertEquals(whitePawn1.getPosition(), underminingImpact.getPosition());
+        assertEquals(blackPawn.getPosition(), underminingImpact.getPosition());
         assertTrue(underminingImpact.getLine().isEmpty());
 
         var whitePawn2 = board.getPiece("b3").get();

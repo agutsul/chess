@@ -48,6 +48,6 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
 
     @Override
     public final Position getPosition() {
-        return getSource().getPosition();
+        return getTarget().getPosition();
     }
 }

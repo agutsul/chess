@@ -271,16 +271,21 @@ public class RookPieceImplTest extends AbstractPieceTest {
         assertEquals(blackRook, absoluteForkImpact.getSource());
         assertEquals(2, forkedImpacts.size());
 
-        assertEquals(Piece.Type.KING,   forkedImpacts.getFirst().getTarget().getType());
-        assertEquals(Piece.Type.KNIGHT, forkedImpacts.getLast().getTarget().getType());
+        var whiteKing = board.getPiece("f6").get();
+        var impact1 = forkedImpacts.getFirst();
+        assertEquals(whiteKing, impact1.getTarget());
+        assertEquals(whiteKing.getPosition(), impact1.getPosition());
+
+        var whiteKnight = board.getPiece("b6").get();
+        var impact2 = forkedImpacts.getLast();
+        assertEquals(whiteKnight, impact2.getTarget());
+        assertEquals(whiteKnight.getPosition(), impact2.getPosition());
 
         var impactTypes = List.of(Impact.Type.ATTACK, Impact.Type.CHECK);
-
         forkedImpacts.forEach(impact -> {
             assertTrue(impactTypes.contains(impact.getType()));
-            assertEquals(blackRook.getPosition(), impact.getPosition());
             assertTrue(isRook(impact.getSource()));
-            assertTrue(!impact.getLine().isEmpty());
+            assertFalse(impact.getLine().isEmpty());
         });
     }
 

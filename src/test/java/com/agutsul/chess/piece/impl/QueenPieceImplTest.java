@@ -194,14 +194,20 @@ public class QueenPieceImplTest extends AbstractPieceTest {
         assertEquals(whiteQueen, relativeForkImpact.getSource());
         assertEquals(3, forkedImpacts.size());
 
-        assertEquals(Piece.Type.KNIGHT, forkedImpacts.getFirst().getTarget().getType());
-        assertEquals(Piece.Type.PAWN, forkedImpacts.getLast().getTarget().getType());
+        var blackKnight = board.getPiece("b6").get();
+        var impact1 = forkedImpacts.getFirst();
+        assertEquals(blackKnight, impact1.getTarget());
+        assertEquals(blackKnight.getPosition(), impact1.getPosition());
+
+        var blackPawn = board.getPiece("g7").get();
+        var impact2 = forkedImpacts.getLast();
+        assertEquals(blackPawn, impact2.getTarget());
+        assertEquals(blackPawn.getPosition(), impact2.getPosition());
 
         forkedImpacts.forEach(impact -> {
             assertTrue(isAttack(impact));
-            assertEquals(whiteQueen.getPosition(), impact.getPosition());
             assertTrue(isQueen(impact.getSource()));
-            assertTrue(!impact.getLine().isEmpty());
+            assertFalse(impact.getLine().isEmpty());
         });
     }
 
@@ -232,8 +238,8 @@ public class QueenPieceImplTest extends AbstractPieceTest {
 
         var blackQueen = board.getPiece("f8").get();
         assertEquals(blackQueen, underminingImpact.getAttacked());
+        assertEquals(blackQueen.getPosition(), underminingImpact.getPosition());
 
-        assertEquals(whiteQueen.getPosition(), underminingImpact.getPosition());
         assertTrue(underminingImpact.getLine().isPresent());
     }
 
