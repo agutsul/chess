@@ -1,6 +1,5 @@
 package com.agutsul.chess.piece.pawn;
 
-import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
@@ -9,6 +8,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculated;
+import com.agutsul.chess.activity.impact.PieceAttackImpact;
 import com.agutsul.chess.activity.impact.PieceDeflectionImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -43,11 +43,9 @@ public final class PawnDeflectionImpactRule<COLOR1 extends Color,
         var enPassantImpacts = Stream.of(enPassantAlgo.calculateData(piece))
                 .map(Map::entrySet)
                 .flatMap(Collection::stream)
-                .map(Map.Entry::getValue)
-                .filter(attackedPiece -> !Objects.equals(attackedPiece.getColor(), piece.getColor()))
-                .map(attackedPiece -> super.createImpacts(
-                        createAttackImpact(piece, (ATTACKED) attackedPiece)
-                ))
+                .filter(entry -> !Objects.equals(entry.getValue().getColor(), piece.getColor()))
+                .map(entry  -> new PieceAttackImpact<>(piece, (ATTACKED) entry.getValue(), entry.getKey()))
+                .map(impact -> super.createImpacts(impact))
                 .map(impact -> (PieceDeflectionImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>) impact)
                 .collect(toList());
 

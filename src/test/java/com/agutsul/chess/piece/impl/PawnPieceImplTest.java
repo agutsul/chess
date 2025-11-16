@@ -535,7 +535,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
         var impact2 = forkedImpacts.getLast();
         assertEquals(blackPawn, impact2.getTarget());
-        assertEquals(blackPawn.getPosition(), impact2.getPosition());
+        assertEquals(positionOf("d6"), impact2.getPosition());
 
         forkedImpacts.forEach(impact -> {
             assertTrue(isAttack(impact));

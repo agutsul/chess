@@ -1,8 +1,8 @@
 package com.agutsul.chess.activity.impact;
 
+import com.agutsul.chess.Calculated;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
 
 public class PieceAttackImpact<COLOR1 extends Color,
@@ -19,12 +19,12 @@ public class PieceAttackImpact<COLOR1 extends Color,
         super(Impact.Type.ATTACK, attacker, piece, hidden);
     }
 
-    public PieceAttackImpact(ATTACKER attacker, ATTACKED piece, Line line) {
-        this(attacker, piece, line, false);
+    public PieceAttackImpact(ATTACKER attacker, ATTACKED piece, Calculated calculated) {
+        this(attacker, piece, calculated, false);
     }
 
-    public PieceAttackImpact(ATTACKER attacker, ATTACKED piece, Line line, boolean hidden) {
-        super(Impact.Type.ATTACK, attacker, piece, line, hidden);
+    public PieceAttackImpact(ATTACKER attacker, ATTACKED piece, Calculated calculated, boolean hidden) {
+        super(Impact.Type.ATTACK, attacker, piece, calculated, hidden);
     }
 
     @Override

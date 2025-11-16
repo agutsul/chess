@@ -46,8 +46,7 @@ final class PawnForkImpactRule<COLOR1 extends Color,
         var enPassantAttackImpacts = Stream.of(enPassantAlgo.calculateData(pawn))
                 .map(Map::entrySet)
                 .flatMap(Collection::stream)
-                .map(Map.Entry::getValue)
-                .map(opponentPawn -> new PieceAttackImpact<>(pawn, (ATTACKED) opponentPawn))
+                .map(entry  -> new PieceAttackImpact<>(pawn, (ATTACKED) entry.getValue(), entry.getKey()))
                 .map(impact -> (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) impact)
                 .collect(toList());
 

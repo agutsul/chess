@@ -2,6 +2,7 @@ package com.agutsul.chess.activity.impact;
 
 import java.util.Optional;
 
+import com.agutsul.chess.Calculated;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
@@ -16,7 +17,7 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
         extends AbstractTargetActivity<Impact.Type,ATTACKER,ATTACKED>
         implements Impact<ATTACKER> {
 
-    private Line line;
+    private Calculated calculated;
     private boolean hidden;
 
     AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece) {
@@ -28,18 +29,21 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
         this.hidden = hidden;
     }
 
-    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece, Line line) {
+    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece, Calculated calculated) {
         this(impactType, attacker, piece);
-        this.line = line;
+        this.calculated = calculated;
     }
 
-    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece, Line line, boolean hidden) {
-        this(impactType, attacker, piece, line);
+    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece, Calculated calculated, boolean hidden) {
+        this(impactType, attacker, piece, calculated);
         this.hidden = hidden;
     }
 
     public final Optional<Line> getLine() {
-        return Optional.ofNullable(this.line);
+        return Optional.ofNullable(this.calculated != null && this.calculated instanceof Line
+                ? (Line) this.calculated
+                : null
+        );
     }
 
     public final boolean isHidden() {
@@ -48,6 +52,8 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
 
     @Override
     public final Position getPosition() {
-        return getTarget().getPosition();
+        return this.calculated != null && this.calculated instanceof Position
+                ? (Position) this.calculated
+                : getTarget().getPosition();
     }
 }
