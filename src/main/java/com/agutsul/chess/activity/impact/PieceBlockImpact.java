@@ -8,7 +8,7 @@ import com.agutsul.chess.piece.Piece;
 
 public interface PieceBlockImpact<COLOR1 extends Color,
                                   COLOR2 extends Color,
-                                  BLOCKER  extends Piece<COLOR1>& Movable,
+                                  BLOCKER  extends Piece<COLOR1> & Movable,
                                   ATTACKED extends Piece<COLOR1>,
                                   ATTACKER extends Piece<COLOR2> & Capturable>
         extends Impact<BLOCKER> {
