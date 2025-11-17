@@ -27,13 +27,13 @@ public class TransformablePieceAdapterTest {
     }
 
     @Test
-    void testIsStagnant() {
+    void testIsBlocked() {
         var pawn = mock(PawnPiece.class);
 
         var adapter = new TransformablePieceAdapter<>(pawn);
-        adapter.isStagnant();
+        adapter.isBlocked();
 
-        verify(pawn, times(1)).isStagnant();
+        verify(pawn, times(1)).isBlocked();
     }
 
     @Test

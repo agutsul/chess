@@ -1,6 +1,6 @@
 package com.agutsul.chess.piece;
 
-import com.agutsul.chess.Stagnatable;
+import com.agutsul.chess.Blockadable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Disposable;
 import com.agutsul.chess.EnPassantable;
@@ -15,7 +15,7 @@ public interface PawnPiece<COLOR extends Color>
         extends Piece<COLOR>, Movable, Capturable,
                 Promotable, Protectable, EnPassantable,
                 Disposable, Restorable, Pinnable,
-                Stagnatable {
+                Blockadable {
 
     int BIG_STEP_MOVE = 2;
 }

@@ -10,7 +10,7 @@ public interface Impact<SOURCE>
         CONTROL,
         PROTECT,
         MONITOR,
-        STAGNANT,
+        BLOCKADE,
         PIN,
         CHECK,
         ATTACK,
@@ -52,12 +52,12 @@ public interface Impact<SOURCE>
         return Impact.Type.MONITOR.equals(impactType);
     }
 
-    static boolean isStagnant(Impact<?> impact) {
-        return isStagnant(impact.getType());
+    static boolean isBlockade(Impact<?> impact) {
+        return isBlockade(impact.getType());
     }
 
-    static boolean isStagnant(Impact.Type impactType) {
-        return Impact.Type.STAGNANT.equals(impactType);
+    static boolean isBlockade(Impact.Type impactType) {
+        return Impact.Type.BLOCKADE.equals(impactType);
     }
 
     static boolean isPin(Impact<?> impact) {

@@ -445,9 +445,9 @@ abstract class AbstractPieceFactory<COLOR extends Color>
             }
 
             @Override
-            public boolean isStagnant() {
+            public boolean isBlocked() {
                 logger.info("Check if piece '{}' is blocked", this);
-                return this.origin.isStagnant();
+                return this.origin.isBlocked();
             }
         }
     }
