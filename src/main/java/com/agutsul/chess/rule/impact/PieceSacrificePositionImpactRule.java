@@ -22,7 +22,7 @@ public class PieceSacrificePositionImpactRule<COLOR1 extends Color,
         extends AbstractSacrificeImpactRule<COLOR1,COLOR2,SACRIFICED,ATTACKER,ATTACKED,
                                             PieceSacrificeImpact<COLOR1,COLOR2,SACRIFICED,ATTACKER>> {
 
-    protected Algo<SACRIFICED,Collection<Position>> algo;
+    private Algo<SACRIFICED,Collection<Position>> algo;
 
     public PieceSacrificePositionImpactRule(Board board,
                                             Algo<SACRIFICED,Collection<Position>> algo) {
