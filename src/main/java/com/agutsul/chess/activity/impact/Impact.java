@@ -22,7 +22,8 @@ public interface Impact<SOURCE>
         DEFLECTION,
         OVERLOADING,
         BATTERY,
-        OUTPOST
+        OUTPOST,
+        SACRIFICE
     }
 
     // utilities
@@ -145,5 +146,13 @@ public interface Impact<SOURCE>
 
     static boolean isOutpost(Impact.Type impactType) {
         return Impact.Type.OUTPOST.equals(impactType);
+    }
+
+    static boolean isSacrifice(Impact<?> impact) {
+        return isSacrifice(impact.getType());
+    }
+
+    static boolean isSacrifice(Impact.Type impactType) {
+        return Impact.Type.SACRIFICE.equals(impactType);
     }
 }

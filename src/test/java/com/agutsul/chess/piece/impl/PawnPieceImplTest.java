@@ -35,6 +35,7 @@ import com.agutsul.chess.activity.impact.PieceOverloadingImpact;
 import com.agutsul.chess.activity.impact.PiecePartialPinImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeForkImpact;
+import com.agutsul.chess.activity.impact.PieceSacrificeAttackImpact;
 import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.LabeledBoardBuilder;
@@ -690,6 +691,66 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertTrue(overloadedPositions.containsAll(expectedPositions));
     }
 
+    @Test
+    void testPawnOutpostImpactByBigMove() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("g6")
+                .withBlackRooks("b5","e6")
+                .withBlackKnight("e8")
+                .withBlackPawns("a6","b4","c5","e5","f6","g5","h6")
+                .withWhiteKing("d2")
+                .withWhiteRooks("a7","d8")
+                .withWhiteKnight("e3")
+                .withWhitePawns("a5","b3","c2","f3","g2","h3")
+                .build();
+
+        var whitePawn = board.getPiece("c2").get();
+        var outpostImpacts = new ArrayList<>(
+                board.getImpacts(whitePawn, Impact.Type.OUTPOST)
+        );
+
+        assertFalse(outpostImpacts.isEmpty());
+        assertEquals(1, outpostImpacts.size());
+
+        var outpostImpact = outpostImpacts.getFirst();
+        assertEquals(board.getPosition("c4").get(), outpostImpact.getPosition());
+    }
+
+    @Test
+    void testPawnSacrificeImpactByEnpassante() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhitePawn("f5")
+                .withBlackKing("d6")
+                .withBlackPawn("e7")
+                .build();
+
+        var blackPawn = (PawnPiece<Color>) board.getPiece("e7").get();
+        blackPawn.move(board.getPosition("e5").get());
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+
+        var whitePawn = board.getPiece("f5").get();
+        var blackKing = board.getPiece("d6").get();
+
+        var sacrificeImpacts = new ArrayList<>(
+                board.getImpacts(whitePawn, Impact.Type.SACRIFICE)
+        );
+
+        assertFalse(sacrificeImpacts.isEmpty());
+        assertEquals(1, sacrificeImpacts.size());
+
+        var sacrificeImpact = sacrificeImpacts.getFirst();
+        assertTrue(sacrificeImpact instanceof PieceSacrificeAttackImpact);
+
+        var sacrificeAttackImpact = (PieceSacrificeAttackImpact<?,?,?,?,?>) sacrificeImpact;
+
+        assertEquals(board.getPosition("e6").get(), sacrificeAttackImpact.getPosition());
+        assertEquals(blackPawn, sacrificeAttackImpact.getSource().getTarget());
+        assertEquals(blackKing, sacrificeAttackImpact.getAttacker());
+        assertEquals(whitePawn, sacrificeAttackImpact.getSacrificed());
+    }
+
     static void assertPawnEnPassantActions(Board board, Color color, Piece.Type type,
                                            String sourcePosition, List<String> expectedMovePositions,
                                            List<String> expectedEnPassantPositions) {
@@ -728,31 +789,6 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
             assertTrue(enPassantPositions.containsAll(expectedEnPassantPositions));
         }
-    }
-
-    @Test
-    void testPawnOutpostImpactByBigMove() {
-        var board = new LabeledBoardBuilder()
-                .withBlackKing("g6")
-                .withBlackRooks("b5","e6")
-                .withBlackKnight("e8")
-                .withBlackPawns("a6","b4","c5","e5","f6","g5","h6")
-                .withWhiteKing("d2")
-                .withWhiteRooks("a7","d8")
-                .withWhiteKnight("e3")
-                .withWhitePawns("a5","b3","c2","f3","g2","h3")
-                .build();
-
-        var whitePawn = board.getPiece("c2").get();
-        var outpostImpacts = new ArrayList<>(
-                board.getImpacts(whitePawn, Impact.Type.OUTPOST)
-        );
-
-        assertFalse(outpostImpacts.isEmpty());
-        assertEquals(1, outpostImpacts.size());
-
-        var outpostImpact = outpostImpacts.getFirst();
-        assertEquals(board.getPosition("c4").get(), outpostImpact.getPosition());
     }
 
     static void assertPawnPromotionActions(Board board, Color color, Piece.Type type,

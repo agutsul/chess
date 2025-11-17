@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,8 @@ import com.agutsul.chess.activity.impact.PieceDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeSkewerImpact;
+import com.agutsul.chess.activity.impact.PieceSacrificeAttackImpact;
+import com.agutsul.chess.activity.impact.PieceSacrificeMoveImpact;
 import com.agutsul.chess.activity.impact.PieceSkewerImpact;
 import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
@@ -566,5 +569,70 @@ public class BishopPieceImplTest extends AbstractPieceTest {
 
         var outpostImpact = outpostImpacts.getFirst();
         assertEquals(board.getPosition("c4").get(), outpostImpact.getPosition());
+    }
+
+    @Test
+    // https://www.chess.com/forum/view/chess-openings/bishop-knight-sacrifice-gambits
+    void testBishopSacrificeImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e8")
+                .withBlackQueen("d8")
+                .withBlackRooks("a8","h8")
+                .withBlackBishops("c8","f8")
+                .withBlackKnights("c6","e4")
+                .withBlackPawns("a7","b7","c7","d7","e5","f7","g7","h7")
+                .withWhiteKing("e1")
+                .withWhiteQueen("d1")
+                .withWhiteRooks("a1","h1")
+                .withWhiteBishops("c1","c4")
+                .withWhiteKnights("c3","f3")
+                .withWhitePawns("a2","b2","c2","d2","f2","g2","h2")
+                .build();
+
+        var whiteBishop = board.getPiece("c4").get();
+        var sacrificeImpacts = board.getImpacts(whiteBishop, Impact.Type.SACRIFICE);
+
+        assertFalse(sacrificeImpacts.isEmpty());
+        assertEquals(4, sacrificeImpacts.size());
+
+        var blackPawn1 = board.getPiece("d7").get();
+        var blackPawn2 = board.getPiece("f7").get();
+        var blackPawn3 = board.getPiece("b7").get();
+
+        var blackPawns = List.of(blackPawn1, blackPawn2, blackPawn3);
+        var emptyPositions = Stream.of("e6","a6")
+                .map(position -> board.getPosition(position))
+                .flatMap(Optional::stream)
+                .toList();
+
+        var sacrificeMoveImpacts = sacrificeImpacts.stream()
+                .filter(impact -> impact instanceof PieceSacrificeMoveImpact)
+                .map(impact -> (PieceSacrificeMoveImpact<?,?,?,?>) impact)
+                .toList();
+
+        assertEquals(3, sacrificeMoveImpacts.size());
+
+        sacrificeMoveImpacts.stream().forEach(impact -> {
+            assertEquals(whiteBishop, impact.getSacrificed());
+            assertTrue(blackPawns.contains(impact.getAttacker()));
+            assertTrue(emptyPositions.contains(impact.getPosition()));
+            assertTrue(emptyPositions.contains(impact.getSource().getTarget()));
+        });
+
+        var blackKing = board.getPiece("e8").get();
+
+        var sacrificeAttackImpacts = sacrificeImpacts.stream()
+                .filter(impact -> impact instanceof PieceSacrificeAttackImpact)
+                .map(impact -> (PieceSacrificeAttackImpact<?,?,?,?,?>) impact)
+                .toList();
+
+        assertEquals(1, sacrificeAttackImpacts.size());
+
+        var impact = sacrificeAttackImpacts.getFirst();
+
+        assertEquals(whiteBishop, impact.getSacrificed());
+        assertEquals(blackKing, impact.getAttacker());
+        assertEquals(blackPawn2.getPosition(), impact.getPosition());
+        assertEquals(blackPawn2, impact.getSource().getTarget());
     }
 }
