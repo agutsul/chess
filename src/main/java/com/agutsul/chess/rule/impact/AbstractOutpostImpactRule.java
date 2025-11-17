@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.impact.Impact;
@@ -43,9 +43,9 @@ abstract class AbstractOutpostImpactRule<COLOR extends Color,
         return createImpacts(piece, next);
     }
 
-    protected abstract Collection<Calculated> calculate(PIECE piece);
+    protected abstract Collection<Calculatable> calculate(PIECE piece);
 
-    protected Collection<IMPACT> createImpacts(PIECE piece, Collection<Calculated> next) {
+    protected Collection<IMPACT> createImpacts(PIECE piece, Collection<Calculatable> next) {
 
         var opponentPawns = Stream.of(board.getPieces(piece.getColor().invert(), Piece.Type.PAWN))
                 .flatMap(Collection::stream)

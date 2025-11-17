@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.PieceMonitorImpact;
 import com.agutsul.chess.board.Board;
@@ -33,10 +33,10 @@ public final class PieceMonitorLineImpactRule<COLOR extends Color,
     }
 
     @Override
-    protected Collection<Calculated> calculate(PIECE piece) {
+    protected Collection<Calculatable> calculate(PIECE piece) {
         var lines = algo.calculate(piece);
 
-        var monitorLines = new ArrayList<Calculated>();
+        var monitorLines = new ArrayList<Calculatable>();
         for (var line : lines) {
             var monitoredPositions = new ArrayList<Position>();
 
@@ -70,7 +70,7 @@ public final class PieceMonitorLineImpactRule<COLOR extends Color,
 
     @Override
     protected Collection<PieceMonitorImpact<COLOR,PIECE>>
-            createImpacts(PIECE piece, Collection<Calculated> lines) {
+            createImpacts(PIECE piece, Collection<Calculatable> lines) {
 
         var impacts = Stream.of(lines)
                 .flatMap(Collection::stream)

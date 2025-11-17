@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.activity.impact.AbstractPieceAttackImpact;
 import com.agutsul.chess.activity.impact.PieceAttackImpact;
 import com.agutsul.chess.board.Board;
@@ -34,7 +34,7 @@ final class PawnForkImpactRule<COLOR1 extends Color,
 
     @Override
     protected Collection<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
-            createAttackImpacts(ATTACKER pawn, Collection<Calculated> next) {
+            createAttackImpacts(ATTACKER pawn, Collection<Calculatable> next) {
 
         var impacts = new ArrayList<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>();
 

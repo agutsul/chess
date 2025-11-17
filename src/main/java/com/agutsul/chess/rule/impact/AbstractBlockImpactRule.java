@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.action.Action;
@@ -49,10 +49,10 @@ abstract class AbstractBlockImpactRule<COLOR1 extends Color,
         return createImpacts(piece, nextPositions);
     }
 
-    protected abstract Collection<Calculated> calculate(BLOCKER piece);
+    protected abstract Collection<Calculatable> calculate(BLOCKER piece);
 
     @SuppressWarnings("unchecked")
-    protected Collection<IMPACT> createImpacts(BLOCKER piece, Collection<Calculated> next) {
+    protected Collection<IMPACT> createImpacts(BLOCKER piece, Collection<Calculatable> next) {
         var piecePositions = Stream.of(next)
                 .flatMap(Collection::stream)
                 .map(calculated -> (Position) calculated)

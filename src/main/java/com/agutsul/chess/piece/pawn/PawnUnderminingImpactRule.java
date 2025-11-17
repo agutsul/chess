@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -34,7 +34,7 @@ final class PawnUnderminingImpactRule<COLOR1 extends Color,
 
     @Override
     protected Collection<PieceUnderminingImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
-            createImpacts(ATTACKER pawn, Collection<Calculated> next) {
+            createImpacts(ATTACKER pawn, Collection<Calculatable> next) {
 
         var impacts = new ArrayList<PieceUnderminingImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>();
         impacts.addAll(super.createImpacts(pawn, next));

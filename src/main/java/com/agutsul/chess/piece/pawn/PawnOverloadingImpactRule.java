@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
@@ -26,7 +26,7 @@ final class PawnOverloadingImpactRule<COLOR extends Color,
     }
 
     @Override
-    protected Collection<Calculated> calculate(PAWN piece) {
+    protected Collection<Calculatable> calculate(PAWN piece) {
         var enPassantOpponentPawn = Stream.of(enPassantAlgo.calculateData(piece))
                 .map(Map::entrySet)
                 .flatMap(Collection::stream)
@@ -37,7 +37,7 @@ final class PawnOverloadingImpactRule<COLOR extends Color,
             return super.calculate(piece);
         }
 
-        var positions = new ArrayList<Calculated>(super.calculate(piece));
+        var positions = new ArrayList<Calculatable>(super.calculate(piece));
         positions.add(enPassantOpponentPawn.get().getPosition());
 
         return positions;

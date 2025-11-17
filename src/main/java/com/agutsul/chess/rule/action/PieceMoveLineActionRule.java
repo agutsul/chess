@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
@@ -30,13 +30,13 @@ public class PieceMoveLineActionRule<COLOR extends Color,
     }
 
     @Override
-    protected Collection<Calculated> calculate(PIECE piece) {
+    protected Collection<Calculatable> calculate(PIECE piece) {
         return List.copyOf(algo.calculate(piece));
     }
 
     @Override
     protected Collection<PieceMoveAction<COLOR,PIECE>>
-            createActions(PIECE piece, Collection<Calculated> lines) {
+            createActions(PIECE piece, Collection<Calculatable> lines) {
 
         var actions = Stream.of(lines)
                 .flatMap(Collection::stream)

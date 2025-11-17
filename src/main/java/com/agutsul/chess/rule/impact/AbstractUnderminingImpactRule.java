@@ -5,7 +5,7 @@ import static java.util.Collections.emptyList;
 
 import java.util.Collection;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
@@ -37,9 +37,9 @@ abstract class AbstractUnderminingImpactRule<COLOR1 extends Color,
         return createImpacts(piece, next);
     }
 
-    protected abstract Collection<Calculated> calculate(ATTACKER piece);
+    protected abstract Collection<Calculatable> calculate(ATTACKER piece);
 
-    protected abstract Collection<IMPACT> createImpacts(ATTACKER piece, Collection<Calculated> next);
+    protected abstract Collection<IMPACT> createImpacts(ATTACKER piece, Collection<Calculatable> next);
 
     protected boolean isPieceAttackable(Piece<Color> piece) {
         if (isKing(piece)) {

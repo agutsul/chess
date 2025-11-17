@@ -4,7 +4,7 @@ import static java.util.List.copyOf;
 
 import java.util.Collection;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.impact.PieceSacrificeImpact;
@@ -35,7 +35,7 @@ public class PieceSacrificePositionImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    protected Collection<Calculated> calculate(SACRIFICED piece) {
+    protected Collection<Calculatable> calculate(SACRIFICED piece) {
         return copyOf(algo.calculate(piece));
     }
 }

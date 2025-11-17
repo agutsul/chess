@@ -4,7 +4,7 @@ import static java.util.Collections.emptyList;
 
 import java.util.Collection;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
@@ -33,8 +33,8 @@ abstract class AbstractMoveActionRule<COLOR extends Color,
         return createActions(piece, next);
     }
 
-    protected abstract Collection<Calculated> calculate(PIECE piece);
+    protected abstract Collection<Calculatable> calculate(PIECE piece);
 
     protected abstract Collection<ACTION> createActions(PIECE piece,
-                                                        Collection<Calculated> next);
+                                                        Collection<Calculatable> next);
 }

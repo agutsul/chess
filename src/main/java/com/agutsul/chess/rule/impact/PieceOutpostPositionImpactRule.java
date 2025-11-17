@@ -3,7 +3,7 @@ package com.agutsul.chess.rule.impact;
 import java.util.Collection;
 import java.util.List;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.impact.PieceOutpostImpact;
@@ -27,7 +27,7 @@ public class PieceOutpostPositionImpactRule<COLOR extends Color,
     }
 
     @Override
-    protected Collection<Calculated> calculate(PIECE piece) {
+    protected Collection<Calculatable> calculate(PIECE piece) {
         return List.copyOf(algo.calculate(piece));
     }
 }

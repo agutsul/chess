@@ -4,7 +4,7 @@ import static java.util.Collections.emptyList;
 
 import java.util.Collection;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceMonitorImpact;
@@ -33,9 +33,9 @@ abstract class AbstractMonitorImpactRule<COLOR extends Color,
         return createImpacts(piece, next);
     }
 
-    protected abstract Collection<Calculated> calculate(PIECE piece);
+    protected abstract Collection<Calculatable> calculate(PIECE piece);
 
     protected abstract Collection<IMPACT> createImpacts(PIECE piece,
-                                                        Collection<Calculated> next);
+                                                        Collection<Calculatable> next);
 
 }

@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.AbstractPieceAttackImpact;
 import com.agutsul.chess.activity.impact.Impact;
@@ -60,10 +60,10 @@ abstract class AbstractForkImpactRule<COLOR1 extends Color,
         return createForkImpacts(piece, sortedImpacts);
     }
 
-    protected abstract Collection<Calculated> calculate(ATTACKER piece);
+    protected abstract Collection<Calculatable> calculate(ATTACKER piece);
 
     protected abstract Collection<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
-            createAttackImpacts(ATTACKER piece, Collection<Calculated> next);
+            createAttackImpacts(ATTACKER piece, Collection<Calculatable> next);
 
     @SuppressWarnings("unchecked")
     private Collection<IMPACT> createForkImpacts(ATTACKER piece,

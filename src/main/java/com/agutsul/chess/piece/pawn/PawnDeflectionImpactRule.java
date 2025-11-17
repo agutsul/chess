@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.activity.impact.PieceAttackImpact;
 import com.agutsul.chess.activity.impact.PieceDeflectionImpact;
 import com.agutsul.chess.board.Board;
@@ -36,7 +36,7 @@ public final class PawnDeflectionImpactRule<COLOR1 extends Color,
     @Override
     @SuppressWarnings("unchecked")
     protected Collection<PieceDeflectionImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>
-            createImpacts(ATTACKER piece, Collection<Calculated> next) {
+            createImpacts(ATTACKER piece, Collection<Calculatable> next) {
 
         var captureImpacts = super.createImpacts(piece, next);
 

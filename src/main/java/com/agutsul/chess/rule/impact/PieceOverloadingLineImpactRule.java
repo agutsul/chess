@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.board.Board;
@@ -29,8 +29,8 @@ public final class PieceOverloadingLineImpactRule<COLOR extends Color,
     }
 
     @Override
-    protected Collection<Calculated> calculate(PIECE piece) {
-        Collection<Calculated> protectedPositions = Stream.of(algo.calculate(piece))
+    protected Collection<Calculatable> calculate(PIECE piece) {
+        Collection<Calculatable> protectedPositions = Stream.of(algo.calculate(piece))
                 .flatMap(Collection::stream) // unwrap calculated lines
                 .flatMap(Collection::stream) // unwrap line positions
                 .collect(toList());

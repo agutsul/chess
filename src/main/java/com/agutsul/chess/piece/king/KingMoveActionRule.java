@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
@@ -27,7 +27,7 @@ final class KingMoveActionRule<COLOR extends Color,
 
     @Override
     protected Collection<PieceMoveAction<COLOR,KING>>
-            createActions(KING king, Collection<Calculated> next) {
+            createActions(KING king, Collection<Calculatable> next) {
 
         var attackerColor = king.getColor().invert();
         var actions = Stream.of(next)

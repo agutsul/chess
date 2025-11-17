@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
@@ -36,8 +36,8 @@ public class PieceMovePositionActionRule<COLOR extends Color,
     }
 
     @Override
-    protected Collection<Calculated> calculate(PIECE piece) {
-        Collection<Calculated> positions = Stream.of(algo.calculate(piece))
+    protected Collection<Calculatable> calculate(PIECE piece) {
+        Collection<Calculatable> positions = Stream.of(algo.calculate(piece))
                 .flatMap(Collection::stream)
                 .filter(position -> board.isEmpty(position))
                 .collect(toList());
@@ -47,7 +47,7 @@ public class PieceMovePositionActionRule<COLOR extends Color,
 
     @Override
     protected Collection<PieceMoveAction<COLOR,PIECE>>
-            createActions(PIECE piece, Collection<Calculated> next) {
+            createActions(PIECE piece, Collection<Calculatable> next) {
 
         var actions = Stream.of(next)
                 .flatMap(Collection::stream)

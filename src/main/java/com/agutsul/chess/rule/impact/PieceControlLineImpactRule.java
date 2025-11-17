@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.impact.PieceControlImpact;
@@ -32,8 +32,8 @@ public final class PieceControlLineImpactRule<COLOR extends Color,
     }
 
     @Override
-    protected Collection<Calculated> calculate(PIECE piece) {
-        Collection<Calculated> positions = Stream.of(algo.calculate(piece))
+    protected Collection<Calculatable> calculate(PIECE piece) {
+        Collection<Calculatable> positions = Stream.of(algo.calculate(piece))
                 .flatMap(Collection::stream) // unwrap calculated lines
                 .flatMap(Collection::stream) // unwrap line positions
                 .collect(toList());
@@ -43,7 +43,7 @@ public final class PieceControlLineImpactRule<COLOR extends Color,
 
     @Override
     protected Collection<PieceControlImpact<COLOR,PIECE>>
-            createImpacts(PIECE piece, Collection<Calculated> next) {
+            createImpacts(PIECE piece, Collection<Calculatable> next) {
 
         var impacts = Stream.of(next)
                 .flatMap(Collection::stream)

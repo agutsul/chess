@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.impact.Impact;
@@ -52,9 +52,9 @@ abstract class AbstractSacrificeImpactRule<COLOR1 extends Color,
         return createImpacts(piece, next);
     }
 
-    protected abstract Collection<Calculated> calculate(SACRIFICED piece);
+    protected abstract Collection<Calculatable> calculate(SACRIFICED piece);
 
-    protected Collection<IMPACT> createImpacts(SACRIFICED piece, Collection<Calculated> next) {
+    protected Collection<IMPACT> createImpacts(SACRIFICED piece, Collection<Calculatable> next) {
 
        var opponentControls = getPieceControls(piece.getColor().invert());
 

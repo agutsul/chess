@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.AbstractPieceAttackImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
@@ -37,13 +37,13 @@ public final class PieceForkLineImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    protected Collection<Calculated> calculate(ATTACKER piece) {
+    protected Collection<Calculatable> calculate(ATTACKER piece) {
         return List.copyOf(algo.calculate(piece));
     }
 
     @Override
     protected Collection<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
-            createAttackImpacts(ATTACKER piece, Collection<Calculated> next) {
+            createAttackImpacts(ATTACKER piece, Collection<Calculatable> next) {
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(next)

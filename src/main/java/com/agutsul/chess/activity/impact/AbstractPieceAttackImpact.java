@@ -2,7 +2,7 @@ package com.agutsul.chess.activity.impact;
 
 import java.util.Optional;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
@@ -17,7 +17,7 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
         extends AbstractTargetActivity<Impact.Type,ATTACKER,ATTACKED>
         implements Impact<ATTACKER> {
 
-    private Calculated calculated;
+    private Calculatable calculated;
     private boolean hidden;
 
     AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece) {
@@ -29,12 +29,12 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
         this.hidden = hidden;
     }
 
-    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece, Calculated calculated) {
+    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece, Calculatable calculated) {
         this(impactType, attacker, piece);
         this.calculated = calculated;
     }
 
-    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece, Calculated calculated, boolean hidden) {
+    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece, Calculatable calculated, boolean hidden) {
         this(impactType, attacker, piece, calculated);
         this.hidden = hidden;
     }

@@ -4,7 +4,7 @@ import static java.util.Collections.emptyList;
 
 import java.util.Collection;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceBigMoveAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
@@ -29,7 +29,7 @@ final class PawnBigMoveActionRule<COLOR extends Color,
     }
 
     @Override
-    protected Collection<Calculated> calculate(PAWN pawn) {
+    protected Collection<Calculatable> calculate(PAWN pawn) {
         if (pawn.isMoved()) {
             return emptyList();
         }

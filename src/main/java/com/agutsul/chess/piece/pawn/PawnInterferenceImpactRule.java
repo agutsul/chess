@@ -3,7 +3,7 @@ package com.agutsul.chess.piece.pawn;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -31,8 +31,8 @@ final class PawnInterferenceImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    protected Collection<Calculated> calculate(PAWN piece) {
-        var positions = new ArrayList<Calculated>();
+    protected Collection<Calculatable> calculate(PAWN piece) {
+        var positions = new ArrayList<Calculatable>();
         positions.addAll(super.calculate(piece));
         positions.addAll(bigMoveAlgo.calculate(piece));
         return positions;

@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.board.Board;
@@ -33,13 +33,13 @@ public class PieceCapturePositionActionRule<COLOR1 extends Color,
     }
 
     @Override
-    protected Collection<Calculated> calculate(PIECE1 piece) {
+    protected Collection<Calculatable> calculate(PIECE1 piece) {
         return List.copyOf(algo.calculate(piece));
     }
 
     @Override
     protected Collection<PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>>
-            createActions(PIECE1 piece1, Collection<Calculated> next) {
+            createActions(PIECE1 piece1, Collection<Calculatable> next) {
 
         var actions = Stream.of(next)
                 .flatMap(Collection::stream)

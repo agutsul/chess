@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.impact.AbstractPieceAttackImpact;
 import com.agutsul.chess.activity.impact.PieceAttackImpact;
@@ -33,7 +33,7 @@ final class KingForkImpactRule<COLOR1 extends Color,
 
     @Override
     protected Collection<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
-            createAttackImpacts(ATTACKER piece, Collection<Calculated> next) {
+            createAttackImpacts(ATTACKER piece, Collection<Calculatable> next) {
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(next)

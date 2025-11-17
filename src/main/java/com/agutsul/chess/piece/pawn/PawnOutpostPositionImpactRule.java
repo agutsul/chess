@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
@@ -34,8 +34,8 @@ final class PawnOutpostPositionImpactRule<COLOR extends Color,
     }
 
     @Override
-    protected Collection<Calculated> calculate(PAWN piece) {
-        var positions = new ArrayList<Calculated>();
+    protected Collection<Calculatable> calculate(PAWN piece) {
+        var positions = new ArrayList<Calculatable>();
 
         positions.addAll(Stream.of(super.calculate(piece))
                 .flatMap(Collection::stream)

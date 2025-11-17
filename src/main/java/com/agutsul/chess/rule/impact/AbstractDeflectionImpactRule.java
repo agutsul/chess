@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.AbstractPieceAttackImpact;
 import com.agutsul.chess.activity.impact.Impact;
@@ -47,9 +47,9 @@ abstract class AbstractDeflectionImpactRule<COLOR1 extends Color,
         return createImpacts(piece, next);
     }
 
-    protected abstract Collection<Calculated> calculate(ATTACKER piece);
+    protected abstract Collection<Calculatable> calculate(ATTACKER piece);
 
-    protected abstract Collection<IMPACT> createImpacts(ATTACKER piece, Collection<Calculated> next);
+    protected abstract Collection<IMPACT> createImpacts(ATTACKER piece, Collection<Calculatable> next);
 
     protected Collection<IMPACT> createImpacts(AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> attackImpact) {
 

@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.PieceUnderminingAttackImpact;
 import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
@@ -36,13 +36,13 @@ public final class PieceUnderminingLineImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    protected Collection<Calculated> calculate(ATTACKER piece) {
+    protected Collection<Calculatable> calculate(ATTACKER piece) {
         return List.copyOf(algo.calculate(piece));
     }
 
     @Override
     protected Collection<PieceUnderminingImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
-            createImpacts(ATTACKER piece, Collection<Calculated> next) {
+            createImpacts(ATTACKER piece, Collection<Calculatable> next) {
 
         @SuppressWarnings("unchecked")
         Collection<PieceUnderminingImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>> impacts = Stream.of(next)

@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculated;
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.board.Board;
@@ -32,13 +32,13 @@ public final class PieceProtectPositionImpactRule<COLOR extends Color,
     }
 
     @Override
-    protected Collection<Calculated> calculate(PIECE1 piece) {
+    protected Collection<Calculatable> calculate(PIECE1 piece) {
         return List.copyOf(algo.calculate(piece));
     }
 
     @Override
     protected Collection<PieceProtectImpact<COLOR,PIECE1,PIECE2>>
-            createImpacts(PIECE1 piece, Collection<Calculated> next) {
+            createImpacts(PIECE1 piece, Collection<Calculatable> next) {
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(next)
