@@ -20,18 +20,18 @@ public final class SecureLineAlgoAdapter<COLOR extends Color,
         implements CapturePieceAlgo<COLOR,PIECE,Line> {
 
     public enum Mode implements BiPredicate<Piece<?>,Piece<?>> {
-        OPPOSITE_COLORS((piece1,piece2) -> !Objects.equals(piece1.getColor(), piece2.getColor())),
-        SAME_COLORS((piece1,piece2) -> Objects.equals(piece1.getColor(), piece2.getColor()));
+        OPPOSITE_COLORS((color1,color2) -> !Objects.equals(color1, color2)),
+        SAME_COLORS((color1,color2)     ->  Objects.equals(color1, color2));
 
-        private BiPredicate<Piece<?>,Piece<?>> predicate;
+        private BiPredicate<Color,Color> predicate;
 
-        Mode(BiPredicate<Piece<?>,Piece<?>> predicate) {
+        Mode(BiPredicate<Color,Color> predicate) {
             this.predicate = predicate;
         }
 
         @Override
         public boolean test(Piece<?> piece1, Piece<?> piece2) {
-            return predicate.test(piece1, piece2);
+            return predicate.test(piece1.getColor(), piece2.getColor());
         }
     }
 
