@@ -2,7 +2,6 @@ package com.agutsul.chess.piece.pawn;
 
 import static java.util.stream.Collectors.toList;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -54,15 +53,16 @@ final class PawnSacrificeImpactRule<COLOR1 extends Color,
     public Collection<PieceSacrificeImpact<COLOR1,COLOR2,SACRIFICED,ATTACKER>>
             evaluate(SACRIFICED pawn) {
 
-        var sacrificedImpacts = new ArrayList<PieceSacrificeImpact<COLOR1,COLOR2,SACRIFICED,ATTACKER>>();
-
         var opponentControls = getPieceControls(pawn.getColor().invert());
+        var impacts = Stream.of(
+                        createSacrificeMoveImpacts(pawn, opponentControls),
+                        createSacrificeAttackImpacts(pawn, opponentControls),
+                        createSacrificeEnPassantImpacts(pawn, opponentControls)
+                )
+                .flatMap(Collection::stream)
+                .collect(toList());
 
-        sacrificedImpacts.addAll(createSacrificeMoveImpacts(pawn, opponentControls));
-        sacrificedImpacts.addAll(createSacrificeAttackImpacts(pawn, opponentControls));
-        sacrificedImpacts.addAll(createSacrificeEnPassantImpacts(pawn, opponentControls));
-
-        return sacrificedImpacts;
+        return impacts;
     }
 
     private Collection<PieceSacrificeImpact<COLOR1,COLOR2,SACRIFICED,ATTACKER>>
