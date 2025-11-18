@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Placeable;
 import com.agutsul.chess.Positionable;
 import com.agutsul.chess.Rankable;
 import com.agutsul.chess.Valuable;
@@ -18,7 +19,7 @@ import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
 public interface Piece<COLOR extends Color>
-        extends Positionable, Valuable<Integer> {
+        extends Positionable, Placeable, Valuable<Integer> {
 
     enum Type implements Rankable {
         PAWN("",    1),
