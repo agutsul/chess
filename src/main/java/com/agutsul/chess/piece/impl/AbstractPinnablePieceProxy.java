@@ -1,10 +1,10 @@
 package com.agutsul.chess.piece.impl;
 
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -44,51 +44,37 @@ abstract class AbstractPinnablePieceProxy<COLOR extends Color,
     public final Collection<Action<?>> getActions() {
         logger.info("Get actions for piece '{}'", this);
 
-        var actions = super.getActions();
+        var allActions = super.getActions();
         if (!isPinned()) {
-            return actions;
+            return allActions;
         }
 
-        logger.info("Filter pinned actions for piece '{}'", this);
+        logger.info("Filter line actions for pinned piece '{}'", this);
         // filter actions for pinned piece
-        var pinImpacts = super.getImpacts(Impact.Type.PIN);
-        if (pinImpacts.isEmpty()) {
-            return actions;
-        }
-
-        var optionalPinImpact = pinImpacts.stream()
-                .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
-                .filter(impact -> impact.isMode(PiecePinImpact.Mode.ABSOLUTE))
-                .findFirst();
-
-        if (optionalPinImpact.isEmpty()) {
-            return actions;
-        }
-
-        logger.info("Filter pinned line actions for piece '{}'", this);
-
-        // return actions the on pinned line
-        var allowedActions = Stream.of(optionalPinImpact)
-                .flatMap(Optional::stream)
+        var lineActions = Stream.of(pinImpacts(PiecePinImpact.Mode.ABSOLUTE))
+                .flatMap(Collection::stream)
                 .map(PiecePinImpact::getLine)
-                .flatMap(line -> actions.stream().filter(action -> line.contains(action.getPosition())))
-                .toList();
+                .flatMap(line -> allActions.stream()
+                        .filter(action -> line.contains(action.getPosition()))
+                )
+                .collect(toSet());
 
-        if (!allowedActions.isEmpty()) {
-            return allowedActions;
+        if (!lineActions.isEmpty()) {
+            return lineActions;
         }
 
-        logger.info("Filter pinned check actions for piece '{}'", this);
+        logger.info("Filter check piece capture actions for pinned piece '{}'", this);
 
         var optionalKing = board.getKing(getColor().invert());
         if (optionalKing.isEmpty()) {
-            return actions;
+            return allActions;
         }
 
         var king = optionalKing.get();
 
         // return actions to capture king's attacker
-        Collection<Action<?>> checkActions = actions.stream()
+        Collection<Action<?>> checkActions = Stream.of(allActions)
+                .flatMap(Collection::stream)
                 .filter(Action::isCapture)
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), king))
@@ -101,13 +87,21 @@ abstract class AbstractPinnablePieceProxy<COLOR extends Color,
     public final boolean isPinned() {
         logger.info("Checking if piece '{}' is pinned", this);
 
-        var impacts = super.getImpacts(Impact.Type.PIN);
-        var isPinned = impacts.stream()
-                .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
-                .filter(impact -> impact.isMode(PiecePinImpact.Mode.ABSOLUTE))
+        var isPinned = Stream.of(pinImpacts(PiecePinImpact.Mode.ABSOLUTE))
+                .flatMap(Collection::stream)
                 .map(Impact::getSource)
                 .anyMatch(piece -> Objects.equals(piece, this));
 
         return isPinned;
+    }
+
+    private Collection<PiecePinImpact<?,?,?,?,?>> pinImpacts(PiecePinImpact.Mode mode) {
+        Collection<PiecePinImpact<?,?,?,?,?>> impacts = Stream.of(super.getImpacts(Impact.Type.PIN))
+                .flatMap(Collection::stream)
+                .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
+                .filter(impact -> impact.isMode(mode))
+                .collect(toList());
+
+        return impacts;
     }
 }
