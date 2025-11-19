@@ -277,6 +277,13 @@ abstract class AbstractPiece<COLOR extends Color>
         return isProtected;
     }
 
+    public boolean isPinned() {
+        LOGGER.info("Checking if piece '{}' is pinned", this);
+
+        var impacts = getImpacts(Impact.Type.PIN);
+        return !impacts.isEmpty();
+    }
+
     public void dispose(Instant instant) {
         LOGGER.info("Disposing '{}' at '{}'", this, instant);
 

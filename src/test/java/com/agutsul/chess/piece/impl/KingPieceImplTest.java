@@ -446,6 +446,19 @@ public class KingPieceImplTest extends AbstractPieceTest {
     }
 
     @Test
+    void testProhibitedIsPinned() {
+        var kingPiece = new KingPieceImpl<Color>(mock(AbstractBoard.class),
+                Colors.WHITE, "", mock(Position.class), 1);
+
+        var thrown = assertThrows(
+                UnsupportedOperationException.class,
+                () -> kingPiece.isPinned()
+        );
+
+        assertEquals("Unable to pin KING piece", thrown.getMessage());
+    }
+
+    @Test
     void testProhibitedDispose() {
         var kingPiece = new KingPieceImpl<Color>(mock(AbstractBoard.class),
                 Colors.WHITE, "", mock(Position.class), 1);

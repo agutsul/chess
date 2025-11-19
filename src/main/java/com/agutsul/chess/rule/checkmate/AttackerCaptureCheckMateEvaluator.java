@@ -9,9 +9,9 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
 import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
@@ -36,10 +36,7 @@ final class AttackerCaptureCheckMateEvaluator
                 .anyMatch(checkMaker -> Stream.of(board.getAttackers(checkMaker))
                         .flatMap(Collection::stream)
                         .filter(not(Piece::isKing))
-                        .filter(attacker -> {
-                            var impacts = board.getImpacts(attacker, Impact.Type.PIN);
-                            return impacts.isEmpty();
-                        })
+                        .filter(attacker -> !((Pinnable) attacker).isPinned())
                         .map(attacker -> board.getActions(attacker, Action.Type.CAPTURE))
                         .flatMap(Collection::stream)
                         .map(action -> (AbstractCaptureAction<?,?,?,?>) action)

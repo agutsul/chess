@@ -1,17 +1,22 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.activity.action.Action.isCapture;
+import static com.agutsul.chess.activity.action.Action.isMove;
 import static java.time.Instant.now;
+import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
+import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.event.ResetPawnMoveActionEvent;
@@ -53,6 +58,24 @@ final class PawnPieceImpl<COLOR extends Color>
         super(board, Piece.Type.PAWN, color, unicode, position, direction,
                 (AbstractPieceState<? extends Piece<COLOR>>) state
         );
+    }
+
+    @Override
+    public Collection<Action<?>> getActions(Action.Type actionType) {
+        if (isMove(actionType) || isCapture(actionType)) {
+            var promoteActions = super.getActions(Action.Type.PROMOTE);
+            if (!promoteActions.isEmpty()) {
+                return Stream.of(promoteActions)
+                        .flatMap(Collection::stream)
+                        .map(action -> (PiecePromoteAction<?,?>) action)
+                        .map(PiecePromoteAction::getSource)
+                        .map(action -> (Action<?>) action)
+                        .filter(action -> Objects.equals(actionType, action.getType()))
+                        .collect(toList());
+            }
+        }
+
+        return super.getActions(actionType);
     }
 
     @Override

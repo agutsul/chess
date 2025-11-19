@@ -36,6 +36,7 @@ final class KingPieceImpl<COLOR extends Color>
 
     private static final String DISPOSE_ERROR_MESSAGE = "Unable to dispose KING piece";
     private static final String RESTORE_ERROR_MESSAGE = "Unable to restore KING piece";
+    private static final String PIN_ERROR_MESSAGE = "Unable to pin KING piece";
 
     private final CheckedPieceState<? extends KingPiece<?>> checkedPieceState;
     private final CheckMatedPieceState<? extends KingPiece<?>> checkMatedPieceState;
@@ -82,6 +83,11 @@ final class KingPieceImpl<COLOR extends Color>
     }
 
     // prevent prohibited operations
+
+    @Override
+    public boolean isPinned() {
+        throw new UnsupportedOperationException(PIN_ERROR_MESSAGE);
+    }
 
     @Override
     public void dispose(Instant instant) {
