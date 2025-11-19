@@ -20,14 +20,18 @@ final class KingCaptureActionRule<COLOR1 extends Color,
 
     KingCaptureActionRule(Board board,
                           CapturePieceAlgo<COLOR1,KING,Position> algo) {
+
         super(board, algo);
     }
 
     @Override
     protected Optional<PIECE> getCapturePiece(KING attacker, Position position) {
+        var attackerColor = attacker.getColor().invert();
+
         var attackedPiece = Stream.of(super.getCapturePiece(attacker, position))
                 .flatMap(Optional::stream)
                 .filter(piece -> !((Protectable) piece).isProtected())
+                .filter(piece -> !board.isMonitored(piece.getPosition(), attackerColor))
                 .findFirst();
 
         return attackedPiece;

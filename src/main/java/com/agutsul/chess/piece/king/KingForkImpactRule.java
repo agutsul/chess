@@ -35,6 +35,8 @@ final class KingForkImpactRule<COLOR1 extends Color,
     protected Collection<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
             createAttackImpacts(ATTACKER piece, Collection<Calculatable> next) {
 
+        var attackerColor = piece.getColor().invert();
+
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(next)
                 .flatMap(Collection::stream)
@@ -43,6 +45,7 @@ final class KingForkImpactRule<COLOR1 extends Color,
                 .filter(attackedPiece -> !Objects.equals(attackedPiece.getColor(), piece.getColor()))
                 .filter(not(Piece::isKing))
                 .filter(attackedPiece -> !((Protectable) attackedPiece).isProtected())
+                .filter(attackedPiece -> !board.isMonitored(attackedPiece.getPosition(), attackerColor))
                 .map(attackedPiece -> new PieceAttackImpact<>(piece, attackedPiece))
                 .map(impact -> (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) impact)
                 .collect(toList());

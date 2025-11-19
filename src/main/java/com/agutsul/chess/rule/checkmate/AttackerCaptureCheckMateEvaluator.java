@@ -1,6 +1,7 @@
 package com.agutsul.chess.rule.checkmate;
 
 import static java.util.function.Predicate.not;
+import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
@@ -31,19 +32,19 @@ final class AttackerCaptureCheckMateEvaluator
     public Boolean evaluate(KingPiece<?> king) {
         LOGGER.info("Evaluate attacker capture by any piece except king '{}'", king);
 
-        var isCapturable = Stream.of(board.getAttackers(king))
+        var actions = Stream.of(board.getAttackers(king))
                 .flatMap(Collection::stream)
-                .anyMatch(checkMaker -> Stream.of(board.getAttackers(checkMaker))
+                .flatMap(checkMaker -> Stream.of(board.getAttackers(checkMaker))
                         .flatMap(Collection::stream)
                         .filter(not(Piece::isKing))
                         .filter(attacker -> !((Pinnable) attacker).isPinned())
                         .map(attacker -> board.getActions(attacker, Action.Type.CAPTURE))
                         .flatMap(Collection::stream)
                         .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                        .map(AbstractCaptureAction::getTarget)
-                        .anyMatch(targetPiece -> Objects.equals(targetPiece, checkMaker))
-                );
+                        .filter(action -> Objects.equals(action.getTarget(), checkMaker))
+                )
+                .collect(toList());
 
-        return isCapturable;
+        return !actions.isEmpty();
     }
 }

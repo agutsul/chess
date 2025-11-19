@@ -583,6 +583,21 @@ public class CheckMatedBoardStateEvaluatorTest {
         assertCheckMate(board, Colors.BLACK);
     }
 
+    @Test
+    void testQueenRookComboMate() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("h5")
+                .withBlackPawns("h3","f7")
+                .withWhiteKing("g1")
+                .withWhiteQueen("g8")
+                .withWhiteRook("h4")
+                .withWhiteKnight("f5")
+                .withWhitePawns("b3","f2","g5","h2")
+                .build();
+
+        assertCheckMate(board, Colors.BLACK);
+    }
+
     private static void assertCheckMate(Board board, Color color) {
         var checkMateEvaluator = new CheckMatedBoardStateEvaluator(board);
         var boardState = checkMateEvaluator.evaluate(color);
