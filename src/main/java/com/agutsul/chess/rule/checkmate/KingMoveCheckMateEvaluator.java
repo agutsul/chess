@@ -2,6 +2,9 @@ package com.agutsul.chess.rule.checkmate;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.util.Collection;
+import java.util.stream.Stream;
+
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
@@ -25,13 +28,13 @@ final class KingMoveCheckMateEvaluator
 
         var attackerColor = king.getColor().invert();
 
-        var moveActions = board.getActions(king, Action.Type.MOVE);
-        var position = moveActions.stream()
+        var availablePosition = Stream.of(board.getActions(king, Action.Type.MOVE))
+                .flatMap(Collection::stream)
                 .map(Action::getPosition)
                 .filter(targetPosition -> !board.isAttacked(targetPosition,  attackerColor))
                 .filter(targetPosition -> !board.isMonitored(targetPosition, attackerColor))
                 .findFirst();
 
-        return position.isPresent();
+        return availablePosition.isPresent();
     }
 }

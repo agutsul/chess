@@ -7,6 +7,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -15,7 +16,6 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 
@@ -32,7 +32,8 @@ final class AttackerPinCheckMateEvaluator
 
     @Override
     public Boolean evaluate(KingPiece<?> king) {
-        LOGGER.info("Evaluate attacker block for king '{}'", king);
+        LOGGER.info("Evaluate attacker line block for king '{}'", king);
+
         // get all piece moves of the same color as king except the king itself
         var pieceMovePositions = board.getPieces(king.getColor()).stream()
                 .filter(not(Piece::isKing))
@@ -45,21 +46,16 @@ final class AttackerPinCheckMateEvaluator
                 .map(PieceMoveAction::getPosition)
                 .collect(toSet());
 
-        if (pieceMovePositions.isEmpty()) {
-            return false;
-        }
-
-        var attackers = board.getAttackers(king);
-        var isPinnable = attackers.stream()
-                .map(piece -> board.getActions(piece, Action.Type.CAPTURE))
+        var isPinnable = Stream.of(board.getAttackers(king))
+                .flatMap(Collection::stream)
+                .map(checkMaker -> board.getActions(checkMaker, Action.Type.CAPTURE))
                 .flatMap(Collection::stream)
                 .filter(Action::isCapture)
                 .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), king))
                 .map(PieceCaptureAction::getLine)
                 .flatMap(Optional::stream)
-                .flatMap(Line::stream)
-                .anyMatch(position -> pieceMovePositions.contains(position));
+                .anyMatch(line -> line.containsAny(pieceMovePositions));
 
         return isPinnable;
     }

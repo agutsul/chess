@@ -542,6 +542,47 @@ public class CheckMatedBoardStateEvaluatorTest {
         assertCheckMate(board, Colors.BLACK);
     }
 
+    @Test
+    // https://www.chessgames.com/perl/chesscollection?cid=1039049
+    void testDoubleCheckMate1() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("h8")
+                .withBlackQueen("c8")
+                .withBlackRooks("a8","f8")
+                .withBlackBishop("e7")
+                .withBlackKnight("e4")
+                .withBlackPawns("a7","b6","e6","h7")
+                .withWhiteKing("c1")
+                .withWhiteQueen("h5")
+                .withWhiteRook("g1")
+                .withWhiteBishop("d4")
+                .withWhiteKnight("f7")
+                .withWhitePawns("a2","b2","c2","f2","h2")
+                .build();
+
+        assertCheckMate(board, Colors.BLACK);
+    }
+
+    @Test
+    void testDoubleCheckMate2() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("a6")
+                .withBlackQueen("d8")
+                .withBlackRooks("a8","h8")
+                .withBlackKnights("c6","g8")
+                .withBlackBishop("c8")
+                .withBlackPawns("a5","b7","d7","e5","g5","h5")
+                .withWhiteKing("e1")
+                .withWhiteQueen("d6")
+                .withWhiteRooks("a1","h1")
+                .withWhiteBishops("c4","e3")
+                .withWhiteKnights("c7","g1")
+                .withWhitePawns("a3","c2","d3","f2","f5","g2","h2")
+                .build();
+
+        assertCheckMate(board, Colors.BLACK);
+    }
+
     private static void assertCheckMate(Board board, Color color) {
         var checkMateEvaluator = new CheckMatedBoardStateEvaluator(board);
         var boardState = checkMateEvaluator.evaluate(color);

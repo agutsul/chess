@@ -19,23 +19,26 @@ public final class CompositeCheckMateEvaluator
     private static final Logger LOGGER = getLogger(CompositeCheckMateEvaluator.class);
 
     private final Board board;
-    private final List<CheckMateEvaluator> evaluators;
+
+    private final CheckMateEvaluator kingMoveEvaluator;         // escape from check
+    private final CheckMateEvaluator kingCaptureEvaluator;      // attack any piece to escape
+    private final CheckMateEvaluator attackerCaptureEvaluator;  // attack checkmaker by any non-king piece
+    private final CheckMateEvaluator attackerPinEvaluator;      // pin attack line
 
     public CompositeCheckMateEvaluator(Board board) {
         this.board = board;
-        this.evaluators = List.of(
-                new KingMoveCheckMateEvaluator(board),
-                new KingCaptureCheckMateEvaluator(board),
-                new AttackerCaptureCheckMateEvaluator(board),
-                new AttackerPinCheckMateEvaluator(board)
-            );
+
+        this.kingMoveEvaluator = new KingMoveCheckMateEvaluator(board);
+        this.kingCaptureEvaluator = new KingCaptureCheckMateEvaluator(board);
+        this.attackerCaptureEvaluator = new AttackerCaptureCheckMateEvaluator(board);
+        this.attackerPinEvaluator = new AttackerPinCheckMateEvaluator(board);
     }
 
     @Override
     public Boolean evaluate(KingPiece<?> king) {
         var results = new ArrayList<Boolean>();
 
-        var tasks = createEvaluationTasks(this.evaluators, king);
+        var tasks = createEvaluationTasks(king);
         try {
             var executor = board.getExecutorService();
             for (var future : executor.invokeAll(tasks)) {
@@ -47,14 +50,19 @@ public final class CompositeCheckMateEvaluator
             LOGGER.error("Checkmate evaluation failed", e);
         }
 
-        var isCheckMated = results.size() == this.evaluators.size() && !results.contains(true);
+        var isCheckMated = results.size() == tasks.size() && !results.contains(true);
         LOGGER.info("Checkmate evaluation is done: checkMated='{}'", isCheckMated);
 
         return isCheckMated;
     }
 
-    private static List<Callable<Boolean>> createEvaluationTasks(List<CheckMateEvaluator> evaluators,
-                                                                 KingPiece<?> king) {
+    private List<Callable<Boolean>> createEvaluationTasks(KingPiece<?> king) {
+        var checkMakers = board.getAttackers(king);
+
+        var evaluators = checkMakers.size() == 1
+                ? List.of(kingMoveEvaluator, kingCaptureEvaluator, attackerCaptureEvaluator, attackerPinEvaluator)
+                : List.of(kingMoveEvaluator, kingCaptureEvaluator);
+
         var tasks = new ArrayList<Callable<Boolean>>();
         for (var evaluator : evaluators) {
             tasks.add(new CheckMateEvaluationTask(evaluator, king));
