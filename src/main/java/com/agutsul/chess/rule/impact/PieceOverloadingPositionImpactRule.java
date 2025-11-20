@@ -1,7 +1,8 @@
 package com.agutsul.chess.rule.impact;
 
+import static java.util.List.copyOf;
+
 import java.util.Collection;
-import java.util.List;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
@@ -26,6 +27,6 @@ public class PieceOverloadingPositionImpactRule<COLOR extends Color,
 
     @Override
     protected Collection<Calculatable> calculate(PIECE piece) {
-        return List.copyOf(algo.calculate(piece));
+        return copyOf(algo.calculate(piece));
     }
 }

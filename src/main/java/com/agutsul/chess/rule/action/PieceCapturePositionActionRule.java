@@ -1,9 +1,9 @@
 package com.agutsul.chess.rule.action;
 
+import static java.util.List.copyOf;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -34,7 +34,7 @@ public class PieceCapturePositionActionRule<COLOR1 extends Color,
 
     @Override
     protected Collection<Calculatable> calculate(PIECE1 piece) {
-        return List.copyOf(algo.calculate(piece));
+        return copyOf(algo.calculate(piece));
     }
 
     @Override
