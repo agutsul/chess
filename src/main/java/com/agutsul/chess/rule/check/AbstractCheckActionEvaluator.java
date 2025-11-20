@@ -9,14 +9,14 @@ import org.slf4j.Logger;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.piece.KingPiece;
 
-abstract class AbtractCheckActionEvaluator
+abstract class AbstractCheckActionEvaluator
         implements CheckActionEvaluator {
 
-    private static final Logger LOGGER = getLogger(AbtractCheckActionEvaluator.class);
+    private static final Logger LOGGER = getLogger(AbstractCheckActionEvaluator.class);
 
     private final CheckActionEvaluator evaluator;
 
-    AbtractCheckActionEvaluator(CheckActionEvaluator evaluator) {
+    AbstractCheckActionEvaluator(CheckActionEvaluator evaluator) {
         this.evaluator = evaluator;
     }
 

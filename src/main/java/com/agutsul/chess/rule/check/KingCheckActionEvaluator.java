@@ -7,7 +7,7 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
 
 public final class KingCheckActionEvaluator
-        extends AbtractCheckActionEvaluator {
+        extends AbstractCheckActionEvaluator {
 
     public KingCheckActionEvaluator(Board board, Collection<Action<?>> actions) {
         super(new CompositeCheckActionEvaluator(board, List.of(
