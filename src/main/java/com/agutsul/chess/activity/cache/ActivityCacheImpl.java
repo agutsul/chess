@@ -1,6 +1,10 @@
 package com.agutsul.chess.activity.cache;
 
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
+
 import java.util.Collection;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.activity.Activity;
@@ -19,6 +23,7 @@ public class ActivityCacheImpl<TYPE extends Enum<TYPE> & Activity.Type,
     public void putAll(Collection<ACTIVITY> activities) {
         Stream.ofNullable(activities)
             .flatMap(Collection::stream)
+            .filter(Objects::nonNull)
             .forEach(activity -> put(activity.getType(), activity));
     }
 
@@ -34,14 +39,16 @@ public class ActivityCacheImpl<TYPE extends Enum<TYPE> & Activity.Type,
 
     @Override
     public final Collection<ACTIVITY> getAll() {
-        return this.cache.values().stream()
+        return Stream.of(this.cache.values())
                 .flatMap(Collection::stream)
-                .toList();
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
+                .collect(toList());
     }
 
     @Override
     public final Collection<ACTIVITY> get(TYPE type) {
-        return this.cache.get(type);
+        return this.cache.getOrDefault(type, emptyList());
     }
 
     @Override

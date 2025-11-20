@@ -3,6 +3,7 @@ package com.agutsul.chess.piece.impl;
 import static com.agutsul.chess.piece.Piece.isKing;
 import static java.time.Instant.now;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -122,6 +123,8 @@ abstract class AbstractPiece<COLOR extends Color>
         if (this.actionCache.isEmpty()) {
             var actions = getState().calculateActions(this);
             this.actionCache.putAll(actions);
+
+            return unmodifiableCollection(actions);
         }
 
         return this.actionCache.getAll();
@@ -151,6 +154,8 @@ abstract class AbstractPiece<COLOR extends Color>
         if (this.impactCache.isEmpty()) {
             var impacts = getState().calculateImpacts(this);
             this.impactCache.putAll(impacts);
+
+            return unmodifiableCollection(impacts);
         }
 
         return this.impactCache.getAll();

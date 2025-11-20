@@ -1,7 +1,10 @@
 package com.agutsul.chess.activity.cache;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -43,7 +46,7 @@ final class ActivityMultiMap<KEY extends Enum<KEY> & Activity.Type,
     @Override
     @SuppressWarnings("unchecked")
     public Collection<VALUE> get(Object key) {
-        return this.map.get((KEY) key);
+        return new ArrayList<>(this.map.get((KEY) key));
     }
 
     @Override
@@ -67,9 +70,8 @@ final class ActivityMultiMap<KEY extends Enum<KEY> & Activity.Type,
         Stream.ofNullable(map)
             .map(Map::entrySet)
             .flatMap(Collection::stream)
-            .forEach(entry ->
-                this.map.putAll(entry.getKey(), entry.getValue())
-            );
+            .filter(Objects::nonNull)
+            .forEach(entry -> this.map.putAll(entry.getKey(), entry.getValue()));
     }
 
     @Override
@@ -79,16 +81,16 @@ final class ActivityMultiMap<KEY extends Enum<KEY> & Activity.Type,
 
     @Override
     public Set<KEY> keySet() {
-        return this.map.keySet();
+        return new HashSet<>(this.map.keySet());
     }
 
     @Override
     public Collection<Collection<VALUE>> values() {
-        return this.map.asMap().values();
+        return new ArrayList<>(this.map.asMap().values());
     }
 
     @Override
-    public Set<Entry<KEY, Collection<VALUE>>> entrySet() {
-        return this.map.asMap().entrySet();
+    public Set<Entry<KEY,Collection<VALUE>>> entrySet() {
+        return new HashSet<>(this.map.asMap().entrySet());
     }
 }
