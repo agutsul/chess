@@ -26,7 +26,8 @@ public final class CompositeTimeout
     }
 
     public CompositeTimeout(List<Timeout> timeouts) {
-        var list = timeouts.stream()
+        var list = Stream.ofNullable(timeouts)
+                .flatMap(Collection::stream)
                 .filter(Objects::nonNull)
                 .toList();
 
@@ -39,7 +40,8 @@ public final class CompositeTimeout
 
     @Override
     public Optional<Duration> getDuration() {
-        var totalMillis = this.timeouts.stream()
+        var totalMillis = Stream.of(this.timeouts)
+                .flatMap(Collection::stream)
                 .filter(timeout -> timeout.isType(Type.GENERIC))
                 .map(Timeout::getDuration)
                 .flatMap(Optional::stream)

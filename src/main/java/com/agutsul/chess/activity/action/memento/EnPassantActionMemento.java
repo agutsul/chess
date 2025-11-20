@@ -13,6 +13,7 @@ final class EnPassantActionMemento
     EnPassantActionMemento(Action.Type actionType,
                            ActionMemento<String,String> origin,
                            Position position) {
+
         super(now(), actionType, origin, String.valueOf(position));
     }
 

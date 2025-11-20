@@ -12,8 +12,10 @@ import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.apache.commons.lang3.math.NumberUtils.toInt;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.board.Board;
@@ -241,8 +243,8 @@ final class FenGameBuilder
 
     private static void enableEnPassant(Game game, Color color, String positionCode) {
         var pattern = compile(ENPASSANT_PATTERN);
-        var matcher = pattern.matcher(positionCode);
 
+        var matcher = pattern.matcher(positionCode);
         if (!matcher.matches()) {
             throw new IllegalArgumentException(String.format(
                     "Unsupported en-passante position: '%s'",
@@ -256,7 +258,8 @@ final class FenGameBuilder
         var position = positionOf(positionCode);
 
         // find piece in the same column
-        var pawnPiece = board.getPieces(color, Piece.Type.PAWN).stream()
+        var pawnPiece = Stream.of(board.getPieces(color, Piece.Type.PAWN))
+                .flatMap(Collection::stream)
                 .filter(pawn -> Objects.equals(pawn.getPosition().x(), position.x()))
                 .findFirst()
                 .map(piece -> (PawnPiece<Color>) piece)

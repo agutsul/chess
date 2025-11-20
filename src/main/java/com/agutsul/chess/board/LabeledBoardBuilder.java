@@ -22,7 +22,9 @@ public final class LabeledBoardBuilder
         this(new BoardContext<String>(), new BoardContext<String>());
     }
 
-    LabeledBoardBuilder(BoardContext<String> whiteContext, BoardContext<String> blackContext) {
+    LabeledBoardBuilder(BoardContext<String> whiteContext,
+                        BoardContext<String> blackContext) {
+
         super(LOGGER, whiteContext, blackContext);
     }
 

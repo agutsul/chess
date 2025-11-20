@@ -3,8 +3,10 @@ package com.agutsul.chess.antlr.pgn.action;
 import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter.CASTLING_KING_SIDE_CODE;
 import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter.CASTLING_QUEEN_SIDE_CODE;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.activity.action.Action;
@@ -41,8 +43,8 @@ final class KingCastlingActionAdapter
 
         var king = kingPiece.get();
 
-        var actions = board.getActions(king, Action.Type.CASTLING);
-        var targetPosition = actions.stream()
+        var targetPosition = Stream.of(board.getActions(king, Action.Type.CASTLING))
+                .flatMap(Collection::stream)
                 .map(castlingAction -> (PieceCastlingAction<?,?,?>) castlingAction)
                 .filter(castlingAction -> Objects.equals(castlingSide, castlingAction.getSide()))
                 .map(PieceCastlingAction::getSource)

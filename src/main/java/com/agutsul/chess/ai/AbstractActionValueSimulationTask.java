@@ -1,9 +1,11 @@
 package com.agutsul.chess.ai;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -30,7 +32,8 @@ abstract class AbstractActionValueSimulationTask<VALUE extends Comparable<VALUE>
 
     @Override
     public final TaskResult<Action<?>,VALUE> process(List<List<Action<?>>> buckets) {
-        var subTasks = buckets.stream()
+        var subTasks = Stream.of(buckets)
+                .flatMap(Collection::stream)
                 .map(actions -> createTask(actions))
                 .map(ForkJoinTask::fork)
                 .toList();

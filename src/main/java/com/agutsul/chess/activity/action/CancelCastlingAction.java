@@ -25,6 +25,7 @@ public final class CancelCastlingAction<COLOR extends Color,
     public CancelCastlingAction(Castlingable.Side side,
                                 UncastlingMoveAction<COLOR,PIECE1> sourceAction,
                                 UncastlingMoveAction<COLOR,PIECE2> targetAction) {
+
         super(side, sourceAction, targetAction);
     }
 

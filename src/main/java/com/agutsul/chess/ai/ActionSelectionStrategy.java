@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -128,7 +129,8 @@ public final class ActionSelectionStrategy
     }
 
     private boolean isAnyAction(Color color) {
-        return board.getPieces(color).stream()
+        return Stream.of(board.getPieces(color))
+                .flatMap(Collection::stream)
                 .map(piece -> board.getActions(piece))
                 .anyMatch(not(Collection::isEmpty));
     }

@@ -3,6 +3,7 @@ package com.agutsul.chess.player.observer;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.activity.action.ActionAdapter;
 import com.agutsul.chess.game.Game;
@@ -29,8 +30,8 @@ public final class RandomActionInputObserver
     protected String getActionCommand(Optional<Long> timeout) {
         var board = this.game.getBoard();
 
-        var pieces  = board.getPieces(player.getColor());
-        var actions = pieces.stream()
+        var actions = Stream.of(board.getPieces(player.getColor()))
+                .flatMap(Collection::stream)
                 .map(piece -> board.getActions(piece))
                 .flatMap(Collection::stream)
                 .toList();

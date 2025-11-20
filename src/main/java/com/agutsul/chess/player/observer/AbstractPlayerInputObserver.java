@@ -117,7 +117,7 @@ public abstract class AbstractPlayerInputObserver
         private static final String UNKNOWN_PROMOTION_PIECE_TYPE_MESSAGE =
                 "Unknown promotion piece type";
 
-        private static final Map<String, Piece.Type> PROMOTION_TYPES =
+        private static final Map<String,Piece.Type> PROMOTION_TYPES =
                 Stream.of(KNIGHT, BISHOP, ROOK, QUEEN)
                         .collect(toMap(Piece.Type::code, identity()));
 

@@ -38,7 +38,7 @@ final class KingMoveCheckActionEvaluator
                 .filter(action -> !board.isMonitored(action.getPosition(), attackerColor))
                 .toList();
 
-        Collection<Action<?>> filteredActions = Stream.of(checkActions)
+        var filteredActions = Stream.of(checkActions)
                 .flatMap(Collection::stream)
                 .flatMap(checkAction -> Stream.of(availableActions)
                         .flatMap(Collection::stream)

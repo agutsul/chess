@@ -18,6 +18,7 @@ final class CheckableBoardStateEvaluator
 
     CheckableBoardStateEvaluator(CheckedBoardStateEvaluator checkedEvaluator,
                                  CheckMatedBoardStateEvaluator checkMatedEvaluator) {
+
         this.checkedEvaluator = checkedEvaluator;
         this.checkMatedEvaluator = checkMatedEvaluator;
     }

@@ -18,6 +18,7 @@ abstract class AbstractCheckActionMemento<SOURCE,TARGET>
     AbstractCheckActionMemento(ActionMemento<SOURCE,TARGET> origin,
                                boolean checked,
                                boolean checkMated) {
+
         this.origin = origin;
         this.checked = checked;
         this.checkMated = checkMated;

@@ -57,19 +57,13 @@ public class TerminateGameActionCommand
     }
 
     private static BoardState createBoardState(Board board, Color color, Type type) {
-        switch (type) {
-        case DEFEAT:
-            return agreedDefeatBoardState(board, color);
-        case DRAW:
-            return agreedDrawBoardState(board, color);
-        case WIN:
-            return agreedWinBoardState(board, color);
-        case EXIT:
-            return exitedBoardState(board, color);
-        case TIMEOUT:
-            return timeoutBoardState(board, color);
-        default:
-            throw new IllegalStateException(String.format("Unknown termination type: %s", type));
-        }
+        return switch (type) {
+        case DEFEAT  -> agreedDefeatBoardState(board, color);
+        case DRAW    -> agreedDrawBoardState(board, color);
+        case WIN     -> agreedWinBoardState(board, color);
+        case EXIT    -> exitedBoardState(board, color);
+        case TIMEOUT -> timeoutBoardState(board, color);
+        default      -> throw new IllegalStateException(String.format("Unknown termination type: %s", type));
+        };
     }
 }

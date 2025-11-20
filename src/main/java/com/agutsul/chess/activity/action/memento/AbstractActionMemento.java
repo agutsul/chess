@@ -16,6 +16,7 @@ abstract class AbstractActionMemento<SOURCE,TARGET>
                           Action.Type actionType,
                           SOURCE source,
                           TARGET target) {
+
         this.createdAt = createdAt;
         this.actionType = actionType;
         this.source = source;

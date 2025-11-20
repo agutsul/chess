@@ -35,7 +35,8 @@ final class AttackerPinCheckMateEvaluator
         LOGGER.info("Evaluate attacker line block for king '{}'", king);
 
         // get all piece moves of the same color as king except the king itself
-        var pieceMovePositions = board.getPieces(king.getColor()).stream()
+        var pieceMovePositions = Stream.of(board.getPieces(king.getColor()))
+                .flatMap(Collection::stream)
                 .filter(not(Piece::isKing))
                 // confirm that piece not already pinned
                 .filter(piece -> !((Pinnable) piece).isPinned())

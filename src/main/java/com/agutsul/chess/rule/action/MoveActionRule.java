@@ -11,6 +11,6 @@ import com.agutsul.chess.rule.Rule;
 public interface MoveActionRule<COLOR extends Color,
                                 PIECE extends Piece<COLOR> & Movable,
                                 ACTION extends PieceMoveAction<COLOR,PIECE>>
-    extends Rule<PIECE,Collection<ACTION>> {
+        extends Rule<PIECE,Collection<ACTION>> {
 
 }

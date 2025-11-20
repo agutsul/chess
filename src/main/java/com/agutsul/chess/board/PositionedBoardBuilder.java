@@ -23,7 +23,9 @@ public final class PositionedBoardBuilder
         this(new BoardContext<Position>(), new BoardContext<Position>());
     }
 
-    PositionedBoardBuilder(BoardContext<Position> whiteContext,BoardContext<Position> blackContext) {
+    PositionedBoardBuilder(BoardContext<Position> whiteContext,
+                           BoardContext<Position> blackContext) {
+
         super(LOGGER, whiteContext, blackContext);
     }
 

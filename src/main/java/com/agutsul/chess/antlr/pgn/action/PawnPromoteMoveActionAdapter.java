@@ -19,8 +19,8 @@ final class PawnPromoteMoveActionAdapter
     @Override
     public String adapt(String action) {
         var pattern = compile(PROMOTE_MOVE_PATTERN);
-        var matcher = pattern.matcher(action);
 
+        var matcher = pattern.matcher(action);
         if (!matcher.matches()) {
             throw new IllegalActionException(formatInvalidActionMessage(action));
         }

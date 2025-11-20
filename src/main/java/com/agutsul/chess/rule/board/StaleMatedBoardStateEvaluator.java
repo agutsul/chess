@@ -9,6 +9,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -33,11 +34,13 @@ final class StaleMatedBoardStateEvaluator
 
         var attackerColor = color.invert();
 
-        var pieces = board.getPieces(color).stream()
+        var pieces = Stream.of(board.getPieces(color))
+                .flatMap(Collection::stream)
                 .sorted(comparing(Piece::getType)) // make king piece the last
                 .toList();
 
-        var actions = pieces.stream()
+        var actions = Stream.of(pieces)
+                .flatMap(Collection::stream)
                 .map(piece -> {
                     var pieceActions = board.getActions(piece);
                     if (!isKing(piece)) {

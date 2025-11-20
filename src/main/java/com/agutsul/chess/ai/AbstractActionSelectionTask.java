@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -81,7 +82,8 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
     }
 
     protected static List<Action<?>> getActions(Board board, Color color) {
-        var actions = board.getPieces(color).stream()
+        var actions = Stream.of(board.getPieces(color))
+                .flatMap(Collection::stream)
                 .map(piece -> board.getActions(piece))
                 .flatMap(Collection::stream)
                 .map(ADAPTER::adapt)

@@ -5,10 +5,12 @@ import static java.util.Collections.unmodifiableList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -43,7 +45,8 @@ final class CompositeBoardStateEvaluator
     @Override
     public List<BoardState> evaluate(Color playerColor) {
         var boardStates = evaluate(evaluators, playerColor);
-        return boardStates.stream()
+        return Stream.of(boardStates)
+                .flatMap(Collection::stream)
                 .flatMap(Optional::stream)
                 .toList();
     }

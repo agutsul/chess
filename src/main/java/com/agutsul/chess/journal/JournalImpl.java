@@ -4,8 +4,10 @@ import static java.util.Collections.unmodifiableList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -74,7 +76,8 @@ public final class JournalImpl
     @Override
     public List<ActionMemento<?,?>> get(Color color) {
         LOGGER.debug("Journal get memento '{}'", color);
-        return this.list.stream()
+        return Stream.of(this.list)
+                .flatMap(Collection::stream)
                 .filter(am -> Objects.equals(color, am.getColor()))
                 .toList();
     }

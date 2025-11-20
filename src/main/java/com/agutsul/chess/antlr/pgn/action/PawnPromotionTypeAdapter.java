@@ -22,7 +22,6 @@ public final class PawnPromotionTypeAdapter
 
         var pattern = compile(PROMOTE_PATTERN);
         var matcher = pattern.matcher(command);
-
         if (!matcher.matches()) {
             throw new IllegalActionException(formatInvalidActionMessage(action));
         }

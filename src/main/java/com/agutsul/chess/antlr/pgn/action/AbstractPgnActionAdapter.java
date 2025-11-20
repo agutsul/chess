@@ -7,11 +7,14 @@ import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActio
 import static com.agutsul.chess.piece.Piece.isKing;
 import static com.agutsul.chess.position.Position.codeOf;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
+import static java.util.function.Predicate.not;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.Strings;
 
@@ -58,16 +61,19 @@ abstract class AbstractPgnActionAdapter
     }
 
     Collection<Piece<Color>> findPieces(Piece.Type pieceType, String code) {
-        var pieces = board.getPieces(color, pieceType).stream()
-                .filter(piece -> code == null || Strings.CI.contains(codeOf(piece.getPosition()), code))
+        var pieces = Stream.of(board.getPieces(color, pieceType))
+                .flatMap(Collection::stream)
+                .filter(piece -> code == null
+                        || Strings.CI.contains(codeOf(piece.getPosition()), code)
+                )
                 .toList();
 
         return pieces;
     }
 
     boolean containsAction(Piece<Color> piece, String position, Action.Type actionType) {
-        var actions = board.getActions(piece, actionType);
-        var actionExists = actions.stream()
+        var actionExists = Stream.of(board.getActions(piece, actionType))
+                .flatMap(Collection::stream)
                 .map(Action::getPosition)
                 .map(Position::codeOf)
                 .anyMatch(targetPosition -> Objects.equals(targetPosition, position));
@@ -79,19 +85,13 @@ abstract class AbstractPgnActionAdapter
                                     String position, Action.Type actionType) {
 
         var map = new HashMap<Piece<Color>,Boolean>();
-
-        var foundPieces = findPieces(pieceType, code);
-        for (var piece : foundPieces) {
+        for (var piece : findPieces(pieceType, code)) {
             if (!containsAction(piece, position, actionType)) {
                 continue;
             }
 
             if (isKing(piece)) {
-                var isAttacked = board.isAttacked(
-                        positionOf(position),
-                        piece.getColor().invert()
-                );
-
+                var isAttacked = board.isAttacked(positionOf(position), piece.getColor().invert());
                 if (isAttacked) {
                     continue;
                 }
@@ -102,29 +102,31 @@ abstract class AbstractPgnActionAdapter
             map.put(piece, ((Pinnable) piece).isPinned());
         }
 
-        var unPinnedPiece = map.entrySet().stream()
-            .filter(entry -> !entry.getValue()) // filter unpinned
-            .map(entry -> entry.getKey())
-            .findFirst();
+        var unPinnedPiece = Stream.of(map.entrySet())
+                .flatMap(Collection::stream)
+                .filter(not(Map.Entry::getValue)) // filter unpinned
+                .map(Map.Entry::getKey)
+                .findFirst();
 
         if (unPinnedPiece.isPresent()) {
             return unPinnedPiece;
         }
 
         // check actions for pinned pieces and find piece with available capture action
-        var piece = map.entrySet().stream()
-            .filter(entry -> entry.getValue()) // filter pinned
-            .map(entry -> entry.getKey())
-            .filter(pinnedPiece -> isActionAvailable(pinnedPiece, position))
-            .findFirst();
+        var piece = Stream.of(map.entrySet())
+                .flatMap(Collection::stream)
+                .filter(Map.Entry::getValue) // filter pinned
+                .map(Map.Entry::getKey)
+                .filter(pinnedPiece -> isActionAvailable(pinnedPiece, position))
+                .findFirst();
 
         return piece;
     }
 
     boolean isActionAvailable(Piece<?> piece, String position) {
         // check if pinned piece action is inside checker's attack line
-        var impacts = board.getImpacts(piece, Impact.Type.PIN);
-        var pinImpact = impacts.stream()
+        var pinImpact = Stream.of(board.getImpacts(piece, Impact.Type.PIN))
+                .flatMap(Collection::stream)
                 .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
                 .filter(impact -> impact.isMode(PiecePinImpact.Mode.ABSOLUTE))
                 .findFirst()
@@ -137,10 +139,10 @@ abstract class AbstractPgnActionAdapter
 
         // check if pinned piece action is capturing checker piece
         var attacker = pinImpact.getAttacker();
-        var pieceActions = board.getActions(piece, Action.Type.CAPTURE);
 
         // TODO: confirm that targetPiece is related to provided position
-        var isCapturable = pieceActions.stream()
+        var isCapturable = Stream.of(board.getActions(piece, Action.Type.CAPTURE))
+                .flatMap(Collection::stream)
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .map(AbstractCaptureAction::getTarget)
                 .anyMatch(targetPiece -> Objects.equals(targetPiece, attacker));

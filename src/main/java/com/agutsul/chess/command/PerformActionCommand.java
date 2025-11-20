@@ -6,7 +6,9 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.util.Collection;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -87,8 +89,8 @@ public final class PerformActionCommand
 
     @Override
     protected void preExecute() throws CommandException {
-        var allActions = board.getActions(this.sourcePiece);
-        var targetAction = allActions.stream()
+        var targetAction = Stream.of(board.getActions(this.sourcePiece))
+                .flatMap(Collection::stream)
                 .filter(action -> action.matches(this.sourcePiece, this.targetPosition))
                 .findFirst();
 

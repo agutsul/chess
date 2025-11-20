@@ -86,6 +86,7 @@ class TimeoutGame<GAME extends Game & Observable>
 
         TimeoutGameImpl(G game, long timeout, boolean evaluateWinner) {
             super(game);
+
             this.timeout = timeout;
             this.evaluateWinner = evaluateWinner;
         }

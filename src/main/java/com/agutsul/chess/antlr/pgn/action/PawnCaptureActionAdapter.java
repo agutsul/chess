@@ -5,7 +5,9 @@ import static com.agutsul.chess.activity.action.Action.isEnPassant;
 import static com.agutsul.chess.position.Position.codeOf;
 import static java.util.regex.Pattern.compile;
 
+import java.util.Collection;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
@@ -27,8 +29,8 @@ final class PawnCaptureActionAdapter
     @Override
     public String adapt(String action) {
         var pattern = compile(PAWN_CAPTURE_PATTERN);
-        var matcher = pattern.matcher(action);
 
+        var matcher = pattern.matcher(action);
         if (!matcher.matches()) {
             throw new IllegalActionException(formatInvalidActionMessage(action));
         }
@@ -46,8 +48,8 @@ final class PawnCaptureActionAdapter
 
     @Override
     boolean containsAction(Piece<Color> piece, String position, Action.Type actionType) {
-        var actions = board.getActions(piece);
-        var actionExists = actions.stream()
+        var actionExists = Stream.of(board.getActions(piece))
+                .flatMap(Collection::stream)
                 .filter(action -> isCapture(action) || isEnPassant(action))
                 .anyMatch(action -> Objects.equals(codeOf(action.getPosition()), position));
 

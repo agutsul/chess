@@ -12,6 +12,6 @@ public interface EnPassantActionRule<COLOR1 extends Color,
                                      PAWN1 extends PawnPiece<COLOR1>,
                                      PAWN2 extends PawnPiece<COLOR2>,
                                      ACTION extends PieceEnPassantAction<COLOR1,COLOR2,PAWN1,PAWN2>>
-    extends Rule<PAWN1,Collection<ACTION>> {
+        extends Rule<PAWN1,Collection<ACTION>> {
 
 }

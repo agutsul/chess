@@ -33,7 +33,9 @@ public abstract class AbstractPromoteActionRule<COLOR1 extends Color,
     protected AbstractPromoteActionRule(Board board,
                                         PromotePieceAlgo<COLOR1,PAWN,Position> algo,
                                         Rule<PAWN,Collection<SOURCE_ACTION>> rule) {
+
         super(board, Action.Type.PROMOTE);
+
         this.algo = algo;
         this.rule = rule;
     }

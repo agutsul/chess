@@ -27,7 +27,8 @@ public final class GameTimeoutWinnerEvaluator
         var boardState = board.getState();
 
         LOGGER.info("Perform winner evaluation for player {} and board ({}:{})",
-                game.getCurrentPlayer(), boardState.getColor(), boardState.getType());
+                game.getCurrentPlayer(), boardState.getColor(), boardState.getType()
+        );
 
         var winner = boardState.isType(TIMEOUT)
                 ? game.getPlayer(player.getColor().invert())

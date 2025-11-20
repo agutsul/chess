@@ -26,6 +26,7 @@ public class PieceCastlingAction<COLOR extends Color,
     public PieceCastlingAction(Castlingable.Side side,
                                CastlingMoveAction<COLOR,PIECE1> sourceAction,
                                CastlingMoveAction<COLOR,PIECE2> targetAction) {
+
         super(side, sourceAction, targetAction);
     }
 

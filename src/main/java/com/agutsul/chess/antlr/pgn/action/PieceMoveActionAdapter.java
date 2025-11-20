@@ -20,8 +20,8 @@ final class PieceMoveActionAdapter
     @Override
     public String adapt(String action) {
         var pattern = compile(MOVE_PATTERN);
-        var matcher = pattern.matcher(action);
 
+        var matcher = pattern.matcher(action);
         if (!matcher.matches()) {
             throw new IllegalActionException(formatInvalidActionMessage(action));
         }

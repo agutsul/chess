@@ -8,10 +8,12 @@ import static java.util.Comparator.comparing;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -67,7 +69,8 @@ public final class BoardStateEvaluatorImpl
             return boardState.orElse(defaultBoardState(board, color));
         }
 
-        var checkMatedState = boardStates.stream()
+        var checkMatedState = Stream.of(boardStates)
+                .flatMap(Collection::stream)
                 .filter(boardState -> boardState.isType(CHECK_MATED))
                 .findFirst();
 

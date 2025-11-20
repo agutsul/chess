@@ -36,7 +36,8 @@ public final class CompositePieceRule<RESULT extends Activity<TYPE,?>,
                 .flatMap(Collection::stream)
                 .toList();
 
-        var typeRules = this.rules.stream()
+        var typeRules = Stream.of(rules)
+                .flatMap(Collection::stream)
                 .filter(rule -> types.contains(rule.getType()))
                 .toList();
 
@@ -51,7 +52,8 @@ public final class CompositePieceRule<RESULT extends Activity<TYPE,?>,
     private Collection<RESULT> evaluate(Collection<? extends Rule<Piece<?>,?>> rules,
                                         Piece<?> piece) {
 
-        var result = rules.stream()
+        var result = Stream.of(rules)
+                .flatMap(Collection::stream)
                 .map(rule -> (Collection<RESULT>) rule.evaluate(piece))
                 .flatMap(Collection::stream)
                 .toList();

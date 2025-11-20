@@ -7,6 +7,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -36,7 +37,8 @@ final class CheckedBoardStateEvaluator
         }
 
         var king = optionalKing.get();
-        var isChecked = board.getPieces(king.getColor().invert()).stream()
+        var isChecked = Stream.of(board.getPieces(king.getColor().invert()))
+                .flatMap(Collection::stream)
                 .filter(not(Piece::isKing))
                 .map(piece -> board.getImpacts(piece, Impact.Type.CHECK))
                 .flatMap(Collection::stream)

@@ -12,6 +12,7 @@ final class IncrementalTimeoutImpl<TIMEOUT extends BaseTimeout>
 
     IncrementalTimeoutImpl(TIMEOUT timeout, long extraMillis) {
         super(Type.INCREMENTAL);
+
         this.timeout = timeout;
         this.extraDuration = Duration.ofMillis(extraMillis);
     }

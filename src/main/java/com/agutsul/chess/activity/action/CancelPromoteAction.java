@@ -24,6 +24,7 @@ public final class CancelPromoteAction<COLOR1 extends Color,
 
     public <COLOR2 extends Color,PIECE2 extends Piece<COLOR2>>
             CancelPromoteAction(CancelCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2> action) {
+
         super(action);
     }
 
