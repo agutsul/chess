@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
@@ -15,6 +16,7 @@ final class AttackerPinCheckActionEvaluator
 
     AttackerPinCheckActionEvaluator(Board board,
                                     Collection<Action<?>> pieceActions) {
+
         super(board, pieceActions);
     }
 
@@ -23,10 +25,13 @@ final class AttackerPinCheckActionEvaluator
                                   Collection<PieceCaptureAction<?,?,?,?>> checkActions,
                                   Collection<Action<?>> actions) {
 
-        Collection<Action<?>> pinActions = checkActions.stream()
+        Collection<Action<?>> pinActions = Stream.of(checkActions)
+                .flatMap(Collection::stream)
                 .map(PieceCaptureAction::getLine)
                 .flatMap(Optional::stream)
-                .flatMap(line -> actions.stream().filter(action -> line.contains(action.getPosition())))
+                .flatMap(line -> actions.stream()
+                        .filter(action -> line.contains(action.getPosition()))
+                )
                 .collect(toSet());
 
         return pinActions;

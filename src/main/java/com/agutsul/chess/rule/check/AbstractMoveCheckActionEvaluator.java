@@ -3,11 +3,12 @@ package com.agutsul.chess.rule.check;
 import static com.agutsul.chess.activity.action.Action.isBigMove;
 import static com.agutsul.chess.activity.action.Action.isMove;
 import static com.agutsul.chess.activity.action.Action.isPromote;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
@@ -28,9 +29,8 @@ abstract class AbstractMoveCheckActionEvaluator
 
     @Override
     public Collection<Action<?>> evaluate(KingPiece<?> king) {
-        var attackers = this.board.getAttackers(king);
-
-        Collection<PieceCaptureAction<?,?,?,?>> checkActions = attackers.stream()
+        Collection<PieceCaptureAction<?,?,?,?>> checkActions = Stream.of(board.getAttackers(king))
+                .flatMap(Collection::stream)
                 .map(attacker -> board.getActions(attacker, Action.Type.CAPTURE))
                 .flatMap(Collection::stream)
                 .filter(Action::isCapture)
@@ -38,14 +38,12 @@ abstract class AbstractMoveCheckActionEvaluator
                 .filter(action -> Objects.equals(king, action.getTarget()))
                 .collect(toSet());
 
-        var filteredActions = new ArrayList<Action<?>>();
-        for (var action : this.pieceActions) {
-            if (isMove(action) || isBigMove(action)) {
-                filteredActions.add(action);
-            } else if (isPromote(action) && isMove((Action<?>) action.getSource())) {
-                filteredActions.add(action);
-            }
-        }
+        var filteredActions = Stream.of(pieceActions)
+                .flatMap(Collection::stream)
+                .filter(action -> isMove(action) || isBigMove(action)
+                        || (isPromote(action) && isMove((Action<?>) action.getSource()))
+                )
+                .collect(toList());
 
         return process(king, checkActions, filteredActions);
     }

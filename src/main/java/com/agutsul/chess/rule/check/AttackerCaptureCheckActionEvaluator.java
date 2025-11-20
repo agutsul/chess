@@ -6,6 +6,7 @@ import static com.agutsul.chess.activity.action.Action.isPromote;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
@@ -40,12 +41,12 @@ final class AttackerCaptureCheckActionEvaluator
             }
         }
 
-        var attackers = board.getAttackers(king);
-        var actions = attackers.stream()
-            .filter(attacker -> actionTargets.containsKey(attacker))
-            .map(attacker -> actionTargets.get(attacker))
-            .flatMap(Collection::stream)
-            .collect(toSet());
+        var actions = Stream.of(board.getAttackers(king))
+                .flatMap(Collection::stream)
+                .filter(attacker -> actionTargets.containsKey(attacker))
+                .map(attacker -> actionTargets.get(attacker))
+                .flatMap(Collection::stream)
+                .collect(toSet());
 
         return actions;
     }

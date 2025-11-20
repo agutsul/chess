@@ -1,7 +1,10 @@
 package com.agutsul.chess.rule.check;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
+
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
@@ -9,8 +12,6 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceMonitorImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
-import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.position.Position;
 
 final class KingMoveCheckActionEvaluator
         extends AbstractMoveCheckActionEvaluator {
@@ -27,50 +28,38 @@ final class KingMoveCheckActionEvaluator
 
         var attackerColor = king.getColor().invert();
 
-        var filteredActions = new HashSet<Action<?>>();
-        for (var checkedAction : checkActions) {
-            var attackLine = checkedAction.getLine();
+        Collection<Action<?>> filteredActions = Stream.of(checkActions)
+                .flatMap(Collection::stream)
+                .flatMap(checkedAction -> Stream.of(actions)
+                        .flatMap(Collection::stream)
+                        // skip moves on positions inside attack line
+                        .filter(action -> checkedAction.getLine().stream()
+                                    .noneMatch(line -> line.contains(action.getPosition()))
+                        )
+                        // skip positions attacked by any opponent piece
+                        .filter(action -> !board.isAttacked(action.getPosition(), attackerColor))
+                        // skip monitored positions
+                        .filter(action -> {
+                            // for example positions behind the king but on the same attack line
+                            if (!board.isMonitored(action.getPosition(), attackerColor)) {
+                                return true;
+                            }
 
-            var checkerMonitoredPositions = getMonitoredPositions(checkedAction.getSource());
+                            // skip positions monitored by check maker.
+                            // position can be monitored by some other opponent's piece
+                            // but as soon as position not directly attacked by the opponent piece
+                            // it is valid for move action
+                            var monitoredPositions = Stream.of(board.getImpacts(checkedAction.getSource(), Impact.Type.MONITOR))
+                                    .flatMap(Collection::stream)
+                                    .map(impact -> (PieceMonitorImpact<?,?>) impact)
+                                    .map(PieceMonitorImpact::getPosition)
+                                    .collect(toList());
 
-            for (var action : actions) {
-                var targetPosition = action.getPosition();
-
-                // skip moves on positions inside attack line
-                if (attackLine.isPresent() && attackLine.get().contains(targetPosition)) {
-                    continue;
-                }
-
-                // skip positions attacked by any opponent piece
-                var isAttacked = board.isAttacked(targetPosition, attackerColor);
-                if (!isAttacked) {
-
-                    // skip monitored positions
-                    // for example positions behind the king but on the same attack line
-                    var isMonitored = board.isMonitored(targetPosition, attackerColor);
-                    if (!isMonitored) {
-                        filteredActions.add(action);
-                        continue;
-                    }
-
-                    // skip positions monitored by the check maker.
-                    // position can be monitored by some other opponent piece
-                    // but as soon as position not directly attacked by the opponent piece
-                    // it is valid for move action
-                    if (!checkerMonitoredPositions.contains(targetPosition)) {
-                        filteredActions.add(action);
-                    }
-                }
-            }
-        }
+                            return !monitoredPositions.contains(action.getPosition());
+                        })
+                )
+                .collect(toSet());
 
         return filteredActions;
-    }
-
-    private Collection<Position> getMonitoredPositions(Piece<?> piece) {
-        return board.getImpacts(piece, Impact.Type.MONITOR).stream()
-                .map(impact -> (PieceMonitorImpact<?,?>) impact)
-                .map(PieceMonitorImpact::getPosition)
-                .toList();
     }
 }
