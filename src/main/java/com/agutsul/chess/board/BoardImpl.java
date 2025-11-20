@@ -202,7 +202,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         LOGGER.debug("Getting pieces with '{}' color", color);
 
         @SuppressWarnings("unchecked")
-        Collection<Piece<COLOR>> pieces = Stream.of(pieceCache.getActive(color))
+        var pieces = Stream.of(pieceCache.getActive(color))
                 .flatMap(Collection::stream)
                 .map(piece -> (Piece<COLOR>) piece)
                 .toList();
@@ -253,7 +253,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         );
 
         @SuppressWarnings("unchecked")
-        Collection<Piece<COLOR>> pieces = Stream.of(pieceCache.getActive(color, pieceType))
+        var pieces = Stream.of(pieceCache.getActive(color, pieceType))
                 .flatMap(Collection::stream)
                 .map(piece -> (Piece<COLOR>) piece)
                 .toList();
@@ -281,7 +281,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         }
 
         @SuppressWarnings("unchecked")
-        Collection<Piece<COLOR>> pieces = Stream.of(pieceCache.getActive(color))
+        var pieces = Stream.of(pieceCache.getActive(color))
                 .flatMap(Collection::stream)
                 .filter(piece -> requestedPositions.contains(piece.getPosition()))
                 .sorted(comparing(Piece::getPosition, COMPARATOR))
@@ -383,7 +383,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         var attackerColor = piece.getColor().invert();
 
         @SuppressWarnings("unchecked")
-        Collection<Piece<COLOR>> attackers = Stream.of(getPieces(attackerColor))
+        var attackers = Stream.of(getPieces(attackerColor))
                 .flatMap(Collection::stream)
                 .map(attacker -> getActions(attacker, Action.Type.CAPTURE))
                 .flatMap(Collection::stream)
@@ -515,7 +515,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     private static Optional<Instant> capturedAt(Piece<?> piece) {
         return Stream.of(piece.getState())
-                .filter(state -> state instanceof DisposedPieceState<?>)
+                .filter(state -> state instanceof DisposedPieceState)
                 .map(state -> (DisposedPieceState<?>) state)
                 .map(DisposedPieceState::getDisposedAt)
                 .flatMap(Optional::stream)
