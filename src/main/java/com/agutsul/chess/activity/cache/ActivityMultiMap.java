@@ -1,8 +1,12 @@
 package com.agutsul.chess.activity.cache;
 
+import static java.util.Collections.emptyList;
+
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -46,7 +50,9 @@ final class ActivityMultiMap<KEY extends Enum<KEY> & Activity.Type,
     @Override
     @SuppressWarnings("unchecked")
     public Collection<VALUE> get(Object key) {
-        return new ArrayList<>(this.map.get((KEY) key));
+        return containsKey(key)
+                ? new ArrayList<>(this.map.get((KEY) key))
+                : emptyList();
     }
 
     @Override
@@ -91,6 +97,11 @@ final class ActivityMultiMap<KEY extends Enum<KEY> & Activity.Type,
 
     @Override
     public Set<Entry<KEY,Collection<VALUE>>> entrySet() {
-        return new HashSet<>(this.map.asMap().entrySet());
+        var entries = new HashSet<Entry<KEY,Collection<VALUE>>>();
+        for (var entry : this.map.entries()) {
+            entries.add(new SimpleEntry<>(entry.getKey(), List.of(entry.getValue())));
+        }
+
+        return entries;
     }
 }
