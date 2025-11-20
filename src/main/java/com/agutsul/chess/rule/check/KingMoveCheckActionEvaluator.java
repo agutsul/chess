@@ -18,6 +18,7 @@ final class KingMoveCheckActionEvaluator
 
     KingMoveCheckActionEvaluator(Board board,
                                  Collection<Action<?>> pieceActions) {
+
         super(board, pieceActions);
     }
 
@@ -28,28 +29,29 @@ final class KingMoveCheckActionEvaluator
 
         var attackerColor = king.getColor().invert();
 
+        var availableActions = Stream.of(actions)
+                .flatMap(Collection::stream)
+                // skip positions attacked by any opponent piece
+                .filter(action -> !board.isAttacked(action.getPosition(), attackerColor))
+                // skip monitored positions
+                // for example positions behind the king but on the same attack line
+                .filter(action -> !board.isMonitored(action.getPosition(), attackerColor))
+                .toList();
+
         Collection<Action<?>> filteredActions = Stream.of(checkActions)
                 .flatMap(Collection::stream)
-                .flatMap(checkedAction -> Stream.of(actions)
+                .flatMap(checkAction -> Stream.of(availableActions)
                         .flatMap(Collection::stream)
                         // skip moves on positions inside attack line
-                        .filter(action -> checkedAction.getLine().stream()
+                        .filter(action -> checkAction.getLine().stream()
                                     .noneMatch(line -> line.contains(action.getPosition()))
                         )
-                        // skip positions attacked by any opponent piece
-                        .filter(action -> !board.isAttacked(action.getPosition(), attackerColor))
-                        // skip monitored positions
                         .filter(action -> {
-                            // for example positions behind the king but on the same attack line
-                            if (!board.isMonitored(action.getPosition(), attackerColor)) {
-                                return true;
-                            }
-
                             // skip positions monitored by check maker.
                             // position can be monitored by some other opponent's piece
                             // but as soon as position not directly attacked by the opponent piece
                             // it is valid for move action
-                            var monitoredPositions = Stream.of(board.getImpacts(checkedAction.getSource(), Impact.Type.MONITOR))
+                            var monitoredPositions = Stream.of(board.getImpacts(checkAction.getSource(), Impact.Type.MONITOR))
                                     .flatMap(Collection::stream)
                                     .map(impact -> (PieceMonitorImpact<?,?>) impact)
                                     .map(PieceMonitorImpact::getPosition)
