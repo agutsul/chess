@@ -34,15 +34,14 @@ class PawnMoveActionRule<COLOR extends Color,
     }
 
     protected Collection<Calculatable> calculate(MovePieceAlgo<COLOR,PAWN,Position> algo,
-                                               PAWN piece) {
-
-        var calculatedPositions = algo.calculate(piece);
+                                                 PAWN piece) {
 
         var positions = new ArrayList<Calculatable>();
-        for (var position : calculatedPositions) {
+        for (var position : algo.calculate(piece)) {
             if (!board.isEmpty(position)) {
                 break;
             }
+
             positions.add(position);
         }
 

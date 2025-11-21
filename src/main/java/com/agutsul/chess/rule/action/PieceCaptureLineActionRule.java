@@ -46,12 +46,12 @@ public final class PieceCaptureLineActionRule<COLOR1 extends Color,
         var actions = Stream.of(next)
                 .flatMap(Collection::stream)
                 .map(calculated -> (Line) calculated)
-                .map(line -> Stream.of(board.getPiece(line.getLast()))
+                .flatMap(line -> Stream.of(board.getPiece(line.getLast()))
                         .flatMap(Optional::stream)
-                        .map(attackedPiece -> new PieceCaptureAction<>(piece, (PIECE2) attackedPiece, line))
-                        .findFirst()
+                        .map(attackedPiece -> new PieceCaptureAction<>(
+                                piece, (PIECE2) attackedPiece, line
+                        ))
                 )
-                .flatMap(Optional::stream)
                 .collect(toList());
 
         return actions;

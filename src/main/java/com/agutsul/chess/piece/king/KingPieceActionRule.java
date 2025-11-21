@@ -7,7 +7,8 @@ import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 
-public final class KingPieceActionRule<COLOR extends Color,PIECE extends KingPiece<COLOR>>
+public final class KingPieceActionRule<COLOR extends Color,
+                                       PIECE extends KingPiece<COLOR>>
         extends AbstractPieceRule<Action<?>,Action.Type> {
 
     public KingPieceActionRule(Board board) {
