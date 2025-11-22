@@ -16,7 +16,7 @@ public final class PawnPieceImpactRule<COLOR extends Color,
                                        PAWN extends PawnPiece<COLOR>>
         extends AbstractPieceRule<Impact<?>,Impact.Type> {
 
-    public PawnPieceImpactRule(Board board, int step, int initialLine,  int promotionLine) {
+    public PawnPieceImpactRule(Board board, int step, int initialLine, int promotionLine) {
         this(board, promotionLine,
                 new PawnMoveAlgo<>(board, step),
                 new PawnBigMoveAlgo<>(board, step, initialLine),
@@ -42,7 +42,7 @@ public final class PawnPieceImpactRule<COLOR extends Color,
                                 PawnEnPassantAlgo<COLOR,PAWN> enPassantAlgo) {
 
         super(new CompositePieceRule<>(
-                new PieceCheckPositionImpactRule<>(board, captureAlgo),
+                new PieceCheckPositionImpactRule<>(board,   captureAlgo),
                 new PieceProtectPositionImpactRule<>(board, captureAlgo),
                 new PieceControlPositionImpactRule<>(board, captureAlgo),
                 new PawnBlockadeImpactRule<>(board, promotionLine),
@@ -53,9 +53,10 @@ public final class PawnPieceImpactRule<COLOR extends Color,
                 new PawnForkImpactRule<>(board, captureAlgo, enPassantAlgo),
                 new PawnOverloadingImpactRule<>(board, captureAlgo, enPassantAlgo),
                 new PawnUnderminingImpactRule<>(board, captureAlgo, enPassantAlgo),
-                new PawnDeflectionImpactRule<>(board, captureAlgo, enPassantAlgo),
+                new PawnDeflectionImpactRule<>(board,  captureAlgo, enPassantAlgo),
                 new PawnOutpostPositionImpactRule<>(board, moveAlgo, bigMoveAlgo, captureAlgo, enPassantAlgo),
-                new PawnSacrificeImpactRule<>(board, moveAlgo, bigMoveAlgo, captureAlgo, enPassantAlgo)
+                new PawnSacrificeImpactRule<>(board, moveAlgo, bigMoveAlgo, captureAlgo, enPassantAlgo),
+                new PawnLuftImpactRule<>(board, moveAlgo, bigMoveAlgo, captureAlgo)
             )
         );
     }

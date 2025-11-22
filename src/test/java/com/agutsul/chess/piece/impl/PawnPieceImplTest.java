@@ -31,6 +31,7 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
+import com.agutsul.chess.activity.impact.PieceLuftImpact;
 import com.agutsul.chess.activity.impact.PieceOverloadingImpact;
 import com.agutsul.chess.activity.impact.PiecePartialPinImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
@@ -749,6 +750,108 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertEquals(blackPawn, sacrificeAttackImpact.getSource().getTarget());
         assertEquals(blackKing, sacrificeAttackImpact.getAttacker());
         assertEquals(whitePawn, sacrificeAttackImpact.getSacrificed());
+    }
+
+    @Test
+    // https://en.wikipedia.org/wiki/Flight_square#Luft
+    void testPawnLuftImpactByMove() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("h8")
+                .withBlackRook("e8")
+                .withBlackPawn("b2")
+                .withWhiteKing("h1")
+                .withWhiteRook("b7")
+                .withWhitePawns("h2","g2","f2")
+                .build();
+
+        var whitePawn1 = board.getPiece("h2").get();
+        var luftImpacts1 = board.getImpacts(whitePawn1, Impact.Type.LUFT);
+
+        assertFalse(luftImpacts1.isEmpty());
+        assertEquals(2, luftImpacts1.size());
+
+        var pawn1Positions = List.of(positionOf("h3"), positionOf("h4"));
+        luftImpacts1.stream()
+            .map(impact -> (PieceLuftImpact<?,?>) impact)
+            .forEach(impact -> {
+                assertTrue(pawn1Positions.contains(impact.getTarget()));
+                assertEquals(whitePawn1.getPosition(), impact.getPosition());
+            });
+
+        var whitePawn2 = board.getPiece("g2").get();
+        var luftImpacts2 = board.getImpacts(whitePawn2, Impact.Type.LUFT);
+
+        assertFalse(luftImpacts2.isEmpty());
+        assertEquals(2, luftImpacts2.size());
+
+        var pawn2Positions = List.of(positionOf("g3"), positionOf("g4"));
+        luftImpacts2.stream()
+            .map(impact -> (PieceLuftImpact<?,?>) impact)
+            .forEach(impact -> {
+                assertTrue(pawn2Positions.contains(impact.getTarget()));
+                assertEquals(whitePawn2.getPosition(), impact.getPosition());
+            });
+
+        var whitePawn3 = board.getPiece("f2").get();
+        var luftImpacts3 = board.getImpacts(whitePawn3, Impact.Type.LUFT);
+
+        assertTrue(luftImpacts3.isEmpty());
+    }
+
+    @Test
+    void testPawnLuftImpactByCapture() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("b8")
+                .withBlackQueen("h7")
+                .withBlackBishop("f4")
+                .withBlackKnights("f3","g4")
+                .withWhiteKing("h1")
+                .withWhitePawns("h3","g2","f2")
+                .build();
+
+        var whitePawn = board.getPiece("g2").get();
+        var luftImpacts = board.getImpacts(whitePawn, Impact.Type.LUFT);
+
+        assertFalse(luftImpacts.isEmpty());
+        assertEquals(2, luftImpacts.size());
+
+        var pawnPositions = List.of(positionOf("f3"), positionOf("g3"));
+        luftImpacts.stream()
+            .map(impact -> (PieceLuftImpact<?,?>) impact)
+            .forEach(impact -> {
+                assertTrue(pawnPositions.contains(impact.getTarget()));
+                assertEquals(whitePawn.getPosition(), impact.getPosition());
+            });
+    }
+
+    @Test
+    void testPinnedPawnLuftImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("b8")
+                .withBlackQueen("a8")
+                .withBlackRook("h6")
+                .withWhiteKing("h1")
+                .withWhitePawns("h2","g2","f2")
+                .build();
+
+        var whitePawn1 = board.getPiece("g2").get();
+        var luftImpacts1 = board.getImpacts(whitePawn1, Impact.Type.LUFT);
+
+        assertTrue(luftImpacts1.isEmpty());
+
+        var whitePawn2 = board.getPiece("h2").get();
+        var luftImpacts2 = board.getImpacts(whitePawn2, Impact.Type.LUFT);
+
+        assertFalse(luftImpacts2.isEmpty());
+        assertEquals(2, luftImpacts2.size());
+
+        var pawnPositions = List.of(positionOf("h3"), positionOf("h4"));
+        luftImpacts2.stream()
+            .map(impact -> (PieceLuftImpact<?,?>) impact)
+            .forEach(impact -> {
+                assertTrue(pawnPositions.contains(impact.getTarget()));
+                assertEquals(whitePawn2.getPosition(), impact.getPosition());
+            });
     }
 
     static void assertPawnEnPassantActions(Board board, Color color, Piece.Type type,
