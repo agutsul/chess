@@ -4,6 +4,8 @@ import static java.util.Collections.emptyList;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -17,7 +19,7 @@ class PawnMoveAlgo<COLOR extends Color,
         extends AbstractAlgo<PAWN,Position>
         implements MovePieceAlgo<COLOR,PAWN,Position> {
 
-    private final int step;
+    protected final int step;
 
     PawnMoveAlgo(Board board, int step) {
         super(board);
@@ -26,15 +28,18 @@ class PawnMoveAlgo<COLOR extends Color,
 
     @Override
     public Collection<Position> calculate(PAWN pawn) {
+        return Stream.of(calculate(pawn, this.step))
+                .flatMap(Optional::stream)
+                .map(List::of)
+                .findFirst()
+                .orElse(emptyList());
+    }
+
+    protected Optional<Position> calculate(PAWN pawn, int step) {
         var currentPosition = pawn.getPosition();
-
-        var nextPosition = board.getPosition(
+        return board.getPosition(
                 currentPosition.x(),
-                currentPosition.y() + this.step
+                currentPosition.y() + step
         );
-
-        return nextPosition.isPresent()
-                ? List.of(nextPosition.get())
-                : emptyList();
     }
 }

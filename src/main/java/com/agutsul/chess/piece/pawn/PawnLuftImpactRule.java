@@ -65,7 +65,29 @@ final class PawnLuftImpactRule<COLOR extends Color,
         var king = optionalKing.get();
 
         var initLine = initialLine(king);
+        // skip luft impact when king is not located at init line
         if (!initLine.stream().anyMatch(line -> line.contains(king.getPosition()))) {
+            return emptyList();
+        }
+
+        var kingProtectors = Stream.of(board.getPieces(piece.getColor()))
+                .flatMap(Collection::stream)
+                .filter(not(Piece::isKing))
+                .filter(protectorPiece -> Stream.of(board.getImpacts(protectorPiece, Impact.Type.PROTECT))
+                        .flatMap(Collection::stream)
+                        .map(impact -> (PieceProtectImpact<?,?,?>) impact)
+                        .anyMatch(impact -> Objects.equals(impact.getTarget(), king)
+                                && initLine.stream()
+                                        .anyMatch(line -> line.contains(
+                                                impact.getSource().getPosition()
+                                         )
+                                )
+                        )
+                )
+                .toList();
+
+        // skip luft impact for king protected by the piece on king's init line
+        if (!kingProtectors.isEmpty()) {
             return emptyList();
         }
 
@@ -76,6 +98,7 @@ final class PawnLuftImpactRule<COLOR extends Color,
                 .filter(position -> !board.isAttacked(position, opponentColor))
                 .collect(toSet());
 
+        // skip luft when there are king move positions outside of init line
         if (!initLine.stream().anyMatch(line -> line.containsAll(kingMovePositions))) {
             return emptyList();
         }
@@ -93,6 +116,7 @@ final class PawnLuftImpactRule<COLOR extends Color,
                 )
                 .toList();
 
+        // skip luft impact when opponent has no piece able to control king's init line
         if (opponentPieces.isEmpty()) {
             return emptyList();
         }
@@ -105,16 +129,18 @@ final class PawnLuftImpactRule<COLOR extends Color,
                 .filter(pawn -> !((Movable) pawn).isMoved())
                 .toList();
 
+        // skip luft impact when pawn is already moved, so initial pawn position already available for king
         if (!pawns.contains(piece)) {
             return emptyList();
         }
 
+        // skip luft impact when pawn is pinned protecting the king
         if (!piece.isPinned()) {
             return createLuftImpacts(piece);
         }
 
         var pawnAttackers = new ArrayList<>(board.getAttackers(piece));
-        // for more than 1 attacker skip making a luft impact
+        // skip luft impact when there are multiple pawn attackers
         if (pawnAttackers.size() > 1) {
             return emptyList();
         }
