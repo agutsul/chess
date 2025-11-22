@@ -61,7 +61,7 @@ public final class PawnPieceActionRule<COLOR extends Color,
                 new PawnPromoteActionRule<>(board, promoteAlgo, moveActionRule),
                 captureActionRule,
                 moveActionRule,
-                new PawnBigMoveActionRule<>(board, moveAlgo, bigMoveAlgo)
+                new PawnBigMoveActionRule<>(board, bigMoveAlgo)
         );
     }
 

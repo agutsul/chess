@@ -18,30 +18,18 @@ final class PawnBigMoveActionRule<COLOR extends Color,
                                   PAWN extends PawnPiece<COLOR>>
         extends PawnMoveActionRule<COLOR,PAWN> {
 
-    private final MovePieceAlgo<COLOR,PAWN,Position> bigMoveAlgo;
 
     PawnBigMoveActionRule(Board board,
-                          MovePieceAlgo<COLOR,PAWN,Position> moveAlgo,
                           MovePieceAlgo<COLOR,PAWN,Position> bigMoveAlgo) {
 
-        super(Action.Type.BIG_MOVE, board, moveAlgo);
-        this.bigMoveAlgo = bigMoveAlgo;
+        super(Action.Type.BIG_MOVE, board, bigMoveAlgo);
     }
 
     @Override
     protected Collection<Calculatable> calculate(PAWN pawn) {
-        if (pawn.isMoved()) {
-            return emptyList();
-        }
-
-        // check if intermediate position is empty for move
-        var positions = super.calculate(pawn);
-        if (positions.isEmpty()) {
-            return emptyList();
-        }
-
-        // calculate actual 'big move position'
-        return super.calculate(bigMoveAlgo, pawn);
+        return pawn.isMoved()
+                ? emptyList()
+                : super.calculate(pawn);
     }
 
     @Override

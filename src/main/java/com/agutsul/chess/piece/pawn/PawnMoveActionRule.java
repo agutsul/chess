@@ -1,6 +1,7 @@
 package com.agutsul.chess.piece.pawn;
 
-import java.util.ArrayList;
+import static java.util.List.copyOf;
+
 import java.util.Collection;
 
 import com.agutsul.chess.Calculatable;
@@ -35,16 +36,6 @@ class PawnMoveActionRule<COLOR extends Color,
 
     protected Collection<Calculatable> calculate(MovePieceAlgo<COLOR,PAWN,Position> algo,
                                                  PAWN piece) {
-
-        var positions = new ArrayList<Calculatable>();
-        for (var position : algo.calculate(piece)) {
-            if (!board.isEmpty(position)) {
-                break;
-            }
-
-            positions.add(position);
-        }
-
-        return positions;
+        return copyOf(algo.calculate(piece));
     }
 }

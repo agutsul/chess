@@ -28,18 +28,23 @@ class PawnMoveAlgo<COLOR extends Color,
 
     @Override
     public Collection<Position> calculate(PAWN pawn) {
-        return Stream.of(calculate(pawn, this.step))
-                .flatMap(Optional::stream)
-                .map(List::of)
-                .findFirst()
-                .orElse(emptyList());
+        return collect(calculate(pawn, this.step));
     }
 
-    protected Optional<Position> calculate(PAWN pawn, int step) {
+    Optional<Position> calculate(PAWN pawn, int step) {
         var currentPosition = pawn.getPosition();
         return board.getPosition(
                 currentPosition.x(),
                 currentPosition.y() + step
         );
+    }
+
+    Collection<Position> collect(Optional<Position> calculated) {
+        return Stream.of(calculated)
+                .flatMap(Optional::stream)
+                .filter(position -> board.isEmpty(position))
+                .map(List::of)
+                .findFirst()
+                .orElse(emptyList());
     }
 }

@@ -196,7 +196,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         var whitePawn = (PawnPiece<Color>) board.getPiece("e2").get();
         var targetPosition = board.getPosition("e4").get();
 
-        assertEquals(whitePawn.getPosition(), board.getPosition("e2").get());
+        assertEquals(board.getPosition("e2").get(), whitePawn.getPosition());
         assertFalse(whitePawn.isMoved());
 
         whitePawn.move(targetPosition);
@@ -212,7 +212,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         var whitePawn = (PawnPiece<Color>) board.getPiece("e2").get();
         var targetPosition = board.getPosition("f4").get();
 
-        assertEquals(whitePawn.getPosition(), board.getPosition("e2").get());
+        assertEquals(board.getPosition("e2").get(), whitePawn.getPosition());
         assertFalse(whitePawn.isMoved());
 
         var thrown = assertThrows(
