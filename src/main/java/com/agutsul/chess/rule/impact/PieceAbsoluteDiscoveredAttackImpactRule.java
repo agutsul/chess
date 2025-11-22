@@ -1,6 +1,5 @@
 package com.agutsul.chess.rule.impact;
 
-import static com.agutsul.chess.rule.impact.LineImpactRule.LINE_ATTACK_PIECE_TYPES;
 import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -52,7 +51,7 @@ final class PieceAbsoluteDiscoveredAttackImpactRule<COLOR1 extends Color,
 
                     var impact = linePieces.stream()
                             .filter(attacker -> Objects.equals(piece.getColor(), attacker.getColor()))
-                            .filter(attacker -> LINE_ATTACK_PIECE_TYPES.contains(attacker.getType()))
+                            .filter(Piece::isLinear)
                             // searched pattern: 'attacker - piece - attacked king' or reverse
                             .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, opponentKing)))
                             .filter(attacker -> {

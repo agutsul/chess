@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.pawn;
 
+import static com.agutsul.chess.piece.Piece.isLinear;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.Collections.emptyList;
 import static java.util.function.Predicate.not;
@@ -8,10 +9,8 @@ import static java.util.stream.Collectors.toSet;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Movable;
@@ -38,9 +37,6 @@ final class PawnLuftImpactRule<COLOR extends Color,
                                IMPACT extends PieceLuftImpact<COLOR,PAWN>>
         extends AbstractRule<PAWN,IMPACT,Impact.Type>
         implements LuftImpactRule<COLOR,PAWN,IMPACT> {
-
-    private static final Set<Piece.Type> LINE_ATTACK_PIECE_TYPES =
-            EnumSet.of(Piece.Type.BISHOP, Piece.Type.ROOK, Piece.Type.QUEEN);
 
     private final Algo<PAWN,Collection<Position>> moveAlgo;
     private final Algo<PAWN,Collection<Position>> captureAlgo;
@@ -139,7 +135,7 @@ final class PawnLuftImpactRule<COLOR extends Color,
                     .collect(toList());
         }
 
-        if (!LINE_ATTACK_PIECE_TYPES.contains(pawnAttacker.getType())) {
+        if (!isLinear(pawnAttacker)) {
             return emptyList();
         }
 

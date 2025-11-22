@@ -125,4 +125,12 @@ public interface Piece<COLOR extends Color>
     static boolean isKing(Piece.Type pieceType) {
         return Piece.Type.KING.equals(pieceType);
     }
+
+    static boolean isLinear(Piece<?> piece) {
+        return isLinear(piece.getType());
+    }
+
+    static boolean isLinear(Piece.Type pieceType) {
+        return isBishop(pieceType) || isRook(pieceType) || isQueen(pieceType);
+    }
 }

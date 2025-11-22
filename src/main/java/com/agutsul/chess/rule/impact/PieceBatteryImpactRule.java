@@ -1,6 +1,5 @@
 package com.agutsul.chess.rule.impact;
 
-import static com.agutsul.chess.rule.impact.LineImpactRule.LINE_ATTACK_PIECE_TYPES;
 import static java.util.Collections.emptyList;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -65,7 +64,7 @@ public class PieceBatteryImpactRule<COLOR extends Color,
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceProtectImpact<?,?,?>) impact)
                 .map(PieceProtectImpact::getTarget)
-                .filter(p -> LINE_ATTACK_PIECE_TYPES.contains(p.getType()))
+                .filter(Piece::isLinear)
                 .collect(toMap(Piece::getPosition, identity()));
 
         if (protectedLocations.isEmpty()) {
@@ -74,7 +73,7 @@ public class PieceBatteryImpactRule<COLOR extends Color,
 
         var pieceLocations = Stream.of(board.getPieces(piece.getColor()))
                 .flatMap(Collection::stream)
-                .filter(p -> LINE_ATTACK_PIECE_TYPES.contains(p.getType()))
+                .filter(Piece::isLinear)
                 .collect(toMap(Piece::getPosition, identity()));
 
         if (pieceLocations.size() < 2) {

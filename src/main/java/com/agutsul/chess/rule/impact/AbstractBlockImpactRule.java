@@ -1,6 +1,5 @@
 package com.agutsul.chess.rule.impact;
 
-import static com.agutsul.chess.rule.impact.LineImpactRule.LINE_ATTACK_PIECE_TYPES;
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
@@ -60,7 +59,7 @@ abstract class AbstractBlockImpactRule<COLOR1 extends Color,
 
         var impacts = Stream.of(board.getPieces(piece.getColor().invert()))
                 .flatMap(Collection::stream)
-                .filter(opponentPiece -> LINE_ATTACK_PIECE_TYPES.contains(opponentPiece.getType()))
+                .filter(Piece::isLinear)
                 .map(opponentPiece -> board.getActions(opponentPiece, Action.Type.CAPTURE))
                 .flatMap(Collection::stream)
                 .map(action -> (PieceCaptureAction<COLOR2,COLOR1,ATTACKER,ATTACKED>) action)

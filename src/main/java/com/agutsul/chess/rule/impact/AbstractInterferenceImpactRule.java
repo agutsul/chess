@@ -1,6 +1,5 @@
 package com.agutsul.chess.rule.impact;
 
-import static com.agutsul.chess.rule.impact.LineImpactRule.LINE_ATTACK_PIECE_TYPES;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
@@ -59,7 +58,7 @@ abstract class AbstractInterferenceImpactRule<COLOR1 extends Color,
 
         var impacts = Stream.of(board.getPieces(piece.getColor().invert()))
                 .flatMap(Collection::stream)
-                .filter(opponentPiece -> LINE_ATTACK_PIECE_TYPES.contains(opponentPiece.getType()))
+                .filter(Piece::isLinear)
                 .map(opponentPiece -> board.getImpacts(opponentPiece, Impact.Type.PROTECT))
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceProtectImpact<COLOR2,PROTECTOR,PROTECTED>) impact)
