@@ -7,6 +7,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.Impact;
@@ -44,8 +45,8 @@ final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
         var king = (ATTACKED) optionalKing.get();
 
         // check if king is attacked by line attacker
-        var attackerImpacts = board.getImpacts(piece, Impact.Type.CONTROL);
-        var isKingAttacked = attackerImpacts.stream()
+        var isKingAttacked = Stream.of(board.getImpacts(piece, Impact.Type.CONTROL))
+                .flatMap(Collection::stream)
                 .map(Impact::getPosition)
                 .anyMatch(position -> Objects.equals(position, king.getPosition()));
 
@@ -54,14 +55,16 @@ final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
         }
 
         var expectedPieces = List.of(piece, king);
-        var impacts = lines.stream()
+        var impacts = Stream.of(lines)
+                .flatMap(Collection::stream)
                 .map(line -> {
                     var linePieces = board.getPieces(line);
                     if (linePieces.size() < 3 || !linePieces.containsAll(expectedPieces)) {
                         return null;
                     }
 
-                    var impact = linePieces.stream()
+                    var impact = Stream.of(linePieces)
+                            .flatMap(Collection::stream)
                             .filter(defended -> !Objects.equals(king,  defended))
                             .filter(defended -> !Objects.equals(piece, defended))
                             .filter(defended -> !Objects.equals(defended.getColor(), piece.getColor()))

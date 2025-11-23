@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -55,7 +56,8 @@ final class RookPieceImpl<COLOR extends Color>
         // (because by default castling is initiated by the king)
         // and as result be the last in the result collection.
         // Action order influences action auto-detection used by PerformActionCommand.
-        return super.getActions().stream()
+        return Stream.of(super.getActions())
+                .flatMap(Collection::stream)
                 .sorted(ROOK_COMPARATOR)
                 .toList();
     }

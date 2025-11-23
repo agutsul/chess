@@ -1,9 +1,6 @@
 package com.agutsul.chess.piece.pawn;
 
-import static java.util.Collections.emptyList;
-
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -43,8 +40,6 @@ class PawnMoveAlgo<COLOR extends Color,
         return Stream.of(calculated)
                 .flatMap(Optional::stream)
                 .filter(position -> board.isEmpty(position))
-                .map(List::of)
-                .findFirst()
-                .orElse(emptyList());
+                .toList();
     }
 }

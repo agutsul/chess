@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.slf4j.Logger;
@@ -268,12 +269,14 @@ abstract class AbstractPiece<COLOR extends Color>
         LOGGER.info("Checking if piece '{}' is protected by the other piece", this);
 
         // piece can't protect itself. only the other piece with the same color ( if it is not pinned )
-        var protectors = board.getPieces(getColor()).stream()
+        var protectors = Stream.of(board.getPieces(getColor()))
+                .flatMap(Collection::stream)
                 .filter(piece -> !Objects.equals(piece, this))
                 .filter(piece -> isKing(piece) || !((Pinnable) piece).isPinned())
                 .toList();
 
-        var isProtected = protectors.stream()
+        var isProtected = Stream.of(protectors)
+                .flatMap(Collection::stream)
                 .map(piece -> board.getImpacts(piece, Impact.Type.PROTECT))
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceProtectImpact<?,?,?>) impact)

@@ -39,7 +39,8 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
     protected Collection<PieceRelativePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>>
             createImpacts(PINNED piece, Collection<Line> lines) {
 
-        var valuablePieces = board.getPieces(piece.getColor()).stream()
+        var valuablePieces = Stream.of(board.getPieces(piece.getColor()))
+                .flatMap(Collection::stream)
                 .filter(not(Piece::isKing))
                 .filter(vp -> !Objects.equals(piece, vp))
                 .filter(vp -> Math.abs(vp.getValue()) > Math.abs(piece.getValue()))
@@ -59,40 +60,41 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
             return emptyList();
         }
 
-        var impacts =
-                impactLines.entries().stream()
-                    .map(entry -> {
-                        var line = entry.getKey();
+        var impacts = Stream.of(impactLines.entries())
+                .flatMap(Collection::stream)
+                .map(entry -> {
+                    var line = entry.getKey();
 
-                        var linePieces = board.getPieces(line);
-                        if (linePieces.size() < 3) {
-                            return null;
-                        }
+                    var linePieces = board.getPieces(line);
+                    if (linePieces.size() < 3) {
+                        return null;
+                    }
 
-                        var valuablePiece = entry.getValue();
-                        var impact = linePieces.stream()
-                                .filter(attacker -> !Objects.equals(attacker.getColor(), piece.getColor()))
-                                .filter(Piece::isLinear)
-                                // searched pattern: 'attacker - pinned piece - valuable piece' or reverse
-                                .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, valuablePiece)))
-                                .filter(attacker -> {
-                                    // check if piece is attacked by line attacker
-                                    var attackerImpacts = board.getImpacts(attacker, Impact.Type.CONTROL);
-                                    var isPieceAttacked = attackerImpacts.stream()
-                                            .map(Impact::getPosition)
-                                            .anyMatch(position -> Objects.equals(position, piece.getPosition()));
+                    var valuablePiece = entry.getValue();
+                    var impact = Stream.of(linePieces)
+                            .flatMap(Collection::stream)
+                            .filter(Piece::isLinear)
+                            .filter(attacker -> !Objects.equals(attacker.getColor(), piece.getColor()))
+                            // searched pattern: 'attacker - pinned piece - valuable piece' or reverse
+                            .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, valuablePiece)))
+                            .filter(attacker -> {
+                                // check if piece is attacked by line attacker
+                                var isPieceAttacked = Stream.of(board.getImpacts(attacker, Impact.Type.CONTROL))
+                                        .flatMap(Collection::stream)
+                                        .map(Impact::getPosition)
+                                        .anyMatch(position -> Objects.equals(position, piece.getPosition()));
 
-                                    return isPieceAttacked;
-                                })
-                                .findFirst()
-                                .map(attacker -> new PieceRelativePinImpact<>(piece, valuablePiece, (ATTACKER) attacker, line))
-                                .orElse(null);
+                                return isPieceAttacked;
+                            })
+                            .findFirst()
+                            .map(attacker -> new PieceRelativePinImpact<>(piece, valuablePiece, (ATTACKER) attacker, line))
+                            .orElse(null);
 
-                        return impact;
-                    })
-                    .filter(Objects::nonNull)
-                    .distinct()
-                    .collect(toList());
+                    return impact;
+                })
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(toList());
 
         return impacts;
     }

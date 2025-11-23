@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -131,7 +132,8 @@ public final class SimulationGame
 
         // copy piece visited positions to properly resolve en-passant and castling actions
         var observableBoard = (Observable) board;
-        PIECE_TYPES.stream()
+        Stream.of(PIECE_TYPES)
+            .flatMap(Collection::stream)
             .map(pieceType -> originBoard.getPieces(pieceType))
             .flatMap(Collection::stream)
             .map(CopyVisitedPositionsEvent::new)

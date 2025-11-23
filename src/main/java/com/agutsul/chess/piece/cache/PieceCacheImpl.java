@@ -136,8 +136,9 @@ public final class PieceCacheImpl implements PieceCache {
 
         @Override
         public PieceMap call() throws Exception {
-            var filteredPieces = this.pieces.stream()
-                    .filter(piece -> predicate.test(piece))
+            var filteredPieces = Stream.of(this.pieces)
+                    .flatMap(Collection::stream)
+                    .filter(predicate)
                     .toList();
 
             return createPieceMap(filteredPieces);
@@ -159,12 +160,14 @@ public final class PieceCacheImpl implements PieceCache {
             var map = new PieceMultiMap();
 
             for (var color : Colors.values()) {
-                var piecesByColor = pieces.stream()
+                var piecesByColor = Stream.of(pieces)
+                        .flatMap(Collection::stream)
                         .filter(piece -> Objects.equals(piece.getColor(), color))
                         .toList();
 
                 for (var pieceType : Piece.Type.values()) {
-                    var piecesByType = piecesByColor.stream()
+                    var piecesByType = Stream.of(piecesByColor)
+                            .flatMap(Collection::stream)
                             .filter(piece -> Objects.equals(piece.getType(), pieceType))
                             .toList();
 

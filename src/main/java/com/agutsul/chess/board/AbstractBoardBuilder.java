@@ -355,7 +355,8 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
             }
 
             // split to subtasks
-            var tasks = partition(this.positions, this.positions.size() / 2).stream()
+            var tasks = Stream.of(partition(this.positions, this.positions.size() / 2))
+                    .flatMap(Collection::stream)
                     .map(positions -> new PieceBuilderSubTask<>(positions, function))
                     .map(ForkJoinTask::fork)
                     .toList();

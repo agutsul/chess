@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toSet;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
@@ -41,7 +42,8 @@ final class PieceMultiMap implements PieceMap {
 
     @Override
     public Collection<Piece<?>> get(Object key) {
-        return this.map.get(String.valueOf(key)).stream()
+        return Stream.of(this.map.get(String.valueOf(key)))
+                .flatMap(Collection::stream)
                 .flatMap(Collection::stream)
                 .toList();
     }
@@ -54,7 +56,8 @@ final class PieceMultiMap implements PieceMap {
 
     @Override
     public Collection<Piece<?>> remove(Object key) {
-        return this.map.remove(key).stream()
+        return Stream.of(this.map.remove(key))
+                .flatMap(Collection::stream)
                 .flatMap(Collection::stream)
                 .toList();
     }

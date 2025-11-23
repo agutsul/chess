@@ -57,40 +57,41 @@ final class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
             return emptyList();
         }
 
-        var impacts =
-                impactLines.entries().stream()
-                    .map(entry -> {
-                        var line = entry.getKey();
+        var impacts = Stream.of(impactLines.entries())
+                .flatMap(Collection::stream)
+                .map(entry -> {
+                    var line = entry.getKey();
 
-                        var linePieces = board.getPieces(line);
-                        if (linePieces.size() < 3) {
-                            return null;
-                        }
+                    var linePieces = board.getPieces(line);
+                    if (linePieces.size() < 3) {
+                        return null;
+                    }
 
-                        var opponentPiece = entry.getValue();
-                        var impact = linePieces.stream()
-                                .filter(attacker -> Objects.equals(piece.getColor(), attacker.getColor()))
-                                .filter(Piece::isLinear)
-                                // searched pattern: 'attacker - piece - attacked piece' or reverse
-                                .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, opponentPiece)))
-                                .filter(attacker -> {
-                                    // check if piece is protected by line attacker
-                                    var protectImpacts = board.getImpacts(attacker, Impact.Type.PROTECT);
-                                    var isPieceProtected = protectImpacts.stream()
-                                            .map(Impact::getPosition)
-                                            .anyMatch(position -> Objects.equals(position, piece.getPosition()));
+                    var opponentPiece = entry.getValue();
+                    var impact = Stream.of(linePieces)
+                            .flatMap(Collection::stream)
+                            .filter(Piece::isLinear)
+                            .filter(attacker -> Objects.equals(piece.getColor(), attacker.getColor()))
+                            // searched pattern: 'attacker - piece - attacked piece' or reverse
+                            .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, opponentPiece)))
+                            .filter(attacker -> {
+                                // check if piece is protected by line attacker
+                                var isPieceProtected = Stream.of(board.getImpacts(attacker, Impact.Type.PROTECT))
+                                        .flatMap(Collection::stream)
+                                        .map(Impact::getPosition)
+                                        .anyMatch(position -> Objects.equals(position, piece.getPosition()));
 
-                                    return isPieceProtected;
-                                })
-                                .findFirst()
-                                .map(attacker -> new PieceRelativeDiscoveredAttackImpact<>(piece, (ATTACKER) attacker, opponentPiece, line))
-                                .orElse(null);
+                                return isPieceProtected;
+                            })
+                            .findFirst()
+                            .map(attacker -> new PieceRelativeDiscoveredAttackImpact<>(piece, (ATTACKER) attacker, opponentPiece, line))
+                            .orElse(null);
 
-                        return impact;
-                    })
-                    .filter(Objects::nonNull)
-                    .distinct()
-                    .collect(toList());
+                    return impact;
+                })
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(toList());
 
         return impacts;
     }

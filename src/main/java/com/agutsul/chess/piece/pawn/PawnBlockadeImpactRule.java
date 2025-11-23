@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceBlockadeImpact;
@@ -44,18 +45,20 @@ final class PawnBlockadeImpactRule<COLOR extends Color,
                 .mapToObj(y -> positionOf(pawnPosition.x(), y))
                 .toList();
 
-        var sameColorBlockImpacts = board.getPieces(pawn.getColor()).stream()
+        var sameColorBlockImpacts = Stream.of(board.getPieces(pawn.getColor()))
+                .flatMap(Collection::stream)
                 .filter(piece -> !Objects.equals(piece, pawn))
                 .filter(piece -> possibleMovePositions.contains(piece.getPosition()))
                 .map(piece -> new PieceBlockadeImpact<>(pawn, (PIECE) piece))
                 .toList();
 
-        var attackerBlockImpacts = board.getPieces(pawn.getColor().invert()).stream()
+        var attackerBlockImpacts = Stream.of(board.getPieces(pawn.getColor().invert()))
+                .flatMap(Collection::stream)
                 .filter(piece -> {
                     var isBlocked = possibleMovePositions.contains(piece.getPosition());
                     if (!isBlocked) {
-                        var controlImpacts = piece.getImpacts(Impact.Type.CONTROL);
-                        return controlImpacts.stream()
+                        return Stream.of(piece.getImpacts(Impact.Type.CONTROL))
+                                .flatMap(Collection::stream)
                                 .map(Impact::getPosition)
                                 .anyMatch(position -> possibleMovePositions.contains(position));
                     }

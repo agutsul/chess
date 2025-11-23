@@ -38,15 +38,13 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
             createImpacts(ATTACKER piece, Collection<Line> lines) {
 
         var opponentColor  = piece.getColor().invert();
-        var opponentPieces = Stream.of(board.getPieces(opponentColor))
-                .flatMap(Collection::stream)
-                .filter(not(Piece::isKing))
-                .collect(toList());
 
-        var attackerImpacts = board.getImpacts(piece, Impact.Type.CONTROL);
-        var attackedPieces  = attackerImpacts.stream()
+        var attackedPieces  = Stream.of(board.getImpacts(piece, Impact.Type.CONTROL))
+                .flatMap(Collection::stream)
                 .map(Impact::getPosition)
-                .map(attackedPosition -> opponentPieces.stream()
+                .map(attackedPosition -> Stream.of(board.getPieces(opponentColor))
+                        .flatMap(Collection::stream)
+                        .filter(not(Piece::isKing))
                         .filter(opponentPiece -> Objects.equals(attackedPosition, opponentPiece.getPosition()))
                         .findFirst()
                 )
@@ -58,14 +56,16 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
             return emptyList();
         }
 
-        var impacts = lines.stream()
+        var impacts = Stream.of(lines)
+               .flatMap(Collection::stream)
                .map(line -> {
                    var linePieces = board.getPieces(line);
                    if (linePieces.size() < 3) {
                        return null;
                    }
 
-                   var optionalPiece = linePieces.stream()
+                   var optionalPiece = Stream.of(linePieces)
+                           .flatMap(Collection::stream)
                            .filter(attacked -> !Objects.equals(piece, attacked))
                            .filter(attacked -> attackedPieces.contains(attacked))
                            .findFirst();
@@ -76,7 +76,8 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
 
                    var attackedPiece = (ATTACKED) optionalPiece.get();
 
-                   var impact = linePieces.stream()
+                   var impact = Stream.of(linePieces)
+                           .flatMap(Collection::stream)
                            .filter(defended -> !Objects.equals(piece, defended))
                            .filter(defended -> !attackedPieces.contains(defended))
                            .filter(defended -> !Objects.equals(defended.getColor(), piece.getColor()))

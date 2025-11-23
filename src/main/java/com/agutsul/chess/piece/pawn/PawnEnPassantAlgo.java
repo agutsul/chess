@@ -40,8 +40,7 @@ final class PawnEnPassantAlgo<COLOR extends Color,
     }
 
     Map<Position,PawnPiece<Color>> calculateData(PAWN pawn) {
-        var nextPositions = captureAlgo.calculate(pawn);
-        var data = Stream.of(nextPositions)
+        var data = Stream.of(captureAlgo.calculate(pawn))
                 .flatMap(Collection::stream)
                 .map(attackedPosition ->
                     Stream.of(findOpponentPawn(pawn, attackedPosition))

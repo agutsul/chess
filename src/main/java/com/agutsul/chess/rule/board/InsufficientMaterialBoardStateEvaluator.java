@@ -4,9 +4,11 @@ import static com.agutsul.chess.board.state.BoardStateFactory.insufficientMateri
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -142,8 +144,8 @@ final class InsufficientMaterialBoardStateEvaluator
 
         @Override
         protected BoardState evaluateBoard(Color color) {
-            var pawns = board.getPieces(color, Piece.Type.PAWN);
-            var isAnyNonLocked = pawns.stream()
+            var isAnyNonLocked = Stream.of(board.getPieces(color, Piece.Type.PAWN))
+                    .flatMap(Collection::stream)
                     .anyMatch(pawn -> !isLocked(pawn));
 
             return isAnyNonLocked
@@ -343,7 +345,8 @@ final class InsufficientMaterialBoardStateEvaluator
             }
 
             // all the pieces of pieceType are located on the positions with the same color
-            var positionColors = pieces.stream()
+            var positionColors = Stream.of(pieces)
+                    .flatMap(Collection::stream)
                     .map(Piece::getPosition)
                     .map(Position::getColor)
                     .collect(toSet());

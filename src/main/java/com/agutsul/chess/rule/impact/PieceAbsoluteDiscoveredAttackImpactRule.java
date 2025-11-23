@@ -7,6 +7,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.Impact;
@@ -41,7 +42,8 @@ final class PieceAbsoluteDiscoveredAttackImpactRule<COLOR1 extends Color,
         }
 
         var opponentKing = (ATTACKED) optionalKing.get();
-        var impacts = lines.stream()
+        var impacts = Stream.of(lines)
+                .flatMap(Collection::stream)
                 .filter(line -> line.contains(opponentKing.getPosition()))
                 .map(line -> {
                     var linePieces = board.getPieces(line);
@@ -49,15 +51,16 @@ final class PieceAbsoluteDiscoveredAttackImpactRule<COLOR1 extends Color,
                         return null;
                     }
 
-                    var impact = linePieces.stream()
-                            .filter(attacker -> Objects.equals(piece.getColor(), attacker.getColor()))
+                    var impact = Stream.of(linePieces)
+                            .flatMap(Collection::stream)
                             .filter(Piece::isLinear)
+                            .filter(attacker -> Objects.equals(piece.getColor(), attacker.getColor()))
                             // searched pattern: 'attacker - piece - attacked king' or reverse
                             .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, opponentKing)))
                             .filter(attacker -> {
                                 // check if piece is protected by line attacker
-                                var protectImpacts = board.getImpacts(attacker, Impact.Type.PROTECT);
-                                var isPieceProtected = protectImpacts.stream()
+                                var isPieceProtected = Stream.of(board.getImpacts(attacker, Impact.Type.PROTECT))
+                                        .flatMap(Collection::stream)
                                         .map(Impact::getPosition)
                                         .anyMatch(position -> Objects.equals(position, piece.getPosition()));
 

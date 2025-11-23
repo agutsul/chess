@@ -1,8 +1,8 @@
 package com.agutsul.chess.piece.pawn;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -25,20 +25,16 @@ final class PawnCaptureAlgo<COLOR extends Color,
 
     @Override
     public Collection<Position> calculate(PAWN pawn) {
-        var currentPosition = pawn.getPosition();
-
-        var nextPositions = new ArrayList<Optional<Position>>();
-        nextPositions.add(board.getPosition(
-                currentPosition.x() + 1,
-                currentPosition.y() + this.step
-            ));
-        nextPositions.add(board.getPosition(
-                currentPosition.x() - 1,
-                currentPosition.y() + this.step
-            ));
-
-        return nextPositions.stream()
+        return Stream.of(calculate(pawn, 1), calculate(pawn, -1))
                 .flatMap(Optional::stream)
                 .toList();
+    }
+
+    Optional<Position> calculate(PAWN pawn, int step) {
+        var currentPosition = pawn.getPosition();
+        return board.getPosition(
+                currentPosition.x() + step,
+                currentPosition.y() + this.step
+        );
     }
 }

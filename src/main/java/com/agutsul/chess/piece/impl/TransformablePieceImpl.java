@@ -344,8 +344,8 @@ final class TransformablePieceImpl<COLOR extends Color,
                 }
             } else {
                 // validate promotion action ( check if promoted position is legal )
-                var promoteActions = this.board.getActions(piece, Action.Type.PROMOTE);
-                var possiblePositions = promoteActions.stream()
+                var possiblePositions = Stream.of(board.getActions(piece, Action.Type.PROMOTE))
+                        .flatMap(Collection::stream)
                         .map(action -> (PiecePromoteAction<?,?>) action)
                         .map(action -> (Action<?>) action.getSource())
                         .map(Action::getPosition)

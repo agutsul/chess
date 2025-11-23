@@ -188,7 +188,8 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
             LOGGER.info("Castling '{}' to '{}'", piece, position);
 
             var possibleActions = board.getActions(piece, Action.Type.CASTLING);
-            var possibleAction = possibleActions.stream()
+            var possibleAction = Stream.of(possibleActions)
+                    .flatMap(Collection::stream)
                     .map(action -> (PieceCastlingAction<?,?,?>) action)
                     .filter(action -> isValidAction(action, position))
                     .findFirst();

@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -72,8 +73,8 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
     public void move(PIECE piece, Position position) {
         LOGGER.info("Move '{}' to '{}'", piece, position);
 
-        var possibleActions = board.getActions(piece, Action.Type.MOVE);
-        var possiblePositions = possibleActions.stream()
+        var possiblePositions = Stream.of(board.getActions(piece, Action.Type.MOVE))
+                .flatMap(Collection::stream)
                 .map(action -> (AbstractMoveAction<?,?>) action)
                 .map(AbstractMoveAction::getPosition)
                 .collect(toSet());

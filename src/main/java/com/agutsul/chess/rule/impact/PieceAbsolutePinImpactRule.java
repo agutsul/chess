@@ -7,6 +7,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Pinnable;
@@ -41,7 +42,8 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
         }
 
         var king = (KING) optionalKing.get();
-        var impactLines = lines.stream()
+        var impactLines = Stream.of(lines)
+                .flatMap(Collection::stream)
                 .filter(line -> line.contains(king.getPosition()))
                 .filter(line -> line.contains(piece.getPosition()))
                 .toList();
@@ -50,22 +52,24 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
             return emptyList();
         }
 
-        var impacts = impactLines.stream()
+        var impacts = Stream.of(impactLines)
+                .flatMap(Collection::stream)
                 .map(line -> {
                     var linePieces = board.getPieces(line);
                     if (linePieces.size() < 3) {
                         return null;
                     }
 
-                    var impact = linePieces.stream()
-                            .filter(attacker -> !Objects.equals(attacker.getColor(), piece.getColor()))
+                    var impact = Stream.of(linePieces)
+                            .flatMap(Collection::stream)
                             .filter(Piece::isLinear)
+                            .filter(attacker -> !Objects.equals(attacker.getColor(), piece.getColor()))
                             // searched pattern: 'attacker - pinned piece - king' or reverse
                             .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, king)))
                             .filter(attacker -> {
                                 // check if piece is attacked by line attacker
-                                var attackerImpacts = board.getImpacts(attacker, Impact.Type.CONTROL);
-                                var isPieceAttacked = attackerImpacts.stream()
+                                var isPieceAttacked = Stream.of(board.getImpacts(attacker, Impact.Type.CONTROL))
+                                        .flatMap(Collection::stream)
                                         .map(Impact::getPosition)
                                         .anyMatch(position -> Objects.equals(position, piece.getPosition()));
 
@@ -73,8 +77,8 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
                             })
                             .filter(attacker -> {
                                 // check if king is monitored by line attacker
-                                var attackerImpacts = board.getImpacts(attacker, Impact.Type.MONITOR);
-                                var isKingMonitored = attackerImpacts.stream()
+                                var isKingMonitored = Stream.of(board.getImpacts(attacker, Impact.Type.MONITOR))
+                                        .flatMap(Collection::stream)
                                         .map(Impact::getPosition)
                                         .anyMatch(position -> Objects.equals(position, king.getPosition()));
 

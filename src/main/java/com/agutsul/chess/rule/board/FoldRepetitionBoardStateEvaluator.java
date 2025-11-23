@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -51,12 +52,12 @@ final class FoldRepetitionBoardStateEvaluator
 
         var maxRepetitions = maxEntry.map(Map.Entry::getValue).orElse(0);
         if (maxRepetitions >= FIVE_REPETITIONS) {
-            var actionMemento = findActionMemento(journalActions, maxEntry.get().getKey());
+            var actionMemento = findActionMemento(journalActions, maxEntry);
             return Optional.of(fiveFoldRepetitionBoardState(board, actionMemento));
         }
 
         if (maxRepetitions >= THREE_REPETITIONS) {
-            var actionMemento = findActionMemento(journalActions, maxEntry.get().getKey());
+            var actionMemento = findActionMemento(journalActions, maxEntry);
             return Optional.of(threeFoldRepetitionBoardState(board, actionMemento));
         }
 
@@ -64,9 +65,15 @@ final class FoldRepetitionBoardStateEvaluator
     }
 
     private static ActionMemento<?,?> findActionMemento(Collection<ActionMemento<?,?>> actions,
-                                                        String actionCode) {
-        return actions.stream()
-                .filter(action -> Objects.equals(createActionCode(action), actionCode))
+                                                        Optional<Map.Entry<String,Integer>> entry) {
+
+        return Stream.of(actions)
+                .flatMap(Collection::stream)
+                .filter(action -> Stream.of(entry)
+                        .flatMap(Optional::stream)
+                        .map(Map.Entry::getKey)
+                        .anyMatch(actionCode -> Objects.equals(createActionCode(action), actionCode))
+                )
                 .findFirst()
                 .get();
     }

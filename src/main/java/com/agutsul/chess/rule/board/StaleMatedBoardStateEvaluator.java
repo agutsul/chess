@@ -47,7 +47,8 @@ final class StaleMatedBoardStateEvaluator
                         return pieceActions;
                     }
 
-                    var kingActions = pieceActions.stream()
+                    var kingActions = Stream.of(pieceActions)
+                            .flatMap(Collection::stream)
                             .filter(action -> !board.isAttacked(action.getPosition(),  attackerColor))
                             .filter(action -> !board.isMonitored(action.getPosition(), attackerColor))
                             .findFirst()

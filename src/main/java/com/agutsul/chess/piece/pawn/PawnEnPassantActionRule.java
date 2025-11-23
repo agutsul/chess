@@ -33,10 +33,9 @@ final class PawnEnPassantActionRule<COLOR1 extends Color,
 
     @Override
     public Collection<PieceEnPassantAction<COLOR1,COLOR2,PAWN1,PAWN2>> evaluate(PAWN1 pawn) {
-        var data = algo.calculateData(pawn);
 
         @SuppressWarnings("unchecked")
-        var actions = Stream.of(data)
+        var actions = Stream.of(algo.calculateData(pawn))
                 .map(Map::entrySet)
                 .flatMap(Collection::stream)
                 .map(e -> new PieceEnPassantAction<>(pawn, (PAWN2) e.getValue(), e.getKey()))
