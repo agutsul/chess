@@ -1,13 +1,12 @@
 package com.agutsul.chess.piece.algo;
 
-import static com.agutsul.chess.line.LineFactory.lineOf;
-
 import java.util.Collection;
-import java.util.List;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
+import com.agutsul.chess.line.LineFactory;
 import com.agutsul.chess.piece.Piece;
 
 public final class VerticalLineAlgo<COLOR extends Color,
@@ -21,10 +20,12 @@ public final class VerticalLineAlgo<COLOR extends Color,
     @Override
     public Collection<Line> calculate(PIECE piece) {
         var currentPosition = piece.getPosition();
+        var lines = Stream.of(calculate(currentPosition, 0, -1),
+                              calculate(currentPosition, 0,  1)
+                )
+                .map(LineFactory::lineOf)
+                .toList();
 
-        var line1 = lineOf(calculate(currentPosition, 0, -1));
-        var line2 = lineOf(calculate(currentPosition, 0,  1));
-
-        return List.of(line1, line2);
+        return lines;
     }
 }

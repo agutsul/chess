@@ -27,7 +27,8 @@ public final class CompositePieceAlgo<COLOR extends Color,
 
     @Override
     public Collection<RESULT> calculate(SOURCE source) {
-        var results = this.algos.stream()
+        var results = Stream.of(this.algos)
+                .flatMap(Collection::stream)
                 .map(algo -> algo.calculate(source))
                 .flatMap(Collection::stream)
                 .toList();
