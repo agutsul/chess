@@ -54,8 +54,8 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
 
     @Override
     public final String toString() {
-        return String.format("[%s]",
-                this.actions.stream().map(Action::toString).collect(joining(","))
+        return String.format("[%s]", this.actions.stream()
+                .map(Action::toString).collect(joining(","))
         );
     }
 

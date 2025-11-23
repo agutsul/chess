@@ -43,7 +43,8 @@ public abstract class ActionMementoFactory {
         }
 
         var targetPosition = action.getPosition();
-        Optional<ActionMemento<?,?>> decoratedMemento = similarPieces.stream()
+        Optional<ActionMemento<?,?>> decoratedMemento = Stream.of(similarPieces)
+                .flatMap(Collection::stream)
                 .filter(piece -> !Objects.equals(piece, sourcePiece))
                 .filter(piece -> isPositionAccessible(board.getActions(piece), targetPosition))
                 .map(piece -> createCode(sourcePiece, piece.getPosition()))

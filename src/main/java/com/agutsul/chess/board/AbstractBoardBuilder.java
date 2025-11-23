@@ -299,7 +299,8 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
                     createTask(context.getPawnPositions(),   position -> pieceFactory.createPawn(position))
             );
 
-            var tasks = optionalTasks.stream()
+            var tasks = Stream.of(optionalTasks)
+                    .flatMap(Collection::stream)
                     .flatMap(Optional::stream)
                     .toList();
 

@@ -1,7 +1,5 @@
 package com.agutsul.chess;
 
-//import static com.agutsul.chess.timeout.TimeoutFactory.createActionTimeout;
-//import static com.agutsul.chess.timeout.TimeoutFactory.createIncrementalTimeout;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import org.apache.commons.configuration2.Configuration;
@@ -37,9 +35,11 @@ public class Application
     public void execute() {
         var gameThread = new Thread(new ConsoleGame<>(
                 new UserPlayer("player1", Colors.WHITE),
-                new UserPlayer("player2", Colors.BLACK)/*,
-                createIncrementalTimeout(createActionTimeout(1 * 60 * 1000L), 1 * 60 * 1000L)
-                */
+                new UserPlayer("player2", Colors.BLACK)//,
+                //createIncrementalTimeout(createActionTimeout(1 * 60 * 1000L), 1 * 60 * 1000L)
+                //createGameTimeout(1 * 60 * 1000L)
+                //createActionTimeout(1 * 60 * 1000L)
+                //createMixedTimeout(2 * 60 * 1000L, 2)
         ));
         gameThread.start();
 

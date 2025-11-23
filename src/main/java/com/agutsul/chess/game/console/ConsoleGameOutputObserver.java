@@ -407,7 +407,8 @@ public final class ConsoleGameOutputObserver
     }
 
     private static String formatBoardState(Collection<BoardState> boardStates) {
-        var states = boardStates.stream()
+        var states = Stream.of(boardStates)
+                .flatMap(Collection::stream)
                 .map(ConsoleGameOutputObserver::formatBoardState)
                 .collect(joining(","));
 

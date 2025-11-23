@@ -92,8 +92,8 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
     public void capture(PIECE piece, Piece<?> targetPiece) {
         LOGGER.info("Capture '{}' by '{}'", targetPiece, piece);
 
-        var possibleActions = board.getActions(piece, Action.Type.CAPTURE);
-        var possibleTargets = possibleActions.stream()
+        var possibleTargets = Stream.of(board.getActions(piece, Action.Type.CAPTURE))
+                .flatMap(Collection::stream)
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .map(AbstractCaptureAction::getTarget)
                 .collect(toSet());
