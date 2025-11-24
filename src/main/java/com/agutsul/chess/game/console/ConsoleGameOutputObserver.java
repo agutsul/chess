@@ -332,7 +332,7 @@ public final class ConsoleGameOutputObserver
                 ? format(createMemento(game.getBoard(), action))
                 : String.valueOf(action);
 
-        System.out.println(String.format("%d. %s %s: '%s': %s",
+        System.out.println(String.format("%d. %s %s: '%s': '%s'",
                 number,
                 actionPlayer.getColor(),
                 ACTION_MESSAGE,

@@ -17,7 +17,7 @@ public abstract class AbstractMoveAction<COLOR extends Color,
 
     @Override
     public final String getCode() {
-        return String.format("%s->%s", getPiece(), getPosition());
+        return String.format("%s %s", getPiece(), getPosition());
     }
 
     @Override
