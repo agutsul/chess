@@ -9,7 +9,8 @@ import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.action.PieceCaptureLineActionRule;
 import com.agutsul.chess.rule.action.PieceMoveLineActionRule;
 
-public final class RookPieceActionRule<COLOR extends Color,PIECE extends RookPiece<COLOR>>
+public final class RookPieceActionRule<COLOR extends Color,
+                                       PIECE extends RookPiece<COLOR>>
         extends AbstractPieceRule<Action<?>,Action.Type> {
 
     public RookPieceActionRule(Board board) {
