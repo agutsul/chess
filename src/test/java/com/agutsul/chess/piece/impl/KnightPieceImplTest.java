@@ -17,6 +17,7 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
 import com.agutsul.chess.activity.impact.PieceAbsolutePinImpact;
 import com.agutsul.chess.activity.impact.PieceBlockImpact;
+import com.agutsul.chess.activity.impact.PieceDesperadoImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PieceInterferenceImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
@@ -376,5 +377,44 @@ public class KnightPieceImplTest extends AbstractPieceTest {
         assertEquals(blackKnight, impact.getAttacker());
         assertEquals(blackPawn.getPosition(), impact.getPosition());
         assertEquals(blackPawn, impact.getSource().getTarget());
+    }
+
+    @Test
+    // https://www.chess.com/terms/desperado-chess
+    void testKnightDesperadoImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("d8")
+                .withBlackQueen("g6")
+                .withBlackRook("h8")
+                .withBlackBishops("b7","c5")
+                .withBlackKnights("c6","g8")
+                .withBlackPawns("a7","b6","d7","e5","f7","g7","h7")
+                .withWhiteKing("e1")
+                .withWhiteQueen("d1")
+                .withWhiteRooks("a1","h1")
+                .withWhiteBishops("c1","c4")
+                .withWhiteKnights("a8","f3")
+                .withWhitePawns("a2","b2","c2","d3","e4","f2","g2","h2")
+                .build();
+
+        var whiteKnight = board.getPiece("a8").get();
+        var desperadoImpacts = new ArrayList<>(
+                board.getImpacts(whiteKnight, Impact.Type.DESCPERADO)
+        );
+
+        assertFalse(desperadoImpacts.isEmpty());
+        assertEquals(2, desperadoImpacts.size());
+
+        var blackPawn1  = board.getPiece("b6").get();
+        var blackPawn2  = board.getPiece("a7").get();
+        var blackBishop = board.getPiece("c5").get();
+
+        var desperadoImpact1 = (PieceDesperadoImpact<?,?,?,?,?>) desperadoImpacts.getFirst();
+        assertEquals(blackPawn1, desperadoImpact1.getAttacked());
+        assertEquals(blackPawn2, desperadoImpact1.getAttacker());
+
+        var desperadoImpact2 = (PieceDesperadoImpact<?,?,?,?,?>) desperadoImpacts.getLast();
+        assertEquals(blackPawn1,  desperadoImpact2.getAttacked());
+        assertEquals(blackBishop, desperadoImpact2.getAttacker());
     }
 }

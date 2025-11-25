@@ -21,6 +21,7 @@ import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
 import com.agutsul.chess.activity.impact.PieceBatteryImpact;
+import com.agutsul.chess.activity.impact.PieceDesperadoImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PieceOverloadingImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
@@ -396,5 +397,39 @@ public class RookPieceImplTest extends AbstractPieceTest {
 
         var outpostImpact = outpostImpacts.getFirst();
         assertEquals(board.getPosition("c7").get(), outpostImpact.getPosition());
+    }
+
+    @Test
+    // https://www.chess.com/terms/desperado-chess
+    void testRookDesperadoImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("b8")
+                .withBlackQueen("h8")
+                .withBlackRooks("e7","h5")
+                .withBlackBishops("g7","d7")
+                .withBlackKnights("f6","c6")
+                .withBlackPawns("h4","e5","d6","c7","b7","a7")
+                .withWhiteKing("g1")
+                .withWhiteQueen("e3")
+                .withWhiteRooks("f1","a1")
+                .withWhiteBishops("g6","g5")
+                .withWhiteKnights("e2","a3")
+                .withWhitePawns("h3","g2","f3","e4","d3","c3","b4","a5")
+                .build();
+
+        var blackRook = board.getPiece("h5").get();
+        var desperadoImpacts = new ArrayList<>(
+                board.getImpacts(blackRook, Impact.Type.DESCPERADO)
+        );
+
+        assertFalse(desperadoImpacts.isEmpty());
+        assertEquals(1, desperadoImpacts.size());
+
+        var whiteBishop = board.getPiece("g5").get();
+        var whiteQueen  = board.getPiece("e3").get();
+
+        var desperadoImpact = (PieceDesperadoImpact<?,?,?,?,?>) desperadoImpacts.getFirst();
+        assertEquals(whiteBishop, desperadoImpact.getAttacked());
+        assertEquals(whiteQueen,  desperadoImpact.getAttacker());
     }
 }

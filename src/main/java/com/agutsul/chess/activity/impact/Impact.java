@@ -24,7 +24,8 @@ public interface Impact<SOURCE>
         BATTERY,
         OUTPOST,
         SACRIFICE,
-        LUFT
+        LUFT,
+        DESCPERADO
     }
 
     // utilities
@@ -163,5 +164,13 @@ public interface Impact<SOURCE>
 
     static boolean isLuft(Impact.Type impactType) {
         return Impact.Type.LUFT.equals(impactType);
+    }
+
+    static boolean isDesperado(Impact<?> impact) {
+        return isDesperado(impact.getType());
+    }
+
+    static boolean isDesperado(Impact.Type impactType) {
+        return Impact.Type.DESCPERADO.equals(impactType);
     }
 }
