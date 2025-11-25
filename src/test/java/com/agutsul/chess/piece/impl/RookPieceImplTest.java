@@ -431,5 +431,6 @@ public class RookPieceImplTest extends AbstractPieceTest {
         var desperadoImpact = (PieceDesperadoImpact<?,?,?,?,?>) desperadoImpacts.getFirst();
         assertEquals(whiteBishop, desperadoImpact.getAttacked());
         assertEquals(whiteQueen,  desperadoImpact.getAttacker());
+        assertEquals(blackRook,   desperadoImpact.getDesperado());
     }
 }

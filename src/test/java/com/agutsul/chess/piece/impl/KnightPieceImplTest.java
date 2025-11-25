@@ -410,11 +410,13 @@ public class KnightPieceImplTest extends AbstractPieceTest {
         var blackBishop = board.getPiece("c5").get();
 
         var desperadoImpact1 = (PieceDesperadoImpact<?,?,?,?,?>) desperadoImpacts.getFirst();
-        assertEquals(blackPawn1, desperadoImpact1.getAttacked());
-        assertEquals(blackPawn2, desperadoImpact1.getAttacker());
+        assertEquals(blackPawn1,  desperadoImpact1.getAttacked());
+        assertEquals(blackPawn2,  desperadoImpact1.getAttacker());
+        assertEquals(whiteKnight, desperadoImpact1.getDesperado());
 
         var desperadoImpact2 = (PieceDesperadoImpact<?,?,?,?,?>) desperadoImpacts.getLast();
         assertEquals(blackPawn1,  desperadoImpact2.getAttacked());
         assertEquals(blackBishop, desperadoImpact2.getAttacker());
+        assertEquals(whiteKnight, desperadoImpact2.getDesperado());
     }
 }

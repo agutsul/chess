@@ -1,6 +1,7 @@
 package com.agutsul.chess.rule.impact;
 
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
+import static java.util.Comparator.comparing;
 import static java.util.List.copyOf;
 import static java.util.stream.Collectors.toList;
 
@@ -75,6 +76,15 @@ public final class PieceDesperadoLineImpactRule<COLOR1 extends Color,
                         )
                 )
                 .map(impact -> (PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED>) impact)
+                .sorted(comparing(
+                        // sort most valuable attacked pieces first
+                        PieceDesperadoImpact::getAttacked,
+                        (piece1,piece2) -> Integer.compare(
+                                piece2.getType().rank(),
+                                piece1.getType().rank()
+                        )
+                    )
+                )
                 .collect(toList());
 
         return impacts;
