@@ -201,8 +201,8 @@ public class CancelActionMementoFactoryTest {
         assertEquals(kingPosition, cancelAction.getPosition());
 
         var action = (CancelCastlingAction<?,?,?>) cancelAction;
-        assertEquals("Kg1->e1", String.valueOf(action.getSource()));
-        assertEquals("Rf1->h1", String.valueOf(action.getTarget()));
+        assertEquals("Kg1 e1", String.valueOf(action.getSource()));
+        assertEquals("Rf1 h1", String.valueOf(action.getTarget()));
     }
 
     @Test

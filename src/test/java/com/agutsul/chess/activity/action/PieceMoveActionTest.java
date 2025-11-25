@@ -36,7 +36,7 @@ public class PieceMoveActionTest {
                 .findFirst();
 
         assertTrue(moveAction.isPresent());
-        assertEquals("Ne5->c6", moveAction.get().getCode());
+        assertEquals("Ne5 c6", moveAction.get().getCode());
 
         moveAction.get().execute();
 

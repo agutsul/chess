@@ -40,7 +40,7 @@ public class PiecePromoteActionTest {
                 .findFirst();
 
         assertTrue(promotionAction.isPresent());
-        assertEquals("a7->a8?", promotionAction.get().getCode());
+        assertEquals("a7 a8?", promotionAction.get().getCode());
 
         var targetPosition = board.getPosition("a8").get();
         assertEquals(targetPosition, promotionAction.get().getPosition());

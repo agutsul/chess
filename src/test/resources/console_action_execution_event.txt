@@ -1,1 +1,1 @@
-1. WHITE Action: 'white_player': e2->e3
+1. WHITE Action: 'white_player': 'e2 e3'
