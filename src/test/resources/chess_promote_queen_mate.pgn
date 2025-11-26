@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site ""]
+[White "Test A"]
+[Black "Test B"]
+[Result "1-0"]
+[UTCDate "2014.06.30"]
+[UTCTime "22:00:04"]
+[WhiteElo "1567"]
+[BlackElo "1518"]
+[WhiteRatingDiff "+10"]
+[BlackRatingDiff "-10"]
+[ECO "A00"]
+[Opening ""]
+[TimeControl "180+0"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nh3 c5 3. Bc4 Ke7 4. Ng5 a5 5. Qf3 f5 6. Qxf5 d5 7. Qf7+ Kd6 8. Qxd5+ Kc7 9. Qxe5+ Kd7 10. Qe6+ Kc7 11. Qe5+ Kd7 12. d3 Qxg5 13. Qxg5 Ke8 14. O-O Ra7 15. Qh5+ Kd8 16. Qf7 h5 17. Bg5+ Be7 18. Qf8+ Kd7 19. Qxg7 Kd8 20. Qxh8 Bxg5 21. Qxg8+ Ke7 22. Qxg5+ Kd7 23. e5 Kc6 24. Qg6+ Be6 25. Qe8+ Kc7 26. Bxe6 b5 27. Qc8+ Kb6 28. Qxb8+ Rb7 29. Qd6+ Ka7 30. Qxc5+ Ka8 31. Bd5 Kb8 32. e6 Ka8 33. e7 Kb8 34. e8=Q# 1-0
