@@ -47,7 +47,7 @@ abstract class AbstractDesperadoImpactRule<COLOR1 extends Color,
     protected abstract Collection<IMPACT> createImpacts(DESPERADO piece, Collection<Calculatable> next);
 
     protected AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,DESPERADO>
-            attackDesparadoImpact(ATTACKER attacker, DESPERADO piece, Optional<Line> attackLine) {
+            attackDesperadoImpact(ATTACKER attacker, DESPERADO piece, Optional<Line> attackLine) {
 
         return Stream.of(attackLine)
                 .flatMap(Optional::stream)

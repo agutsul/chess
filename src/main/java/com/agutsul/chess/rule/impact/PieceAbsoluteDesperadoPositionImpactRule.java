@@ -63,9 +63,9 @@ public final class PieceAbsoluteDesperadoPositionImpactRule<COLOR1 extends Color
                                     .filter(impact -> Objects.equals(impact.getTarget(), opponentPiece))
                                     .map(impact -> new PieceDesperadoAttackImpact<>(
                                             createAttackImpact(piece, (ATTACKED) opponentPiece),
-                                            attackDesparadoImpact((ATTACKER) impact.getSource(), piece, impact.getLine())
+                                            attackDesperadoImpact((ATTACKER) impact.getSource(), piece, impact.getLine())
                                     ))
-                                    .map(impact -> new PieceAbsoluteDesperadoImpact<>(impact))
+                                    .map(PieceAbsoluteDesperadoImpact::new)
                             )
                 )
                 .map(impact -> (PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>) impact)
