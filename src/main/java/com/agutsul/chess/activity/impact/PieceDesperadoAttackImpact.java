@@ -17,10 +17,14 @@ public final class PieceDesperadoAttackImpact<COLOR1 extends Color,
         implements PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,
                                         AbstractPieceAttackImpact<COLOR1,COLOR2,DESPERADO,ATTACKED>> {
 
-    public PieceDesperadoAttackImpact(AbstractPieceAttackImpact<COLOR1,COLOR2,DESPERADO,ATTACKED> source,
+    private final Mode mode;
+
+    public PieceDesperadoAttackImpact(Mode mode,
+                                      AbstractPieceAttackImpact<COLOR1,COLOR2,DESPERADO,ATTACKED> source,
                                       AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,DESPERADO> target) {
 
         super(Impact.Type.DESPERADO, source, target);
+        this.mode = mode;
     }
 
     @Override
@@ -50,6 +54,6 @@ public final class PieceDesperadoAttackImpact<COLOR1 extends Color,
 
     @Override
     public Mode getMode() {
-        return null;
+        return this.mode;
     }
 }

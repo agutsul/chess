@@ -64,6 +64,7 @@ public final class PieceAbsoluteDesperadoLineImpactRule<COLOR1 extends Color,
                                             .map(impact -> (PieceProtectImpact<?,?,?>) impact)
                                             .filter(impact -> Objects.equals(impact.getTarget(), opponentPiece))
                                             .map(impact -> new PieceDesperadoAttackImpact<>(
+                                                    PieceDesperadoImpact.Mode.ABSOLUTE,
                                                     createAttackImpact(piece, (ATTACKED) opponentPiece, attackLine),
                                                     attackDesperadoImpact((ATTACKER) impact.getSource(), piece, impact.getLine())
                                             ))
