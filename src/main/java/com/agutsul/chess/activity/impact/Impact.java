@@ -25,7 +25,7 @@ public interface Impact<SOURCE>
         OUTPOST,
         SACRIFICE,
         LUFT,
-        DESCPERADO
+        DESPERADO
     }
 
     // utilities
@@ -171,6 +171,6 @@ public interface Impact<SOURCE>
     }
 
     static boolean isDesperado(Impact.Type impactType) {
-        return Impact.Type.DESCPERADO.equals(impactType);
+        return Impact.Type.DESPERADO.equals(impactType);
     }
 }

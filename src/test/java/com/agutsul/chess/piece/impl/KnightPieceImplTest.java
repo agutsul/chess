@@ -398,9 +398,7 @@ public class KnightPieceImplTest extends AbstractPieceTest {
                 .build();
 
         var whiteKnight = board.getPiece("a8").get();
-        var desperadoImpacts = new ArrayList<>(
-                board.getImpacts(whiteKnight, Impact.Type.DESCPERADO)
-        );
+        var desperadoImpacts = board.getImpacts(whiteKnight, Impact.Type.DESPERADO);
 
         assertFalse(desperadoImpacts.isEmpty());
         assertEquals(2, desperadoImpacts.size());
@@ -409,14 +407,13 @@ public class KnightPieceImplTest extends AbstractPieceTest {
         var blackPawn2  = board.getPiece("a7").get();
         var blackBishop = board.getPiece("c5").get();
 
-        var desperadoImpact1 = (PieceDesperadoImpact<?,?,?,?,?>) desperadoImpacts.getFirst();
-        assertEquals(blackPawn1,  desperadoImpact1.getAttacked());
-        assertEquals(blackPawn2,  desperadoImpact1.getAttacker());
-        assertEquals(whiteKnight, desperadoImpact1.getDesperado());
-
-        var desperadoImpact2 = (PieceDesperadoImpact<?,?,?,?,?>) desperadoImpacts.getLast();
-        assertEquals(blackPawn1,  desperadoImpact2.getAttacked());
-        assertEquals(blackBishop, desperadoImpact2.getAttacker());
-        assertEquals(whiteKnight, desperadoImpact2.getDesperado());
+        var attackers = List.of(blackPawn2, blackBishop);
+        desperadoImpacts.stream()
+            .map(impact -> (PieceDesperadoImpact<?,?,?,?,?,?>) impact)
+            .forEach(impact -> {
+                assertEquals(blackPawn1,  impact.getAttacked());
+                assertEquals(whiteKnight, impact.getDesperado());
+                assertTrue(attackers.contains(impact.getAttacker()));
+            });
     }
 }

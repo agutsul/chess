@@ -13,7 +13,7 @@ public interface DesperadoImpactRule<COLOR1 extends Color,
                                      DESPERADO extends Piece<COLOR1> & Capturable,
                                      ATTACKER extends Piece<COLOR2> & Capturable,
                                      ATTACKED extends Piece<COLOR2>,
-                                     IMPACT extends PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED>>
+                                     IMPACT extends PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>>
         extends Rule<DESPERADO,Collection<IMPACT>> {
 
 }

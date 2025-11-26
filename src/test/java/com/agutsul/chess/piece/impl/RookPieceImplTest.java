@@ -419,7 +419,7 @@ public class RookPieceImplTest extends AbstractPieceTest {
 
         var blackRook = board.getPiece("h5").get();
         var desperadoImpacts = new ArrayList<>(
-                board.getImpacts(blackRook, Impact.Type.DESCPERADO)
+                board.getImpacts(blackRook, Impact.Type.DESPERADO)
         );
 
         assertFalse(desperadoImpacts.isEmpty());
@@ -428,7 +428,7 @@ public class RookPieceImplTest extends AbstractPieceTest {
         var whiteBishop = board.getPiece("g5").get();
         var whiteQueen  = board.getPiece("e3").get();
 
-        var desperadoImpact = (PieceDesperadoImpact<?,?,?,?,?>) desperadoImpacts.getFirst();
+        var desperadoImpact = (PieceDesperadoImpact<?,?,?,?,?,?>) desperadoImpacts.getFirst();
         assertEquals(whiteBishop, desperadoImpact.getAttacked());
         assertEquals(whiteQueen,  desperadoImpact.getAttacker());
         assertEquals(blackRook,   desperadoImpact.getDesperado());

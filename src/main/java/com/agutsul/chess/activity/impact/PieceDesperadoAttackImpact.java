@@ -1,26 +1,55 @@
 package com.agutsul.chess.activity.impact;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.position.Position;
 
 public final class PieceDesperadoAttackImpact<COLOR1 extends Color,
                                               COLOR2 extends Color,
                                               DESPERADO extends Piece<COLOR1> & Capturable,
                                               ATTACKER  extends Piece<COLOR2> & Capturable,
                                               ATTACKED  extends Piece<COLOR2>>
-        extends AbstractPieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,
-                                             AbstractPieceAttackImpact<COLOR1,COLOR2,DESPERADO,ATTACKED>,
-                                             AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,DESPERADO>> {
+        extends AbstractTargetActivity<Impact.Type,
+                                       AbstractPieceAttackImpact<COLOR1,COLOR2,DESPERADO,ATTACKED>,
+                                       AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,DESPERADO>>
+        implements PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,
+                                        AbstractPieceAttackImpact<COLOR1,COLOR2,DESPERADO,ATTACKED>> {
 
     public PieceDesperadoAttackImpact(AbstractPieceAttackImpact<COLOR1,COLOR2,DESPERADO,ATTACKED> source,
                                       AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,DESPERADO> target) {
 
-        super(source, target);
+        super(Impact.Type.DESPERADO, source, target);
+    }
+
+    @Override
+    public ATTACKER getAttacker() {
+        return getTarget().getSource();
+    }
+
+    @Override
+    public ATTACKED getAttacked() {
+        return getSource().getTarget();
+    }
+
+    @Override
+    public DESPERADO getDesperado() {
+        return getSource().getSource();
+    }
+
+    @Override
+    public Position getPosition() {
+        return getSource().getPosition();
     }
 
     @Override
     public String toString() {
         return String.format("[ %s ] => [ %s ]", getSource(), getTarget());
+    }
+
+    @Override
+    public Mode getMode() {
+        return null;
     }
 }
