@@ -65,7 +65,9 @@ public class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color,
 
                     if (opponentProtects.isEmpty()) {
                         // unprotected piece
-                        return Stream.of(new PieceDesperadoAttackImpact<>(Mode.RELATIVE, attackImpact, null));
+                        return Stream.of(new PieceDesperadoAttackImpact<>(
+                                Mode.RELATIVE, attackImpact, null
+                        ));
                     }
 
                     return Stream.of(opponentProtects)
