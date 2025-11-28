@@ -53,8 +53,10 @@ public class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color,
         var impacts = Stream.of(attackActions)
                 .flatMap(Collection::stream)
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                .flatMap(action -> Stream.of(createAttackImpact((DESPERADO) action.getSource(), (ATTACKED) action.getTarget()))
-                        .flatMap(desperadoAttackImpact -> {
+                .flatMap(action -> Stream.of(createAttackImpact(
+                                (DESPERADO) action.getSource(), (ATTACKED) action.getTarget()
+                        ))
+                        .map(desperadoAttackImpact -> {
 
                             var opponentProtects = Stream.of(opponentProtectImpacts)
                                     .flatMap(Collection::stream)
@@ -63,7 +65,9 @@ public class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color,
 
                             if (opponentProtects.isEmpty()) {
                                 // unprotected piece
-                                return Stream.of(new PieceDesperadoAttackImpact<>(Mode.RELATIVE, desperadoAttackImpact, null));
+                                return Stream.of(new PieceDesperadoAttackImpact<>(
+                                        Mode.RELATIVE, desperadoAttackImpact, null
+                                ));
                             }
 
                             return Stream.of(opponentProtects)
