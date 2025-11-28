@@ -37,8 +37,8 @@ public class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color,
 
     @Override
     public Collection<IMPACT> evaluate(DESPERADO piece) {
-        var attackActions = findExchangeActions(piece);
-        if (attackActions.isEmpty()) {
+        var actions = findExchangeActions(piece);
+        if (actions.isEmpty()) {
             return emptyList();
         }
 
@@ -50,7 +50,7 @@ public class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color,
                 .collect(toList());
 
         @SuppressWarnings("unchecked")
-        var impacts = Stream.of(attackActions)
+        var impacts = Stream.of(actions)
                 .flatMap(Collection::stream)
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .map(action -> createAttackImpact(
@@ -70,16 +70,13 @@ public class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color,
 
                     return Stream.of(opponentProtects)
                             .flatMap(Collection::stream)
-                            .map(impact -> (PieceProtectImpact<?,?,?>) impact)
-                            .filter(protectImpact -> Objects.equals(protectImpact.getTarget(), attackImpact.getTarget()))
-                            .map(impact -> new PieceDesperadoAttackImpact<>(
-                                    Mode.RELATIVE,
-                                    attackImpact,
-                                    createAttackImpact(
-                                            (ATTACKER) impact.getSource(),
-                                            attackImpact.getSource(),
-                                            impact.getLine()
-                                    )
+                            .map(protectImpact -> createAttackImpact(
+                                    (ATTACKER) protectImpact.getSource(),
+                                    attackImpact.getSource(),
+                                    protectImpact.getLine()
+                            ))
+                            .map(exchangeImpact -> new PieceDesperadoAttackImpact<>(
+                                    Mode.RELATIVE, attackImpact, exchangeImpact
                             ));
                 })
                 .map(impact -> (IMPACT) impact)
@@ -97,7 +94,10 @@ public class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color,
                         .flatMap(Collection::stream)
                         .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                         // check if there is same or more valuable opponent piece under attack
-                        .filter(action -> action.getTarget().getType().rank() >= piece.getType().rank())
+                        .filter(action -> {
+                            var attacked = action.getTarget();
+                            return attacked.getType().rank() >= piece.getType().rank();
+                        })
                 )
                 .sorted(comparing(
                         // sort most valuable attacked pieces first
