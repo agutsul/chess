@@ -4,6 +4,7 @@ import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.joining;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
@@ -21,8 +22,15 @@ public final class PieceRelativeDesperadoImpact<COLOR1 extends Color,
         extends AbstractTargetActivity<Impact.Type,IMPACT,Collection<IMPACT>>
         implements PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,IMPACT> {
 
-    public PieceRelativeDesperadoImpact(IMPACT source, Collection<IMPACT> target) {
-        super(Impact.Type.DESPERADO, source, target);
+    public PieceRelativeDesperadoImpact(IMPACT source, IMPACT target) {
+        super(Impact.Type.DESPERADO, source, List.of(source, target));
+    }
+
+    public PieceRelativeDesperadoImpact(Collection<IMPACT> target) {
+        super(Impact.Type.DESPERADO,
+                Stream.of(target).flatMap(Collection::stream).findFirst().get(),
+                target
+        );
     }
 
     @Override
@@ -52,11 +60,13 @@ public final class PieceRelativeDesperadoImpact<COLOR1 extends Color,
 
     @Override
     public String toString() {
-        return String.format("{%s}",
+        return String.format("{%s%s%s}",
+                lineSeparator(),
                 Stream.of(getTarget())
                     .flatMap(Collection::stream)
                     .map(String::valueOf)
-                    .collect(joining(lineSeparator()))
+                    .collect(joining(lineSeparator())),
+                lineSeparator()
         );
     }
 }

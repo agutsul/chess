@@ -1,20 +1,18 @@
 package com.agutsul.chess.rule.impact;
 
-import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.emptyList;
 
 import java.util.Collection;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
-import com.agutsul.chess.activity.impact.AbstractPieceAttackImpact;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceDesperadoImpact;
+import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.AbstractRule;
 
@@ -46,13 +44,14 @@ abstract class AbstractDesperadoImpactRule<COLOR1 extends Color,
 
     protected abstract Collection<IMPACT> createImpacts(DESPERADO piece, Collection<Calculatable> next);
 
-    protected AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,DESPERADO>
-            attackDesperadoImpact(ATTACKER attacker, DESPERADO piece, Optional<Line> attackLine) {
-
-        return Stream.of(attackLine)
-                .flatMap(Optional::stream)
-                .map(line -> createAttackImpact(attacker, piece, line))
-                .findFirst()
-                .orElse(createAttackImpact(attacker, piece));
+    protected Stream<PieceProtectImpact<?,?,?>> findProtectImpacts(Piece<?> piece) {
+        return Stream.of(board.getPieces(piece.getColor()))
+                .flatMap(Collection::stream)
+                .filter(foundPiece -> !Objects.equals(foundPiece, piece))
+                .flatMap(foundPiece -> Stream.of(board.getImpacts(foundPiece, Impact.Type.PROTECT))
+                        .flatMap(Collection::stream)
+                        .map(impact -> (PieceProtectImpact<?,?,?>) impact)
+                        .filter(impact -> Objects.equals(impact.getTarget(), piece))
+                );
     }
 }

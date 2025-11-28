@@ -7,7 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +23,7 @@ import com.agutsul.chess.activity.impact.PieceDesperadoImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PieceInterferenceImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
+import com.agutsul.chess.activity.impact.PieceRelativeDesperadoImpact;
 import com.agutsul.chess.activity.impact.PieceRelativePinImpact;
 import com.agutsul.chess.activity.impact.PieceSacrificeAttackImpact;
 import com.agutsul.chess.activity.impact.PieceSacrificeMoveImpact;
@@ -381,7 +384,7 @@ public class KnightPieceImplTest extends AbstractPieceTest {
 
     @Test
     // https://www.chess.com/terms/desperado-chess
-    void testKnightDesperadoImpact() {
+    void testKnightAbsoluteDesperadoImpact() {
         var board = new LabeledBoardBuilder()
                 .withBlackKing("d8")
                 .withBlackQueen("g6")
@@ -414,6 +417,65 @@ public class KnightPieceImplTest extends AbstractPieceTest {
                 assertEquals(blackPawn1,  impact.getAttacked());
                 assertEquals(whiteKnight, impact.getDesperado());
                 assertTrue(attackers.contains(impact.getAttacker()));
+                assertTrue(PieceDesperadoImpact.isAbsolute(impact));
             });
+    }
+
+    @Test
+    // https://en.wikipedia.org/wiki/Desperado_(chess)
+    void testKnightRelativeDesperadoImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("g8")
+                .withBlackQueen("d8")
+                .withBlackRooks("a8","f8")
+                .withBlackBishops("c8","g7")
+                .withBlackKnights("e7","h5")
+                .withBlackPawns("a7","b7","c7","d6","f5","h7")
+                .withWhiteKing("g1")
+                .withWhiteQueen("d1")
+                .withWhiteRooks("a1","f1")
+                .withWhiteBishops("c1","g2")
+                .withWhiteKnights("c3","e5")
+                .withWhitePawns("a2","b2","c4","d5","f2","g3","h2")
+                .build();
+
+        var blackKnight = board.getPiece("h5").get();
+        var desperadoImpacts = board.getImpacts(blackKnight, Impact.Type.DESPERADO);
+
+        assertFalse(desperadoImpacts.isEmpty());
+        assertEquals(6, desperadoImpacts.size());
+
+        var relativeDesperadoImpacts = Stream.of(desperadoImpacts)
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceDesperadoImpact<?,?,?,?,?,?>) impact)
+                .filter(PieceDesperadoImpact::isRelative)
+                .map(impact -> (PieceRelativeDesperadoImpact<?,?,?,?,?,?>) impact)
+                .toList();
+
+        assertEquals(4, relativeDesperadoImpacts.size());
+
+        var whitePawn1  = board.getPiece("h2").get();
+        var whitePawn2  = board.getPiece("f2").get();
+        var whitePawn3  = board.getPiece("g3").get();
+        var whiteKnight = board.getPiece("e5").get();
+
+        var blackBishop = board.getPiece("g7").get();
+        var blackPawn   = board.getPiece("d6").get();
+
+        var attackers = List.of(whitePawn1, whitePawn2);
+        var pieces = List.of(blackBishop, blackPawn);
+
+        for (var relativeImpact : relativeDesperadoImpacts) {
+            var impacts = new ArrayList<>(relativeImpact.getTarget());
+
+            var desperadoImpact = impacts.getFirst();
+            assertEquals(blackKnight, desperadoImpact.getDesperado());
+            assertEquals(whitePawn3,  desperadoImpact.getAttacked());
+            assertTrue(attackers.contains(desperadoImpact.getAttacker()));
+
+            var exchangeImpact = impacts.getLast();
+            assertTrue(pieces.contains(exchangeImpact.getDesperado()));
+            assertEquals(whiteKnight,  exchangeImpact.getAttacked());
+        }
     }
 }

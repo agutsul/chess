@@ -24,6 +24,7 @@ import com.agutsul.chess.activity.impact.PieceBatteryImpact;
 import com.agutsul.chess.activity.impact.PieceDesperadoImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PieceOverloadingImpact;
+import com.agutsul.chess.activity.impact.PieceRelativeDesperadoImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Color;
@@ -401,7 +402,7 @@ public class RookPieceImplTest extends AbstractPieceTest {
 
     @Test
     // https://www.chess.com/terms/desperado-chess
-    void testRookDesperadoImpact() {
+    void testRookAbsoluteDesperadoImpact() {
         var board = new LabeledBoardBuilder()
                 .withBlackKing("b8")
                 .withBlackQueen("h8")
@@ -432,5 +433,54 @@ public class RookPieceImplTest extends AbstractPieceTest {
         assertEquals(whiteBishop, desperadoImpact.getAttacked());
         assertEquals(whiteQueen,  desperadoImpact.getAttacker());
         assertEquals(blackRook,   desperadoImpact.getDesperado());
+
+        assertTrue(PieceDesperadoImpact.isAbsolute(desperadoImpact));
+    }
+
+    @Test
+    // https://www.chess.com/terms/desperado-chess
+    void testRookRelativeDesperadoImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("f5")
+                .withBlackRook("d6")
+                .withBlackPawns("a6","b5","f4","g4")
+                .withWhiteKing("c5")
+                .withWhiteRook("f3")
+                .withWhitePawns("a2","c3","d5","h2")
+                .build();
+
+        var whiteRook = board.getPiece("f3").get();
+        var desperadoImpacts = new ArrayList<>(
+                board.getImpacts(whiteRook, Impact.Type.DESPERADO)
+        );
+
+        assertFalse(desperadoImpacts.isEmpty());
+        assertEquals(2, desperadoImpacts.size());
+
+        var relativeDesperadoImpacts = Stream.of(desperadoImpacts)
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceDesperadoImpact<?,?,?,?,?,?>) impact)
+                .filter(PieceDesperadoImpact::isRelative)
+                .map(impact -> (PieceRelativeDesperadoImpact<?,?,?,?,?,?>) impact)
+                .toList();
+
+        assertEquals(1, relativeDesperadoImpacts.size());
+
+        var blackPawn = board.getPiece("f4").get();
+        var blackKing = board.getPiece("f5").get();
+        var blackRook = board.getPiece("d6").get();
+        var whiteKing = board.getPiece("c5").get();
+
+        var relativeImpact = relativeDesperadoImpacts.getFirst();
+        var impacts = new ArrayList<>(relativeImpact.getTarget());
+
+        var desperadoImpact = impacts.getFirst();
+        assertEquals(whiteRook, desperadoImpact.getDesperado());
+        assertEquals(blackPawn, desperadoImpact.getAttacked());
+        assertEquals(blackKing, desperadoImpact.getAttacker());
+
+        var exchangeImpact = impacts.getLast();
+        assertEquals(whiteKing,  exchangeImpact.getDesperado());
+        assertEquals(blackRook, exchangeImpact.getAttacked());
     }
 }
