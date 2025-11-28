@@ -9,6 +9,7 @@ import static java.util.Comparator.comparing;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.function.Function.identity;
 import static java.util.function.Predicate.not;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.join;
@@ -41,6 +42,7 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceControlImpact;
 import com.agutsul.chess.activity.impact.PieceMonitorImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
+import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
@@ -386,7 +388,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         @SuppressWarnings("unchecked")
         var attackers = Stream.of(getPieces(attackerColor))
                 .flatMap(Collection::stream)
-                .map(attacker -> getActions(attacker, Action.Type.CAPTURE))
+                .map(foundPiece -> getActions(foundPiece, Action.Type.CAPTURE))
                 .flatMap(Collection::stream)
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), piece))
@@ -395,6 +397,25 @@ final class BoardImpl extends AbstractBoard implements Closeable {
                 .collect(toSet());
 
         return attackers;
+    }
+
+    @Override
+    public <COLOR extends Color> Collection<Piece<COLOR>> getProtectors(Piece<?> piece) {
+        LOGGER.debug("Get piece '{}' protectors", piece);
+
+        @SuppressWarnings("unchecked")
+        var protectors = Stream.of(getPieces(piece.getColor()))
+                .flatMap(Collection::stream)
+                .filter(foundPiece -> !Objects.equals(foundPiece, piece))
+                .map(foundPiece -> getImpacts(foundPiece, Impact.Type.PROTECT))
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceProtectImpact<?,?,?>) impact)
+                .filter(impact -> Objects.equals(impact.getTarget(), piece))
+                .map(PieceProtectImpact::getSource)
+                .map(protector -> (Piece<COLOR>) protector)
+                .collect(toList());
+
+        return protectors;
     }
 
     @Override
