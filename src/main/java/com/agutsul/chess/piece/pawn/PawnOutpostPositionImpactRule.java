@@ -23,11 +23,11 @@ final class PawnOutpostPositionImpactRule<COLOR extends Color,
     private final Algo<PAWN,Collection<Position>> captureAlgo;
 
     @SuppressWarnings("unchecked")
-    public PawnOutpostPositionImpactRule(Board board,
-                                         PawnMoveAlgo<COLOR,PAWN> moveAlgo,
-                                         PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
-                                         PawnCaptureAlgo<COLOR,PAWN> captureAlgo,
-                                         PawnEnPassantAlgo<COLOR,PAWN> enPassantAlgo) {
+    PawnOutpostPositionImpactRule(Board board,
+                                  PawnMoveAlgo<COLOR,PAWN> moveAlgo,
+                                  PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
+                                  PawnCaptureAlgo<COLOR,PAWN> captureAlgo,
+                                  PawnEnPassantAlgo<COLOR,PAWN> enPassantAlgo) {
 
         super(board, new CompositePieceAlgo<>(board, moveAlgo, bigMoveAlgo));
         this.captureAlgo = new CompositePieceAlgo<>(board, captureAlgo, enPassantAlgo);

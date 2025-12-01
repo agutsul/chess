@@ -16,18 +16,18 @@ import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.impact.PieceDeflectionPositionImpactRule;
 
-public final class PawnDeflectionImpactRule<COLOR1 extends Color,
-                                            COLOR2 extends Color,
-                                            ATTACKER extends PawnPiece<COLOR1>,
-                                            ATTACKED extends Piece<COLOR2>,
-                                            DEFENDED extends Piece<COLOR2>>
+final class PawnDeflectionImpactRule<COLOR1 extends Color,
+                                     COLOR2 extends Color,
+                                     ATTACKER extends PawnPiece<COLOR1>,
+                                     ATTACKED extends Piece<COLOR2>,
+                                     DEFENDED extends Piece<COLOR2>>
         extends PieceDeflectionPositionImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED> {
 
     private final PawnEnPassantAlgo<COLOR1,ATTACKER> enPassantAlgo;
 
-    public PawnDeflectionImpactRule(Board board,
-                                    PawnCaptureAlgo<COLOR1,ATTACKER> captureAlgo,
-                                    PawnEnPassantAlgo<COLOR1,ATTACKER> enPassantAlgo) {
+    PawnDeflectionImpactRule(Board board,
+                             PawnCaptureAlgo<COLOR1,ATTACKER> captureAlgo,
+                             PawnEnPassantAlgo<COLOR1,ATTACKER> enPassantAlgo) {
 
         super(board, captureAlgo);
         this.enPassantAlgo = enPassantAlgo;

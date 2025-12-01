@@ -42,10 +42,10 @@ final class PawnLuftImpactRule<COLOR extends Color,
     private final Algo<PAWN,Collection<Position>> captureAlgo;
 
     @SuppressWarnings("unchecked")
-    public PawnLuftImpactRule(Board board,
-                              PawnMoveAlgo<COLOR,PAWN> moveAlgo,
-                              PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
-                              PawnCaptureAlgo<COLOR,PAWN> captureAlgo) {
+    PawnLuftImpactRule(Board board,
+                       PawnMoveAlgo<COLOR,PAWN> moveAlgo,
+                       PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
+                       PawnCaptureAlgo<COLOR,PAWN> captureAlgo) {
 
         super(board, Impact.Type.LUFT);
 
