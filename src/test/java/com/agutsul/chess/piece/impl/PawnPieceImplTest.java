@@ -29,12 +29,14 @@ import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteDiscoveredAttackImpact;
+import com.agutsul.chess.activity.impact.PieceDesperadoImpact;
 import com.agutsul.chess.activity.impact.PieceDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PieceLuftImpact;
 import com.agutsul.chess.activity.impact.PieceOverloadingImpact;
 import com.agutsul.chess.activity.impact.PiecePartialPinImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
+import com.agutsul.chess.activity.impact.PieceRelativeDesperadoImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeForkImpact;
 import com.agutsul.chess.activity.impact.PieceSacrificeAttackImpact;
 import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
@@ -983,6 +985,87 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         var luftImpacts = board.getImpacts(whitePawn, Impact.Type.LUFT);
 
         assertTrue(luftImpacts.isEmpty());
+    }
+
+    @Test
+    void testPawnAbsoluteDesperadoImpactByEnpassante() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e8")
+                .withBlackKnight("d7")
+                .withBlackRook("f8")
+                .withBlackPawns("f7","e6","b4","c5")
+                .withWhiteKing("e1")
+                .withWhitePawns("b3","c2","e5","f4")
+                .build();
+
+        var blackPawn = (PawnPiece<Color>) board.getPiece("f7").get();
+        blackPawn.move(board.getPosition("f5").get());
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+
+        var whitePawn = board.getPiece("e5").get();
+        var desperadoImpacts = Stream.of(board.getImpacts(whitePawn, Impact.Type.DESPERADO))
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceDesperadoImpact<?,?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertFalse(desperadoImpacts.isEmpty());
+        assertEquals(2, desperadoImpacts.size());
+
+        var blackRook = board.getPiece("f8").get();
+        var blackKnight = board.getPiece("d7").get();
+
+        var attackers = List.of(blackKnight, blackRook);
+        for (var impact : desperadoImpacts) {
+            assertTrue(PieceDesperadoImpact.isAbsolute(impact));
+            assertTrue(attackers.contains(impact.getAttacker()));
+            assertEquals(whitePawn, impact.getDesperado());
+            assertEquals(blackPawn, impact.getAttacked());
+        }
+    }
+
+    @Test
+    void testPawnRelativeDesperadoImpactByEnpassante() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e8")
+                .withBlackKnight("d7")
+                .withBlackPawns("f7","e6","b4","c5")
+                .withWhiteKing("e1")
+                .withWhitePawns("b3","c3","e5","f4")
+                .build();
+
+        var blackPawn1 = (PawnPiece<Color>) board.getPiece("f7").get();
+        blackPawn1.move(board.getPosition("f5").get());
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+
+        var whitePawn = board.getPiece("e5").get();
+        var desperadoImpacts = Stream.of(board.getImpacts(whitePawn, Impact.Type.DESPERADO))
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceDesperadoImpact<?,?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertFalse(desperadoImpacts.isEmpty());
+        assertEquals(2, desperadoImpacts.size());
+
+        var relativeDesperadoImpact = Stream.of(desperadoImpacts)
+                .flatMap(Collection::stream)
+                .filter(impact -> PieceDesperadoImpact.isRelative(impact))
+                .map(impact -> (PieceRelativeDesperadoImpact<?,?,?,?,?,?>) impact)
+                .collect(toList());
+
+        assertEquals(1, relativeDesperadoImpact.size());
+
+        var blackKnight = board.getPiece("d7").get();
+        var blackPawn2 =  board.getPiece("c5").get();
+
+        var attackers = List.of(blackKnight, blackPawn2);
+        for (var impact : relativeDesperadoImpact) {
+            assertTrue(PieceDesperadoImpact.isRelative(impact));
+            assertTrue(attackers.contains(impact.getAttacker()));
+            assertEquals(whitePawn, impact.getDesperado());
+            assertEquals(blackPawn1, impact.getAttacked());
+        }
     }
 
     static void assertPawnEnPassantActions(Board board, Color color, Piece.Type type,

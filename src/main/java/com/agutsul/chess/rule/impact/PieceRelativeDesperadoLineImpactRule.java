@@ -50,7 +50,8 @@ public final class PieceRelativeDesperadoLineImpactRule<COLOR1 extends Color,
                 .flatMap(attackLine -> Stream.of(board.getPiece(attackLine.getLast()))
                         .flatMap(Optional::stream)
                         .filter(foundPiece -> !Objects.equals(foundPiece.getColor(), piece.getColor()))
-                        .flatMap(opponentPiece -> findProtectImpacts(opponentPiece))
+                        .map(opponentPiece -> findProtectImpacts(opponentPiece))
+                        .flatMap(Collection::stream)
                         .map(impact -> createImpact(Mode.RELATIVE, piece, impact, attackLine))
                 )
                 .collect(toList());

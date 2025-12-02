@@ -20,11 +20,11 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.position.Position;
 
-public final class PieceRelativeDesperadoPositionImpactRule<COLOR1 extends Color,
-                                                            COLOR2 extends Color,
-                                                            DESPERADO extends Piece<COLOR1> & Capturable,
-                                                            ATTACKER  extends Piece<COLOR2> & Capturable,
-                                                            ATTACKED  extends Piece<COLOR2>>
+public class PieceRelativeDesperadoPositionImpactRule<COLOR1 extends Color,
+                                                      COLOR2 extends Color,
+                                                      DESPERADO extends Piece<COLOR1> & Capturable,
+                                                      ATTACKER  extends Piece<COLOR2> & Capturable,
+                                                      ATTACKED  extends Piece<COLOR2>>
         extends AbstractDesperadoPositionImpactRule<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED> {
 
     private final DesperadoImpactRule<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?> exchangeRule;
@@ -49,7 +49,8 @@ public final class PieceRelativeDesperadoPositionImpactRule<COLOR1 extends Color
                 .map(calculated -> board.getPiece((Position) calculated))
                 .flatMap(Optional::stream)
                 .filter(foundPiece -> !Objects.equals(foundPiece.getColor(), piece.getColor()))
-                .flatMap(opponentPiece -> findProtectImpacts(opponentPiece))
+                .map(opponentPiece -> findProtectImpacts(opponentPiece))
+                .flatMap(Collection::stream)
                 .map(impact -> createImpact(Mode.RELATIVE, piece, impact))
                 .collect(toList());
 

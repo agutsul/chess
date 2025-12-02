@@ -50,6 +50,7 @@ abstract class AbstractPieceDesperadoImpactRule<COLOR1 extends Color,
 
         var impacts = Stream.of(rule.evaluate(piece))
                 .flatMap(Collection::stream)
+                .distinct()
                 .sorted(comparing(
                         // sort most valuable attacked pieces first
                         PieceDesperadoImpact::getAttacked,
