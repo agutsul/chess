@@ -25,10 +25,10 @@ import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.impact.DesperadoImpactRule;
-import com.agutsul.chess.rule.impact.PieceAbsoluteDesperadoPositionImpactRule;
-import com.agutsul.chess.rule.impact.PieceDesperadoPositionImpactRule;
-import com.agutsul.chess.rule.impact.PieceRelativeDesperadoExchangeImpactRule;
-import com.agutsul.chess.rule.impact.PieceRelativeDesperadoPositionImpactRule;
+import com.agutsul.chess.rule.impact.desperado.PieceAbsoluteDesperadoPositionImpactRule;
+import com.agutsul.chess.rule.impact.desperado.PieceDesperadoPositionImpactRule;
+import com.agutsul.chess.rule.impact.desperado.PieceRelativeDesperadoExchangeImpactRule;
+import com.agutsul.chess.rule.impact.desperado.PieceRelativeDesperadoPositionImpactRule;
 
 final class PawnDesperadoImpactRule<COLOR1 extends Color,
                                     COLOR2 extends Color,
@@ -87,7 +87,7 @@ final class PawnDesperadoImpactRule<COLOR1 extends Color,
 
             var captureImpacts = super.createImpacts(piece, super.calculate(piece));
 
-            Collection<PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>> enPassantImpacts = Stream.of(enPassantAlgo.calculateData(piece))
+            var enPassantImpacts = Stream.of(enPassantAlgo.calculateData(piece))
                     .map(Map::entrySet)
                     .flatMap(Collection::stream)
                     .filter(entry -> board.isAttacked(entry.getKey(), piece.getColor().invert()))
@@ -96,7 +96,8 @@ final class PawnDesperadoImpactRule<COLOR1 extends Color,
                         var position = entry.getKey();
                         var opponentPawn = entry.getValue();
 
-                        var positionAttackers = Stream.of(board.getPieces(opponentPawn.getColor()))
+                        @SuppressWarnings("unchecked")
+                        var impacts = Stream.of(board.getPieces(opponentPawn.getColor()))
                                 .flatMap(Collection::stream)
                                 .filter(opponentPiece -> !Objects.equals(opponentPawn, opponentPiece))
                                 .map(opponentPiece -> board.getImpacts(opponentPiece, Impact.Type.CONTROL))
@@ -104,11 +105,6 @@ final class PawnDesperadoImpactRule<COLOR1 extends Color,
                                 .map(impact -> (PieceControlImpact<?,?>) impact)
                                 .filter(impact -> Objects.equals(impact.getPosition(), position))
                                 .map(PieceControlImpact::getSource)
-                                .collect(toList());
-
-                        @SuppressWarnings("unchecked")
-                        var impacts = Stream.of(positionAttackers)
-                                .flatMap(Collection::stream)
                                 .map(attacker -> new PieceDesperadoAttackImpact<>(Mode.ABSOLUTE,
                                         createAttackImpact(piece, (ATTACKED) opponentPawn),
                                         createAttackImpact((ATTACKER) attacker, piece)
@@ -173,7 +169,7 @@ final class PawnDesperadoImpactRule<COLOR1 extends Color,
 
             var captureImpacts = super.createImpacts(piece, super.calculate(piece));
 
-            Collection<PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>> enPassantImpacts = Stream.of(enPassantAlgo.calculateData(piece))
+            var enPassantImpacts = Stream.of(enPassantAlgo.calculateData(piece))
                     .map(Map::entrySet)
                     .flatMap(Collection::stream)
                     .filter(entry -> board.isAttacked(entry.getKey(), piece.getColor().invert()))
@@ -182,7 +178,8 @@ final class PawnDesperadoImpactRule<COLOR1 extends Color,
                         var position = entry.getKey();
                         var opponentPawn = entry.getValue();
 
-                        var positionAttackers = Stream.of(board.getPieces(opponentPawn.getColor()))
+                        @SuppressWarnings("unchecked")
+                        var impacts = Stream.of(board.getPieces(opponentPawn.getColor()))
                                 .flatMap(Collection::stream)
                                 .filter(opponentPiece -> !Objects.equals(opponentPawn, opponentPiece))
                                 .map(opponentPiece -> board.getImpacts(opponentPiece, Impact.Type.CONTROL))
@@ -190,11 +187,6 @@ final class PawnDesperadoImpactRule<COLOR1 extends Color,
                                 .map(impact -> (PieceControlImpact<?,?>) impact)
                                 .filter(impact -> Objects.equals(impact.getPosition(), position))
                                 .map(PieceControlImpact::getSource)
-                                .collect(toList());
-
-                        @SuppressWarnings("unchecked")
-                        var impacts = Stream.of(positionAttackers)
-                                .flatMap(Collection::stream)
                                 .map(attacker -> new PieceDesperadoAttackImpact<>(Mode.RELATIVE,
                                         createAttackImpact(piece, (ATTACKED) opponentPawn),
                                         createAttackImpact((ATTACKER) attacker, piece)

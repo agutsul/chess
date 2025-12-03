@@ -1,4 +1,4 @@
-package com.agutsul.chess.rule.impact;
+package com.agutsul.chess.rule.impact.desperado;
 
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.emptyList;
@@ -21,6 +21,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.AbstractRule;
+import com.agutsul.chess.rule.impact.DesperadoImpactRule;
 
 public class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color,
                                                       COLOR2 extends Color,

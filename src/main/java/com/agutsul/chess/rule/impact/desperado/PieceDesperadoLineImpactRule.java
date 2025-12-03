@@ -1,4 +1,4 @@
-package com.agutsul.chess.rule.impact;
+package com.agutsul.chess.rule.impact.desperado;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.PieceDesperadoImpact;

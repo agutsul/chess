@@ -1,4 +1,4 @@
-package com.agutsul.chess.rule.impact;
+package com.agutsul.chess.rule.impact.desperado;
 
 import java.util.Collection;
 

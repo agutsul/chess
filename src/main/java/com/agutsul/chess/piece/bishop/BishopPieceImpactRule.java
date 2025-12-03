@@ -11,7 +11,6 @@ import com.agutsul.chess.rule.impact.PieceBlockLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceCheckLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceControlLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceDeflectionLineImpactRule;
-import com.agutsul.chess.rule.impact.PieceDesperadoLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceDiscoveredAttackImpactRule;
 import com.agutsul.chess.rule.impact.PieceForkLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceInterferenceLineImpactRule;
@@ -23,6 +22,7 @@ import com.agutsul.chess.rule.impact.PieceProtectLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceSacrificeLineImpactRule;
 import com.agutsul.chess.rule.impact.PieceSkewerImpactRule;
 import com.agutsul.chess.rule.impact.PieceUnderminingLineImpactRule;
+import com.agutsul.chess.rule.impact.desperado.PieceDesperadoLineImpactRule;
 
 public final class BishopPieceImpactRule<COLOR extends Color,
                                          PIECE extends BishopPiece<COLOR>>
