@@ -27,17 +27,19 @@ public final class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color
                                                             COLOR2 extends Color,
                                                             DESPERADO extends Piece<COLOR1> & Capturable,
                                                             ATTACKER extends Piece<COLOR2> & Capturable,
-                                                            ATTACKED extends Piece<COLOR2>,
-                                                            IMPACT extends PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>>
-        extends AbstractRule<DESPERADO,IMPACT,Impact.Type>
-        implements DesperadoImpactRule<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,IMPACT> {
+                                                            ATTACKED extends Piece<COLOR2>>
+        extends AbstractRule<DESPERADO,
+                             PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>,
+                             Impact.Type>
+        implements DesperadoImpactRule<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,
+                                       PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>> {
 
     public PieceRelativeDesperadoExchangeImpactRule(Board board) {
         super(board, Impact.Type.DESPERADO);
     }
 
     @Override
-    public Collection<IMPACT> evaluate(DESPERADO piece) {
+    public Collection<PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>> evaluate(DESPERADO piece) {
         var actions = findExchangeActions(piece);
         if (actions.isEmpty()) {
             return emptyList();
@@ -51,40 +53,41 @@ public final class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color
                 .collect(toList());
 
         @SuppressWarnings("unchecked")
-        Collection<IMPACT> impacts = Stream.of(actions)
-                .flatMap(Collection::stream)
-                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                .map(action -> createAttackImpact(
-                        (DESPERADO) action.getSource(),
-                        (ATTACKED)  action.getTarget()
-                ))
-                .flatMap(attackImpact -> {
-                    var opponentProtects = Stream.of(opponentProtectImpacts)
-                            .flatMap(Collection::stream)
-                            .filter(protectImpact -> Objects.equals(protectImpact.getTarget(), attackImpact.getTarget()))
-                            .collect(toList());
+        Collection<PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>> impacts =
+                Stream.of(actions)
+                        .flatMap(Collection::stream)
+                        .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
+                        .map(action -> createAttackImpact(
+                                (DESPERADO) action.getSource(),
+                                (ATTACKED)  action.getTarget()
+                        ))
+                        .flatMap(attackImpact -> {
+                            var opponentProtects = Stream.of(opponentProtectImpacts)
+                                    .flatMap(Collection::stream)
+                                    .filter(protectImpact -> Objects.equals(protectImpact.getTarget(), attackImpact.getTarget()))
+                                    .collect(toList());
 
-                    if (opponentProtects.isEmpty()) {
-                        // unprotected piece
-                        return Stream.of(new PieceDesperadoAttackImpact<>(
-                                Mode.RELATIVE, attackImpact, null
-                        ));
-                    }
+                            if (opponentProtects.isEmpty()) {
+                                // unprotected piece
+                                return Stream.of(new PieceDesperadoAttackImpact<>(
+                                        Mode.RELATIVE, attackImpact, null
+                                ));
+                            }
 
-                    return Stream.of(opponentProtects)
-                            .flatMap(Collection::stream)
-                            .map(protectImpact -> createAttackImpact(
-                                    (ATTACKER) protectImpact.getSource(),
-                                    attackImpact.getSource(),
-                                    protectImpact.getLine()
-                            ))
-                            .map(exchangeImpact -> new PieceDesperadoAttackImpact<>(
-                                    Mode.RELATIVE, attackImpact, exchangeImpact
-                            ));
-                })
-                .map(impact -> (IMPACT) impact)
-                .distinct()
-                .collect(toList());
+                            return Stream.of(opponentProtects)
+                                    .flatMap(Collection::stream)
+                                    .map(protectImpact -> createAttackImpact(
+                                            (ATTACKER) protectImpact.getSource(),
+                                            attackImpact.getSource(),
+                                            protectImpact.getLine()
+                                    ))
+                                    .map(exchangeImpact -> new PieceDesperadoAttackImpact<>(
+                                            Mode.RELATIVE, attackImpact, exchangeImpact
+                                    ));
+                        })
+                        .map(impact -> (PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>) impact)
+                        .distinct()
+                        .collect(toList());
 
         return impacts;
     }

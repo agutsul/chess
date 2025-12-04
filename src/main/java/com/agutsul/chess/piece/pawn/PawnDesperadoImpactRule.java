@@ -4,7 +4,6 @@ import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttac
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -18,7 +17,6 @@ import com.agutsul.chess.activity.impact.PieceControlImpact;
 import com.agutsul.chess.activity.impact.PieceDesperadoAttackImpact;
 import com.agutsul.chess.activity.impact.PieceDesperadoImpact;
 import com.agutsul.chess.activity.impact.PieceDesperadoImpact.Mode;
-import com.agutsul.chess.activity.impact.PieceRelativeDesperadoImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
@@ -109,7 +107,7 @@ final class PawnDesperadoImpactRule<COLOR1 extends Color,
         private final Algo<DESPERADO,Collection<Position>> enPassantAlgo;
 
         private final DesperadoImpactRule<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?> enPassantRule;
-        private final DesperadoImpactRule<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?> exchangeRule;
+        private final PieceRelativeDesperadoExchangeImpactRule<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED> exchangeRule;
 
         PawnRelativeDesperadoImpactRule(Board board,
                                         PawnCaptureAlgo<COLOR1,DESPERADO> captureAlgo,
@@ -142,24 +140,12 @@ final class PawnDesperadoImpactRule<COLOR1 extends Color,
             var captureImpacts = super.createImpacts(piece, super.calculate(piece));
             var enPassantImpacts = enPassantRule.evaluate(piece);
 
-            var desperadoImpacts = Stream.of(captureImpacts, enPassantImpacts)
-                    .flatMap(Collection::stream)
-                    .collect(toList());
+            Collection<PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>> desperadoImpacts =
+                    Stream.of(captureImpacts, enPassantImpacts)
+                            .flatMap(Collection::stream)
+                            .collect(toList());
 
-            var impacts = new ArrayList<PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>>();
-            for (var desperadoImpact : desperadoImpacts) {
-                for (var exchangeImpact : exchangeImpacts) {
-                    Piece<?> attacker = exchangeImpact.getAttacker();
-
-                    if (!Objects.equals(attacker, desperadoImpact.getAttacked())
-                            && !Objects.equals(attacker, desperadoImpact.getDesperado())) {
-
-                        impacts.add(new PieceRelativeDesperadoImpact<>(desperadoImpact, exchangeImpact));
-                    }
-                }
-            }
-
-            return impacts;
+            return createRelativeImpacts(desperadoImpacts, exchangeImpacts);
         }
     }
 
