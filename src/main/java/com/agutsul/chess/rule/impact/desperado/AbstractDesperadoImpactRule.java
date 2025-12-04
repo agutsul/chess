@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
@@ -15,6 +16,7 @@ import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.AbstractRule;
 import com.agutsul.chess.rule.impact.DesperadoImpactRule;
 
@@ -46,14 +48,18 @@ abstract class AbstractDesperadoImpactRule<COLOR1 extends Color,
 
     protected abstract Collection<IMPACT> createImpacts(DESPERADO piece, Collection<Calculatable> next);
 
-    protected Collection<PieceProtectImpact<?,?,?>> findProtectImpacts(Piece<?> piece) {
-        Collection<PieceProtectImpact<?,?,?>> impacts = Stream.of(board.getPieces(piece.getColor()))
-                .flatMap(Collection::stream)
-                .filter(foundPiece -> !Objects.equals(foundPiece, piece))
-                .flatMap(foundPiece -> Stream.of(board.getImpacts(foundPiece, Impact.Type.PROTECT))
+    protected Collection<PieceProtectImpact<?,?,?>> findProtectImpacts(Piece<?> piece, Position position) {
+        Collection<PieceProtectImpact<?,?,?>> impacts = Stream.of(board.getPiece(position))
+                .flatMap(Optional::stream)
+                .filter(foundPiece -> !Objects.equals(foundPiece.getColor(), piece.getColor()))
+                .flatMap(opponentPiece -> Stream.of(board.getPieces(opponentPiece.getColor()))
                         .flatMap(Collection::stream)
-                        .map(impact -> (PieceProtectImpact<?,?,?>) impact)
-                        .filter(impact -> Objects.equals(impact.getTarget(), piece))
+                        .filter(foundPiece -> !Objects.equals(foundPiece, opponentPiece))
+                        .flatMap(foundPiece -> Stream.of(board.getImpacts(foundPiece, Impact.Type.PROTECT))
+                                .flatMap(Collection::stream)
+                                .map(impact -> (PieceProtectImpact<?,?,?>) impact)
+                                .filter(impact -> Objects.equals(impact.getTarget(), opponentPiece))
+                        )
                 )
                 .collect(toList());
 

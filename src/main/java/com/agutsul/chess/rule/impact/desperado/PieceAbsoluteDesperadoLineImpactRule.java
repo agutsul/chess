@@ -3,8 +3,6 @@ package com.agutsul.chess.rule.impact.desperado;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
@@ -37,15 +35,13 @@ public final class PieceAbsoluteDesperadoLineImpactRule<COLOR1 extends Color,
         Collection<PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>> impacts = Stream.of(next)
                 .flatMap(Collection::stream)
                 .map(calculated -> (Line) calculated)
-                .flatMap(attackLine -> Stream.of(board.getPiece(attackLine.getLast()))
-                        .flatMap(Optional::stream)
-                        .filter(foundPiece -> !Objects.equals(foundPiece.getColor(), piece.getColor()))
-                        .map(opponentPiece -> findProtectImpacts(opponentPiece))
+                .flatMap(attackLine -> Stream.of(findProtectImpacts(piece, attackLine.getLast()))
                         .flatMap(Collection::stream)
-                        .map(impact -> createImpact(Mode.ABSOLUTE, piece, impact, attackLine))
+                        .map(protectImpact -> createImpact(Mode.ABSOLUTE,
+                                piece, protectImpact, attackLine
+                        ))
                 )
                 .map(PieceAbsoluteDesperadoImpact::new)
-                .map(impact -> (PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>) impact)
                 .collect(toList());
 
         return impacts;

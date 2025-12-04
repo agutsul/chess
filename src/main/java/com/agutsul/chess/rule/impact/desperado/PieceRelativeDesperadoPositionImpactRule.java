@@ -4,8 +4,6 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
@@ -43,16 +41,12 @@ public class PieceRelativeDesperadoPositionImpactRule<COLOR1 extends Color,
             return emptyList();
         }
 
-        Collection<PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>> desperadoImpacts =
-                Stream.of(next)
-                        .flatMap(Collection::stream)
-                        .map(calculated -> board.getPiece((Position) calculated))
-                        .flatMap(Optional::stream)
-                        .filter(foundPiece -> !Objects.equals(foundPiece.getColor(), piece.getColor()))
-                        .map(opponentPiece -> findProtectImpacts(opponentPiece))
-                        .flatMap(Collection::stream)
-                        .map(impact -> createImpact(Mode.RELATIVE, piece, impact))
-                        .collect(toList());
+        Collection<PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>> desperadoImpacts = Stream.of(next)
+                .flatMap(Collection::stream)
+                .map(calculated -> findProtectImpacts(piece, (Position) calculated))
+                .flatMap(Collection::stream)
+                .map(protectImpact -> createImpact(Mode.RELATIVE, piece, protectImpact))
+                .collect(toList());
 
         return createRelativeImpacts(desperadoImpacts, exchangeImpacts);
     }
