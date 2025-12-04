@@ -23,12 +23,12 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.AbstractRule;
 import com.agutsul.chess.rule.impact.DesperadoImpactRule;
 
-public class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color,
-                                                      COLOR2 extends Color,
-                                                      DESPERADO extends Piece<COLOR1> & Capturable,
-                                                      ATTACKER extends Piece<COLOR2> & Capturable,
-                                                      ATTACKED extends Piece<COLOR2>,
-                                                      IMPACT extends PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>>
+public final class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color,
+                                                            COLOR2 extends Color,
+                                                            DESPERADO extends Piece<COLOR1> & Capturable,
+                                                            ATTACKER extends Piece<COLOR2> & Capturable,
+                                                            ATTACKED extends Piece<COLOR2>,
+                                                            IMPACT extends PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>>
         extends AbstractRule<DESPERADO,IMPACT,Impact.Type>
         implements DesperadoImpactRule<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,IMPACT> {
 
@@ -51,7 +51,7 @@ public class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color,
                 .collect(toList());
 
         @SuppressWarnings("unchecked")
-        var impacts = Stream.of(actions)
+        Collection<IMPACT> impacts = Stream.of(actions)
                 .flatMap(Collection::stream)
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .map(action -> createAttackImpact(
