@@ -62,7 +62,14 @@ final class ActivityMultiMap<KEY extends Enum<KEY> & Activity.Type,
 
     @Override
     public void put(KEY key, VALUE value) {
-        this.map.put(key, value);
+        if (containsKey(key)) {
+            var values = new ArrayList<>(this.map.get(key));
+            values.add(value);
+
+            put(key, values);
+        } else {
+            this.map.put(key, value);
+        }
     }
 
     @Override
