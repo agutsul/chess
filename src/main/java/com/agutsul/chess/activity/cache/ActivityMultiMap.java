@@ -12,6 +12,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
@@ -99,7 +101,16 @@ final class ActivityMultiMap<KEY extends Enum<KEY> & Activity.Type,
 
     @Override
     public Collection<Collection<VALUE>> values() {
-        return new ArrayList<>(this.map.asMap().values());
+        var internalMap = this.map.asMap();
+        if (MapUtils.isEmpty(internalMap)) {
+            return emptyList();
+        }
+
+        if (CollectionUtils.isEmpty(internalMap.values())) {
+            return emptyList();
+        }
+
+        return new ArrayList<>(internalMap.values());
     }
 
     @Override
