@@ -215,7 +215,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     @Override
     public Collection<Piece<Color>> getPieces(Piece.Type pieceType) {
-        LOGGER.debug("Getting pieces with type '{}'", pieceType);
+        LOGGER.debug("Getting pieces with type '{}'", pieceType.name());
 
         @SuppressWarnings("unchecked")
         var pieces = Stream.of(pieceCache.getActive(pieceType))
@@ -252,7 +252,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
                                                                     Piece.Type pieceType) {
 
         LOGGER.debug("Getting pieces with type '{}' and '{}' color",
-                pieceType, color
+                pieceType.name(), color
         );
 
         @SuppressWarnings("unchecked")
@@ -275,7 +275,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
                 .flatMap(Optional::stream)
                 .collect(toSet());
 
-        LOGGER.debug("Getting pieces with type of '{}' color and locations '[{}]'",
+        LOGGER.debug("Getting pieces of '{}' color and locations '[{}]'",
                 color, join(requestedPositions, COMMA_SEPARATOR)
         );
 
