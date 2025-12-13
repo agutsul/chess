@@ -9,7 +9,7 @@ import java.util.List;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
-interface LineImpactRule {
+public interface LineImpactRule {
 
     static boolean containsPattern(Collection<Piece<Color>> pieces, List<Piece<?>> pattern) {
         return containsPattern(copyOf(pieces), pattern);

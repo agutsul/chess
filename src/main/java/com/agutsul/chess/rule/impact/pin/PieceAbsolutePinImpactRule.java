@@ -1,8 +1,7 @@
-package com.agutsul.chess.rule.impact;
+package com.agutsul.chess.rule.impact.pin;
 
 import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static java.util.Collections.emptyList;
-import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
@@ -10,73 +9,66 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.apache.commons.collections4.MultiValuedMap;
-import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
-
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.impact.Impact;
-import com.agutsul.chess.activity.impact.PieceRelativePinImpact;
+import com.agutsul.chess.activity.impact.PieceAbsolutePinImpact;
+import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
+import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 
-final class PieceRelativePinImpactRule<COLOR1 extends Color,
+final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
                                        COLOR2 extends Color,
                                        PINNED extends Piece<COLOR1> & Pinnable,
-                                       PIECE  extends Piece<COLOR1>,
+                                       KING   extends KingPiece<COLOR1>,
                                        ATTACKER extends Piece<COLOR2> & Capturable>
-        extends AbstractPiecePinImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,
-                                           PieceRelativePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>> {
+        extends AbstractPiecePinModeImpactRule<COLOR1,COLOR2,PINNED,KING,ATTACKER,
+                                               PiecePinImpact<COLOR1,COLOR2,PINNED,KING,ATTACKER>> {
 
-    PieceRelativePinImpactRule(Board board) {
+    PieceAbsolutePinImpactRule(Board board) {
         super(board);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Collection<PieceRelativePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>>
-            createImpacts(PINNED piece, Collection<Line> lines) {
+    protected Collection<PiecePinImpact<COLOR1,COLOR2,PINNED,KING,ATTACKER>>
+            createImpacts(PINNED piece, Collection<Calculatable> next) {
 
-        var valuablePieces = Stream.of(board.getPieces(piece.getColor()))
+        var optionalKing = board.getKing(piece.getColor());
+        if (optionalKing.isEmpty()) {
+            return emptyList();
+        }
+
+        var king = (KING) optionalKing.get();
+        var impactLines = Stream.of(next)
                 .flatMap(Collection::stream)
-                .filter(not(Piece::isKing))
-                .filter(vp -> !Objects.equals(piece, vp))
-                .filter(vp -> Math.abs(vp.getValue()) > Math.abs(piece.getValue()))
-                .map(vp -> (PIECE) vp)
+                .map(calculated -> (Line) calculated)
+                .filter(line -> line.contains(king.getPosition()))
+                .filter(line -> line.contains(piece.getPosition()))
                 .collect(toList());
-
-        MultiValuedMap<Line,PIECE> impactLines = new ArrayListValuedHashMap<>();
-        Stream.of(lines)
-            .flatMap(Collection::stream)
-            .filter(line  -> line.contains(piece.getPosition()))
-            .forEach(line -> valuablePieces.stream()
-                    .filter(vp  -> line.contains(vp.getPosition()))
-                    .forEach(vp -> impactLines.put(line, vp))
-            );
 
         if (impactLines.isEmpty()) {
             return emptyList();
         }
 
-        var impacts = Stream.of(impactLines.entries())
+        Collection<PiecePinImpact<COLOR1,COLOR2,PINNED,KING,ATTACKER>> impacts = Stream.of(impactLines)
                 .flatMap(Collection::stream)
-                .map(entry -> {
-                    var line = entry.getKey();
-
+                .map(line -> {
                     var linePieces = board.getPieces(line);
                     if (linePieces.size() < 3) {
                         return null;
                     }
 
-                    var valuablePiece = entry.getValue();
                     var impact = Stream.of(linePieces)
                             .flatMap(Collection::stream)
                             .filter(Piece::isLinear)
                             .filter(attacker -> !Objects.equals(attacker.getColor(), piece.getColor()))
-                            // searched pattern: 'attacker - pinned piece - valuable piece' or reverse
-                            .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, valuablePiece)))
+                            // searched pattern: 'attacker - pinned piece - king' or reverse
+                            .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, king)))
                             .filter(attacker -> {
                                 // check if piece is attacked by line attacker
                                 var isPieceAttacked = Stream.of(board.getImpacts(attacker, Impact.Type.CONTROL))
@@ -86,8 +78,17 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
 
                                 return isPieceAttacked;
                             })
+                            .filter(attacker -> {
+                                // check if king is monitored by line attacker
+                                var isKingMonitored = Stream.of(board.getImpacts(attacker, Impact.Type.MONITOR))
+                                        .flatMap(Collection::stream)
+                                        .map(Impact::getPosition)
+                                        .anyMatch(position -> Objects.equals(position, king.getPosition()));
+
+                                return isKingMonitored;
+                            })
                             .findFirst()
-                            .map(attacker -> new PieceRelativePinImpact<>(piece, valuablePiece, (ATTACKER) attacker, line))
+                            .map(attacker -> new PieceAbsolutePinImpact<>(piece, king, (ATTACKER) attacker, line))
                             .orElse(null);
 
                     return impact;
