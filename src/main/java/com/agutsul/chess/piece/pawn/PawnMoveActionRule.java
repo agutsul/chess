@@ -1,6 +1,6 @@
 package com.agutsul.chess.piece.pawn;
 
-import static java.util.List.copyOf;
+import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
 
@@ -36,6 +36,6 @@ class PawnMoveActionRule<COLOR extends Color,
 
     protected Collection<Calculatable> calculate(MovePieceAlgo<COLOR,PAWN,Position> algo,
                                                  PAWN piece) {
-        return copyOf(algo.calculate(piece));
+        return unmodifiableCollection(algo.calculate(piece));
     }
 }

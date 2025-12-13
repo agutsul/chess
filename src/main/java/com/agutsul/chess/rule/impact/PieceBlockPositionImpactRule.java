@@ -1,6 +1,6 @@
 package com.agutsul.chess.rule.impact;
 
-import static java.util.List.copyOf;
+import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
 
@@ -32,6 +32,6 @@ public class PieceBlockPositionImpactRule<COLOR1 extends Color,
 
     @Override
     protected Collection<Calculatable> calculate(BLOCKER piece) {
-        return copyOf(algo.calculate(piece));
+        return unmodifiableCollection(algo.calculate(piece));
     }
 }

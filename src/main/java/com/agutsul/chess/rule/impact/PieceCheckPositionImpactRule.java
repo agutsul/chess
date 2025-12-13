@@ -1,7 +1,7 @@
 package com.agutsul.chess.rule.impact;
 
 import static java.util.Collections.emptyList;
-import static java.util.List.copyOf;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
@@ -37,7 +37,7 @@ public final class PieceCheckPositionImpactRule<COLOR1 extends Color,
     protected Collection<Calculatable> calculate(ATTACKER attacker, KING king) {
         var positions = algo.calculate(attacker);
         return positions.contains(king.getPosition())
-                ? copyOf(positions)
+                ? unmodifiableCollection(positions)
                 : emptyList();
     }
 
