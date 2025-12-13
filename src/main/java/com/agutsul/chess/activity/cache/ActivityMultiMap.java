@@ -6,6 +6,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -65,7 +66,7 @@ final class ActivityMultiMap<KEY extends Enum<KEY> & Activity.Type,
     @Override
     public void put(KEY key, VALUE value) {
         if (containsKey(key)) {
-            var values = new ArrayList<>(this.map.get(key));
+            var values = new LinkedHashSet<>(this.map.get(key));
             values.add(value);
 
             put(key, values);

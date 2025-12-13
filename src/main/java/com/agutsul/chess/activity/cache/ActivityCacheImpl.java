@@ -43,6 +43,7 @@ public class ActivityCacheImpl<TYPE extends Enum<TYPE> & Activity.Type,
                 .flatMap(Collection::stream)
                 .flatMap(Collection::stream)
                 .filter(Objects::nonNull)
+                .distinct()
                 .collect(toList());
     }
 
