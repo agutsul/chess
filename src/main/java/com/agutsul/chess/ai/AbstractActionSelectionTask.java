@@ -54,9 +54,11 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
 
     @Override
     public final String toString() {
-        return String.format("[%s]", this.actions.stream()
-                .map(Action::toString).collect(joining(","))
-        );
+        return String.format("[%s]", Stream.of(this.actions)
+                .flatMap(Collection::stream)
+                .map(Action::toString)
+                .collect(joining(",")
+        ));
     }
 
     @Override
@@ -88,6 +90,7 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
                 .flatMap(Collection::stream)
                 .map(ADAPTER::adapt)
                 .flatMap(Collection::stream)
+                .distinct()
                 .collect(toList());
 
         return actions;
