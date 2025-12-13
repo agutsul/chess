@@ -1,4 +1,4 @@
-package com.agutsul.chess.rule.impact;
+package com.agutsul.chess.rule.impact.attack;
 
 import static java.util.Collections.emptyList;
 
@@ -12,6 +12,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.AbstractRule;
+import com.agutsul.chess.rule.impact.DiscoveredAttackImpactRule;
 
 abstract class AbstractDiscoveredAttackImpactRule<COLOR1 extends Color,
                                                   COLOR2 extends Color,

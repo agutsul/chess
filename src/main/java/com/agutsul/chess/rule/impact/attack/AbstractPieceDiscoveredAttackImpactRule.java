@@ -1,4 +1,4 @@
-package com.agutsul.chess.rule.impact;
+package com.agutsul.chess.rule.impact.attack;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;

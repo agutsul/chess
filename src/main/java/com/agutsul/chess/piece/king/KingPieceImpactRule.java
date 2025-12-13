@@ -7,10 +7,10 @@ import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.impact.PieceControlPositionImpactRule;
-import com.agutsul.chess.rule.impact.PieceDiscoveredAttackImpactRule;
 import com.agutsul.chess.rule.impact.PieceOutpostPositionImpactRule;
 import com.agutsul.chess.rule.impact.PieceOverloadingPositionImpactRule;
 import com.agutsul.chess.rule.impact.PieceProtectPositionImpactRule;
+import com.agutsul.chess.rule.impact.attack.PieceDiscoveredAttackImpactRule;
 
 public final class KingPieceImpactRule<COLOR extends Color,
                                        PIECE extends KingPiece<COLOR>>

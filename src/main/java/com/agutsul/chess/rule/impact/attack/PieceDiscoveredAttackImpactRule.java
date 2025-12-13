@@ -1,4 +1,4 @@
-package com.agutsul.chess.rule.impact;
+package com.agutsul.chess.rule.impact.attack;
 
 import java.util.Collection;
 
@@ -11,6 +11,7 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.AbstractRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.Rule;
+import com.agutsul.chess.rule.impact.DiscoveredAttackImpactRule;
 
 // https://en.wikipedia.org/wiki/Discovered_attack
 public final class PieceDiscoveredAttackImpactRule<COLOR1 extends Color,

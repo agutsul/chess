@@ -1,7 +1,8 @@
-package com.agutsul.chess.rule.impact;
+package com.agutsul.chess.rule.impact.attack;
 
 import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static java.util.Collections.emptyList;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
@@ -9,54 +10,70 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
+
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.Impact;
-import com.agutsul.chess.activity.impact.PieceAbsoluteDiscoveredAttackImpact;
+import com.agutsul.chess.activity.impact.PieceRelativeDiscoveredAttackImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
-import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 
-final class PieceAbsoluteDiscoveredAttackImpactRule<COLOR1 extends Color,
+final class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
                                                     COLOR2 extends Color,
                                                     PIECE extends Piece<COLOR1>,
                                                     ATTACKER extends Piece<COLOR1> & Capturable,
-                                                    ATTACKED extends KingPiece<COLOR2>>
+                                                    ATTACKED extends Piece<COLOR2>>
         extends AbstractPieceDiscoveredAttackImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,
-                                                        PieceAbsoluteDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>> {
+                                                        PieceRelativeDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>> {
 
-    PieceAbsoluteDiscoveredAttackImpactRule(Board board) {
+    PieceRelativeDiscoveredAttackImpactRule(Board board) {
         super(board);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Collection<PieceAbsoluteDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>>
+    protected Collection<PieceRelativeDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>>
             createImpacts(PIECE piece, Collection<Line> lines) {
 
         var opponentColor = piece.getColor().invert();
-        var optionalKing = board.getKing(opponentColor);
-        if (optionalKing.isEmpty()) {
+        var opponentPieces = Stream.of(board.getPieces(opponentColor))
+                .flatMap(Collection::stream)
+                .filter(not(Piece::isKing))
+                .map(opponentPiece -> (ATTACKED) opponentPiece)
+                .collect(toList());
+
+        MultiValuedMap<Line,ATTACKED> impactLines = new ArrayListValuedHashMap<>();
+        Stream.of(lines)
+            .flatMap(Collection::stream)
+            .forEach(line -> opponentPieces.stream()
+                    .filter(opponentPiece  -> line.contains(opponentPiece.getPosition()))
+                    .forEach(opponentPiece -> impactLines.put(line, opponentPiece))
+            );
+
+        if (impactLines.isEmpty()) {
             return emptyList();
         }
 
-        var opponentKing = (ATTACKED) optionalKing.get();
-        var impacts = Stream.of(lines)
+        var impacts = Stream.of(impactLines.entries())
                 .flatMap(Collection::stream)
-                .filter(line -> line.contains(opponentKing.getPosition()))
-                .map(line -> {
+                .map(entry -> {
+                    var line = entry.getKey();
+
                     var linePieces = board.getPieces(line);
                     if (linePieces.size() < 3) {
                         return null;
                     }
 
+                    var opponentPiece = entry.getValue();
                     var impact = Stream.of(linePieces)
                             .flatMap(Collection::stream)
                             .filter(Piece::isLinear)
                             .filter(attacker -> Objects.equals(piece.getColor(), attacker.getColor()))
-                            // searched pattern: 'attacker - piece - attacked king' or reverse
-                            .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, opponentKing)))
+                            // searched pattern: 'attacker - piece - attacked piece' or reverse
+                            .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, opponentPiece)))
                             .filter(attacker -> {
                                 // check if piece is protected by line attacker
                                 var isPieceProtected = Stream.of(board.getImpacts(attacker, Impact.Type.PROTECT))
@@ -66,8 +83,8 @@ final class PieceAbsoluteDiscoveredAttackImpactRule<COLOR1 extends Color,
 
                                 return isPieceProtected;
                             })
-                            .map(attacker -> new PieceAbsoluteDiscoveredAttackImpact<>(piece, (ATTACKER) attacker, opponentKing, line))
                             .findFirst()
+                            .map(attacker -> new PieceRelativeDiscoveredAttackImpact<>(piece, (ATTACKER) attacker, opponentPiece, line))
                             .orElse(null);
 
                     return impact;

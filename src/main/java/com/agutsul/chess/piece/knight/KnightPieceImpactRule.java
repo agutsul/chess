@@ -10,7 +10,6 @@ import com.agutsul.chess.rule.impact.PieceBlockPositionImpactRule;
 import com.agutsul.chess.rule.impact.PieceCheckPositionImpactRule;
 import com.agutsul.chess.rule.impact.PieceControlPositionImpactRule;
 import com.agutsul.chess.rule.impact.PieceDeflectionPositionImpactRule;
-import com.agutsul.chess.rule.impact.PieceDiscoveredAttackImpactRule;
 import com.agutsul.chess.rule.impact.PieceForkPositionImpactRule;
 import com.agutsul.chess.rule.impact.PieceInterferencePositionImpactRule;
 import com.agutsul.chess.rule.impact.PieceOutpostPositionImpactRule;
@@ -18,6 +17,7 @@ import com.agutsul.chess.rule.impact.PieceOverloadingPositionImpactRule;
 import com.agutsul.chess.rule.impact.PieceProtectPositionImpactRule;
 import com.agutsul.chess.rule.impact.PieceSacrificePositionImpactRule;
 import com.agutsul.chess.rule.impact.PieceUnderminingPositionImpactRule;
+import com.agutsul.chess.rule.impact.attack.PieceDiscoveredAttackImpactRule;
 import com.agutsul.chess.rule.impact.desperado.PieceDesperadoPositionImpactRule;
 import com.agutsul.chess.rule.impact.pin.PiecePinPositionImpactRule;
 
