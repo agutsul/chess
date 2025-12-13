@@ -2,6 +2,7 @@
 .project
 .classpath
 .pmd
+.checkstyle
 .factorypath
 /target/
 /logs/
