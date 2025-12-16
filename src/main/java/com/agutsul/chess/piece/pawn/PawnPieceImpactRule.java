@@ -9,7 +9,6 @@ import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.impact.PieceCheckPositionImpactRule;
 import com.agutsul.chess.rule.impact.PieceControlPositionImpactRule;
 import com.agutsul.chess.rule.impact.PieceProtectPositionImpactRule;
-import com.agutsul.chess.rule.impact.attack.PieceDiscoveredAttackImpactRule;
 
 public final class PawnPieceImpactRule<COLOR extends Color,
                                        PAWN extends PawnPiece<COLOR>>
@@ -46,7 +45,7 @@ public final class PawnPieceImpactRule<COLOR extends Color,
                 new PieceControlPositionImpactRule<>(board, captureAlgo),
                 new PawnBlockadeImpactRule<>(board, promotionLine),
                 new PawnPinImpactRule<>(board, moveAlgo, bigMoveAlgo, captureAlgo),
-                new PieceDiscoveredAttackImpactRule<>(board),
+                new PawnDiscoveredAttackImpactRule<>(board, moveAlgo, bigMoveAlgo, captureAlgo, enPassantAlgo),
                 new PawnBlockImpactRule<>(board, moveAlgo, bigMoveAlgo),
                 new PawnInterferenceImpactRule<>(board, moveAlgo, bigMoveAlgo),
                 new PawnForkImpactRule<>(board, captureAlgo, enPassantAlgo),
