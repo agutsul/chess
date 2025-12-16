@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
 import com.agutsul.chess.Calculatable;
@@ -49,7 +48,7 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
                 .map(vp -> (PIECE) vp)
                 .collect(toList());
 
-        MultiValuedMap<Line,PIECE> impactLines = new ArrayListValuedHashMap<>();
+        var impactLines = new ArrayListValuedHashMap<Line,PIECE>();
         Stream.of(next)
             .flatMap(Collection::stream)
             .map(calculated -> (Line) calculated)
