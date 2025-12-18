@@ -7,8 +7,6 @@ import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.impact.PieceControlPositionImpactRule;
-import com.agutsul.chess.rule.impact.PieceOutpostPositionImpactRule;
-import com.agutsul.chess.rule.impact.PieceOverloadingPositionImpactRule;
 import com.agutsul.chess.rule.impact.PieceProtectPositionImpactRule;
 
 public final class KingPieceImpactRule<COLOR extends Color,
@@ -26,9 +24,9 @@ public final class KingPieceImpactRule<COLOR extends Color,
                 new PieceControlPositionImpactRule<>(board, algo),
                 new KingForkImpactRule<>(board, algo),
                 new KingDiscoveredAttackImpactRule<>(board, algo),
-                new PieceOverloadingPositionImpactRule<>(board, algo),
+                new KingOverloadingImpactRule<>(board, algo),
                 new KingUnderminingImpactRule<>(board, algo),
-                new PieceOutpostPositionImpactRule<>(board, algo)
+                new KingOutpostImpactRule<>(board, algo)
             )
         );
     }

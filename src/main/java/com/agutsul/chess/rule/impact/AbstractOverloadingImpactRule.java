@@ -55,7 +55,7 @@ abstract class AbstractOverloadingImpactRule<COLOR extends Color,
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceControlImpact<?,?>) impact)
                 .map(PieceControlImpact::getPosition)
-                .collect(toList());
+                .collect(toSet());
 
         var overloadedPositions = intersection(attackedPositions, protectedPositions);
         if (overloadedPositions.size() <= 1) {
