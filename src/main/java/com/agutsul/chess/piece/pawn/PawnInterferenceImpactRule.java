@@ -11,7 +11,7 @@ import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.impact.PieceInterferencePositionImpactRule;
+import com.agutsul.chess.rule.impact.interference.PieceInterferencePositionImpactRule;
 
 final class PawnInterferenceImpactRule<COLOR1 extends Color,
                                        COLOR2 extends Color,

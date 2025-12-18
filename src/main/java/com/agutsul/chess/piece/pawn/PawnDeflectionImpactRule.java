@@ -14,7 +14,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.rule.impact.PieceDeflectionPositionImpactRule;
+import com.agutsul.chess.rule.impact.deflection.PieceDeflectionPositionImpactRule;
 
 final class PawnDeflectionImpactRule<COLOR1 extends Color,
                                      COLOR2 extends Color,

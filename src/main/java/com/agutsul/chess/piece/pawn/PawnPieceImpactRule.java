@@ -6,9 +6,9 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
-import com.agutsul.chess.rule.impact.PieceCheckPositionImpactRule;
-import com.agutsul.chess.rule.impact.PieceControlPositionImpactRule;
-import com.agutsul.chess.rule.impact.PieceProtectPositionImpactRule;
+import com.agutsul.chess.rule.impact.check.PieceCheckPositionImpactRule;
+import com.agutsul.chess.rule.impact.control.PieceControlPositionImpactRule;
+import com.agutsul.chess.rule.impact.protect.PieceProtectPositionImpactRule;
 
 public final class PawnPieceImpactRule<COLOR extends Color,
                                        PAWN extends PawnPiece<COLOR>>

@@ -13,7 +13,7 @@ import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.impact.PieceOutpostPositionImpactRule;
+import com.agutsul.chess.rule.impact.outpost.PieceOutpostPositionImpactRule;
 
 final class PawnOutpostPositionImpactRule<COLOR extends Color,
                                           PAWN extends PawnPiece<COLOR>>

@@ -22,7 +22,7 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.impact.PieceSacrificePositionImpactRule;
+import com.agutsul.chess.rule.impact.sacrifice.PieceSacrificePositionImpactRule;
 
 final class PawnSacrificeImpactRule<COLOR1 extends Color,
                                     COLOR2 extends Color,

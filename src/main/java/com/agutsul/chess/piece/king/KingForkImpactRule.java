@@ -18,7 +18,7 @@ import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.impact.PieceForkPositionImpactRule;
+import com.agutsul.chess.rule.impact.fork.PieceForkPositionImpactRule;
 
 final class KingForkImpactRule<COLOR1 extends Color,
                                COLOR2 extends Color,

@@ -6,23 +6,23 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.BishopPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
-import com.agutsul.chess.rule.impact.PieceBatteryImpactRule;
-import com.agutsul.chess.rule.impact.PieceBlockLineImpactRule;
-import com.agutsul.chess.rule.impact.PieceCheckLineImpactRule;
-import com.agutsul.chess.rule.impact.PieceControlLineImpactRule;
-import com.agutsul.chess.rule.impact.PieceDeflectionLineImpactRule;
-import com.agutsul.chess.rule.impact.PieceForkLineImpactRule;
-import com.agutsul.chess.rule.impact.PieceInterferenceLineImpactRule;
-import com.agutsul.chess.rule.impact.PieceMonitorLineImpactRule;
-import com.agutsul.chess.rule.impact.PieceOutpostLineImpactRule;
-import com.agutsul.chess.rule.impact.PieceOverloadingLineImpactRule;
-import com.agutsul.chess.rule.impact.PieceProtectLineImpactRule;
-import com.agutsul.chess.rule.impact.PieceSacrificeLineImpactRule;
-import com.agutsul.chess.rule.impact.PieceSkewerImpactRule;
-import com.agutsul.chess.rule.impact.PieceUnderminingLineImpactRule;
 import com.agutsul.chess.rule.impact.attack.PieceDiscoveredAttackLineImpactRule;
+import com.agutsul.chess.rule.impact.battery.PieceBatteryImpactRule;
+import com.agutsul.chess.rule.impact.block.PieceBlockLineImpactRule;
+import com.agutsul.chess.rule.impact.check.PieceCheckLineImpactRule;
+import com.agutsul.chess.rule.impact.control.PieceControlLineImpactRule;
+import com.agutsul.chess.rule.impact.deflection.PieceDeflectionLineImpactRule;
 import com.agutsul.chess.rule.impact.desperado.PieceDesperadoLineImpactRule;
+import com.agutsul.chess.rule.impact.fork.PieceForkLineImpactRule;
+import com.agutsul.chess.rule.impact.interference.PieceInterferenceLineImpactRule;
+import com.agutsul.chess.rule.impact.monitor.PieceMonitorLineImpactRule;
+import com.agutsul.chess.rule.impact.outpost.PieceOutpostLineImpactRule;
+import com.agutsul.chess.rule.impact.overloading.PieceOverloadingLineImpactRule;
 import com.agutsul.chess.rule.impact.pin.PiecePinLineImpactRule;
+import com.agutsul.chess.rule.impact.protect.PieceProtectLineImpactRule;
+import com.agutsul.chess.rule.impact.sacrifice.PieceSacrificeLineImpactRule;
+import com.agutsul.chess.rule.impact.skewer.PieceSkewerImpactRule;
+import com.agutsul.chess.rule.impact.undermining.PieceUnderminingLineImpactRule;
 
 public final class BishopPieceImpactRule<COLOR extends Color,
                                          PIECE extends BishopPiece<COLOR>>

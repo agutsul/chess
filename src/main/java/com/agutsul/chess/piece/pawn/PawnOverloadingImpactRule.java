@@ -11,7 +11,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.rule.impact.PieceOverloadingPositionImpactRule;
+import com.agutsul.chess.rule.impact.overloading.PieceOverloadingPositionImpactRule;
 
 final class PawnOverloadingImpactRule<COLOR extends Color,
                                       PAWN extends PawnPiece<COLOR>>

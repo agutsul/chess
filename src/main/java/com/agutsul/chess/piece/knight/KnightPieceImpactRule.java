@@ -6,20 +6,20 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KnightPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
-import com.agutsul.chess.rule.impact.PieceBlockPositionImpactRule;
-import com.agutsul.chess.rule.impact.PieceCheckPositionImpactRule;
-import com.agutsul.chess.rule.impact.PieceControlPositionImpactRule;
-import com.agutsul.chess.rule.impact.PieceDeflectionPositionImpactRule;
-import com.agutsul.chess.rule.impact.PieceForkPositionImpactRule;
-import com.agutsul.chess.rule.impact.PieceInterferencePositionImpactRule;
-import com.agutsul.chess.rule.impact.PieceOutpostPositionImpactRule;
-import com.agutsul.chess.rule.impact.PieceOverloadingPositionImpactRule;
-import com.agutsul.chess.rule.impact.PieceProtectPositionImpactRule;
-import com.agutsul.chess.rule.impact.PieceSacrificePositionImpactRule;
-import com.agutsul.chess.rule.impact.PieceUnderminingPositionImpactRule;
 import com.agutsul.chess.rule.impact.attack.PieceDiscoveredAttackPositionImpactRule;
+import com.agutsul.chess.rule.impact.block.PieceBlockPositionImpactRule;
+import com.agutsul.chess.rule.impact.check.PieceCheckPositionImpactRule;
+import com.agutsul.chess.rule.impact.control.PieceControlPositionImpactRule;
+import com.agutsul.chess.rule.impact.deflection.PieceDeflectionPositionImpactRule;
 import com.agutsul.chess.rule.impact.desperado.PieceDesperadoPositionImpactRule;
+import com.agutsul.chess.rule.impact.fork.PieceForkPositionImpactRule;
+import com.agutsul.chess.rule.impact.interference.PieceInterferencePositionImpactRule;
+import com.agutsul.chess.rule.impact.outpost.PieceOutpostPositionImpactRule;
+import com.agutsul.chess.rule.impact.overloading.PieceOverloadingPositionImpactRule;
 import com.agutsul.chess.rule.impact.pin.PiecePinPositionImpactRule;
+import com.agutsul.chess.rule.impact.protect.PieceProtectPositionImpactRule;
+import com.agutsul.chess.rule.impact.sacrifice.PieceSacrificePositionImpactRule;
+import com.agutsul.chess.rule.impact.undermining.PieceUnderminingPositionImpactRule;
 
 public final class KnightPieceImpactRule<COLOR extends Color,
                                          PIECE extends KnightPiece<COLOR>>

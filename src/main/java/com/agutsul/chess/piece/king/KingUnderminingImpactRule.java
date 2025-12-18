@@ -7,7 +7,7 @@ import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.impact.PieceUnderminingPositionImpactRule;
+import com.agutsul.chess.rule.impact.undermining.PieceUnderminingPositionImpactRule;
 
 final class KingUnderminingImpactRule<COLOR1 extends Color,
                                       COLOR2 extends Color,

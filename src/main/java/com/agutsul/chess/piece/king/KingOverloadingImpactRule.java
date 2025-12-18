@@ -16,7 +16,7 @@ import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.impact.PieceOverloadingPositionImpactRule;
+import com.agutsul.chess.rule.impact.overloading.PieceOverloadingPositionImpactRule;
 
 final class KingOverloadingImpactRule<COLOR extends Color,
                                       PIECE extends KingPiece<COLOR>>
