@@ -4,11 +4,12 @@ import java.util.Objects;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
 
 public interface PieceDiscoveredAttackImpact<COLOR1 extends Color,
                                              COLOR2 extends Color,
-                                             PIECE extends Piece<COLOR1>,
+                                             PIECE  extends Piece<COLOR1>,
                                              ATTACKER extends Piece<COLOR1> & Capturable,
                                              ATTACKED extends Piece<COLOR2>>
         extends Impact<PIECE> {
@@ -23,6 +24,14 @@ public interface PieceDiscoveredAttackImpact<COLOR1 extends Color,
     }
 
     Mode getMode();
+
+    ATTACKER getAttacker();
+
+    ATTACKED getAttacked();
+
+    PIECE getPiece();
+
+    Line getLine();
 
     // utilities
 
