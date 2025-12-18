@@ -12,7 +12,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
-abstract class AbstractPiecePinModeImpactRule<COLOR1 extends Color,
+abstract class AbstractPinModeImpactRule<COLOR1 extends Color,
                                               COLOR2 extends Color,
                                               PINNED extends Piece<COLOR1> & Pinnable,
                                               PIECE  extends Piece<COLOR1>,
@@ -20,7 +20,7 @@ abstract class AbstractPiecePinModeImpactRule<COLOR1 extends Color,
                                               IMPACT extends PiecePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>>
         extends AbstractPinImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,IMPACT> {
 
-    AbstractPiecePinModeImpactRule(Board board) {
+    AbstractPinModeImpactRule(Board board) {
         super(board);
     }
 

@@ -28,7 +28,7 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
                                        PINNED extends Piece<COLOR1> & Pinnable,
                                        PIECE extends Piece<COLOR1>,
                                        ATTACKER extends Piece<COLOR2> & Capturable>
-        extends AbstractPiecePinModeImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,
+        extends AbstractPinModeImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,
                                                PiecePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>> {
 
     PieceRelativePinImpactRule(Board board) {

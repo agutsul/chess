@@ -26,7 +26,7 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
                                        PINNED extends Piece<COLOR1> & Pinnable,
                                        KING   extends KingPiece<COLOR1>,
                                        ATTACKER extends Piece<COLOR2> & Capturable>
-        extends AbstractPiecePinModeImpactRule<COLOR1,COLOR2,PINNED,KING,ATTACKER,
+        extends AbstractPinModeImpactRule<COLOR1,COLOR2,PINNED,KING,ATTACKER,
                                                PiecePinImpact<COLOR1,COLOR2,PINNED,KING,ATTACKER>> {
 
     PieceAbsolutePinImpactRule(Board board) {
