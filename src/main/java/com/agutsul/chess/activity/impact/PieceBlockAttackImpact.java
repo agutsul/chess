@@ -1,5 +1,8 @@
 package com.agutsul.chess.activity.impact;
 
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
@@ -32,7 +35,10 @@ public final class PieceBlockAttackImpact<COLOR1 extends Color,
 
     @Override
     public Line getLine() {
-        return attackImpact.getLine().get();
+        return Stream.of(attackImpact.getLine())
+                .flatMap(Optional::stream)
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
