@@ -15,7 +15,7 @@ import com.agutsul.chess.piece.algo.CompositePieceAlgo;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.outpost.PieceOutpostPositionImpactRule;
 
-final class PawnOutpostPositionImpactRule<COLOR extends Color,
+final class PawnOutpostImpactRule<COLOR extends Color,
                                           PAWN extends PawnPiece<COLOR>>
         extends PieceOutpostPositionImpactRule<COLOR,PAWN> {
 
@@ -23,11 +23,11 @@ final class PawnOutpostPositionImpactRule<COLOR extends Color,
     private final PawnEnPassantAlgo<COLOR,PAWN> enPassantAlgo;
 
     @SuppressWarnings("unchecked")
-    PawnOutpostPositionImpactRule(Board board,
-                                  PawnMoveAlgo<COLOR,PAWN> moveAlgo,
-                                  PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
-                                  PawnCaptureAlgo<COLOR,PAWN> captureAlgo,
-                                  PawnEnPassantAlgo<COLOR,PAWN> enPassantAlgo) {
+    PawnOutpostImpactRule(Board board,
+                          PawnMoveAlgo<COLOR,PAWN> moveAlgo,
+                          PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
+                          PawnCaptureAlgo<COLOR,PAWN> captureAlgo,
+                          PawnEnPassantAlgo<COLOR,PAWN> enPassantAlgo) {
 
         super(board, new CompositePieceAlgo<>(board, moveAlgo, bigMoveAlgo));
 
