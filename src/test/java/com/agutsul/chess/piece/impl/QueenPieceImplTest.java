@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceBatteryImpact;
 import com.agutsul.chess.activity.impact.PieceDesperadoImpact;
+import com.agutsul.chess.activity.impact.PieceDominationImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PieceOverloadingImpact;
 import com.agutsul.chess.activity.impact.PiecePartialPinImpact;
@@ -376,5 +377,36 @@ public class QueenPieceImplTest extends AbstractPieceTest {
         var exchangeImpact = impacts.getLast();
         assertEquals(whiteRook,  exchangeImpact.getDesperado());
         assertEquals(blackQueen, exchangeImpact.getAttacked());
+    }
+
+    @Test
+    // https://en.wikipedia.org/wiki/Domination_(chess)
+    void testQueenDominationImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("g8")
+                .withBlackQueen("d3")
+                .withBlackBishop("c3")
+                .withBlackPawns("a7","c5","f7","g7","h6")
+                .withWhiteKing("h2")
+                .withWhiteQueen("g2")
+                .withWhiteKnight("c4")
+                .withWhitePawns("a3","e3","g3","f2","h4")
+                .build();
+
+        var blackQueen  = board.getPiece("d3").get();
+        var dominationImpacts = board.getImpacts(blackQueen, Impact.Type.DOMINATION);
+
+        assertFalse(dominationImpacts.isEmpty());
+        assertEquals(2, dominationImpacts.size());
+
+        var attackedPieces = board.getPieces(Colors.WHITE, "c4", "e3");
+        Stream.of(dominationImpacts)
+            .flatMap(Collection::stream)
+            .map(impact -> (PieceDominationImpact<?,?,?,?>) impact)
+            .forEach(dominationImpact -> {
+                assertEquals(blackQueen,  dominationImpact.getAttacker());
+                assertTrue(attackedPieces.contains(dominationImpact.getAttacked()));
+                assertTrue(dominationImpact.getLine().isPresent());
+            });
     }
 }

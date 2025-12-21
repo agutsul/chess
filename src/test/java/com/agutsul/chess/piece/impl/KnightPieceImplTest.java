@@ -20,6 +20,7 @@ import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
 import com.agutsul.chess.activity.impact.PieceAbsolutePinImpact;
 import com.agutsul.chess.activity.impact.PieceBlockImpact;
 import com.agutsul.chess.activity.impact.PieceDesperadoImpact;
+import com.agutsul.chess.activity.impact.PieceDominationImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PieceInterferenceImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
@@ -477,5 +478,32 @@ public class KnightPieceImplTest extends AbstractPieceTest {
             assertTrue(pieces.contains(exchangeImpact.getDesperado()));
             assertEquals(whiteKnight,  exchangeImpact.getAttacked());
         }
+    }
+
+    @Test
+    // https://www.chess.com/blog/EnergeticHay/piece-domination-the-knight
+    void testKnightDominationImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("d5")
+                .withBlackKnight("e6")
+                .withBlackPawns("a5","c2","d4","g6","h6")
+                .withWhiteKing("c1")
+                .withWhitePawns("a4","f4","h4")
+                .build();
+
+        var blackKnight = board.getPiece("e6").get();
+        var dominationImpacts = new ArrayList<>(
+                board.getImpacts(blackKnight, Impact.Type.DOMINATION)
+        );
+
+        assertFalse(dominationImpacts.isEmpty());
+        assertEquals(1, dominationImpacts.size());
+
+        var dominationImpact = (PieceDominationImpact<?,?,?,?>) dominationImpacts.getFirst();
+        var whitePawn = board.getPiece("f4").get();
+
+        assertEquals(blackKnight,  dominationImpact.getAttacker());
+        assertEquals(whitePawn, dominationImpact.getAttacked());
+        assertTrue(dominationImpact.getLine().isEmpty());
     }
 }

@@ -55,7 +55,8 @@ public final class PawnPieceImpactRule<COLOR extends Color,
                 new PawnOutpostPositionImpactRule<>(board, moveAlgo, bigMoveAlgo, captureAlgo, enPassantAlgo),
                 new PawnSacrificeImpactRule<>(board, moveAlgo, bigMoveAlgo, captureAlgo, enPassantAlgo),
                 new PawnLuftImpactRule<>(board, moveAlgo, bigMoveAlgo, captureAlgo),
-                new PawnDesperadoImpactRule<>(board, captureAlgo, enPassantAlgo)
+                new PawnDesperadoImpactRule<>(board, captureAlgo, enPassantAlgo),
+                new PawnDominationImpactRule<>(board, captureAlgo, enPassantAlgo)
             )
         );
     }

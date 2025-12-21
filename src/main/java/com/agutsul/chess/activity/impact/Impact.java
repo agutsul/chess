@@ -25,7 +25,8 @@ public interface Impact<SOURCE>
         OUTPOST,
         SACRIFICE,
         LUFT,
-        DESPERADO
+        DESPERADO,
+        DOMINATION
     }
 
     // utilities
@@ -172,5 +173,13 @@ public interface Impact<SOURCE>
 
     static boolean isDesperado(Impact.Type impactType) {
         return Impact.Type.DESPERADO.equals(impactType);
+    }
+
+    static boolean isDomination(Impact<?> impact) {
+        return isDomination(impact.getType());
+    }
+
+    static boolean isDomination(Impact.Type impactType) {
+        return Impact.Type.DOMINATION.equals(impactType);
     }
 }
