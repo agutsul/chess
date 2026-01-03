@@ -139,6 +139,11 @@ public final class StandardBoard
     }
 
     @Override
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color, Collection<Position> positions) {
+        return this.origin.getPieces(color, positions);
+    }
+
+    @Override
     public <COLOR extends Color> Optional<Piece<COLOR>> getPiece(Position position) {
         return this.origin.getPiece(position);
     }

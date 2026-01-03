@@ -275,18 +275,25 @@ final class BoardImpl extends AbstractBoard implements Closeable {
                 .flatMap(Optional::stream)
                 .collect(toSet());
 
+        return getPieces(color, requestedPositions);
+    }
+
+    @Override
+    public <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color,
+                                                                    Collection<Position> positions) {
+
         LOGGER.debug("Getting pieces of '{}' color and locations '[{}]'",
-                color, join(requestedPositions, COMMA_SEPARATOR)
+                color, join(positions, COMMA_SEPARATOR)
         );
 
-        if (CollectionUtils.isEmpty(requestedPositions)) {
+        if (CollectionUtils.isEmpty(positions)) {
             return emptyList();
         }
 
         @SuppressWarnings("unchecked")
         var pieces = Stream.of(pieceCache.getActive(color))
                 .flatMap(Collection::stream)
-                .filter(piece -> requestedPositions.contains(piece.getPosition()))
+                .filter(piece -> positions.contains(piece.getPosition()))
                 .sorted(comparing(Piece::getPosition, COMPARATOR))
                 .map(piece -> (Piece<COLOR>) piece)
                 .toList();

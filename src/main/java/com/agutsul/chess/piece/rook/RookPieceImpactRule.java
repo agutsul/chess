@@ -24,6 +24,7 @@ import com.agutsul.chess.rule.impact.protect.PieceProtectLineImpactRule;
 import com.agutsul.chess.rule.impact.sacrifice.PieceSacrificeLineImpactRule;
 import com.agutsul.chess.rule.impact.skewer.PieceSkewerImpactRule;
 import com.agutsul.chess.rule.impact.undermining.PieceUnderminingLineImpactRule;
+import com.agutsul.chess.rule.impact.xray.PieceXRayImpactRule;
 
 public final class RookPieceImpactRule<COLOR extends Color,
                                        PIECE extends RookPiece<COLOR>>
@@ -53,7 +54,8 @@ public final class RookPieceImpactRule<COLOR extends Color,
                 new PieceOutpostLineImpactRule<>(board, algo),
                 new PieceSacrificeLineImpactRule<>(board, algo),
                 new PieceDesperadoLineImpactRule<>(board, algo),
-                new PieceDominationLineImpactRule<>(board, algo)
+                new PieceDominationLineImpactRule<>(board, algo),
+                new PieceXRayImpactRule<>(board, algo)
             )
         );
     }

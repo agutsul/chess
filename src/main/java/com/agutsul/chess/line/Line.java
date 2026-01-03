@@ -13,4 +13,8 @@ public interface Line extends List<Position>, Calculatable {
     boolean containsAny(Collection<Position> positions);
 
     Collection<Position> intersection(Collection<Position> positions);
+
+    Collection<Line> split(Position position);
+
+    Line subLine(Position start, Position finish);
 }

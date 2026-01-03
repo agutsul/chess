@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -26,9 +27,11 @@ import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PieceOverloadingImpact;
 import com.agutsul.chess.activity.impact.PiecePartialPinImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
+import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeDesperadoImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeForkImpact;
 import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
+import com.agutsul.chess.activity.impact.PieceXRayImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Colors;
@@ -393,7 +396,7 @@ public class QueenPieceImplTest extends AbstractPieceTest {
                 .withWhitePawns("a3","e3","g3","f2","h4")
                 .build();
 
-        var blackQueen  = board.getPiece("d3").get();
+        var blackQueen = board.getPiece("d3").get();
         var dominationImpacts = board.getImpacts(blackQueen, Impact.Type.DOMINATION);
 
         assertFalse(dominationImpacts.isEmpty());
@@ -408,5 +411,53 @@ public class QueenPieceImplTest extends AbstractPieceTest {
                 assertTrue(attackedPieces.contains(dominationImpact.getAttacked()));
                 assertTrue(dominationImpact.getLine().isPresent());
             });
+    }
+
+    @Test
+    // https://en.wikipedia.org/wiki/X-ray_(chess)
+    void testQueenXRayProtectImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("b7")
+                .withBlackQueen("g4")
+                .withBlackRook("a8")
+                .withBlackKnight("c7")
+                .withBlackPawns("b6","c6","e6","f3","g5","h7")
+                .withWhiteKing("g1")
+                .withWhiteQueen("e7")
+                .withWhiteRook("f1")
+                .withWhiteKnight("c3")
+                .withWhiteBishop("d2")
+                .withWhitePawns("c4","d4","e5","f2","g2","h2")
+                .build();
+
+        var whiteQueen = board.getPiece("e7").get();
+        var xRayImpacts = new ArrayList<>(
+                board.getImpacts(whiteQueen, Impact.Type.XRAY)
+        );
+
+        assertFalse(xRayImpacts.isEmpty());
+        assertEquals(2, xRayImpacts.size());
+
+        var xRayImpact = (PieceXRayImpact<?,?,?,?>) xRayImpacts.getFirst();
+        assertTrue(PieceXRayImpact.isRelative(xRayImpact));
+
+        var whitePawn = board.getPiece("e5").get();
+
+        assertEquals(whitePawn,  xRayImpact.getTarget());
+        assertEquals(whiteQueen, xRayImpact.getPiece());
+        assertNotNull(xRayImpact.getLine());
+
+        var blackPawn = board.getPiece("e6").get();
+
+        var pieces = xRayImpact.getPieces();
+        assertFalse(pieces.isEmpty());
+        assertEquals(1, pieces.size());
+        assertTrue(pieces.contains(blackPawn));
+
+        var originImpact = xRayImpact.getSource();
+        assertTrue(Impact.isProtect((Impact<?>) originImpact));
+
+        var protectImpact = (PieceProtectImpact<?,?,?>) originImpact;
+        assertTrue(protectImpact.isHidden());
     }
 }

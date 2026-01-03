@@ -175,5 +175,15 @@ public enum LineFactory {
         public Collection<Position> intersection(Collection<Position> positions) {
             return emptyList();
         }
+
+        @Override
+        public Collection<Line> split(Position position) {
+            return emptyList();
+        }
+
+        @Override
+        public Line subLine(Position start, Position finish) {
+            return lineOf(emptyList());
+        }
     }
 }

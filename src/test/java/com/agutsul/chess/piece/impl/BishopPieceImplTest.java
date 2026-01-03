@@ -23,17 +23,21 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteSkewerImpact;
+import com.agutsul.chess.activity.impact.PieceAttackImpact;
 import com.agutsul.chess.activity.impact.PieceBatteryImpact;
 import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.activity.impact.PieceDeflectionAttackImpact;
 import com.agutsul.chess.activity.impact.PieceDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
+import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeSkewerImpact;
 import com.agutsul.chess.activity.impact.PieceSacrificeAttackImpact;
 import com.agutsul.chess.activity.impact.PieceSacrificeMoveImpact;
 import com.agutsul.chess.activity.impact.PieceSkewerImpact;
 import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
+import com.agutsul.chess.activity.impact.PieceXRayAttackImpact;
+import com.agutsul.chess.activity.impact.PieceXRayImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Color;
@@ -634,5 +638,101 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         assertEquals(blackKing, impact.getAttacker());
         assertEquals(blackPawn2.getPosition(), impact.getPosition());
         assertEquals(blackPawn2, impact.getSource().getTarget());
+    }
+
+    @Test
+    // https://en.wikipedia.org/wiki/X-ray_(chess)
+    void testBishopXRayProtectImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("g8")
+                .withBlackQueen("d8")
+                .withBlackRooks("a8","e8")
+                .withBlackKnights("b8","e7")
+                .withBlackBishop("d4")
+                .withBlackPawns("b4","b7","c6","f7","g6")
+                .withWhiteKing("c1")
+                .withWhiteQueen("h8")
+                .withWhiteRooks("d1","h1")
+                .withWhiteBishops("b2","f1")
+                .withWhitePawns("a2","c4","d2","f2","g2")
+                .build();
+
+        var whiteBishop = board.getPiece("b2").get();
+        var xRayImpacts = new ArrayList<>(
+                board.getImpacts(whiteBishop, Impact.Type.XRAY)
+        );
+
+        assertFalse(xRayImpacts.isEmpty());
+        assertEquals(1, xRayImpacts.size());
+
+        var xRayImpact = (PieceXRayImpact<?,?,?,?>) xRayImpacts.getFirst();
+        assertTrue(PieceXRayImpact.isRelative(xRayImpact));
+
+        var whiteQueen = board.getPiece("h8").get();
+
+        assertEquals(whiteQueen,  xRayImpact.getTarget());
+        assertEquals(whiteBishop, xRayImpact.getPiece());
+        assertNotNull(xRayImpact.getLine());
+
+        var blackBishop = board.getPiece("d4").get();
+
+        var pieces = xRayImpact.getPieces();
+        assertFalse(pieces.isEmpty());
+        assertEquals(1, pieces.size());
+        assertTrue(pieces.contains(blackBishop));
+
+        var originImpact = xRayImpact.getSource();
+        assertTrue(Impact.isProtect((Impact<?>) originImpact));
+
+        var protectImpact = (PieceProtectImpact<?,?,?>) originImpact;
+        assertTrue(protectImpact.isHidden());
+    }
+
+    @Test
+    // https://en.wikipedia.org/wiki/X-ray_(chess)
+    void testBisshopXRayAttackImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("h8")
+                .withBlackQueen("d8")
+                .withBlackRooks("b8","f8")
+                .withBlackBishops("c8","h4")
+                .withBlackKnight("c6")
+                .withBlackPawns("a5","d6","f7","g6","h7")
+                .withWhiteKing("f1")
+                .withWhiteQueen("d1")
+                .withWhiteRooks("a4","h1")
+                .withWhiteBishop("c4")
+                .withWhiteKnights("d5","e3")
+                .withWhitePawns("b3","c3","e4","f4")
+                .build();
+
+        var whiteBishop = board.getPiece("c4").get();
+        var xRayImpacts = board.getImpacts(whiteBishop, Impact.Type.XRAY);
+
+        assertFalse(xRayImpacts.isEmpty());
+        assertEquals(1, xRayImpacts.size());
+
+        var relativeXRayImpacts = Stream.of(xRayImpacts)
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceXRayImpact<?,?,?,?>) impact)
+                .filter(PieceXRayImpact::isRelative)
+                .toList();
+
+        assertEquals(1, relativeXRayImpacts.size());
+
+        var blackPawn = board.getPiece("f7").get();
+        var whiteKnight = board.getPiece("d5").get();
+
+        var xRayImpact = relativeXRayImpacts.get(0);
+
+        var source = xRayImpact.getSource();
+        assertTrue(Impact.isAttack((Impact<?>) source));
+        assertTrue(((PieceAttackImpact<?,?,?,?>) source).isHidden());
+
+        assertEquals(whiteBishop, xRayImpact.getPiece());
+        assertEquals(blackPawn, xRayImpact.getTarget());
+        assertTrue(xRayImpact.getPieces().contains(whiteKnight));
+        assertTrue(xRayImpact instanceof PieceXRayAttackImpact);
+        assertNotNull(xRayImpact.getLine());
     }
 }

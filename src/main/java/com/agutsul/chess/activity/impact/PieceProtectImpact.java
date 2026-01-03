@@ -16,6 +16,7 @@ public class PieceProtectImpact<COLOR extends Color,
         implements Impact<PIECE1> {
 
     private Line line;
+    private boolean hidden;
 
     public PieceProtectImpact(PIECE1 source, PIECE2 target) {
         super(Impact.Type.PROTECT, source, target);
@@ -26,6 +27,11 @@ public class PieceProtectImpact<COLOR extends Color,
         this.line = line;
     }
 
+    public PieceProtectImpact(PIECE1 source, PIECE2 target, Line line, boolean hidden) {
+        this(source, target, line);
+        this.hidden = hidden;
+    }
+
     public final Optional<Line> getLine() {
         return Optional.ofNullable(this.line);
     }
@@ -33,6 +39,10 @@ public class PieceProtectImpact<COLOR extends Color,
     @Override
     public final Position getPosition() {
         return getTarget().getPosition();
+    }
+
+    public final boolean isHidden() {
+        return this.hidden;
     }
 
     @Override

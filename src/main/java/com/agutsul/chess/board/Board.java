@@ -40,6 +40,7 @@ public interface Board {
     <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color);
     <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color, Piece.Type pieceType);
     <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color, String position, String... positions);
+    <COLOR extends Color> Collection<Piece<COLOR>> getPieces(Color color, Collection<Position> positions);
 
     <COLOR extends Color> Optional<Piece<COLOR>> getPiece(Position position);
     <COLOR extends Color> Optional<Piece<COLOR>> getPiece(String position);

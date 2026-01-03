@@ -15,9 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.StandardBoard;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.exception.UnknownPieceException;
+import com.agutsul.chess.piece.Piece;
 
 @ExtendWith(MockitoExtension.class)
 public class PieceMoveActionAdapterTest {
@@ -41,7 +43,7 @@ public class PieceMoveActionAdapterTest {
 
     @Test
     void testAdaptUnknownPieceMoveAction() {
-        when(board.getPieces(any(), any()))
+        when(board.getPieces(any(Color.class), any(Piece.Type.class)))
             .thenReturn(emptyList());
 
         var adapter = new PieceMoveActionAdapter(board, Colors.WHITE);

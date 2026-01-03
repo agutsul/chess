@@ -26,7 +26,8 @@ public interface Impact<SOURCE>
         SACRIFICE,
         LUFT,
         DESPERADO,
-        DOMINATION
+        DOMINATION,
+        XRAY
     }
 
     // utilities
@@ -181,5 +182,13 @@ public interface Impact<SOURCE>
 
     static boolean isDomination(Impact.Type impactType) {
         return Impact.Type.DOMINATION.equals(impactType);
+    }
+
+    static boolean isXRay(Impact<?> impact) {
+        return isXRay(impact.getType());
+    }
+
+    static boolean isXRay(Impact.Type impactType) {
+        return Impact.Type.XRAY.equals(impactType);
     }
 }

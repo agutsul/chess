@@ -38,6 +38,17 @@ public abstract class PieceAttackImpactFactory {
         return (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) attackImpact;
     }
 
+    @SuppressWarnings("unchecked")
+    public static <COLOR1 extends Color,COLOR2 extends Color,ATTACKER extends Piece<COLOR1> & Capturable,ATTACKED extends Piece<COLOR2>>
+            AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> createHiddenAttackImpact(ATTACKER predator, ATTACKED victim, Line line) {
+
+        var attackImpact = isKing(victim)
+                ? new PieceCheckImpact<>(predator, (KingPiece<COLOR2>) victim, line, true)
+                : new PieceAttackImpact<>(predator, victim, line, true);
+
+        return (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) attackImpact;
+    }
+
     public static <COLOR1 extends Color,COLOR2 extends Color,ATTACKER extends Piece<COLOR1> & Capturable,ATTACKED extends Piece<COLOR2>>
             AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> createAttackImpact(ATTACKER predator, ATTACKED victim, Optional<Line> attackLine) {
 

@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -20,11 +21,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
+import com.agutsul.chess.activity.impact.PieceAttackImpact;
 import com.agutsul.chess.activity.impact.PieceBatteryImpact;
+import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.activity.impact.PieceDesperadoImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PieceOverloadingImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeDesperadoImpact;
+import com.agutsul.chess.activity.impact.PieceXRayAttackImpact;
+import com.agutsul.chess.activity.impact.PieceXRayImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Color;
@@ -450,9 +455,7 @@ public class RookPieceImplTest extends AbstractPieceTest {
                 .build();
 
         var whiteRook = board.getPiece("f3").get();
-        var desperadoImpacts = new ArrayList<>(
-                board.getImpacts(whiteRook, Impact.Type.DESPERADO)
-        );
+        var desperadoImpacts = board.getImpacts(whiteRook, Impact.Type.DESPERADO);
 
         assertFalse(desperadoImpacts.isEmpty());
         assertEquals(2, desperadoImpacts.size());
@@ -482,5 +485,128 @@ public class RookPieceImplTest extends AbstractPieceTest {
         var exchangeImpact = impacts.getLast();
         assertEquals(whiteKing,  exchangeImpact.getDesperado());
         assertEquals(blackRook, exchangeImpact.getAttacked());
+    }
+
+    @Test
+    // https://en.wikipedia.org/wiki/X-ray_(chess)
+    void testRookXRayRelativeAttackImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("g8")
+                .withBlackQueen("d8")
+                .withBlackRooks("a8","e8")
+                .withBlackBishops("c8","g7")
+                .withBlackKnights("d4","f6")
+                .withBlackPawns("a7","b7","c7","d6","e5","f7","g6","h7")
+                .withWhiteKing("g1")
+                .withWhiteQueen("d1")
+                .withWhiteRooks("a1","f1")
+                .withWhiteBishops("e2","e3")
+                .withWhiteKnights("c3","f3")
+                .withWhitePawns("a3","b2","c4","d5","e4","f2","g2","h2")
+                .build();
+
+        var blackRook = board.getPiece("e8").get();
+        var xRayImpacts = board.getImpacts(blackRook, Impact.Type.XRAY);
+
+        assertFalse(xRayImpacts.isEmpty());
+        assertEquals(3, xRayImpacts.size());
+
+        var relativeXRayImpacts = Stream.of(xRayImpacts)
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceXRayImpact<?,?,?,?>) impact)
+                .filter(PieceXRayImpact::isRelative)
+                .toList();
+
+        assertEquals(3, relativeXRayImpacts.size());
+
+        var blackPawn = board.getPiece("e5").get();
+        var whitePawn = board.getPiece("e4").get();
+
+        var xRayImpact1 = relativeXRayImpacts.get(0);
+
+        var source1 = xRayImpact1.getSource();
+        assertTrue(Impact.isAttack((Impact<?>) source1));
+        assertTrue(((PieceAttackImpact<?,?,?,?>) source1).isHidden());
+
+        assertEquals(blackRook, xRayImpact1.getPiece());
+        assertEquals(whitePawn, xRayImpact1.getTarget());
+        assertTrue(xRayImpact1.getPieces().contains(blackPawn));
+        assertTrue(xRayImpact1 instanceof PieceXRayAttackImpact);
+        assertNotNull(xRayImpact1.getLine());
+
+        var whiteBishop1 = board.getPiece("e3").get();
+        var xRayImpact2 = relativeXRayImpacts.get(1);
+
+        var source2 = xRayImpact2.getSource();
+        assertTrue(Impact.isAttack((Impact<?>) source2));
+        assertTrue(((PieceAttackImpact<?,?,?,?>) source2).isHidden());
+
+        assertEquals(blackRook, xRayImpact2.getPiece());
+        assertEquals(whiteBishop1, xRayImpact2.getTarget());
+        assertTrue(xRayImpact2.getPieces().containsAll(List.of(blackPawn,whitePawn)));
+        assertTrue(xRayImpact2 instanceof PieceXRayAttackImpact);
+        assertNotNull(xRayImpact2.getLine());
+
+        var whiteBishop2 = board.getPiece("e2").get();
+        var xRayImpact3 = relativeXRayImpacts.get(2);
+
+        var source3 = xRayImpact1.getSource();
+        assertTrue(Impact.isAttack((Impact<?>) source3));
+        assertTrue(((PieceAttackImpact<?,?,?,?>) source3).isHidden());
+
+        assertEquals(blackRook, xRayImpact3.getPiece());
+        assertEquals(whiteBishop2, xRayImpact3.getTarget());
+        assertTrue(xRayImpact3.getPieces().containsAll(List.of(blackPawn,whitePawn,whiteBishop1)));
+        assertTrue(xRayImpact3 instanceof PieceXRayAttackImpact);
+        assertNotNull(xRayImpact3.getLine());
+    }
+
+    @Test
+    // https://en.wikipedia.org/wiki/X-ray_(chess)
+    void testRookXRayAbsoluteAttackImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("h8")
+                .withBlackQueen("d8")
+                .withBlackRooks("b8","f8")
+                .withBlackBishops("c8","h4")
+                .withBlackKnight("c6")
+                .withBlackPawns("a5","d6","f7","g6","h7")
+                .withWhiteKing("f1")
+                .withWhiteQueen("d1")
+                .withWhiteRooks("a4","h1")
+                .withWhiteBishop("c4")
+                .withWhiteKnights("d5","e3")
+                .withWhitePawns("b3","c3","e4","f4")
+                .build();
+
+        var blackRook = board.getPiece("f8").get();
+        var xRayImpacts = board.getImpacts(blackRook, Impact.Type.XRAY);
+
+        assertFalse(xRayImpacts.isEmpty());
+        assertEquals(2, xRayImpacts.size());
+
+        var absoluteXRayImpacts = Stream.of(xRayImpacts)
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceXRayImpact<?,?,?,?>) impact)
+                .filter(PieceXRayImpact::isAbsolute)
+                .toList();
+
+        assertEquals(1, absoluteXRayImpacts.size());
+
+        var blackPawn = board.getPiece("f7").get();
+        var whitePawn = board.getPiece("f4").get();
+        var whiteKing = board.getPiece("f1").get();
+
+        var xRayImpact = absoluteXRayImpacts.getFirst();
+
+        var source = xRayImpact.getSource();
+        assertTrue(Impact.isCheck((Impact<?>) source));
+        assertTrue(((PieceCheckImpact<?,?,?,?>) source).isHidden());
+
+        assertEquals(blackRook, xRayImpact.getPiece());
+        assertEquals(whiteKing, xRayImpact.getTarget());
+        assertTrue(xRayImpact.getPieces().containsAll(List.of(blackPawn,whitePawn)));
+        assertTrue(xRayImpact instanceof PieceXRayAttackImpact);
+        assertNotNull(xRayImpact.getLine());
     }
 }
