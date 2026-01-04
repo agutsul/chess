@@ -1,12 +1,10 @@
 package com.agutsul.chess.rule.impact.monitor;
 
-import static com.agutsul.chess.line.LineFactory.lineOf;
-import static com.agutsul.chess.piece.Piece.isKing;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
@@ -15,9 +13,9 @@ import com.agutsul.chess.activity.impact.PieceMonitorImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
+import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
-import com.agutsul.chess.position.Position;
 
 public final class PieceMonitorLineImpactRule<COLOR extends Color,
                                               PIECE extends Piece<COLOR> & Capturable>
@@ -35,37 +33,23 @@ public final class PieceMonitorLineImpactRule<COLOR extends Color,
     @Override
     protected Collection<Calculatable> calculate(PIECE piece) {
         var lines = algo.calculate(piece);
+        var opponentKing = board.getKing(piece.getColor().invert());
 
-        var monitorLines = new ArrayList<Calculatable>();
-        for (var line : lines) {
-            var monitoredPositions = new ArrayList<Position>();
+        // positions behind opponent king
+        Collection<Calculatable> monitoredLines = Stream.of(opponentKing)
+                .flatMap(Optional::stream)
+                .map(KingPiece::getPosition)
+                .flatMap(kingPosition -> Stream.of(lines)
+                        .flatMap(Collection::stream)
+                        .filter(line -> line.contains(kingPosition))
+                        .map(line -> line.split(kingPosition))
+                        .flatMap(Collection::stream)
+                        .filter(not(Collection::isEmpty))
+                        .filter(line -> !line.contains(piece.getPosition()))
+                )
+                .collect(toList());
 
-            // positions behind opponent king
-            var isKingFound = false;
-            for (var position : line) {
-                if (!isKingFound) {
-                    var optionalPiece = board.getPiece(position);
-                    if (optionalPiece.isEmpty()) {
-                        continue;
-                    }
-
-                    var foundPiece = optionalPiece.get();
-                    if (!Objects.equals(foundPiece.getColor(), piece.getColor())) {
-                        isKingFound = isKing(foundPiece);
-                    } else {
-                        break;
-                    }
-                }
-
-                monitoredPositions.add(position);
-            }
-
-            if (!monitoredPositions.isEmpty()) {
-                monitorLines.add(lineOf(monitoredPositions));
-            }
-        }
-
-        return monitorLines;
+        return monitoredLines;
     }
 
     @Override
