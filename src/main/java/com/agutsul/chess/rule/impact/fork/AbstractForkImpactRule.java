@@ -18,7 +18,7 @@ import com.agutsul.chess.activity.impact.PieceRelativeForkImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.rule.AbstractRule;
+import com.agutsul.chess.rule.impact.AbstractImpactRule;
 import com.agutsul.chess.rule.impact.ForkImpactRule;
 
 // https://en.wikipedia.org/wiki/Fork_(chess)
@@ -27,7 +27,7 @@ abstract class AbstractForkImpactRule<COLOR1 extends Color,
                                       ATTACKER extends Piece<COLOR1> & Capturable,
                                       ATTACKED extends Piece<COLOR2>,
                                       IMPACT extends PieceForkImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
-        extends AbstractRule<ATTACKER,IMPACT,Impact.Type>
+        extends AbstractImpactRule<COLOR1,ATTACKER,IMPACT>
         implements ForkImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,IMPACT> {
 
     AbstractForkImpactRule(Board board) {
@@ -35,11 +35,8 @@ abstract class AbstractForkImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    public final Collection<IMPACT> evaluate(ATTACKER piece) {
-        var next = calculate(piece);
-        if (next.isEmpty()) {
-            return emptyList();
-        }
+    protected final Collection<IMPACT> createImpacts(ATTACKER piece,
+                                                     Collection<Calculatable> next) {
 
         var impacts = createAttackImpacts(piece, next);
         if (impacts.size() < 2) {
@@ -61,8 +58,6 @@ abstract class AbstractForkImpactRule<COLOR1 extends Color,
 
         return createForkImpacts(piece, sortedImpacts);
     }
-
-    protected abstract Collection<Calculatable> calculate(ATTACKER piece);
 
     protected abstract Collection<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
             createAttackImpacts(ATTACKER piece, Collection<Calculatable> next);

@@ -1,6 +1,5 @@
 package com.agutsul.chess.rule.impact.deflection;
 
-import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.io.IOUtils.closeQuietly;
 
@@ -10,7 +9,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.AbstractPieceAttackImpact;
 import com.agutsul.chess.activity.impact.Impact;
@@ -21,7 +19,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.PositionedBoardBuilder;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.rule.AbstractRule;
+import com.agutsul.chess.rule.impact.AbstractImpactRule;
 import com.agutsul.chess.rule.impact.DeflectionImpactRule;
 
 // https://en.wikipedia.org/wiki/Deflection_(chess)
@@ -31,26 +29,12 @@ abstract class AbstractDeflectionImpactRule<COLOR1 extends Color,
                                             ATTACKED extends Piece<COLOR2>,
                                             DEFENDED extends Piece<COLOR2>,
                                             IMPACT extends PieceDeflectionImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>
-        extends AbstractRule<ATTACKER,IMPACT,Impact.Type>
+        extends AbstractImpactRule<COLOR1,ATTACKER,IMPACT>
         implements DeflectionImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,IMPACT> {
 
     AbstractDeflectionImpactRule(Board board) {
         super(board, Impact.Type.DEFLECTION);
     }
-
-    @Override
-    public final Collection<IMPACT> evaluate(ATTACKER piece) {
-        var next = calculate(piece);
-        if (next.isEmpty()) {
-            return emptyList();
-        }
-
-        return createImpacts(piece, next);
-    }
-
-    protected abstract Collection<Calculatable> calculate(ATTACKER piece);
-
-    protected abstract Collection<IMPACT> createImpacts(ATTACKER piece, Collection<Calculatable> next);
 
     protected Collection<IMPACT> createImpacts(AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> attackImpact) {
 

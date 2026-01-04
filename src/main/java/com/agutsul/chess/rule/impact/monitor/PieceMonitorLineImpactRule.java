@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
+import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceMonitorImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -17,17 +18,18 @@ import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
+import com.agutsul.chess.rule.impact.AbstractImpactRule;
 
 public final class PieceMonitorLineImpactRule<COLOR extends Color,
                                               PIECE extends Piece<COLOR> & Capturable & Lineable>
-        extends AbstractMonitorImpactRule<COLOR,PIECE,
-                                          PieceMonitorImpact<COLOR,PIECE>> {
+        extends AbstractImpactRule<COLOR,PIECE,PieceMonitorImpact<COLOR,PIECE>> {
 
     private final CapturePieceAlgo<COLOR,PIECE,Line> algo;
 
     public PieceMonitorLineImpactRule(Board board,
                                       CapturePieceAlgo<COLOR,PIECE,Line> algo) {
-        super(board);
+
+        super(board, Impact.Type.MONITOR);
         this.algo = algo;
     }
 

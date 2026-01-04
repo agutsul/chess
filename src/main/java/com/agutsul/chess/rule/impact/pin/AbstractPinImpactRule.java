@@ -1,10 +1,5 @@
 package com.agutsul.chess.rule.impact.pin;
 
-import static java.util.Collections.emptyList;
-
-import java.util.Collection;
-
-import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.impact.Impact;
@@ -12,7 +7,7 @@ import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.rule.AbstractRule;
+import com.agutsul.chess.rule.impact.AbstractImpactRule;
 import com.agutsul.chess.rule.impact.PinImpactRule;
 
 abstract class AbstractPinImpactRule<COLOR1 extends Color,
@@ -21,24 +16,10 @@ abstract class AbstractPinImpactRule<COLOR1 extends Color,
                                      PIECE  extends Piece<COLOR1>,
                                      ATTACKER extends Piece<COLOR2> & Capturable,
                                      IMPACT extends PiecePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>>
-        extends AbstractRule<PINNED,IMPACT,Impact.Type>
+        extends AbstractImpactRule<COLOR1,PINNED,IMPACT>
         implements PinImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,IMPACT> {
 
     AbstractPinImpactRule(Board board) {
         super(board, Impact.Type.PIN);
     }
-
-    @Override
-    public final Collection<IMPACT> evaluate(PINNED piece) {
-        var lines = calculate(piece);
-        if (lines.isEmpty()) {
-            return emptyList();
-        }
-
-        return createImpacts(piece, lines);
-    }
-
-    protected abstract Collection<Calculatable> calculate(PINNED piece);
-
-    protected abstract Collection<IMPACT> createImpacts(PINNED piece, Collection<Calculatable> lines);
 }

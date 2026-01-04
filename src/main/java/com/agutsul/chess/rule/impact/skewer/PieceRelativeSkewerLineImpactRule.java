@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
 import com.agutsul.chess.activity.impact.Impact;
@@ -36,7 +37,7 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
     @Override
     @SuppressWarnings("unchecked")
     protected Collection<PieceRelativeSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>
-            createImpacts(ATTACKER piece, Collection<Line> lines) {
+            createImpacts(ATTACKER piece, Collection<Calculatable> next) {
 
         var opponentColor  = piece.getColor().invert();
 
@@ -57,8 +58,9 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
             return emptyList();
         }
 
-        var impacts = Stream.of(lines)
+        var impacts = Stream.of(next)
                .flatMap(Collection::stream)
+               .map(calculated -> (Line) calculated)
                .map(line -> {
                    var linePieces = board.getPieces(line);
                    if (linePieces.size() < 3) {

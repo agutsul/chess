@@ -1,6 +1,5 @@
 package com.agutsul.chess.rule.impact.interference;
 
-import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -20,7 +19,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.AbstractRule;
+import com.agutsul.chess.rule.impact.AbstractImpactRule;
 import com.agutsul.chess.rule.impact.InterferenceImpactRule;
 
 // https://en.wikipedia.org/wiki/Interference_(chess)
@@ -30,7 +29,7 @@ abstract class AbstractInterferenceImpactRule<COLOR1 extends Color,
                                               PROTECTOR extends Piece<COLOR2> & Capturable,
                                               PROTECTED extends Piece<COLOR2>,
                                               IMPACT extends PieceInterferenceImpact<COLOR1,COLOR2,PIECE,PROTECTOR,PROTECTED>>
-        extends AbstractRule<PIECE,IMPACT,Impact.Type>
+        extends AbstractImpactRule<COLOR1,PIECE,IMPACT>
         implements InterferenceImpactRule<COLOR1,COLOR2,PIECE,PROTECTOR,PROTECTED,IMPACT> {
 
     AbstractInterferenceImpactRule(Board board) {
@@ -38,17 +37,6 @@ abstract class AbstractInterferenceImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    public final Collection<IMPACT> evaluate(PIECE piece) {
-        var next = calculate(piece);
-        if (next.isEmpty()) {
-            return emptyList();
-        }
-
-        return createImpacts(piece, next);
-    }
-
-    protected abstract Collection<Calculatable> calculate(PIECE piece);
-
     @SuppressWarnings("unchecked")
     protected Collection<IMPACT> createImpacts(PIECE piece, Collection<Calculatable> next) {
 

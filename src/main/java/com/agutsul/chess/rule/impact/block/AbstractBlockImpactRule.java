@@ -1,7 +1,5 @@
 package com.agutsul.chess.rule.impact.block;
 
-import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
-import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -15,6 +13,7 @@ import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
+import com.agutsul.chess.activity.impact.AbstractPieceAttackImpact;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceBlockAttackImpact;
 import com.agutsul.chess.activity.impact.PieceBlockImpact;
@@ -22,8 +21,9 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.AbstractRule;
+import com.agutsul.chess.rule.impact.AbstractImpactRule;
 import com.agutsul.chess.rule.impact.BlockImpactRule;
+import com.agutsul.chess.rule.impact.PieceAttackImpactFactory;
 
 // https://en.wikipedia.org/wiki/Block_(chess)
 abstract class AbstractBlockImpactRule<COLOR1 extends Color,
@@ -32,7 +32,7 @@ abstract class AbstractBlockImpactRule<COLOR1 extends Color,
                                        ATTACKED extends Piece<COLOR1>,
                                        ATTACKER extends Piece<COLOR2> & Capturable,
                                        IMPACT extends PieceBlockImpact<COLOR1,COLOR2,BLOCKER,ATTACKED,ATTACKER>>
-        extends AbstractRule<BLOCKER,IMPACT,Impact.Type>
+        extends AbstractImpactRule<COLOR1,BLOCKER,IMPACT>
         implements BlockImpactRule<COLOR1,COLOR2,BLOCKER,ATTACKED,ATTACKER,IMPACT> {
 
     AbstractBlockImpactRule(Board board) {
@@ -40,17 +40,6 @@ abstract class AbstractBlockImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    public final Collection<IMPACT> evaluate(BLOCKER piece) {
-        var nextPositions = calculate(piece);
-        if (nextPositions.isEmpty()) {
-            return emptyList();
-        }
-
-        return createImpacts(piece, nextPositions);
-    }
-
-    protected abstract Collection<Calculatable> calculate(BLOCKER piece);
-
     @SuppressWarnings("unchecked")
     protected Collection<IMPACT> createImpacts(BLOCKER piece, Collection<Calculatable> next) {
         var piecePositions = Stream.of(next)
@@ -70,10 +59,9 @@ abstract class AbstractBlockImpactRule<COLOR1 extends Color,
                         .flatMap(attackLine -> Stream.of(attackLine.intersection(piecePositions))
                                 .flatMap(Collection::stream)
                                 .filter(blockPosition -> board.isEmpty(blockPosition))
-                                .map(blockPosition -> new PieceBlockAttackImpact<>(piece, blockPosition,
-                                        createAttackImpact(action.getSource(), action.getTarget(), action.getLine().get())
+                                .map(blockPosition -> new PieceBlockAttackImpact<>(
+                                        piece, blockPosition, createAttackImpact(action)
                                 ))
-
                         )
                 )
                 .sorted(comparing(
@@ -89,5 +77,13 @@ abstract class AbstractBlockImpactRule<COLOR1 extends Color,
                 .collect(toList());
 
         return impacts;
+    }
+
+    private AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,ATTACKED>
+            createAttackImpact(PieceCaptureAction<COLOR2,COLOR1,ATTACKER,ATTACKED> action) {
+
+        return PieceAttackImpactFactory.createAttackImpact(
+                action.getSource(), action.getTarget(), action.getLine().get()
+        );
     }
 }

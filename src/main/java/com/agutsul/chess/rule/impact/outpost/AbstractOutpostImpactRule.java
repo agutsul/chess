@@ -1,7 +1,6 @@
 package com.agutsul.chess.rule.impact.outpost;
 
 import static com.agutsul.chess.position.PositionFactory.positionOf;
-import static java.util.Collections.emptyList;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -20,14 +19,14 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.AbstractRule;
+import com.agutsul.chess.rule.impact.AbstractImpactRule;
 import com.agutsul.chess.rule.impact.OutpostImpactRule;
 
 // https://en.wikipedia.org/wiki/Outpost_(chess)
 abstract class AbstractOutpostImpactRule<COLOR extends Color,
                                          PIECE extends Piece<COLOR> & Capturable & Movable,
                                          IMPACT extends PieceOutpostImpact<COLOR,PIECE>>
-        extends AbstractRule<PIECE,IMPACT,Impact.Type>
+        extends AbstractImpactRule<COLOR,PIECE,IMPACT>
         implements OutpostImpactRule<COLOR,PIECE,IMPACT> {
 
     AbstractOutpostImpactRule(Board board) {
@@ -35,17 +34,6 @@ abstract class AbstractOutpostImpactRule<COLOR extends Color,
     }
 
     @Override
-    public final Collection<IMPACT> evaluate(PIECE piece) {
-        var next = calculate(piece);
-        if (next.isEmpty()) {
-            return emptyList();
-        }
-
-        return createImpacts(piece, next);
-    }
-
-    protected abstract Collection<Calculatable> calculate(PIECE piece);
-
     protected Collection<IMPACT> createImpacts(PIECE piece, Collection<Calculatable> next) {
 
         var opponentPawns = Stream.of(board.getPieces(piece.getColor().invert(), Piece.Type.PAWN))

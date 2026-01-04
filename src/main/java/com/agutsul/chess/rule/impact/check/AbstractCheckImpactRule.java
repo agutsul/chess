@@ -1,8 +1,10 @@
 package com.agutsul.chess.rule.impact.check;
 
-import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
@@ -12,7 +14,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.rule.AbstractRule;
+import com.agutsul.chess.rule.impact.AbstractImpactRule;
 import com.agutsul.chess.rule.impact.CheckImpactRule;
 
 abstract class AbstractCheckImpactRule<COLOR1 extends Color,
@@ -20,7 +22,7 @@ abstract class AbstractCheckImpactRule<COLOR1 extends Color,
                                        PIECE extends Piece<COLOR1> & Capturable,
                                        KING extends KingPiece<COLOR2>,
                                        IMPACT extends PieceCheckImpact<COLOR1,COLOR2,PIECE,KING>>
-        extends AbstractRule<PIECE,IMPACT,Impact.Type>
+        extends AbstractImpactRule<COLOR1,PIECE,IMPACT>
         implements CheckImpactRule<COLOR1,COLOR2,PIECE,KING,IMPACT> {
 
     AbstractCheckImpactRule(Board board) {
@@ -28,28 +30,35 @@ abstract class AbstractCheckImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    public final Collection<IMPACT> evaluate(PIECE attacker) {
-        var opponentColor = attacker.getColor().invert();
-
-        var optionalKing = board.getKing(opponentColor);
-        if (optionalKing.isEmpty()) {
-            return emptyList();
-        }
+    protected Collection<Calculatable> calculate(PIECE piece) {
+        var opponentColor = piece.getColor().invert();
 
         @SuppressWarnings("unchecked")
-        var king = (KING) optionalKing.get();
+        Collection<Calculatable> next = Stream.of(board.getKing(opponentColor))
+                .flatMap(Optional::stream)
+                .map(opponentKing -> calculate(piece, (KING) opponentKing))
+                .flatMap(Collection::stream)
+                .collect(toList());
 
-        var next = calculate(attacker, king);
-        if (next.isEmpty()) {
-            return emptyList();
-        }
+        return next;
+    }
 
-        return createImpacts(attacker, king, next);
+    @Override
+    protected Collection<IMPACT> createImpacts(PIECE piece, Collection<Calculatable> next) {
+        var opponentColor = piece.getColor().invert();
+
+        @SuppressWarnings("unchecked")
+        Collection<IMPACT> impacts = Stream.of(board.getKing(opponentColor))
+                .flatMap(Optional::stream)
+                .map(opponentKing -> createImpacts(piece, (KING) opponentKing, next))
+                .flatMap(Collection::stream)
+                .collect(toList());
+
+        return impacts;
     }
 
     protected abstract Collection<Calculatable> calculate(PIECE attacker, KING king);
 
-    protected abstract Collection<IMPACT> createImpacts(PIECE attacker,
-                                                        KING king,
+    protected abstract Collection<IMPACT> createImpacts(PIECE attacker, KING king,
                                                         Collection<Calculatable> next);
 }

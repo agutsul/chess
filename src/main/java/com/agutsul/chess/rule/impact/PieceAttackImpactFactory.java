@@ -20,33 +20,33 @@ public abstract class PieceAttackImpactFactory {
     public static <COLOR1 extends Color,COLOR2 extends Color,ATTACKER extends Piece<COLOR1> & Capturable,ATTACKED extends Piece<COLOR2>>
             AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> createAttackImpact(ATTACKER predator, ATTACKED victim) {
 
-        var attackImpact = isKing(victim)
+        var impact = isKing(victim)
                 ? new PieceCheckImpact<>(predator, (KingPiece<COLOR2>) victim)
                 : new PieceAttackImpact<>(predator, victim);
 
-        return (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) attackImpact;
+        return (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) impact;
     }
 
     @SuppressWarnings("unchecked")
     public static <COLOR1 extends Color,COLOR2 extends Color,ATTACKER extends Piece<COLOR1> & Capturable,ATTACKED extends Piece<COLOR2>>
             AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> createAttackImpact(ATTACKER predator, ATTACKED victim, Line line) {
 
-        var attackImpact = isKing(victim)
+        var impact = isKing(victim)
                 ? new PieceCheckImpact<>(predator, (KingPiece<COLOR2>) victim, line)
                 : new PieceAttackImpact<>(predator, victim, line);
 
-        return (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) attackImpact;
+        return (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) impact;
     }
 
     @SuppressWarnings("unchecked")
     public static <COLOR1 extends Color,COLOR2 extends Color,ATTACKER extends Piece<COLOR1> & Capturable,ATTACKED extends Piece<COLOR2>>
             AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> createHiddenAttackImpact(ATTACKER predator, ATTACKED victim, Line line) {
 
-        var attackImpact = isKing(victim)
+        var impact = isKing(victim)
                 ? new PieceCheckImpact<>(predator, (KingPiece<COLOR2>) victim, line, true)
                 : new PieceAttackImpact<>(predator, victim, line, true);
 
-        return (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) attackImpact;
+        return (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) impact;
     }
 
     public static <COLOR1 extends Color,COLOR2 extends Color,ATTACKER extends Piece<COLOR1> & Capturable,ATTACKED extends Piece<COLOR2>>
