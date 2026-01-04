@@ -22,8 +22,7 @@ public final class PieceCheckPositionImpactRule<COLOR1 extends Color,
                                                 COLOR2 extends Color,
                                                 ATTACKER extends Piece<COLOR1> & Capturable,
                                                 KING extends KingPiece<COLOR2>>
-        extends AbstractCheckImpactRule<COLOR1,COLOR2,ATTACKER,KING,
-                                        PieceCheckImpact<COLOR1,COLOR2,ATTACKER,KING>> {
+        extends AbstractCheckImpactRule<COLOR1,COLOR2,ATTACKER,KING> {
 
     private final CapturePieceAlgo<COLOR1,ATTACKER,Position> algo;
 

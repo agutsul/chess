@@ -20,10 +20,10 @@ import com.agutsul.chess.rule.impact.CheckImpactRule;
 abstract class AbstractCheckImpactRule<COLOR1 extends Color,
                                        COLOR2 extends Color,
                                        PIECE extends Piece<COLOR1> & Capturable,
-                                       KING extends KingPiece<COLOR2>,
-                                       IMPACT extends PieceCheckImpact<COLOR1,COLOR2,PIECE,KING>>
-        extends AbstractImpactRule<COLOR1,PIECE,IMPACT>
-        implements CheckImpactRule<COLOR1,COLOR2,PIECE,KING,IMPACT> {
+                                       KING extends KingPiece<COLOR2>>
+        extends AbstractImpactRule<COLOR1,PIECE,
+                                   PieceCheckImpact<COLOR1,COLOR2,PIECE,KING>>
+        implements CheckImpactRule<COLOR1,COLOR2,PIECE,KING> {
 
     AbstractCheckImpactRule(Board board) {
         super(board, Impact.Type.CHECK);
@@ -44,11 +44,13 @@ abstract class AbstractCheckImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    protected Collection<IMPACT> createImpacts(PIECE piece, Collection<Calculatable> next) {
+    protected Collection<PieceCheckImpact<COLOR1,COLOR2,PIECE,KING>>
+            createImpacts(PIECE piece, Collection<Calculatable> next) {
+
         var opponentColor = piece.getColor().invert();
 
         @SuppressWarnings("unchecked")
-        Collection<IMPACT> impacts = Stream.of(board.getKing(opponentColor))
+        var impacts = Stream.of(board.getKing(opponentColor))
                 .flatMap(Optional::stream)
                 .map(opponentKing -> createImpacts(piece, (KING) opponentKing, next))
                 .flatMap(Collection::stream)
@@ -59,6 +61,6 @@ abstract class AbstractCheckImpactRule<COLOR1 extends Color,
 
     protected abstract Collection<Calculatable> calculate(PIECE attacker, KING king);
 
-    protected abstract Collection<IMPACT> createImpacts(PIECE attacker, KING king,
-                                                        Collection<Calculatable> next);
+    protected abstract Collection<PieceCheckImpact<COLOR1,COLOR2,PIECE,KING>>
+            createImpacts(PIECE attacker, KING king, Collection<Calculatable> next);
 }
