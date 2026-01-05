@@ -2,13 +2,17 @@ package com.agutsul.chess.board;
 
 import static com.agutsul.chess.line.LineFactory.lineOf;
 import static com.agutsul.chess.line.LineFactory.linesOf;
+import static com.agutsul.chess.piece.Piece.isLinear;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
+import static java.util.function.Predicate.not;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.line.Line;
+import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
 public abstract class AbstractBoard
@@ -22,6 +26,21 @@ public abstract class AbstractBoard
     @Override
     public final Optional<Position> getPosition(int x, int y) {
         return Optional.ofNullable(positionOf(x, y));
+    }
+
+    @Override
+    public final Optional<Line> getLine(Piece<?> piece1, Piece<?> piece2) {
+        if (!isLinear(piece1)) {
+            return Optional.empty();
+        }
+
+        var line = Stream.of(getLine(piece1.getPosition(), piece2.getPosition()))
+                .flatMap(Optional::stream)
+                .filter(not(Collection::isEmpty))
+                .map(fullLine -> fullLine.subLine(piece1.getPosition(), piece2.getPosition()))
+                .findFirst();
+
+        return line;
     }
 
     @Override

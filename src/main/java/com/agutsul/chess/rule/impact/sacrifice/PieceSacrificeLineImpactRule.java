@@ -21,7 +21,7 @@ import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter.Mode;
 public final class PieceSacrificeLineImpactRule<COLOR1 extends Color,
                                                 COLOR2 extends Color,
                                                 SACRIFICED extends Piece<COLOR1> & Capturable & Movable,
-                                                ATTACKER   extends Piece<COLOR2> & Capturable,
+                                                ATTACKER extends Piece<COLOR2> & Capturable,
                                                 ATTACKED extends Piece<COLOR2>>
         extends AbstractSacrificeImpactRule<COLOR1,COLOR2,SACRIFICED,ATTACKER,ATTACKED,
                                             PieceSacrificeImpact<COLOR1,COLOR2,SACRIFICED,ATTACKER>> {

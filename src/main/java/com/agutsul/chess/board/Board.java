@@ -52,6 +52,7 @@ public interface Board {
     Collection<Line> getLines(Position position);
     Collection<Line> getLines(String position);
 
+    Optional<Line> getLine(Piece<?> piece1, Piece<?> piece2);
     Optional<Line> getLine(Position position1, Position position2);
     Optional<Line> getLine(String position1, String position2);
 

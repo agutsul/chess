@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.impact.sacrifice;
 
+import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -17,13 +18,13 @@ import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.impact.Impact;
-import com.agutsul.chess.activity.impact.PieceAttackImpact;
 import com.agutsul.chess.activity.impact.PieceControlImpact;
 import com.agutsul.chess.activity.impact.PieceSacrificeAttackImpact;
 import com.agutsul.chess.activity.impact.PieceSacrificeImpact;
 import com.agutsul.chess.activity.impact.PieceSacrificeMoveImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.AbstractRule;
@@ -72,7 +73,7 @@ abstract class AbstractSacrificeImpactRule<COLOR1 extends Color,
                            if (board.isEmpty(position)) {
                                return Optional.of(new PieceSacrificeMoveImpact<>(
                                        new PieceControlImpact<>(piece, position),
-                                       new PieceAttackImpact<>(attacker, piece)
+                                       createAttackImpact(attacker, piece, getAttackLine(attacker, piece))
                                ));
                            }
 
@@ -80,8 +81,8 @@ abstract class AbstractSacrificeImpactRule<COLOR1 extends Color,
                                    .flatMap(Optional::stream)
                                    .filter(foundPiece -> !Objects.equals(foundPiece.getColor(), piece.getColor()))
                                    .map(opponentPiece -> new PieceSacrificeAttackImpact<>(
-                                           new PieceAttackImpact<>(piece, (ATTACKED) opponentPiece),
-                                           new PieceAttackImpact<>(attacker, piece)
+                                           createAttackImpact(piece, (ATTACKED) opponentPiece, getAttackLine(piece, opponentPiece)),
+                                           createAttackImpact(attacker, piece, getAttackLine(attacker, piece))
                                    ))
                                    .map(impact -> (IMPACT) impact)
                                    .findFirst();
@@ -109,5 +110,13 @@ abstract class AbstractSacrificeImpactRule<COLOR1 extends Color,
                 })
                 .filter(pair -> !pair.getValue().isEmpty())
                 .collect(toMap(Pair::getKey, Pair::getValue));
+    }
+
+    protected Optional<Line> getAttackLine(Piece<?> piece1, Piece<?> piece2) {
+        if (Objects.equals(piece1.getColor(), piece2.getColor())) {
+            return Optional.empty();
+        }
+
+        return board.getLine(piece1, piece2);
     }
 }

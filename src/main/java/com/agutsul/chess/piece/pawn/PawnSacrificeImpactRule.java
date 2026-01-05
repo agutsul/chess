@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.pawn;
 
+import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
@@ -79,7 +80,7 @@ final class PawnSacrificeImpactRule<COLOR1 extends Color,
                         .map(Map.Entry::getKey)
                         .map(piece -> new PieceSacrificeMoveImpact<>(
                                 new PieceControlImpact<>(pawn, position),
-                                new PieceAttackImpact<>((ATTACKER) piece, pawn)
+                                createAttackImpact((ATTACKER) piece, pawn, getAttackLine(piece, pawn))
                         ))
                         .map(impact -> (PieceSacrificeImpact<COLOR1,COLOR2,SACRIFICED,ATTACKER>) impact)
                 )
@@ -104,8 +105,8 @@ final class PawnSacrificeImpactRule<COLOR1 extends Color,
                                 .flatMap(Optional::stream)
                                 .filter(foundPiece -> !Objects.equals(foundPiece.getColor(), pawn.getColor()))
                                 .map(opponentPiece -> new PieceSacrificeAttackImpact<>(
-                                        new PieceAttackImpact<>(pawn, (ATTACKED) opponentPiece),
-                                        new PieceAttackImpact<>((ATTACKER) piece, pawn)
+                                        createAttackImpact(pawn, (ATTACKED) opponentPiece),
+                                        createAttackImpact((ATTACKER) piece, pawn, getAttackLine(piece, pawn))
                                 ))
                                 .map(impact -> (PieceSacrificeImpact<COLOR1,COLOR2,SACRIFICED,ATTACKER>) impact)
                         )
