@@ -6,6 +6,7 @@ import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Demotable;
 import com.agutsul.chess.Disposable;
 import com.agutsul.chess.EnPassantable;
+import com.agutsul.chess.Isolatable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.Promotable;
@@ -56,6 +57,11 @@ final class TransformablePieceAdapter<COLOR extends Color,
     @Override
     public boolean isBlocked() {
         return ((Blockadable) this.origin).isBlocked();
+    }
+
+    @Override
+    public boolean isIsolated() {
+        return ((Isolatable) this.origin).isIsolated();
     }
 
     @Override

@@ -1068,6 +1068,28 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         }
     }
 
+    @Test
+    void testPawnIsolationImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e8")
+                .withBlackPawns("a7","c7","d6","g7","h6")
+                .withWhiteKing("e1")
+                .withWhitePawns("b4","b5","c4","e4","g4","h5")
+                .build();
+
+        var expectedPawns = List.of("a7","e4");
+        var isolatedPawns = Stream.of(board.getPieces(PAWN_TYPE))
+                .flatMap(Collection::stream)
+                .map(piece -> (PawnPiece<?>) piece)
+                .filter(PawnPiece::isIsolated)
+                .map(PawnPiece::getPosition)
+                .map(String::valueOf)
+                .toList();
+
+        assertEquals(expectedPawns.size(), isolatedPawns.size());
+        assertTrue(expectedPawns.containsAll(isolatedPawns));
+    }
+
     static void assertPawnEnPassantActions(Board board, Color color, Piece.Type type,
                                            String sourcePosition, List<String> expectedMovePositions,
                                            List<String> expectedEnPassantPositions) {

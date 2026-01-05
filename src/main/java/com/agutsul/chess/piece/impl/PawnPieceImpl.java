@@ -99,6 +99,12 @@ final class PawnPieceImpl<COLOR extends Color>
     }
 
     @Override
+    public boolean isIsolated() {
+        var isolations = getImpacts(Impact.Type.ISOLATION);
+        return !isolations.isEmpty();
+    }
+
+    @Override
     DisposedPieceState<?> createDisposedPieceState(Instant instant) {
         return new DisposedEnPassantablePieceState<>(instant);
     }

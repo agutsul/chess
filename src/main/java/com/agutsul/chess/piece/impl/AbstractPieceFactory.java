@@ -449,6 +449,12 @@ abstract class AbstractPieceFactory<COLOR extends Color>
                 logger.info("Check if piece '{}' is blocked", this);
                 return this.origin.isBlocked();
             }
+
+            @Override
+            public boolean isIsolated() {
+                logger.info("Check if piece '{}' is isolated", this);
+                return this.origin.isIsolated();
+            }
         }
     }
 }
