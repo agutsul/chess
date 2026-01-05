@@ -2,7 +2,6 @@ package com.agutsul.chess.board;
 
 import static com.agutsul.chess.line.LineFactory.lineOf;
 import static com.agutsul.chess.line.LineFactory.linesOf;
-import static com.agutsul.chess.piece.Piece.isLinear;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.function.Predicate.not;
 
@@ -30,10 +29,6 @@ public abstract class AbstractBoard
 
     @Override
     public final Optional<Line> getLine(Piece<?> piece1, Piece<?> piece2) {
-        if (!isLinear(piece1)) {
-            return Optional.empty();
-        }
-
         var line = Stream.of(getLine(piece1.getPosition(), piece2.getPosition()))
                 .flatMap(Optional::stream)
                 .filter(not(Collection::isEmpty))

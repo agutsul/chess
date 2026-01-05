@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.impact.sacrifice;
 
+import static com.agutsul.chess.piece.Piece.isLinear;
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -114,6 +115,10 @@ abstract class AbstractSacrificeImpactRule<COLOR1 extends Color,
 
     protected Optional<Line> getAttackLine(Piece<?> piece1, Piece<?> piece2) {
         if (Objects.equals(piece1.getColor(), piece2.getColor())) {
+            return Optional.empty();
+        }
+
+        if (!isLinear(piece1)) {
             return Optional.empty();
         }
 
