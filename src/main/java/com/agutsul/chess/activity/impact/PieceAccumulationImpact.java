@@ -6,13 +6,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Accumulatable;
 import com.agutsul.chess.activity.AbstractSourceActivity;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
 public class PieceAccumulationImpact<COLOR extends Color,
-                                     PIECE extends Piece<COLOR>>
+                                     PIECE extends Piece<COLOR> & Accumulatable>
         extends AbstractSourceActivity<Impact.Type,Collection<PIECE>>
         implements Impact<Collection<PIECE>> {
 
