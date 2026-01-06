@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Accumulatable;
 import com.agutsul.chess.Backwardable;
 import com.agutsul.chess.Blockadable;
 import com.agutsul.chess.Capturable;
@@ -191,6 +192,11 @@ final class TransformablePieceImpl<COLOR extends Color,
     @Override
     public boolean isBackwarded() {
         return ((Backwardable) this.origin).isBackwarded();
+    }
+
+    @Override
+    public boolean isAccumulated() {
+        return ((Accumulatable) this.origin).isAccumulated();
     }
 
     private void setState(PieceState<?> state) {

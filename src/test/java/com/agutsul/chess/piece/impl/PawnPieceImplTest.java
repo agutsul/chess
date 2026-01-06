@@ -1122,6 +1122,29 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertTrue(expectedPawns.containsAll(backwardedPawns));
     }
 
+    @Test
+    // https://en.wikipedia.org/wiki/Doubled_pawns
+    void testPawnAccumulationImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e8")
+                .withBlackPawns("b6","c7","e6","g7","h6")
+                .withWhiteKing("e1")
+                .withWhitePawns("b4","b5","c4","e3","e5","g4","h5")
+                .build();
+
+        var expectedPawns = List.of("b4","b5","e3","e5");
+        var accumulatedPawns = Stream.of(board.getPieces(Colors.WHITE, PAWN_TYPE))
+                .flatMap(Collection::stream)
+                .map(piece -> (PawnPiece<?>) piece)
+                .filter(PawnPiece::isAccumulated)
+                .map(PawnPiece::getPosition)
+                .map(String::valueOf)
+                .toList();
+
+        assertEquals(expectedPawns.size(), accumulatedPawns.size());
+        assertTrue(expectedPawns.containsAll(accumulatedPawns));
+    }
+
     static void assertPawnEnPassantActions(Board board, Color color, Piece.Type type,
                                            String sourcePosition, List<String> expectedMovePositions,
                                            List<String> expectedEnPassantPositions) {

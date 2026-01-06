@@ -13,6 +13,7 @@ public interface Impact<SOURCE>
         BLOCKADE,
         ISOLATION,
         BACKWARD,
+        ACCUMULATION,
         PIN,
         CHECK,
         ATTACK,
@@ -80,6 +81,14 @@ public interface Impact<SOURCE>
 
     static boolean isBackward(Impact.Type impactType) {
         return Impact.Type.BACKWARD.equals(impactType);
+    }
+
+    static boolean isAccumulation(Impact<?> impact) {
+        return isAccumulation(impact.getType());
+    }
+
+    static boolean isAccumulation(Impact.Type impactType) {
+        return Impact.Type.ACCUMULATION.equals(impactType);
     }
 
     static boolean isPin(Impact<?> impact) {

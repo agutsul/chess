@@ -461,6 +461,12 @@ abstract class AbstractPieceFactory<COLOR extends Color>
                 logger.info("Check if piece '{}' is backwarded", this);
                 return this.origin.isBackwarded();
             }
+
+            @Override
+            public boolean isAccumulated() {
+                logger.info("Check if piece '{}' is accumulated", this);
+                return this.origin.isAccumulated();
+            }
         }
     }
 }

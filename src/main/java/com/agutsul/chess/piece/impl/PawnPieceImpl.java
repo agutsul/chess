@@ -111,6 +111,12 @@ final class PawnPieceImpl<COLOR extends Color>
     }
 
     @Override
+    public boolean isAccumulated() {
+        var accumulations = getImpacts(Impact.Type.ACCUMULATION);
+        return !accumulations.isEmpty();
+    }
+
+    @Override
     DisposedPieceState<?> createDisposedPieceState(Instant instant) {
         return new DisposedEnPassantablePieceState<>(instant);
     }

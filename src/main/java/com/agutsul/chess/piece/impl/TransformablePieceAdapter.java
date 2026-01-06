@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import com.agutsul.chess.Accumulatable;
 import com.agutsul.chess.Backwardable;
 import com.agutsul.chess.Blockadable;
 import com.agutsul.chess.Capturable;
@@ -68,6 +69,11 @@ final class TransformablePieceAdapter<COLOR extends Color,
     @Override
     public boolean isBackwarded() {
         return ((Backwardable) this.origin).isBackwarded();
+    }
+
+    @Override
+    public boolean isAccumulated() {
+        return ((Accumulatable) this.origin).isAccumulated();
     }
 
     @Override
