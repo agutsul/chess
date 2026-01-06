@@ -98,11 +98,6 @@ abstract class AbstractPiece<COLOR extends Color>
     }
 
     @Override
-    public final int getDirection() {
-        return this.context.getDirection();
-    }
-
-    @Override
     public final PieceState<Piece<COLOR>> getState() {
         return this.currentState;
     }
@@ -218,6 +213,11 @@ abstract class AbstractPiece<COLOR extends Color>
     @Override
     public final String getUnicode() {
         return this.context.getUnicode();
+    }
+
+    @Override
+    public final int getDirection() {
+        return this.context.getDirection();
     }
 
     @Override
