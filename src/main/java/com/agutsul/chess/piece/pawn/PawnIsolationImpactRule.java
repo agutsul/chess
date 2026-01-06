@@ -22,7 +22,7 @@ import com.agutsul.chess.rule.impact.IsolationImpactRule;
 
 // https://en.wikipedia.org/wiki/Isolated_pawn
 final class PawnIsolationImpactRule<COLOR extends Color,
-                                    PAWN extends PawnPiece<COLOR>>
+                                    PAWN  extends PawnPiece<COLOR>>
         extends AbstractImpactRule<COLOR,PAWN,PieceIsolationImpact<COLOR,PAWN>>
         implements IsolationImpactRule<COLOR,PAWN,PieceIsolationImpact<COLOR,PAWN>> {
 

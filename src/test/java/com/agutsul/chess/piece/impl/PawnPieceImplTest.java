@@ -1069,6 +1069,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
     }
 
     @Test
+    // https://en.wikipedia.org/wiki/Isolated_pawn
     void testPawnIsolationImpact() {
         var board = new LabeledBoardBuilder()
                 .withBlackKing("e8")
@@ -1091,6 +1092,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
     }
 
     @Test
+    // https://en.wikipedia.org/wiki/Backward_pawn
     void testPawnBackwardImpact() {
         var board = new LabeledBoardBuilder()
                 .withBlackKing("e8")

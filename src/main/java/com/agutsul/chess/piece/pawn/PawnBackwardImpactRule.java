@@ -27,6 +27,7 @@ import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.AbstractImpactRule;
 import com.agutsul.chess.rule.impact.BackwardImpactRule;
 
+// https://en.wikipedia.org/wiki/Backward_pawn
 final class PawnBackwardImpactRule<COLOR extends Color,
                                    PAWN  extends PawnPiece<COLOR>>
         extends AbstractImpactRule<COLOR,PAWN,PieceBackwardImpact<COLOR,PAWN>>
