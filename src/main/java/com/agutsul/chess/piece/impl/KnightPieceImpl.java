@@ -15,7 +15,8 @@ final class KnightPieceImpl<COLOR extends Color>
     KnightPieceImpl(Board board, COLOR color, String unicode,
                     Position position, int direction) {
 
-        super(board, Piece.Type.KNIGHT, color, unicode, position, direction,
+        super(board, position,
+                new PieceContext<>(Piece.Type.KNIGHT, color, unicode, direction),
                 new ActivePieceStateImpl<>(board,
                                            new KnightPieceActionRule<>(board),
                                            new KnightPieceImpactRule<>(board)

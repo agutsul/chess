@@ -37,13 +37,16 @@ final class RookPieceImpl<COLOR extends Color>
     RookPieceImpl(Board board, COLOR color, String unicode,
                   Position position, int direction) {
 
-        this(board, color, unicode, position, direction, Castling.of(position));
+        this(board, position,
+                new PieceContext<>(Piece.Type.ROOK, color, unicode, direction),
+                Castling.of(position)
+        );
     }
 
-    private RookPieceImpl(Board board, COLOR color, String unicode,
-                          Position position, int direction, Castling castling) {
+    private RookPieceImpl(Board board, Position position,
+                          PieceContext<COLOR> context, Castling castling) {
 
-        super(board, Piece.Type.ROOK, color, unicode, position, direction,
+        super(board, position, context,
                 new RookPieceActionRule<>(board),
                 new RookPieceImpactRule<>(board),
                 castling != null ? List.of(castling.side()) : emptyList()

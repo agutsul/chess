@@ -57,11 +57,7 @@ abstract class AbstractPiece<COLOR extends Color>
     private final ActivityCache<Action.Type,Action<?>> actionCache;
     private final ActivityCache<Impact.Type,Impact<?>> impactCache;
 
-    private final Type type;
-    private final COLOR color;
-    private final String unicode;
-    private final int value;
-    private final int direction;
+    private final PieceContext<COLOR> context;
 
     private Observer observer;
 
@@ -70,19 +66,17 @@ abstract class AbstractPiece<COLOR extends Color>
     protected final ActivePieceState<? extends Piece<COLOR>> activeState;
     protected PieceState<Piece<COLOR>> currentState;
 
-    AbstractPiece(Board board, Type type, COLOR color, String unicode,
-                  Position position, int direction,
+    AbstractPiece(Board board, Position position, PieceContext<COLOR> context,
                   AbstractPieceState<? extends Piece<COLOR>> state) {
 
-        this(board, type, color, unicode, position, direction, state,
+        this(board, position, context, state,
                 new ActivityCacheImpl<>(),
                 new ActivityCacheImpl<>()
         );
     }
 
     @SuppressWarnings("unchecked")
-    AbstractPiece(Board board, Type type, COLOR color, String unicode,
-                  Position position, int direction,
+    AbstractPiece(Board board, Position position, PieceContext<COLOR> context,
                   AbstractPieceState<? extends Piece<COLOR>> state,
                   ActivityCache<Action.Type,Action<?>> actionCache,
                   ActivityCache<Impact.Type,Impact<?>> impactCache) {
@@ -92,11 +86,7 @@ abstract class AbstractPiece<COLOR extends Color>
         this.board = (AbstractBoard) board;
         this.board.addObserver(this.observer);
 
-        this.type = type;
-        this.color = color;
-        this.unicode = unicode;
-        this.direction = direction;
-        this.value = type.rank() * direction;
+        this.context = context;
 
         this.activeState = (ActivePieceState<? extends Piece<COLOR>>) state;
         setState(state);
@@ -109,7 +99,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
     @Override
     public final int getDirection() {
-        return this.direction;
+        return this.context.getDirection();
     }
 
     @Override
@@ -217,22 +207,22 @@ abstract class AbstractPiece<COLOR extends Color>
 
     @Override
     public final Type getType() {
-        return this.type;
+        return this.context.getType();
     }
 
     @Override
     public final COLOR getColor() {
-        return this.color;
+        return this.context.getColor();
     }
 
     @Override
     public final String getUnicode() {
-        return this.unicode;
+        return this.context.getUnicode();
     }
 
     @Override
     public final Integer getValue() {
-        return this.value;
+        return this.context.getValue();
     }
 
     @Override
@@ -314,12 +304,12 @@ abstract class AbstractPiece<COLOR extends Color>
 
     @Override
     public final String toString() {
-        return String.format("%s%s", this.type, getPosition());
+        return String.format("%s%s", getType(), getPosition());
     }
 
     @Override
     public final int hashCode() {
-        return Objects.hash(this.color, this.type, getPosition());
+        return Objects.hash(getColor(), getType(), getPosition());
     }
 
     @Override
@@ -411,6 +401,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
     final void setPositions(List<Position> positions) {
         if (isEmpty(positions)) {
+            LOGGER.info("Unable to set empty positions for '{}'", this);
             return;
         }
 

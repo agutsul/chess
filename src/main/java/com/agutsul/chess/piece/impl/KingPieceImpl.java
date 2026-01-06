@@ -44,7 +44,8 @@ final class KingPieceImpl<COLOR extends Color>
     KingPieceImpl(Board board, COLOR color, String unicode,
                   Position position, int direction) {
 
-        super(board, Piece.Type.KING, color, unicode, position, direction,
+        super(board, position,
+                new PieceContext<>(Piece.Type.KING, color, unicode, direction),
                 new KingPieceActionRule<>(board),
                 new KingPieceImpactRule<>(board),
                 List.of(Side.values())

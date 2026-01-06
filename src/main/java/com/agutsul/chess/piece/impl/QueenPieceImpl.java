@@ -15,7 +15,8 @@ final class QueenPieceImpl<COLOR extends Color>
     QueenPieceImpl(Board board, COLOR color, String unicode,
                    Position position, int direction) {
 
-        super(board, Piece.Type.QUEEN, color, unicode, position, direction,
+        super(board, position,
+                new PieceContext<>(Piece.Type.QUEEN, color, unicode, direction),
                 new ActivePieceStateImpl<>(board,
                                            new QueenPieceActionRule<>(board),
                                            new QueenPieceImpactRule<>(board)

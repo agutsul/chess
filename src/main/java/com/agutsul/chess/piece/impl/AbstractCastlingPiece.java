@@ -42,13 +42,12 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
     private final Map<Castlingable.Side,Boolean> sides;
 
-    AbstractCastlingPiece(Board board, Piece.Type type, COLOR color,
-                          String unicode, Position position, int direction,
+    AbstractCastlingPiece(Board board, Position position, PieceContext<COLOR> context,
                           Rule<Piece<?>,Collection<Action<?>>> actionRule,
                           Rule<Piece<?>,Collection<Impact<?>>> impactRule,
                           Collection<Side> sides) {
 
-        super(board, type, color, unicode, position, direction,
+        super(board, position, context,
                 new ActiveCastlingablePieceState<>(board, actionRule, impactRule)
         );
 

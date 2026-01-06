@@ -44,7 +44,8 @@ final class PawnPieceImpl<COLOR extends Color>
     PawnPieceImpl(Board board, COLOR color, String unicode, Position position,
                   int direction, int promotionLine, int initialLine) {
 
-        this(board, color, unicode, position, direction,
+        this(board, position,
+                new PieceContext<>(Piece.Type.PAWN, color, unicode, direction),
                 new ActiveEnPassantablePieceState<>(board,
                         new PawnPieceActionRule<>(board, direction, initialLine, promotionLine),
                         new PawnPieceImpactRule<>(board, direction, initialLine, promotionLine)
@@ -52,10 +53,10 @@ final class PawnPieceImpl<COLOR extends Color>
         );
     }
 
-    private PawnPieceImpl(Board board, COLOR color, String unicode, Position position,
-                          int direction, PieceState<? extends PawnPiece<COLOR>> state) {
+    private PawnPieceImpl(Board board, Position position, PieceContext<COLOR> context,
+                          PieceState<? extends PawnPiece<COLOR>> state) {
 
-        super(board, Piece.Type.PAWN, color, unicode, position, direction,
+        super(board, position, context,
                 (AbstractPieceState<? extends Piece<COLOR>>) state
         );
     }
