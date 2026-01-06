@@ -105,6 +105,12 @@ final class PawnPieceImpl<COLOR extends Color>
     }
 
     @Override
+    public boolean isBackwarded() {
+        var backwards = getImpacts(Impact.Type.BACKWARD);
+        return !backwards.isEmpty();
+    }
+
+    @Override
     DisposedPieceState<?> createDisposedPieceState(Instant instant) {
         return new DisposedEnPassantablePieceState<>(instant);
     }

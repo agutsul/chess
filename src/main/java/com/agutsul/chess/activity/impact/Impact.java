@@ -12,6 +12,7 @@ public interface Impact<SOURCE>
         MONITOR,
         BLOCKADE,
         ISOLATION,
+        BACKWARD,
         PIN,
         CHECK,
         ATTACK,
@@ -71,6 +72,14 @@ public interface Impact<SOURCE>
 
     static boolean isIsolation(Impact.Type impactType) {
         return Impact.Type.ISOLATION.equals(impactType);
+    }
+
+    static boolean isBackward(Impact<?> impact) {
+        return isBackward(impact.getType());
+    }
+
+    static boolean isBackward(Impact.Type impactType) {
+        return Impact.Type.BACKWARD.equals(impactType);
     }
 
     static boolean isPin(Impact<?> impact) {

@@ -1090,6 +1090,36 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertTrue(expectedPawns.containsAll(isolatedPawns));
     }
 
+    @Test
+    void testPawnBackwardImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e8")
+                .withBlackPawns("c7","d7")
+                .withWhiteKing("e1")
+                .withWhitePawn("d4")
+                .build();
+
+        var blackPawn1 = (PawnPiece<Color>) board.getPiece("c7").get();
+        blackPawn1.move(board.getPosition("c6").get());
+
+        var blackPawn2 = (PawnPiece<Color>) board.getPiece("d7").get();
+        blackPawn2.move(board.getPosition("d5").get());
+
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+
+        var expectedPawns = List.of("c6");
+        var backwardedPawns = Stream.of(board.getPieces(Colors.BLACK, PAWN_TYPE))
+                .flatMap(Collection::stream)
+                .map(piece -> (PawnPiece<?>) piece)
+                .filter(PawnPiece::isBackwarded)
+                .map(PawnPiece::getPosition)
+                .map(String::valueOf)
+                .toList();
+
+        assertEquals(expectedPawns.size(), backwardedPawns.size());
+        assertTrue(expectedPawns.containsAll(backwardedPawns));
+    }
+
     static void assertPawnEnPassantActions(Board board, Color color, Piece.Type type,
                                            String sourcePosition, List<String> expectedMovePositions,
                                            List<String> expectedEnPassantPositions) {
