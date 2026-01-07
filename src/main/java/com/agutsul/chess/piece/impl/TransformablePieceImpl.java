@@ -24,6 +24,7 @@ import com.agutsul.chess.Backwardable;
 import com.agutsul.chess.Blockadable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Castlingable;
+import com.agutsul.chess.Connectable;
 import com.agutsul.chess.Demotable;
 import com.agutsul.chess.Disposable;
 import com.agutsul.chess.EnPassantable;
@@ -197,6 +198,11 @@ final class TransformablePieceImpl<COLOR extends Color,
     @Override
     public boolean isAccumulated() {
         return ((Accumulatable) this.origin).isAccumulated();
+    }
+
+    @Override
+    public boolean isConnected() {
+        return ((Connectable) this.origin).isConnected();
     }
 
     private void setState(PieceState<?> state) {

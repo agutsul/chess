@@ -467,6 +467,12 @@ abstract class AbstractPieceFactory<COLOR extends Color>
                 logger.info("Check if piece '{}' is accumulated", this);
                 return this.origin.isAccumulated();
             }
+
+            @Override
+            public boolean isConnected() {
+                logger.info("Check if piece '{}' is connected", this);
+                return this.origin.isConnected();
+            }
         }
     }
 }

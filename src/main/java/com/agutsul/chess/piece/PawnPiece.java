@@ -4,6 +4,7 @@ import com.agutsul.chess.Accumulatable;
 import com.agutsul.chess.Backwardable;
 import com.agutsul.chess.Blockadable;
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Connectable;
 import com.agutsul.chess.Disposable;
 import com.agutsul.chess.EnPassantable;
 import com.agutsul.chess.Isolatable;
@@ -19,7 +20,7 @@ public interface PawnPiece<COLOR extends Color>
                 Promotable, Protectable, EnPassantable,
                 Disposable, Restorable, Pinnable,
                 Blockadable, Isolatable, Backwardable,
-                Accumulatable {
+                Accumulatable, Connectable {
 
     int BIG_STEP_MOVE = 2;
 }

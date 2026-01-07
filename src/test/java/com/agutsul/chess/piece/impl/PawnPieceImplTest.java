@@ -1145,6 +1145,40 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertTrue(expectedPawns.containsAll(accumulatedPawns));
     }
 
+    @Test
+    // https://en.wikipedia.org/wiki/Connected_pawns
+    void testPawnConnectionImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e8")
+                .withWhiteKing("e1")
+                .withWhitePawns("a5","b5","c4","e3","e5","g4","h5")
+                .build();
+
+        var expectedConnectedPawns1 = List.of("a5","b5","c4");
+        var connectedPawns1 = Stream.of(board.getPieces(Colors.WHITE, "a5","b5","c4","e3","e5"))
+                .flatMap(Collection::stream)
+                .map(piece -> (PawnPiece<?>) piece)
+                .filter(PawnPiece::isConnected)
+                .map(PawnPiece::getPosition)
+                .map(String::valueOf)
+                .toList();
+
+        assertEquals(expectedConnectedPawns1.size(), connectedPawns1.size());
+        assertTrue(expectedConnectedPawns1.containsAll(connectedPawns1));
+
+        var expectedConnectedPawns2 = List.of("g4","h5");
+        var connectedPawns2 = Stream.of(board.getPieces(Colors.WHITE, "g4","h5","e3","e5"))
+                .flatMap(Collection::stream)
+                .map(piece -> (PawnPiece<?>) piece)
+                .filter(PawnPiece::isConnected)
+                .map(PawnPiece::getPosition)
+                .map(String::valueOf)
+                .toList();
+
+        assertEquals(expectedConnectedPawns2.size(), connectedPawns2.size());
+        assertTrue(expectedConnectedPawns2.containsAll(connectedPawns2));
+    }
+
     static void assertPawnEnPassantActions(Board board, Color color, Piece.Type type,
                                            String sourcePosition, List<String> expectedMovePositions,
                                            List<String> expectedEnPassantPositions) {

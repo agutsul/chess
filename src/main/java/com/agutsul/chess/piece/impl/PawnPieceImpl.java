@@ -118,6 +118,12 @@ final class PawnPieceImpl<COLOR extends Color>
     }
 
     @Override
+    public boolean isConnected() {
+        var connections = getImpacts(Impact.Type.CONNECTION);
+        return !connections.isEmpty();
+    }
+
+    @Override
     DisposedPieceState<?> createDisposedPieceState(Instant instant) {
         return new DisposedEnPassantablePieceState<>(instant);
     }

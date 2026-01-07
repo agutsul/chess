@@ -14,6 +14,7 @@ public interface Impact<SOURCE>
         ISOLATION,
         BACKWARD,
         ACCUMULATION,
+        CONNECTION,
         PIN,
         CHECK,
         ATTACK,
@@ -89,6 +90,14 @@ public interface Impact<SOURCE>
 
     static boolean isAccumulation(Impact.Type impactType) {
         return Impact.Type.ACCUMULATION.equals(impactType);
+    }
+
+    static boolean isConnection(Impact<?> impact) {
+        return isConnection(impact.getType());
+    }
+
+    static boolean isConnection(Impact.Type impactType) {
+        return Impact.Type.CONNECTION.equals(impactType);
     }
 
     static boolean isPin(Impact<?> impact) {
