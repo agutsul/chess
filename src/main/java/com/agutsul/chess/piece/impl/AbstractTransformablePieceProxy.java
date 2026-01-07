@@ -25,19 +25,8 @@ abstract class AbstractTransformablePieceProxy<COLOR extends Color,
         extends AbstractLifecyclePieceProxy<COLOR,PIECE>
         implements TransformablePieceProxy<COLOR,PIECE> {
 
-
     AbstractTransformablePieceProxy(PIECE piece) {
         super(piece);
-    }
-
-    @Override
-    public void enpassant(PawnPiece<?> targetPiece, Position targetPosition) {
-        ((EnPassantable) this.origin).enpassant(targetPiece, targetPosition);
-    }
-
-    @Override
-    public void unenpassant(PawnPiece<?> targetPiece) {
-        ((EnPassantable) this.origin).unenpassant(targetPiece);
     }
 
     @Override
@@ -51,8 +40,13 @@ abstract class AbstractTransformablePieceProxy<COLOR extends Color,
     }
 
     @Override
-    public boolean isPinned() {
-        return this.origin.isPinned();
+    public void enpassant(PawnPiece<?> targetPiece, Position targetPosition) {
+        ((EnPassantable) this.origin).enpassant(targetPiece, targetPosition);
+    }
+
+    @Override
+    public void unenpassant(PawnPiece<?> targetPiece) {
+        ((EnPassantable) this.origin).unenpassant(targetPiece);
     }
 
     @Override
@@ -78,5 +72,10 @@ abstract class AbstractTransformablePieceProxy<COLOR extends Color,
     @Override
     public boolean isConnected() {
         return ((Connectable) this.origin).isConnected();
+    }
+
+    @Override
+    public boolean isPinned() {
+        return this.origin.isPinned();
     }
 }
