@@ -1,12 +1,12 @@
 package com.agutsul.chess.piece.pawn;
 
-import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -42,7 +42,8 @@ final class PawnBlockadeImpactRule<COLOR extends Color,
                     min(pawnPosition.y(), promotionLine),
                     max(pawnPosition.y(), promotionLine)
                 )
-                .mapToObj(y -> positionOf(pawnPosition.x(), y))
+                .mapToObj(y -> board.getPosition(pawnPosition.x(), y))
+                .flatMap(Optional::stream)
                 .toList();
 
         var sameColorBlockImpacts = Stream.of(board.getPieces(pawn.getColor()))

@@ -1,6 +1,5 @@
 package com.agutsul.chess.piece.pawn;
 
-import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
@@ -40,7 +39,8 @@ final class PawnIsolationImpactRule<COLOR extends Color,
         // find vertical lines aside of pawn based on its attacked positions
         Collection<Calculatable> lines = Stream.of(algo.calculate(piece))
                 .flatMap(Collection::stream)
-                .map(position -> Stream.ofNullable(positionOf(position.x(), piecePosition.y()))
+                .map(position -> Stream.of(board.getPosition(position.x(), piecePosition.y()))
+                        .flatMap(Optional::stream)
                         .map(previousPosition -> board.getLine(position, previousPosition))
                         .flatMap(Optional::stream)
                         .findFirst()
