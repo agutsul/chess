@@ -352,7 +352,7 @@ abstract class AbstractPiece<COLOR extends Color>
         );
     }
 
-    boolean hasImpact(Impact.Type impactType) {
+    final boolean hasImpact(Impact.Type impactType) {
         return !getImpacts(impactType).isEmpty();
     }
 
