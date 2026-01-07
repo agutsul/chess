@@ -93,7 +93,7 @@ final class FoldRepetitionBoardStateEvaluator
     private static String createActionCode(ActionMemento<?,?> action) {
         var pieceType = action.getPieceType();
         return String.format("%s_%s",
-                pieceType.name(),
+                pieceType != null ? pieceType.name() : "?",
                 String.valueOf(action.getTarget())
         );
     }

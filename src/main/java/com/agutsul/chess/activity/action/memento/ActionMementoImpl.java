@@ -36,7 +36,11 @@ class ActionMementoImpl<SOURCE,TARGET>
 
     @Override
     public String toString() {
-        return String.format("%s %s(%s %s)", getActionType(),
-                    pieceType.name(), getSource(), getTarget());
+        return String.format("%s %s(%s %s)",
+                getActionType(),
+                getPieceType() != null ? pieceType.name() : "?",
+                getSource(),
+                getTarget()
+        );
     }
 }
