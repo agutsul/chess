@@ -277,9 +277,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
     public boolean isPinned() {
         LOGGER.info("Checking if piece '{}' is pinned", this);
-
-        var impacts = getImpacts(Impact.Type.PIN);
-        return !impacts.isEmpty();
+        return hasImpact(Impact.Type.PIN);
     }
 
     public void dispose(Instant instant) {
@@ -352,6 +350,10 @@ abstract class AbstractPiece<COLOR extends Color>
                 new ClearPieceActivitiesObserver(),
                 new CopyPieceVisitedPositionsObserver()
         );
+    }
+
+    boolean hasImpact(Impact.Type impactType) {
+        return !getImpacts(impactType).isEmpty();
     }
 
     final void doMove(Position position) {

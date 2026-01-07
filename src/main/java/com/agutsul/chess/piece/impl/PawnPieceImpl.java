@@ -95,32 +95,27 @@ final class PawnPieceImpl<COLOR extends Color>
 
     @Override
     public boolean isBlocked() {
-        var blocks = getImpacts(Impact.Type.BLOCKADE);
-        return !blocks.isEmpty();
+        return hasImpact(Impact.Type.BLOCKADE);
     }
 
     @Override
     public boolean isIsolated() {
-        var isolations = getImpacts(Impact.Type.ISOLATION);
-        return !isolations.isEmpty();
+        return hasImpact(Impact.Type.ISOLATION);
     }
 
     @Override
     public boolean isBackwarded() {
-        var backwards = getImpacts(Impact.Type.BACKWARD);
-        return !backwards.isEmpty();
+        return hasImpact(Impact.Type.BACKWARD);
     }
 
     @Override
     public boolean isAccumulated() {
-        var accumulations = getImpacts(Impact.Type.ACCUMULATION);
-        return !accumulations.isEmpty();
+        return hasImpact(Impact.Type.ACCUMULATION);
     }
 
     @Override
     public boolean isConnected() {
-        var connections = getImpacts(Impact.Type.CONNECTION);
-        return !connections.isEmpty();
+        return hasImpact(Impact.Type.CONNECTION);
     }
 
     @Override
