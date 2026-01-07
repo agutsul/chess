@@ -58,7 +58,7 @@ public enum StandardAlgebraicActionFormatter implements ActionFormatter {
             return isPawn(pieceType)
                     ? formatPawn(memento)
                     : String.format("%s%s",
-                            pieceType != null ? String.valueOf(pieceType) : "?",
+                            nonNull(pieceType) ? String.valueOf(pieceType) : "?",
                             formatCode(memento.getCode())
                       );
         }
@@ -81,10 +81,11 @@ public enum StandardAlgebraicActionFormatter implements ActionFormatter {
                     ? new ActionMementoDecorator<>(originMemento, memento.getCode())
                     : originMemento;
 
+            var pieceType = memento.getPieceType();
             return String.format("%s%s%s",
                     format(originAction),
                     PROMOTE_CODE,
-                    memento.getPieceType() != null ? String.valueOf(memento.getPieceType()) : "?"
+                    nonNull(pieceType) ? String.valueOf(pieceType) : "?"
             );
         }
     };
