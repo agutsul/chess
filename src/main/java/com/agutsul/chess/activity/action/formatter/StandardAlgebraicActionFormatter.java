@@ -17,6 +17,7 @@ import com.agutsul.chess.Checkable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.activity.action.memento.ActionMementoDecorator;
+import com.agutsul.chess.piece.Piece;
 
 public enum StandardAlgebraicActionFormatter implements ActionFormatter {
     MOVE_MODE(Action.Type.MOVE) {
@@ -58,7 +59,7 @@ public enum StandardAlgebraicActionFormatter implements ActionFormatter {
             return isPawn(pieceType)
                     ? formatPawn(memento)
                     : String.format("%s%s",
-                            nonNull(pieceType) ? String.valueOf(pieceType) : "?",
+                            formatPieceType(pieceType),
                             formatCode(memento.getCode())
                       );
         }
@@ -81,11 +82,10 @@ public enum StandardAlgebraicActionFormatter implements ActionFormatter {
                     ? new ActionMementoDecorator<>(originMemento, memento.getCode())
                     : originMemento;
 
-            var pieceType = memento.getPieceType();
             return String.format("%s%s%s",
                     format(originAction),
                     PROMOTE_CODE,
-                    nonNull(pieceType) ? String.valueOf(pieceType) : "?"
+                    formatPieceType(memento.getPieceType())
             );
         }
     };
@@ -114,7 +114,7 @@ public enum StandardAlgebraicActionFormatter implements ActionFormatter {
 
     private static String formatMoveMemento(ActionMemento<?,?> memento) {
         return String.format("%s%s%s",
-                memento.getPieceType() != null ? String.valueOf(memento.getPieceType()) : "?",
+                formatPieceType(memento.getPieceType()),
                 formatCode(memento.getCode()),
                 memento.getTarget()
         );
@@ -129,6 +129,10 @@ public enum StandardAlgebraicActionFormatter implements ActionFormatter {
                 label,
                 Objects.equals(label, code) ? EMPTY : code
         );
+    }
+
+    private static String formatPieceType(Piece.Type pieceType) {
+        return nonNull(pieceType) ? String.valueOf(pieceType) : "?";
     }
 
     private static String formatCode(String code) {
