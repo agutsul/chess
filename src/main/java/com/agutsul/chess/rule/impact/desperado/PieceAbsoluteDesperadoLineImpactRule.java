@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.activity.impact.PieceAbsoluteDesperadoImpact;
 import com.agutsul.chess.activity.impact.PieceDesperadoImpact;
 import com.agutsul.chess.activity.impact.PieceDesperadoImpact.Mode;
@@ -18,7 +19,7 @@ import com.agutsul.chess.piece.algo.Algo;
 
 public final class PieceAbsoluteDesperadoLineImpactRule<COLOR1 extends Color,
                                                         COLOR2 extends Color,
-                                                        DESPERADO extends Piece<COLOR1> & Capturable,
+                                                        DESPERADO extends Piece<COLOR1> & Capturable & Lineable,
                                                         ATTACKER extends Piece<COLOR2> & Capturable,
                                                         ATTACKED extends Piece<COLOR2>>
         extends AbstractDesperadoLineImpactRule<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED> {

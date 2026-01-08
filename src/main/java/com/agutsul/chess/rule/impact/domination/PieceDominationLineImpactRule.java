@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.PieceDominationAttackImpact;
 import com.agutsul.chess.activity.impact.PieceDominationImpact;
@@ -25,7 +26,7 @@ import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter.Mode;
 
 public final class PieceDominationLineImpactRule<COLOR1 extends Color,
                                                  COLOR2 extends Color,
-                                                 ATTACKER extends Piece<COLOR1> & Capturable,
+                                                 ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
                                                  ATTACKED extends Piece<COLOR2>,
                                                  IMPACT extends PieceDominationImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
         extends AbstractDominationImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,IMPACT> {

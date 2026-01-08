@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.impact.PieceOutpostImpact;
 import com.agutsul.chess.board.Board;
@@ -18,7 +19,7 @@ import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter;
 import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter.Mode;
 
 public final class PieceOutpostLineImpactRule<COLOR extends Color,
-                                              PIECE extends Piece<COLOR> & Capturable & Movable>
+                                              PIECE extends Piece<COLOR> & Capturable & Movable & Lineable>
         extends AbstractOutpostImpactRule<COLOR,PIECE,
                                           PieceOutpostImpact<COLOR,PIECE>> {
 

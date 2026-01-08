@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceInterferenceImpact;
@@ -26,7 +27,7 @@ import com.agutsul.chess.rule.impact.InterferenceImpactRule;
 abstract class AbstractInterferenceImpactRule<COLOR1 extends Color,
                                               COLOR2 extends Color,
                                               PIECE extends Piece<COLOR1> & Movable,
-                                              PROTECTOR extends Piece<COLOR2> & Capturable,
+                                              PROTECTOR extends Piece<COLOR2> & Capturable & Lineable,
                                               PROTECTED extends Piece<COLOR2>,
                                               IMPACT extends PieceInterferenceImpact<COLOR1,COLOR2,PIECE,PROTECTOR,PROTECTED>>
         extends AbstractImpactRule<COLOR1,PIECE,IMPACT>

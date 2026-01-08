@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.activity.impact.AbstractPieceAttackImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.board.Board;
@@ -23,7 +24,7 @@ import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter.Mode;
 
 public final class PieceForkLineImpactRule<COLOR1 extends Color,
                                            COLOR2 extends Color,
-                                           ATTACKER extends Piece<COLOR1> & Capturable,
+                                           ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
                                            ATTACKED extends Piece<COLOR2>>
         extends AbstractForkImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,
                                        PieceForkImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>> {

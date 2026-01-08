@@ -1,6 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
@@ -11,7 +12,7 @@ import com.agutsul.chess.position.Position;
 public final class PieceInterferenceProtectImpact<COLOR1 extends Color,
                                                   COLOR2 extends Color,
                                                   PIECE extends Piece<COLOR1> & Movable,
-                                                  PROTECTOR extends Piece<COLOR2> & Capturable,
+                                                  PROTECTOR extends Piece<COLOR2> & Capturable & Lineable,
                                                   PROTECTED extends Piece<COLOR2>>
         extends AbstractTargetActivity<Impact.Type,PIECE,Position>
         implements PieceInterferenceImpact<COLOR1,COLOR2,PIECE,PROTECTOR,PROTECTED> {

@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
@@ -18,7 +19,7 @@ import com.agutsul.chess.piece.algo.MoveLineAlgoAdapter;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
 
 public class PieceMoveLineActionRule<COLOR extends Color,
-                                     PIECE extends Piece<COLOR> & Movable>
+                                     PIECE extends Piece<COLOR> & Movable & Lineable>
         extends AbstractMoveActionRule<COLOR,PIECE,
                                        PieceMoveAction<COLOR,PIECE>> {
 

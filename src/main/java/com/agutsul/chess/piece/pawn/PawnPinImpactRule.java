@@ -1,6 +1,7 @@
 package com.agutsul.chess.piece.pawn;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -13,7 +14,7 @@ final class PawnPinImpactRule<COLOR1 extends Color,
                               COLOR2 extends Color,
                               PINNED extends PawnPiece<COLOR1>,
                               PIECE  extends Piece<COLOR1>,
-                              ATTACKER extends Piece<COLOR2> & Capturable>
+                              ATTACKER extends Piece<COLOR2> & Capturable & Lineable>
         extends PiecePinPositionImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,
                                            PiecePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>> {
 

@@ -1,6 +1,7 @@
 package com.agutsul.chess.piece.algo;
 
 import static com.agutsul.chess.line.LineFactory.lineOf;
+import static java.util.Collections.unmodifiableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,6 +9,7 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
@@ -15,7 +17,7 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
 public final class SecureLineAlgoAdapter<COLOR extends Color,
-                                         PIECE extends Piece<COLOR> & Capturable>
+                                         PIECE extends Piece<COLOR> & Capturable & Lineable>
         extends AbstractLineAlgo<PIECE,Line>
         implements CapturePieceAlgo<COLOR,PIECE,Line> {
 
@@ -68,6 +70,6 @@ public final class SecureLineAlgoAdapter<COLOR extends Color,
             }
         }
 
-        return lines;
+        return unmodifiableList(lines);
     }
 }

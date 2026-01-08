@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
@@ -30,7 +31,7 @@ abstract class AbstractBlockImpactRule<COLOR1 extends Color,
                                        COLOR2 extends Color,
                                        BLOCKER extends Piece<COLOR1>& Movable,
                                        ATTACKED extends Piece<COLOR1>,
-                                       ATTACKER extends Piece<COLOR2> & Capturable,
+                                       ATTACKER extends Piece<COLOR2> & Capturable & Lineable,
                                        IMPACT extends PieceBlockImpact<COLOR1,COLOR2,BLOCKER,ATTACKED,ATTACKER>>
         extends AbstractImpactRule<COLOR1,BLOCKER,IMPACT>
         implements BlockImpactRule<COLOR1,COLOR2,BLOCKER,ATTACKED,ATTACKER,IMPACT> {

@@ -6,6 +6,7 @@ import java.util.Collection;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.impact.PieceBlockImpact;
 import com.agutsul.chess.board.Board;
@@ -18,7 +19,7 @@ public class PieceBlockPositionImpactRule<COLOR1 extends Color,
                                           COLOR2 extends Color,
                                           BLOCKER extends Piece<COLOR1> & Movable,
                                           ATTACKED extends Piece<COLOR1>,
-                                          ATTACKER extends Piece<COLOR2> & Capturable>
+                                          ATTACKER extends Piece<COLOR2> & Capturable & Lineable>
         extends AbstractBlockImpactRule<COLOR1,COLOR2,BLOCKER,ATTACKED,ATTACKER,
                                         PieceBlockImpact<COLOR1,COLOR2,BLOCKER,ATTACKED,ATTACKER>> {
 

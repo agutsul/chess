@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
@@ -14,7 +15,7 @@ import com.agutsul.chess.line.LineBuilder;
 import com.agutsul.chess.piece.Piece;
 
 public final class CombinedLineAlgo<COLOR extends Color,
-                                    PIECE extends Piece<COLOR>>
+                                    PIECE extends Piece<COLOR> & Lineable>
         extends AbstractAlgo<PIECE,Line> {
 
     private final CompositePieceAlgo<COLOR,PIECE,Line> algo;
@@ -35,7 +36,7 @@ public final class CombinedLineAlgo<COLOR extends Color,
     }
 
     private static class CombinedLineAlgoAdapter<COLOR extends Color,
-                                                 PIECE extends Piece<COLOR>>
+                                                 PIECE extends Piece<COLOR> & Lineable>
             extends AbstractLineAlgo<PIECE,Line> {
 
         private final AbstractLineAlgo<PIECE,Line> origin;
@@ -77,7 +78,7 @@ public final class CombinedLineAlgo<COLOR extends Color,
     }
 
     private static class CombinedDiagonalLineAlgoAdapter<COLOR extends Color,
-                                                         PIECE extends Piece<COLOR>>
+                                                         PIECE extends Piece<COLOR> & Lineable>
             extends CombinedLineAlgoAdapter<COLOR,PIECE> {
 
         public CombinedDiagonalLineAlgoAdapter(Board board,

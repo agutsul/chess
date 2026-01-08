@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -20,7 +21,7 @@ import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter.Mode;
 
 public final class PieceCaptureLineActionRule<COLOR1 extends Color,
                                               COLOR2 extends Color,
-                                              PIECE1 extends Piece<COLOR1> & Capturable,
+                                              PIECE1 extends Piece<COLOR1> & Capturable & Lineable,
                                               PIECE2 extends Piece<COLOR2>>
         extends AbstractCaptureActionRule<COLOR1,COLOR2,PIECE1,PIECE2,
                                           PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>> {

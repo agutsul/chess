@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
@@ -15,7 +16,7 @@ public final class PieceBlockAttackImpact<COLOR1 extends Color,
                                           COLOR2 extends Color,
                                           BLOCKER  extends Piece<COLOR1> & Movable,
                                           DEFENDED extends Piece<COLOR1>,
-                                          ATTACKER extends Piece<COLOR2> & Capturable>
+                                          ATTACKER extends Piece<COLOR2> & Capturable & Lineable>
         extends AbstractTargetActivity<Impact.Type,BLOCKER,Position>
         implements PieceBlockImpact<COLOR1,COLOR2,BLOCKER,DEFENDED,ATTACKER> {
 

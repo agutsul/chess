@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
@@ -16,7 +17,7 @@ import com.agutsul.chess.rule.impact.interference.PieceInterferencePositionImpac
 final class PawnInterferenceImpactRule<COLOR1 extends Color,
                                        COLOR2 extends Color,
                                        PAWN extends PawnPiece<COLOR1>,
-                                       PROTECTOR extends Piece<COLOR2> & Capturable,
+                                       PROTECTOR extends Piece<COLOR2> & Capturable & Lineable,
                                        PROTECTED extends Piece<COLOR2>>
         extends PieceInterferencePositionImpactRule<COLOR1,COLOR2,PAWN,PROTECTOR,PROTECTED> {
 

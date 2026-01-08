@@ -14,6 +14,7 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
@@ -27,7 +28,7 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
                                        COLOR2 extends Color,
                                        PINNED extends Piece<COLOR1> & Pinnable,
                                        PIECE extends Piece<COLOR1>,
-                                       ATTACKER extends Piece<COLOR2> & Capturable>
+                                       ATTACKER extends Piece<COLOR2> & Capturable & Lineable>
         extends AbstractPinModeImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,
                                                PiecePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>> {
 

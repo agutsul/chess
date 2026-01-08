@@ -3,6 +3,7 @@ package com.agutsul.chess.piece.algo;
 import java.util.Collection;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
@@ -10,7 +11,7 @@ import com.agutsul.chess.line.LineFactory;
 import com.agutsul.chess.piece.Piece;
 
 public final class HorizontalLineAlgo<COLOR extends Color,
-                                      PIECE extends Piece<COLOR>>
+                                      PIECE extends Piece<COLOR> & Lineable>
         extends AbstractLineAlgo<PIECE,Line> {
 
     public HorizontalLineAlgo(Board board) {

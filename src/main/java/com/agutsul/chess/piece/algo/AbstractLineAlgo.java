@@ -6,10 +6,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.position.Position;
 
-abstract class AbstractLineAlgo<SOURCE,RESULT>
+abstract class AbstractLineAlgo<SOURCE extends Lineable,RESULT extends Line>
         implements Algo<SOURCE,Collection<RESULT>> {
 
     protected final Board board;
