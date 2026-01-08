@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
@@ -21,7 +22,7 @@ import com.agutsul.chess.rule.impact.attack.PieceDiscoveredAttackPositionImpactR
 final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
                                            COLOR2 extends Color,
                                            PIECE  extends PawnPiece<COLOR1>,
-                                           ATTACKER extends Piece<COLOR1> & Capturable,
+                                           ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
                                            ATTACKED extends Piece<COLOR2>>
         extends PieceDiscoveredAttackPositionImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED> {
 

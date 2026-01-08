@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteDiscoveredAttackImpact;
 import com.agutsul.chess.board.Board;
@@ -23,7 +24,7 @@ import com.agutsul.chess.position.Position;
 final class PieceAbsoluteDiscoveredAttackImpactRule<COLOR1 extends Color,
                                                     COLOR2 extends Color,
                                                     PIECE  extends Piece<COLOR1>,
-                                                    ATTACKER extends Piece<COLOR1> & Capturable,
+                                                    ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
                                                     ATTACKED extends KingPiece<COLOR2>>
         extends AbstractDiscoveredAttackModeImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,
                                                        PieceAbsoluteDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>> {

@@ -14,6 +14,7 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Lineable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceRelativeDiscoveredAttackImpact;
 import com.agutsul.chess.board.Board;
@@ -26,7 +27,7 @@ import com.agutsul.chess.position.Position;
 final class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
                                                     COLOR2 extends Color,
                                                     PIECE  extends Piece<COLOR1>,
-                                                    ATTACKER extends Piece<COLOR1> & Capturable,
+                                                    ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
                                                     ATTACKED extends Piece<COLOR2>>
         extends AbstractDiscoveredAttackModeImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,
                                                        PieceRelativeDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>> {
