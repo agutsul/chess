@@ -17,6 +17,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter;
 import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter.Mode;
@@ -29,7 +30,7 @@ public final class PieceDeflectionLineImpactRule<COLOR1 extends Color,
         extends AbstractDeflectionImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,
                                              PieceDeflectionImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>> {
 
-    private final CapturePieceAlgo<COLOR1,ATTACKER,Line> algo;
+    private final Algo<ATTACKER,Collection<Line>> algo;
 
     public PieceDeflectionLineImpactRule(Board board,
                                          CapturePieceAlgo<COLOR1,ATTACKER,Line> algo) {

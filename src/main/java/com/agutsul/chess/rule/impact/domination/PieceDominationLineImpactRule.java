@@ -20,6 +20,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter;
 import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter.Mode;
@@ -31,7 +32,7 @@ public final class PieceDominationLineImpactRule<COLOR1 extends Color,
                                                  IMPACT extends PieceDominationImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
         extends AbstractDominationImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,IMPACT> {
 
-    private final CapturePieceAlgo<COLOR1,ATTACKER,Line> algo;
+    private final Algo<ATTACKER,Collection<Line>> algo;
 
     public PieceDominationLineImpactRule(Board board,
                                          CapturePieceAlgo<COLOR1,ATTACKER,Line> algo) {

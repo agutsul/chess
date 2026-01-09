@@ -14,6 +14,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter;
 import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter.Mode;
@@ -24,7 +25,7 @@ public final class PieceCheckLineImpactRule<COLOR1 extends Color,
                                             KING extends KingPiece<COLOR2>>
         extends AbstractCheckImpactRule<COLOR1,COLOR2,ATTACKER,KING> {
 
-    private final CapturePieceAlgo<COLOR1,ATTACKER,Line> algo;
+    private final Algo<ATTACKER,Collection<Line>> algo;
 
     public PieceCheckLineImpactRule(Board board,
                                     CapturePieceAlgo<COLOR1,ATTACKER,Line> algo) {

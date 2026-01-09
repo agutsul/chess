@@ -1,9 +1,8 @@
 package com.agutsul.chess.rule.impact.pin;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
-import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
@@ -15,6 +14,8 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.Algo;
+import com.agutsul.chess.piece.algo.LinePositionAlgoAdapter;
+import com.agutsul.chess.position.Position;
 
 public class PiecePinLineImpactRule<COLOR1 extends Color,
                                     COLOR2 extends Color,
@@ -24,19 +25,16 @@ public class PiecePinLineImpactRule<COLOR1 extends Color,
                                     IMPACT extends PiecePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>>
         extends AbstractPiecePinImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,IMPACT> {
 
-    private final Algo<PINNED,Collection<Line>> algo;
+    private final Algo<PINNED,Collection<Position>> algo;
 
     public PiecePinLineImpactRule(Board board,
                                   Algo<PINNED,Collection<Line>> algo) {
         super(board);
-        this.algo = algo;
+        this.algo = new LinePositionAlgoAdapter<>(algo);
     }
 
     @Override
     protected Collection<Calculatable> calculate(PINNED piece) {
-        return Stream.of(algo.calculate(piece))
-                .flatMap(Collection::stream)
-                .flatMap(Collection::stream)
-                .collect(toList());
+        return unmodifiableCollection(algo.calculate(piece));
     }
 }

@@ -18,6 +18,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter;
 import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter.Mode;
@@ -29,7 +30,7 @@ public final class PieceForkLineImpactRule<COLOR1 extends Color,
         extends AbstractForkImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,
                                        PieceForkImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>> {
 
-    private final CapturePieceAlgo<COLOR1,ATTACKER,Line> algo;
+    private final Algo<ATTACKER,Collection<Line>> algo;
 
     public PieceForkLineImpactRule(Board board,
                                    CapturePieceAlgo<COLOR1,ATTACKER,Line> algo) {

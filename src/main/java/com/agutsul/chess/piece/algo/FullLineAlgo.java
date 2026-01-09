@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.algo;
 
+import static java.util.Collections.unmodifiableList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -34,6 +36,6 @@ public final class FullLineAlgo<COLOR extends Color,
             }
         }
 
-        return fullLines;
+        return unmodifiableList(fullLines);
     }
 }
