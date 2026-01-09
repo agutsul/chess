@@ -28,6 +28,10 @@ public final class LineBuilder implements Builder<Line> {
         return this;
     }
 
+    public boolean isReady() {
+        return !this.positions.isEmpty();
+    }
+
     public LineBuilder sort() {
         this.positions.sort(COMPARATOR);
         return this;

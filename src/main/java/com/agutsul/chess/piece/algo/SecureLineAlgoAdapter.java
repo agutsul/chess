@@ -1,6 +1,5 @@
 package com.agutsul.chess.piece.algo;
 
-import static com.agutsul.chess.line.LineFactory.lineOf;
 import static java.util.Collections.unmodifiableList;
 
 import java.util.ArrayList;
@@ -13,8 +12,8 @@ import com.agutsul.chess.Lineable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
+import com.agutsul.chess.line.LineBuilder;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.position.Position;
 
 public final class SecureLineAlgoAdapter<COLOR extends Color,
                                          PIECE extends Piece<COLOR> & Capturable & Lineable>
@@ -50,23 +49,26 @@ public final class SecureLineAlgoAdapter<COLOR extends Color,
     @Override
     public Collection<Line> calculate(PIECE piece) {
         var lines = new ArrayList<Line>();
+
+        var lineBuilder = new LineBuilder();
         for (var line : algo.calculate(piece)) {
-            var positions = new ArrayList<Position>();
+            lineBuilder.reset();
+
             for (var position : line) {
                 var optionalPiece = board.getPiece(position);
                 if (optionalPiece.isPresent()) {
                     if (mode.test(optionalPiece.get(), piece)) {
-                        positions.add(position);
+                        lineBuilder.append(position);
                     }
 
                     break;
                 }
 
-                positions.add(position);
+                lineBuilder.append(position);
             }
 
-            if (!positions.isEmpty()) {
-                lines.add(lineOf(positions));
+            if (lineBuilder.isReady()) {
+                lines.add(lineBuilder.build());
             }
         }
 
