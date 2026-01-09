@@ -1,5 +1,6 @@
 package com.agutsul.chess.game.observer;
 
+import static com.agutsul.chess.player.PlayerFactory.playerOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.times;
@@ -17,7 +18,6 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.AbstractGame;
 import com.agutsul.chess.game.event.SwitchPlayerEvent;
 import com.agutsul.chess.player.Player;
-import com.agutsul.chess.player.UserPlayer;
 import com.agutsul.chess.player.state.PlayerState;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,9 +26,9 @@ public class SwitchPlayerObserverTest {
     @Mock
     AbstractGame game;
     @Spy
-    Player whitePlayer = new UserPlayer("testA", Colors.WHITE);
+    Player whitePlayer = playerOf(Colors.WHITE, "testA");
     @Spy
-    Player blackPlayer = new UserPlayer("testB", Colors.BLACK);
+    Player blackPlayer = playerOf(Colors.BLACK, "testB");
 
     @InjectMocks
     SwitchPlayerObserver observer;

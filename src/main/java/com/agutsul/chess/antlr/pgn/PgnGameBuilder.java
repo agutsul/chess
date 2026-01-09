@@ -1,5 +1,6 @@
 package com.agutsul.chess.antlr.pgn;
 
+import static com.agutsul.chess.player.PlayerFactory.playerOf;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 import java.util.ArrayList;
@@ -18,7 +19,6 @@ import com.agutsul.chess.game.state.DefaultGameState;
 import com.agutsul.chess.game.state.DrawnGameState;
 import com.agutsul.chess.game.state.GameState;
 import com.agutsul.chess.game.state.WhiteWinGameState;
-import com.agutsul.chess.player.UserPlayer;
 
 final class PgnGameBuilder
         implements GameBuilder<PgnGame<?>> {
@@ -37,8 +37,8 @@ final class PgnGameBuilder
 
     @Override
     public PgnGame<?> build() {
-        var player1 = new UserPlayer(whitePlayer, Colors.WHITE);
-        var player2 = new UserPlayer(blackPlayer, Colors.BLACK);
+        var player1 = playerOf(Colors.WHITE, whitePlayer);
+        var player2 = playerOf(Colors.BLACK, blackPlayer);
 
         var context = new GameContext();
 

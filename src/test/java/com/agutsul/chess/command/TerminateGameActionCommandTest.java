@@ -1,5 +1,6 @@
 package com.agutsul.chess.command;
 
+import static com.agutsul.chess.player.PlayerFactory.playerOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -23,7 +24,6 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.event.GameTerminationEvent.Type;
-import com.agutsul.chess.player.UserPlayer;
 
 @ExtendWith(MockitoExtension.class)
 public class TerminateGameActionCommandTest {
@@ -37,7 +37,7 @@ public class TerminateGameActionCommandTest {
         when(game.getBoard())
             .thenReturn(board);
 
-        var player = new UserPlayer("test", Colors.WHITE);
+        var player = playerOf(Colors.WHITE, "test");
 
         var command = new TerminateGameActionCommand(game, player, Type.DEFEAT);
         command.execute();
@@ -60,7 +60,7 @@ public class TerminateGameActionCommandTest {
         when(game.getBoard())
             .thenReturn(board);
 
-        var player = new UserPlayer("test", Colors.WHITE);
+        var player = playerOf(Colors.WHITE, "test");
 
         var command = new TerminateGameActionCommand(game, player, Type.DEFEAT);
         var thrown = assertThrows(

@@ -3,8 +3,8 @@ package com.agutsul.chess.game.ai;
 import static com.agutsul.chess.piece.Piece.Type.KING;
 import static com.agutsul.chess.piece.Piece.Type.PAWN;
 import static com.agutsul.chess.piece.Piece.Type.ROOK;
+import static com.agutsul.chess.player.PlayerFactory.playerOf;
 import static java.lang.System.lineSeparator;
-import static java.util.UUID.randomUUID;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -38,7 +38,6 @@ import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
-import com.agutsul.chess.player.UserPlayer;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 
 public final class SimulationGame
@@ -55,7 +54,7 @@ public final class SimulationGame
     public SimulationGame(Board board, Journal<ActionMemento<?,?>> journal,
                           ForkJoinPool forkJoinPool, Color activeColor, Action<?> action) {
 
-        this(createPlayer(Colors.WHITE), createPlayer(Colors.BLACK),
+        this(playerOf(Colors.WHITE), playerOf(Colors.BLACK),
                 copyBoard(board), new JournalImpl(journal),
                 forkJoinPool, activeColor, action
         );
@@ -114,10 +113,6 @@ public final class SimulationGame
     @Override
     public void close() throws IOException {
         notifyBoardObservers(new GameOverEvent(this));
-    }
-
-    private static Player createPlayer(Color color) {
-        return new UserPlayer(String.format("%s-%s", color, randomUUID()), color);
     }
 
     private static Board copyBoard(Board originBoard) {

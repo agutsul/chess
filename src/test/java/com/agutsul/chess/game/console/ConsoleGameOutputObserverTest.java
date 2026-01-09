@@ -2,6 +2,7 @@ package com.agutsul.chess.game.console;
 
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static com.agutsul.chess.piece.Piece.isPawn;
+import static com.agutsul.chess.player.PlayerFactory.playerOf;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -54,7 +55,6 @@ import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
-import com.agutsul.chess.player.UserPlayer;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerTerminateActionExceptionEvent;
@@ -64,7 +64,7 @@ import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 @ExtendWith(MockitoExtension.class)
 public class ConsoleGameOutputObserverTest implements TestFileReader {
 
-    private static final Player PLAYER = new UserPlayer("white_player", Colors.WHITE);
+    private static final Player PLAYER = playerOf(Colors.WHITE, "white_player");
     private static final Board STANDARD_BOARD = new StandardBoard();
 
     @AutoClose

@@ -1,6 +1,6 @@
 package com.agutsul.chess.game.observer;
 
-import static java.util.UUID.randomUUID;
+import static com.agutsul.chess.player.PlayerFactory.playerOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -14,15 +14,14 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.GameMock;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.player.Player;
-import com.agutsul.chess.player.UserPlayer;
 
 @ExtendWith(MockitoExtension.class)
 public class GameStartedObserverTest {
 
     @Test
     void testGameStartedEvent() {
-        var whitePlayer = new UserPlayer(String.valueOf(randomUUID()), Colors.WHITE);
-        var blackPlayer = new UserPlayer(String.valueOf(randomUUID()), Colors.BLACK);
+        var whitePlayer = playerOf(Colors.WHITE);
+        var blackPlayer = playerOf(Colors.BLACK);
 
         var game = new InitialGameMock(whitePlayer, blackPlayer, new StandardBoard());
 

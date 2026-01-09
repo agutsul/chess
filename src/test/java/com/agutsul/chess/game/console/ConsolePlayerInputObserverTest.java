@@ -1,6 +1,7 @@
 package com.agutsul.chess.game.console;
 
 import static com.agutsul.chess.piece.Piece.isQueen;
+import static com.agutsul.chess.player.PlayerFactory.playerOf;
 import static java.lang.System.lineSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -29,7 +30,6 @@ import com.agutsul.chess.game.AbstractPlayableGame;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.player.Player;
-import com.agutsul.chess.player.UserPlayer;
 import com.agutsul.chess.player.event.PromotionPieceTypeEvent;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
@@ -37,7 +37,7 @@ import com.agutsul.chess.player.event.RequestPromotionPieceTypeEvent;
 @ExtendWith(MockitoExtension.class)
 public class ConsolePlayerInputObserverTest {
 
-    private static final Player PLAYER = new UserPlayer("white_player", Colors.WHITE);
+    private static final Player PLAYER = playerOf(Colors.WHITE, "white_player");
 
     @Mock
     GameContext context;

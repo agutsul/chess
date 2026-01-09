@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.console.ConsoleGame;
-import com.agutsul.chess.player.UserPlayer;
+import com.agutsul.chess.player.PlayerFactory;
 
 public class Application
         implements Executable {
@@ -34,8 +34,8 @@ public class Application
     @Override
     public void execute() {
         var gameThread = new Thread(new ConsoleGame<>(
-                new UserPlayer("player1", Colors.WHITE),
-                new UserPlayer("player2", Colors.BLACK)//,
+                PlayerFactory.playerOf(Colors.WHITE, "player1"),
+                PlayerFactory.playerOf(Colors.BLACK, "player2")//,
                 //createIncrementalTimeout(createActionTimeout(1 * 60 * 1000L), 1 * 60 * 1000L)
                 //createGameTimeout(1 * 60 * 1000L)
                 //createActionTimeout(1 * 60 * 1000L)

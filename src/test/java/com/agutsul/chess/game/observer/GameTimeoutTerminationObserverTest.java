@@ -1,7 +1,7 @@
 package com.agutsul.chess.game.observer;
 
+import static com.agutsul.chess.player.PlayerFactory.playerOf;
 import static com.agutsul.chess.timeout.TimeoutFactory.createGameTimeout;
-import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -15,7 +15,6 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.game.PlayableGameBuilder;
 import com.agutsul.chess.game.event.GameTimeoutTerminationEvent;
-import com.agutsul.chess.player.UserPlayer;
 
 @ExtendWith(MockitoExtension.class)
 public class GameTimeoutTerminationObserverTest {
@@ -25,8 +24,8 @@ public class GameTimeoutTerminationObserverTest {
 
     @Test
     void testGameTimeoutTermination() {
-        var whitePlayer = new UserPlayer(String.valueOf(randomUUID()), Colors.WHITE);
-        var blackPlayer = new UserPlayer(String.valueOf(randomUUID()), Colors.BLACK);
+        var whitePlayer = playerOf(Colors.WHITE);
+        var blackPlayer = playerOf(Colors.BLACK);
 
         context.setTimeout(createGameTimeout(10000L));
 

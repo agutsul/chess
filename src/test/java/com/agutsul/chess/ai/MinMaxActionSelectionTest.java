@@ -1,7 +1,7 @@
 package com.agutsul.chess.ai;
 
+import static com.agutsul.chess.player.PlayerFactory.playerOf;
 import static java.util.Collections.emptyList;
-import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -21,7 +21,6 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.GameMock;
 import com.agutsul.chess.journal.JournalImpl;
-import com.agutsul.chess.player.UserPlayer;
 
 @ExtendWith(MockitoExtension.class)
 public class MinMaxActionSelectionTest {
@@ -41,8 +40,8 @@ public class MinMaxActionSelectionTest {
                 .withBlackPawn("f7")
                 .build();
 
-        var whitePlayer = new UserPlayer(randomUUID().toString(), Colors.WHITE);
-        var blackPlayer = new UserPlayer(randomUUID().toString(), Colors.BLACK);
+        var whitePlayer = playerOf(Colors.WHITE);
+        var blackPlayer = playerOf(Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer,
                 board, new JournalImpl(), forkJoinPool
@@ -56,8 +55,8 @@ public class MinMaxActionSelectionTest {
 
     @Test
     void testNoActionFound() {
-        var whitePlayer = new UserPlayer(randomUUID().toString(), Colors.WHITE);
-        var blackPlayer = new UserPlayer(randomUUID().toString(), Colors.BLACK);
+        var whitePlayer = playerOf(Colors.WHITE);
+        var blackPlayer = playerOf(Colors.BLACK);
 
         when(board.getPieces(any(Color.class)))
             .thenReturn(emptyList());
@@ -89,8 +88,8 @@ public class MinMaxActionSelectionTest {
                 .withBlackPawns("a7","b7","c7","d7","e5","f7","g7","h7")
                 .build();
 
-        var whitePlayer = new UserPlayer(randomUUID().toString(), Colors.WHITE);
-        var blackPlayer = new UserPlayer(randomUUID().toString(), Colors.BLACK);
+        var whitePlayer = playerOf(Colors.WHITE);
+        var blackPlayer = playerOf(Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer,
                 board, new JournalImpl(), forkJoinPool
@@ -121,8 +120,8 @@ public class MinMaxActionSelectionTest {
                 .withBlackPawns("a7","b7","c7","d7","e5","f7","g7","h7")
                 .build();
 
-        var whitePlayer = new UserPlayer(randomUUID().toString(), Colors.WHITE);
-        var blackPlayer = new UserPlayer(randomUUID().toString(), Colors.BLACK);
+        var whitePlayer = playerOf(Colors.WHITE);
+        var blackPlayer = playerOf(Colors.BLACK);
 
         var game = new GameMock(whitePlayer, blackPlayer,
                 board, new JournalImpl(), forkJoinPool

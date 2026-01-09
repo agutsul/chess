@@ -6,6 +6,7 @@ import static com.agutsul.chess.board.state.BoardStateFactory.checkMatedBoardSta
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.exitedBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.staleMatedBoardState;
+import static com.agutsul.chess.player.PlayerFactory.playerOf;
 import static java.time.LocalDateTime.now;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -222,8 +223,8 @@ public class GameImplTest {
         when(board.getState())
             .thenReturn(checkMatedBoardState(board, Colors.WHITE));
 
-        var whitePlayer = new UserPlayer("test1", Colors.WHITE);
-        var blackPlayer = new UserPlayer("test2", Colors.BLACK);
+        var whitePlayer = playerOf(Colors.WHITE, "test1");
+        var blackPlayer = playerOf(Colors.BLACK, "test2");
         var journal = new JournalImpl();
 
         var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
@@ -243,11 +244,11 @@ public class GameImplTest {
         when(board.getState())
             .thenReturn(agreedDrawBoardState(board, Colors.WHITE));
 
-        var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
+        var whitePlayer = spy(playerOf(Colors.WHITE, "test1"));
         doCallRealMethod()
             .when(whitePlayer).getColor();
 
-        var blackPlayer = new UserPlayer("test2", Colors.BLACK);
+        var blackPlayer = spy(playerOf(Colors.BLACK, "test2"));
         var journal = new JournalImpl();
 
         var game = spy(new GameImpl(whitePlayer, blackPlayer, board, journal,
@@ -270,8 +271,8 @@ public class GameImplTest {
         when(board.getState())
             .thenReturn(exitedBoardState(board, Colors.WHITE));
 
-        var whitePlayer = new UserPlayer("test1", Colors.WHITE);
-        var blackPlayer = new UserPlayer("test2", Colors.BLACK);
+        var whitePlayer = playerOf(Colors.WHITE, "test1");
+        var blackPlayer = playerOf(Colors.BLACK, "test2");
         var journal = new JournalImpl();
 
         var game = new GameImpl(whitePlayer, blackPlayer, board, journal,

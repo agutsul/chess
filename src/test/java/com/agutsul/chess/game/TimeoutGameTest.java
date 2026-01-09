@@ -1,7 +1,7 @@
 package com.agutsul.chess.game;
 
+import static com.agutsul.chess.player.PlayerFactory.playerOf;
 import static com.agutsul.chess.timeout.TimeoutFactory.createMixedTimeout;
-import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,7 +35,6 @@ import com.agutsul.chess.game.observer.GameTimeoutTerminationObserver;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
-import com.agutsul.chess.player.UserPlayer;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 import com.agutsul.chess.timeout.Timeout;
 
@@ -57,8 +56,8 @@ public class TimeoutGameTest {
 
     @Test
     void testTimeoutExceeded() {
-        var whitePlayer = new UserPlayer(String.valueOf(randomUUID()), Colors.WHITE);
-        var blackPlayer = new UserPlayer(String.valueOf(randomUUID()), Colors.BLACK);
+        var whitePlayer = playerOf(Colors.WHITE);
+        var blackPlayer = playerOf(Colors.BLACK);
 
         var timeout = 100L;
 
@@ -95,8 +94,8 @@ public class TimeoutGameTest {
 
     @Test
     void testMixedTimeoutExceededWithEmptyJournal() {
-        var whitePlayer = new UserPlayer(String.valueOf(randomUUID()), Colors.WHITE);
-        var blackPlayer = new UserPlayer(String.valueOf(randomUUID()), Colors.BLACK);
+        var whitePlayer = playerOf(Colors.WHITE);
+        var blackPlayer = playerOf(Colors.BLACK);
 
         var timeout = createMixedTimeout(100L, 2);
 
@@ -120,8 +119,8 @@ public class TimeoutGameTest {
 
     @Test
     void testMixedTimeoutExceededWithNonEmptyJournal() {
-        var whitePlayer = new UserPlayer(String.valueOf(randomUUID()), Colors.WHITE);
-        var blackPlayer = new UserPlayer(String.valueOf(randomUUID()), Colors.BLACK);
+        var whitePlayer = playerOf(Colors.WHITE);
+        var blackPlayer = playerOf(Colors.BLACK);
 
         var journal = spy(new JournalImpl());
         doReturn(false)
@@ -151,8 +150,8 @@ public class TimeoutGameTest {
 
     @Test
     void testMixedTimeoutExceededWithValidJournal() {
-        var whitePlayer = new UserPlayer(String.valueOf(randomUUID()), Colors.WHITE);
-        var blackPlayer = new UserPlayer(String.valueOf(randomUUID()), Colors.BLACK);
+        var whitePlayer = playerOf(Colors.WHITE);
+        var blackPlayer = playerOf(Colors.BLACK);
 
         var journal = spy(new JournalImpl());
         doReturn(false)

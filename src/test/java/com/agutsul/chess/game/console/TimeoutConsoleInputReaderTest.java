@@ -1,5 +1,6 @@
 package com.agutsul.chess.game.console;
 
+import static com.agutsul.chess.player.PlayerFactory.playerOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
@@ -14,14 +15,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.ActionTimeoutException;
-import com.agutsul.chess.player.UserPlayer;
 
 @ExtendWith(MockitoExtension.class)
 public class TimeoutConsoleInputReaderTest {
 
     @Test
     void testNegativeTimeoutArgument() {
-        var player = new UserPlayer("test", Colors.WHITE);
+        var player = playerOf(Colors.WHITE, "test");
         var reader = new TimeoutConsoleInputReader(player, mock(InputStream.class), -1);
 
         var thrown = assertThrows(
@@ -34,7 +34,7 @@ public class TimeoutConsoleInputReaderTest {
 
     @Test
     void testTimeoutException() throws IOException {
-        var player = new UserPlayer("test", Colors.WHITE);
+        var player = playerOf(Colors.WHITE, "test");
         var reader = new TimeoutConsoleInputReader(player, new DelayedInputStreamMock(), 50);
 
         var thrown = assertThrows(
@@ -48,7 +48,7 @@ public class TimeoutConsoleInputReaderTest {
     @Test
     void testConsoleReadSuccessfully() throws IOException {
         var text = String.format("e2 e4%s", System.lineSeparator());
-        var player = new UserPlayer("test", Colors.WHITE);
+        var player = playerOf(Colors.WHITE, "test");
 
         try (var inputStream = new ByteArrayInputStream(text.getBytes())) {
             var reader = new TimeoutConsoleInputReader(player, inputStream, 100);

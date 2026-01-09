@@ -1,5 +1,6 @@
 package com.agutsul.chess.antlr.fen;
 
+import static com.agutsul.chess.player.PlayerFactory.playerOf;
 import static com.agutsul.chess.position.Position.codeOf;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.regex.Pattern.compile;
@@ -32,8 +33,6 @@ import com.agutsul.chess.game.GameBuilder;
 import com.agutsul.chess.game.fen.FenGame;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.player.Player;
-import com.agutsul.chess.player.UserPlayer;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.action.AbstractCastlingActionRule.Castling;
 
@@ -63,7 +62,7 @@ final class FenGameBuilder
         var playerColor = resolveColor(activeColor != null ? activeColor : EMPTY);
 
         var game = new FenGame<>(
-                createPlayer(Colors.WHITE), createPlayer(Colors.BLACK),
+                playerOf(Colors.WHITE), playerOf(Colors.BLACK),
                 board, playerColor, halfMoveClock, fullMoveClock
         );
 
@@ -127,13 +126,6 @@ final class FenGameBuilder
     GameBuilder<FenGame<?>> withFullMoves(int fullMoves) {
         this.fullMoveClock = fullMoves;
         return this;
-    }
-
-    private static Player createPlayer(Color color) {
-        return new UserPlayer(
-                String.format("%sPlayer", lowerCase(String.valueOf(color))),
-                color
-        );
     }
 
     private static Board createBoard(List<String> lines) {
