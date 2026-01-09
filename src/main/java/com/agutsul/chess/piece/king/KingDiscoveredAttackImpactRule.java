@@ -1,9 +1,7 @@
 package com.agutsul.chess.piece.king;
 
 import static java.util.function.Predicate.not;
-import static java.util.stream.Collectors.toList;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -44,10 +42,10 @@ final class KingDiscoveredAttackImpactRule<COLOR1 extends Color,
 
         @Override
         public Collection<Position> calculate(PIECE piece) {
-            var positions = new ArrayList<Position>();
-            positions.addAll(movePositions(piece));
-            positions.addAll(capturePositions(piece));
-            return positions;
+            return Stream.of(movePositions(piece), capturePositions(piece))
+                    .flatMap(Collection::stream)
+                    .distinct()
+                    .toList();
         }
 
         private Collection<Position> movePositions(PIECE piece) {
@@ -57,7 +55,7 @@ final class KingDiscoveredAttackImpactRule<COLOR1 extends Color,
                     .filter(position -> board.isEmpty(position))
                     .filter(position -> !board.isAttacked(position,  opponentColor))
                     .filter(position -> !board.isMonitored(position, opponentColor))
-                    .collect(toList());
+                    .toList();
         }
 
         private Collection<Position> capturePositions(PIECE piece) {
@@ -71,7 +69,7 @@ final class KingDiscoveredAttackImpactRule<COLOR1 extends Color,
                     .filter(opponentPiece -> !((Protectable) opponentPiece).isProtected())
                     .filter(opponentPiece -> !board.isMonitored(opponentPiece.getPosition(), opponentColor))
                     .map(Piece::getPosition)
-                    .collect(toList());
+                    .toList();
         }
     }
 }
