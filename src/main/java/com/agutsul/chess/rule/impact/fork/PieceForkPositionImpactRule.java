@@ -16,6 +16,7 @@ import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Position;
 
@@ -26,7 +27,7 @@ public class PieceForkPositionImpactRule<COLOR1 extends Color,
             extends AbstractForkImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,
                                            PieceForkImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>> {
 
-    private final CapturePieceAlgo<COLOR1,ATTACKER,Position> algo;
+    private final Algo<ATTACKER,Collection<Position>> algo;
 
     public PieceForkPositionImpactRule(Board board,
                                        CapturePieceAlgo<COLOR1,ATTACKER,Position> algo) {

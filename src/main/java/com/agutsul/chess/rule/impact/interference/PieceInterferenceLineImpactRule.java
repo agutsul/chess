@@ -32,7 +32,9 @@ public final class PieceInterferenceLineImpactRule<COLOR1 extends Color,
     public PieceInterferenceLineImpactRule(Board board,
                                            MovePieceAlgo<COLOR1,PIECE,Line> algo) {
         super(board);
-        this.algo = new LinePositionAlgoAdapter<>(new MoveLineAlgoAdapter<>(board, algo));
+        this.algo = new LinePositionAlgoAdapter<>(
+                new MoveLineAlgoAdapter<>(board, algo)
+        );
     }
 
     @Override

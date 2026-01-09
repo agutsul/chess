@@ -19,7 +19,7 @@ public final class MoveLineAlgoAdapter<COLOR extends Color,
         extends AbstractLineAlgo<PIECE,Line>
         implements MovePieceAlgo<COLOR,PIECE,Line> {
 
-    private final MovePieceAlgo<COLOR,PIECE,Line> algo;
+    private final Algo<PIECE,Collection<Line>> algo;
 
     public MoveLineAlgoAdapter(Board board,
                                MovePieceAlgo<COLOR,PIECE,Line> algo) {

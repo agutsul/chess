@@ -15,6 +15,7 @@ import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Position;
 
@@ -25,7 +26,7 @@ public class PieceUnderminingPositionImpactRule<COLOR1 extends Color,
         extends AbstractUnderminingImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,
                                               PieceUnderminingImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>> {
 
-    private final CapturePieceAlgo<COLOR1,ATTACKER,Position> algo;
+    private final Algo<ATTACKER,Collection<Position>> algo;
 
     public PieceUnderminingPositionImpactRule(Board board,
                                               CapturePieceAlgo<COLOR1,ATTACKER,Position> algo) {

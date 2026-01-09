@@ -15,6 +15,7 @@ import com.agutsul.chess.activity.impact.PieceDeflectionImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Position;
 
@@ -26,7 +27,7 @@ public class PieceDeflectionPositionImpactRule<COLOR1 extends Color,
         extends AbstractDeflectionImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,
                                              PieceDeflectionImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>> {
 
-    private final CapturePieceAlgo<COLOR1,ATTACKER,Position> algo;
+    private final Algo<ATTACKER,Collection<Position>> algo;
 
     public PieceDeflectionPositionImpactRule(Board board,
                                              CapturePieceAlgo<COLOR1,ATTACKER,Position> algo) {

@@ -14,6 +14,7 @@ import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Position;
 
@@ -23,7 +24,7 @@ public final class PieceProtectPositionImpactRule<COLOR extends Color,
         extends AbstractProtectImpactRule<COLOR,PIECE1,PIECE2,
                                           PieceProtectImpact<COLOR,PIECE1,PIECE2>> {
 
-    private final CapturePieceAlgo<COLOR,PIECE1,Position> algo;
+    private final Algo<PIECE1,Collection<Position>> algo;
 
     public PieceProtectPositionImpactRule(Board board,
                                           CapturePieceAlgo<COLOR,PIECE1,Position> algo) {

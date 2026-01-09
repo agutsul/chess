@@ -17,6 +17,7 @@ import com.agutsul.chess.activity.impact.PieceDominationImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Position;
 
@@ -27,7 +28,7 @@ public class PieceDominationPositionImpactRule<COLOR1 extends Color,
                                                IMPACT extends PieceDominationImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
         extends AbstractDominationImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,IMPACT> {
 
-    private final CapturePieceAlgo<COLOR1,ATTACKER,Position> algo;
+    private final Algo<ATTACKER,Collection<Position>> algo;
 
     public PieceDominationPositionImpactRule(Board board,
                                              CapturePieceAlgo<COLOR1,ATTACKER,Position> algo) {

@@ -12,6 +12,7 @@ import com.agutsul.chess.activity.impact.PieceBlockImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Position;
 
@@ -23,7 +24,7 @@ public class PieceBlockPositionImpactRule<COLOR1 extends Color,
         extends AbstractBlockImpactRule<COLOR1,COLOR2,BLOCKER,ATTACKED,ATTACKER,
                                         PieceBlockImpact<COLOR1,COLOR2,BLOCKER,ATTACKED,ATTACKER>> {
 
-    private final MovePieceAlgo<COLOR1,BLOCKER,Position> algo;
+    private final Algo<BLOCKER,Collection<Position>> algo;
 
     public PieceBlockPositionImpactRule(Board board,
                                         MovePieceAlgo<COLOR1,BLOCKER,Position> algo) {

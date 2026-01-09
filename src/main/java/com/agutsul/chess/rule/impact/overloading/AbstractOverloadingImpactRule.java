@@ -23,10 +23,8 @@ import com.agutsul.chess.rule.impact.OverloadingImpactRule;
 
 abstract class AbstractOverloadingImpactRule<COLOR extends Color,
                                              PIECE extends Piece<COLOR> & Capturable & Movable>
-        extends AbstractImpactRule<COLOR,PIECE,
-                                   PieceOverloadingImpact<COLOR,PIECE>>
-        implements OverloadingImpactRule<COLOR,PIECE,
-                                         PieceOverloadingImpact<COLOR,PIECE>> {
+        extends AbstractImpactRule<COLOR,PIECE,PieceOverloadingImpact<COLOR,PIECE>>
+        implements OverloadingImpactRule<COLOR,PIECE,PieceOverloadingImpact<COLOR,PIECE>> {
 
     AbstractOverloadingImpactRule(Board board) {
         super(board, Impact.Type.OVERLOADING);

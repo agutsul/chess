@@ -38,7 +38,7 @@ public final class SecureLineAlgoAdapter<COLOR extends Color,
     }
 
     private final Mode mode;
-    private final CapturePieceAlgo<COLOR,PIECE,Line> algo;
+    private final Algo<PIECE,Collection<Line>> algo;
 
     public SecureLineAlgoAdapter(Mode mode, Board board,
                                  CapturePieceAlgo<COLOR,PIECE,Line> algo) {

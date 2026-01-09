@@ -13,6 +13,7 @@ import com.agutsul.chess.activity.impact.PieceControlImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Position;
 
@@ -21,7 +22,7 @@ public final class PieceControlPositionImpactRule<COLOR extends Color,
         extends AbstractControlImpactRule<COLOR,PIECE,
                                           PieceControlImpact<COLOR,PIECE>> {
 
-    private final CapturePieceAlgo<COLOR,PIECE,Position> algo;
+    private final Algo<PIECE,Collection<Position>> algo;
 
     public PieceControlPositionImpactRule(Board board,
                                           CapturePieceAlgo<COLOR,PIECE,Position> algo) {
