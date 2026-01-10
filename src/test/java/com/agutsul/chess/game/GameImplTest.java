@@ -72,7 +72,7 @@ import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.mock.PlayerActionObserverMock;
 import com.agutsul.chess.mock.PlayerInputObserverMock;
 import com.agutsul.chess.player.Player;
-import com.agutsul.chess.player.UserPlayer;
+import com.agutsul.chess.player.PlayerImpl;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerCancelActionExceptionEvent;
 import com.agutsul.chess.player.event.PlayerTerminateActionEvent;
@@ -94,9 +94,9 @@ public class GameImplTest {
     BoardStateEvaluator<BoardState> boardStateEvaluator;
 
     @Spy
-    UserPlayer whitePlayer = new UserPlayer("test1", Colors.WHITE);
+    PlayerImpl whitePlayer = new PlayerImpl("test1", Colors.WHITE);
     @Spy
-    UserPlayer blackPlayer = new UserPlayer("test2", Colors.BLACK);
+    PlayerImpl blackPlayer = new PlayerImpl("test2", Colors.BLACK);
 
     @BeforeEach
     void setUp() {

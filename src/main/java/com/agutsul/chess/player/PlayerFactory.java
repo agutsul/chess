@@ -13,6 +13,6 @@ public abstract class PlayerFactory {
 
     @SuppressWarnings("unchecked")
     public static <PLAYER extends Player & Observable> PLAYER playerOf(Color color, String name) {
-        return (PLAYER) new UserPlayer(name, color);
+        return (PLAYER) new PlayerImpl(name, color);
     }
 }

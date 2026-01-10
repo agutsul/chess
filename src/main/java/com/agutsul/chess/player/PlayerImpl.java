@@ -12,7 +12,7 @@ import com.agutsul.chess.player.state.ActivePlayerState;
 import com.agutsul.chess.player.state.LockedPlayerState;
 import com.agutsul.chess.player.state.PlayerState;
 
-public final class UserPlayer
+public final class PlayerImpl
         implements Player, Observable {
 
     private static final PlayerState ACTIVE_STATE = new ActivePlayerState();
@@ -26,7 +26,7 @@ public final class UserPlayer
     private PlayerState state;
     private Long extraTimeout;
 
-    public UserPlayer(String name, Color color) {
+    public PlayerImpl(String name, Color color) {
         this.name = name;
         this.color = color;
     }

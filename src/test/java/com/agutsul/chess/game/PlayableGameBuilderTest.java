@@ -24,7 +24,7 @@ import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
-import com.agutsul.chess.player.UserPlayer;
+import com.agutsul.chess.player.PlayerImpl;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
 import com.agutsul.chess.timeout.CompositeTimeout;
 
@@ -32,9 +32,9 @@ import com.agutsul.chess.timeout.CompositeTimeout;
 public class PlayableGameBuilderTest {
 
     @Mock
-    UserPlayer whitePlayer;
+    PlayerImpl whitePlayer;
     @Mock
-    UserPlayer blackPlayer;
+    PlayerImpl blackPlayer;
     @Mock
     BoardStateEvaluator<BoardState> boardStateEvaluator;
     @Mock
