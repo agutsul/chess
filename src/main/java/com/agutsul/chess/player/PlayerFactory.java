@@ -3,23 +3,16 @@ package com.agutsul.chess.player;
 import static java.util.UUID.randomUUID;
 
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.event.Observable;
 
-public enum PlayerFactory {
-    INSTANCE;
+public abstract class PlayerFactory {
 
-    public Player create(Color color) {
-        return new UserPlayer(String.format("%s-%s", color, randomUUID()), color);
+    public static <PLAYER extends Player & Observable> PLAYER playerOf(Color color) {
+        return playerOf(color, String.format("%s-%s", color, randomUUID()));
     }
 
-    public Player create(Color color, String name) {
-        return new UserPlayer(name, color);
-    }
-
-    public static Player playerOf(Color color) {
-        return INSTANCE.create(color);
-    }
-
-    public static Player playerOf(Color color, String name) {
-        return INSTANCE.create(color, name);
+    @SuppressWarnings("unchecked")
+    public static <PLAYER extends Player & Observable> PLAYER playerOf(Color color, String name) {
+        return (PLAYER) new UserPlayer(name, color);
     }
 }

@@ -6,7 +6,6 @@ import static com.agutsul.chess.board.state.BoardStateFactory.checkMatedBoardSta
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.exitedBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.staleMatedBoardState;
-import static com.agutsul.chess.player.PlayerFactory.playerOf;
 import static java.time.LocalDateTime.now;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -14,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -28,9 +26,11 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AutoClose;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
@@ -93,16 +93,22 @@ public class GameImplTest {
     @Mock
     BoardStateEvaluator<BoardState> boardStateEvaluator;
 
+    @Spy
+    UserPlayer whitePlayer = new UserPlayer("test1", Colors.WHITE);
+    @Spy
+    UserPlayer blackPlayer = new UserPlayer("test2", Colors.BLACK);
+
+    @BeforeEach
+    void setUp() {
+        doCallRealMethod()
+            .when(whitePlayer).getColor();
+
+        doCallRealMethod()
+            .when(blackPlayer).getColor();
+    }
+
     @Test
     void testGetStateReturningDefault() {
-        var whitePlayer = mock(UserPlayer.class);
-        when(whitePlayer.getColor())
-            .thenReturn(Colors.WHITE);
-
-        var blackPlayer = mock(UserPlayer.class);
-        when(blackPlayer.getColor())
-            .thenReturn(Colors.BLACK);
-
         var game = new GameMock(whitePlayer, blackPlayer, board);
         var state = game.getState();
 
@@ -112,14 +118,6 @@ public class GameImplTest {
 
     @Test
     void testGetStateReturningDrawn() {
-        var whitePlayer = mock(UserPlayer.class);
-        when(whitePlayer.getColor())
-            .thenReturn(Colors.WHITE);
-
-        var blackPlayer = mock(UserPlayer.class);
-        when(blackPlayer.getColor())
-            .thenReturn(Colors.BLACK);
-
         var game = new GameMock(whitePlayer, blackPlayer, board);
         game.setFinishedAt(now());
 
@@ -134,14 +132,6 @@ public class GameImplTest {
         var board = spy(new StandardBoard());
         when(board.getState())
             .thenReturn(checkMatedBoardState(board, Colors.WHITE));
-
-        var whitePlayer = mock(UserPlayer.class);
-        when(whitePlayer.getColor())
-            .thenReturn(Colors.WHITE);
-
-        var blackPlayer = mock(UserPlayer.class);
-        when(blackPlayer.getColor())
-            .thenReturn(Colors.BLACK);
 
         var journal = new JournalImpl();
 
@@ -164,14 +154,6 @@ public class GameImplTest {
         when(board.getState())
             .thenReturn(agreedDefeatBoardState(board, Colors.BLACK));
 
-        var whitePlayer = mock(UserPlayer.class);
-        when(whitePlayer.getColor())
-            .thenReturn(Colors.WHITE);
-
-        var blackPlayer = mock(UserPlayer.class);
-        when(blackPlayer.getColor())
-            .thenReturn(Colors.BLACK);
-
         var journal = new JournalImpl();
 
         var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
@@ -192,14 +174,6 @@ public class GameImplTest {
     void testPlayerAskedAction() {
         when(board.getState())
             .thenReturn(defaultBoardState(board, Colors.WHITE));
-
-        var whitePlayer = mock(UserPlayer.class);
-        when(whitePlayer.getColor())
-            .thenReturn(Colors.WHITE);
-
-        var blackPlayer = mock(UserPlayer.class);
-        when(blackPlayer.getColor())
-            .thenReturn(Colors.BLACK);
 
         when(boardStateEvaluator.evaluate(any(Color.class)))
             .thenAnswer(inv -> {
@@ -223,8 +197,6 @@ public class GameImplTest {
         when(board.getState())
             .thenReturn(checkMatedBoardState(board, Colors.WHITE));
 
-        var whitePlayer = playerOf(Colors.WHITE, "test1");
-        var blackPlayer = playerOf(Colors.BLACK, "test2");
         var journal = new JournalImpl();
 
         var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
@@ -244,11 +216,6 @@ public class GameImplTest {
         when(board.getState())
             .thenReturn(agreedDrawBoardState(board, Colors.WHITE));
 
-        var whitePlayer = spy(playerOf(Colors.WHITE, "test1"));
-        doCallRealMethod()
-            .when(whitePlayer).getColor();
-
-        var blackPlayer = spy(playerOf(Colors.BLACK, "test2"));
         var journal = new JournalImpl();
 
         var game = spy(new GameImpl(whitePlayer, blackPlayer, board, journal,
@@ -271,8 +238,6 @@ public class GameImplTest {
         when(board.getState())
             .thenReturn(exitedBoardState(board, Colors.WHITE));
 
-        var whitePlayer = playerOf(Colors.WHITE, "test1");
-        var blackPlayer = playerOf(Colors.BLACK, "test2");
         var journal = new JournalImpl();
 
         var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
@@ -303,11 +268,9 @@ public class GameImplTest {
                     : staleMatedBoardState(board, color);
             });
 
-        var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
         doCallRealMethod()
             .when(whitePlayer).notifyObservers(any());
 
-        var blackPlayer = spy(new UserPlayer("test2", Colors.BLACK));
         doCallRealMethod()
             .when(blackPlayer).notifyObservers(any());
 
@@ -366,11 +329,8 @@ public class GameImplTest {
         doCallRealMethod()
             .when(board).notifyObservers(any());
 
-        var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
         doCallRealMethod()
             .when(whitePlayer).notifyObservers(any());
-
-        var blackPlayer = spy(new UserPlayer("test2", Colors.BLACK));
         doCallRealMethod()
             .when(blackPlayer).notifyObservers(any());
 
@@ -435,11 +395,8 @@ public class GameImplTest {
         doCallRealMethod()
             .when(board).notifyObservers(any());
 
-        var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
         doCallRealMethod()
             .when(whitePlayer).notifyObservers(any());
-
-        var blackPlayer = spy(new UserPlayer("test2", Colors.BLACK));
         doCallRealMethod()
             .when(blackPlayer).notifyObservers(any());
 
@@ -501,11 +458,8 @@ public class GameImplTest {
         doCallRealMethod()
             .when(board).notifyObservers(any());
 
-        var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
         doCallRealMethod()
             .when(whitePlayer).notifyObservers(any());
-
-        var blackPlayer = spy(new UserPlayer("test2", Colors.BLACK));
         doCallRealMethod()
             .when(blackPlayer).notifyObservers(any());
 
@@ -586,11 +540,8 @@ public class GameImplTest {
         doCallRealMethod()
             .when(board).notifyObservers(any());
 
-        var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
         doCallRealMethod()
             .when(whitePlayer).notifyObservers(any());
-
-        var blackPlayer = spy(new UserPlayer("test2", Colors.BLACK));
         doCallRealMethod()
             .when(blackPlayer).notifyObservers(any());
 
@@ -646,11 +597,8 @@ public class GameImplTest {
         doCallRealMethod()
             .when(board).notifyObservers(any());
 
-        var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
         doCallRealMethod()
             .when(whitePlayer).notifyObservers(any());
-
-        var blackPlayer = spy(new UserPlayer("test2", Colors.BLACK));
         doCallRealMethod()
             .when(blackPlayer).notifyObservers(any());
 
@@ -732,11 +680,8 @@ public class GameImplTest {
         doCallRealMethod()
             .when(board).notifyObservers(any());
 
-        var whitePlayer = spy(new UserPlayer("test1", Colors.WHITE));
         doCallRealMethod()
             .when(whitePlayer).notifyObservers(any());
-
-        var blackPlayer = spy(new UserPlayer("test2", Colors.BLACK));
         doCallRealMethod()
             .when(blackPlayer).notifyObservers(any());
 
@@ -826,8 +771,7 @@ public class GameImplTest {
         }
     }
 
-    private static class GameExceptionMock
-            extends GameImpl {
+    private static class GameExceptionMock extends GameImpl {
 
         GameExceptionMock(Player whitePlayer, Player blackPlayer,
                           Board board, Journal<ActionMemento<?,?>> journal,

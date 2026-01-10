@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.color.Colors;
-import com.agutsul.chess.player.AbstractPlayer;
+import com.agutsul.chess.player.UserPlayer;
 import com.agutsul.chess.player.event.RequestPlayerActionEvent;
 import com.agutsul.chess.player.state.ActivePlayerState;
 import com.agutsul.chess.player.state.LockedPlayerState;
@@ -27,7 +27,7 @@ public class PlayableObserverTest {
     @Mock
     AbstractBoard board;
     @Mock
-    AbstractPlayer player;
+    UserPlayer player;
 
     @InjectMocks
     PlayableObserver playableObserver;
