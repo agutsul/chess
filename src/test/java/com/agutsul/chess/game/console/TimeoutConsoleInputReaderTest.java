@@ -1,9 +1,9 @@
 package com.agutsul.chess.game.console;
 
 import static com.agutsul.chess.player.PlayerFactory.playerOf;
+import static java.lang.System.lineSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -11,18 +11,25 @@ import java.io.InputStream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.ActionTimeoutException;
+import com.agutsul.chess.player.Player;
 
 @ExtendWith(MockitoExtension.class)
 public class TimeoutConsoleInputReaderTest {
 
+    @Spy
+    Player player = playerOf(Colors.WHITE, "test");
+    @Mock
+    InputStream inputStream;
+
     @Test
     void testNegativeTimeoutArgument() {
-        var player = playerOf(Colors.WHITE, "test");
-        var reader = new TimeoutConsoleInputReader(player, mock(InputStream.class), -1);
+        var reader = new TimeoutConsoleInputReader(player, inputStream, -1);
 
         var thrown = assertThrows(
                 ActionTimeoutException.class,
@@ -34,7 +41,6 @@ public class TimeoutConsoleInputReaderTest {
 
     @Test
     void testTimeoutException() throws IOException {
-        var player = playerOf(Colors.WHITE, "test");
         var reader = new TimeoutConsoleInputReader(player, new DelayedInputStreamMock(), 50);
 
         var thrown = assertThrows(
@@ -47,8 +53,7 @@ public class TimeoutConsoleInputReaderTest {
 
     @Test
     void testConsoleReadSuccessfully() throws IOException {
-        var text = String.format("e2 e4%s", System.lineSeparator());
-        var player = playerOf(Colors.WHITE, "test");
+        var text = String.format("e2 e4%s", lineSeparator());
 
         try (var inputStream = new ByteArrayInputStream(text.getBytes())) {
             var reader = new TimeoutConsoleInputReader(player, inputStream, 100);
