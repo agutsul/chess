@@ -32,17 +32,17 @@ public final class PlayerImpl
     }
 
     @Override
-    public final void addObserver(Observer observer) {
+    public void addObserver(Observer observer) {
         this.observers.add(observer);
     }
 
     @Override
-    public final void removeObserver(Observer observer) {
+    public void removeObserver(Observer observer) {
         this.observers.remove(observer);
     }
 
     @Override
-    public final void notifyObservers(Event event) {
+    public void notifyObservers(Event event) {
         for (var observer : this.observers) {
             observer.observe(event);
         }
