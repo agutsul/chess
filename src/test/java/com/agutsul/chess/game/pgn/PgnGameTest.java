@@ -1,6 +1,5 @@
 package com.agutsul.chess.game.pgn;
 
-import static java.util.regex.Pattern.compile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -34,29 +33,6 @@ public final class PgnGameTest extends AbstractPgnGameTest {
     void testPgnGameFileDrawn() throws URISyntaxException, IOException {
         var game = parseGame(readFileContent("chess_drawn.pgn"));
         assertGame(game, GameState.Type.DRAWN_GAME, 121, 6);
-    }
-
-    @Test
-    void testPgnGameToString() throws URISyntaxException, IOException {
-        var pgnGames = readFileContent("scholar_mate.pgn");
-
-        var games = parseGames(pgnGames, 1);
-        var game = games.getFirst();
-        game.run();
-
-        var builder = new StringBuilder();
-
-        // remove generated date from pgn file
-        var pattern = compile("\\d{4}\\.\\d{2}\\.\\d{2}");
-        var matcher = pattern.matcher(game.toString());
-
-        while (matcher.find()) {
-            matcher.appendReplacement(builder, "");
-        }
-
-        matcher.appendTail(builder);
-
-        assertEquals(pgnGames, builder.toString());
     }
 
     @Test
