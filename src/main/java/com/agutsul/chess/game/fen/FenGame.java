@@ -78,6 +78,11 @@ public final class FenGame<T extends Game & Observable>
         updateMovesCounter(color.invert());
     }
 
+    @Override
+    public String toString() {
+        return FenGameFormatter.format(this);
+    }
+
     private void updateMovesCounter(Color color) {
         var journal = (FenJournal) getJournal();
         journal.set(color, Math.max(journal.size(color) - 1, 0));

@@ -41,6 +41,11 @@ final class KingPieceProxy<COLOR extends Color>
     }
 
     @Override
+    public Collection<Side> getSides() {
+        return this.origin.getSides();
+    }
+
+    @Override
     public void castling(Position position) {
         this.origin.castling(position);
     }

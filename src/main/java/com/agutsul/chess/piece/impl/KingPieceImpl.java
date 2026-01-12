@@ -2,6 +2,8 @@ package com.agutsul.chess.piece.impl;
 
 import static com.agutsul.chess.activity.action.Action.isCastling;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableSet;
+import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Instant;
@@ -92,9 +94,10 @@ final class KingPieceImpl<COLOR extends Color>
 
     @Override
     public void dispose(Instant instant) {
-        throw new UnsupportedOperationException(
-                String.format("%s at '%s'", DISPOSE_ERROR_MESSAGE, instant)
-        );
+        throw new UnsupportedOperationException(String.format(
+                "%s at '%s'",
+                DISPOSE_ERROR_MESSAGE, instant
+        ));
     }
 
     @Override
@@ -104,9 +107,10 @@ final class KingPieceImpl<COLOR extends Color>
 
     @Override
     DisposedPieceState<?> createDisposedPieceState(Instant instant) {
-        throw new UnsupportedOperationException(
-                String.format("%s at '%s'", DISPOSE_ERROR_MESSAGE, instant)
-        );
+        throw new UnsupportedOperationException(String.format(
+                "%s at '%s'",
+                DISPOSE_ERROR_MESSAGE, instant
+        ));
     }
 
     static class KingCheckedPieceState<PIECE extends KingPiece<?>>
@@ -114,6 +118,8 @@ final class KingPieceImpl<COLOR extends Color>
             implements CheckedPieceState<PIECE>,
                        CastlingablePieceState<PIECE>,
                        ActivePieceState<PIECE> {
+
+        private static final String ERROR_MESSAGE = "Unable to perform %s for checked king";
 
         @SuppressWarnings("unchecked")
         KingCheckedPieceState(PieceState<? extends Piece<?>> origin) {
@@ -125,7 +131,7 @@ final class KingPieceImpl<COLOR extends Color>
             var actions = new HashSet<Action<?>>();
             actions.addAll(calculateActions(piece, Action.Type.MOVE));
             actions.addAll(calculateActions(piece, Action.Type.CAPTURE));
-            return actions;
+            return unmodifiableSet(actions);
         }
 
         @Override
@@ -137,18 +143,24 @@ final class KingPieceImpl<COLOR extends Color>
 
         @Override
         public void castling(PIECE piece, Position position) {
-            throw new IllegalActionException("Unable to perform castling for checked king");
+            throw new IllegalActionException(formatErrorMessage(Action.Type.CASTLING));
         }
 
         @Override
         public void uncastling(PIECE piece, Position position) {
             ((AbstractCastlingablePieceState<PIECE>) this.origin).uncastling(piece, position);
         }
+
+        protected String formatErrorMessage(Action.Type actionType) {
+            return String.format(ERROR_MESSAGE, lowerCase(actionType.name()));
+        }
     }
 
     static final class KingCheckMatedPieceState<PIECE extends KingPiece<?>>
             extends KingCheckedPieceState<PIECE>
             implements CheckMatedPieceState<PIECE> {
+
+        private static final String ERROR_MESSAGE = "Unable to perform %s for check mated king";
 
         KingCheckMatedPieceState(PieceState<? extends Piece<?>> origin) {
             super(origin);
@@ -175,18 +187,18 @@ final class KingPieceImpl<COLOR extends Color>
         }
 
         @Override
-        public void castling(PIECE piece, Position position) {
-            throw new IllegalActionException("Unable to perform castling for check mated king");
-        }
-
-        @Override
         public void move(PIECE piece, Position position) {
-            throw new IllegalActionException("Unable to perform move for check mated king");
+            throw new IllegalActionException(formatErrorMessage(Action.Type.MOVE));
         }
 
         @Override
         public void capture(PIECE piece, Piece<?> targetPiece) {
-            throw new IllegalActionException("Unable to perform capture for check mated king");
+            throw new IllegalActionException(formatErrorMessage(Action.Type.CAPTURE));
+        }
+
+        @Override
+        protected String formatErrorMessage(Action.Type actionType) {
+            return String.format(ERROR_MESSAGE, lowerCase(actionType.name()));
         }
     }
 }

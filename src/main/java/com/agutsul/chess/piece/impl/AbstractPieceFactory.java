@@ -4,6 +4,7 @@ import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.stream.Collectors.toMap;
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -303,6 +304,11 @@ abstract class AbstractPieceFactory<COLOR extends Color>
             public boolean isPinned() {
                 return this.origin.isPinned();
             }
+
+            @Override
+            public Collection<Side> getSides() {
+                return this.origin.getSides();
+            }
         }
     }
 
@@ -409,6 +415,11 @@ abstract class AbstractPieceFactory<COLOR extends Color>
             public void uncastling(Position position) {
                 logger.info("Cancel castling for piece '{}'", this);
                 this.origin.uncastling(position);
+            }
+
+            @Override
+            public Collection<Side> getSides() {
+                return this.origin.getSides();
             }
         }
 

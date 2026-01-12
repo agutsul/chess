@@ -41,6 +41,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     private static final Logger LOGGER = getLogger(AbstractCastlingPiece.class);
 
     private final Map<Castlingable.Side,Boolean> sides;
+    private Map<Castlingable.Side,Boolean> tmpSides;
 
     AbstractCastlingPiece(Board board, Position position, PieceContext<COLOR> context,
                           Rule<Piece<?>,Collection<Action<?>>> actionRule,
@@ -63,6 +64,17 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     @Override
     public Collection<Action<?>> getActions(Action.Type actionType) {
         return filterEnabledActions(super.getActions(actionType));
+    }
+
+    @Override
+    public final Collection<Side> getSides() {
+        var enabledSides = Stream.of(this.sides.entrySet())
+                .flatMap(Collection::stream)
+                .filter(entry -> isTrue(entry.getValue()))
+                .map(Map.Entry::getKey)
+                .toList();
+
+        return enabledSides;
     }
 
     @Override
@@ -119,10 +131,25 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
     private void doCastling(Position position) {
         super.doMove(position);
+
+        // keep sides configuration for a while
+        // to be able to restore origin settings after canceling castling
+        this.tmpSides = Map.copyOf(this.sides);
+
+        // disable castling sides because only one castling is allowed
+        this.sides.keySet()
+                .forEach(side -> set(side, false));
     }
 
     private void cancelCastling(Position position) {
         super.cancelMove(position);
+
+        // reset castling sides to initial values
+        this.tmpSides.entrySet()
+                .forEach(entry -> set(entry.getKey(), entry.getValue()));
+
+        // clean temporary sides settings
+        this.tmpSides = null;
     }
 
     private final class SetCastlingableSideObserver
@@ -190,7 +217,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
             var possibleAction = Stream.of(possibleActions)
                     .flatMap(Collection::stream)
                     .map(action -> (PieceCastlingAction<?,?,?>) action)
-                    .filter(action -> isValidAction(action, position))
+                    .filter(action -> isValid(action, position))
                     .findFirst();
 
             if (possibleAction.isEmpty()) {
@@ -205,9 +232,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
             doCastling(castlingAction.getTarget());
         }
 
-        private static boolean isValidAction(PieceCastlingAction<?,?,?> action,
-                                             Position position) {
-
+        private static boolean isValid(PieceCastlingAction<?,?,?> action, Position position) {
             var possiblePositions = Stream.of(action.getTarget(), action.getSource())
                     .map(CastlingMoveAction::getTarget)
                     .collect(toSet());

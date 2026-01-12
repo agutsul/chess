@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.impl;
 
+import java.util.Collection;
+
 import com.agutsul.chess.Accumulatable;
 import com.agutsul.chess.Backwardable;
 import com.agutsul.chess.Blockadable;
@@ -27,6 +29,11 @@ abstract class AbstractTransformablePieceProxy<COLOR extends Color,
 
     AbstractTransformablePieceProxy(PIECE piece) {
         super(piece);
+    }
+
+    @Override
+    public Collection<Side> getSides() {
+        return ((Castlingable) this.origin).getSides();
     }
 
     @Override
