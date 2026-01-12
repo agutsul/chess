@@ -95,8 +95,8 @@ public class FenGameFormatter {
     }
 
     private static String formatCastlings(Board board) {
-        var whiteSides = formatCastlingSides(board.getKing(Colors.WHITE));
-        var blackSides = formatCastlingSides(board.getKing(Colors.BLACK));
+        var whiteSides = formatCastlingSides(board, Colors.WHITE);
+        var blackSides = formatCastlingSides(board, Colors.BLACK);
 
         var sides = String.format("%s%s", upperCase(whiteSides), lowerCase(blackSides));
         return isBlank(sides)
@@ -104,8 +104,8 @@ public class FenGameFormatter {
                 : sides;
     }
 
-    private static String formatCastlingSides(Optional<KingPiece<Color>> king) {
-        return Stream.of(king)
+    private static String formatCastlingSides(Board board, Color color) {
+        return Stream.of(board.getKing(color))
                 .flatMap(Optional::stream)
                 .map(KingPiece::getSides)
                 .flatMap(Collection::stream)
