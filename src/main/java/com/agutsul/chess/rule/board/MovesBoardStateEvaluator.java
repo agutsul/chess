@@ -1,21 +1,10 @@
 package com.agutsul.chess.rule.board;
 
-import static com.agutsul.chess.activity.action.Action.isBigMove;
-import static com.agutsul.chess.activity.action.Action.isCapture;
-import static com.agutsul.chess.activity.action.Action.isEnPassant;
-import static com.agutsul.chess.activity.action.Action.isMove;
-import static com.agutsul.chess.activity.action.Action.isPromote;
 import static com.agutsul.chess.board.state.BoardStateFactory.fiftyMovesBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.seventyFiveMovesBoardState;
-import static com.agutsul.chess.piece.Piece.isPawn;
-import static java.util.Collections.max;
 import static org.slf4j.LoggerFactory.getLogger;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 
@@ -26,8 +15,8 @@ import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.AbstractEventObserver;
 import com.agutsul.chess.event.Observable;
-import com.agutsul.chess.exception.GameInterruptionException;
 import com.agutsul.chess.journal.Journal;
+import com.agutsul.chess.journal.statistic.JournalActionCalculation;
 
 final class MovesBoardStateEvaluator
         extends AbstractJournalStateEvaluator {
@@ -82,182 +71,71 @@ final class MovesBoardStateEvaluator
 
         @Override
         protected void process(SetActionCounterEvent event) {
-            setActionCountMatcher(new HalfMoveActionCountMatcher(event.getCounter()));
+            setActionCountMatcher(new HalfMoveActionCountMatcher(
+                    board, journal, event.getCounter()
+            ));
         }
     }
 
-    private interface ActionCountMatcher {
+    interface ActionCountMatcher {
         boolean match(Color color, int limit);
     }
 
     private static final class HalfMoveActionCountMatcher
             implements ActionCountMatcher {
 
+        private static final Logger LOGGER = getLogger(HalfMoveActionCountMatcher.class);
+
+        private final Board board;
+        private final Journal<ActionMemento<?,?>> journal;
         private final int halfMoveCounter;
 
-        HalfMoveActionCountMatcher(int halfMoveCounter) {
+        HalfMoveActionCountMatcher(Board board, Journal<ActionMemento<?,?>> journal,
+                                   int halfMoveCounter) {
+
+            this.board = board;
+            this.journal = journal;
             this.halfMoveCounter = halfMoveCounter;
         }
 
         @Override
         public boolean match(Color color, int limit) {
-            return this.halfMoveCounter >= limit;
+            var calculationTask = new JournalActionCalculation(board, journal);
+
+            var results = calculationTask.calculate(color, limit);
+            if (results < 0) {
+                LOGGER.error("Journal action counter failed");
+                return false;
+            }
+
+            return results + this.halfMoveCounter >= limit;
         }
     }
 
     private static final class JournalActionCountMatcher
             implements ActionCountMatcher {
 
+        private static final Logger LOGGER = getLogger(JournalActionCountMatcher.class);
+
         private final Board board;
         private final Journal<ActionMemento<?,?>> journal;
 
-        JournalActionCountMatcher(Board board, Journal<ActionMemento<?,?>> journal) {
+        public JournalActionCountMatcher(Board board, Journal<ActionMemento<?,?>> journal) {
             this.board = board;
             this.journal = journal;
         }
 
         @Override
         public boolean match(Color color, int limit) {
-            var actions = journal.get(color);
+            var calculationTask = new JournalActionCalculation(board, journal);
 
-            try {
-                var results = calculate(List.of(
-                        new CaptureCalculationTask(actions,  limit),
-                        new PawnMoveCalculationTask(actions, limit)
-                ));
-
-                return max(results) == 0;
-            } catch (InterruptedException e) {
-                throw new GameInterruptionException("Board state evaluation interrupted");
-            } catch (ExecutionException e) {
-                LOGGER.error("Board state evaluation failed", e);
+            var results = calculationTask.calculate(color, limit);
+            if (results < 0) {
+                LOGGER.error("Journal action counter failed");
+                return false;
             }
 
-            return false;
-        }
-
-        private List<Integer> calculate(List<? extends Callable<Integer>> tasks)
-                throws InterruptedException, ExecutionException {
-
-            var results = new ArrayList<Integer>();
-            try {
-                var executor = board.getExecutorService();
-                for (var future : executor.invokeAll(tasks)) {
-                    results.add(future.get());
-                }
-            } catch (InterruptedException e) {
-                throw new GameInterruptionException("Piece moves evaluation interrupted");
-            } catch (ExecutionException e) {
-                LOGGER.error("Piece moves evaluation failed", e);
-            }
-
-            return results;
-        }
-    }
-
-    private static abstract class AbstractCalculationTask
-            implements Callable<Integer> {
-
-        protected final Logger logger;
-        protected final List<ActionMemento<?,?>> actions;
-        protected final int limit;
-
-        AbstractCalculationTask(Logger logger, List<ActionMemento<?,?>> actions, int limit) {
-            this.logger = logger;
-            this.actions = actions;
-            this.limit = limit;
-        }
-
-        @Override
-        public Integer call() throws Exception {
-            try {
-                return calculate();
-            } catch (Exception e) {
-                logger.error("Board state calculation failed", e);
-            }
-
-            return 0;
-        }
-
-        protected abstract int calculate();
-    }
-
-    private static final class CaptureCalculationTask
-            extends AbstractCalculationTask {
-
-        private static final Logger LOGGER = getLogger(CaptureCalculationTask.class);
-
-        CaptureCalculationTask(List<ActionMemento<?,?>> actions, int limit) {
-            super(LOGGER, actions, limit);
-        }
-
-        @Override
-        protected int calculate() {
-            int counter = 0;
-
-            for (int i = actions.size() - 1, j = 0; i >= 0 && j < limit; i--, j++) {
-                var memento = actions.get(i);
-
-                var actionType = memento.getActionType();
-                if (isCapture(actionType) || isEnPassant(actionType)
-                        || (isPromote(actionType) && isCaptureMemento(memento))) {
-
-                    counter++;
-                }
-            }
-
-            return counter;
-        }
-
-        private static boolean isCaptureMemento(ActionMemento<?,?> memento) {
-            @SuppressWarnings("unchecked")
-            var promoteMemento =
-                    (ActionMemento<String,ActionMemento<String,String>>) memento;
-
-            var originAction = promoteMemento.getTarget();
-            var actionType = originAction.getActionType();
-
-            return isCapture(actionType);
-        }
-    }
-
-    private static final class PawnMoveCalculationTask
-            extends AbstractCalculationTask {
-
-        private static final Logger LOGGER = getLogger(PawnMoveCalculationTask.class);
-
-        PawnMoveCalculationTask(List<ActionMemento<?,?>> actions, int limit) {
-            super(LOGGER, actions, limit);
-        }
-
-        @Override
-        protected int calculate() {
-            int counter = 0;
-
-            for (int i = actions.size() - 1, j = 0; i >= 0 && j < limit; i--, j++) {
-                var memento = actions.get(i);
-                if (!isPawn(memento.getPieceType())) {
-                    continue;
-                }
-
-                var actionType = memento.getActionType();
-                if (isMove(actionType) || isBigMove(actionType)
-                        || (isPromote(actionType) && isMoveMemento(memento))) {
-
-                    counter++;
-                }
-            }
-
-            return counter;
-        }
-
-        private static boolean isMoveMemento(ActionMemento<?,?> memento) {
-            @SuppressWarnings("unchecked")
-            var promoteMemento =
-                    (ActionMemento<String,ActionMemento<String,String>>) memento;
-
-            var originAction = promoteMemento.getTarget();
-            return isMove(originAction.getActionType());
+            return results == limit;
         }
     }
 }

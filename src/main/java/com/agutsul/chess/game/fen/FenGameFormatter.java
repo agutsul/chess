@@ -18,6 +18,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.journal.Journal;
+import com.agutsul.chess.journal.statistic.JournalActionCalculation;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
@@ -36,7 +37,7 @@ public class FenGameFormatter {
                 formatPlayer(game.getCurrentPlayer()),
                 formatCastlings(game.getBoard()),
                 formattedEnPassant,
-                halfMoves(game.getJournal()),
+                halfMoves(game),
                 !DISABLE_ALL_SYMBOL.equals(formattedEnPassant)
                         ? fullMoves(game.getJournal(), game.getOpponentPlayer())
                         : fullMoves(game.getJournal())
@@ -53,9 +54,16 @@ public class FenGameFormatter {
         return journal.size(Colors.BLACK);
     }
 
-    private static int halfMoves(Journal<ActionMemento<?,?>> journal) {
-        // TODO: implement
-        return 0;
+    private static int halfMoves(Game game) {
+        var calculationTask = new JournalActionCalculation(game.getBoard(), game.getJournal());
+        var results = Math.max(
+                calculationTask.calculate(game.getCurrentPlayer().getColor(), 50),
+                0
+        );
+
+        return game instanceof FenGame
+                ? ((FenGame<?>) game).getParsedHalfMoves() + results
+                : results;
     }
 
     private static String formatEnPassant(Board board, Journal<ActionMemento<?,?>> journal,

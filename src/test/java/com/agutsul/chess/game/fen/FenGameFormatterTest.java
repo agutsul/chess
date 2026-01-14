@@ -22,9 +22,7 @@ public class FenGameFormatterTest implements TestFileReader {
     @ParameterizedTest(name = "{index}. testFenGameToString({0})")
     @ValueSource(strings = {
             "chess_move_0.fen", "chess_move_1.fen",
-            "chess_move_2.fen"
-            // TODO: implement
-            //, "chess_move_3.fen"
+            "chess_move_2.fen", "chess_move_3.fen"
     })
     void testFenGameToString(String fileName) throws URISyntaxException, IOException {
         var parser = new AntlrFileParser<FenGame<?>>(new FenGameParser());
