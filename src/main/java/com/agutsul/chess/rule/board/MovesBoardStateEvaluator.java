@@ -81,30 +81,42 @@ final class MovesBoardStateEvaluator
         boolean match(Color color, int limit);
     }
 
-    private static final class HalfMoveActionCountMatcher
+    private static abstract class AbstractActionCountMatcher
             implements ActionCountMatcher {
+
+        protected final Board board;
+        protected final Journal<ActionMemento<?,?>> journal;
+
+        AbstractActionCountMatcher(Board board, Journal<ActionMemento<?,?>> journal) {
+            this.board = board;
+            this.journal = journal;
+        }
+
+        protected final int calculate(Color color, int limit) {
+            var calculationTask = new JournalActionCalculation(board, journal);
+            return calculationTask.calculate(color, limit);
+        }
+    }
+
+    private static final class HalfMoveActionCountMatcher
+            extends AbstractActionCountMatcher {
 
         private static final Logger LOGGER = getLogger(HalfMoveActionCountMatcher.class);
 
-        private final Board board;
-        private final Journal<ActionMemento<?,?>> journal;
         private final int halfMoveCounter;
 
         HalfMoveActionCountMatcher(Board board, Journal<ActionMemento<?,?>> journal,
                                    int halfMoveCounter) {
 
-            this.board = board;
-            this.journal = journal;
+            super(board, journal);
             this.halfMoveCounter = halfMoveCounter;
         }
 
         @Override
         public boolean match(Color color, int limit) {
-            var calculationTask = new JournalActionCalculation(board, journal);
-
-            var results = calculationTask.calculate(color, limit);
+            var results = calculate(color, limit);
             if (results < 0) {
-                LOGGER.error("Journal action counter failed");
+                LOGGER.error("Half move journal action counter failed");
                 return false;
             }
 
@@ -113,23 +125,17 @@ final class MovesBoardStateEvaluator
     }
 
     private static final class JournalActionCountMatcher
-            implements ActionCountMatcher {
+            extends AbstractActionCountMatcher {
 
         private static final Logger LOGGER = getLogger(JournalActionCountMatcher.class);
 
-        private final Board board;
-        private final Journal<ActionMemento<?,?>> journal;
-
         public JournalActionCountMatcher(Board board, Journal<ActionMemento<?,?>> journal) {
-            this.board = board;
-            this.journal = journal;
+            super(board, journal);
         }
 
         @Override
         public boolean match(Color color, int limit) {
-            var calculationTask = new JournalActionCalculation(board, journal);
-
-            var results = calculationTask.calculate(color, limit);
+            var results = calculate(color, limit);
             if (results < 0) {
                 LOGGER.error("Journal action counter failed");
                 return false;
