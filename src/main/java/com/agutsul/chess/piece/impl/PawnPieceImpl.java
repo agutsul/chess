@@ -119,6 +119,11 @@ final class PawnPieceImpl<COLOR extends Color>
     }
 
     @Override
+    public boolean isPassed() {
+        return !hasImpact(Impact.Type.BLOCKADE);
+    }
+
+    @Override
     DisposedPieceState<?> createDisposedPieceState(Instant instant) {
         return new DisposedEnPassantablePieceState<>(instant);
     }

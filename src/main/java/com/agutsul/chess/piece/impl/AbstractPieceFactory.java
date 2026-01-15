@@ -484,6 +484,12 @@ abstract class AbstractPieceFactory<COLOR extends Color>
                 logger.info("Check if piece '{}' is connected", this);
                 return this.origin.isConnected();
             }
+
+            @Override
+            public boolean isPassed() {
+                logger.info("Check if piece '{}' is passed", this);
+                return this.origin.isPassed();
+            }
         }
     }
 }

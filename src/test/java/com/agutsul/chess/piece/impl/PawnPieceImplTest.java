@@ -1179,6 +1179,30 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         assertTrue(expectedConnectedPawns2.containsAll(connectedPawns2));
     }
 
+    @Test
+    // https://en.wikipedia.org/wiki/Passed_pawn
+    void testPawnIsPassed() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("h8")
+                .withBlackPawns("d4","f5","h6")
+                .withWhiteKing("a1")
+                .withWhitePawns("b5","c4","e5","f4","g4","h5")
+                .build();
+
+        var pawns = Stream.of(board.getPieces(Piece.Type.PAWN))
+                .flatMap(Collection::stream)
+                .map(piece -> (PawnPiece<?>) piece)
+                .filter(PawnPiece::isPassed)
+                .map(PawnPiece::getPosition)
+                .map(String::valueOf)
+                .toList();
+
+        var expected = List.of("b5","c4","e5","d4");
+
+        assertEquals(expected.size(), pawns.size());
+        assertTrue(expected.containsAll(pawns));
+    }
+
     static void assertPawnEnPassantActions(Board board, Color color, Piece.Type type,
                                            String sourcePosition, List<String> expectedMovePositions,
                                            List<String> expectedEnPassantPositions) {

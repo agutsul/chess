@@ -12,6 +12,7 @@ import com.agutsul.chess.Disposable;
 import com.agutsul.chess.EnPassantable;
 import com.agutsul.chess.Isolatable;
 import com.agutsul.chess.Movable;
+import com.agutsul.chess.Passable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.Restorable;
@@ -79,6 +80,11 @@ abstract class AbstractTransformablePieceProxy<COLOR extends Color,
     @Override
     public boolean isConnected() {
         return ((Connectable) this.origin).isConnected();
+    }
+
+    @Override
+    public boolean isPassed() {
+        return ((Passable) this.origin).isPassed();
     }
 
     @Override
