@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.board.state.FiftyMovesBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.Game;
@@ -56,8 +57,10 @@ public class FenGameFormatter {
 
     private static int halfMoves(Game game) {
         var calculationTask = new JournalActionCalculation(game.getBoard(), game.getJournal());
-        var results = Math.max(
-                calculationTask.calculate(game.getCurrentPlayer().getColor(), 50),
+        var results = Math.max(calculationTask.calculate(
+                        game.getCurrentPlayer().getColor(),
+                        FiftyMovesBoardState.MOVES
+                ),
                 0
         );
 

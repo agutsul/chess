@@ -12,6 +12,8 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.event.SetActionCounterEvent;
 import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.board.state.FiftyMovesBoardState;
+import com.agutsul.chess.board.state.SeventyFiveMovesBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.AbstractEventObserver;
 import com.agutsul.chess.event.Observable;
@@ -22,9 +24,6 @@ final class MovesBoardStateEvaluator
         extends AbstractJournalStateEvaluator {
 
     private static final Logger LOGGER = getLogger(MovesBoardStateEvaluator.class);
-
-    static final int FIFTY_MOVES = 50;
-    static final int SEVENTY_FIVE_MOVES = 75;
 
     private ActionCountMatcher actionCountMatcher;
 
@@ -43,18 +42,18 @@ final class MovesBoardStateEvaluator
         LOGGER.info("Checking if '{}' missed any capture or pawn moves", color);
 
         var performedActions = journal.size(color);
-        if (performedActions < FIFTY_MOVES) {
+        if (performedActions < FiftyMovesBoardState.MOVES) {
             return Optional.empty();
         }
 
-        if (performedActions >= SEVENTY_FIVE_MOVES
-                && actionCountMatcher.match(color, SEVENTY_FIVE_MOVES)) {
+        if (performedActions >= SeventyFiveMovesBoardState.MOVES
+                && actionCountMatcher.match(color, SeventyFiveMovesBoardState.MOVES)) {
 
             return Optional.of(seventyFiveMovesBoardState(board, color));
         }
 
-        if (performedActions >= FIFTY_MOVES
-                && actionCountMatcher.match(color, FIFTY_MOVES)) {
+        if (performedActions >= FiftyMovesBoardState.MOVES
+                && actionCountMatcher.match(color, FiftyMovesBoardState.MOVES)) {
 
             return Optional.of(fiftyMovesBoardState(board, color));
         }

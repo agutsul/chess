@@ -1,8 +1,6 @@
 package com.agutsul.chess.rule.board;
 
 import static com.agutsul.chess.activity.action.memento.ActionMementoFactory.createMemento;
-import static com.agutsul.chess.rule.board.MovesBoardStateEvaluator.FIFTY_MOVES;
-import static com.agutsul.chess.rule.board.MovesBoardStateEvaluator.SEVENTY_FIVE_MOVES;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -23,6 +21,8 @@ import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.board.state.FiftyMovesBoardState;
+import com.agutsul.chess.board.state.SeventyFiveMovesBoardState;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.piece.PawnPiece;
@@ -47,7 +47,7 @@ public class MovesBoardStateEvaluatorTest {
 
     @Test
     void testMovesBoardStateEvaluatorWith75QueenMoves() {
-        var result = getBoardStateEvaluatorWithQueenMovesLimit(SEVENTY_FIVE_MOVES);
+        var result = getBoardStateEvaluatorWithQueenMovesLimit(SeventyFiveMovesBoardState.MOVES);
         var boardState = result.get();
 
         assertEquals(BoardState.Type.SEVENTY_FIVE_MOVES, boardState.getType());
@@ -55,7 +55,7 @@ public class MovesBoardStateEvaluatorTest {
 
     @Test
     void testMovesBoardStateEvaluatorWith50QueenMoves() {
-        var result = getBoardStateEvaluatorWithQueenMovesLimit(FIFTY_MOVES);
+        var result = getBoardStateEvaluatorWithQueenMovesLimit(FiftyMovesBoardState.MOVES);
         var boardState = result.get();
 
         assertEquals(BoardState.Type.FIFTY_MOVES, boardState.getType());
@@ -63,12 +63,12 @@ public class MovesBoardStateEvaluatorTest {
 
     @Test
     void testMovesBoardStateEvaluatorWith75PawnMoves() {
-        getBoardStateEvaluatorWithPawnMovesLimit(SEVENTY_FIVE_MOVES);
+        getBoardStateEvaluatorWithPawnMovesLimit(SeventyFiveMovesBoardState.MOVES);
     }
 
     @Test
     void testMovesBoardStateEvaluatorWith50PawnMoves() {
-        getBoardStateEvaluatorWithPawnMovesLimit(FIFTY_MOVES);
+        getBoardStateEvaluatorWithPawnMovesLimit(FiftyMovesBoardState.MOVES);
     }
 
     private Optional<BoardState> getBoardStateEvaluatorWithQueenMovesLimit(int limit) {
