@@ -9,9 +9,9 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 
 abstract class AbstractCalculationTask implements Callable<Integer> {
 
-    protected final Logger logger;
-    protected final List<ActionMemento<?,?>> actions;
-    protected final int limit;
+    private final Logger logger;
+    private final List<ActionMemento<?,?>> actions;
+    private final int limit;
 
     AbstractCalculationTask(Logger logger, List<ActionMemento<?,?>> actions, int limit) {
         this.logger = logger;
@@ -23,7 +23,6 @@ abstract class AbstractCalculationTask implements Callable<Integer> {
     public Integer call() throws Exception {
         try {
             int counter = 0;
-
             for (int i = actions.size() - 1, j = 0; i >= 0 && j < limit; i--, j++) {
                 counter += count(actions.get(i));
             }

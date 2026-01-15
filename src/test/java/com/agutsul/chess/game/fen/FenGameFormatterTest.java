@@ -31,8 +31,6 @@ public class FenGameFormatterTest implements TestFileReader {
         assertNotNull(games);
         assertFalse(games.isEmpty());
         assertEquals(1, games.size());
-
-        var game = games.getFirst();
-        assertEquals(readFileContent(fileName), String.valueOf(game));
+        assertEquals(readFileContent(fileName), String.valueOf(games.getFirst()));
     }
 }
