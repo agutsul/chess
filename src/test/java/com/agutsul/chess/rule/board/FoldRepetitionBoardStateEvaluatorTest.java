@@ -1,6 +1,7 @@
 package com.agutsul.chess.rule.board;
 
 import static com.agutsul.chess.activity.action.memento.ActionMementoFactory.createMemento;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,8 +38,8 @@ public class FoldRepetitionBoardStateEvaluatorTest {
 
     @Test
     void testFoldRepetitionForEmptyJournal() {
-        when(journal.size(any(Color.class)))
-            .thenReturn(0);
+        when(journal.get(any(Color.class)))
+            .thenReturn(emptyList());
 
         var boardState = evaluator.evaluate(Colors.WHITE);
         assertTrue(boardState.isEmpty());

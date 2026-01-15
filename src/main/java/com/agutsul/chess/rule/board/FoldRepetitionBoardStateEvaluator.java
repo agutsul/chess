@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.board.state.FiveFoldRepetitionBoardState;
+import com.agutsul.chess.board.state.ThreeFoldRepetitionBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 
@@ -24,9 +26,6 @@ final class FoldRepetitionBoardStateEvaluator
         extends AbstractJournalStateEvaluator {
 
     private static final Logger LOGGER = getLogger(FoldRepetitionBoardStateEvaluator.class);
-
-    static final int THREE_REPETITIONS = 3;
-    static final int FIVE_REPETITIONS = 5;
 
     FoldRepetitionBoardStateEvaluator(Board board,
                                       Journal<ActionMemento<?,?>> journal) {
@@ -37,11 +36,10 @@ final class FoldRepetitionBoardStateEvaluator
     public Optional<BoardState> evaluate(Color color) {
         LOGGER.info("Checking if '{}' piece action repetitions", color);
 
-        if (journal.size(color) < THREE_REPETITIONS) {
+        var journalActions = journal.get(color);
+        if (journalActions.size() < ThreeFoldRepetitionBoardState.REPETITIONS) {
             return Optional.empty();
         }
-
-        var journalActions = journal.get(color);
 
         var stats = calculateStatistics(journalActions);
 
@@ -51,12 +49,12 @@ final class FoldRepetitionBoardStateEvaluator
         }
 
         var maxRepetitions = maxEntry.map(Map.Entry::getValue).orElse(0);
-        if (maxRepetitions >= FIVE_REPETITIONS) {
+        if (maxRepetitions >= FiveFoldRepetitionBoardState.REPETITIONS) {
             var actionMemento = findActionMemento(journalActions, maxEntry);
             return Optional.of(fiveFoldRepetitionBoardState(board, actionMemento));
         }
 
-        if (maxRepetitions >= THREE_REPETITIONS) {
+        if (maxRepetitions >= ThreeFoldRepetitionBoardState.REPETITIONS) {
             var actionMemento = findActionMemento(journalActions, maxEntry);
             return Optional.of(threeFoldRepetitionBoardState(board, actionMemento));
         }
