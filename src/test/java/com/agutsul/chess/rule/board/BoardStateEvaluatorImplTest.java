@@ -1,10 +1,10 @@
 package com.agutsul.chess.rule.board;
 
+import static java.util.concurrent.Executors.newFixedThreadPool;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.junit.jupiter.api.AutoClose;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ import com.agutsul.chess.journal.Journal;
 public class BoardStateEvaluatorImplTest {
 
     @AutoClose
-    ExecutorService executor = Executors.newFixedThreadPool(2);
+    ExecutorService executor = newFixedThreadPool(2);
 
     @Mock
     AbstractBoard board;

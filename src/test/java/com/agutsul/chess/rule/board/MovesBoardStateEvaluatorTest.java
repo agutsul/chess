@@ -1,6 +1,9 @@
 package com.agutsul.chess.rule.board;
 
 import static com.agutsul.chess.activity.action.memento.ActionMementoFactory.createMemento;
+import static com.agutsul.chess.board.state.BoardState.Type.FIFTY_MOVES;
+import static com.agutsul.chess.board.state.BoardState.Type.SEVENTY_FIVE_MOVES;
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -8,7 +11,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.junit.jupiter.api.AutoClose;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +36,7 @@ import com.agutsul.chess.position.Position;
 public class MovesBoardStateEvaluatorTest {
 
     @AutoClose
-    ExecutorService executorService = Executors.newSingleThreadExecutor();
+    ExecutorService executorService = newSingleThreadExecutor();
 
     @Mock
     StandardBoard board;
@@ -50,7 +52,7 @@ public class MovesBoardStateEvaluatorTest {
         var result = getBoardStateEvaluatorWithQueenMovesLimit(SeventyFiveMovesBoardState.MOVES);
         var boardState = result.get();
 
-        assertEquals(BoardState.Type.SEVENTY_FIVE_MOVES, boardState.getType());
+        assertEquals(SEVENTY_FIVE_MOVES, boardState.getType());
     }
 
     @Test
@@ -58,7 +60,7 @@ public class MovesBoardStateEvaluatorTest {
         var result = getBoardStateEvaluatorWithQueenMovesLimit(FiftyMovesBoardState.MOVES);
         var boardState = result.get();
 
-        assertEquals(BoardState.Type.FIFTY_MOVES, boardState.getType());
+        assertEquals(FIFTY_MOVES, boardState.getType());
     }
 
     @Test

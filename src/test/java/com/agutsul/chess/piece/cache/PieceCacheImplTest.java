@@ -1,7 +1,8 @@
 package com.agutsul.chess.piece.cache;
 
+import static com.agutsul.chess.position.PositionFactory.positionOf;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
-import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -16,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.position.PositionFactory;
 
 @ExtendWith(MockitoExtension.class)
 public class PieceCacheImplTest {
@@ -73,16 +73,15 @@ public class PieceCacheImplTest {
         var cache = new PieceCacheImpl(createPieces(), executorService);
         cache.refresh();
 
-        var emptyPosition = PositionFactory.positionOf("e3");
+        var emptyPosition = positionOf("e3");
         assertTrue(cache.getActive(emptyPosition).isEmpty());
 
-        var nonEmptyPosition = PositionFactory.positionOf("e2");
+        var nonEmptyPosition = positionOf("e2");
         assertTrue(cache.getActive(nonEmptyPosition).isPresent());
     }
 
     private static Collection<Piece<?>> createPieces() {
         var board = new StandardBoard();
-        return board.getPieces().stream()
-                .collect(toList());
+        return unmodifiableCollection(board.getPieces());
     }
 }

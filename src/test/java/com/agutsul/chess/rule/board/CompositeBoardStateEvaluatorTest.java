@@ -7,6 +7,7 @@ import static com.agutsul.chess.board.state.BoardStateFactory.fiveFoldRepetition
 import static com.agutsul.chess.board.state.BoardStateFactory.seventyFiveMovesBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.staleMatedBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.threeFoldRepetitionBoardState;
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,7 +19,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.junit.jupiter.api.AutoClose;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +37,7 @@ import com.agutsul.chess.color.Colors;
 public class CompositeBoardStateEvaluatorTest {
 
     @AutoClose
-    ExecutorService executorService = Executors.newSingleThreadExecutor();
+    ExecutorService executorService = newSingleThreadExecutor();
 
     @Mock
     Board board;
