@@ -15,6 +15,7 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.event.SetActionCounterEvent;
 import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.board.state.FiftyMovesBoardState;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.journal.Journal;
 
@@ -43,11 +44,11 @@ public class MovesBoardStateEvaluator2Test {
         var board = new StandardBoard();
 
         when(journal.size(any()))
-            .thenReturn(50);
+            .thenReturn(FiftyMovesBoardState.MOVES);
 
         var evaluator = new MovesBoardStateEvaluator(board, journal);
 
-        board.notifyObservers(new SetActionCounterEvent(50));
+        board.notifyObservers(new SetActionCounterEvent(FiftyMovesBoardState.MOVES));
 
         var result = evaluator.evaluate(Colors.WHITE);
         var boardState = result.get();
@@ -60,7 +61,7 @@ public class MovesBoardStateEvaluator2Test {
         var board = new StandardBoard();
 
         when(journal.size(any()))
-            .thenReturn(50);
+            .thenReturn(FiftyMovesBoardState.MOVES);
 
         var evaluator = new MovesBoardStateEvaluator(board, journal);
 
