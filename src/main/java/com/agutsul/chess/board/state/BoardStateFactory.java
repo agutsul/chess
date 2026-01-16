@@ -193,7 +193,7 @@ public abstract class BoardStateFactory {
 
         // draw
         SeventyFiveMovesBoardStateImpl(Board board, Color color) {
-            super(LOGGER, Type.SEVENTY_FIVE_MOVES, board, color);
+            super(LOGGER, BoardState.Type.SEVENTY_FIVE_MOVES, board, color);
         }
     }
 
@@ -229,7 +229,7 @@ public abstract class BoardStateFactory {
         private static final Logger LOGGER = getLogger(FiftyMovesBoardState.class);
 
         FiftyMovesBoardStateImpl(Board board, Color color) {
-            super(LOGGER, Type.FIFTY_MOVES, board, color);
+            super(LOGGER, BoardState.Type.FIFTY_MOVES, board, color);
         }
     }
 
