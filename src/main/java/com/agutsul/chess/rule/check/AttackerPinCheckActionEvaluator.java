@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.check;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
@@ -24,6 +25,11 @@ final class AttackerPinCheckActionEvaluator
     Collection<Action<?>> process(KingPiece<?> king,
                                   Collection<PieceCaptureAction<?,?,?,?>> checkActions,
                                   Collection<Action<?>> actions) {
+
+        if (checkActions.size() > 1) {
+            // there is no sense to pin attack line one of king's attackers during double check
+            return emptyList();
+        }
 
         Collection<Action<?>> pinActions = Stream.of(checkActions)
                 .flatMap(Collection::stream)

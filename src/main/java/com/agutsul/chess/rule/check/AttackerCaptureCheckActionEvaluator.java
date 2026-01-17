@@ -3,6 +3,7 @@ package com.agutsul.chess.rule.check;
 import static com.agutsul.chess.activity.action.Action.isCapture;
 import static com.agutsul.chess.activity.action.Action.isEnPassant;
 import static com.agutsul.chess.activity.action.Action.isPromote;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
@@ -30,6 +31,12 @@ final class AttackerCaptureCheckActionEvaluator
 
     @Override
     public Collection<Action<?>> evaluate(KingPiece<?> king) {
+        var kingAttackers = board.getAttackers(king);
+        if (kingAttackers.size() > 1) {
+            // there is no sense to capture one of king's attackers during double check
+            return emptyList();
+        }
+
         var actionTargets = new ArrayListValuedHashMap<Piece<?>,Action<?>>();
         for (var action : this.pieceActions) {
             if (isCapture(action) || isEnPassant(action)) {
@@ -41,7 +48,7 @@ final class AttackerCaptureCheckActionEvaluator
             }
         }
 
-        var actions = Stream.of(board.getAttackers(king))
+        var actions = Stream.of(kingAttackers)
                 .flatMap(Collection::stream)
                 .filter(attacker -> actionTargets.containsKey(attacker))
                 .map(attacker -> actionTargets.get(attacker))

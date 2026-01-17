@@ -38,6 +38,25 @@ public class CheckedBoardStateEvaluatorTest {
         assertChecked(board, Colors.BLACK);
     }
 
+    @Test
+    void testKingDoubleCheck() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e7")
+                .withBlackRooks("a8","h8")
+                .withBlackBishops("f8","f5")
+                .withBlackKnights("b8","f6")
+                .withBlackPawns("a5","b7","c5","h5")
+                .withWhiteKing("g2")
+                .withWhiteQueen("d1")
+                .withWhiteRooks("a1","e1")
+                .withWhiteKnights("b5","g6")
+                .withWhiteBishop("g5")
+                .withWhitePawns("a2","b2","c2","d3","f2","h2")
+                .build();
+
+        assertChecked(board, Colors.BLACK);
+    }
+
     private static void assertChecked(Board board, Color color) {
         var checkEvaluator = new CheckedBoardStateEvaluator(board);
         var boardState = checkEvaluator.evaluate(color);
