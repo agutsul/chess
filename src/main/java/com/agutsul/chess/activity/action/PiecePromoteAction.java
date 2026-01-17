@@ -6,6 +6,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Executable;
+import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.AbstractEventObserver;
 import com.agutsul.chess.event.Observable;
@@ -29,16 +30,21 @@ public class PiecePromoteAction<COLOR1 extends Color,
 
     public PiecePromoteAction(PieceMoveAction<COLOR1,PIECE1> action,
                               Observable observable) {
-        super(action);
 
-        this.observable = observable;
-        this.observer = new PromotionPieceObserver();
+        this((AbstractTargetActivity<Action.Type,PIECE1,?>) action, observable);
     }
 
     public <COLOR2 extends Color,PIECE2 extends Piece<COLOR2>>
             PiecePromoteAction(PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2> action,
                                Observable observable) {
-        super(action);
+
+        this((AbstractTargetActivity<Action.Type,PIECE1,?>) action, observable);
+    }
+
+    private PiecePromoteAction(AbstractTargetActivity<Action.Type,PIECE1,?> activity,
+                               Observable observable) {
+
+        super(activity);
 
         this.observable = observable;
         this.observer = new PromotionPieceObserver();
