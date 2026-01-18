@@ -37,8 +37,8 @@ public abstract class BoardStateFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <STATE extends BoardState & CheckMatedBoardState> STATE checkMatedBoardState(Board board, Color color) {
-        return (STATE) new CheckMatedBoardStateImpl(board, color);
+    public static <STATE extends BoardState & CheckMatedBoardState> STATE checkMatedBoardState(Board board, Color color, Piece<Color> checkMaker) {
+        return (STATE) new CheckMatedBoardStateImpl(board, color, checkMaker);
     }
 
     @SuppressWarnings("unchecked")
@@ -69,8 +69,8 @@ public abstract class BoardStateFactory {
     // playable states
 
     @SuppressWarnings("unchecked")
-    public static <STATE extends BoardState & CheckedBoardState> STATE checkedBoardState(Board board, Color color) {
-        return (STATE) new CheckedBoardStateImpl(board, color);
+    public static <STATE extends BoardState & CheckedBoardState> STATE checkedBoardState(Board board, Color color, Piece<Color> checkMaker) {
+        return (STATE) new CheckedBoardStateImpl(board, color, checkMaker);
     }
 
     @SuppressWarnings("unchecked")
@@ -134,8 +134,16 @@ public abstract class BoardStateFactory {
 
         private static final Logger LOGGER = getLogger(CheckMatedBoardState.class);
 
-        CheckMatedBoardStateImpl(Board board, Color checkMatedColor) {
+        private final Piece<Color> checkMaker;
+
+        CheckMatedBoardStateImpl(Board board, Color checkMatedColor, Piece<Color> checkMaker) {
             super(LOGGER, BoardState.Type.CHECK_MATED, board, checkMatedColor);
+            this.checkMaker = checkMaker;
+        }
+
+        @Override
+        public Piece<Color> getPiece() {
+            return this.checkMaker;
         }
     }
 
@@ -287,8 +295,11 @@ public abstract class BoardStateFactory {
 
         private static final Logger LOGGER = getLogger(CheckedBoardState.class);
 
-        CheckedBoardStateImpl(Board board, Color checkedColor) {
+        private final Piece<Color> checkMaker;
+
+        CheckedBoardStateImpl(Board board, Color checkedColor, Piece<Color> checkMaker) {
             super(LOGGER, BoardState.Type.CHECKED, board, checkedColor);
+            this.checkMaker = checkMaker;
         }
 
         @Override
@@ -310,6 +321,11 @@ public abstract class BoardStateFactory {
                     : new PieceCheckActionEvaluator(board, actions);
 
             return evaluator.evaluate(king);
+        }
+
+        @Override
+        public Piece<Color> getPiece() {
+            return this.checkMaker;
         }
     }
 }

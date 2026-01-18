@@ -19,12 +19,15 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.piece.Piece;
 
 @ExtendWith(MockitoExtension.class)
 public class CheckableBoardStateEvaluatorTest {
 
     @Mock
     Board board;
+    @Mock
+    Piece<Color> piece;
     @Mock
     CheckedBoardStateEvaluator checkedEvaluator;
     @Mock
@@ -48,7 +51,7 @@ public class CheckableBoardStateEvaluatorTest {
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                return Optional.of(checkedBoardState(board, color));
+                return Optional.of(checkedBoardState(board, color, piece));
             });
 
         var boardState = evaluator.evaluate(Colors.WHITE);
@@ -62,13 +65,13 @@ public class CheckableBoardStateEvaluatorTest {
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                return Optional.of(checkedBoardState(board, color));
+                return Optional.of(checkedBoardState(board, color, piece));
             });
 
         when(checkMatedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                return Optional.of(checkMatedBoardState(board, color));
+                return Optional.of(checkMatedBoardState(board, color, piece));
             });
 
 

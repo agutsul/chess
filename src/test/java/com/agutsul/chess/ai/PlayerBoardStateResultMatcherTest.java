@@ -13,8 +13,10 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.journal.Journal;
+import com.agutsul.chess.piece.Piece;
 
 @ExtendWith(MockitoExtension.class)
 public class PlayerBoardStateResultMatcherTest {
@@ -24,6 +26,8 @@ public class PlayerBoardStateResultMatcherTest {
     @Mock
     Journal<ActionMemento<?,?>> journal;
     @Mock
+    Piece<Color> piece;
+    @Mock
     ActionMemento<?,?> memento;
     @Mock
     Action<?> action;
@@ -31,7 +35,7 @@ public class PlayerBoardStateResultMatcherTest {
     @Test
     void testResultMatch() {
         when(board.getState())
-            .thenReturn(checkMatedBoardState(board, Colors.BLACK));
+            .thenReturn(checkMatedBoardState(board, Colors.BLACK, piece));
 
         when(memento.getColor())
             .thenReturn(Colors.BLACK);

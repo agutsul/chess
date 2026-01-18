@@ -5,6 +5,7 @@ import static java.util.function.Predicate.not;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -15,6 +16,7 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
+import com.agutsul.chess.board.state.CompositeBoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
@@ -37,20 +39,28 @@ final class CheckedBoardStateEvaluator
         }
 
         var king = optionalKing.get();
-        var isChecked = Stream.of(board.getPieces(king.getColor().invert()))
+
+        @SuppressWarnings("unchecked")
+        List<BoardState> checkedStates = Stream.of(board.getPieces(king.getColor().invert()))
                 .flatMap(Collection::stream)
                 .filter(not(Piece::isKing))
                 .map(piece -> board.getImpacts(piece, Impact.Type.CHECK))
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceCheckImpact<?,?,?,?>) impact)
-                .map(PieceCheckImpact::getTarget)
-                .anyMatch(piece -> Objects.equals(piece, king));
+                .filter(impact -> Objects.equals(impact.getTarget(), king))
+                .map(PieceCheckImpact::getSource)
+                .map(checkMaker -> checkedBoardState(board, color, (Piece<Color>) checkMaker))
+                .map(boardState -> (BoardState) boardState)
+                .toList();
 
-        king.setChecked(isChecked);
+        king.setChecked(!checkedStates.isEmpty());
 
-        return Optional.ofNullable(isChecked
-                ? checkedBoardState(board, color)
-                : null
-        );
+        var boardState = switch (checkedStates.size()) {
+        case 0 -> null;
+        case 1 -> checkedStates.getFirst();
+        default -> new CompositeBoardState(checkedStates);
+        };
+
+        return Optional.ofNullable(boardState);
     }
 }

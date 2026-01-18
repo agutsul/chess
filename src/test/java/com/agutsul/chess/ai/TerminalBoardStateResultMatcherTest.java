@@ -14,8 +14,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.journal.Journal;
+import com.agutsul.chess.piece.Piece;
 
 @ExtendWith(MockitoExtension.class)
 public class TerminalBoardStateResultMatcherTest {
@@ -25,12 +27,14 @@ public class TerminalBoardStateResultMatcherTest {
     @Mock
     Journal<ActionMemento<?,?>> journal;
     @Mock
+    Piece<Color> piece;
+    @Mock
     Action<?> action;
 
     @Test
     void testResultTerminalMatch() {
         when(board.getState())
-            .thenReturn(checkMatedBoardState(board, Colors.WHITE));
+            .thenReturn(checkMatedBoardState(board, Colors.WHITE, piece));
 
         var result = new ActionSimulationResult<>(board, journal, action, Colors.WHITE,  1);
 
@@ -41,7 +45,7 @@ public class TerminalBoardStateResultMatcherTest {
     @Test
     void testResultNonTerminalMatch() {
         when(board.getState())
-            .thenReturn(checkedBoardState(board, Colors.BLACK));
+            .thenReturn(checkedBoardState(board, Colors.BLACK, piece));
 
         var result = new ActionSimulationResult<>(board, journal, action, Colors.BLACK, -1);
 

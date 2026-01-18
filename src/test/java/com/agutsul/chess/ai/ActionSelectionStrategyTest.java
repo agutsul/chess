@@ -152,7 +152,7 @@ public class ActionSelectionStrategyTest {
         when(board.getActions(any(Piece.class)))
             .thenReturn(List.of(action));
         when(board.getState())
-            .thenReturn(checkMatedBoardState(board, Colors.WHITE));
+            .thenReturn(checkMatedBoardState(board, Colors.WHITE, piece));
 
         when(memento.getColor())
             .thenReturn(Colors.WHITE);
@@ -178,7 +178,7 @@ public class ActionSelectionStrategyTest {
         when(board.getActions(any(Piece.class)))
             .thenReturn(List.of(action));
         when(board.getState())
-            .thenReturn(checkMatedBoardState(board, Colors.WHITE));
+            .thenReturn(checkMatedBoardState(board, Colors.WHITE, piece));
 
         when(memento.getColor())
             .thenReturn(Colors.BLACK);

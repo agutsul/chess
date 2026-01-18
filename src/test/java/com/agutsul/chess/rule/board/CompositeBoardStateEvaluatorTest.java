@@ -32,6 +32,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.piece.Piece;
 
 @ExtendWith(MockitoExtension.class)
 public class CompositeBoardStateEvaluatorTest {
@@ -41,6 +42,8 @@ public class CompositeBoardStateEvaluatorTest {
 
     @Mock
     Board board;
+    @Mock
+    Piece<Color> piece;
     @Mock
     CheckedBoardStateEvaluator checkedEvaluator;
     @Mock
@@ -73,7 +76,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                return Optional.of(checkedBoardState(board, color));
+                return Optional.of(checkedBoardState(board, color, piece));
             });
 
         when(checkMatedEvaluator.evaluate(any()))
@@ -96,13 +99,13 @@ public class CompositeBoardStateEvaluatorTest {
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                return Optional.of(checkedBoardState(board, color));
+                return Optional.of(checkedBoardState(board, color, piece));
             });
 
         when(checkMatedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                return Optional.of(checkMatedBoardState(board, color));
+                return Optional.of(checkMatedBoardState(board, color, piece));
             });
 
         var boardStates = evaluator.evaluate(Colors.BLACK);
@@ -189,14 +192,14 @@ public class CompositeBoardStateEvaluatorTest {
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = checkedBoardState(board, color);
+                var state = checkedBoardState(board, color, piece);
                 return Optional.of(state);
             });
 
         when(checkMatedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = checkMatedBoardState(board, color);
+                var state = checkMatedBoardState(board, color, piece);
                 return Optional.of(state);
             });
 
@@ -230,7 +233,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = checkedBoardState(board, color);
+                var state = checkedBoardState(board, color, piece);
                 return Optional.of(state);
             });
 
@@ -326,7 +329,7 @@ public class CompositeBoardStateEvaluatorTest {
         when(checkedEvaluator.evaluate(any()))
             .thenAnswer(inv -> {
                 var color = inv.getArgument(0, Color.class);
-                var state = checkedBoardState(board, color);
+                var state = checkedBoardState(board, color, piece);
                 return Optional.of(state);
             });
 

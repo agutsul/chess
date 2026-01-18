@@ -71,6 +71,7 @@ import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.mock.PlayerActionObserverMock;
 import com.agutsul.chess.mock.PlayerInputObserverMock;
+import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.PlayerImpl;
 import com.agutsul.chess.player.event.PlayerActionExceptionEvent;
@@ -85,6 +86,9 @@ public class GameImplTest {
 
     @AutoClose
     GameContext context = new GameContext();
+
+    @Mock
+    Piece<Color> piece;
 
     @Mock
     AbstractBoard board;
@@ -131,7 +135,7 @@ public class GameImplTest {
     void testGetStateReturningWhiteWin() {
         var board = spy(new StandardBoard());
         when(board.getState())
-            .thenReturn(checkMatedBoardState(board, Colors.WHITE));
+            .thenReturn(checkMatedBoardState(board, Colors.WHITE, piece));
 
         var journal = new JournalImpl();
 
@@ -180,7 +184,7 @@ public class GameImplTest {
                 var color = inv.getArgument(0, Color.class);
                 return Colors.WHITE.equals(color)
                     ? defaultBoardState(board, color)
-                    : checkMatedBoardState(board, color);
+                    : checkMatedBoardState(board, color, piece);
             });
 
         var game = new GameImpl(whitePlayer, blackPlayer,
@@ -195,7 +199,7 @@ public class GameImplTest {
     @Test
     void testGetWinnerByCheckMate() {
         when(board.getState())
-            .thenReturn(checkMatedBoardState(board, Colors.WHITE));
+            .thenReturn(checkMatedBoardState(board, Colors.WHITE, piece));
 
         var journal = new JournalImpl();
 

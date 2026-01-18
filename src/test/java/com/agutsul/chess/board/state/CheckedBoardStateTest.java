@@ -25,7 +25,8 @@ public class CheckedBoardStateTest {
                 .withWhiteKing("e3")
                 .build();
 
-        board.setState(checkedBoardState(board, Colors.BLACK));
+        var whiteBishop = board.getPiece("e4").get();
+        board.setState(checkedBoardState(board, Colors.BLACK, whiteBishop));
 
         var blackPawn = board.getPiece("a7").get();
         assertTrue(board.getActions(blackPawn).isEmpty());
@@ -45,7 +46,8 @@ public class CheckedBoardStateTest {
                 .withWhiteKing("e3")
                 .build();
 
-        board.setState(checkedBoardState(board, Colors.BLACK));
+        var whiteBishop = board.getPiece("b2").get();
+        board.setState(checkedBoardState(board, Colors.BLACK, whiteBishop));
 
         var blackPawn = board.getPiece("h7").get();
         assertTrue(board.getActions(blackPawn).isEmpty());
@@ -64,7 +66,8 @@ public class CheckedBoardStateTest {
                 .withBlackKing("a8")
                 .build();
 
-        board.setState(checkedBoardState(board, Colors.BLACK));
+        var whiteQueen = board.getPiece("e8").get();
+        board.setState(checkedBoardState(board, Colors.BLACK, whiteQueen));
 
         var blackKing = board.getKing(Colors.BLACK).get();
         assertFalse(board.getActions(blackKing).isEmpty());

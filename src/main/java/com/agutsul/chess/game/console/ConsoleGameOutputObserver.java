@@ -30,11 +30,10 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.BoardStateProxy;
+import com.agutsul.chess.board.state.CheckableBoardState;
 import com.agutsul.chess.board.state.CompositeBoardState;
-import com.agutsul.chess.board.state.FiveFoldRepetitionBoardState;
 import com.agutsul.chess.board.state.FoldRepetitionBoardState;
 import com.agutsul.chess.board.state.InsufficientMaterialBoardState;
-import com.agutsul.chess.board.state.ThreeFoldRepetitionBoardState;
 import com.agutsul.chess.event.AbstractEventObserver;
 import com.agutsul.chess.event.AbstractObserverProxy;
 import com.agutsul.chess.event.CompositeEventObserver;
@@ -383,9 +382,9 @@ public final class ConsoleGameOutputObserver
 
     private static String formatBoardState(BoardState boardState) {
         return switch (boardState) {
-        case FiveFoldRepetitionBoardState bs -> formatBoardState(bs);
-        case ThreeFoldRepetitionBoardState bs -> formatBoardState(bs);
+        case FoldRepetitionBoardState bs -> formatBoardState(bs);
         case InsufficientMaterialBoardState bs -> formatBoardState(bs);
+        case CheckableBoardState bs -> formatBoardState(bs);
         case CompositeBoardState bs -> formatBoardState(bs.getBoardStates());
         case BoardStateProxy bs -> formatBoardState(bs.getOrigin());
         default -> String.valueOf(boardState.getType());
@@ -403,6 +402,13 @@ public final class ConsoleGameOutputObserver
         return String.format("%s(%s)",
                 ((BoardState) boardState).getType(),
                 boardState.getPattern()
+        );
+    }
+
+    private static String formatBoardState(CheckableBoardState boardState) {
+        return String.format("%s(%s)",
+                ((BoardState) boardState).getType(),
+                boardState.getPiece()
         );
     }
 

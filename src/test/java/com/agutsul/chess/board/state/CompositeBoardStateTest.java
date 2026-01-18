@@ -59,7 +59,7 @@ public class CompositeBoardStateTest {
 
     @Test
     void testGetBoardStates() {
-        var checkedBoardState = checkedBoardState(board, color);
+        var checkedBoardState = checkedBoardState(board, color, piece);
         var fiftyMovesBoardState = fiftyMovesBoardState(board, color);
 
         var compositeBoardState = new CompositeBoardState(List.of(
@@ -76,7 +76,7 @@ public class CompositeBoardStateTest {
 
     @Test
     void testGetColor() {
-        var checkedBoardState = checkedBoardState(board, color);
+        var checkedBoardState = checkedBoardState(board, color, piece);
         var checkedBoardStateMock = spy(checkedBoardState);
         doCallRealMethod()
             .when(checkedBoardStateMock).getColor();
@@ -97,7 +97,7 @@ public class CompositeBoardStateTest {
 
     @Test
     void testGetType() {
-        var checkedBoardState = checkedBoardState(board, color);
+        var checkedBoardState = checkedBoardState(board, color, piece);
         var checkedBoardStateMock = spy(checkedBoardState);
         doCallRealMethod()
             .when(checkedBoardStateMock).getType();
@@ -118,7 +118,7 @@ public class CompositeBoardStateTest {
 
     @Test
     void testIsType() {
-        var checkedBoardState = checkedBoardState(board, color);
+        var checkedBoardState = checkedBoardState(board, color, piece);
         var checkedBoardStateMock = spy(checkedBoardState);
         doCallRealMethod()
             .when(checkedBoardStateMock).isType(any());
@@ -145,7 +145,7 @@ public class CompositeBoardStateTest {
 
     @Test
     void testIsAnyType() {
-        var checkedBoardState = checkedBoardState(board, color);
+        var checkedBoardState = checkedBoardState(board, color, piece);
         var checkedBoardStateMock = spy(checkedBoardState);
         doCallRealMethod()
             .when(checkedBoardStateMock).isAnyType(any(),any());
@@ -171,7 +171,7 @@ public class CompositeBoardStateTest {
 
     @Test
     void testGetActions() {
-        var checkedBoardState = checkedBoardState(board, color);
+        var checkedBoardState = checkedBoardState(board, color, piece);
         var checkedBoardStateMock = spy(checkedBoardState);
         doCallRealMethod()
             .when(checkedBoardStateMock).getActions(any());
@@ -192,7 +192,7 @@ public class CompositeBoardStateTest {
 
     @Test
     void testGetImpacts() {
-        var checkedBoardState = checkedBoardState(board, color);
+        var checkedBoardState = checkedBoardState(board, color, piece);
         var checkedBoardStateMock = spy(checkedBoardState);
         doCallRealMethod()
             .when(checkedBoardStateMock).getImpacts(any());
@@ -217,7 +217,7 @@ public class CompositeBoardStateTest {
             .thenReturn(Colors.WHITE.toString());
 
         var compositeBoardState = new CompositeBoardState(List.of(
-                checkedBoardState(board, color),
+                checkedBoardState(board, color, piece),
                 fiftyMovesBoardState(board, color)
         ));
 

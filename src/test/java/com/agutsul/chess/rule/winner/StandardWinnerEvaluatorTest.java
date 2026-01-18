@@ -20,8 +20,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.Game;
+import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,6 +33,8 @@ public class StandardWinnerEvaluatorTest {
     Game game;
     @Mock
     Board board;
+    @Mock
+    Piece<Color> piece;
     @Mock
     Player whitePlayer;
     @Mock
@@ -73,7 +77,7 @@ public class StandardWinnerEvaluatorTest {
         when(game.getCurrentPlayer())
             .thenReturn(whitePlayer);
         when(board.getState())
-            .thenReturn(checkMatedBoardState(board, Colors.WHITE));
+            .thenReturn(checkMatedBoardState(board, Colors.WHITE, piece));
 
         var evaluator = new StandardWinnerEvaluator(mock(WinnerEvaluator.class));
         var winner = evaluator.evaluate(game);
