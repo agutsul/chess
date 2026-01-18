@@ -52,6 +52,8 @@ abstract class AbstractPiece<COLOR extends Color>
 
     private static final Logger LOGGER = getLogger(AbstractPiece.class);
 
+    private static final String CANCEL_UNVISITED_POSITION_MESSAGE = "Unable to cancel unvisited position";
+
     private final List<Position> positions = new ArrayList<>();
 
     private final ActivityCache<Action.Type,Action<?>> actionCache;
@@ -81,18 +83,17 @@ abstract class AbstractPiece<COLOR extends Color>
                   ActivityCache<Action.Type,Action<?>> actionCache,
                   ActivityCache<Impact.Type,Impact<?>> impactCache) {
 
+        this.context = context;
+        this.actionCache = actionCache;
+        this.impactCache = impactCache;
+
         this.observer = createObserver();
 
         this.board = (AbstractBoard) board;
         this.board.addObserver(this.observer);
 
-        this.context = context;
-
         this.activeState = (ActivePieceState<? extends Piece<COLOR>>) state;
         setState(state);
-
-        this.actionCache = actionCache;
-        this.impactCache = impactCache;
 
         setPosition(position);
     }
@@ -122,7 +123,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
         var actions = this.actionCache.get(actionType);
         if (!actions.isEmpty()) {
-            return actions;
+            return unmodifiableCollection(actions);
         }
 
         if (!this.actionCache.isEmpty() && actions.isEmpty()) {
@@ -153,7 +154,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
         var impacts = this.impactCache.get(impactType);
         if (!impacts.isEmpty()) {
-            return impacts;
+            return unmodifiableCollection(impacts);
         }
 
         if (!this.impactCache.isEmpty() && impacts.isEmpty()) {
@@ -362,9 +363,11 @@ abstract class AbstractPiece<COLOR extends Color>
 
     final void cancelMove(Position position) {
         if (!this.positions.contains(position)) {
-            throw new IllegalPositionException(
-                    String.format("Unable to cancel unvisited position '%s'", position)
-            );
+            throw new IllegalPositionException(String.format(
+                    "%s '%s'",
+                    CANCEL_UNVISITED_POSITION_MESSAGE,
+                    position
+            ));
         }
 
         var lastPosition = this.positions.removeLast();

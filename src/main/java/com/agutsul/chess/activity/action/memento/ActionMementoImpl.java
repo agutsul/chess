@@ -1,6 +1,7 @@
 package com.agutsul.chess.activity.action.memento;
 
 import static java.time.LocalDateTime.now;
+import static java.util.Objects.nonNull;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.color.Color;
@@ -38,7 +39,7 @@ class ActionMementoImpl<SOURCE,TARGET>
     public String toString() {
         return String.format("%s %s(%s %s)",
                 getActionType(),
-                getPieceType() != null ? pieceType.name() : "?",
+                nonNull(getPieceType()) ? getPieceType().name() : "?",
                 getSource(),
                 getTarget()
         );

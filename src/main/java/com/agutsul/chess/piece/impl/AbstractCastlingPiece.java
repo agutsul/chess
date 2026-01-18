@@ -199,6 +199,8 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
         private static final Logger LOGGER = getLogger(ActiveCastlingablePieceState.class);
 
+        private static final String INVALID_CASTLING_MESSAGE = "invalid castling to";
+
         private final Board board;
 
         ActiveCastlingablePieceState(Board board,
@@ -221,9 +223,12 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
                     .findFirst();
 
             if (possibleAction.isEmpty()) {
-                throw new IllegalActionException(
-                        String.format("%s invalid castling to %s", piece, position)
-                );
+                throw new IllegalActionException(String.format(
+                        "%s %s %s",
+                        piece,
+                        INVALID_CASTLING_MESSAGE,
+                        position
+                ));
             }
 
             var castlingAction = possibleAction.get();
