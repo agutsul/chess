@@ -1,0 +1,12 @@
+[Event "Test"]
+[Site ""]
+[UTCDate "2026.01.18"]
+[UTCTime "22:00:52"]
+[Result "1-0"]
+[White "Test A"]
+[Black "Test B"]
+[WhiteElo "?"]
+[BlackElo "?"]
+[Termination "Normal"]
+
+1. e4 e5 2. Qf3 Qf6 3. Qb3 Kd8 4. d3 g5 5. f3 a5 6. Nh3 h5 7. Be2 b5 8. Qd5 Bd6 9. Qxa8 Ke8 10. Qxb8 Ke7 11. Qxc8 Bb4+ 12. c3 Bxc3+ 13. Nxc3 Qxf3 14. Bxf3 c5 15. O-O f5 16. Bxg5+ Kd6 17. Nxb5+ Ke6 18. Nc7+ Kf7 19. Qe8+ Kg7 20. exf5 Ne7 21. f6+ Kh7 22. Qxe7+ Kg8 23. f7+ Kh7 24. Be4+ Kg7 25. f8=Q 1-0

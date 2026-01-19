@@ -55,5 +55,6 @@ chess_white_move_and_exit_timeout3.pgn,BLACK_WIN,53,9
 chess_multiple_piece_of_same_type_action.pgn,WHITE_WIN,151,9
 chess_capture_checkmaker_by_pinned_piece.pgn,WHITE_WIN,119,9
 chess_double_checkmate_via_enpassante.pgn,WHITE_WIN,29,7
+chess_double_checkmate_via_promote.pgn,WHITE_WIN,49,5
 chess_promote_queen_mate.pgn,WHITE_WIN,67,9
 chess_promote_mate.pgn,WHITE_WIN,95,9
