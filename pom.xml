@@ -17,34 +17,34 @@
         <project.java.version>21</project.java.version>
         <argLine>-Xms512m -Xmx512m -Xss512m</argLine>
 
-        <commons-io.version>2.18.0</commons-io.version>
+        <commons-io.version>2.21.0</commons-io.version>
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
-        <commons-conf.version>2.11.0</commons-conf.version>
-        <commons-lang3.version>3.18.0</commons-lang3.version>
+        <commons-conf.version>2.13.0</commons-conf.version>
+        <commons-lang3.version>3.20.0</commons-lang3.version>
         <commons-collections4.version>4.5.0</commons-collections4.version>
-        <commons-cli.version>1.9.0</commons-cli.version>
+        <commons-cli.version>1.11.0</commons-cli.version>
         <slf4j-api.verion>2.0.17</slf4j-api.verion>
-        <log4j.version>2.24.1</log4j.version>
+        <log4j.version>2.25.3</log4j.version>
         <antlr4.version>4.13.2</antlr4.version>
 
-        <spotbugs.version>4.8.6</spotbugs.version>
-        <junit-jupiter.version>5.12.2</junit-jupiter.version>
-        <mockito-core.version>5.13.0</mockito-core.version>
-        <mockito-junit-jupiter.version>5.13.0</mockito-junit-jupiter.version>
+        <spotbugs.version>4.9.8</spotbugs.version>
+        <junit-jupiter.version>6.0.2</junit-jupiter.version>
+        <mockito-core.version>5.21.0</mockito-core.version>
+        <mockito-junit-jupiter.version>5.21.0</mockito-junit-jupiter.version>
         <!-- plugins -->
-        <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
-        <maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
-        <maven.surefire.plugin.version>3.5.0</maven.surefire.plugin.version>
-        <maven.surefire-report.plugin.version>3.5.0</maven.surefire-report.plugin.version>
-        <maven.site.plugin.version>3.20.0</maven.site.plugin.version>
-        <maven.spotbugs.plugin.version>4.8.6.4</maven.spotbugs.plugin.version>
-        <maven.pmd.plugin.version>3.25.0</maven.pmd.plugin.version>
-        <maven.jacoco.plugin.version>0.8.12</maven.jacoco.plugin.version>
-        <maven.project.info.reports.plugin.version>3.7.0</maven.project.info.reports.plugin.version>
-        <maven.jxr.plugin.version>3.5.0</maven.jxr.plugin.version>
-        <maven.dependency-check.plugin.version>12.1.6</maven.dependency-check.plugin.version>
+        <maven.compiler.plugin.version>3.14.1</maven.compiler.plugin.version>
+        <maven.resources.plugin.version>3.4.0</maven.resources.plugin.version>
+        <maven.surefire.plugin.version>3.5.4</maven.surefire.plugin.version>
+        <maven.surefire-report.plugin.version>3.5.4</maven.surefire-report.plugin.version>
+        <maven.site.plugin.version>3.21.0</maven.site.plugin.version>
+        <maven.spotbugs.plugin.version>4.9.8.2</maven.spotbugs.plugin.version>
+        <maven.pmd.plugin.version>3.28.0</maven.pmd.plugin.version>
+        <maven.jacoco.plugin.version>0.8.14</maven.jacoco.plugin.version>
+        <maven.project.info.reports.plugin.version>3.9.0</maven.project.info.reports.plugin.version>
+        <maven.jxr.plugin.version>3.6.0</maven.jxr.plugin.version>
+        <maven.dependency-check.plugin.version>12.2.0</maven.dependency-check.plugin.version>
         <maven.dependency.plugin.version>3.9.0</maven.dependency.plugin.version>
-        <maven.javadoc.plugin.version>3.11.2</maven.javadoc.plugin.version>
+        <maven.javadoc.plugin.version>3.12.0</maven.javadoc.plugin.version>
     </properties>
 
     <dependencies>
@@ -110,12 +110,16 @@
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-core</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
         <!-- ANTLR v4 -->
         <!-- see https://github.com/antlr/antlr4 -->
-        <!-- 
+        <!--
             chess grammar files:
             https://github.com/antlr/grammars-v4/blob/master/pgn/PGN.g4
             https://github.com/antlr/grammars-v4/blob/master/fen/fen.g4
@@ -163,6 +167,12 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>${mockito-junit-jupiter.version}</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-junit-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -177,7 +187,7 @@
                     <target>${project.java.version}</target>
                 </configuration>
             </plugin>
-            
+
             <!-- ANTLR v4 Maven Plugin -->
             <!-- see https://github.com/antlr/antlr4 -->
             <!-- see https://www.antlr.org/api/maven-plugin/latest/usage.html -->
@@ -197,7 +207,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -239,7 +249,7 @@
                         <configuration>
                             <skipTests>false</skipTests>
                             <includes>
-                                <include>**/*IT.*</include>
+                                <include>**/*IT.java</include>
                             </includes>
                         </configuration>
                     </execution>
