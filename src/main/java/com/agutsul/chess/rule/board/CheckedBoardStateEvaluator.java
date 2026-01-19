@@ -39,7 +39,7 @@ final class CheckedBoardStateEvaluator
     }
 
     @Override
-    protected BoardState createBoardState(Piece<Color> checkMaker) {
+    BoardState createBoardState(Piece<Color> checkMaker) {
         return checkedBoardState(board, checkMaker.getColor().invert(), checkMaker);
     }
 }

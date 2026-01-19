@@ -47,7 +47,7 @@ final class CheckMatedBoardStateEvaluator
     }
 
     @Override
-    protected BoardState createBoardState(Piece<Color> checkMaker) {
+    BoardState createBoardState(Piece<Color> checkMaker) {
         return checkMatedBoardState(board, checkMaker.getColor().invert(), checkMaker);
     }
 }

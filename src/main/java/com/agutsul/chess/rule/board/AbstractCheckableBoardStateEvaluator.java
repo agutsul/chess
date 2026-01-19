@@ -23,9 +23,9 @@ abstract class AbstractCheckableBoardStateEvaluator
         super(board);
     }
 
-    protected abstract BoardState createBoardState(Piece<Color> checkMaker);
+    abstract BoardState createBoardState(Piece<Color> checkMaker);
 
-    protected Collection<Piece<Color>> getCheckMakers(KingPiece<Color> king) {
+    final Collection<Piece<Color>> getCheckMakers(KingPiece<Color> king) {
         @SuppressWarnings("unchecked")
         var checkMakers = Stream.of(board.getPieces(king.getColor().invert()))
                 .flatMap(Collection::stream)
@@ -41,7 +41,7 @@ abstract class AbstractCheckableBoardStateEvaluator
         return checkMakers;
     }
 
-    protected Optional<BoardState> createBoardState(Collection<Piece<Color>> checkMakers) {
+    final Optional<BoardState> createBoardState(Collection<Piece<Color>> checkMakers) {
         var boardStates = Stream.of(checkMakers)
                 .flatMap(Collection::stream)
                 .map(this::createBoardState)
