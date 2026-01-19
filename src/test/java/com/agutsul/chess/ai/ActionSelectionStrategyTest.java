@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -74,7 +75,8 @@ public class ActionSelectionStrategyTest {
         assertTrue(result.isEmpty());
     }
 
-    @ParameterizedTest(name = "{index}. testSelectionActionFound({0})")
+    @DisplayName("testSelectionActionFound")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @EnumSource(SelectionStrategy.Type.class)
     void testSelectionActionFound(SelectionStrategy.Type type) {
         when(board.getPieces(any(Color.class)))
@@ -144,7 +146,8 @@ public class ActionSelectionStrategyTest {
         assertTrue(result.isEmpty());
     }
 
-    @ParameterizedTest(name = "{index}. testSearchActionFound({0})")
+    @DisplayName("testSearchActionFound")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @EnumSource(SelectionStrategy.Type.class)
     void testSearchActionFound(SelectionStrategy.Type type) {
         when(board.getPieces(any(Color.class)))
@@ -170,7 +173,8 @@ public class ActionSelectionStrategyTest {
         assertEquals(action, result.get());
     }
 
-    @ParameterizedTest(name = "{index}. testSearchActionNotFound({0})")
+    @DisplayName("testSearchActionNotFound")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @EnumSource(SelectionStrategy.Type.class)
     void testSearchActionNotFound(SelectionStrategy.Type type) {
         when(board.getPieces(any(Color.class)))

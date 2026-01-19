@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -47,7 +48,8 @@ public class PgnGameBuilderTest {
         assertEquals(TAG_VALUE, game.getParsedTags().get(TAG_KEY));
     }
 
-    @ParameterizedTest(name = "{index}. testPgnGameBuildWithTimeControl({0})")
+    @DisplayName("testPgnGameBuildWithTimeControl")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @CsvSource({
         "?,true", "-,false", "40/9000,true", "300,true", "*180,true",
         "40/9000+0,true", "4500+60,true", "*180+2,true"

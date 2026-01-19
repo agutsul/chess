@@ -20,6 +20,7 @@ import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AutoClose;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -87,7 +88,8 @@ public class FenGameBuilderTest implements TestFileReader {
         assertEquals(expected, actual);
     }
 
-    @ParameterizedTest(name = "{index}. testInvalidBoardSize({0})")
+    @DisplayName("testInvalidBoardSize")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "", " / ", "8/8/8/8/8/8/8/8/8", "1/X", "1/0", "9/R" })
     void testInvalidBoardSize(String boardLine) {
         var builder = new FenGameBuilder();
@@ -108,7 +110,8 @@ public class FenGameBuilderTest implements TestFileReader {
         assertEquals(expectedMessage, thrown.getMessage());
     }
 
-    @ParameterizedTest(name = "{index}. testInvalidBoardLine({0})")
+    @DisplayName("testInvalidBoardLine")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { BOARD_LINE + "9", BOARD_LINE + "X" })
     void testInvalidBoardLine(String boardLine) {
         var builder = new FenGameBuilder();
@@ -130,7 +133,8 @@ public class FenGameBuilderTest implements TestFileReader {
         assertEquals(expectedMessage, thrown.getMessage());
     }
 
-    @ParameterizedTest(name = "{index}. testValidActiveColor({0})")
+    @DisplayName("testValidActiveColor")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "w", "b", "W", "B" })
     void testValidActiveColor(String color) {
         var builder = new FenGameBuilder();
@@ -151,7 +155,8 @@ public class FenGameBuilderTest implements TestFileReader {
         assertTrue(Strings.CI.startsWith(player.getName(), color));
     }
 
-    @ParameterizedTest(name = "{index}. testInvalidActiveColor({0})")
+    @DisplayName("testInvalidActiveColor")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "", "A", "1", "ww", "bb", "wb", "bw" })
     void testInvalidActiveColor(String color) {
         var builder = new FenGameBuilder();
@@ -170,7 +175,8 @@ public class FenGameBuilderTest implements TestFileReader {
         assertEquals(expectedMessage, thrown.getMessage());
     }
 
-    @ParameterizedTest(name = "{index}. testValidCastling({0})")
+    @DisplayName("testValidCastling")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "KQkq", "Kq", "Qk", "Qq", "Kk", "K", "Q", "k", "q" })
     void testValidCastling(String castling) {
         var builder = new FenGameBuilder();
@@ -194,7 +200,8 @@ public class FenGameBuilderTest implements TestFileReader {
         assertEquals(castling.length(), castlingCounts);
     }
 
-    @ParameterizedTest(name = "{index}. testInvalidCastling({0})")
+    @DisplayName("testInvalidCastling")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "a", "B", "1" })
     void testInvalidCastling(String castling) {
         var builder = new FenGameBuilder();
@@ -214,7 +221,8 @@ public class FenGameBuilderTest implements TestFileReader {
         assertEquals(expectedMessage, thrown.getMessage());
     }
 
-    @ParameterizedTest(name = "{index}. testValidEnPassant({1},{2})")
+    @DisplayName("testValidEnPassant")
+    @ParameterizedTest(name = "({index}) => (''{1}'',''{2}'')")
     @CsvSource({
         "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR,b,e3",
         "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR,w,c6"
@@ -236,7 +244,8 @@ public class FenGameBuilderTest implements TestFileReader {
         assertEquals(1, game.getJournal().size());
     }
 
-    @ParameterizedTest(name = "{index}. testInvalidEnPassant({0})")
+    @DisplayName("testInvalidEnPassant")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "e2", "e4", "1", "A1", "H8" })
     void testInvalidEnPassant(String enPassant) {
         var builder = new FenGameBuilder();

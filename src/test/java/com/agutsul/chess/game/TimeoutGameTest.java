@@ -17,6 +17,7 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,7 +42,8 @@ import com.agutsul.chess.timeout.Timeout;
 @ExtendWith(MockitoExtension.class)
 public class TimeoutGameTest {
 
-    @ParameterizedTest(name = "{index}. testInvalidTimeoutValue({0})")
+    @DisplayName("testInvalidTimeoutValue")
+    @ParameterizedTest(name = "({index}) => ({0})")
     @ValueSource(ints = { -1 })
     void testInvalidTimeoutValue(int timeout) {
         var originGame = mock(AbstractPlayableGame.class);

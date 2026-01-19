@@ -3,6 +3,7 @@ package com.agutsul.chess.antlr.pgn.action;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,7 +22,8 @@ public class PawnPromotionTypeAdapterTest {
     @Mock
     Board board;
 
-    @ParameterizedTest(name = "{index}. testAdaptInvalidPawnPromotionTypeAction({0})")
+    @DisplayName("testAdaptInvalidPawnPromotionTypeAction")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "z9Q", "a0R", "2aQ", "A2r", "Aa22", "a11", "cxb3", "e4e4" })
     void testAdaptInvalidPawnPromotionTypeAction(String action) {
         var adapter = new PawnPromotionTypeAdapter(board, Colors.WHITE);

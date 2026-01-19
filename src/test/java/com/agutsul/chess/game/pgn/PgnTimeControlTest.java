@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,7 +25,8 @@ import com.agutsul.chess.timeout.UnknownTimeout;
 @ExtendWith(MockitoExtension.class)
 public class PgnTimeControlTest {
 
-    @ParameterizedTest(name = "{index}. testBlankPgnTimeControl({0})")
+    @DisplayName("testBlankPgnTimeControl")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "", " ", "  " })
     void testBlankTimeControl(String timeControl) {
         assertNull(PgnTimeControl.timeoutOf(timeControl));
@@ -35,7 +37,8 @@ public class PgnTimeControlTest {
         assertNull(PgnTimeControl.timeoutOf(null));
     }
 
-    @ParameterizedTest(name = "{index}. testUnknownTimeControl({0})")
+    @DisplayName("testUnknownTimeControl")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "?", "?:-", "?:-:" })
     void testUnknownTimeControl(String timeControl) {
         var parsedTimeout = PgnTimeControl.timeoutOf(timeControl);
@@ -46,13 +49,15 @@ public class PgnTimeControlTest {
         assertEquals(Optional.empty(), parsedTimeout.getDuration());
     }
 
-    @ParameterizedTest(name = "{index}. testInvalidUnknownTimeControl({0})")
+    @DisplayName("testInvalidUnknownTimeControl")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "??", "?!", "!?" })
     void testInvalidUnknownTimeControl(String timeControl) {
         assertNull(PgnTimeControl.timeoutOf(timeControl));
     }
 
-    @ParameterizedTest(name = "{index}. testNoTimeoutTimeControl({0})")
+    @DisplayName("testNoTimeoutTimeControl")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "-", "--", "=-" })
     void testNoTimeoutTimeControl(String timeControl) {
         assertNull(PgnTimeControl.timeoutOf(timeControl));
@@ -71,13 +76,15 @@ public class PgnTimeControlTest {
         assertEquals(60000L, duration.get().toMillis());
     }
 
-    @ParameterizedTest(name = "{index}. testInvalidGeneralTimeControl({0})")
+    @DisplayName("testInvalidGeneralTimeControl")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "12 3", "-123", "12.3" })
     void testInvalidGeneralTimeControl(String timeControl) {
         assertNull(PgnTimeControl.timeoutOf(timeControl));
     }
 
-    @ParameterizedTest(name = "{index}. testIncrementalTimeControl({0})")
+    @DisplayName("testIncrementalTimeControl")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "*180+60", "40/9000+60", "4500+60" })
     void testIncrementalTimeControl(String timeControl) {
         var parsedTimeout = PgnTimeControl.timeoutOf(timeControl);
@@ -98,7 +105,8 @@ public class PgnTimeControlTest {
         ));
     }
 
-    @ParameterizedTest(name = "{index}. testInvalidIncrementalTimeControl({0})")
+    @DisplayName("testInvalidIncrementalTimeControl")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "*180++60", "40/9000+60+", "+4500+60" })
     void testInvalidIncrementalTimeControl(String timeControl) {
         assertNull(PgnTimeControl.timeoutOf(timeControl));
@@ -117,7 +125,8 @@ public class PgnTimeControlTest {
         assertEquals(60000L, duration.get().toMillis());
     }
 
-    @ParameterizedTest(name = "{index}. testInvalidSandclockTimeControl({0})")
+    @DisplayName("testInvalidSandclockTimeControl")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "**180", "*180*", "180*" })
     void testInvalidSandclockTimeControl(String timeControl) {
         assertNull(PgnTimeControl.timeoutOf(timeControl));
@@ -151,13 +160,15 @@ public class PgnTimeControlTest {
         assertEquals(10, actionsGameTimeout.getActionsCounter());
     }
 
-    @ParameterizedTest(name = "{index}. testInvalidActionsPerPeriodTimeControl({0})")
+    @DisplayName("testInvalidActionsPerPeriodTimeControl")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "10//300", "/10", "10/", "ab/cd", "ab/10", "10/ab" })
     void testInvalidActionsPerPeriodTimeControl(String timeControl) {
         assertNull(PgnTimeControl.timeoutOf(timeControl));
     }
 
-    @ParameterizedTest(name = "{index}. testCompositeTimeControl({0})")
+    @DisplayName("testCompositeTimeControl")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "40/5400+30:1800+30", "40/5400:*300", "5400:*300", "5400+30:*300", "5400:*300+30" })
     void testCompositeTimeControl(String timeControl) {
         var timeout = PgnTimeControl.timeoutOf(timeControl);
@@ -169,7 +180,8 @@ public class PgnTimeControlTest {
         ));
     }
 
-    @ParameterizedTest(name = "{index}. testInvalidCompositeTimeControl({0})")
+    @DisplayName("testInvalidCompositeTimeControl")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "-:-", "::" })
     void testInvalidCompositeTimeControl(String timeControl) {
         assertNull(PgnTimeControl.timeoutOf(timeControl));

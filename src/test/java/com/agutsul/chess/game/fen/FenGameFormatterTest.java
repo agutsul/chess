@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -19,7 +20,8 @@ import com.agutsul.chess.antlr.fen.FenGameParser;
 @ExtendWith(MockitoExtension.class)
 public class FenGameFormatterTest implements TestFileReader {
 
-    @ParameterizedTest(name = "{index}. testFenGameToString({0})")
+    @DisplayName("testFenGameToString")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = {
             "chess_move_0.fen", "chess_move_1.fen",
             "chess_move_2.fen", "chess_move_3.fen"

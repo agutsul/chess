@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,7 +28,8 @@ public class PawnMoveActionAdapterTest {
     @Mock
     Board board;
 
-    @ParameterizedTest(name = "{index}. testAdaptInvalidPawnMoveAction({0})")
+    @DisplayName("testAdaptInvalidPawnMoveAction")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "z9", "a0", "2a", "A2", "Aa", "a11", "cxb3", "e4e4" })
     void testAdaptInvalidPawnMoveAction(String action) {
         var adapter = new PawnMoveActionAdapter(board, Colors.WHITE);

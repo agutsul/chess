@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,7 +28,8 @@ public class PieceMoveActionAdapterTest {
     @Mock
     Board board;
 
-    @ParameterizedTest(name = "{index}. testAdaptInvalidPieceMoveAction({0})")
+    @DisplayName("testAdaptInvalidPieceMoveAction")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @ValueSource(strings = { "Wz9", "Ba0", "Q12a", "Ac2", "Aa2", "Ba11", "cxb3" })
     void testAdaptInvalidPieceMoveAction(String action) {
         var adapter = new PieceMoveActionAdapter(board, Colors.WHITE);

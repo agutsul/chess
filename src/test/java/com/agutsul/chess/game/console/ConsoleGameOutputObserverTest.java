@@ -22,6 +22,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AutoClose;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -258,7 +259,8 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
         assertStream("console_action_terminated_event.txt", outputStream);
     }
 
-    @ParameterizedTest(name = "{index}. testProcessActionTerminationEvent({0})")
+    @DisplayName("testProcessActionTerminationEvent")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
     @EnumSource(value = Type.class, names = { "DRAW", "EXIT", "TIMEOUT" })
     void testProcessActionTerminationEvent(Type terminationType)
             throws URISyntaxException, IOException {
