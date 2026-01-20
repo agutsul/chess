@@ -3,17 +3,14 @@ package com.agutsul.chess.rule.impact.domination;
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
-import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.PieceDominationAttackImpact;
 import com.agutsul.chess.activity.impact.PieceDominationImpact;
 import com.agutsul.chess.board.Board;
@@ -55,19 +52,11 @@ public final class PieceDominationLineImpactRule<COLOR1 extends Color,
                 .map(calculated -> (Line) calculated)
                 .flatMap(line -> Stream.of(board.getPiece(line.getLast()))
                         .flatMap(Optional::stream)
-                        .map(foundPiece -> {
-                            var opponentActionPositions = Stream.of(board.getActions(foundPiece))
-                                    .flatMap(Collection::stream)
-                                    .map(Action::getPosition)
-                                    .collect(toSet());
-
-                            return attackedPositions.containsAll(opponentActionPositions)
-                                    ? createAttackImpact(piece, foundPiece, line)
-                                    : null;
-                        })
+                        .map(opponentPiece -> (ATTACKED) opponentPiece)
+                        .filter(opponentPiece -> isAllOpponentPositionsAttacked(opponentPiece, attackedPositions))
+                        .map(opponentPiece -> createAttackImpact(piece, opponentPiece, line))
                 )
-                .filter(Objects::nonNull)
-                .map(impact -> new PieceDominationAttackImpact<>(impact))
+                .map(PieceDominationAttackImpact::new)
                 .map(impact -> (IMPACT) impact)
                 .collect(toList());
 

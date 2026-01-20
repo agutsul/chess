@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceControlImpact;
 import com.agutsul.chess.activity.impact.PieceDominationImpact;
@@ -39,5 +40,16 @@ abstract class AbstractDominationImpactRule<COLOR1 extends Color,
                 .collect(toSet());
 
         return positions;
+    }
+
+    protected boolean isAllOpponentPositionsAttacked(PIECE2 piece,
+                                                     Collection<Position> attackedPositions) {
+
+        var opponentActionPositions = Stream.of(board.getActions(piece))
+                .flatMap(Collection::stream)
+                .map(Action::getPosition)
+                .collect(toSet());
+
+        return attackedPositions.containsAll(opponentActionPositions);
     }
 }
