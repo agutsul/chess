@@ -690,7 +690,7 @@ public class BishopPieceImplTest extends AbstractPieceTest {
 
     @Test
     // https://en.wikipedia.org/wiki/X-ray_(chess)
-    void testBisshopXRayAttackImpact() {
+    void testBishopXRayAttackImpact() {
         var board = new LabeledBoardBuilder()
                 .withBlackKing("h8")
                 .withBlackQueen("d8")
