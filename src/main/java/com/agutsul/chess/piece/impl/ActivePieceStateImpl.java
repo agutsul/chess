@@ -80,9 +80,10 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
                 .collect(toSet());
 
         if (!possiblePositions.contains(position)) {
-            throw new IllegalActionException(
-                    String.format("%s invalid move to %s", piece, position)
-            );
+            throw new IllegalActionException(String.format(
+                    "%s invalid move to %s",
+                    piece, position
+            ));
         }
 
         ((AbstractPiece<?>) piece).doMove(position);
@@ -99,9 +100,10 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
                 .collect(toSet());
 
         if (!possibleTargets.contains(targetPiece)) {
-            throw new IllegalActionException(
-                    String.format("%s invalid capture of %s", piece, targetPiece)
-            );
+            throw new IllegalActionException(String.format(
+                    "%s invalid capture of %s",
+                    piece, targetPiece
+            ));
         }
 
         ((AbstractPiece<?>) piece).doCapture(targetPiece);

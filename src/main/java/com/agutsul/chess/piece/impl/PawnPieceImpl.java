@@ -199,9 +199,10 @@ final class PawnPieceImpl<COLOR extends Color>
                                             && Objects.equals(action.getPosition(), targetPosition));
 
             if (!isValid) {
-                throw new IllegalActionException(
-                        String.format("%s invalid en passant of %s", piece, targetPosition)
-                );
+                throw new IllegalActionException(String.format(
+                        "%s invalid en passant of %s",
+                        piece, targetPosition
+                ));
             }
 
             // remove target pawn from board
