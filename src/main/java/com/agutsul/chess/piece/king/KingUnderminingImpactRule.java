@@ -1,6 +1,5 @@
 package com.agutsul.chess.piece.king;
 
-import com.agutsul.chess.Protectable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
@@ -17,11 +16,7 @@ final class KingUnderminingImpactRule<COLOR1 extends Color,
 
     KingUnderminingImpactRule(Board board,
                               CapturePieceAlgo<COLOR1,ATTACKER,Position> algo) {
-        super(board, algo);
-    }
 
-    @Override
-    protected boolean isPieceAttackable(Piece<Color> piece) {
-        return super.isPieceAttackable(piece) && !((Protectable) piece).isProtected();
+        super(board, new KingPieceAlgoAdapter<>(board, algo));
     }
 }

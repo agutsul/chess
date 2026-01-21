@@ -1,16 +1,5 @@
 package com.agutsul.chess.piece.king;
 
-import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
-import static java.util.function.Predicate.not;
-import static java.util.stream.Collectors.toList;
-
-import java.util.Collection;
-import java.util.Optional;
-import java.util.stream.Stream;
-
-import com.agutsul.chess.Calculatable;
-import com.agutsul.chess.Protectable;
-import com.agutsul.chess.activity.impact.PieceDominationAttackImpact;
 import com.agutsul.chess.activity.impact.PieceDominationImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -27,31 +16,9 @@ final class KingDominationImpactRule<COLOR1 extends Color,
                                      IMPACT extends PieceDominationImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
         extends PieceDominationPositionImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,IMPACT> {
 
-    KingDominationImpactRule(Board board, CapturePieceAlgo<COLOR1,ATTACKER,Position> algo) {
-        super(board, algo);
-    }
+    KingDominationImpactRule(Board board,
+                             CapturePieceAlgo<COLOR1,ATTACKER,Position> algo) {
 
-    @Override
-    protected Collection<IMPACT> createImpacts(ATTACKER piece, Collection<Calculatable> next,
-                                               Collection<Position> attackedPositions) {
-
-        var opponentColor = piece.getColor().invert();
-
-        @SuppressWarnings("unchecked")
-        var impacts = Stream.of(next)
-                .flatMap(Collection::stream)
-                .map(calculated -> board.getPiece((Position) calculated))
-                .flatMap(Optional::stream)
-                .filter(not(Piece::isKing))
-                .filter(opponentPiece -> !((Protectable) opponentPiece).isProtected())
-                .filter(opponentPiece -> !board.isMonitored(opponentPiece.getPosition(), opponentColor))
-                .map(opponentPiece -> (ATTACKED) opponentPiece)
-                .filter(opponentPiece -> isAllOpponentPositionsAttacked(opponentPiece, attackedPositions))
-                .map(opponentPiece -> createAttackImpact(piece, opponentPiece))
-                .map(PieceDominationAttackImpact::new)
-                .map(impact -> (IMPACT) impact)
-                .collect(toList());
-
-        return impacts;
+        super(board, new KingPieceAlgoAdapter<>(board, algo));
     }
 }
