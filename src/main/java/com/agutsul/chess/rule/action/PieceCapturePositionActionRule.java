@@ -19,46 +19,37 @@ import com.agutsul.chess.position.Position;
 
 public class PieceCapturePositionActionRule<COLOR1 extends Color,
                                             COLOR2 extends Color,
-                                            PIECE1 extends Piece<COLOR1> & Capturable,
-                                            PIECE2 extends Piece<COLOR2>>
-        extends AbstractCaptureActionRule<COLOR1,COLOR2,PIECE1,PIECE2,
-                                          PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>> {
+                                            ATTACKER extends Piece<COLOR1> & Capturable,
+                                            ATTACKED extends Piece<COLOR2>>
+        extends AbstractCaptureActionRule<COLOR1,COLOR2,ATTACKER,ATTACKED,
+                                          PieceCaptureAction<COLOR1,COLOR2,ATTACKER,ATTACKED>> {
 
-    private final CapturePieceAlgo<COLOR1,PIECE1,Position> algo;
+    private final CapturePieceAlgo<COLOR1,ATTACKER,Position> algo;
 
     public PieceCapturePositionActionRule(Board board,
-                                          CapturePieceAlgo<COLOR1,PIECE1,Position> algo) {
+                                          CapturePieceAlgo<COLOR1,ATTACKER,Position> algo) {
         super(board);
         this.algo = algo;
     }
 
     @Override
-    protected Collection<Calculatable> calculate(PIECE1 piece) {
+    protected Collection<Calculatable> calculate(ATTACKER piece) {
         return unmodifiableCollection(algo.calculate(piece));
     }
 
     @Override
-    protected Collection<PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>>
-            createActions(PIECE1 piece1, Collection<Calculatable> next) {
+    protected Collection<PieceCaptureAction<COLOR1,COLOR2,ATTACKER,ATTACKED>>
+            createActions(ATTACKER attacker, Collection<Calculatable> next) {
 
+        @SuppressWarnings("unchecked")
         var actions = Stream.of(next)
                 .flatMap(Collection::stream)
-                .map(calculated -> getCapturePiece(piece1, (Position) calculated))
+                .map(calculated -> board.getPiece((Position) calculated))
                 .flatMap(Optional::stream)
-                .map(attackedPiece -> new PieceCaptureAction<>(piece1, attackedPiece))
+                .filter(piece -> !Objects.equals(piece.getColor(), attacker.getColor()))
+                .map(attackedPiece -> new PieceCaptureAction<>(attacker, (ATTACKED) attackedPiece))
                 .collect(toList());
 
         return actions;
-    }
-
-    protected Optional<PIECE2> getCapturePiece(PIECE1 attacker, Position position) {
-        @SuppressWarnings("unchecked")
-        var capturedPiece = Stream.of(board.getPiece(position))
-                .flatMap(Optional::stream)
-                .filter(piece -> !Objects.equals(piece.getColor(), attacker.getColor()))
-                .map(piece -> (PIECE2) piece)
-                .findFirst();
-
-        return capturedPiece;
     }
 }

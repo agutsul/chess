@@ -13,23 +13,28 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.AbstractAlgo;
-import com.agutsul.chess.piece.algo.Algo;
-import com.agutsul.chess.piece.algo.CapturePieceAlgo;
-import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Position;
 
-final class KingPieceAlgoAdapter<COLOR extends Color,
-                                 PIECE extends KingPiece<COLOR>>
+final class KingPieceAlgoProxy<COLOR extends Color,
+                               PIECE extends KingPiece<COLOR>>
         extends AbstractAlgo<PIECE,Position>
-        implements MovePieceAlgo<COLOR,PIECE,Position>,
-                   CapturePieceAlgo<COLOR,PIECE,Position> {
+        implements KingPieceAlgo<COLOR,PIECE> {
 
-    private final Algo<PIECE,Collection<Position>> algo;
+    enum Mode {
+        MOVE,
+        CAPTURE,
+        DEFAULT
+    }
 
-    KingPieceAlgoAdapter(Board board,
-                         Algo<PIECE,Collection<Position>> algo) {
+    private final Mode mode;
+    private final KingPieceAlgo<COLOR,PIECE> algo;
+
+    KingPieceAlgoProxy(Mode mode, Board board,
+                       KingPieceAlgo<COLOR,PIECE> algo) {
 
         super(board);
+
+        this.mode = mode;
         this.algo = algo;
     }
 
@@ -38,18 +43,25 @@ final class KingPieceAlgoAdapter<COLOR extends Color,
         var opponentColor = piece.getColor().invert();
 
         var calculatedPositions = algo.calculate(piece);
-        var positions = Stream.of(
-                    filterMovePositions(calculatedPositions, opponentColor),
-                    filterCapturePositions(calculatedPositions, opponentColor)
-                )
-                .flatMap(Collection::parallelStream)
-                .distinct()
-                .toList();
+
+        var positions = switch (mode) {
+        case MOVE -> movePositions(calculatedPositions, opponentColor);
+        case CAPTURE -> capturePositions(calculatedPositions, opponentColor);
+        default -> Stream.of(
+                movePositions(calculatedPositions, opponentColor),
+                capturePositions(calculatedPositions, opponentColor)
+            )
+            .flatMap(Collection::parallelStream)
+            .distinct()
+            .toList();
+        };
 
         return positions;
     }
 
-    private Collection<Position> filterMovePositions(Collection<Position> positions, Color opponentColor) {
+    private Collection<Position> movePositions(Collection<Position> positions,
+                                               Color opponentColor) {
+
         var filtered = Stream.of(positions)
                 .flatMap(Collection::stream)
                 .filter(position -> board.isEmpty(position))
@@ -60,7 +72,9 @@ final class KingPieceAlgoAdapter<COLOR extends Color,
         return filtered;
     }
 
-    private Collection<Position> filterCapturePositions(Collection<Position> positions, Color opponentColor) {
+    private Collection<Position> capturePositions(Collection<Position> positions,
+                                                  Color opponentColor) {
+
         var filtered = Stream.of(positions)
                 .flatMap(Collection::stream)
                 .map(position -> board.getPiece(position))

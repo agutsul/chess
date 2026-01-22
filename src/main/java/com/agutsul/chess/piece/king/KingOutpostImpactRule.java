@@ -1,12 +1,8 @@
 package com.agutsul.chess.piece.king;
 
-import java.util.Collection;
-
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
-import com.agutsul.chess.piece.algo.Algo;
-import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.outpost.PieceOutpostPositionImpactRule;
 
 final class KingOutpostImpactRule<COLOR extends Color,
@@ -14,8 +10,8 @@ final class KingOutpostImpactRule<COLOR extends Color,
         extends PieceOutpostPositionImpactRule<COLOR,PIECE> {
 
     KingOutpostImpactRule(Board board,
-                          Algo<PIECE,Collection<Position>> algo) {
+                          KingPieceAlgo<COLOR,PIECE> algo) {
 
-        super(board, new KingPieceAlgoAdapter<>(board, algo));
+        super(board, new KingPieceAlgoProxy<>(KingPieceAlgoProxy.Mode.MOVE, board, algo));
     }
 }

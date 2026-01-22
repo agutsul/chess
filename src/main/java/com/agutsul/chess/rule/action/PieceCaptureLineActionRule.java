@@ -21,27 +21,27 @@ import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter.Mode;
 
 public final class PieceCaptureLineActionRule<COLOR1 extends Color,
                                               COLOR2 extends Color,
-                                              PIECE1 extends Piece<COLOR1> & Capturable & Lineable,
-                                              PIECE2 extends Piece<COLOR2>>
-        extends AbstractCaptureActionRule<COLOR1,COLOR2,PIECE1,PIECE2,
-                                          PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>> {
+                                              ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
+                                              ATTACKED extends Piece<COLOR2>>
+        extends AbstractCaptureActionRule<COLOR1,COLOR2,ATTACKER,ATTACKED,
+                                          PieceCaptureAction<COLOR1,COLOR2,ATTACKER,ATTACKED>> {
 
-    private final CapturePieceAlgo<COLOR1,PIECE1,Line> algo;
+    private final CapturePieceAlgo<COLOR1,ATTACKER,Line> algo;
 
     public PieceCaptureLineActionRule(Board board,
-                                      CapturePieceAlgo<COLOR1,PIECE1,Line> algo) {
+                                      CapturePieceAlgo<COLOR1,ATTACKER,Line> algo) {
         super(board);
         this.algo = new SecureLineAlgoAdapter<>(Mode.OPPOSITE_COLORS, board, algo);
     }
 
     @Override
-    protected Collection<Calculatable> calculate(PIECE1 piece) {
+    protected Collection<Calculatable> calculate(ATTACKER piece) {
         return unmodifiableCollection(algo.calculate(piece));
     }
 
     @Override
-    protected Collection<PieceCaptureAction<COLOR1,COLOR2,PIECE1,PIECE2>>
-            createActions(PIECE1 piece, Collection<Calculatable> next) {
+    protected Collection<PieceCaptureAction<COLOR1,COLOR2,ATTACKER,ATTACKED>>
+            createActions(ATTACKER attacker, Collection<Calculatable> next) {
 
         @SuppressWarnings("unchecked")
         var actions = Stream.of(next)
@@ -50,7 +50,7 @@ public final class PieceCaptureLineActionRule<COLOR1 extends Color,
                 .flatMap(line -> Stream.of(board.getPiece(line.getLast()))
                         .flatMap(Optional::stream)
                         .map(attackedPiece -> new PieceCaptureAction<>(
-                                piece, (PIECE2) attackedPiece, line
+                                attacker, (ATTACKED) attackedPiece, line
                         ))
                 )
                 .collect(toList());

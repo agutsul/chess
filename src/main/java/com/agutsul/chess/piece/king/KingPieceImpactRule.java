@@ -14,7 +14,7 @@ public final class KingPieceImpactRule<COLOR extends Color,
         extends AbstractPieceRule<Impact<?>,Impact.Type> {
 
     public KingPieceImpactRule(Board board) {
-        this(board, new KingPieceAlgo<>(board));
+        this(board, new KingPieceAlgoImpl<>(board));
     }
 
     @SuppressWarnings("unchecked")

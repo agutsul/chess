@@ -12,7 +12,7 @@ public final class KingPieceActionRule<COLOR extends Color,
         extends AbstractPieceRule<Action<?>,Action.Type> {
 
     public KingPieceActionRule(Board board) {
-        this(board, new KingPieceAlgo<>(board));
+        this(board, new KingPieceAlgoImpl<>(board));
     }
 
     @SuppressWarnings("unchecked")

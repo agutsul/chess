@@ -4,8 +4,6 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.CapturePieceAlgo;
-import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.fork.PieceForkPositionImpactRule;
 
 final class KingForkImpactRule<COLOR1 extends Color,
@@ -15,8 +13,8 @@ final class KingForkImpactRule<COLOR1 extends Color,
         extends PieceForkPositionImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
     KingForkImpactRule(Board board,
-                       CapturePieceAlgo<COLOR1,ATTACKER,Position> algo) {
+                       KingPieceAlgo<COLOR1,ATTACKER> algo) {
 
-        super(board, new KingPieceAlgoAdapter<>(board, algo));
+        super(board, new KingPieceAlgoProxy<>(KingPieceAlgoProxy.Mode.CAPTURE, board, algo));
     }
 }

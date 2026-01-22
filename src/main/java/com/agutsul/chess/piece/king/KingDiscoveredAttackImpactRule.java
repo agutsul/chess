@@ -1,15 +1,11 @@
 package com.agutsul.chess.piece.king;
 
-import java.util.Collection;
-
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.Algo;
-import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.attack.PieceDiscoveredAttackPositionImpactRule;
 
 final class KingDiscoveredAttackImpactRule<COLOR1 extends Color,
@@ -20,8 +16,8 @@ final class KingDiscoveredAttackImpactRule<COLOR1 extends Color,
         extends PieceDiscoveredAttackPositionImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED> {
 
     KingDiscoveredAttackImpactRule(Board board,
-                                   Algo<PIECE,Collection<Position>> algo) {
+                                   KingPieceAlgo<COLOR1,PIECE> algo) {
 
-        super(board, new KingPieceAlgoAdapter<>(board, algo));
+        super(board, new KingPieceAlgoProxy<>(KingPieceAlgoProxy.Mode.DEFAULT, board, algo));
     }
 }
