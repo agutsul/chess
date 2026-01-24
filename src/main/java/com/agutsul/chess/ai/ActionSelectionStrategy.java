@@ -28,6 +28,15 @@ public final class ActionSelectionStrategy
 
     private static final Logger LOGGER = getLogger(ActionSelectionStrategy.class);
 
+    private static final String ACTION_SELECTION_ERROR_MESSAGE =
+            "Unable to select action for '%s': fork-join pool not set";
+
+    private static final String ACTION_SELECTION_INTERRUPTED_MESSAGE =
+            "Select('%s') '%s' action interrupted";
+
+    private static final String ACTION_SELECTION_BOARD_STATE_ERROR_MESSAGE =
+            "Unable to select action for '%s' and board state '%s': fork-join pool not set";
+
     private final Board board;
     private final Journal<ActionMemento<?,?>> journal;
     private final ForkJoinPool forkJoinPool;
@@ -52,7 +61,7 @@ public final class ActionSelectionStrategy
 
         if (isNull(forkJoinPool)) {
             throw new IllegalStateException(String.format(
-                    "Unable to select action for '%s': fork-join pool not set",
+                    ACTION_SELECTION_ERROR_MESSAGE,
                     color
             ));
         }
@@ -73,7 +82,7 @@ public final class ActionSelectionStrategy
             return Optional.ofNullable(result.getAction());
         } catch (CancellationException e) {
             throw new GameInterruptionException(String.format(
-                    "Select('%s') '%s' action interrupted",
+                    ACTION_SELECTION_INTERRUPTED_MESSAGE,
                     this.type, color
             ));
         } finally {
@@ -90,7 +99,7 @@ public final class ActionSelectionStrategy
 
         if (isNull(forkJoinPool)) {
             throw new IllegalStateException(String.format(
-                    "Unable to select action for '%s' and board state '%s': fork-join pool not set",
+                    ACTION_SELECTION_BOARD_STATE_ERROR_MESSAGE,
                     color, boardState.name()
             ));
         }
@@ -115,7 +124,7 @@ public final class ActionSelectionStrategy
             }
         } catch (CancellationException e) {
             throw new GameInterruptionException(String.format(
-                    "Select('%s') '%s' action interrupted",
+                    ACTION_SELECTION_INTERRUPTED_MESSAGE,
                     this.type, color
             ));
         } finally {
