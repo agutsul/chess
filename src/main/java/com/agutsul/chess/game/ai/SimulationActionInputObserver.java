@@ -19,6 +19,8 @@ public final class SimulationActionInputObserver
         extends AbstractPlayerInputObserver
         implements ActionAdapter {
 
+    private static final String UNKNOWN_PROMOTION_ERROR_MESSAGE = "Unknown promotion action";
+
     private final SelectionStrategy<Action<?>> actionStrategy;
 
     private PiecePromoteAction<?,?> promoteAction;
@@ -52,7 +54,7 @@ public final class SimulationActionInputObserver
     @Override
     protected String getPromotionPieceType(Optional<Long> timeout) {
         if (this.promoteAction == null) {
-            throw new IllegalStateException("Unknown promotion action");
+            throw new IllegalStateException(UNKNOWN_PROMOTION_ERROR_MESSAGE);
         }
 
         return String.valueOf(this.promoteAction.getPieceType());
