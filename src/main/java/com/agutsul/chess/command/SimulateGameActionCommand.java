@@ -1,5 +1,6 @@
 package com.agutsul.chess.command;
 
+import static java.util.Objects.isNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.Closeable;
@@ -24,6 +25,8 @@ public final class SimulateGameActionCommand<VALUE extends Comparable<VALUE>>
         implements Closeable, Valuable<VALUE> {
 
     private static final Logger LOGGER = getLogger(SimulateGameActionCommand.class);
+
+    private static final String VALUE_EVALUATOR_ERROR_MESSAGE = "Value evaluator is not set";
 
     private final SimulationGame game;
 
@@ -66,8 +69,8 @@ public final class SimulateGameActionCommand<VALUE extends Comparable<VALUE>>
 
     @Override
     protected void preExecute() throws CommandException {
-        if (this.evaluator == null) {
-            throw new IllegalStateException("Value evaluator is not set");
+        if (isNull(this.evaluator)) {
+            throw new IllegalStateException(VALUE_EVALUATOR_ERROR_MESSAGE);
         }
     }
 

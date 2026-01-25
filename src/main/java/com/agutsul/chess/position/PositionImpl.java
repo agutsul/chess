@@ -1,8 +1,8 @@
 package com.agutsul.chess.position;
 
 import static com.agutsul.chess.position.Position.codeOf;
-
-import java.util.Objects;
+import static java.util.Objects.hash;
+import static java.util.Objects.isNull;
 
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -22,7 +22,7 @@ final class PositionImpl
 
     PositionImpl(int x, int y) {
         var code = codeOf(x,y);
-        if (code == null) {
+        if (isNull(code)) {
             throw new IllegalPositionException(
                     String.format("%s [%d,%d]", INVALID_POSITION_MESSAGE, x, y)
             );
@@ -62,7 +62,7 @@ final class PositionImpl
 
     @Override
     public int hashCode() {
-        return Objects.hash(x(), y());
+        return hash(x(), y());
     }
 
     @Override

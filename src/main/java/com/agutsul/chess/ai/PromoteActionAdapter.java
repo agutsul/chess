@@ -25,6 +25,9 @@ final class PromoteActionAdapter
 
     private static final Set<Piece.Type> PROMOTION_TYPES = EnumSet.of(BISHOP, KNIGHT, ROOK, QUEEN);
 
+    private static final String UNSUPPORTED_PROMOTION_ERROR_MESSAGE =
+            "Unsupported promotion action source";
+
     @Override
     public Collection<Action<?>> adapt(PiecePromoteAction<?,?> action) {
         Collection<Action<?>> actions = PROMOTION_TYPES.stream()
@@ -56,7 +59,8 @@ final class PromoteActionAdapter
             );
         default:
             throw new IllegalStateException(String.format(
-                    "Unsupported promotion action source: %s",
+                    "%s: %s",
+                    UNSUPPORTED_PROMOTION_ERROR_MESSAGE,
                     action.getType()
             ));
         }

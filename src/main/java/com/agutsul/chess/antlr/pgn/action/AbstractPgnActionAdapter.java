@@ -7,6 +7,7 @@ import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActio
 import static com.agutsul.chess.piece.Piece.isKing;
 import static com.agutsul.chess.position.Position.codeOf;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
+import static java.util.Objects.nonNull;
 import static java.util.function.Predicate.not;
 
 import java.util.Collection;
@@ -133,7 +134,7 @@ abstract class AbstractPgnActionAdapter
                 .get();
 
         var checkLine = pinImpact.getLine();
-        if (checkLine != null) {
+        if (nonNull(checkLine)) {
             return checkLine.contains(positionOf(position));
         }
 

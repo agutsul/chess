@@ -1,6 +1,7 @@
 package com.agutsul.chess.rule.board;
 
 import static com.agutsul.chess.board.state.BoardStateFactory.insufficientMaterialBoardState;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -44,7 +45,7 @@ final class InsufficientMaterialBoardStateEvaluator
                                             ForkJoinPool forkJoinPool) {
 
         this(board, createEvaluator(board),
-                forkJoinPool != null
+                nonNull(forkJoinPool)
                     ? new NoLegalActionsLeadToCheckmateEvaluationTask(board, journal, forkJoinPool)
                     : (BoardStateEvaluator<Optional<BoardState>>) null
         );
@@ -69,7 +70,7 @@ final class InsufficientMaterialBoardStateEvaluator
             return Optional.of(boardStates.getFirst());
         }
 
-        if (legalActionsEvaluator != null) {
+        if (nonNull(legalActionsEvaluator)) {
             LOGGER.info("Insufficient material verification '{}' - check legal actions...", color);
             return legalActionsEvaluator.evaluate(color);
         }

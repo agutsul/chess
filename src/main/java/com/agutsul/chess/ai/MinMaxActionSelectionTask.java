@@ -27,13 +27,20 @@ final class MinMaxActionSelectionTask
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_LIMIT = 2;
 
+    private static final String SIMULATION_ERROR_MESSAGE =
+            "Simulation for '%s' action '%s' failed";
+    private static final String SIMULATION_INTERRUPTED_ERROR_MESSAGE =
+            "Simulation for '%s' action '%s' interrupted";
+
     private final int value;
 
     MinMaxActionSelectionTask(Board board, Journal<ActionMemento<?,?>> journal,
                               ForkJoinPool forkJoinPool, Color color) {
 
         // best matched action selection
-        this(board, journal, forkJoinPool, color, DEFAULT_LIMIT, TERMINAL_BOARD_STATE_RESULT_MATCHER);
+        this(board, journal, forkJoinPool, color,
+                DEFAULT_LIMIT, TERMINAL_BOARD_STATE_RESULT_MATCHER
+        );
     }
 
     @SuppressWarnings("unchecked")
@@ -99,14 +106,16 @@ final class MinMaxActionSelectionTask
             return simulationResult;
         } catch (CancellationException e) {
             throw new GameInterruptionException(String.format(
-                    "Simulation for '%s' action '%s' interrupted",
+                    SIMULATION_INTERRUPTED_ERROR_MESSAGE,
                     this.color, action
             ));
         } catch (IOException e) {
-            logger.error(
-                    String.format("Simulation for '%s' action '%s' failed", this.color, action),
-                    e
+            var message = String.format(
+                    SIMULATION_ERROR_MESSAGE,
+                    this.color, action
             );
+
+            logger.error(message, e);
         }
 
         return createTaskResult(action, 0);

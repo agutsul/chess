@@ -3,6 +3,7 @@ package com.agutsul.chess.rule.board;
 import static com.agutsul.chess.board.state.BoardStateFactory.fiveFoldRepetitionBoardState;
 import static com.agutsul.chess.board.state.BoardStateFactory.threeFoldRepetitionBoardState;
 import static java.util.Map.Entry.comparingByValue;
+import static java.util.Objects.nonNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
@@ -91,7 +92,7 @@ final class FoldRepetitionBoardStateEvaluator
     private static String createActionCode(ActionMemento<?,?> action) {
         var pieceType = action.getPieceType();
         return String.format("%s_%s",
-                pieceType != null ? pieceType.name() : "?",
+                nonNull(pieceType) ? pieceType.name() : "?",
                 String.valueOf(action.getTarget())
         );
     }

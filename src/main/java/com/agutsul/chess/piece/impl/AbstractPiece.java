@@ -5,6 +5,8 @@ import static java.time.Instant.now;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.hash;
+import static java.util.Objects.isNull;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -308,7 +310,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
     @Override
     public final int hashCode() {
-        return Objects.hash(getColor(), getType(), getPosition());
+        return hash(getColor(), getType(), getPosition());
     }
 
     @Override
@@ -317,7 +319,7 @@ abstract class AbstractPiece<COLOR extends Color>
             return true;
         }
 
-        if (obj == null) {
+        if (isNull(obj)) {
             return false;
         }
 
@@ -396,7 +398,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
     final void setPosition(Position position) {
         // null can be set when piece should be removed from the board
-        if (position == null) {
+        if (isNull(position)) {
             dispose(null);
             return;
         }

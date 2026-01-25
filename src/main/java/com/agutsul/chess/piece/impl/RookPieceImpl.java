@@ -4,6 +4,7 @@ import static com.agutsul.chess.activity.action.Action.isCapture;
 import static com.agutsul.chess.activity.action.Action.isCastling;
 import static com.agutsul.chess.activity.action.Action.isMove;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.Serializable;
@@ -49,7 +50,7 @@ final class RookPieceImpl<COLOR extends Color>
         super(board, position, context,
                 new RookPieceActionRule<>(board),
                 new RookPieceImpactRule<>(board),
-                castling != null ? List.of(castling.side()) : emptyList()
+                nonNull(castling) ? List.of(castling.side()) : emptyList()
         );
     }
 

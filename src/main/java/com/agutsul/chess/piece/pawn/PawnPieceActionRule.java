@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.pawn;
 
+import static java.util.Objects.nonNull;
+
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
@@ -73,7 +75,7 @@ public final class PawnPieceActionRule<COLOR extends Color,
         //               promotion should be returned
         for (var result : this.compositeRule.evaluate(piece)) {
             var targetPosition = result.getPosition();
-            if (targetPosition != null
+            if (nonNull(targetPosition)
                     && !positionedMap.containsKey(targetPosition)) {
 
                 positionedMap.put(targetPosition, result);

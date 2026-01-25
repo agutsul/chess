@@ -2,6 +2,7 @@ package com.agutsul.chess.piece.impl;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.isNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
@@ -174,10 +175,11 @@ final class TransformablePieceImpl<COLOR extends Color,
     @SuppressWarnings("unchecked")
     private Piece<COLOR> createPiece(Position position, Piece.Type pieceType) {
         var factory = PromotionFactory.of(pieceType);
-        if (factory == null) {
-            throw new IllegalActionException(
-                    String.format("Unsupported promotion type: %s", pieceType.name())
-            );
+        if (isNull(factory)) {
+            throw new IllegalActionException(String.format(
+                    "Unsupported promotion type: %s",
+                    pieceType.name()
+            ));
         }
 
         return (Piece<COLOR>) factory.createPiece(pieceFactory, position);
@@ -233,7 +235,7 @@ final class TransformablePieceImpl<COLOR extends Color,
         }
 
         @Override
-        public <D extends Piece<?> & Demotable> void demote(D piece) {
+        public <DP extends Piece<?> & Demotable> void demote(DP piece) {
             LOGGER.info("Undo promote by '{}'", piece);
             ((TransformablePieceImpl<?,?>) piece).cancelPromote();
         }

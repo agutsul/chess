@@ -1,5 +1,7 @@
 package com.agutsul.chess.iterator;
 
+import static java.util.Objects.nonNull;
+
 import java.util.Iterator;
 
 public class CurrentIteratorImpl<E>
@@ -21,7 +23,7 @@ public class CurrentIteratorImpl<E>
 
     @Override
     public boolean hasCurrent() {
-        return this.current != null;
+        return nonNull(this.current);
     }
 
     @Override

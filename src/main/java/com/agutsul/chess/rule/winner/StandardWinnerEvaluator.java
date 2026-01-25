@@ -8,6 +8,7 @@ import static com.agutsul.chess.board.state.BoardState.Type.EXITED;
 import static com.agutsul.chess.board.state.BoardState.Type.FIVE_FOLD_REPETITION;
 import static com.agutsul.chess.board.state.BoardState.Type.SEVENTY_FIVE_MOVES;
 import static com.agutsul.chess.board.state.BoardState.Type.STALE_MATED;
+import static java.util.Objects.nonNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import org.slf4j.Logger;
@@ -37,7 +38,7 @@ public final class StandardWinnerEvaluator
                 game.getCurrentPlayer(), boardState.getColor(), boardState.getType());
 
         var winner = resolveWinner(game);
-        if (winner != null) {
+        if (nonNull(winner)) {
             LOGGER.info("Performed winner evaluation: winner - '{}'", winner);
         } else {
             LOGGER.info("No winner found for board state '{}': draw", board.getState());

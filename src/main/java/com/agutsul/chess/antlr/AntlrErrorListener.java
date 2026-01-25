@@ -22,7 +22,12 @@ public final class AntlrErrorListener
                             int charPositionInLine,
                             String msg,
                             RecognitionException e) {
-        this.errors.add(String.format("line '%s': %d - %s", line, charPositionInLine, msg));
+
+        this.errors.add(String.format(
+                "line '%s': %d - %s",
+                line, charPositionInLine,
+                msg
+        ));
     }
 
     public int getErrorsCount() {

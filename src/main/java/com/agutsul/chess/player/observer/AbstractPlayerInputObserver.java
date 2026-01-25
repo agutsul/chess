@@ -5,6 +5,8 @@ import static com.agutsul.chess.piece.Piece.Type.KNIGHT;
 import static com.agutsul.chess.piece.Piece.Type.QUEEN;
 import static com.agutsul.chess.piece.Piece.Type.ROOK;
 import static java.time.Instant.now;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.summingLong;
 import static java.util.stream.Collectors.toMap;
@@ -124,7 +126,7 @@ public abstract class AbstractPlayerInputObserver
         @Override
         protected void process(RequestPromotionPieceTypeEvent event) {
             var timeout = getActionTimeout(game.getContext());
-            if (timeout.isPresent() && getActionStarted() != null) {
+            if (timeout.isPresent() && Objects.nonNull(getActionStarted())) {
 
                 // remaining = ( expected duration + action started) - current timestamp
                 var remainingTimeout = Stream.of(timeout.get(),
@@ -147,7 +149,7 @@ public abstract class AbstractPlayerInputObserver
             LOGGER.debug("Processing selected pawn promotion type '{}'", selectedType);
 
             var pieceType = PROMOTION_TYPES.get(selectedType);
-            if (pieceType == null) {
+            if (isNull(pieceType)) {
                 throw new IllegalActionException(String.format(
                         "%s: '%s'",
                         UNKNOWN_PROMOTION_PIECE_TYPE_MESSAGE, selectedType
@@ -179,7 +181,7 @@ public abstract class AbstractPlayerInputObserver
                 var command = getActionCommand(timeout);
 
                 var eventFactory = PlayerActionEventFactory.of(command);
-                if (eventFactory != null) {
+                if (nonNull(eventFactory)) {
                     notifyGameEvent(eventFactory.create(player));
                 } else if (Strings.CI.contains(command, SPACE)) {
                     processActionCommand(command);

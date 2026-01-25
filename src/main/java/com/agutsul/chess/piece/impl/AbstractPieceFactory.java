@@ -1,6 +1,7 @@
 package com.agutsul.chess.piece.impl;
 
 import static com.agutsul.chess.position.PositionFactory.positionOf;
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toMap;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -206,12 +207,12 @@ abstract class AbstractPieceFactory<COLOR extends Color>
         static <COLOR extends Color,PIECE extends Piece<COLOR> & Demotable,PROXY extends PieceProxy<COLOR,PIECE> & Demotable>
                 PROXY createProxy(PIECE piece) {
 
-            if (piece == null) {
+            if (isNull(piece)) {
                 return null;
             }
 
             var function = MODES.get(piece.getType());
-            if (function == null) {
+            if (isNull(function)) {
                 return null;
             }
 
@@ -336,12 +337,12 @@ abstract class AbstractPieceFactory<COLOR extends Color>
         static <COLOR extends Color,PIECE extends Piece<COLOR> & Pinnable,PROXY extends PieceProxy<COLOR,PIECE> & Pinnable>
                 PROXY createProxy(Board board, PIECE piece) {
 
-            if (board == null || piece == null) {
+            if (isNull(board) || isNull(piece)) {
                 return null;
             }
 
             var function = MODES.get(piece.getType());
-            if (function == null) {
+            if (isNull(function)) {
                 return null;
             }
 

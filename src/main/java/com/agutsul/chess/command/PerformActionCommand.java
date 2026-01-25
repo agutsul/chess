@@ -61,16 +61,20 @@ public final class PerformActionCommand
     public void setSource(String source) {
         var foundPiece = board.getPiece(source);
         if (foundPiece.isEmpty()) {
-            throw new IllegalPositionException(
-                    String.format("%s: %s", MISSED_PIECE_MESSAGE, source)
-            );
+            throw new IllegalPositionException(String.format(
+                    "%s: %s",
+                    MISSED_PIECE_MESSAGE,
+                    source
+            ));
         }
 
         var piece = foundPiece.get();
         if (!Objects.equals(piece.getColor(), player.getColor())) {
-            throw new IllegalActionException(
-                    String.format("%s: %s", OPPONENT_PIECE_MESSAGE, piece)
-            );
+            throw new IllegalActionException(String.format(
+                    "%s: %s",
+                    OPPONENT_PIECE_MESSAGE,
+                    piece
+            ));
         }
 
         this.sourcePiece = piece;
@@ -79,9 +83,11 @@ public final class PerformActionCommand
     public void setTarget(String target) {
         var position = board.getPosition(target);
         if (position.isEmpty()) {
-            throw new IllegalPositionException(
-                    String.format("%s: %s", MISSED_POSITION_MESSAGE, target)
-            );
+            throw new IllegalPositionException(String.format(
+                    "%s: %s",
+                    MISSED_POSITION_MESSAGE,
+                    target
+            ));
         }
 
         this.targetPosition = position.get();

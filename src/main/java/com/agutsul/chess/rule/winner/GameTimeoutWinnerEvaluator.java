@@ -1,6 +1,7 @@
 package com.agutsul.chess.rule.winner;
 
 import static com.agutsul.chess.board.state.BoardState.Type.TIMEOUT;
+import static java.util.Objects.nonNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import org.slf4j.Logger;
@@ -34,7 +35,7 @@ public final class GameTimeoutWinnerEvaluator
                 ? game.getPlayer(player.getColor().invert())
                 : super.evaluate(game);
 
-        if (winner != null) {
+        if (nonNull(winner)) {
             LOGGER.info("Performed winner evaluation: winner - '{}'", winner);
         } else {
             LOGGER.info("No winner found for board state '{}': draw", board.getState());

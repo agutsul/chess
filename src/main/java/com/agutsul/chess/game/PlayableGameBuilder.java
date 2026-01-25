@@ -1,6 +1,6 @@
 package com.agutsul.chess.game;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -64,11 +64,11 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
     @Override
     @SuppressWarnings("unchecked")
     public GAME build() {
-        var board   = this.board   != null ? this.board   : new StandardBoard();
-        var journal = this.journal != null ? this.journal : new JournalImpl();
-        var context = this.context != null ? this.context : new GameContext();
+        var board   = nonNull(this.board)   ? this.board   : new StandardBoard();
+        var journal = nonNull(this.journal) ? this.journal : new JournalImpl();
+        var context = nonNull(this.context) ? this.context : new GameContext();
 
-        var boardStateEvaluator = this.boardStateEvaluator != null
+        var boardStateEvaluator = nonNull(this.boardStateEvaluator)
                 ? this.boardStateEvaluator
                 : new BoardStateEvaluatorImpl(board, journal, context.getForkJoinPool())
         ;
@@ -77,7 +77,7 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
                 board, journal, boardStateEvaluator, context
         );
 
-        if (!isNull(this.color)) {
+        if (nonNull(this.color)) {
             game.setCurrentPlayer(game.getPlayer(this.color));
             // re-evaluate board state
             board.setState(game.evaluateBoardState(game.getCurrentPlayer()));

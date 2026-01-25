@@ -18,6 +18,8 @@ public final class SimulateActionCommand
 
     private static final Logger LOGGER = getLogger(SimulateActionCommand.class);
 
+    private static final String UNSUPPORTED_COMMAND_ERROR_MESSAGE = "Unsupported command format";
+
     private final PerformActionCommand command;
     private final Action<?> action;
 
@@ -44,7 +46,8 @@ public final class SimulateActionCommand
         var positions = split(command, SPACE);
         if (positions.length != 2) {
             throw new IllegalStateException(String.format(
-                    "Unsupported command format: '%s'",
+                    "%s: '%s'",
+                    UNSUPPORTED_COMMAND_ERROR_MESSAGE,
                     command
             ));
         }

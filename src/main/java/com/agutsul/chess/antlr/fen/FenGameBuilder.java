@@ -3,6 +3,8 @@ package com.agutsul.chess.antlr.fen;
 import static com.agutsul.chess.player.PlayerFactory.playerOf;
 import static com.agutsul.chess.position.Position.codeOf;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isAllLowerCase;
@@ -59,14 +61,14 @@ final class FenGameBuilder
     public FenGame<?> build() {
         // reverse parsed lines to process board from position(0,0) and up to position(7,7)
         var board = createBoard(parsedBoardLines.reversed());
-        var playerColor = resolveColor(activeColor != null ? activeColor : EMPTY);
+        var playerColor = resolveColor(nonNull(activeColor) ? activeColor : EMPTY);
 
         var game = new FenGame<>(
                 playerOf(Colors.WHITE), playerOf(Colors.BLACK),
                 board, playerColor, halfMoveClock, fullMoveClock
         );
 
-        if (activeCastling != null) {
+        if (nonNull(activeCastling)) {
             if (!DISABLE_ALL_SYMBOL.equals(activeCastling)) {
                 disableAllCastlings(board);
                 // toggle available castling sides
@@ -78,8 +80,8 @@ final class FenGameBuilder
             }
         }
 
-        if (activeEnPassant != null && !DISABLE_ALL_SYMBOL.equals(activeEnPassant)) {
-            if (enPassantPosition == null) {
+        if (nonNull(activeEnPassant) && !DISABLE_ALL_SYMBOL.equals(activeEnPassant)) {
+            if (isNull(enPassantPosition)) {
                 throw new IllegalArgumentException("En-passant enabled but not set");
             }
 

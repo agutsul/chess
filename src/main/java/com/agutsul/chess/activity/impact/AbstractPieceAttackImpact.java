@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
+import static java.util.Objects.nonNull;
+
 import java.util.Optional;
 
 import com.agutsul.chess.Calculatable;
@@ -40,7 +42,7 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
     }
 
     public final Optional<Line> getLine() {
-        return Optional.ofNullable(this.calculated != null && this.calculated instanceof Line
+        return Optional.ofNullable(nonNull(calculated) && this.calculated instanceof Line
                 ? (Line) this.calculated
                 : null
         );
@@ -52,7 +54,7 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
 
     @Override
     public final Position getPosition() {
-        return this.calculated != null && this.calculated instanceof Position
+        return nonNull(this.calculated) && this.calculated instanceof Position
                 ? (Position) this.calculated
                 : getTarget().getPosition();
     }

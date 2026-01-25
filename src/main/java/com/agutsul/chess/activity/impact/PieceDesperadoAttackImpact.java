@@ -1,6 +1,8 @@
 package com.agutsul.chess.activity.impact;
 
-import org.apache.commons.lang3.StringUtils;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
@@ -31,7 +33,7 @@ public final class PieceDesperadoAttackImpact<COLOR1 extends Color,
 
     @Override
     public ATTACKER getAttacker() {
-        return getTarget() != null
+        return nonNull(getTarget())
                 ? getTarget().getSource()
                 : null;
     }
@@ -54,7 +56,7 @@ public final class PieceDesperadoAttackImpact<COLOR1 extends Color,
     @Override
     public String toString() {
         return String.format("[ %s ] => [ %s ]", getSource(),
-                getTarget() == null ? StringUtils.EMPTY : getTarget()
+                isNull(getTarget()) ? EMPTY : getTarget()
         );
     }
 

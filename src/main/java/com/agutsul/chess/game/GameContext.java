@@ -1,7 +1,7 @@
 package com.agutsul.chess.game;
 
 import static java.lang.Thread.currentThread;
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -131,7 +131,7 @@ public class GameContext implements Closeable {
 
     @Override
     public void close() throws IOException {
-        if (!isNull(getForkJoinPool())) {
+        if (nonNull(getForkJoinPool())) {
             close(getForkJoinPool());
         }
     }

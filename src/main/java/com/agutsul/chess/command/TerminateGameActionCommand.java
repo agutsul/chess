@@ -26,6 +26,8 @@ public class TerminateGameActionCommand
 
     private static final Logger LOGGER = getLogger(TerminateGameActionCommand.class);
 
+    private static final String UNKNOWN_TERMINATION_TYPE_ERROR_MESSAGE = "Unknown termination type";
+
     private final Game game;
     private final Player player;
     private final Type type;
@@ -63,7 +65,11 @@ public class TerminateGameActionCommand
         case WIN     -> agreedWinBoardState(board, color);
         case EXIT    -> exitedBoardState(board, color);
         case TIMEOUT -> timeoutBoardState(board, color);
-        default      -> throw new IllegalStateException(String.format("Unknown termination type: %s", type));
+        default      -> throw new IllegalStateException(String.format(
+                "%s: %s",
+                UNKNOWN_TERMINATION_TYPE_ERROR_MESSAGE,
+                type
+        ));
         };
     }
 }

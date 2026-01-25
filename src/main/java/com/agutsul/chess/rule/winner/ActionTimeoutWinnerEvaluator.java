@@ -4,6 +4,7 @@ import static com.agutsul.chess.ai.SelectionStrategy.Type.ALPHA_BETA;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.INSUFFICIENT_MATERIAL;
 import static com.agutsul.chess.board.state.BoardState.Type.TIMEOUT;
+import static java.util.Objects.isNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Objects;
@@ -42,7 +43,7 @@ public final class ActionTimeoutWinnerEvaluator
             var opponentPlayer = game.getPlayer(player.getColor().invert());
 
             var opponentBoardState = board.getState(opponentPlayer.getColor());
-            if (opponentBoardState == null) {
+            if (isNull(opponentBoardState)) {
                 LOGGER.info("No opponent action performed: draw");
                 return null;
             }

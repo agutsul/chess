@@ -1,6 +1,7 @@
 package com.agutsul.chess.rule.action;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.upperCase;
@@ -197,7 +198,7 @@ public abstract class AbstractCastlingActionRule<COLOR extends Color,
         }
 
         var castling = Castling.of(rook.getPosition());
-        if (castling == null) {
+        if (isNull(castling)) {
             return emptyList();
         }
 

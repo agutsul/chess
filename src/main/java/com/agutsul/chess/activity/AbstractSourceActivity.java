@@ -1,5 +1,8 @@
 package com.agutsul.chess.activity;
 
+import static java.util.Objects.hash;
+import static java.util.Objects.isNull;
+
 import java.util.Objects;
 
 public abstract class AbstractSourceActivity<TYPE extends Activity.Type,SOURCE>
@@ -26,7 +29,7 @@ public abstract class AbstractSourceActivity<TYPE extends Activity.Type,SOURCE>
 
     @Override
     public int hashCode() {
-        return Objects.hash(source, type);
+        return hash(source, type);
     }
 
     @Override
@@ -35,7 +38,7 @@ public abstract class AbstractSourceActivity<TYPE extends Activity.Type,SOURCE>
             return true;
         }
 
-        if (obj == null) {
+        if (isNull(obj)) {
             return false;
         }
 

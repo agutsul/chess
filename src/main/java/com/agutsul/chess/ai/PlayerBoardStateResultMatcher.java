@@ -29,7 +29,7 @@ final class PlayerBoardStateResultMatcher<RESULT extends TaskResult<Action<?>,In
         }
 
         var opponentResult = result.getOpponentResult();
-        if (opponentResult != null) {
+        if (Objects.nonNull(opponentResult)) {
             return match((RESULT) opponentResult);
         }
 
