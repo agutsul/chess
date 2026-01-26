@@ -67,7 +67,7 @@ public final class ActionSimulationResult<VALUE extends Comparable<VALUE>>
     @Override
     public String toString() {
         return String.format("%s: %s: %s",
-                getColor(), getAction(), String.valueOf(getValue())
+                getColor(), String.valueOf(getAction()), String.valueOf(getValue())
         );
     }
 }
