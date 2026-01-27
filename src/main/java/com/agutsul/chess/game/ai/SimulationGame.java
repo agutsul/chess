@@ -104,7 +104,7 @@ public final class SimulationGame
                     getStackTrace(e)
             );
 
-            if (!BoardState.Type.TIMEOUT.equals(boardState.getType())) {
+            if (!boardState.isType(BoardState.Type.TIMEOUT)) {
                 notifyObservers(new GameExceptionEvent(this, e));
             }
         }
