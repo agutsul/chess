@@ -1,13 +1,13 @@
 package com.agutsul.chess.rule.impact.outpost;
 
 import static com.agutsul.chess.position.PositionFactory.positionOf;
-import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
@@ -35,18 +35,20 @@ abstract class AbstractOutpostImpactRule<COLOR extends Color,
 
     @Override
     protected Collection<IMPACT> createImpacts(PIECE piece, Collection<Calculatable> next) {
+        var opponentPawns = board.getPieces(piece.getColor().invert(), Piece.Type.PAWN);
 
-        var opponentPawns = Stream.of(board.getPieces(piece.getColor().invert(), Piece.Type.PAWN))
+        var opponentPawnsCache = new ArrayListValuedHashMap<Integer,Piece<Color>>();
+        Stream.of(opponentPawns)
                 .flatMap(Collection::stream)
-                .collect(toMap(pawn -> pawn.getPosition().x(), identity()));
+                .forEach(pawn -> opponentPawnsCache.put(pawn.getPosition().x(), pawn));
 
-        var attackedPositions = Stream.of(opponentPawns.values())
+        var attackedPositions = Stream.of(opponentPawns)
                 .flatMap(Collection::stream)
                 .map(opponentPawn -> board.getImpacts(opponentPawn, Impact.Type.CONTROL))
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceControlImpact<?,?>) impact)
                 .map(PieceControlImpact::getTarget)
-                .collect(toList());
+                .toList();
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(next)
@@ -55,17 +57,20 @@ abstract class AbstractOutpostImpactRule<COLOR extends Color,
                 // confirm that position is not attacked by any opponent pawn
                 .filter(position -> !attackedPositions.contains(position))
                 // confirm that position can't be attacked by any opponent pawn in future
-                .filter(position -> Stream.of(positionOf(position.x() - 1, position.y()), positionOf(position.x() - 1, position.y()))
+                .filter(position -> Stream.of(position.x() + 1, position.x() - 1)
+                        .map(x -> positionOf(x, position.y()))
                         .filter(Objects::nonNull)
                         .anyMatch(opponentPosition -> {
-                            if (!opponentPawns.containsKey(opponentPosition.x())) {
+                            if (!opponentPawnsCache.containsKey(opponentPosition.x())) {
                                 return true;
                             }
 
-                            var opponentPawn = opponentPawns.get(opponentPosition.x());
-                            var visitedPositions = opponentPawn.getPositions();
+                            var isVisited = Stream.of(opponentPawnsCache.get(opponentPosition.x()))
+                                    .flatMap(Collection::stream)
+                                    .map(Piece::getPositions)
+                                    .allMatch(visitedPositions -> visitedPositions.contains(opponentPosition));
 
-                            return visitedPositions.contains(opponentPosition);
+                            return isVisited;
                         })
                 )
                 // confirm that position is under control by any player's pawn
