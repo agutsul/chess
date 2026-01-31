@@ -46,8 +46,9 @@ final class PawnDeflectionImpactRule<COLOR1 extends Color,
                 .filter(entry -> !Objects.equals(entry.getValue().getColor(), piece.getColor()))
                 .map(entry  -> new PieceAttackImpact<>(piece, (ATTACKED) entry.getValue(), entry.getKey()))
                 .map(impact -> super.createImpacts(impact))
-                .map(impact -> (PieceDeflectionImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>) impact)
-                .collect(toList());
+                .flatMap(Collection::stream)
+                .map(impact -> impact)
+                .toList();
 
         var impacts = Stream.of(captureImpacts, enPassantImpacts)
                     .flatMap(Collection::stream)
