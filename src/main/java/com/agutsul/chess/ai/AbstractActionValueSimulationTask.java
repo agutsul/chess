@@ -34,7 +34,7 @@ abstract class AbstractActionValueSimulationTask<VALUE extends Comparable<VALUE>
     public final TaskResult<Action<?>,VALUE> process(List<List<Action<?>>> buckets) {
         var subTasks = Stream.of(buckets)
                 .flatMap(Collection::stream)
-                .map(actions -> createTask(actions))
+                .map(this::createTask)
                 .map(ForkJoinTask::fork)
                 .toList();
 

@@ -1,7 +1,5 @@
 package com.agutsul.chess.piece.pawn;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -44,16 +42,13 @@ final class PawnDeflectionImpactRule<COLOR1 extends Color,
                 .map(Map::entrySet)
                 .flatMap(Collection::stream)
                 .filter(entry -> !Objects.equals(entry.getValue().getColor(), piece.getColor()))
-                .map(entry  -> new PieceAttackImpact<>(piece, (ATTACKED) entry.getValue(), entry.getKey()))
+                .map(entry -> new PieceAttackImpact<>(piece, (ATTACKED) entry.getValue(), entry.getKey()))
                 .map(impact -> super.createImpacts(impact))
                 .flatMap(Collection::stream)
-                .map(impact -> impact)
                 .toList();
 
-        var impacts = Stream.of(captureImpacts, enPassantImpacts)
+        return Stream.of(captureImpacts, enPassantImpacts)
                     .flatMap(Collection::stream)
-                    .collect(toList());
-
-        return impacts;
+                    .toList();
     }
 }
