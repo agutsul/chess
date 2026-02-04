@@ -1,9 +1,13 @@
 package com.agutsul.chess.activity.cache;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -21,10 +25,23 @@ public class ActivityCacheImpl<TYPE extends Enum<TYPE> & Activity.Type,
 
     @Override
     public void putAll(Collection<ACTIVITY> activities) {
-        Stream.ofNullable(activities)
-            .flatMap(Collection::stream)
-            .filter(Objects::nonNull)
-            .forEach(activity -> put(activity.getType(), activity));
+        var map = new HashMap<TYPE,List<ACTIVITY>>();
+        for (var activity : activities) {
+            if (nonNull(activity)) {
+                var key = activity.getType();
+
+                var values = map.getOrDefault(key, new ArrayList<ACTIVITY>());
+                values.add(activity);
+
+                if (!map.containsKey(key)) {
+                    map.put(key, values);
+                }
+            }
+        }
+
+        for (var entry : map.entrySet()) {
+            put(entry.getKey(), entry.getValue());
+        }
     }
 
     @Override
