@@ -126,7 +126,7 @@ public abstract class AbstractPlayerInputObserver
         @Override
         protected void process(RequestPromotionPieceTypeEvent event) {
             var timeout = getActionTimeout(game.getContext());
-            if (timeout.isPresent() && Objects.nonNull(getActionStarted())) {
+            if (timeout.isPresent() && nonNull(getActionStarted())) {
 
                 // remaining = ( expected duration + action started) - current timestamp
                 var remainingTimeout = Stream.of(timeout.get(),
