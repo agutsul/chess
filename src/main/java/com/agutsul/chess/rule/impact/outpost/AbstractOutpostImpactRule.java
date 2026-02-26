@@ -38,9 +38,9 @@ abstract class AbstractOutpostImpactRule<COLOR extends Color,
         var opponentPawns = board.getPieces(piece.getColor().invert(), Piece.Type.PAWN);
 
         var opponentPawnsCache = new ArrayListValuedHashMap<Integer,Piece<Color>>();
-        Stream.of(opponentPawns)
-                .flatMap(Collection::stream)
-                .forEach(pawn -> opponentPawnsCache.put(pawn.getPosition().x(), pawn));
+        for (var opponentPawn : opponentPawns) {
+            opponentPawnsCache.put(opponentPawn.getPosition().x(), opponentPawn);
+        }
 
         var attackedPositions = Stream.of(opponentPawns)
                 .flatMap(Collection::stream)
