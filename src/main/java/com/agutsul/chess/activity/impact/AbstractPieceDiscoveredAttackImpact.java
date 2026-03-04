@@ -23,7 +23,7 @@ abstract class AbstractPieceDiscoveredAttackImpact<COLOR1 extends Color,
     private final Mode mode;
 
     AbstractPieceDiscoveredAttackImpact(Mode mode, PIECE piece, IMPACT discoveredAttack) {
-        super(Impact.Type.ATTACK, piece, discoveredAttack);
+        super(Impact.Type.DISCOVERED_ATTACK, piece, discoveredAttack);
         this.mode = mode;
     }
 
@@ -54,7 +54,8 @@ abstract class AbstractPieceDiscoveredAttackImpact<COLOR1 extends Color,
 
     @Override
     public final Line getLine() {
-        return Stream.of(getTarget().getLine())
+        return Stream.of(getTarget())
+                .map(AbstractPieceAttackImpact::getLine)
                 .flatMap(Optional::stream)
                 .findFirst()
                 .orElse(null);

@@ -1,37 +1,58 @@
 package com.agutsul.chess.activity.impact;
 
+import static org.apache.commons.lang3.ObjectUtils.compare;
+
 import com.agutsul.chess.Positionable;
+import com.agutsul.chess.Rankable;
+import com.agutsul.chess.Valuable;
 import com.agutsul.chess.activity.Activity;
 
 public interface Impact<SOURCE>
-        extends Positionable, Activity<Impact.Type,SOURCE> {
+        extends Positionable, Activity<Impact.Type,SOURCE>,
+                Valuable<Integer>, Comparable<Impact<?>> {
 
-    enum Type implements Activity.Type {
-        CONTROL,
+    enum Type implements Activity.Type, Rankable {
+        CHECK,
+        PIN,
+        ATTACK,
+        DESPERADO,
+        FORK,
+        SKEWER,
+        DISCOVERED_ATTACK,
+        XRAY,
+        BATTERY,
+        UNDERMINING,
+        INTERFERENCE,
+        BLOCK,
+        SACRIFICE,
+        DEFLECTION,
+        OVERLOADING,
+        OUTPOST,
+        LUFT,
+        DOMINATION,
         PROTECT,
+        CONTROL,
         MONITOR,
         BLOCKADE,
         ISOLATION,
         BACKWARD,
         ACCUMULATION,
-        CONNECTION,
-        PIN,
-        CHECK,
-        ATTACK,
-        FORK,
-        SKEWER,
-        UNDERMINING,
-        BLOCK,
-        INTERFERENCE,
-        DEFLECTION,
-        OVERLOADING,
-        BATTERY,
-        OUTPOST,
-        SACRIFICE,
-        LUFT,
-        DESPERADO,
-        DOMINATION,
-        XRAY
+        CONNECTION;
+
+        @Override
+        public int rank() {
+            return values().length - ordinal();
+        }
+    }
+
+    @Override
+    default int compareTo(Impact<?> impact) {
+        return compare(getType(), impact.getType());
+    }
+
+    @Override
+    default Integer getValue() {
+        return getType().rank();
     }
 
     // utilities
@@ -122,6 +143,14 @@ public interface Impact<SOURCE>
 
     static boolean isAttack(Impact.Type impactType) {
         return Impact.Type.ATTACK.equals(impactType);
+    }
+
+    static boolean isDiscoveredAttack(Impact<?> impact) {
+        return isDiscoveredAttack(impact.getType());
+    }
+
+    static boolean isDiscoveredAttack(Impact.Type impactType) {
+        return Impact.Type.DISCOVERED_ATTACK.equals(impactType);
     }
 
     static boolean isFork(Impact<?> impact) {

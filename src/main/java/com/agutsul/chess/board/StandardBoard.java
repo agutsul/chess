@@ -49,6 +49,11 @@ public final class StandardBoard
     }
 
     @Override
+    public Collection<Observer> getObservers() {
+        return ((Observable) this.origin).getObservers();
+    }
+
+    @Override
     public void setState(BoardState state) {
         this.origin.setState(state);
     }

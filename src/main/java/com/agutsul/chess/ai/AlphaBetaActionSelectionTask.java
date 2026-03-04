@@ -202,8 +202,10 @@ final class AlphaBetaActionSelectionTask
     private static final class AlphaBetaGameEvaluator
             extends AbstractIntegerGameEvaluator {
 
+        private static final Logger LOGGER = getLogger(AlphaBetaGameEvaluator.class);
+
         public AlphaBetaGameEvaluator(int limit) {
-            super(limit);
+            super(LOGGER, limit);
         }
     }
 

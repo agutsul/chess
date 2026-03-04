@@ -37,7 +37,7 @@ public final class SimulationActionInputObserver
     }
 
     @Override
-    protected String getActionCommand(Optional<Long> timeout) {
+    public String getActionCommand(Optional<Long> timeout) {
         var calculatedAction = this.actionStrategy.select(player.getColor());
         if (calculatedAction.isEmpty()) {
             return PlayerCommand.DEFEAT.code();
@@ -52,7 +52,7 @@ public final class SimulationActionInputObserver
     }
 
     @Override
-    protected String getPromotionPieceType(Optional<Long> timeout) {
+    public String getPromotionPieceType(Optional<Long> timeout) {
         if (this.promoteAction == null) {
             throw new IllegalStateException(UNKNOWN_PROMOTION_ERROR_MESSAGE);
         }

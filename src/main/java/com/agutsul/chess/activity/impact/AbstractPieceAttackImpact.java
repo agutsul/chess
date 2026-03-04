@@ -19,37 +19,32 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
         extends AbstractTargetActivity<Impact.Type,ATTACKER,ATTACKED>
         implements Impact<ATTACKER> {
 
-    private Calculatable calculated;
-    private boolean hidden;
+    private final Calculatable calculated;
+    private final boolean hidden;
 
-    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece) {
+    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece,
+                              Calculatable calculated, boolean hidden) {
+
         super(impactType, attacker, piece);
-    }
 
-    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece, boolean hidden) {
-        super(impactType, attacker, piece);
-        this.hidden = hidden;
-    }
-
-    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece, Calculatable calculated) {
-        this(impactType, attacker, piece);
         this.calculated = calculated;
-    }
-
-    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece, Calculatable calculated, boolean hidden) {
-        this(impactType, attacker, piece, calculated);
         this.hidden = hidden;
-    }
-
-    public final Optional<Line> getLine() {
-        return Optional.ofNullable(nonNull(calculated) && this.calculated instanceof Line
-                ? (Line) this.calculated
-                : null
-        );
     }
 
     public final boolean isHidden() {
         return this.hidden;
+    }
+
+    @Override
+    public final Integer getValue() {
+        return Impact.super.getValue() * Math.abs(getTarget().getValue());
+    }
+
+    public final Optional<Line> getLine() {
+        return Optional.ofNullable(nonNull(this.calculated) && this.calculated instanceof Line
+                ? (Line) this.calculated
+                : null
+        );
     }
 
     @Override

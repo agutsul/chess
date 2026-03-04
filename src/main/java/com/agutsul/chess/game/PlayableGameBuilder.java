@@ -70,8 +70,7 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
 
         var boardStateEvaluator = nonNull(this.boardStateEvaluator)
                 ? this.boardStateEvaluator
-                : new BoardStateEvaluatorImpl(board, journal, context.getForkJoinPool())
-        ;
+                : new BoardStateEvaluatorImpl(board, journal, context.getForkJoinPool());
 
         var game = new GameImpl(this.whitePlayer, this.blackPlayer,
                 board, journal, boardStateEvaluator, context

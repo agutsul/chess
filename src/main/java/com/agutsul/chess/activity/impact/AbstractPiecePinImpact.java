@@ -25,6 +25,12 @@ abstract class AbstractPiecePinImpact<COLOR1 extends Color,
     }
 
     @Override
+    public final Integer getValue() {
+        var value = Math.abs(getDefended().getValue()) - Math.abs(getPinned().getValue());
+        return PiecePinImpact.super.getValue() * value + Math.abs(getTarget().getValue());
+    }
+
+    @Override
     public final String toString() {
         return String.format("%s{%s}", getPinned(), getTarget());
     }

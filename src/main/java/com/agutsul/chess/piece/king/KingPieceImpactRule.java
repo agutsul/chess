@@ -7,6 +7,7 @@ import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.king.KingPieceAlgoProxy.Mode;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.impact.attack.PieceAttackPositionImpactRule;
 import com.agutsul.chess.rule.impact.attack.PieceDiscoveredAttackPositionImpactRule;
 import com.agutsul.chess.rule.impact.control.PieceControlPositionImpactRule;
 import com.agutsul.chess.rule.impact.domination.PieceDominationPositionImpactRule;
@@ -27,6 +28,7 @@ public final class KingPieceImpactRule<COLOR extends Color,
     @SuppressWarnings("unchecked")
     private KingPieceImpactRule(Board board, KingPieceAlgo<COLOR,PIECE> algo) {
         super(new CompositePieceRule<>(
+                new PieceAttackPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, algo)),
                 new PieceProtectPositionImpactRule<>(board, algo),
                 new PieceControlPositionImpactRule<>(board, algo),
                 new PieceForkPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, algo)),

@@ -566,7 +566,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
         var whitePawn = board.getPiece("h5").get();
 
-        var discoveredAttackImpacts = board.getImpacts(whitePawn, Impact.Type.ATTACK);
+        var discoveredAttackImpacts = board.getImpacts(whitePawn, Impact.Type.DISCOVERED_ATTACK);
         assertFalse(discoveredAttackImpacts.isEmpty());
 
         var absoluteDiscoveredAttackImpacts = discoveredAttackImpacts.stream()
@@ -607,7 +607,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
         var whitePawn = board.getPiece("h7").get();
 
-        var discoveredAttackImpacts = board.getImpacts(whitePawn, Impact.Type.ATTACK);
+        var discoveredAttackImpacts = board.getImpacts(whitePawn, Impact.Type.DISCOVERED_ATTACK);
         assertTrue(discoveredAttackImpacts.isEmpty());
     }
 
@@ -622,7 +622,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
         var whitePawn = board.getPiece("h6").get();
 
-        var discoveredAttackImpacts = board.getImpacts(whitePawn, Impact.Type.ATTACK);
+        var discoveredAttackImpacts = board.getImpacts(whitePawn, Impact.Type.DISCOVERED_ATTACK);
         assertTrue(discoveredAttackImpacts.isEmpty());
     }
 

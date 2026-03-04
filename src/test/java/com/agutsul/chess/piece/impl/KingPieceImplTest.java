@@ -586,7 +586,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .build();
 
         var whiteKing = board.getPiece("e4").get();
-        var discoveredAttackImpacts = board.getImpacts(whiteKing, Impact.Type.ATTACK);
+        var discoveredAttackImpacts = board.getImpacts(whiteKing, Impact.Type.DISCOVERED_ATTACK);
 
         assertFalse(discoveredAttackImpacts.isEmpty());
         assertEquals(2, discoveredAttackImpacts.size());
@@ -634,7 +634,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .build();
 
         var whiteKing = board.getPiece("e4").get();
-        var discoveredAttackImpacts = board.getImpacts(whiteKing, Impact.Type.ATTACK);
+        var discoveredAttackImpacts = board.getImpacts(whiteKing, Impact.Type.DISCOVERED_ATTACK);
 
         assertFalse(discoveredAttackImpacts.isEmpty());
         assertEquals(1, discoveredAttackImpacts.size());

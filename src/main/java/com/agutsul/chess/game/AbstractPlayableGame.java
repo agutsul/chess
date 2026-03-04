@@ -4,6 +4,7 @@ import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.DEFAULT;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -134,6 +135,11 @@ public abstract class AbstractPlayableGame
         for (var observer : this.observers) {
             observer.observe(event);
         }
+    }
+
+    @Override
+    public final Collection<Observer> getObservers() {
+        return this.observers;
     }
 
     @Override

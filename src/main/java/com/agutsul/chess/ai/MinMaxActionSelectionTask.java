@@ -141,11 +141,13 @@ final class MinMaxActionSelectionTask
     private static final class MinMaxGameEvaluator
             extends AbstractIntegerGameEvaluator {
 
+        private static final Logger LOGGER = getLogger(MinMaxGameEvaluator.class);
+
         // previous board value
         private final int value;
 
         MinMaxGameEvaluator(int limit, int value) {
-            super(limit);
+            super(LOGGER, limit);
             this.value = value;
         }
 

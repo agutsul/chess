@@ -1,9 +1,12 @@
 package com.agutsul.chess.game.fen;
 
+import static java.util.Objects.nonNull;
+
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ForkJoinPool;
 
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
@@ -13,7 +16,9 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.game.AbstractGameProxy;
 import com.agutsul.chess.game.Game;
+import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.game.PlayableGameBuilder;
+import com.agutsul.chess.game.ai.SimulationActionInputObserver;
 import com.agutsul.chess.game.console.ConsolePlayerInputObserver;
 import com.agutsul.chess.game.observer.CloseableGameOverObserver;
 import com.agutsul.chess.journal.Journal;
@@ -32,12 +37,20 @@ public final class FenGame<T extends Game & Observable>
     public FenGame(Player whitePlayer, Player blackPlayer,
                    Board board, Color color, int halfMoves, int fullMoves) {
 
+        this(whitePlayer, blackPlayer, board, null, color, halfMoves, fullMoves);
+    }
+
+    // to enable fen game for console player pass inputStream as System.in
+    public FenGame(Player whitePlayer, Player blackPlayer,
+                   Board board, InputStream inputStream, Color color,
+                   int halfMoves, int fullMoves) {
+
         super(createGame(whitePlayer, blackPlayer, board,
                 new FenJournal(Map.of(
                         Colors.WHITE, Colors.WHITE.equals(color) ? fullMoves : fullMoves + 1,
                         Colors.BLACK, fullMoves
                 )),
-                System.in,
+                inputStream,
                 color
         ));
 
@@ -109,14 +122,24 @@ public final class FenGame<T extends Game & Observable>
                 .withBoard(board)
                 .withJournal(journal)
                 .withActiveColor(color)
+                .withContext(new GameContext(new ForkJoinPool()))
                 .build();
 
-        game.addObserver(new CloseableGameOverObserver(inputStream));
+        var isInputAvailable = nonNull(inputStream);
+        if (isInputAvailable) {
+            game.addObserver(new CloseableGameOverObserver(inputStream));
+        }
 
         var observableBoard = (Observable) board;
 
-        observableBoard.addObserver(new ConsolePlayerInputObserver(whitePlayer, game, inputStream));
-        observableBoard.addObserver(new ConsolePlayerInputObserver(blackPlayer, game, inputStream));
+        observableBoard.addObserver(isInputAvailable
+                ? new ConsolePlayerInputObserver(game.getCurrentPlayer(), game, inputStream)
+                : new SimulationActionInputObserver(game.getCurrentPlayer(), game)
+        );
+
+        observableBoard.addObserver(
+                new SimulationActionInputObserver(game.getOpponentPlayer(), game)
+        );
 
         return (T) game;
     }
@@ -195,6 +218,11 @@ public final class FenGame<T extends Game & Observable>
         @Override
         public ActionMemento<?,?> getLast() {
             return this.origin.getLast();
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(this.origin);
         }
     }
 }

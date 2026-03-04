@@ -1,6 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
@@ -21,6 +22,16 @@ abstract class AbstractPieceForkImpact<COLOR1 extends Color,
     AbstractPieceForkImpact(Mode mode, ATTACKER piece, Collection<IMPACT> impacts) {
         super(Impact.Type.FORK, piece, impacts);
         this.mode = mode;
+    }
+
+    @Override
+    public final Integer getValue() {
+        var value = Stream.of(getTarget())
+                .flatMap(Collection::stream)
+                .mapToInt(Impact::getValue)
+                .sum();
+
+        return PieceForkImpact.super.getValue() * value;
     }
 
     @Override

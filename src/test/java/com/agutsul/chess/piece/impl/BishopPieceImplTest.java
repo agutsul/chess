@@ -327,7 +327,7 @@ public class BishopPieceImplTest extends AbstractPieceTest {
                 .build();
 
         var whiteBishop = board.getPiece("e4").get();
-        var discoveredAttackImpacts = board.getImpacts(whiteBishop, Impact.Type.ATTACK);
+        var discoveredAttackImpacts = board.getImpacts(whiteBishop, Impact.Type.DISCOVERED_ATTACK);
         assertFalse(discoveredAttackImpacts.isEmpty());
 
         var absoluteDiscoveredAttackImpacts = discoveredAttackImpacts.stream()
@@ -370,7 +370,7 @@ public class BishopPieceImplTest extends AbstractPieceTest {
                 .build();
 
         var whiteBishop = board.getPiece("d2").get();
-        var discoveredAttackImpacts = board.getImpacts(whiteBishop, Impact.Type.ATTACK);
+        var discoveredAttackImpacts = board.getImpacts(whiteBishop, Impact.Type.DISCOVERED_ATTACK);
         assertFalse(discoveredAttackImpacts.isEmpty());
 
         var relativeDiscoveredAttackImpacts = discoveredAttackImpacts.stream()

@@ -1,5 +1,6 @@
 package com.agutsul.chess.player;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -39,6 +40,11 @@ public final class PlayerImpl
     @Override
     public void removeObserver(Observer observer) {
         this.observers.remove(observer);
+    }
+
+    @Override
+    public Collection<Observer> getObservers() {
+        return this.observers;
     }
 
     @Override

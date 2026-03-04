@@ -17,6 +17,11 @@ public class PieceControlImpact<COLOR extends Color,
     }
 
     @Override
+    public final Integer getValue() {
+        return Impact.super.getValue();
+    }
+
+    @Override
     public final String toString() {
         return String.format("%sX%s", getSource(), getPosition());
     }

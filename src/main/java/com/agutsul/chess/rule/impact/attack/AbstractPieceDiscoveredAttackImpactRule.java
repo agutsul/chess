@@ -31,7 +31,7 @@ abstract class AbstractPieceDiscoveredAttackImpactRule<COLOR1 extends Color,
     AbstractPieceDiscoveredAttackImpactRule(Board board,
                                             Algo<PIECE,Collection<Position>> algo) {
 
-        super(board, Impact.Type.ATTACK);
+        super(board, Impact.Type.DISCOVERED_ATTACK);
         this.rule = new CompositePieceRule<>(
                 new PieceAbsoluteDiscoveredAttackImpactRule<>(board, algo),
                 new PieceRelativeDiscoveredAttackImpactRule<>(board, algo)

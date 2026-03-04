@@ -1,6 +1,7 @@
 package com.agutsul.chess.game;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Optional;
 
 import com.agutsul.chess.activity.action.memento.ActionMemento;
@@ -95,6 +96,11 @@ public abstract class AbstractGameProxy<GAME extends Game & Observable>
     @Override
     public void notifyObservers(Event event) {
         this.game.notifyObservers(event);
+    }
+
+    @Override
+    public Collection<Observer> getObservers() {
+        return this.game.getObservers();
     }
 
     @Override

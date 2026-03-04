@@ -63,6 +63,10 @@ public abstract class AbstractPlayerInputObserver
         this.player = player;
     }
 
+    public final Player getPlayer() {
+        return this.player;
+    }
+
     @Override
     public final void observe(Event event) {
         if (!(event instanceof AbstractRequestEvent)) {

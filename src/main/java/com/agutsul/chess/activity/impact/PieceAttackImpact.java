@@ -12,18 +12,20 @@ public final class PieceAttackImpact<COLOR1 extends Color,
         extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
     public PieceAttackImpact(ATTACKER attacker, ATTACKED piece) {
-        super(Impact.Type.ATTACK, attacker, piece);
+        this(attacker, piece, false);
     }
 
     public PieceAttackImpact(ATTACKER attacker, ATTACKED piece, boolean hidden) {
-        super(Impact.Type.ATTACK, attacker, piece, hidden);
+        this(attacker, piece, null, hidden);
     }
 
     public PieceAttackImpact(ATTACKER attacker, ATTACKED piece, Calculatable calculated) {
-        super(Impact.Type.ATTACK, attacker, piece, calculated);
+        this(attacker, piece, calculated, false);
     }
 
-    public PieceAttackImpact(ATTACKER attacker, ATTACKED piece, Calculatable calculated, boolean hidden) {
+    public PieceAttackImpact(ATTACKER attacker, ATTACKED piece,
+                             Calculatable calculated, boolean hidden) {
+
         super(Impact.Type.ATTACK, attacker, piece, calculated, hidden);
     }
 

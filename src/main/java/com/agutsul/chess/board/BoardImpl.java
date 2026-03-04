@@ -138,6 +138,11 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     }
 
     @Override
+    public Collection<Observer> getObservers() {
+        return this.observers;
+    }
+
+    @Override
     public void notifyObservers(Event event) {
         for (var observer : this.observers) {
             observer.observe(event);

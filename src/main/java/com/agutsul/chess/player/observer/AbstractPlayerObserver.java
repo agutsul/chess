@@ -16,6 +16,10 @@ abstract class AbstractPlayerObserver
         this.observer = createObserver();
     }
 
+    public final Game getGame() {
+        return game;
+    }
+
     @Override
     public void observe(Event event) {
         this.observer.observe(event);

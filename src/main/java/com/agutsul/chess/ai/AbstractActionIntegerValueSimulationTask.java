@@ -1,19 +1,27 @@
 package com.agutsul.chess.ai;
 
+import static com.agutsul.chess.activity.action.Action.isCastling;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.PieceCastlingAction;
+import com.agutsul.chess.activity.action.PieceCastlingAction.CastlingMoveAction;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
+import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.ai.SimulationGame;
 import com.agutsul.chess.journal.Journal;
+import com.agutsul.chess.piece.Piece;
 
 abstract class AbstractActionIntegerValueSimulationTask
         extends AbstractActionValueSimulationTask<Integer> {
@@ -62,8 +70,11 @@ abstract class AbstractActionIntegerValueSimulationTask
 
         private static final int CHECK_MATE_COEF = 1000;
 
-        AbstractIntegerGameEvaluator(int limit) {
+        protected final Logger logger;
+
+        AbstractIntegerGameEvaluator(Logger logger, int limit) {
             super(limit);
+            this.logger = logger;
         }
 
         @Override
@@ -84,14 +95,44 @@ abstract class AbstractActionIntegerValueSimulationTask
             var sourcePiece = action.getPiece();
             var direction = sourcePiece.getDirection();
 
-            var currentPlayerValue = board.calculateValue(color) * direction;
+            var currentPlayerValue  = board.calculateValue(color) * direction;
             var opponentPlayerValue = board.calculateValue(color.invert()) * Math.negateExact(direction);
 
+            var impactValue = isCastling(action)
+                    ? calculateImpact(board, (PieceCastlingAction<?,?,?>) action)
+                    : calculateImpact(board, getActionPiece(board, action));
+
             var value = action.getValue()                       // action type influence
+                    + impactValue * direction                   // impacts influence
                     + this.limit * direction                    // depth influence
                     + currentPlayerValue + opponentPlayerValue; // current board value
 
             return value;
+        }
+
+        private static int calculateImpact(Board board, PieceCastlingAction<?,?,?> action) {
+            return calculateImpact(board, action.getSource())       // king impacts
+                    + calculateImpact(board, action.getTarget());   // rook impacts
+        }
+
+        private static int calculateImpact(Board board, CastlingMoveAction<?,?> action) {
+            return calculateImpact(board, getActionPiece(board, action));
+        }
+
+        private static int calculateImpact(Board board, Optional<Piece<Color>> targetPiece) {
+            var value = Stream.of(targetPiece)
+                    .flatMap(Optional::stream)
+                    .map(piece -> board.getImpacts(piece))
+                    .flatMap(Collection::stream)
+                    .mapToInt(Impact::getValue)
+                    .sum();
+
+            return value;
+        }
+
+        private static Optional<Piece<Color>> getActionPiece(Board board, Action<?> action) {
+            // same source piece but located on target position after executing an action
+            return board.getPiece(action.getPosition());
         }
     }
 }

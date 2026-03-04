@@ -6,6 +6,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.impact.attack.PieceAttackLineImpactRule;
 import com.agutsul.chess.rule.impact.attack.PieceDiscoveredAttackLineImpactRule;
 import com.agutsul.chess.rule.impact.battery.PieceBatteryImpactRule;
 import com.agutsul.chess.rule.impact.block.PieceBlockLineImpactRule;
@@ -38,6 +39,7 @@ public final class RookPieceImpactRule<COLOR extends Color,
     private RookPieceImpactRule(Board board, RookPieceAlgo<COLOR,PIECE> algo) {
         super(new CompositePieceRule<>(
                 new PieceCheckLineImpactRule<>(board, algo),
+                new PieceAttackLineImpactRule<>(board, algo),
                 new PieceProtectLineImpactRule<>(board, algo),
                 new PieceMonitorLineImpactRule<>(board, algo),
                 new PieceControlLineImpactRule<>(board, algo),

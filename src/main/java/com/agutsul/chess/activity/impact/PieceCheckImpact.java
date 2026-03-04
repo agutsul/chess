@@ -13,18 +13,20 @@ public final class PieceCheckImpact<COLOR1 extends Color,
         extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
     public PieceCheckImpact(ATTACKER attacker, ATTACKED king) {
-        super(Impact.Type.CHECK, attacker, king);
+        this(attacker, king, false);
     }
 
     public PieceCheckImpact(ATTACKER attacker, ATTACKED king, boolean hidden) {
-        super(Impact.Type.CHECK, attacker, king, hidden);
+        this(attacker, king, null, hidden);
     }
 
     public PieceCheckImpact(ATTACKER attacker, ATTACKED king, Line line) {
-        super(Impact.Type.CHECK, attacker, king, line);
+        this(attacker, king, line, false);
     }
 
-    public PieceCheckImpact(ATTACKER attacker, ATTACKED king, Line line, boolean hidden) {
+    public PieceCheckImpact(ATTACKER attacker, ATTACKED king,
+                            Line line, boolean hidden) {
+
         super(Impact.Type.CHECK, attacker, king, line, hidden);
     }
 
