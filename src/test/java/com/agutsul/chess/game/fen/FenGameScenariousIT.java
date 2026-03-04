@@ -42,9 +42,6 @@ public class FenGameScenariousIT extends AbstractFenGameTest {
         var expectedActions = split(Strings.CI.replace(expectedJournal, ". ", "."), SPACE);
 
         var game = new FenGameProxy(parseGame(fen), expectedActions.length);
-
-        System.out.println(game.getBoard());
-
         game.run();
 
         assertEquals(expectedJournal, String.valueOf(game.getJournal()));
