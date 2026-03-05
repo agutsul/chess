@@ -11,7 +11,7 @@ abstract class AbstractPieceSacrificeImpact<COLOR1 extends Color,
                                             COLOR2 extends Color,
                                             SACRIFICED extends Piece<COLOR1> & Capturable & Movable,
                                             ATTACKER   extends Piece<COLOR2> & Capturable,
-                                            SOURCE extends AbstractTargetActivity<Impact.Type,SACRIFICED,?>,
+                                            SOURCE extends AbstractTargetActivity<Impact.Type,SACRIFICED,?> & Impact<SACRIFICED>,
                                             TARGET extends AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,SACRIFICED>>
         extends AbstractTargetActivity<Impact.Type,
                                        AbstractTargetActivity<Impact.Type,SACRIFICED,?>,
