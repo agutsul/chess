@@ -26,7 +26,7 @@ public final class PieceXRayAttackImpact<COLOR1 extends Color,
     }
 
     @Override
-    public final Integer getValue() {
+    public Integer getValue() {
         return super.getValue() + getPieceValues(getPiece().getColor().invert());
     }
 
