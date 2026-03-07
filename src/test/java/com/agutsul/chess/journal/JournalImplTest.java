@@ -102,6 +102,8 @@ public class JournalImplTest implements TestFileReader {
         var pawn = mock(PawnPiece.class);
         when(pawn.getType())
             .thenReturn(Piece.Type.PAWN);
+        when(pawn.getColor())
+            .thenReturn(Colors.WHITE);
         when(pawn.getPosition())
             .thenReturn(positionOf("e2"));
 
@@ -243,6 +245,8 @@ public class JournalImplTest implements TestFileReader {
     @Test
     void testCheckMoveToString() throws IOException, URISyntaxException {
         var pawn = mock(PawnPiece.class);
+        when(pawn.getColor())
+            .thenReturn(Colors.WHITE);
         when(pawn.getType())
             .thenReturn(Piece.Type.PAWN);
         when(pawn.getPosition())
@@ -261,6 +265,8 @@ public class JournalImplTest implements TestFileReader {
     @Test
     void testCheckMatedMoveToString() throws IOException, URISyntaxException {
         var pawn = mock(PawnPiece.class);
+        when(pawn.getColor())
+            .thenReturn(Colors.WHITE);
         when(pawn.getType())
             .thenReturn(Piece.Type.PAWN);
         when(pawn.getPosition())
