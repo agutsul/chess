@@ -26,6 +26,11 @@ public final class PieceXRayAttackImpact<COLOR1 extends Color,
     }
 
     @Override
+    public final Integer getValue() {
+        return super.getValue() + getPieceValues(getPiece().getColor().invert());
+    }
+
+    @Override
     public Line getLine() {
         return Stream.of(getSource())
                 .map(AbstractPieceAttackImpact::getLine)

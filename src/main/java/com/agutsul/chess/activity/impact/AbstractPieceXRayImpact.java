@@ -4,9 +4,12 @@ import static com.agutsul.chess.piece.Piece.isKing;
 import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
+import com.agutsul.chess.Valuable;
 import com.agutsul.chess.activity.AbstractSourceActivity;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
@@ -17,7 +20,7 @@ abstract class AbstractPieceXRayImpact<COLOR1 extends Color,
                                        COLOR2 extends Color,
                                        SOURCE extends Piece<COLOR1> & Capturable & Lineable,
                                        TARGET extends Piece<?>,
-                                       IMPACT extends AbstractTargetActivity<Impact.Type,SOURCE,TARGET>>
+                                       IMPACT extends AbstractTargetActivity<Impact.Type,SOURCE,TARGET> & Impact<SOURCE>>
         extends AbstractSourceActivity<Impact.Type,AbstractTargetActivity<Impact.Type,SOURCE,TARGET>>
         implements PieceXRayImpact<COLOR1,COLOR2,SOURCE,TARGET> {
 
@@ -29,6 +32,11 @@ abstract class AbstractPieceXRayImpact<COLOR1 extends Color,
 
         this.mode = createMode(impact.getTarget());
         this.pieces = pieces;
+    }
+
+    @Override
+    public Integer getValue() {
+        return PieceXRayImpact.super.getValue() * Math.abs(getTarget().getValue());
     }
 
     @Override
@@ -60,6 +68,14 @@ abstract class AbstractPieceXRayImpact<COLOR1 extends Color,
     @Override
     public final Collection<Piece<?>> getPieces() {
         return unmodifiableCollection(pieces);
+    }
+
+    protected final int getPieceValues(Color color) {
+        return Stream.of(pieces)
+                .flatMap(Collection::stream)
+                .filter(piece -> Objects.equals(piece.getColor(), color))
+                .mapToInt(Valuable::getValue)
+                .sum();
     }
 
     private static Mode createMode(Piece<?> piece) {
