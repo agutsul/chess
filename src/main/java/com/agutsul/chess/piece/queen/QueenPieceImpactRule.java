@@ -39,8 +39,8 @@ public final class QueenPieceImpactRule<COLOR extends Color,
     private QueenPieceImpactRule(Board board, QueenPieceAlgo<COLOR,PIECE> algo) {
         super(new CompositePieceRule<>(
                 new PieceCheckLineImpactRule<>(board, algo),
-                new PieceAttackLineImpactRule<>(board, algo),
                 new PieceProtectLineImpactRule<>(board, algo),
+                new PieceAttackLineImpactRule<>(board, algo),
                 new PieceMonitorLineImpactRule<>(board, algo),
                 new PieceControlLineImpactRule<>(board, algo),
                 new PiecePinLineImpactRule<>(board, algo),
