@@ -37,7 +37,8 @@ public class FenGameScenariousIT extends AbstractFenGameTest {
             "/chess_fork_scenarious.csv",
             "/chess_pin_scenarious.csv",
             "/chess_xray_scenarious.csv",
-            "/chess_skewer_scenarious.csv"
+            "/chess_skewer_scenarious.csv",
+            "/chess_discovered_attack_scenarious.csv"
     })
     void testScenarious(String fen, String expectedJournal)
             throws URISyntaxException, IOException {
