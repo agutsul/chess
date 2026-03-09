@@ -27,6 +27,12 @@ abstract class AbstractPieceSkewerImpact<COLOR1 extends Color,
     }
 
     @Override
+    public final Integer getValue() {
+        return PieceSkewerImpact.super.getValue() * Math.abs(impact.getValue())
+                + Math.abs(getDefended().getValue());
+    }
+
+    @Override
     public final Mode getMode() {
         return mode;
     }

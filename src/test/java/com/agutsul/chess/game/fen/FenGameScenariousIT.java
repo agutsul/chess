@@ -36,7 +36,8 @@ public class FenGameScenariousIT extends AbstractFenGameTest {
     @CsvFileSource(useHeadersInDisplayName = true, resources = {
             "/chess_fork_scenarious.csv",
             "/chess_pin_scenarious.csv",
-            "/chess_xray_scenarious.csv"
+            "/chess_xray_scenarious.csv",
+            "/chess_skewer_scenarious.csv"
     })
     void testScenarious(String fen, String expectedJournal)
             throws URISyntaxException, IOException {
