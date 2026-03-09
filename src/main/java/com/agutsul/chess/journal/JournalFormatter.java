@@ -2,6 +2,7 @@ package com.agutsul.chess.journal;
 
 import static java.lang.System.lineSeparator;
 import static org.apache.commons.lang3.StringUtils.SPACE;
+import static org.apache.commons.lang3.StringUtils.repeat;
 
 import java.util.Objects;
 
@@ -9,7 +10,9 @@ import com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormat
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.color.Colors;
 
-public class JournalFormatter {
+public final class JournalFormatter {
+
+    private static final String SEPARATOR = ".";
 
     public enum Mode {
         SINGLE_LINE(SPACE),
@@ -47,9 +50,12 @@ public class JournalFormatter {
 
             var actionMemento = journal.get(i);
             if (i == 0) {
-                builder.append(Objects.equals(Colors.WHITE, actionMemento.getColor()) ? "." : "...");
+                builder.append(Objects.equals(Colors.WHITE, actionMemento.getColor())
+                        ? SEPARATOR
+                        : repeat(SEPARATOR, 3)
+                );
             } else {
-                builder.append(".");
+                builder.append(SEPARATOR);
             }
 
             builder.append(SPACE);
