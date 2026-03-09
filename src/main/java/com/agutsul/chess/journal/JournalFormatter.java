@@ -12,7 +12,7 @@ import com.agutsul.chess.color.Colors;
 
 public final class JournalFormatter {
 
-    private static final String SEPARATOR = ".";
+    private static final String DOT = ".";
 
     public enum Mode {
         SINGLE_LINE(SPACE),
@@ -50,18 +50,15 @@ public final class JournalFormatter {
 
             var actionMemento = journal.get(i);
             if (i == 0) {
-                builder.append(Objects.equals(Colors.WHITE, actionMemento.getColor())
-                        ? SEPARATOR
-                        : repeat(SEPARATOR, 3)
-                );
+                builder.append(isWhite(actionMemento) ? DOT : repeat(DOT, 3));
             } else {
-                builder.append(SEPARATOR);
+                builder.append(DOT);
             }
 
             builder.append(SPACE);
             builder.append(format(actionMemento));
 
-            if (i + 1 < journal.size() && Objects.equals(Colors.WHITE, actionMemento.getColor())) {
+            if (i + 1 < journal.size() && isWhite(actionMemento)) {
                 builder.append(SPACE);
                 builder.append(format(journal.get(i + 1)));
 
@@ -72,6 +69,10 @@ public final class JournalFormatter {
         }
 
         return builder.toString();
+    }
+
+    private static boolean isWhite(ActionMemento<?,?> actionMemento) {
+        return Objects.equals(Colors.WHITE, actionMemento.getColor());
     }
 
     private static String format(ActionMemento<?,?> memento) {
