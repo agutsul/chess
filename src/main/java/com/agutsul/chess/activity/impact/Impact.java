@@ -37,7 +37,8 @@ public interface Impact<SOURCE>
         ISOLATION,
         BACKWARD,
         ACCUMULATION,
-        CONNECTION;
+        CONNECTION,
+        MOTION;
 
         @Override
         public int rank() {
@@ -255,5 +256,13 @@ public interface Impact<SOURCE>
 
     static boolean isXRay(Impact.Type impactType) {
         return Impact.Type.XRAY.equals(impactType);
+    }
+
+    static boolean isMotion(Impact<?> impact) {
+        return isMotion(impact.getType());
+    }
+
+    static boolean isMotion(Impact.Type impactType) {
+        return Impact.Type.MOTION.equals(impactType);
     }
 }

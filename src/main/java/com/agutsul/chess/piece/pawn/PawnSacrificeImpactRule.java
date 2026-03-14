@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.impact.PieceAttackImpact;
-import com.agutsul.chess.activity.impact.PieceControlImpact;
+import com.agutsul.chess.activity.impact.PieceMotionImpact;
 import com.agutsul.chess.activity.impact.PieceSacrificeAttackImpact;
 import com.agutsul.chess.activity.impact.PieceSacrificeImpact;
 import com.agutsul.chess.activity.impact.PieceSacrificeMoveImpact;
@@ -79,7 +79,7 @@ final class PawnSacrificeImpactRule<COLOR1 extends Color,
                         .filter(entry -> entry.getValue().contains(position))
                         .map(Map.Entry::getKey)
                         .map(piece -> new PieceSacrificeMoveImpact<>(
-                                new PieceControlImpact<>(pawn, position),
+                                new PieceMotionImpact<>(pawn, position),
                                 createAttackImpact((ATTACKER) piece, pawn, getAttackLine(piece, pawn))
                         ))
                         .map(impact -> (PieceSacrificeImpact<COLOR1,COLOR2,SACRIFICED,ATTACKER>) impact)

@@ -18,6 +18,7 @@ import com.agutsul.chess.rule.impact.domination.PieceDominationLineImpactRule;
 import com.agutsul.chess.rule.impact.fork.PieceForkLineImpactRule;
 import com.agutsul.chess.rule.impact.interference.PieceInterferenceLineImpactRule;
 import com.agutsul.chess.rule.impact.monitor.PieceMonitorLineImpactRule;
+import com.agutsul.chess.rule.impact.motion.PieceMotionLineImpactRule;
 import com.agutsul.chess.rule.impact.outpost.PieceOutpostLineImpactRule;
 import com.agutsul.chess.rule.impact.overloading.PieceOverloadingLineImpactRule;
 import com.agutsul.chess.rule.impact.pin.PiecePinLineImpactRule;
@@ -41,6 +42,7 @@ public final class RookPieceImpactRule<COLOR extends Color,
                 new PieceCheckLineImpactRule<>(board, algo),
                 new PieceAttackLineImpactRule<>(board, algo),
                 new PieceProtectLineImpactRule<>(board, algo),
+                new PieceMotionLineImpactRule<>(board, algo),
                 new PieceMonitorLineImpactRule<>(board, algo),
                 new PieceControlLineImpactRule<>(board, algo),
                 new PiecePinLineImpactRule<>(board, algo),

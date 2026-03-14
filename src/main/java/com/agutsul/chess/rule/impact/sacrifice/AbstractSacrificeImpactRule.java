@@ -20,6 +20,7 @@ import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceControlImpact;
+import com.agutsul.chess.activity.impact.PieceMotionImpact;
 import com.agutsul.chess.activity.impact.PieceSacrificeAttackImpact;
 import com.agutsul.chess.activity.impact.PieceSacrificeImpact;
 import com.agutsul.chess.activity.impact.PieceSacrificeMoveImpact;
@@ -73,7 +74,7 @@ abstract class AbstractSacrificeImpactRule<COLOR1 extends Color,
 
                            if (board.isEmpty(position)) {
                                return Optional.of(new PieceSacrificeMoveImpact<>(
-                                       new PieceControlImpact<>(piece, position),
+                                       new PieceMotionImpact<>(piece, position),
                                        createAttackImpact(attacker, piece, getAttackLine(attacker, piece))
                                ));
                            }

@@ -12,6 +12,7 @@ import com.agutsul.chess.rule.impact.attack.PieceDiscoveredAttackPositionImpactR
 import com.agutsul.chess.rule.impact.control.PieceControlPositionImpactRule;
 import com.agutsul.chess.rule.impact.domination.PieceDominationPositionImpactRule;
 import com.agutsul.chess.rule.impact.fork.PieceForkPositionImpactRule;
+import com.agutsul.chess.rule.impact.motion.PieceMotionPositionImpactRule;
 import com.agutsul.chess.rule.impact.outpost.PieceOutpostPositionImpactRule;
 import com.agutsul.chess.rule.impact.overloading.PieceOverloadingPositionImpactRule;
 import com.agutsul.chess.rule.impact.protect.PieceProtectPositionImpactRule;
@@ -31,11 +32,12 @@ public final class KingPieceImpactRule<COLOR extends Color,
                 new PieceAttackPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, algo)),
                 new PieceProtectPositionImpactRule<>(board, algo),
                 new PieceControlPositionImpactRule<>(board, algo),
+                new PieceMotionPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.MOVE, board, algo)),
                 new PieceForkPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, algo)),
                 new PieceDiscoveredAttackPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.DEFAULT, board, algo)),
                 new PieceOverloadingPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, algo)),
                 new PieceUnderminingPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, algo)),
-                new PieceOutpostPositionImpactRule<>(board,  new KingPieceAlgoProxy<>(Mode.MOVE, board, algo)),
+                new PieceOutpostPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.MOVE, board, algo)),
                 new PieceDominationPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, algo))
             )
         );

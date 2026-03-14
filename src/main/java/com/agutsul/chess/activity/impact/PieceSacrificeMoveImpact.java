@@ -10,10 +10,10 @@ public final class PieceSacrificeMoveImpact<COLOR1 extends Color,
                                             SACRIFICED extends Piece<COLOR1> & Capturable & Movable,
                                             ATTACKER   extends Piece<COLOR2> & Capturable>
         extends AbstractPieceSacrificeImpact<COLOR1,COLOR2,SACRIFICED,ATTACKER,
-                                             PieceControlImpact<COLOR1,SACRIFICED>,
+                                             PieceMotionImpact<COLOR1,SACRIFICED>,
                                              AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,SACRIFICED>> {
 
-    public PieceSacrificeMoveImpact(PieceControlImpact<COLOR1,SACRIFICED> source,
+    public PieceSacrificeMoveImpact(PieceMotionImpact<COLOR1,SACRIFICED> source,
                                     AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,SACRIFICED> target) {
 
         super(source, target);

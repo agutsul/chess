@@ -16,6 +16,7 @@ import com.agutsul.chess.rule.impact.desperado.PieceDesperadoPositionImpactRule;
 import com.agutsul.chess.rule.impact.domination.PieceDominationPositionImpactRule;
 import com.agutsul.chess.rule.impact.fork.PieceForkPositionImpactRule;
 import com.agutsul.chess.rule.impact.interference.PieceInterferencePositionImpactRule;
+import com.agutsul.chess.rule.impact.motion.PieceMotionPositionImpactRule;
 import com.agutsul.chess.rule.impact.outpost.PieceOutpostPositionImpactRule;
 import com.agutsul.chess.rule.impact.overloading.PieceOverloadingPositionImpactRule;
 import com.agutsul.chess.rule.impact.pin.PiecePinPositionImpactRule;
@@ -36,6 +37,7 @@ public final class KnightPieceImpactRule<COLOR extends Color,
         super(new CompositePieceRule<>(
                 new PieceCheckPositionImpactRule<>(board, algo),
                 new PieceAttackPositionImpactRule<>(board, algo),
+                new PieceMotionPositionImpactRule<>(board, algo),
                 new PieceProtectPositionImpactRule<>(board, algo),
                 new PieceControlPositionImpactRule<>(board, algo),
                 new PiecePinPositionImpactRule<>(board, algo),
