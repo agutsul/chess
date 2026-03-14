@@ -1,4 +1,4 @@
-package com.agutsul.chess.rule.impact.attack;
+package com.agutsul.chess.rule.impact.attack.discovered;
 
 import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static java.util.Collections.emptyList;

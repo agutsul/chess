@@ -7,7 +7,7 @@ import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.impact.attack.PieceAttackLineImpactRule;
-import com.agutsul.chess.rule.impact.attack.PieceDiscoveredAttackLineImpactRule;
+import com.agutsul.chess.rule.impact.attack.discovered.PieceDiscoveredAttackLineImpactRule;
 import com.agutsul.chess.rule.impact.battery.PieceBatteryImpactRule;
 import com.agutsul.chess.rule.impact.block.PieceBlockLineImpactRule;
 import com.agutsul.chess.rule.impact.check.PieceCheckLineImpactRule;

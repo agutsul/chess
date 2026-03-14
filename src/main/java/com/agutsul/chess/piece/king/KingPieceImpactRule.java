@@ -8,7 +8,7 @@ import com.agutsul.chess.piece.king.KingPieceAlgoProxy.Mode;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositePieceRule;
 import com.agutsul.chess.rule.impact.attack.PieceAttackPositionImpactRule;
-import com.agutsul.chess.rule.impact.attack.PieceDiscoveredAttackPositionImpactRule;
+import com.agutsul.chess.rule.impact.attack.discovered.PieceDiscoveredAttackPositionImpactRule;
 import com.agutsul.chess.rule.impact.control.PieceControlPositionImpactRule;
 import com.agutsul.chess.rule.impact.domination.PieceDominationPositionImpactRule;
 import com.agutsul.chess.rule.impact.fork.PieceForkPositionImpactRule;

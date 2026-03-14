@@ -1,4 +1,4 @@
-package com.agutsul.chess.rule.impact.attack;
+package com.agutsul.chess.rule.impact.attack.discovered;
 
 import java.util.Collection;
 

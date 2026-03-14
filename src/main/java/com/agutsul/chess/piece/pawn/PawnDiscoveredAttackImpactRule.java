@@ -17,7 +17,7 @@ import com.agutsul.chess.piece.algo.AbstractAlgo;
 import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.impact.attack.PieceDiscoveredAttackPositionImpactRule;
+import com.agutsul.chess.rule.impact.attack.discovered.PieceDiscoveredAttackPositionImpactRule;
 
 final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
                                            COLOR2 extends Color,
