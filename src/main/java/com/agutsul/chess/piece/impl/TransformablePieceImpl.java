@@ -63,18 +63,27 @@ final class TransformablePieceImpl<COLOR extends Color,
     private PieceState<?> currentState;
 
     @SuppressWarnings("unchecked")
-    TransformablePieceImpl(Board board, PieceFactory<COLOR> pieceFactory,
-                           PawnPiece<COLOR> pawnPiece, int promotionLine) {
+    <PS extends PieceState<PIECE> & ActivePieceState<PIECE>>
+            TransformablePieceImpl(Board board, PieceFactory<COLOR> pieceFactory,
+                                   PawnPiece<COLOR> pawnPiece, int promotionLine) {
+
+        this(board, pieceFactory, pawnPiece,
+                (PS) new ActiveTransformablePieceState<>(board, promotionLine)
+        );
+    }
+
+    @SuppressWarnings("unchecked")
+    private <PS extends PieceState<PIECE> & ActivePieceState<PIECE>>
+            TransformablePieceImpl(Board board, PieceFactory<COLOR> pieceFactory,
+                                   PawnPiece<COLOR> pawnPiece, PS pieceState) {
 
         super((PIECE) pawnPiece);
 
         this.pawnPiece = pawnPiece;
         this.pieceFactory = pieceFactory;
+        this.activeState = pieceState;
 
-        var state = new ActiveTransformablePieceState<>(board, promotionLine);
-
-        this.activeState = state;
-        setState(state);
+        setState(pieceState);
     }
 
     @Override
