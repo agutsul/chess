@@ -2,6 +2,8 @@ package com.agutsul.chess.piece.impl;
 
 import java.util.Collection;
 
+import org.slf4j.Logger;
+
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.action.Action;
@@ -14,8 +16,8 @@ abstract class AbstractPieceStateProxy<PIECE extends Piece<?> & Movable & Captur
 
     protected final AbstractPieceState<PIECE> origin;
 
-    AbstractPieceStateProxy(AbstractPieceState<PIECE> origin) {
-        super(origin.getType());
+    AbstractPieceStateProxy(Logger logger, AbstractPieceState<PIECE> origin) {
+        super(logger, origin.getType());
         this.origin = origin;
     }
 

@@ -38,7 +38,7 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
                          Rule<Piece<?>,Collection<Action<?>>> actionRule,
                          Rule<Piece<?>,Collection<Impact<?>>> impactRule) {
 
-        super(Type.ACTIVE);
+        super(LOGGER, Type.ACTIVE);
 
         this.board = board;
         this.actionRule = (AbstractPieceRule<Action<?>,Action.Type>) actionRule;

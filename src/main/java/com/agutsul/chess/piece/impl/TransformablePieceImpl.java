@@ -63,27 +63,18 @@ final class TransformablePieceImpl<COLOR extends Color,
     private PieceState<?> currentState;
 
     @SuppressWarnings("unchecked")
-    <PS extends PieceState<PIECE> & ActivePieceState<PIECE>>
-            TransformablePieceImpl(Board board, PieceFactory<COLOR> pieceFactory,
-                                   PawnPiece<COLOR> pawnPiece, int promotionLine) {
-
-        this(board, pieceFactory, pawnPiece,
-                (PS) new ActiveTransformablePieceState<>(board, promotionLine)
-        );
-    }
-
-    @SuppressWarnings("unchecked")
-    private <PS extends PieceState<PIECE> & ActivePieceState<PIECE>>
-            TransformablePieceImpl(Board board, PieceFactory<COLOR> pieceFactory,
-                                   PawnPiece<COLOR> pawnPiece, PS pieceState) {
+    TransformablePieceImpl(Board board, PieceFactory<COLOR> pieceFactory,
+                           PawnPiece<COLOR> pawnPiece, int promotionLine) {
 
         super((PIECE) pawnPiece);
 
         this.pawnPiece = pawnPiece;
         this.pieceFactory = pieceFactory;
-        this.activeState = pieceState;
 
-        setState(pieceState);
+        var state = new ActiveTransformablePieceState<>(board, promotionLine);
+
+        this.activeState = state;
+        setState(state);
     }
 
     @Override
@@ -230,11 +221,11 @@ final class TransformablePieceImpl<COLOR extends Color,
             implements PieceState<PIECE>,
                        TransformablePieceState<PIECE> {
 
-        private static final Logger LOGGER = getLogger(AbstractTransformablePieceState.class);
-
+        protected final Logger logger;
         private final PieceState.Type type;
 
-        AbstractTransformablePieceState(PieceState.Type type) {
+        AbstractTransformablePieceState(Logger logger, PieceState.Type type) {
+            this.logger = logger;
             this.type = type;
         }
 
@@ -245,19 +236,19 @@ final class TransformablePieceImpl<COLOR extends Color,
 
         @Override
         public <DP extends Piece<?> & Demotable> void demote(DP piece) {
-            LOGGER.info("Undo promote by '{}'", piece);
+            logger.info("Undo promote by '{}'", piece);
             ((TransformablePieceImpl<?,?>) piece).cancelPromote();
         }
 
         @Override
         public Collection<Action<?>> calculateActions(PIECE piece) {
-            LOGGER.info("Calculating actions for piece '{}'", piece);
+            logger.info("Calculating actions for piece '{}'", piece);
             return emptyList();
         }
 
         @Override
         public Collection<Action<?>> calculateActions(PIECE piece, Action.Type actionType) {
-            LOGGER.warn("Calculating actions({}) for piece '{}'",
+            logger.warn("Calculating actions({}) for piece '{}'",
                     actionType.name(), piece
             );
 
@@ -266,13 +257,13 @@ final class TransformablePieceImpl<COLOR extends Color,
 
         @Override
         public Collection<Impact<?>> calculateImpacts(PIECE piece) {
-            LOGGER.warn("Calculating impacts for piece '{}'", piece);
+            logger.warn("Calculating impacts for piece '{}'", piece);
             return emptyList();
         }
 
         @Override
         public Collection<Impact<?>> calculateImpacts(PIECE piece, Impact.Type impactType) {
-            LOGGER.warn("Calculating impacts({}) for piece '{}'",
+            logger.warn("Calculating impacts({}) for piece '{}'",
                     impactType.name(), piece
             );
 
@@ -297,7 +288,7 @@ final class TransformablePieceImpl<COLOR extends Color,
         private final int promotionLine;
 
         ActiveTransformablePieceState(Board board, int promotionLine) {
-            super(Type.ACTIVE);
+            super(LOGGER, Type.ACTIVE);
 
             this.board = board;
             this.promotionLine = promotionLine;
@@ -356,7 +347,7 @@ final class TransformablePieceImpl<COLOR extends Color,
         private <DPS extends PieceState<PIECE> & DisposedPieceState<PIECE>>
                 DisposedTransformablePieceState(DPS pieceState) {
 
-            super(pieceState.getType());
+            super(LOGGER, pieceState.getType());
             this.disposedState = pieceState;
         }
 

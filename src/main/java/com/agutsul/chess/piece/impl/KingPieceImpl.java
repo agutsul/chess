@@ -119,11 +119,17 @@ final class KingPieceImpl<COLOR extends Color>
                        CastlingablePieceState<PIECE>,
                        ActivePieceState<PIECE> {
 
+        private static final Logger LOGGER = getLogger(KingCheckedPieceState.class);
+
         private static final String ERROR_MESSAGE = "Unable to perform %s for checked king";
 
-        @SuppressWarnings("unchecked")
         KingCheckedPieceState(PieceState<? extends Piece<?>> origin) {
-            super((AbstractCastlingablePieceState<PIECE>) origin);
+            this(LOGGER, origin);
+        }
+
+        @SuppressWarnings("unchecked")
+        KingCheckedPieceState(Logger logger, PieceState<? extends Piece<?>> origin) {
+            super(logger, (AbstractCastlingablePieceState<PIECE>) origin);
         }
 
         @Override
@@ -160,10 +166,12 @@ final class KingPieceImpl<COLOR extends Color>
             extends KingCheckedPieceState<PIECE>
             implements CheckMatedPieceState<PIECE> {
 
+        private static final Logger LOGGER = getLogger(KingCheckMatedPieceState.class);
+
         private static final String ERROR_MESSAGE = "Unable to perform %s for check mated king";
 
         KingCheckMatedPieceState(PieceState<? extends Piece<?>> origin) {
-            super(origin);
+            super(LOGGER, origin);
         }
 
         @Override

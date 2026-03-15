@@ -27,7 +27,7 @@ final class DisposedPieceStateImpl<PIECE extends Piece<?> & Movable & Capturable
     private Instant disposedAt;
 
     DisposedPieceStateImpl(Instant disposedAt) {
-        super(Type.INACTIVE);
+        super(LOGGER, Type.INACTIVE);
         this.disposedAt = disposedAt;
     }
 

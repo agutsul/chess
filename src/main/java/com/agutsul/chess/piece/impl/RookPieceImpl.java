@@ -106,7 +106,7 @@ final class RookPieceImpl<COLOR extends Color>
         private <DPS extends AbstractPieceState<PIECE> & DisposedPieceState<PIECE>>
                 DisposedCastlingablePieceState(DPS pieceState) {
 
-            super(pieceState);
+            super(LOGGER, pieceState);
             this.disposedState = pieceState;
         }
 

@@ -167,15 +167,13 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
             extends AbstractPieceStateProxy<PIECE>
             implements CastlingablePieceState<PIECE> {
 
-        private static final Logger LOGGER = getLogger(AbstractCastlingablePieceState.class);
-
-        AbstractCastlingablePieceState(AbstractPieceState<PIECE> originState) {
-            super(originState);
+        AbstractCastlingablePieceState(Logger logger, AbstractPieceState<PIECE> originState) {
+            super(logger, originState);
         }
 
         @Override
         public void uncastling(PIECE piece, Position position) {
-            LOGGER.info("Undo castling '{}' to '{}'", piece, position);
+            logger.info("Undo castling '{}' to '{}'", piece, position);
 
             if (piece instanceof AbstractCastlingPiece) {
                 cancelCastling((AbstractCastlingPiece<?>) piece, position);
@@ -207,7 +205,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
                                      Rule<Piece<?>,Collection<Action<?>>> actionRule,
                                      Rule<Piece<?>,Collection<Impact<?>>> impactRule) {
 
-            super(new ActivePieceStateImpl<>(board, actionRule, impactRule));
+            super(LOGGER, new ActivePieceStateImpl<>(board, actionRule, impactRule));
             this.board = board;
         }
 

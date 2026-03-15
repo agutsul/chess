@@ -155,15 +155,13 @@ final class PawnPieceImpl<COLOR extends Color>
             extends AbstractPieceStateProxy<PIECE>
             implements EnPassantablePieceState<PIECE> {
 
-        private static final Logger LOGGER = getLogger(AbstractEnPassantablePieceState.class);
-
-        AbstractEnPassantablePieceState(AbstractPieceState<PIECE> originState) {
-            super(originState);
+        AbstractEnPassantablePieceState(Logger logger, AbstractPieceState<PIECE> originState) {
+            super(logger, originState);
         }
 
         @Override
         public void unenpassant(PIECE piece, PawnPiece<?> targetPiece) {
-            LOGGER.info("Undo en-passante '{}' by '{}'", targetPiece, piece);
+            logger.info("Undo en-passante '{}' by '{}'", targetPiece, piece);
             ((AbstractPiece<?>) piece).cancelCapture(targetPiece);
         }
     }
@@ -182,7 +180,7 @@ final class PawnPieceImpl<COLOR extends Color>
                                       Rule<Piece<?>, Collection<Action<?>>> actionRule,
                                       Rule<Piece<?>, Collection<Impact<?>>> impactRule) {
 
-            super(new ActivePieceStateImpl<>(board, actionRule, impactRule));
+            super(LOGGER, new ActivePieceStateImpl<>(board, actionRule, impactRule));
 
             this.board = board;
             this.actionRule = (AbstractPieceRule<Action<?>,Action.Type>) actionRule;
@@ -240,7 +238,7 @@ final class PawnPieceImpl<COLOR extends Color>
         private <DPS extends AbstractPieceState<PIECE> & DisposedPieceState<PIECE>>
                 DisposedEnPassantablePieceState(DPS pieceState) {
 
-            super(pieceState);
+            super(LOGGER, pieceState);
             this.disposedState = pieceState;
         }
 
