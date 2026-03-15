@@ -2,6 +2,7 @@ package com.agutsul.chess.piece.cache;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableCollection;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.joining;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -51,8 +52,8 @@ public final class PieceCacheImpl implements PieceCache {
     @Override
     public void refresh() {
         var tasks = List.of(
-                new ActivePieceTask(pieces,   keyFactory, piece ->  piece.isActive()),
-                new CapturedPieceTask(pieces, keyFactory, piece -> !piece.isActive())
+                new ActivePieceTask(pieces,   keyFactory, Piece::isActive),
+                new CapturedPieceTask(pieces, keyFactory, not(Piece::isActive))
         );
 
         try {

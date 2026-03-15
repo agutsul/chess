@@ -63,7 +63,7 @@ final class PieceMultiMap implements PieceMap {
     }
 
     @Override
-    public void putAll(Map<? extends String, ? extends Collection<Piece<?>>> map) {
+    public void putAll(Map<? extends String,? extends Collection<Piece<?>>> map) {
         this.map.putAll(map);
     }
 
@@ -83,7 +83,7 @@ final class PieceMultiMap implements PieceMap {
     }
 
     @Override
-    public Set<Entry<String, Collection<Piece<?>>>> entrySet() {
+    public Set<Entry<String,Collection<Piece<?>>>> entrySet() {
         return this.map.entries().stream().collect(toSet());
     }
 }
