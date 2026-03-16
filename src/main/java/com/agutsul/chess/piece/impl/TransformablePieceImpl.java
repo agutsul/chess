@@ -295,7 +295,9 @@ final class TransformablePieceImpl<COLOR extends Color,
         }
 
         @Override
-        public <P extends Piece<?> & Promotable> void promote(P piece, Position position, Piece.Type pieceType) {
+        public <P extends Piece<?> & Promotable> void promote(P piece, Position position,
+                                                              Piece.Type pieceType) {
+
             LOGGER.info("Promoting '{}' to '{}'", piece, position);
 
             // after execution of MOVE or CAPTURE piece should already be placed at target position
@@ -304,11 +306,7 @@ final class TransformablePieceImpl<COLOR extends Color,
 
                 // just double check if it is promotion line
                 if (promotionPosition.y() != this.promotionLine) {
-                    var message = String.format(INVALID_PROMOTION_MESSAGE,
-                            piece.getType().name(), pieceType.name(), position
-                    );
-
-                    throw new IllegalActionException(message);
+                    throw createIllegalActionException(piece, position, pieceType);
                 }
             } else {
                 // validate promotion action ( check if promoted position is legal )
@@ -320,15 +318,22 @@ final class TransformablePieceImpl<COLOR extends Color,
                         .collect(toSet());
 
                 if (!possiblePositions.contains(position)) {
-                    var message = String.format(INVALID_PROMOTION_MESSAGE,
-                            piece.getType().name(), pieceType.name(), position
-                    );
-
-                    throw new IllegalActionException(message);
+                    throw createIllegalActionException(piece, position, pieceType);
                 }
             }
 
             ((TransformablePieceImpl<?,?>) piece).doPromote(position, pieceType);
+        }
+
+        private static IllegalActionException createIllegalActionException(Piece<?> piece,
+                                                                           Position position,
+                                                                           Piece.Type pieceType) {
+
+            var message = String.format(INVALID_PROMOTION_MESSAGE,
+                    piece.getType().name(), pieceType.name(), position
+            );
+
+            return new IllegalActionException(message);
         }
     }
 
@@ -352,7 +357,9 @@ final class TransformablePieceImpl<COLOR extends Color,
         }
 
         @Override
-        public <P extends Piece<?> & Promotable> void promote(P piece, Position position, Piece.Type pieceType) {
+        public <P extends Piece<?> & Promotable> void promote(P piece, Position position,
+                                                              Piece.Type pieceType) {
+
             LOGGER.warn("Promoting disabled '{}' to '{}'", piece, position);
             // do nothing
         }
