@@ -1,14 +1,11 @@
 package com.agutsul.chess.rule.impact.attack.discovered;
 
-import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
@@ -60,38 +57,9 @@ public class PieceAbsoluteDiscoveredAttackImpactRule<COLOR1 extends Color,
                 .filter(line -> line.contains(opponentKing.getPosition()))
                 .map(line -> {
                     var linePieces = board.getPieces(line);
-                    if (linePieces.size() < 3) {
-                        return emptyList();
-                    }
-
-                    var absoluteImpacts = Stream.of(linePieces)
-                            .flatMap(Collection::stream)
-                            .filter(Piece::isLinear)
-                            .filter(attacker -> Objects.equals(piece.getColor(), attacker.getColor()))
-                            // searched pattern: 'attacker - piece - attacked king' or reverse
-                            .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, opponentKing)))
-                            .filter(attacker -> {
-                                // check if piece is protected by line attacker
-                                var isPieceProtected = Stream.of(board.getImpacts(attacker, Impact.Type.PROTECT))
-                                        .flatMap(Collection::stream)
-                                        .map(Impact::getPosition)
-                                        .anyMatch(position -> Objects.equals(position, piece.getPosition()));
-
-                                return isPieceProtected;
-                            })
-                            .map(attacker -> Stream.of(next)
-                                    .flatMap(Collection::stream)
-                                    .map(position -> (Position) position)
-                                    .filter(position -> !line.contains(position))
-                                    .map(position -> createImpact(piece, position, (ATTACKER) attacker, opponentKing, line))
-                                    .map(Optional::ofNullable)
-                                    .flatMap(Optional::stream)
-                                    .toList()
-                            )
-                            .flatMap(Collection::stream)
-                            .toList();
-
-                    return absoluteImpacts;
+                    return linePieces.size() < 3
+                            ? emptyList()
+                            : createImpacts(piece, next, opponentKing, line, linePieces);
                 })
                 .flatMap(Collection::stream)
                 .distinct()
@@ -101,6 +69,7 @@ public class PieceAbsoluteDiscoveredAttackImpactRule<COLOR1 extends Color,
         return impacts;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected PieceAbsoluteDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,SOURCE>
             createImpact(PIECE piece, Position position, ATTACKER attacker, ATTACKED attacked, Line line) {

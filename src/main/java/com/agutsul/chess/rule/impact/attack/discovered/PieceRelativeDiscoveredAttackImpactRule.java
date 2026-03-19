@@ -1,15 +1,12 @@
 package com.agutsul.chess.rule.impact.attack.discovered;
 
-import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.emptyList;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
@@ -73,41 +70,11 @@ public class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
                 .flatMap(Collection::stream)
                 .map(entry -> {
                     var line = entry.getKey();
-
                     var linePieces = board.getPieces(line);
-                    if (linePieces.size() < 3) {
-                        return emptyList();
-                    }
 
-                    var opponentPiece = entry.getValue();
-                    var relativeImpacts = Stream.of(linePieces)
-                            .flatMap(Collection::stream)
-                            .filter(Piece::isLinear)
-                            .filter(attacker -> Objects.equals(piece.getColor(), attacker.getColor()))
-                            // searched pattern: 'attacker - piece - attacked piece' or reverse
-                            .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, opponentPiece)))
-                            .filter(attacker -> {
-                                // check if piece is protected by line attacker
-                                var isPieceProtected = Stream.of(board.getImpacts(attacker, Impact.Type.PROTECT))
-                                        .flatMap(Collection::stream)
-                                        .map(Impact::getPosition)
-                                        .anyMatch(position -> Objects.equals(position, piece.getPosition()));
-
-                                return isPieceProtected;
-                            })
-                            .map(attacker -> Stream.of(next)
-                                    .flatMap(Collection::stream)
-                                    .map(position -> (Position) position)
-                                    .filter(position -> !line.contains(position))
-                                    .map(position -> createImpact(piece, position, (ATTACKER) attacker, opponentPiece, line))
-                                    .map(Optional::ofNullable)
-                                    .flatMap(Optional::stream)
-                                    .toList()
-                            )
-                            .flatMap(Collection::stream)
-                            .toList();
-
-                    return relativeImpacts;
+                    return linePieces.size() < 3
+                        ? emptyList()
+                        : createImpacts(piece, next, entry.getValue(), line, linePieces);
                 })
                 .flatMap(Collection::stream)
                 .distinct()
@@ -117,6 +84,7 @@ public class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
         return impacts;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     protected PieceRelativeDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,SOURCE>
             createImpact(PIECE piece, Position position, ATTACKER attacker, ATTACKED attacked, Line line) {
