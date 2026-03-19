@@ -572,14 +572,14 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         var absoluteDiscoveredAttackImpacts = discoveredAttackImpacts.stream()
                 .map(impact -> (PieceDiscoveredAttackImpact<?,?,?,?,?>) impact)
                 .filter(PieceDiscoveredAttackImpact::isAbsolute)
-                .map(impact -> (PieceAbsoluteDiscoveredAttackImpact<?,?,?,?,?>) impact)
+                .map(impact -> (PieceAbsoluteDiscoveredAttackImpact<?,?,?,?,?,?>) impact)
                 .collect(toList());
 
         assertFalse(absoluteDiscoveredAttackImpacts.isEmpty());
         assertEquals(1, absoluteDiscoveredAttackImpacts.size());
 
         var absoluteDiscoveredAttackImpact = absoluteDiscoveredAttackImpacts.getFirst();
-        assertEquals(whitePawn, absoluteDiscoveredAttackImpact.getSource());
+        assertEquals(whitePawn, absoluteDiscoveredAttackImpact.getPiece());
 
         var blackKing = board.getPiece("h6").get();
 

@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
+import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
@@ -13,24 +14,28 @@ import com.agutsul.chess.position.Position;
 
 abstract class AbstractPieceDiscoveredAttackImpact<COLOR1 extends Color,
                                                    COLOR2 extends Color,
-                                                   PIECE extends Piece<COLOR1>,
+                                                   PIECE  extends Piece<COLOR1> & Movable & Capturable,
                                                    ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
                                                    ATTACKED extends Piece<COLOR2>,
-                                                   IMPACT extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
-        extends AbstractTargetActivity<Impact.Type,PIECE,IMPACT>
+                                                   SOURCE extends AbstractTargetActivity<Impact.Type,PIECE,?> & Impact<PIECE>,
+                                                   TARGET extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
+        extends AbstractTargetActivity<Impact.Type,
+                                       AbstractTargetActivity<Impact.Type,PIECE,?>,
+                                       TARGET>
         implements PieceDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED> {
 
     private final Mode mode;
 
-    AbstractPieceDiscoveredAttackImpact(Mode mode, PIECE piece, IMPACT discoveredAttack) {
-        super(Impact.Type.DISCOVERED_ATTACK, piece, discoveredAttack);
+    AbstractPieceDiscoveredAttackImpact(Mode mode, SOURCE sourceImpact, TARGET discoveredAttack) {
+        super(Impact.Type.DISCOVERED_ATTACK, sourceImpact, discoveredAttack);
         this.mode = mode;
     }
 
     @Override
     public final Integer getValue() {
-        var value = PieceDiscoveredAttackImpact.super.getValue() * Math.abs(getTarget().getValue());
-        return value + Math.abs(getPiece().getValue());
+        return PieceDiscoveredAttackImpact.super.getValue()
+                * Math.abs(((Impact<?>) getSource()).getValue())
+                + Math.abs(getTarget().getValue());
     }
 
     @Override
@@ -50,12 +55,12 @@ abstract class AbstractPieceDiscoveredAttackImpact<COLOR1 extends Color,
 
     @Override
     public final PIECE getPiece() {
-        return getSource();
+        return getSource().getSource();
     }
 
     @Override
     public final Position getPosition() {
-        return getSource().getPosition();
+        return getPiece().getPosition();
     }
 
     @Override
@@ -65,5 +70,10 @@ abstract class AbstractPieceDiscoveredAttackImpact<COLOR1 extends Color,
                 .flatMap(Optional::stream)
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    public final String toString() {
+        return String.format("%s %s", getSource(), getTarget());
     }
 }

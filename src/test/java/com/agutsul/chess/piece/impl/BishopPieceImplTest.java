@@ -333,14 +333,14 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         var absoluteDiscoveredAttackImpacts = discoveredAttackImpacts.stream()
                 .map(impact -> (PieceDiscoveredAttackImpact<?,?,?,?,?>) impact)
                 .filter(PieceDiscoveredAttackImpact::isAbsolute)
-                .map(impact -> (PieceAbsoluteDiscoveredAttackImpact<?,?,?,?,?>) impact)
+                .map(impact -> (PieceAbsoluteDiscoveredAttackImpact<?,?,?,?,?,?>) impact)
                 .collect(toList());
 
         assertFalse(absoluteDiscoveredAttackImpacts.isEmpty());
-        assertEquals(1, absoluteDiscoveredAttackImpacts.size());
+        assertEquals(12, absoluteDiscoveredAttackImpacts.size());
 
         var absoluteDiscoveredAttackImpact = absoluteDiscoveredAttackImpacts.getFirst();
-        assertEquals(whiteBishop, absoluteDiscoveredAttackImpact.getSource());
+        assertEquals(whiteBishop, absoluteDiscoveredAttackImpact.getPiece());
 
         var blackKing = board.getPiece("e5").get();
 
@@ -376,14 +376,14 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         var relativeDiscoveredAttackImpacts = discoveredAttackImpacts.stream()
                 .map(impact -> (PieceDiscoveredAttackImpact<?,?,?,?,?>) impact)
                 .filter(PieceDiscoveredAttackImpact::isRelative)
-                .map(impact -> (PieceRelativeDiscoveredAttackImpact<?,?,?,?,?>) impact)
+                .map(impact -> (PieceRelativeDiscoveredAttackImpact<?,?,?,?,?,?>) impact)
                 .collect(toList());
 
         assertFalse(relativeDiscoveredAttackImpacts.isEmpty());
-        assertEquals(1, relativeDiscoveredAttackImpacts.size());
+        assertEquals(8, relativeDiscoveredAttackImpacts.size());
 
         var relativeDiscoveredAttackImpact = relativeDiscoveredAttackImpacts.getFirst();
-        assertEquals(whiteBishop, relativeDiscoveredAttackImpact.getSource());
+        assertEquals(whiteBishop, relativeDiscoveredAttackImpact.getPiece());
 
         var blackQueen = board.getPiece("d6").get();
 

@@ -4,16 +4,18 @@ import java.util.Objects;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
+import com.agutsul.chess.Movable;
+import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
 
 public interface PieceDiscoveredAttackImpact<COLOR1 extends Color,
                                              COLOR2 extends Color,
-                                             PIECE  extends Piece<COLOR1>,
+                                             PIECE  extends Piece<COLOR1> & Movable & Capturable,
                                              ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
                                              ATTACKED extends Piece<COLOR2>>
-        extends Impact<PIECE> {
+        extends Impact<AbstractTargetActivity<Impact.Type,PIECE,?>> {
 
     enum Mode {
         ABSOLUTE, // discovered check

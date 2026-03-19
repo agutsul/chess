@@ -589,23 +589,23 @@ public class KingPieceImplTest extends AbstractPieceTest {
         var discoveredAttackImpacts = board.getImpacts(whiteKing, Impact.Type.DISCOVERED_ATTACK);
 
         assertFalse(discoveredAttackImpacts.isEmpty());
-        assertEquals(2, discoveredAttackImpacts.size());
+        assertEquals(7, discoveredAttackImpacts.size());
 
         var relativeDiscoveredAttacks = Stream.of(discoveredAttackImpacts)
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceDiscoveredAttackImpact<?,?,?,?,?>) impact)
                 .filter(PieceDiscoveredAttackImpact::isRelative)
-                .map(impact -> (PieceRelativeDiscoveredAttackImpact<?,?,?,?,?>) impact)
+                .map(impact -> (PieceRelativeDiscoveredAttackImpact<?,?,?,?,?,?>) impact)
                 .collect(toList());
 
-        assertEquals(2, relativeDiscoveredAttacks.size());
+        assertEquals(7, relativeDiscoveredAttacks.size());
 
         var whiteBishop = board.getPiece("h7").get();
         var blackPawn = board.getPiece("d3").get();
 
         var discoveredAttack1 = relativeDiscoveredAttacks.getFirst();
 
-        assertEquals(whiteKing,   discoveredAttack1.getSource());
+        assertEquals(whiteKing,   discoveredAttack1.getPiece());
         assertEquals(whiteBishop, discoveredAttack1.getAttacker());
         assertEquals(blackPawn,   discoveredAttack1.getAttacked());
         assertTrue(discoveredAttack1.getTarget().isHidden());
@@ -616,7 +616,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
         var discoveredAttack2 = relativeDiscoveredAttacks.getLast();
 
-        assertEquals(whiteKing,   discoveredAttack2.getSource());
+        assertEquals(whiteKing,   discoveredAttack2.getPiece());
         assertEquals(whiteRook,   discoveredAttack2.getAttacker());
         assertEquals(blackBishop, discoveredAttack2.getAttacked());
         assertTrue(discoveredAttack2.getTarget().isHidden());
@@ -637,23 +637,23 @@ public class KingPieceImplTest extends AbstractPieceTest {
         var discoveredAttackImpacts = board.getImpacts(whiteKing, Impact.Type.DISCOVERED_ATTACK);
 
         assertFalse(discoveredAttackImpacts.isEmpty());
-        assertEquals(1, discoveredAttackImpacts.size());
+        assertEquals(4, discoveredAttackImpacts.size());
 
         var absoluteDiscoveredAttacks = Stream.of(discoveredAttackImpacts)
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceDiscoveredAttackImpact<?,?,?,?,?>) impact)
                 .filter(PieceDiscoveredAttackImpact::isAbsolute)
-                .map(impact -> (PieceAbsoluteDiscoveredAttackImpact<?,?,?,?,?>) impact)
+                .map(impact -> (PieceAbsoluteDiscoveredAttackImpact<?,?,?,?,?,?>) impact)
                 .collect(toList());
 
-        assertEquals(1, absoluteDiscoveredAttacks.size());
+        assertEquals(4, absoluteDiscoveredAttacks.size());
 
         var whiteRook = board.getPiece("e1").get();
         var blackKing = board.getPiece("e8").get();
 
         var discoveredAttack = absoluteDiscoveredAttacks.getFirst();
 
-        assertEquals(whiteKing, discoveredAttack.getSource());
+        assertEquals(whiteKing, discoveredAttack.getPiece());
         assertEquals(whiteRook, discoveredAttack.getAttacker());
         assertEquals(blackKing, discoveredAttack.getAttacked());
         assertTrue(discoveredAttack.getTarget().isHidden());

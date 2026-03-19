@@ -1,6 +1,7 @@
 package com.agutsul.chess.rule.impact.attack.discovered;
 
 import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
+import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.emptyList;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
@@ -8,6 +9,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
@@ -15,7 +17,10 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
+import com.agutsul.chess.Movable;
+import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PieceMotionImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeDiscoveredAttackImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -24,22 +29,23 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.position.Position;
 
-final class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
-                                                    COLOR2 extends Color,
-                                                    PIECE  extends Piece<COLOR1>,
-                                                    ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
-                                                    ATTACKED extends Piece<COLOR2>>
+public class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
+                                                     COLOR2 extends Color,
+                                                     PIECE  extends Piece<COLOR1> & Movable & Capturable,
+                                                     ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
+                                                     ATTACKED extends Piece<COLOR2>,
+                                                     SOURCE extends AbstractTargetActivity<Impact.Type,PIECE,?> & Impact<PIECE>>
         extends AbstractDiscoveredAttackModeImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,
-                                                       PieceRelativeDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>> {
+                                                       PieceRelativeDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,SOURCE>> {
 
-    PieceRelativeDiscoveredAttackImpactRule(Board board,
-                                            Algo<PIECE,Collection<Position>> algo) {
+    protected PieceRelativeDiscoveredAttackImpactRule(Board board,
+                                                      Algo<PIECE,Collection<Position>> algo) {
         super(board, algo);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    protected Collection<PieceRelativeDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>>
+    protected Collection<PieceRelativeDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,SOURCE>>
             createImpacts(PIECE piece, Collection<Calculatable> next) {
 
         var opponentColor  = piece.getColor().invert();
@@ -70,11 +76,11 @@ final class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
 
                     var linePieces = board.getPieces(line);
                     if (linePieces.size() < 3) {
-                        return null;
+                        return emptyList();
                     }
 
                     var opponentPiece = entry.getValue();
-                    var impact = Stream.of(linePieces)
+                    var relativeImpacts = Stream.of(linePieces)
                             .flatMap(Collection::stream)
                             .filter(Piece::isLinear)
                             .filter(attacker -> Objects.equals(piece.getColor(), attacker.getColor()))
@@ -89,16 +95,48 @@ final class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
 
                                 return isPieceProtected;
                             })
-                            .findFirst()
-                            .map(attacker -> new PieceRelativeDiscoveredAttackImpact<>(piece, (ATTACKER) attacker, opponentPiece, line))
-                            .orElse(null);
+                            .map(attacker -> Stream.of(next)
+                                    .flatMap(Collection::stream)
+                                    .map(position -> (Position) position)
+                                    .filter(position -> !line.contains(position))
+                                    .map(position -> createImpact(piece, position, (ATTACKER) attacker, opponentPiece, line))
+                                    .map(Optional::ofNullable)
+                                    .flatMap(Optional::stream)
+                                    .toList()
+                            )
+                            .flatMap(Collection::stream)
+                            .toList();
 
-                    return impact;
+                    return relativeImpacts;
                 })
-                .filter(Objects::nonNull)
+                .flatMap(Collection::stream)
                 .distinct()
+                .map(impact -> (PieceRelativeDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,SOURCE>) impact)
                 .collect(toList());
 
         return impacts;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected PieceRelativeDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,SOURCE>
+            createImpact(PIECE piece, Position position, ATTACKER attacker, ATTACKED attacked, Line line) {
+
+        var optionalPiece = board.getPiece(position);
+        if (optionalPiece.isEmpty()) {
+            return new PieceRelativeDiscoveredAttackImpact<>(
+                    new PieceMotionImpact<>(piece, position),
+                    attacker, attacked, line
+            );
+        }
+
+        var oPiece = optionalPiece.get();
+        if (!Objects.equals(oPiece.getColor(), piece.getColor())) {
+            return new PieceRelativeDiscoveredAttackImpact<>(
+                    createAttackImpact(piece, (Piece<COLOR2>) oPiece),
+                    attacker, attacked, line
+            );
+        }
+
+        return null;
     }
 }
