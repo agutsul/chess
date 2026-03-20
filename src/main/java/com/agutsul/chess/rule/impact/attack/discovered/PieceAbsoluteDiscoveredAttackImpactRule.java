@@ -2,7 +2,6 @@ package com.agutsul.chess.rule.impact.attack.discovered;
 
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -55,16 +54,10 @@ public class PieceAbsoluteDiscoveredAttackImpactRule<COLOR1 extends Color,
                 // check if there is piece action position outside line
                 .filter(line -> !line.containsAll(next))
                 .filter(line -> line.contains(opponentKing.getPosition()))
-                .map(line -> {
-                    var linePieces = board.getPieces(line);
-                    return linePieces.size() < 3
-                            ? emptyList()
-                            : createImpacts(piece, next, opponentKing, line, linePieces);
-                })
+                .map(line -> createImpacts(piece, next, opponentKing, line))
                 .flatMap(Collection::stream)
                 .distinct()
-                .map(impact -> (PieceAbsoluteDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,SOURCE>) impact)
-                .collect(toList());
+                .toList();
 
         return impacts;
     }

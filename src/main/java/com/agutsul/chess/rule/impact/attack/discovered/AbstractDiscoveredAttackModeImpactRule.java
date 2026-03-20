@@ -1,6 +1,7 @@
 package com.agutsul.chess.rule.impact.attack.discovered;
 
 import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
@@ -58,7 +59,12 @@ abstract class AbstractDiscoveredAttackModeImpactRule<COLOR1 extends Color,
 
     @SuppressWarnings("unchecked")
     protected Collection<IMPACT> createImpacts(PIECE piece, Collection<Calculatable> positions,
-                                               ATTACKED opponentPiece, Line line, Collection<Piece<Color>> linePieces) {
+                                               ATTACKED opponentPiece, Line line) {
+
+        var linePieces = board.getPieces(line);
+        if (linePieces.size() < 3) {
+            return emptyList();
+        }
 
         var impacts = Stream.of(linePieces)
                 .flatMap(Collection::stream)

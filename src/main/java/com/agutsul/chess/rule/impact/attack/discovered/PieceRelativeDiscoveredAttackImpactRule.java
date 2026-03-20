@@ -3,7 +3,6 @@ package com.agutsul.chess.rule.impact.attack.discovered;
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.emptyList;
 import static java.util.function.Predicate.not;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -50,7 +49,7 @@ public class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
                 .flatMap(Collection::stream)
                 .filter(not(Piece::isKing))
                 .map(opponentPiece -> (ATTACKED) opponentPiece)
-                .collect(toList());
+                .toList();
 
         var impactLines = new ArrayListValuedHashMap<Line,ATTACKED>();
         Stream.of(board.getLines(piece.getPosition()))
@@ -68,18 +67,10 @@ public class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
 
         var impacts = Stream.of(impactLines.entries())
                 .flatMap(Collection::stream)
-                .map(entry -> {
-                    var line = entry.getKey();
-                    var linePieces = board.getPieces(line);
-
-                    return linePieces.size() < 3
-                        ? emptyList()
-                        : createImpacts(piece, next, entry.getValue(), line, linePieces);
-                })
+                .map(entry -> createImpacts(piece, next, entry.getValue(), entry.getKey()))
                 .flatMap(Collection::stream)
                 .distinct()
-                .map(impact -> (PieceRelativeDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,SOURCE>) impact)
-                .collect(toList());
+                .toList();
 
         return impacts;
     }
