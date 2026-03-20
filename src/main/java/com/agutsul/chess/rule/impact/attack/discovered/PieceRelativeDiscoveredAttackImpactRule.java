@@ -44,8 +44,7 @@ public class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
     protected Collection<PieceRelativeDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,SOURCE>>
             createImpacts(PIECE piece, Collection<Calculatable> next) {
 
-        var opponentColor  = piece.getColor().invert();
-        var opponentPieces = Stream.of(board.getPieces(opponentColor))
+        var opponentPieces = Stream.of(board.getPieces(piece.getColor().invert()))
                 .flatMap(Collection::stream)
                 .filter(not(Piece::isKing))
                 .map(opponentPiece -> (ATTACKED) opponentPiece)

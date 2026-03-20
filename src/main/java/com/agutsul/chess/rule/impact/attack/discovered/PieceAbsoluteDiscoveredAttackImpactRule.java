@@ -42,8 +42,7 @@ public class PieceAbsoluteDiscoveredAttackImpactRule<COLOR1 extends Color,
     protected Collection<PieceAbsoluteDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,SOURCE>>
             createImpacts(PIECE piece, Collection<Calculatable> next) {
 
-        var opponentColor = piece.getColor().invert();
-        var optionalKing  = board.getKing(opponentColor);
+        var optionalKing  = board.getKing(piece.getColor().invert());
         if (optionalKing.isEmpty()) {
             return emptyList();
         }
