@@ -17,6 +17,11 @@ import com.agutsul.chess.game.state.GameState;
 @ExtendWith(MockitoExtension.class)
 public final class PgnGameTest extends AbstractPgnGameTest {
 
+    @Override
+    public String readFileContent(String fileName) throws URISyntaxException, IOException {
+        return super.readFileContent(PGN_FOLDER, fileName);
+    }
+
     @Test
     void testPgnGameFileWhiteWins() throws URISyntaxException, IOException {
         var game = parseGame(readFileContent("chess_white.pgn"));

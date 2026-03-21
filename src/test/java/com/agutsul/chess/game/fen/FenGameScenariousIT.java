@@ -1,5 +1,4 @@
 package com.agutsul.chess.game.fen;
-
 import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.apache.commons.lang3.StringUtils.split;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -8,11 +7,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.Strings;
-import org.junit.jupiter.api.AutoClose;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,27 +25,20 @@ import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
 @ExtendWith(MockitoExtension.class)
 public class FenGameScenariousIT extends AbstractFenGameTest {
 
-    @AutoClose
-    ForkJoinPool forkJoin = new ForkJoinPool(2);
-
     @DisplayName("testScenarious")
-    @ParameterizedTest(name = "({index}) => (''{0}'',''{1}'')")
-    @CsvFileSource(useHeadersInDisplayName = true, resources = {
-            "/chess_fork_scenarious.csv",
-            "/chess_pin_scenarious.csv",
-            "/chess_xray_scenarious.csv",
-            "/chess_skewer_scenarious.csv",
-            "/chess_discovered_attack_scenarious.csv"
-    })
-    void testScenarious(String fen, String expectedJournal)
-            throws URISyntaxException, IOException {
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
+    @CsvFileSource(resources = "/fen-scenarious.csv", useHeadersInDisplayName = true)
+    void testScenarious(String file) throws URISyntaxException, IOException {
+        var lines = split(readFileContent(FEN_FOLDER, file), System.lineSeparator());
+        for (int line = 1; line < lines.length; line++) {
+            var data = split(lines[line], ',');
+            var expectedActions = split(Strings.CI.replace(data[1], ". ", "."), SPACE);
 
-        var expectedActions = split(Strings.CI.replace(expectedJournal, ". ", "."), SPACE);
+            var game = new FenGameProxy(parseGame(data[0]), expectedActions.length);
+            game.run();
 
-        var game = new FenGameProxy(parseGame(fen), expectedActions.length);
-        game.run();
-
-        assertEquals(expectedJournal, String.valueOf(game.getJournal()));
+            assertEquals(data[1], String.valueOf(game.getJournal()));
+        }
     }
 
     private static final class FenGameProxy

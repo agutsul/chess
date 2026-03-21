@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -28,11 +29,13 @@ public class FenGameFormatterTest implements TestFileReader {
     })
     void testFenGameToString(String fileName) throws URISyntaxException, IOException {
         var parser = new AntlrFileParser<FenGame<?>>(new FenGameParser());
-        var games = parser.parse(readFile(fileName));
+
+        var file = new File(FEN_FOLDER, fileName);
+        var games = parser.parse(readFile(file.toString()));
 
         assertNotNull(games);
         assertFalse(games.isEmpty());
         assertEquals(1, games.size());
-        assertEquals(readFileContent(fileName), String.valueOf(games.getFirst()));
+        assertEquals(readFileContent(FEN_FOLDER, fileName), String.valueOf(games.getFirst()));
     }
 }

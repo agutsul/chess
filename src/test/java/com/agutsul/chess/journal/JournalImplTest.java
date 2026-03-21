@@ -49,6 +49,11 @@ public class JournalImplTest implements TestFileReader {
     @Mock
     Observable observable;
 
+    @Override
+    public String readFileContent(String fileName) throws URISyntaxException, IOException {
+        return TestFileReader.super.readFileContent(CONSOLE_FOLDER, fileName);
+    }
+
     @Test
     void testAddMemento() {
         var memento = mockMemento();

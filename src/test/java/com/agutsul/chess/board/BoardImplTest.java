@@ -8,10 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -20,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.TestFileReader;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Color;
@@ -30,7 +29,7 @@ import com.agutsul.chess.position.Position;
 import com.agutsul.chess.position.PositionFactory;
 
 @ExtendWith(MockitoExtension.class)
-public class BoardImplTest {
+public class BoardImplTest implements TestFileReader {
 
     private final Board board;
 
@@ -209,9 +208,7 @@ public class BoardImplTest {
 
     @Test
     void testToString() throws IOException, URISyntaxException {
-        var resource = getClass().getClassLoader().getResource("standard_board.txt");
-        var file = new File(resource.toURI());
-        var standardBoard = Files.readString(file.toPath());
+        var standardBoard = readFileContent(CONSOLE_FOLDER, "standard_board.txt");
         assertEquals(standardBoard, board.toString());
     }
 

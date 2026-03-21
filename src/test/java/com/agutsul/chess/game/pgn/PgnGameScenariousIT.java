@@ -20,7 +20,7 @@ public final class PgnGameScenariousIT extends AbstractPgnGameTest {
     void testScenarious(String file, String status, int actions, int tags)
             throws URISyntaxException, IOException {
 
-        var game = parseGame(readFileContent(file));
+        var game = parseGame(readFileContent(PGN_FOLDER, file));
         assertGame(game, GameState.Type.valueOf(status), actions, tags);
     }
 }

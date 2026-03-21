@@ -278,7 +278,7 @@ public class ConsoleGameOutputObserverTest implements TestFileReader {
     private void assertStream(String file, OutputStream stream)
             throws URISyntaxException, IOException {
 
-        var expected = readFileContent(file);
+        var expected = readFileContent(CONSOLE_FOLDER, file);
         var actual = stream.toString();
 
         assertEquals(expected, actual);

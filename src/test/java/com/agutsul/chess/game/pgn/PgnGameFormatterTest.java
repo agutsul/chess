@@ -16,7 +16,7 @@ public class PgnGameFormatterTest
 
     @Test
     void testPgnGameToString() throws URISyntaxException, IOException {
-        var pgnGames = readFileContent("scholar_mate.pgn");
+        var pgnGames = readFileContent(PGN_FOLDER, "scholar_mate.pgn");
 
         var games = parseGames(pgnGames, 1);
         var game = games.getFirst();

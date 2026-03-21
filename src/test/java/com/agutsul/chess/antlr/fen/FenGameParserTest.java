@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -30,7 +31,7 @@ public class FenGameParserTest implements TestFileReader {
         var game = games.getFirst();
 
         var board = game.getBoard();
-        var standardBoard = readFileContent("standard_board.txt");
+        var standardBoard = readFileContent(CONSOLE_FOLDER, "standard_board.txt");
 
         assertEquals(String.valueOf(board), standardBoard);
         assertEquals(Colors.WHITE, game.getCurrentPlayer().getColor());
@@ -121,7 +122,9 @@ public class FenGameParserTest implements TestFileReader {
             throws URISyntaxException, IOException {
 
         var parser = new AntlrFileParser<FenGame<?>>(new FenGameParser());
-        var games = parser.parse(readFile(fileName));
+
+        var file = new File(FEN_FOLDER, fileName);
+        var games = parser.parse(readFile(file.toString()));
 
         assertNotNull(games);
         assertFalse(games.isEmpty());

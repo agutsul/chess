@@ -19,7 +19,7 @@ public class PgnStringBuilderTest implements TestFileReader {
 
     @Test
     void testPgnStringBuild() throws URISyntaxException, IOException {
-        var content = readFileContent("chess_eval_format.pgn");
+        var content = readFileContent(PGN_FOLDER, "chess_eval_format.pgn");
         // check that content string has data to be cleaned
         assertTrue(content.contains("%eval"));
         assertTrue(content.contains("..."));

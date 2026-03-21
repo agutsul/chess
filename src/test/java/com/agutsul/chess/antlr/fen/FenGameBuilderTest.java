@@ -82,7 +82,7 @@ public class FenGameBuilderTest implements TestFileReader {
 
         observer.observe(new GameStartedEvent(game));
 
-        var expected = readFileContent("console_fen_game_board.txt");
+        var expected = readFileContent(CONSOLE_FOLDER, "console_fen_game_board.txt");
         var actual = outputStream.toString();
 
         assertEquals(expected, actual);

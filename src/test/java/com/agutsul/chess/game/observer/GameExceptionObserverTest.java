@@ -42,6 +42,11 @@ public class GameExceptionObserverTest implements TestFileReader {
     @TempDir(cleanup = CleanupMode.ON_SUCCESS)
     static Path tempDir;
 
+    @Override
+    public String readFileContent(String fileName) throws URISyntaxException, IOException {
+        return TestFileReader.super.readFileContent(PGN_FOLDER, fileName);
+    }
+
     @Test
     @Order(1)
     void testProcessingGameExceptionEventForUnknownErrorFolder()
