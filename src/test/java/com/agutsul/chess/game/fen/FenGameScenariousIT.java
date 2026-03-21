@@ -1,4 +1,5 @@
 package com.agutsul.chess.game.fen;
+import static java.lang.System.lineSeparator;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.apache.commons.lang3.StringUtils.split;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,13 +26,16 @@ import com.agutsul.chess.player.observer.AbstractPlayerInputObserver;
 @ExtendWith(MockitoExtension.class)
 public class FenGameScenariousIT extends AbstractFenGameTest {
 
+    private static final String SEPARATOR = ",";
+
     @DisplayName("testScenarious")
     @ParameterizedTest(name = "({index}) => (''{0}'')")
     @CsvFileSource(resources = "/fen-scenarious.csv", useHeadersInDisplayName = true)
     void testScenarious(String file) throws URISyntaxException, IOException {
-        var lines = split(readFileContent(FEN_FOLDER, file), System.lineSeparator());
-        for (int line = 1; line < lines.length; line++) {
-            var data = split(lines[line], ',');
+        var lines = split(readFileContent(FEN_FOLDER, file), lineSeparator());
+        for (var i = 1; i < lines.length; i++) {
+            var data = split(lines[i], SEPARATOR);
+
             var expectedActions = split(Strings.CI.replace(data[1], ". ", "."), SPACE);
 
             var game = new FenGameProxy(parseGame(data[0]), expectedActions.length);
@@ -68,7 +72,7 @@ public class FenGameScenariousIT extends AbstractFenGameTest {
                     .map(observer -> new LimitFenPlayerInputObserverProxy(observer, actionLimit))
                     .toList();
 
-            // replace player obervers
+            // replace player observers
             proxyObservers.forEach(observer -> observableBoard.addObserver(observer));
             playerObservers.forEach(observer -> observableBoard.removeObserver(observer));
         }
