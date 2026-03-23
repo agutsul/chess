@@ -37,7 +37,8 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
 
     @Override
     public final Integer getValue() {
-        return Impact.super.getValue() * Math.abs(getTarget().getValue());
+        var value = Math.abs(getSource().getValue()) - Math.abs(getTarget().getValue());
+        return Impact.super.getValue() * Math.abs(getTarget().getValue()) + Math.abs(value);
     }
 
     public final Optional<Line> getLine() {

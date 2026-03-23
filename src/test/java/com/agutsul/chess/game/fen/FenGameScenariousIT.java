@@ -35,14 +35,19 @@ public class FenGameScenariousIT extends AbstractFenGameTest {
         var lines = split(readFileContent(FEN_FOLDER, file), lineSeparator());
         for (var i = 1; i < lines.length; i++) {
             var data = split(lines[i], SEPARATOR);
-
-            var expectedActions = split(Strings.CI.replace(data[1], ". ", "."), SPACE);
-
-            var game = new FenGameProxy(parseGame(data[0]), expectedActions.length);
-            game.run();
-
-            assertEquals(data[1], String.valueOf(game.getJournal()));
+            assertScenario(data[0], data[1]);
         }
+    }
+
+    private void assertScenario(String fen, String journal)
+            throws URISyntaxException, IOException {
+
+        var expectedActions = split(Strings.CI.replace(journal, ". ", "."), SPACE);
+
+        var game = new FenGameProxy(parseGame(fen), expectedActions.length);
+        game.run();
+
+        assertEquals(journal, String.valueOf(game.getJournal()));
     }
 
     private static final class FenGameProxy
