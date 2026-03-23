@@ -33,15 +33,19 @@ abstract class AbstractPieceDiscoveredAttackImpact<COLOR1 extends Color,
 
     @Override
     public final Integer getValue() {
-        var value = Math.abs(((Impact<?>) getSource()).getValue())
-                + Math.abs(getTarget().getValue());
-
+        var value = Math.abs(getSource().getValue()) + Math.abs(getTarget().getValue());
         return PieceDiscoveredAttackImpact.super.getValue() * value;
     }
 
     @Override
     public final Mode getMode() {
         return mode;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public final SOURCE getSource() {
+        return (SOURCE) super.getSource();
     }
 
     @Override

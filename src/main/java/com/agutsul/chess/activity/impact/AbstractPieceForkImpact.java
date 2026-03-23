@@ -31,7 +31,7 @@ abstract class AbstractPieceForkImpact<COLOR1 extends Color,
                 .mapToInt(Impact::getValue)
                 .sum();
 
-        return PieceForkImpact.super.getValue() * value;
+        return PieceForkImpact.super.getValue() * Math.abs(value);
     }
 
     @Override

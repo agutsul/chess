@@ -23,6 +23,12 @@ abstract class AbstractPieceSacrificeImpact<COLOR1 extends Color,
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public final SOURCE getSource() {
+        return (SOURCE) super.getSource();
+    }
+
+    @Override
     public final SACRIFICED getSacrificed() {
         return getSource().getSource();
     }
@@ -34,6 +40,6 @@ abstract class AbstractPieceSacrificeImpact<COLOR1 extends Color,
 
     @Override
     public final Position getPosition() {
-        return ((Impact<?>) getSource()).getPosition();
+        return getSource().getPosition();
     }
 }
