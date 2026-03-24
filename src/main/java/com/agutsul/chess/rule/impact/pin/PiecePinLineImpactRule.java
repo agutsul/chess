@@ -7,6 +7,7 @@ import java.util.Collection;
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
+import com.agutsul.chess.Movable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.board.Board;
@@ -19,11 +20,11 @@ import com.agutsul.chess.position.Position;
 
 public class PiecePinLineImpactRule<COLOR1 extends Color,
                                     COLOR2 extends Color,
-                                    PINNED extends Piece<COLOR1> & Pinnable & Lineable,
-                                    PIECE  extends Piece<COLOR1>,
+                                    PINNED extends Piece<COLOR1> & Movable & Capturable & Pinnable & Lineable,
+                                    DEFENDED extends Piece<COLOR1>,
                                     ATTACKER extends Piece<COLOR2> & Capturable & Lineable,
-                                    IMPACT extends PiecePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>>
-        extends AbstractPiecePinImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,IMPACT> {
+                                    IMPACT extends PiecePinImpact<COLOR1,COLOR2,PINNED,DEFENDED,ATTACKER>>
+        extends AbstractPiecePinImpactRule<COLOR1,COLOR2,PINNED,DEFENDED,ATTACKER,IMPACT> {
 
     private final Algo<PINNED,Collection<Position>> algo;
 

@@ -1,7 +1,6 @@
 package com.agutsul.chess.rule.impact.pin;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -10,6 +9,7 @@ import java.util.stream.Stream;
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
+import com.agutsul.chess.Movable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.impact.PiecePartialPinImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
@@ -23,11 +23,11 @@ import com.agutsul.chess.rule.Rule;
 // https://en.wikipedia.org/wiki/Pin_(chess)
 abstract class AbstractPiecePinImpactRule<COLOR1 extends Color,
                                           COLOR2 extends Color,
-                                          PINNED extends Piece<COLOR1> & Pinnable,
-                                          PIECE  extends Piece<COLOR1>,
+                                          PINNED extends Piece<COLOR1> & Movable & Capturable & Pinnable,
+                                          DEFENDED extends Piece<COLOR1>,
                                           ATTACKER extends Piece<COLOR2> & Capturable & Lineable,
-                                          IMPACT extends PiecePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>>
-        extends AbstractPinImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,IMPACT> {
+                                          IMPACT extends PiecePinImpact<COLOR1,COLOR2,PINNED,DEFENDED,ATTACKER>>
+        extends AbstractPinImpactRule<COLOR1,COLOR2,PINNED,DEFENDED,ATTACKER,IMPACT> {
 
     private final Rule<Piece<?>,Collection<IMPACT>> rule;
 
@@ -56,14 +56,14 @@ abstract class AbstractPiecePinImpactRule<COLOR1 extends Color,
                     var foundPiece = optionalPiece.get();
                     return !Objects.equals(foundPiece.getColor(), piece.getColor());
                 })
-                .collect(toList());
+                .toList();
 
         if (positions.isEmpty()) {
             return emptyList();
         }
 
         @SuppressWarnings("unchecked")
-        var impacts = Stream.of(rule.evaluate(piece))
+        Collection<IMPACT> impacts = Stream.of(rule.evaluate(piece))
                 .flatMap(Collection::stream)
                 .map(impact -> {
                     var line = impact.getLine();
@@ -72,7 +72,7 @@ abstract class AbstractPiecePinImpactRule<COLOR1 extends Color,
                             : impact;
                 })
                 .map(impact -> (IMPACT) impact)
-                .collect(toList());
+                .toList();
 
         return impacts;
     }

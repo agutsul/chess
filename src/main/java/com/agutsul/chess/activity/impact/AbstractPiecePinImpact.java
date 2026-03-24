@@ -2,6 +2,7 @@ package com.agutsul.chess.activity.impact;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
+import com.agutsul.chess.Movable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
@@ -10,7 +11,7 @@ import com.agutsul.chess.position.Position;
 
 abstract class AbstractPiecePinImpact<COLOR1 extends Color,
                                       COLOR2 extends Color,
-                                      PINNED extends Piece<COLOR1> & Pinnable,
+                                      PINNED extends Piece<COLOR1> & Movable & Capturable & Pinnable,
                                       DEFENDED extends Piece<COLOR1>,
                                       ATTACKER extends Piece<COLOR2> & Capturable & Lineable,
                                       IMPACT extends AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,DEFENDED>>
@@ -27,12 +28,7 @@ abstract class AbstractPiecePinImpact<COLOR1 extends Color,
     @Override
     public final Integer getValue() {
         var value = Math.abs(getDefended().getValue()) - Math.abs(getPinned().getValue());
-        return PiecePinImpact.super.getValue() * value + Math.abs(getTarget().getValue());
-    }
-
-    @Override
-    public final String toString() {
-        return String.format("%s{%s}", getPinned(), getTarget());
+        return PiecePinImpact.super.getValue() * Math.abs(value) + Math.abs(getTarget().getValue());
     }
 
     @Override
@@ -48,5 +44,10 @@ abstract class AbstractPiecePinImpact<COLOR1 extends Color,
     @Override
     public final Mode getMode() {
         return mode;
+    }
+
+    @Override
+    public final String toString() {
+        return String.format("%s{%s}", getPinned(), getTarget());
     }
 }

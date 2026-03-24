@@ -1,17 +1,15 @@
 package com.agutsul.chess.rule.impact.pin;
 
-import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
+import com.agutsul.chess.Movable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsolutePinImpact;
@@ -24,7 +22,7 @@ import com.agutsul.chess.piece.Piece;
 
 final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
                                        COLOR2 extends Color,
-                                       PINNED extends Piece<COLOR1> & Pinnable,
+                                       PINNED extends Piece<COLOR1> & Movable & Capturable & Pinnable,
                                        KING   extends KingPiece<COLOR1>,
                                        ATTACKER extends Piece<COLOR2> & Capturable & Lineable>
         extends AbstractPinModeImpactRule<COLOR1,COLOR2,PINNED,KING,ATTACKER,
@@ -50,54 +48,41 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
                 .map(calculated -> (Line) calculated)
                 .filter(line -> line.contains(king.getPosition()))
                 .filter(line -> line.contains(piece.getPosition()))
-                .collect(toList());
+                .toList();
 
         if (impactLines.isEmpty()) {
             return emptyList();
         }
 
-        Collection<PiecePinImpact<COLOR1,COLOR2,PINNED,KING,ATTACKER>> impacts = Stream.of(impactLines)
+        var impacts = Stream.of(impactLines)
                 .flatMap(Collection::stream)
-                .map(line -> {
-                    var linePieces = board.getPieces(line);
-                    if (linePieces.size() < 3) {
-                        return null;
-                    }
-
-                    var impact = Stream.of(linePieces)
-                            .flatMap(Collection::stream)
-                            .filter(Piece::isLinear)
-                            .filter(attacker -> !Objects.equals(attacker.getColor(), piece.getColor()))
-                            // searched pattern: 'attacker - pinned piece - king' or reverse
-                            .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, king)))
-                            .filter(attacker -> {
-                                // check if piece is attacked by line attacker
-                                var isPieceAttacked = Stream.of(board.getImpacts(attacker, Impact.Type.CONTROL))
-                                        .flatMap(Collection::stream)
-                                        .map(Impact::getPosition)
-                                        .anyMatch(position -> Objects.equals(position, piece.getPosition()));
-
-                                return isPieceAttacked;
-                            })
-                            .filter(attacker -> {
-                                // check if king is monitored by line attacker
-                                var isKingMonitored = Stream.of(board.getImpacts(attacker, Impact.Type.MONITOR))
-                                        .flatMap(Collection::stream)
-                                        .map(Impact::getPosition)
-                                        .anyMatch(position -> Objects.equals(position, king.getPosition()));
-
-                                return isKingMonitored;
-                            })
-                            .findFirst()
-                            .map(attacker -> new PieceAbsolutePinImpact<>(piece, king, (ATTACKER) attacker, line))
-                            .orElse(null);
-
-                    return impact;
-                })
-                .filter(Objects::nonNull)
+                .map(line -> createImpacts(piece, king, line))
+                .flatMap(Collection::stream)
                 .distinct()
-                .collect(toList());
+                .toList();
 
         return impacts;
+    }
+
+    @Override
+    protected boolean isAttacked(ATTACKER attacker, PINNED pinnedPiece, KING defendedPiece) {
+        if (!super.isAttacked(attacker, pinnedPiece, defendedPiece)) {
+            return false;
+        }
+
+        // check if king is monitored by line attacker
+        var isKingMonitored = Stream.of(board.getImpacts(attacker, Impact.Type.MONITOR))
+                .flatMap(Collection::stream)
+                .map(Impact::getPosition)
+                .anyMatch(position -> Objects.equals(position, defendedPiece.getPosition()));
+
+        return isKingMonitored;
+    }
+
+    @Override
+    protected PiecePinImpact<COLOR1,COLOR2,PINNED,KING,ATTACKER>
+            createImpact(PINNED pinnedPiece, KING defendedPiece, ATTACKER attacker, Line line) {
+
+        return new PieceAbsolutePinImpact<>(pinnedPiece, defendedPiece, attacker, line);
     }
 }
