@@ -33,7 +33,6 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Collection<PiecePinImpact<COLOR1,COLOR2,PINNED,KING,ATTACKER>>
             createImpacts(PINNED piece, Collection<Calculatable> next) {
 
@@ -42,7 +41,9 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
             return emptyList();
         }
 
+        @SuppressWarnings("unchecked")
         var king = (KING) optionalKing.get();
+
         var impactLines = Stream.of(next)
                 .flatMap(Collection::stream)
                 .map(calculated -> (Line) calculated)

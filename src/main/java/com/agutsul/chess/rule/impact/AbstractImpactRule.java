@@ -15,7 +15,7 @@ import com.agutsul.chess.rule.AbstractRule;
 public abstract class AbstractImpactRule<COLOR extends Color,
                                          PIECE extends Piece<COLOR>,
                                          IMPACT extends Impact<PIECE>>
-        extends AbstractRule<PIECE,IMPACT,Impact.Type> {
+        extends AbstractRule<PIECE,IMPACT,Type> {
 
     protected AbstractImpactRule(Board board, Type type) {
         super(board, type);

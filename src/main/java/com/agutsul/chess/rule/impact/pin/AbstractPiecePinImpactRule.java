@@ -63,7 +63,7 @@ abstract class AbstractPiecePinImpactRule<COLOR1 extends Color,
         }
 
         @SuppressWarnings("unchecked")
-        Collection<IMPACT> impacts = Stream.of(rule.evaluate(piece))
+        var impacts = Stream.of(rule.evaluate(piece))
                 .flatMap(Collection::stream)
                 .map(impact -> {
                     var line = impact.getLine();
