@@ -10,6 +10,7 @@ import com.agutsul.chess.Protectable;
 import com.agutsul.chess.Restorable;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.PieceProxy;
 import com.agutsul.chess.position.Position;
 
 final class TransformablePieceAdapter<COLOR extends Color,

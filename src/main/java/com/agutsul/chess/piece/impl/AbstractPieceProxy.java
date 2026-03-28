@@ -10,6 +10,7 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.PieceProxy;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
@@ -19,7 +20,7 @@ abstract class AbstractPieceProxy<COLOR extends Color,
 
     protected PIECE origin;
 
-    AbstractPieceProxy(PIECE origin) {
+    protected AbstractPieceProxy(PIECE origin) {
         this.origin = origin;
     }
 
@@ -54,6 +55,16 @@ abstract class AbstractPieceProxy<COLOR extends Color,
     }
 
     @Override
+    public Position getPosition() {
+        return this.origin.getPosition();
+    }
+
+    @Override
+    public List<Position> getPositions() {
+        return this.origin.getPositions();
+    }
+
+    @Override
     public final Type getType() {
         return this.origin.getType();
     }
@@ -76,16 +87,6 @@ abstract class AbstractPieceProxy<COLOR extends Color,
     @Override
     public final int getDirection() {
         return this.origin.getDirection();
-    }
-
-    @Override
-    public final Position getPosition() {
-        return this.origin.getPosition();
-    }
-
-    @Override
-    public List<Position> getPositions() {
-        return this.origin.getPositions();
     }
 
     @Override

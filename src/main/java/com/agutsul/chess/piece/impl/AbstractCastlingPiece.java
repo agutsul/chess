@@ -29,6 +29,7 @@ import com.agutsul.chess.event.CompositeEventObserver;
 import com.agutsul.chess.event.Observer;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.PieceProxy;
 import com.agutsul.chess.piece.state.ActivePieceState;
 import com.agutsul.chess.piece.state.CastlingablePieceState;
 import com.agutsul.chess.position.Position;
