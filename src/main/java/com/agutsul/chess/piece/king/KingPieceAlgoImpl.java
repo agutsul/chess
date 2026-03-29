@@ -11,9 +11,9 @@ import com.agutsul.chess.piece.algo.AbstractAlgo;
 import com.agutsul.chess.position.Position;
 
 final class KingPieceAlgoImpl<COLOR extends Color,
-                              PIECE extends KingPiece<COLOR>>
-        extends AbstractAlgo<PIECE,Position>
-        implements KingPieceAlgo<COLOR,PIECE> {
+                              KING  extends KingPiece<COLOR>>
+        extends AbstractAlgo<KING,Position>
+        implements KingPieceAlgo<COLOR,KING> {
 
     private enum Move {
         NORTH     ( 0,  1),
@@ -46,7 +46,7 @@ final class KingPieceAlgoImpl<COLOR extends Color,
     }
 
     @Override
-    public Collection<Position> calculate(PIECE king) {
+    public Collection<Position> calculate(KING king) {
         var currentPosition = king.getPosition();
         var nextPositions = Stream.of(Move.values())
                 .map(move -> board.getPosition(

@@ -16,9 +16,9 @@ import com.agutsul.chess.piece.algo.AbstractAlgo;
 import com.agutsul.chess.position.Position;
 
 final class KingPieceAlgoProxy<COLOR extends Color,
-                               PIECE extends KingPiece<COLOR>>
-        extends AbstractAlgo<PIECE,Position>
-        implements KingPieceAlgo<COLOR,PIECE> {
+                               KING  extends KingPiece<COLOR>>
+        extends AbstractAlgo<KING,Position>
+        implements KingPieceAlgo<COLOR,KING> {
 
     enum Mode {
         MOVE,
@@ -27,10 +27,10 @@ final class KingPieceAlgoProxy<COLOR extends Color,
     }
 
     private final Mode mode;
-    private final KingPieceAlgo<COLOR,PIECE> algo;
+    private final KingPieceAlgo<COLOR,KING> algo;
 
     KingPieceAlgoProxy(Mode mode, Board board,
-                       KingPieceAlgo<COLOR,PIECE> algo) {
+                       KingPieceAlgo<COLOR,KING> algo) {
 
         super(board);
 
@@ -39,7 +39,7 @@ final class KingPieceAlgoProxy<COLOR extends Color,
     }
 
     @Override
-    public Collection<Position> calculate(PIECE piece) {
+    public Collection<Position> calculate(KING piece) {
         var opponentColor = piece.getColor().invert();
 
         var calculatedPositions = algo.calculate(piece);

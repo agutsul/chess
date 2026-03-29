@@ -19,7 +19,7 @@ import com.agutsul.chess.rule.impact.protect.PieceProtectPositionImpactRule;
 import com.agutsul.chess.rule.impact.undermining.PieceUnderminingPositionImpactRule;
 
 public final class KingPieceImpactRule<COLOR extends Color,
-                                       PIECE extends KingPiece<COLOR>>
+                                       KING  extends KingPiece<COLOR>>
         extends AbstractPieceRule<Impact<?>,Impact.Type> {
 
     public KingPieceImpactRule(Board board) {
@@ -27,7 +27,7 @@ public final class KingPieceImpactRule<COLOR extends Color,
     }
 
     @SuppressWarnings("unchecked")
-    private KingPieceImpactRule(Board board, KingPieceAlgo<COLOR,PIECE> algo) {
+    private KingPieceImpactRule(Board board, KingPieceAlgo<COLOR,KING> algo) {
         super(new CompositePieceRule<>(
                 new PieceAttackPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, algo)),
                 new PieceProtectPositionImpactRule<>(board, algo),

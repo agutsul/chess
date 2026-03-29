@@ -7,8 +7,8 @@ import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Position;
 
 interface KingPieceAlgo<COLOR extends Color,
-                        PIECE extends KingPiece<COLOR>>
-        extends MovePieceAlgo<COLOR,PIECE,Position>,
-                CapturePieceAlgo<COLOR,PIECE,Position>{
+                        KING  extends KingPiece<COLOR>>
+        extends MovePieceAlgo<COLOR,KING,Position>,
+                CapturePieceAlgo<COLOR,KING,Position> {
 
 }

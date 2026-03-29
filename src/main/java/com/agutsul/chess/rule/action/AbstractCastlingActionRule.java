@@ -25,9 +25,9 @@ import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.AbstractRule;
 
 // https://en.wikipedia.org/wiki/Castling
-public abstract class AbstractCastlingActionRule<COLOR extends Color,
-                                                 KING extends Piece<COLOR> & Castlingable & Movable,
-                                                 ROOK extends Piece<COLOR> & Castlingable & Movable,
+public abstract class AbstractCastlingActionRule<COLOR  extends Color,
+                                                 KING   extends Piece<COLOR> & Castlingable & Movable,
+                                                 ROOK   extends Piece<COLOR> & Castlingable & Movable,
                                                  ACTION extends PieceCastlingAction<COLOR,KING,ROOK>>
         extends AbstractRule<KING,ACTION,Action.Type>
         implements CastlingActionRule<COLOR,KING,ROOK,ACTION> {

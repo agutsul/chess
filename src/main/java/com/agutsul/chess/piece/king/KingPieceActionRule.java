@@ -11,7 +11,7 @@ import com.agutsul.chess.rule.action.PieceCapturePositionActionRule;
 import com.agutsul.chess.rule.action.PieceMovePositionActionRule;
 
 public final class KingPieceActionRule<COLOR extends Color,
-                                       PIECE extends KingPiece<COLOR>>
+                                       KING  extends KingPiece<COLOR>>
         extends AbstractPieceRule<Action<?>,Action.Type> {
 
     public KingPieceActionRule(Board board) {
@@ -19,7 +19,7 @@ public final class KingPieceActionRule<COLOR extends Color,
     }
 
     @SuppressWarnings("unchecked")
-    private KingPieceActionRule(Board board, KingPieceAlgo<COLOR,PIECE> algo) {
+    private KingPieceActionRule(Board board, KingPieceAlgo<COLOR,KING> algo) {
         super(new CompositePieceRule<>(
                 new KingCastlingActionRule<>(board),
                 new PieceCapturePositionActionRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, algo)),
