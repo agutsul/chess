@@ -16,7 +16,7 @@ import com.agutsul.chess.position.Position;
 final class PawnPromoteAlgo<COLOR extends Color,
                             PAWN extends PawnPiece<COLOR>>
         extends AbstractAlgo<PAWN,Position>
-        implements PromotePieceAlgo<COLOR,PAWN,Position> {
+        implements PromotePieceAlgo<COLOR,PAWN> {
 
     private final CompositePieceAlgo<COLOR,PAWN,Position> algo;
     private final int promotionLine;

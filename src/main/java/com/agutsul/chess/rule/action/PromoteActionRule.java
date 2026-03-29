@@ -8,7 +8,7 @@ import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.rule.Rule;
 
 public interface PromoteActionRule<COLOR extends Color,
-                                   PAWN extends PawnPiece<COLOR>,
+                                   PAWN  extends PawnPiece<COLOR>,
                                    ACTION extends PiecePromoteAction<COLOR,PAWN>>
     extends Rule<PAWN,Collection<ACTION>> {
 

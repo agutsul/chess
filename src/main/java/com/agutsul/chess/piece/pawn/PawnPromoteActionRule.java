@@ -12,7 +12,6 @@ import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.PromotePieceAlgo;
-import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.AbstractRule;
 import com.agutsul.chess.rule.action.AbstractPromoteActionRule;
 import com.agutsul.chess.rule.action.CaptureActionRule;
@@ -28,7 +27,7 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
 
     <COLOR2 extends Color,PIECE extends Piece<COLOR2>> PawnPromoteActionRule(
                                  Board board,
-                                 PromotePieceAlgo<COLOR1,PAWN, Position> algo,
+                                 PromotePieceAlgo<COLOR1,PAWN> algo,
                                  MoveActionRule<COLOR1,PAWN,PieceMoveAction<COLOR1,PAWN>> rule) {
 
         super(board, Action.Type.PROMOTE);
@@ -37,7 +36,7 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
 
     <COLOR2 extends Color,PIECE extends Piece<COLOR2>> PawnPromoteActionRule(
                                  Board board,
-                                 PromotePieceAlgo<COLOR1,PAWN,Position> algo,
+                                 PromotePieceAlgo<COLOR1,PAWN> algo,
                                  CaptureActionRule<COLOR1,COLOR2,PAWN,PIECE,
                                                    PieceCaptureAction<COLOR1,COLOR2,PAWN,PIECE>> rule) {
 
@@ -64,7 +63,7 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
                                               PieceCaptureAction<COLOR1,COLOR2,PAWN,PIECE>> {
 
         PawnPromoteCaptureActionRule(Board board,
-                                     PromotePieceAlgo<COLOR1,PAWN,Position> algo,
+                                     PromotePieceAlgo<COLOR1,PAWN> algo,
                                      CaptureActionRule<COLOR1,COLOR2,PAWN,PIECE,
                                                        PieceCaptureAction<COLOR1,COLOR2,PAWN,PIECE>> rule) {
             super(board, algo, rule);
@@ -90,7 +89,7 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
                                               PieceMoveAction<COLOR1,PAWN>> {
 
         PawnPromoteMoveActionRule(Board board,
-                                  PromotePieceAlgo<COLOR1,PAWN,Position> algo,
+                                  PromotePieceAlgo<COLOR1,PAWN> algo,
                                   MoveActionRule<COLOR1,PAWN,
                                                  PieceMoveAction<COLOR1,PAWN>> rule) {
             super(board, algo, rule);

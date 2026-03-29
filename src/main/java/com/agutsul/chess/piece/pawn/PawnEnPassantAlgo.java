@@ -22,7 +22,7 @@ import com.agutsul.chess.position.Position;
 final class PawnEnPassantAlgo<COLOR extends Color,
                               PAWN extends PawnPiece<COLOR>>
         extends AbstractAlgo<PAWN,Position>
-        implements EnPassantPieceAlgo<COLOR,PAWN,Position> {
+        implements EnPassantPieceAlgo<COLOR,PAWN> {
 
     private final CapturePieceAlgo<COLOR,PAWN,Position> captureAlgo;
 
