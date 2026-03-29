@@ -1,8 +1,11 @@
 package com.agutsul.chess.rule.impact.attack;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.Collections.unmodifiableCollection;
+import static java.util.function.Predicate.not;
 
 import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
@@ -33,23 +36,26 @@ public final class PieceAttackLineImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    protected Collection<Calculatable> calculate(ATTACKER attacker, ATTACKED attacked) {
-        Collection<Calculatable> lines = Stream.of(algo.calculate(attacker))
-                .flatMap(Collection::stream)
-                .filter(line -> line.contains(attacked.getPosition()))
-                .collect(toList());
-
-        return lines;
+    protected Collection<Calculatable> calculate(ATTACKER piece) {
+        return unmodifiableCollection(algo.calculate(piece));
     }
 
     @Override
-    protected Collection<PieceAttackImpact<COLOR1,COLOR2, ATTACKER,ATTACKED>>
-            createImpacts(ATTACKER attacker, ATTACKED attacked, Collection<Calculatable> next) {
+    protected Collection<PieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
+            createImpacts(ATTACKER piece, Collection<Calculatable> next) {
 
+        @SuppressWarnings("unchecked")
         var impacts = Stream.of(next)
                 .flatMap(Collection::stream)
-                .map(calculated -> new PieceAttackImpact<>(attacker, attacked, calculated))
-                .collect(toList());
+                .map(calculated -> (Line) calculated)
+                .flatMap(line -> Stream.of(board.getPiece(line.getLast()))
+                        .flatMap(Optional::stream)
+                        // attacking king means check and it is handled by appropriate impact
+                        .filter(not(Piece::isKing))
+                        .filter(attacked -> !Objects.equals(attacked.getColor(), piece.getColor()))
+                        .map(attacked -> new PieceAttackImpact<>(piece, (ATTACKED) attacked, line))
+                )
+                .toList();
 
         return impacts;
     }

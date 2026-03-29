@@ -1,11 +1,11 @@
 package com.agutsul.chess.rule.impact.attack;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableCollection;
-import static java.util.stream.Collectors.toList;
+import static java.util.function.Predicate.not;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
@@ -18,37 +18,39 @@ import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Position;
 
-public final class PieceAttackPositionImpactRule<COLOR1 extends Color,
-                                                 COLOR2 extends Color,
-                                                 ATTACKER extends Piece<COLOR1> & Capturable,
-                                                 ATTACKED extends Piece<COLOR2>>
+public class PieceAttackPositionImpactRule<COLOR1 extends Color,
+                                           COLOR2 extends Color,
+                                           ATTACKER extends Piece<COLOR1> & Capturable,
+                                           ATTACKED extends Piece<COLOR2>>
         extends AbstractAttackImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
     private final Algo<ATTACKER,Collection<Position>> algo;
 
     public PieceAttackPositionImpactRule(Board board,
-                                        CapturePieceAlgo<COLOR1,ATTACKER,Position> algo) {
+                                         CapturePieceAlgo<COLOR1,ATTACKER,Position> algo) {
         super(board);
         this.algo = algo;
     }
 
     @Override
-    protected Collection<Calculatable> calculate(ATTACKER attacker, ATTACKED attacked) {
-        var positions = algo.calculate(attacker);
-        return positions.contains(attacked.getPosition())
-                ? unmodifiableCollection(positions)
-                : emptyList();
+    protected Collection<Calculatable> calculate(ATTACKER piece) {
+        return unmodifiableCollection(algo.calculate(piece));
     }
 
     @Override
     protected Collection<PieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
-            createImpacts(ATTACKER attacker, ATTACKED attacked, Collection<Calculatable> next) {
+            createImpacts(ATTACKER piece, Collection<Calculatable> next) {
 
+        @SuppressWarnings("unchecked")
         var impacts = Stream.of(next)
                 .flatMap(Collection::stream)
-                .filter(position -> Objects.equals(position, attacked.getPosition()))
-                .map(position -> new PieceAttackImpact<>(attacker, attacked))
-                .collect(toList());
+                .map(calculated -> board.getPiece((Position) calculated))
+                .flatMap(Optional::stream)
+                // attacking king means check and it is handled by appropriate impact
+                .filter(not(Piece::isKing))
+                .filter(attacked -> !Objects.equals(attacked.getColor(), piece.getColor()))
+                .map(attacked -> new PieceAttackImpact<>(piece, (ATTACKED) attacked))
+                .toList();
 
         return impacts;
     }
