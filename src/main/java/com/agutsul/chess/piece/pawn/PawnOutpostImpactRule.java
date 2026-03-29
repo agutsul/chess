@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.pawn;
 
+import static java.util.Collections.unmodifiableCollection;
+
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -58,6 +60,6 @@ final class PawnOutpostImpactRule<COLOR extends Color,
 
         positions.addAll(enPassantAlgo.calculate(piece));
 
-        return positions;
+        return unmodifiableCollection(positions);
     }
 }

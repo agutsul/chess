@@ -1,6 +1,6 @@
 package com.agutsul.chess.piece.pawn;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.Collections.unmodifiableCollection;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,10 +36,8 @@ final class PawnForkImpactRule<COLOR1 extends Color,
     protected Collection<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
             createAttackImpacts(ATTACKER pawn, Collection<Calculatable> next) {
 
-        var impacts = new ArrayList<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>();
-
         // add all usual pawn capture impacts
-        impacts.addAll(super.createAttackImpacts(pawn, next));
+        var impacts = new ArrayList<>(super.createAttackImpacts(pawn, next));
 
         // add en-passante impacts
         @SuppressWarnings("unchecked")
@@ -48,10 +46,10 @@ final class PawnForkImpactRule<COLOR1 extends Color,
                 .flatMap(Collection::stream)
                 .map(entry  -> new PieceAttackImpact<>(pawn, (ATTACKED) entry.getValue(), entry.getKey()))
                 .map(impact -> (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) impact)
-                .collect(toList());
+                .toList();
 
         impacts.addAll(enPassantAttackImpacts);
 
-        return impacts;
+        return unmodifiableCollection(impacts);
     }
 }

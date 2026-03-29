@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.pawn;
 
+import static java.util.Collections.unmodifiableCollection;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -36,6 +38,6 @@ final class PawnBlockImpactRule<COLOR1 extends Color,
         var positions = new ArrayList<Calculatable>();
         positions.addAll(super.calculate(piece));
         positions.addAll(bigMoveAlgo.calculate(piece));
-        return positions;
+        return unmodifiableCollection(positions);
     }
 }

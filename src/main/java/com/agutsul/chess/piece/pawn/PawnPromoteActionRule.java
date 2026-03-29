@@ -90,8 +90,8 @@ final class PawnPromoteActionRule<COLOR1 extends Color,
 
         PawnPromoteMoveActionRule(Board board,
                                   PromotePieceAlgo<COLOR1,PAWN> algo,
-                                  MoveActionRule<COLOR1,PAWN,
-                                                 PieceMoveAction<COLOR1,PAWN>> rule) {
+                                  MoveActionRule<COLOR1,PAWN,PieceMoveAction<COLOR1,PAWN>> rule) {
+
             super(board, algo, rule);
         }
 

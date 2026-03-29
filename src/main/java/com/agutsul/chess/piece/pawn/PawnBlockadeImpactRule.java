@@ -2,6 +2,7 @@ package com.agutsul.chess.piece.pawn;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import static java.util.Collections.unmodifiableCollection;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -74,6 +75,6 @@ final class PawnBlockadeImpactRule<COLOR extends Color,
         impacts.addAll(sameColorBlockImpacts);
         impacts.addAll(attackerBlockImpacts);
 
-        return impacts;
+        return unmodifiableCollection(impacts);
     }
 }

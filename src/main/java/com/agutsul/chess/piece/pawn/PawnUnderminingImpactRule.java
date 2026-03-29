@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.pawn;
 
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
@@ -49,6 +50,6 @@ final class PawnUnderminingImpactRule<COLOR1 extends Color,
 
         impacts.addAll(enPassantUnderminingImpacts);
 
-        return impacts;
+        return unmodifiableCollection(impacts);
     }
 }
