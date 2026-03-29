@@ -144,6 +144,10 @@ final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
             }
 
             var enPassantData = ((PawnEnPassantAlgo<COLOR1,PIECE>) this.algo).calculateData(piece);
+            if (enPassantData.isEmpty()) {
+                return null;
+            }
+
             return new PieceAbsoluteDiscoveredAttackImpact<>(
                     new PieceAttackImpact<>(piece, (PawnPiece<COLOR2>) enPassantData.get(position), position),
                     attacker, attacked, line
@@ -174,6 +178,10 @@ final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
             }
 
             var enPassantData = ((PawnEnPassantAlgo<COLOR1,PIECE>) this.algo).calculateData(piece);
+            if (enPassantData.isEmpty()) {
+                return null;
+            }
+
             return new PieceRelativeDiscoveredAttackImpact<>(
                     new PieceAttackImpact<>(piece, (PawnPiece<COLOR2>) enPassantData.get(position), position),
                     attacker, attacked, line

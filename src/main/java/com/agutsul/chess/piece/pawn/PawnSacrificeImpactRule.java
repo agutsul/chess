@@ -130,7 +130,7 @@ final class PawnSacrificeImpactRule<COLOR1 extends Color,
                         .flatMap(Collection::stream)
                         .filter(entry -> entry.getValue().contains(position))
                         .map(Map.Entry::getKey)
-                        .flatMap(piece -> Stream.of(enPassantData.get(position))
+                        .flatMap(piece -> Stream.ofNullable(enPassantData.get(position))
                                 .filter(foundPiece -> !Objects.equals(foundPiece.getColor(), pawn.getColor()))
                                 .filter(Piece::isPawn)
                                 .map(opponentPawn -> new PieceSacrificeAttackImpact<>(

@@ -60,7 +60,7 @@ final class PawnDominationImpactRule<COLOR1 extends Color,
                 .filter(position -> board.isEmpty(position))
                 .filter(position -> enPassantData.containsKey(position))
                 .filter(position -> attackedPositions.contains(position))
-                .map(position -> Stream.of(enPassantData.get(position))
+                .map(position -> Stream.ofNullable(enPassantData.get(position))
                         .filter(foundPiece -> !Objects.equals(foundPiece.getColor(), pawn.getColor()))
                         .filter(Piece::isPawn)
                         .map(opponentPawn -> new PieceAttackImpact<>(pawn, (ATTACKED) opponentPawn, position)) // enPassant attack

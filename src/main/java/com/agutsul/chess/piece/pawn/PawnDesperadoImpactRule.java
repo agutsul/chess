@@ -218,7 +218,7 @@ final class PawnDesperadoImpactRule<COLOR1 extends Color,
 
         @Override
         public Collection<Position> calculate(PAWN piece) {
-            return Stream.of(algo.calculateData(piece))
+            return Stream.ofNullable(algo.calculateData(piece))
                     .map(Map::entrySet)
                     .flatMap(Collection::stream)
                     .map(Map.Entry::getValue)

@@ -43,7 +43,7 @@ final class PawnForkImpactRule<COLOR1 extends Color,
 
         // add en-passante impacts
         @SuppressWarnings("unchecked")
-        var enPassantAttackImpacts = Stream.of(enPassantAlgo.calculateData(pawn))
+        var enPassantAttackImpacts = Stream.ofNullable(enPassantAlgo.calculateData(pawn))
                 .map(Map::entrySet)
                 .flatMap(Collection::stream)
                 .map(entry  -> new PieceAttackImpact<>(pawn, (ATTACKED) entry.getValue(), entry.getKey()))

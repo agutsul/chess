@@ -29,7 +29,7 @@ final class PawnOverloadingImpactRule<COLOR extends Color,
 
     @Override
     protected Collection<Calculatable> calculate(PAWN piece) {
-        var enPassantOpponentPositions = Stream.of(enPassantAlgo.calculateData(piece))
+        var enPassantOpponentPositions = Stream.ofNullable(enPassantAlgo.calculateData(piece))
                 .map(Map::entrySet)
                 .flatMap(Collection::stream)
                 .map(Map.Entry::getValue)
