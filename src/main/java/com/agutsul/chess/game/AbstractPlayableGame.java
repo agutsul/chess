@@ -197,12 +197,14 @@ public abstract class AbstractPlayableGame
     protected final BoardState evaluateBoardState(Player player) {
         var boardState = this.boardStateEvaluator.evaluate(player.getColor());
 
-        if (boardState.isType(CHECK_MATED)) {
-            this.journal.add(new CheckMatedActionMemento<>(this.journal.removeLast()));
-        }
+        if (!this.journal.isEmpty()) {
+            if (boardState.isType(CHECK_MATED)) {
+                this.journal.add(new CheckMatedActionMemento<>(this.journal.removeLast()));
+            }
 
-        if (boardState.isType(CHECKED)) {
-            this.journal.add(new CheckedActionMemento<>(this.journal.removeLast()));
+            if (boardState.isType(CHECKED)) {
+                this.journal.add(new CheckedActionMemento<>(this.journal.removeLast()));
+            }
         }
 
         return boardState;
