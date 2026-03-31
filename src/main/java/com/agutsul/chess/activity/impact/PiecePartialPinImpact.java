@@ -31,6 +31,11 @@ public final class PiecePartialPinImpact<COLOR1 extends Color,
     }
 
     @Override
+    public final Integer getValue() {
+        return impact.getValue();
+    }
+
+    @Override
     public boolean isMode(Mode mode) {
         return PiecePinImpact.super.isMode(mode)
                 || impact.isMode(mode);
