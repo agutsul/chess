@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
@@ -37,8 +38,13 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
 
     @Override
     public final Integer getValue() {
-        var value = Math.abs(getSource().getValue()) - Math.abs(getTarget().getValue());
-        return Impact.super.getValue() * Math.abs(getTarget().getValue()) + Math.abs(value);
+        var value = Impact.super.getValue() * Math.abs(getTarget().getValue());
+        if (((Protectable) getTarget()).isProtected()) {
+            return value;
+        }
+
+        var diff = Math.abs(getSource().getValue()) - Math.abs(getTarget().getValue());
+        return value + Math.abs(diff);
     }
 
     public final Optional<Line> getLine() {
