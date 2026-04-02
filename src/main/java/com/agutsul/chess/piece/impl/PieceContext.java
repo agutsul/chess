@@ -12,11 +12,15 @@ final class PieceContext<COLOR extends Color> {
     private final int direction;
 
     PieceContext(Type type, COLOR color, String unicode, int direction) {
+        this(type, color, unicode, direction, type.rank() * direction);
+    }
+
+    private PieceContext(Type type, COLOR color, String unicode, int direction, int value) {
         this.type = type;
         this.color = color;
         this.unicode = unicode;
         this.direction = direction;
-        this.value = type.rank() * direction;
+        this.value = value;
     }
 
     Type getType() {
