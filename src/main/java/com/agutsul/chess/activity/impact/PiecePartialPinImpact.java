@@ -31,7 +31,7 @@ public final class PiecePartialPinImpact<COLOR1 extends Color,
     }
 
     @Override
-    public final Integer getValue() {
+    public Integer getValue() {
         return impact.getValue();
     }
 
