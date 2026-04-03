@@ -36,6 +36,7 @@ import com.agutsul.chess.activity.impact.PieceLuftImpact;
 import com.agutsul.chess.activity.impact.PieceOverloadingImpact;
 import com.agutsul.chess.activity.impact.PiecePartialPinImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
+import com.agutsul.chess.activity.impact.PiecePromoteImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeDesperadoImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeForkImpact;
 import com.agutsul.chess.activity.impact.PieceSacrificeAttackImpact;
@@ -1201,6 +1202,68 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
         assertEquals(expected.size(), pawns.size());
         assertTrue(expected.containsAll(pawns));
+    }
+
+    @Test
+    void testPawnPromotionMoveImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("h8")
+                .withWhiteKing("a1")
+                .withWhitePawn("a7")
+                .build();
+
+        var whitePawn = board.getPiece("a7").get();
+        var promoteImpacts = Stream.of(board.getImpacts(whitePawn, Impact.Type.PROMOTE))
+                .flatMap(Collection::stream)
+                .map(impact -> (PiecePromoteImpact<?,?>) impact)
+                .collect(toList());
+
+        assertFalse(promoteImpacts.isEmpty());
+        assertEquals(4, promoteImpacts.size());
+
+        for (var impact : promoteImpacts) {
+            assertEquals("a8", String.valueOf(impact.getPosition()));
+        }
+    }
+
+    @Test
+    void testPawnPromotionCaptureImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("a8")
+                .withBlackKnight("b8")
+                .withWhiteKing("a1")
+                .withWhitePawn("a7")
+                .build();
+
+        var whitePawn = board.getPiece("a7").get();
+        var promoteImpacts = Stream.of(board.getImpacts(whitePawn, Impact.Type.PROMOTE))
+                .flatMap(Collection::stream)
+                .map(impact -> (PiecePromoteImpact<?,?>) impact)
+                .collect(toList());
+
+        assertFalse(promoteImpacts.isEmpty());
+        assertEquals(4, promoteImpacts.size());
+
+        for (var impact : promoteImpacts) {
+            assertEquals("b8", String.valueOf(impact.getPosition()));
+        }
+    }
+
+    @Test
+    void testNoPawnPromotionImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("a8")
+                .withWhiteKing("a1")
+                .withWhitePawn("a7")
+                .build();
+
+        var whitePawn = board.getPiece("a7").get();
+        var promoteImpacts = Stream.of(board.getImpacts(whitePawn, Impact.Type.PROMOTE))
+                .flatMap(Collection::stream)
+                .map(impact -> (PiecePromoteImpact<?,?>) impact)
+                .collect(toList());
+
+        assertTrue(promoteImpacts.isEmpty());
     }
 
     static void assertPawnEnPassantActions(Board board, Color color, Piece.Type type,

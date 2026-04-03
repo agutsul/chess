@@ -33,6 +33,7 @@ public interface Impact<SOURCE>
         PROTECT,
         CONTROL,
         MONITOR,
+        PROMOTE,
         BLOCKADE,
         ISOLATION,
         BACKWARD,
@@ -264,5 +265,13 @@ public interface Impact<SOURCE>
 
     static boolean isMotion(Impact.Type impactType) {
         return Impact.Type.MOTION.equals(impactType);
+    }
+
+    static boolean isPromote(Impact<?> impact) {
+        return isPromote(impact.getType());
+    }
+
+    static boolean isPromote(Impact.Type impactType) {
+        return Impact.Type.PROMOTE.equals(impactType);
     }
 }

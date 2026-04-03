@@ -7,6 +7,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.algo.AbstractAlgo;
+import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
@@ -18,7 +19,7 @@ final class PawnPromoteAlgo<COLOR extends Color,
         extends AbstractAlgo<PAWN,Position>
         implements PromotePieceAlgo<COLOR,PAWN> {
 
-    private final CompositePieceAlgo<COLOR,PAWN,Position> algo;
+    private final Algo<PAWN,Collection<Position>> algo;
     private final int promotionLine;
 
     @SuppressWarnings("unchecked")
