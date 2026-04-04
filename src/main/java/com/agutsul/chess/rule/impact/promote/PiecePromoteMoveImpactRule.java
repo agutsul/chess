@@ -44,7 +44,7 @@ final class PiecePromoteMoveImpactRule<COLOR extends Color,
                 .map(calculated -> (Position) calculated)
                 .filter(position -> board.isEmpty(position))
                 .filter(position -> Objects.equals(position.x(), piece.getPosition().x()))
-                .flatMap(position -> Stream.of(PROMOTION_TYPES)
+                .flatMap(position -> Stream.of(Promotable.TARGET_TYPES)
                         .flatMap(Collection::stream)
                         .map(pieceType -> new PiecePromoteMoveImpact<>(
                                 piece, position, pieceType

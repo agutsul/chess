@@ -4,10 +4,6 @@ import static com.agutsul.chess.activity.action.Action.isCastling;
 import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter.format;
 import static com.agutsul.chess.activity.action.memento.ActionMementoFactory.createMemento;
 import static com.agutsul.chess.journal.JournalFormatter.format;
-import static com.agutsul.chess.piece.Piece.Type.BISHOP;
-import static com.agutsul.chess.piece.Piece.Type.KNIGHT;
-import static com.agutsul.chess.piece.Piece.Type.QUEEN;
-import static com.agutsul.chess.piece.Piece.Type.ROOK;
 import static java.lang.System.lineSeparator;
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
@@ -20,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Promotable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.event.ActionCancelledEvent;
 import com.agutsul.chess.activity.action.event.ActionCancellingEvent;
@@ -174,21 +171,21 @@ public final class ConsoleGameOutputObserver
 
         private static final String PROMOTION_PIECE_TYPE_MESSAGE = "Choose promotion piece type:";
         private static final String PROMPT_PROMOTION_PIECE_TYPE_MESSAGE =
-                createPromptPromotionPieceTypeMessage(Stream.of(KNIGHT, BISHOP, ROOK, QUEEN));
+                createPromptPromotionPieceTypeMessage(Promotable.TARGET_TYPES);
 
         @Override
         protected void process(RequestPromotionPieceTypeEvent ignoredEvent) {
             System.out.println(PROMPT_PROMOTION_PIECE_TYPE_MESSAGE);
         }
 
-        private static String createPromptPromotionPieceTypeMessage(Stream<Piece.Type> promotionTypes) {
+        private static String createPromptPromotionPieceTypeMessage(Collection<Piece.Type> promotionTypes) {
             var builder = new StringBuilder();
             builder.append(PROMOTION_PIECE_TYPE_MESSAGE).append(lineSeparator());
 
-            promotionTypes.forEach(pieceType ->
+            for (var pieceType : promotionTypes) {
                 builder.append("'").append(pieceType).append("' - ")
-                    .append(pieceType.name()).append(lineSeparator())
-            );
+                    .append(pieceType.name()).append(lineSeparator());
+            }
 
             return builder.toString();
         }

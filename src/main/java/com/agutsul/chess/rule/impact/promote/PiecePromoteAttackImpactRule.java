@@ -51,7 +51,7 @@ final class PiecePromoteAttackImpactRule<COLOR1 extends Color,
                 .flatMap(Optional::stream)
                 .filter(attacked -> !Objects.equals(attacked.getColor(), piece.getColor()))
                 .map(attacked -> (ATTACKED) attacked)
-                .flatMap(attacked -> Stream.of(PROMOTION_TYPES)
+                .flatMap(attacked -> Stream.of(Promotable.TARGET_TYPES)
                         .flatMap(Collection::stream)
                         .map(pieceType -> new PiecePromoteAttackImpact<>(
                                 piece, attacked, pieceType

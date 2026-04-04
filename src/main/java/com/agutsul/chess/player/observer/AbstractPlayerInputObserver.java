@@ -1,9 +1,5 @@
 package com.agutsul.chess.player.observer;
 
-import static com.agutsul.chess.piece.Piece.Type.BISHOP;
-import static com.agutsul.chess.piece.Piece.Type.KNIGHT;
-import static com.agutsul.chess.piece.Piece.Type.QUEEN;
-import static com.agutsul.chess.piece.Piece.Type.ROOK;
 import static java.time.Instant.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -22,6 +18,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,6 +28,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.Strings;
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Promotable;
 import com.agutsul.chess.event.AbstractEventObserver;
 import com.agutsul.chess.event.CompositeEventObserver;
 import com.agutsul.chess.event.Event;
@@ -124,7 +122,8 @@ public abstract class AbstractPlayerInputObserver
                 "Unknown promotion piece type";
 
         private static final Map<String,Piece.Type> PROMOTION_TYPES =
-                Stream.of(KNIGHT, BISHOP, ROOK, QUEEN)
+                Stream.of(Promotable.TARGET_TYPES)
+                        .flatMap(Collection::stream)
                         .collect(toMap(Piece.Type::code, identity()));
 
         @Override

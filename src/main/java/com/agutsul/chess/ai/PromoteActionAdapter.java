@@ -1,15 +1,11 @@
 package com.agutsul.chess.ai;
 
-import static com.agutsul.chess.piece.Piece.Type.BISHOP;
-import static com.agutsul.chess.piece.Piece.Type.KNIGHT;
-import static com.agutsul.chess.piece.Piece.Type.QUEEN;
-import static com.agutsul.chess.piece.Piece.Type.ROOK;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.stream.Stream;
 
+import com.agutsul.chess.Promotable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
@@ -23,14 +19,13 @@ import com.agutsul.chess.piece.Piece;
 final class PromoteActionAdapter
         implements Adapter<PiecePromoteAction<?,?>,Collection<Action<?>>> {
 
-    private static final Set<Piece.Type> PROMOTION_TYPES = EnumSet.of(BISHOP, KNIGHT, ROOK, QUEEN);
-
     private static final String UNSUPPORTED_PROMOTION_ERROR_MESSAGE =
             "Unsupported promotion action source";
 
     @Override
     public Collection<Action<?>> adapt(PiecePromoteAction<?,?> action) {
-        Collection<Action<?>> actions = PROMOTION_TYPES.stream()
+        Collection<Action<?>> actions = Stream.of(Promotable.TARGET_TYPES)
+                .flatMap(Collection::stream)
                 .map(pieceType -> create(action, pieceType))
                 .collect(toList());
 
