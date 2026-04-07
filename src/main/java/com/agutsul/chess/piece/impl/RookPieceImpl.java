@@ -27,7 +27,6 @@ import com.agutsul.chess.piece.rook.RookPieceActionRule;
 import com.agutsul.chess.piece.rook.RookPieceImpactRule;
 import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.action.AbstractCastlingActionRule.Castling;
 
 final class RookPieceImpl<COLOR extends Color>
         extends AbstractCastlingPiece<COLOR>
@@ -40,12 +39,12 @@ final class RookPieceImpl<COLOR extends Color>
 
         this(board, position,
                 new PieceContext<>(Piece.Type.ROOK, color, unicode, direction),
-                Castling.of(position)
+                Castlings.of(position)
         );
     }
 
     private RookPieceImpl(Board board, Position position,
-                          PieceContext<COLOR> context, Castling castling) {
+                          PieceContext<COLOR> context, Castlings castling) {
 
         super(board, position, context,
                 new RookPieceActionRule<>(board),

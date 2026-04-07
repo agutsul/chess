@@ -1,7 +1,5 @@
 package com.agutsul.chess.piece.rook;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -15,15 +13,15 @@ import com.agutsul.chess.rule.action.AbstractCastlingActionRule;
 import com.agutsul.chess.rule.action.CastlingActionRule;
 
 final class RookCastlingActionRule<COLOR extends Color,
-                                   ROOK extends RookPiece<COLOR>,
-                                   KING extends KingPiece<COLOR>>
+                                   ROOK  extends RookPiece<COLOR>,
+                                   KING  extends KingPiece<COLOR>>
         extends AbstractCastlingActionRule<COLOR,ROOK,KING,
                                            PieceCastlingAction<COLOR,ROOK,KING>>
         implements CastlingActionRule<COLOR,ROOK,KING,
                                       PieceCastlingAction<COLOR,ROOK,KING>> {
 
     RookCastlingActionRule(Board board) {
-        super(board);
+        super(board, new RookCastlingAlgo<>(board));
     }
 
     @Override
@@ -31,9 +29,11 @@ final class RookCastlingActionRule<COLOR extends Color,
 
         var actions = Stream.of(board.getKing(rook.getColor()))
                 .flatMap(Optional::stream)
-                .map(king -> super.evaluate(king, rook))
-                .flatMap(Collection::stream)
-                .collect(toList());
+                .flatMap(king -> Stream.of(algo.calculate(rook))
+                        .flatMap(Collection::stream)
+                        .map(castling -> createAction(castling, king, rook))
+                )
+                .toList();
 
         return actions;
     }

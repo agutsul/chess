@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Castlingable;
+import com.agutsul.chess.Castlingable.Castlings;
+import com.agutsul.chess.Castlingable.Side;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.PositionedBoardBuilder;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
@@ -36,7 +37,6 @@ import com.agutsul.chess.game.fen.FenGame;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.action.AbstractCastlingActionRule.Castling;
 
 final class FenGameBuilder
         implements GameBuilder<FenGame<?>> {
@@ -198,10 +198,22 @@ final class FenGameBuilder
         };
     }
 
-    private static void enableCastlings(Board board, String castling) {
+    private static Castlings resolveCastling(String code) {
+        return switch(code) {
+        case "q","Q" -> Castlings.QUEEN_SIDE;
+        case "k","K" -> Castlings.KING_SIDE;
+        default ->
+            throw new IllegalArgumentException(String.format(
+                "Unsupported castling: '%s'",
+                code
+            ));
+        };
+    }
+
+    private static void enableCastlings(Board board, String castlingString) {
         var pattern = compile(CASTLING_PATTERN);
-        for (int i = 0; i < castling.length(); i++) {
-            var code = String.valueOf(castling.charAt(i));
+        for (int i = 0; i < castlingString.length(); i++) {
+            var code = String.valueOf(castlingString.charAt(i));
 
             var matcher = pattern.matcher(code);
             if (!matcher.matches()) {
@@ -211,9 +223,10 @@ final class FenGameBuilder
                 ));
             }
 
+            var castling = resolveCastling(code);
             toggleCastling(board,
                     isAllUpperCase(code) ? Colors.WHITE : Colors.BLACK,
-                    Castling.of(code).side(),
+                    castling.side(),
                     true
             );
         }
@@ -221,15 +234,13 @@ final class FenGameBuilder
 
     private static void disableAllCastlings(Board board) {
         for (var color : Colors.values()) {
-            for (var side : Castlingable.Side.values()) {
+            for (var side : Side.values()) {
                 toggleCastling(board, color, side, false);
             }
         }
     }
 
-    private static void toggleCastling(Board board, Color color,
-                                       Castlingable.Side side, boolean enabled) {
-
+    private static void toggleCastling(Board board, Color color, Side side, boolean enabled) {
         ((Observable) board).notifyObservers(
                 new SetCastlingableSideEvent(color, side, enabled)
         );
