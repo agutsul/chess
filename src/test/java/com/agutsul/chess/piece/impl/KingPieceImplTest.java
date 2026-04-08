@@ -22,11 +22,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteDiscoveredAttackImpact;
+import com.agutsul.chess.activity.impact.PieceCastlingImpact;
 import com.agutsul.chess.activity.impact.PieceDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeDiscoveredAttackImpact;
@@ -658,5 +660,48 @@ public class KingPieceImplTest extends AbstractPieceTest {
         assertEquals(blackKing, discoveredAttack.getAttacked());
         assertTrue(discoveredAttack.getTarget().isHidden());
         assertNotNull(discoveredAttack.getLine());
+    }
+
+    @Test
+    void testKingCastlingImpacts() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhiteRooks("a1","h1")
+                .withBlackKing("e8")
+                .build();
+
+        var whiteKing = board.getPiece("e1").get();
+        var castlingImpacts = Stream.of(board.getImpacts(whiteKing, Impact.Type.CASTLING))
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceCastlingImpact<?,?,?>) impact)
+                .collect(toList());
+
+        assertFalse(castlingImpacts.isEmpty());
+        assertEquals(2, castlingImpacts.size());
+
+        var rooks = board.getPieces(Colors.WHITE, Piece.Type.ROOK);
+        var sides = List.of(Castlingable.Side.values());
+
+        for (var impact : castlingImpacts) {
+            assertTrue(sides.contains(impact.getSide()));
+            assertEquals(whiteKing, impact.getSource().getSource());
+            assertTrue(rooks.contains(impact.getTarget().getSource()));
+        }
+    }
+
+    @Test
+    void testKingNoCastlingImpacts() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhiteKnight("g1")
+                .withWhiteRooks("a1","h1")
+                .withBlackKing("e8")
+                .withBlackBishop("a4")
+                .build();
+
+        var whiteKing = board.getPiece("e1").get();
+        var castlingImpacts = board.getImpacts(whiteKing, Impact.Type.CASTLING);
+
+        assertTrue(castlingImpacts.isEmpty());
     }
 }

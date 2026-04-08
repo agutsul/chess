@@ -59,7 +59,8 @@ public final class RookPieceImpactRule<COLOR extends Color,
                 new PieceSacrificeLineImpactRule<>(board, algo),
                 new PieceDesperadoLineImpactRule<>(board, algo),
                 new PieceDominationLineImpactRule<>(board, algo),
-                new PieceXRayImpactRule<>(board, algo)
+                new PieceXRayImpactRule<>(board, algo),
+                new RookCastlingImpactRule<>(board)
             )
         );
     }

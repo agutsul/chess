@@ -23,6 +23,7 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
 import com.agutsul.chess.activity.impact.PieceAttackImpact;
 import com.agutsul.chess.activity.impact.PieceBatteryImpact;
+import com.agutsul.chess.activity.impact.PieceCastlingImpact;
 import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.activity.impact.PieceDesperadoImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
@@ -608,5 +609,55 @@ public class RookPieceImplTest extends AbstractPieceTest {
         assertTrue(xRayImpact.getPieces().containsAll(List.of(blackPawn,whitePawn)));
         assertTrue(xRayImpact instanceof PieceXRayAttackImpact);
         assertNotNull(xRayImpact.getLine());
+    }
+
+    @Test
+    void testRookKingSideCastlingImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e8")
+                .withBlackRook("h8")
+                .withWhiteKing("e1")
+                .build();
+
+        var blackKing = board.getPiece("e8").get();
+        var castlingImpacts = Stream.of(board.getImpacts(blackKing, Impact.Type.CASTLING))
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceCastlingImpact<?,?,?>) impact)
+                .collect(toList());
+
+        assertFalse(castlingImpacts.isEmpty());
+        assertEquals(1, castlingImpacts.size());
+
+        var blackRook = board.getPiece("h8").get();
+        var castlingImpact = castlingImpacts.getFirst();
+
+        assertEquals(Castlingable.Side.KING, castlingImpact.getSide());
+        assertEquals(blackKing, castlingImpact.getSource().getSource());
+        assertEquals(blackRook, castlingImpact.getTarget().getSource());
+    }
+
+    @Test
+    void testRookQueenSideCastlingImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e8")
+                .withBlackRook("a8")
+                .withWhiteKing("e1")
+                .build();
+
+        var blackKing = board.getPiece("e8").get();
+        var castlingImpacts = Stream.of(board.getImpacts(blackKing, Impact.Type.CASTLING))
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceCastlingImpact<?,?,?>) impact)
+                .collect(toList());
+
+        assertFalse(castlingImpacts.isEmpty());
+        assertEquals(1, castlingImpacts.size());
+
+        var blackRook = board.getPiece("a8").get();
+        var castlingImpact = castlingImpacts.getFirst();
+
+        assertEquals(Castlingable.Side.QUEEN, castlingImpact.getSide());
+        assertEquals(blackKing, castlingImpact.getSource().getSource());
+        assertEquals(blackRook, castlingImpact.getTarget().getSource());
     }
 }

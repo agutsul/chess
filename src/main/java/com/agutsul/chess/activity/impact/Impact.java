@@ -34,6 +34,7 @@ public interface Impact<SOURCE>
         CONTROL,
         MONITOR,
         PROMOTE,
+        CASTLING,
         BLOCKADE,
         ISOLATION,
         BACKWARD,
@@ -273,5 +274,13 @@ public interface Impact<SOURCE>
 
     static boolean isPromote(Impact.Type impactType) {
         return Impact.Type.PROMOTE.equals(impactType);
+    }
+
+    static boolean isCastling(Impact<?> impact) {
+        return isCastling(impact.getType());
+    }
+
+    static boolean isCastling(Impact.Type impactType) {
+        return Impact.Type.CASTLING.equals(impactType);
     }
 }
