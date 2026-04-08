@@ -28,37 +28,37 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
 
     @Override
     public final Collection<Castlings> calculate(Pair<PIECE1,PIECE2> pieces) {
-        return calculate(pieces.getLeft(), pieces.getRight());
+        var castling = calculate(pieces.getLeft(), pieces.getRight());
+        return isNull(castling)
+                ? emptyList()
+                : List.of(castling);
     }
 
     abstract boolean isAllEmptyBetween(PIECE1 king, PIECE2 rook);
 
     abstract boolean isAnyAttackedBetween(PIECE1 king, PIECE2 rook);
 
-    private Collection<Castlings> calculate(PIECE1 king, PIECE2 rook) {
+    private Castlings calculate(PIECE1 king, PIECE2 rook) {
         // Neither the king nor the rook has previously moved.
         if (king.isMoved() || rook.isMoved()) {
-            return emptyList();
+            return null;
         }
 
         // The king is not currently in check.
         if (king.isChecked()) {
-            return emptyList();
+            return null;
         }
 
         // There are no pieces between the king and the rook.
         if (!isAllEmptyBetween(king, rook)) {
-            return emptyList();
+            return null;
         }
 
         // The king does not pass through or finish on a square that is attacked by an enemy piece.
         if (isAnyAttackedBetween(king, rook)) {
-            return emptyList();
+            return null;
         }
 
-        var castling = Castlings.of(rook.getPosition());
-        return isNull(castling)
-                ? emptyList()
-                : List.of(castling);
+        return Castlings.of(rook.getPosition());
     }
 }
