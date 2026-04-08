@@ -1,7 +1,7 @@
 package com.agutsul.chess.rule.impact.castling;
 
 import com.agutsul.chess.Castlingable;
-import com.agutsul.chess.Castlingable.Castlings;
+import com.agutsul.chess.Castlingable.Castling;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceCastlingImpact;
@@ -21,17 +21,17 @@ public abstract class AbstractCastlingImpactRule<COLOR  extends Color,
         extends AbstractRule<PIECE1,IMPACT,Impact.Type>
         implements CastlingImpactRule<COLOR,PIECE1,PIECE2,IMPACT> {
 
-    protected final CastlingPieceAlgo<COLOR,PIECE1,Castlings> algo;
+    protected final CastlingPieceAlgo<COLOR,PIECE1,Castling> algo;
 
     protected AbstractCastlingImpactRule(Board board,
-                                         CastlingPieceAlgo<COLOR,PIECE1,Castlings> algo) {
+                                         CastlingPieceAlgo<COLOR,PIECE1,Castling> algo) {
 
         super(board, Impact.Type.CASTLING);
         this.algo = algo;
     }
 
     protected PieceCastlingImpact<COLOR,PIECE1,PIECE2>
-            createImpact(Castlings castling, KingPiece<COLOR> king, RookPiece<COLOR> rook) {
+            createImpact(Castling castling, KingPiece<COLOR> king, RookPiece<COLOR> rook) {
 
         var kPosition = board.getPosition(castling.getKingTarget(), king.getPosition().y());
         var rPosition = board.getPosition(castling.getRookTarget(), rook.getPosition().y());

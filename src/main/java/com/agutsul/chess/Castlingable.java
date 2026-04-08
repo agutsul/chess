@@ -20,13 +20,24 @@ public interface Castlingable {
 
     Collection<Side> getSides();
 
-    enum Castlings implements Calculatable {
+    interface Castling extends Calculatable {
+
+        Side side();
+
+        int getRookSource();
+
+        int getRookTarget();
+
+        int getKingTarget();
+    }
+
+    enum Castlings implements Castling {
         // rook is located at "h1" or "h8"
         KING_SIDE(Side.KING, Position.MAX - 1, 5, 6),   // "O-O"
         // rook is located at "a1" or "a8"
         QUEEN_SIDE(Side.QUEEN, Position.MIN, 3, 2);     // "O-O-O"
 
-        private static final Map<Integer,Castlings> BY_ROOK_POSITION = Stream.of(values())
+        private static final Map<Integer,Castling> BY_ROOK_POSITION = Stream.of(values())
                 .collect(toMap(entry -> Integer.valueOf(entry.getRookSource()), identity()));
 
         private int rookSource, rookTarget, kingTarget;
@@ -39,18 +50,22 @@ public interface Castlingable {
             this.side = side;
         }
 
+        @Override
         public int getRookSource() {
             return rookSource;
         }
 
+        @Override
         public int getRookTarget() {
             return rookTarget;
         }
 
+        @Override
         public int getKingTarget() {
             return kingTarget;
         }
 
+        @Override
         public Side side() {
             return side;
         }
@@ -60,7 +75,7 @@ public interface Castlingable {
             return side.name();
         }
 
-        public static Castlings of(Position rookPosition) {
+        public static Castling of(Position rookPosition) {
             return BY_ROOK_POSITION.get(Integer.valueOf(rookPosition.x()));
         }
     }

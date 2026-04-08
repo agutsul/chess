@@ -44,7 +44,7 @@ final class RookPieceImpl<COLOR extends Color>
     }
 
     private RookPieceImpl(Board board, Position position,
-                          PieceContext<COLOR> context, Castlings castling) {
+                          PieceContext<COLOR> context, Castling castling) {
 
         super(board, position, context,
                 new RookPieceActionRule<>(board),

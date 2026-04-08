@@ -1,7 +1,7 @@
 package com.agutsul.chess.rule.action;
 
 import com.agutsul.chess.Castlingable;
-import com.agutsul.chess.Castlingable.Castlings;
+import com.agutsul.chess.Castlingable.Castling;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCastlingAction;
@@ -21,17 +21,17 @@ public abstract class AbstractCastlingActionRule<COLOR  extends Color,
         extends AbstractRule<PIECE1,ACTION,Action.Type>
         implements CastlingActionRule<COLOR,PIECE1,PIECE2,ACTION> {
 
-    protected final CastlingPieceAlgo<COLOR,PIECE1,Castlings> algo;
+    protected final CastlingPieceAlgo<COLOR,PIECE1,Castling> algo;
 
     protected AbstractCastlingActionRule(Board board,
-                                         CastlingPieceAlgo<COLOR,PIECE1,Castlings> algo) {
+                                         CastlingPieceAlgo<COLOR,PIECE1,Castling> algo) {
 
         super(board, Action.Type.CASTLING);
         this.algo = algo;
     }
 
     protected PieceCastlingAction<COLOR,PIECE1,PIECE2>
-            createAction(Castlings castling, KingPiece<COLOR> king, RookPiece<COLOR> rook) {
+            createAction(Castling castling, KingPiece<COLOR> king, RookPiece<COLOR> rook) {
 
         var kPosition = board.getPosition(castling.getKingTarget(), king.getPosition().y());
         var rPosition = board.getPosition(castling.getRookTarget(), rook.getPosition().y());

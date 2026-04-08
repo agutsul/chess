@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.agutsul.chess.Castlingable;
+import com.agutsul.chess.Castlingable.Castling;
 import com.agutsul.chess.Castlingable.Castlings;
 import com.agutsul.chess.Checkable;
 import com.agutsul.chess.Movable;
@@ -20,14 +21,14 @@ import com.agutsul.chess.piece.Piece;
 public abstract class AbstractCastlingAlgo<COLOR  extends Color,
                                            PIECE1 extends Piece<COLOR> & Movable & Castlingable & Checkable,
                                            PIECE2 extends Piece<COLOR> & Movable & Castlingable>
-        extends AbstractAlgo<Pair<PIECE1,PIECE2>,Castlings> {
+        extends AbstractAlgo<Pair<PIECE1,PIECE2>,Castling> {
 
     AbstractCastlingAlgo(Board board) {
         super(board);
     }
 
     @Override
-    public final Collection<Castlings> calculate(Pair<PIECE1,PIECE2> pieces) {
+    public final Collection<Castling> calculate(Pair<PIECE1,PIECE2> pieces) {
         var castling = calculate(pieces.getLeft(), pieces.getRight());
         return isNull(castling)
                 ? emptyList()
@@ -38,7 +39,7 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
 
     abstract boolean isAnyAttackedBetween(PIECE1 king, PIECE2 rook);
 
-    private Castlings calculate(PIECE1 king, PIECE2 rook) {
+    private Castling calculate(PIECE1 king, PIECE2 rook) {
         // Neither the king nor the rook has previously moved.
         if (king.isMoved() || rook.isMoved()) {
             return null;

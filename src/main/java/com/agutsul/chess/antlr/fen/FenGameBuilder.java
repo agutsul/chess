@@ -1,5 +1,7 @@
 package com.agutsul.chess.antlr.fen;
 
+import static com.agutsul.chess.Castlingable.Castlings.KING_SIDE;
+import static com.agutsul.chess.Castlingable.Castlings.QUEEN_SIDE;
 import static com.agutsul.chess.player.PlayerFactory.playerOf;
 import static com.agutsul.chess.position.Position.codeOf;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
@@ -20,7 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Castlingable.Castlings;
+import com.agutsul.chess.Castlingable.Castling;
 import com.agutsul.chess.Castlingable.Side;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.PositionedBoardBuilder;
@@ -198,10 +200,10 @@ final class FenGameBuilder
         };
     }
 
-    private static Castlings resolveCastling(String code) {
+    private static Castling resolveCastling(String code) {
         return switch(code) {
-        case "q","Q" -> Castlings.QUEEN_SIDE;
-        case "k","K" -> Castlings.KING_SIDE;
+        case "q","Q" -> QUEEN_SIDE;
+        case "k","K" -> KING_SIDE;
         default ->
             throw new IllegalArgumentException(String.format(
                 "Unsupported castling: '%s'",

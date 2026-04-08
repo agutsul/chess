@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.agutsul.chess.Castlingable.Castlings;
+import com.agutsul.chess.Castlingable.Castling;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
@@ -20,8 +20,8 @@ import com.agutsul.chess.piece.algo.QueenSideCastlingAlgo;
 
 final class KingCastlingAlgo<COLOR extends Color,
                              KING  extends KingPiece<COLOR>>
-        extends AbstractAlgo<KING,Castlings>
-        implements CastlingPieceAlgo<COLOR,KING,Castlings> {
+        extends AbstractAlgo<KING,Castling>
+        implements CastlingPieceAlgo<COLOR,KING,Castling> {
 
     private final Collection<AbstractCastlingAlgo<COLOR,KING,RookPiece<COLOR>>> algos;
 
@@ -31,7 +31,7 @@ final class KingCastlingAlgo<COLOR extends Color,
     }
 
     @Override
-    public Collection<Castlings> calculate(KING king) {
+    public Collection<Castling> calculate(KING king) {
 
         @SuppressWarnings("unchecked")
         var castlings = Stream.of(board.getPieces(king.getColor(), Piece.Type.ROOK))
