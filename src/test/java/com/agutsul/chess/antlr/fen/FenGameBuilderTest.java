@@ -177,11 +177,11 @@ public class FenGameBuilderTest implements TestFileReader {
 
     @DisplayName("testValidCastling")
     @ParameterizedTest(name = "({index}) => (''{0}'')")
-    @ValueSource(strings = { "KQkq", "Kq", "Qk", "Qq", "Kk", "K", "Q", "k", "q" })
+    @ValueSource(strings = { "KQkq", "KQ", "Kq", "Qk", "Qq", "Kk", "kq", "K", "Q", "k", "q" })
     void testValidCastling(String castling) {
         var builder = new FenGameBuilder();
 
-        Stream.of(split("R3K2R/8/8/8/8/8/8/r3k2r", "/"))
+        Stream.of(split("r3k2r/8/8/8/8/8/8/R3K2R", "/"))
             .forEach(line -> builder.addBoardLine(line));
 
         builder.withActiveColor("w");
@@ -193,11 +193,11 @@ public class FenGameBuilderTest implements TestFileReader {
         var game = builder.build();
         var board = game.getBoard();
 
-        var castlingCounts = board.getPieces(Piece.Type.ROOK).stream()
+        var castlingCounter = board.getPieces(Piece.Type.ROOK).stream()
             .map(piece -> board.getActions(piece, Action.Type.CASTLING))
             .collect(summingInt(Collection::size));
 
-        assertEquals(castling.length(), castlingCounts);
+        assertEquals(castling.length(), castlingCounter);
     }
 
     @DisplayName("testInvalidCastling")

@@ -1,7 +1,7 @@
 package com.agutsul.chess.piece.algo;
 
 import static java.util.Collections.emptyList;
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,6 +16,7 @@ import com.agutsul.chess.Movable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.position.Position;
 
 // https://en.wikipedia.org/wiki/Castling
 public abstract class AbstractCastlingAlgo<COLOR  extends Color,
@@ -33,9 +34,9 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
     @Override
     public final Collection<Castling> calculate(Pair<PIECE1,PIECE2> pieces) {
         var castling = calculate(pieces.getLeft(), pieces.getRight());
-        return isNull(castling)
-                ? emptyList()
-                : List.of(castling);
+        return nonNull(castling)
+                ? List.of(castling)
+                : emptyList();
     }
 
     abstract boolean isAllEmptyBetween(PIECE1 king, PIECE2 rook);
@@ -47,8 +48,8 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
         if (king.isMoved() || rook.isMoved()
                 // confirm that king and rook on the same horizontal line
                 // required for game created from FEN string
-                || king.getPosition().y() != castlingLine
-                || rook.getPosition().y() != castlingLine) {
+                || !isCastlingable(king.getPosition())
+                || !isCastlingable(rook.getPosition())) {
 
             return null;
         }
@@ -69,5 +70,9 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
         }
 
         return Castlings.of(rook.getPosition());
+    }
+
+    private boolean isCastlingable(Position position) {
+        return position.y() == this.castlingLine;
     }
 }
