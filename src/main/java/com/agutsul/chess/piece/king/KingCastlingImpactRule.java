@@ -4,11 +4,13 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Castlingable.Castling;
 import com.agutsul.chess.activity.impact.PieceCastlingImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.RookPiece;
+import com.agutsul.chess.piece.algo.CastlingPieceAlgo;
 import com.agutsul.chess.rule.impact.castling.AbstractCastlingImpactRule;
 
 final class KingCastlingImpactRule<COLOR extends Color,
@@ -17,8 +19,10 @@ final class KingCastlingImpactRule<COLOR extends Color,
         extends AbstractCastlingImpactRule<COLOR,KING,ROOK,
                                            PieceCastlingImpact<COLOR,KING,ROOK>> {
 
-    KingCastlingImpactRule(Board board) {
-        super(board, new KingCastlingAlgo<>(board));
+    KingCastlingImpactRule(Board board,
+                           CastlingPieceAlgo<COLOR,KING,Castling> algo) {
+
+        super(board, algo);
     }
 
     @Override

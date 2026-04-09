@@ -23,8 +23,11 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
                                            PIECE2 extends Piece<COLOR> & Movable & Castlingable>
         extends AbstractAlgo<Pair<PIECE1,PIECE2>,Castling> {
 
-    AbstractCastlingAlgo(Board board) {
+    private final int castlingLine;
+
+    AbstractCastlingAlgo(Board board, int castlingLine) {
         super(board);
+        this.castlingLine = castlingLine;
     }
 
     @Override
@@ -44,7 +47,8 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
         if (king.isMoved() || rook.isMoved()
                 // confirm that king and rook on the same horizontal line
                 // required for game created from FEN string
-                || king.getPosition().y() != rook.getPosition().y()) {
+                || king.getPosition().y() != castlingLine
+                || rook.getPosition().y() != castlingLine) {
 
             return null;
         }

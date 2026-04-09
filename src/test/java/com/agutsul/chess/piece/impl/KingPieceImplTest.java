@@ -456,7 +456,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
     @Test
     void testProhibitedIsPinned() {
         var kingPiece = new KingPieceImpl<Color>(mock(AbstractBoard.class),
-                Colors.WHITE, "", mock(Position.class), 1);
+                Colors.WHITE, "", mock(Position.class), 1, 0);
 
         var thrown = assertThrows(
                 UnsupportedOperationException.class,
@@ -469,7 +469,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
     @Test
     void testProhibitedDispose() {
         var kingPiece = new KingPieceImpl<Color>(mock(AbstractBoard.class),
-                Colors.WHITE, "", mock(Position.class), 1);
+                Colors.WHITE, "", mock(Position.class), 1, 0);
 
         var thrown = assertThrows(
                 UnsupportedOperationException.class,
@@ -482,7 +482,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
     @Test
     void testProhibitedRestore() {
         var kingPiece = new KingPieceImpl<Color>(mock(AbstractBoard.class),
-                Colors.WHITE, "", mock(Position.class), 1);
+                Colors.WHITE, "", mock(Position.class), 1, 0);
 
         var thrown = assertThrows(
                 UnsupportedOperationException.class,
@@ -495,7 +495,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
     @Test
     void testProhibitedCreateDisposedPieceState() {
         var kingPiece = new KingPieceImpl<Color>(mock(AbstractBoard.class),
-                Colors.WHITE, "", mock(Position.class), 1);
+                Colors.WHITE, "", mock(Position.class), 1, 0);
 
         var thrown = assertThrows(
                 UnsupportedOperationException.class,
@@ -706,7 +706,7 @@ public class KingPieceImplTest extends AbstractPieceTest {
     }
 
     @Test
-    void testKingCastlingWhenKingAndRookNotInline() {
+    void testKingCastlingWhenKingAndRookNotInline1() {
         var board = new LabeledBoardBuilder()
                 .withWhiteKing("e3")
                 .withWhiteRook("h1")
@@ -714,6 +714,20 @@ public class KingPieceImplTest extends AbstractPieceTest {
                 .build();
 
         var whiteKing = board.getPiece("e3").get();
+        var castlingActions = board.getActions(whiteKing, Action.Type.CASTLING);
+
+        assertTrue(castlingActions.isEmpty());
+    }
+
+    @Test
+    void testKingCastlingWhenKingAndRookNotInline2() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhiteRook("h2")
+                .withBlackKing("d6")
+                .build();
+
+        var whiteKing = board.getPiece("e1").get();
         var castlingActions = board.getActions(whiteKing, Action.Type.CASTLING);
 
         assertTrue(castlingActions.isEmpty());

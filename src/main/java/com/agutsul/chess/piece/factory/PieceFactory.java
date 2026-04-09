@@ -23,6 +23,10 @@ public interface PieceFactory<COLOR extends Color> {
         int line();
     }
 
+    interface Castling {
+        int line();
+    }
+
     KingPiece<COLOR> createKing(Position position);
     KingPiece<COLOR> createKing(String code);
 

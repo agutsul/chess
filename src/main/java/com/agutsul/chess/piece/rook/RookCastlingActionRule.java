@@ -4,11 +4,13 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Castlingable.Castling;
 import com.agutsul.chess.activity.action.PieceCastlingAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.RookPiece;
+import com.agutsul.chess.piece.algo.CastlingPieceAlgo;
 import com.agutsul.chess.rule.action.AbstractCastlingActionRule;
 import com.agutsul.chess.rule.action.CastlingActionRule;
 
@@ -20,8 +22,10 @@ final class RookCastlingActionRule<COLOR extends Color,
         implements CastlingActionRule<COLOR,ROOK,KING,
                                       PieceCastlingAction<COLOR,ROOK,KING>> {
 
-    RookCastlingActionRule(Board board) {
-        super(board, new RookCastlingAlgo<>(board));
+    RookCastlingActionRule(Board board,
+                           CastlingPieceAlgo<COLOR,ROOK,Castling> algo) {
+
+        super(board, algo);
     }
 
     @Override

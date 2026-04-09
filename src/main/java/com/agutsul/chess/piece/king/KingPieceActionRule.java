@@ -14,16 +14,19 @@ public final class KingPieceActionRule<COLOR extends Color,
                                        KING  extends KingPiece<COLOR>>
         extends AbstractPieceRule<Action<?>,Action.Type> {
 
-    public KingPieceActionRule(Board board) {
-        this(board, new KingPieceAlgoImpl<>(board));
+    public KingPieceActionRule(Board board, int castlingLine) {
+        this(board, new KingPieceAlgoImpl<>(board), new KingCastlingAlgo<>(board, castlingLine));
     }
 
     @SuppressWarnings("unchecked")
-    private KingPieceActionRule(Board board, KingPieceAlgo<COLOR,KING> algo) {
+    private KingPieceActionRule(Board board,
+                                KingPieceAlgo<COLOR,KING> actionAlgo,
+                                KingCastlingAlgo<COLOR,KING> castlingAlgo) {
+
         super(new CompositePieceRule<>(
-                new KingCastlingActionRule<>(board),
-                new PieceCapturePositionActionRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, algo)),
-                new PieceMovePositionActionRule<>(board, new KingPieceAlgoProxy<>(Mode.MOVE, board, algo))
+                new KingCastlingActionRule<>(board, castlingAlgo),
+                new PieceCapturePositionActionRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, actionAlgo)),
+                new PieceMovePositionActionRule<>(board, new KingPieceAlgoProxy<>(Mode.MOVE, board, actionAlgo))
             )
         );
     }

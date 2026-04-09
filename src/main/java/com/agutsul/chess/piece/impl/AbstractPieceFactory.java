@@ -94,15 +94,38 @@ abstract class AbstractPieceFactory<COLOR extends Color>
         }
     }
 
+    enum Castlings implements Castling {
+        WHITE(Position.MIN),
+        BLACK(Position.MAX - 1);
+
+        private int line;
+
+        Castlings(int line) {
+            this.line = line;
+        }
+
+        @Override
+        public int line() {
+            return line;
+        }
+
+        @Override
+        public String toString() {
+            return name();
+        }
+    }
+
     final Logger logger;
     final Board board;
     final COLOR color;
     final Direction direction;
     final Promotion promotion;
     final BigMove bigMove;
+    final Castling castling;
 
     AbstractPieceFactory(Logger logger, Board board, COLOR color,
-                         Direction direction, Promotion promotion, BigMove bigMove) {
+                         Direction direction, Promotion promotion,
+                         BigMove bigMove, Castling castling) {
 
         this.logger = logger;
         this.board = board;
@@ -110,6 +133,7 @@ abstract class AbstractPieceFactory<COLOR extends Color>
         this.direction = direction;
         this.promotion = promotion;
         this.bigMove = bigMove;
+        this.castling = castling;
     }
 
     @Override
@@ -144,7 +168,8 @@ abstract class AbstractPieceFactory<COLOR extends Color>
 
     KingPiece<COLOR> createKing(Position position, String unicode) {
         logger.debug("Create '{}' king at '{}'", color, position);
-        return new KingPieceImpl<>(board, color, unicode, position, direction.code());
+        return new KingPieceImpl<>(board, color, unicode, position,
+                                   direction.code(), castling.line());
     }
 
     QueenPiece<COLOR> createQueen(Position position, String unicode) {
@@ -154,7 +179,8 @@ abstract class AbstractPieceFactory<COLOR extends Color>
 
     RookPiece<COLOR> createRook(Position position, String unicode) {
         logger.debug("Create '{}' rook at '{}'", color, position);
-        return new RookPieceImpl<>(board, color, unicode, position, direction.code());
+        return new RookPieceImpl<>(board, color, unicode, position,
+                                   direction.code(), castling.line());
     }
 
     BishopPiece<COLOR> createBishop(Position position, String unicode) {

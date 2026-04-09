@@ -10,8 +10,8 @@ public final class KingSideCastlingAlgo<COLOR extends Color,
                                         ROOK  extends RookPiece<COLOR>>
         extends AbstractCastlingAlgo<COLOR,KING,ROOK> {
 
-    public KingSideCastlingAlgo(Board board) {
-        super(board);
+    public KingSideCastlingAlgo(Board board, int castlingLine) {
+        super(board, castlingLine);
     }
 
     @Override

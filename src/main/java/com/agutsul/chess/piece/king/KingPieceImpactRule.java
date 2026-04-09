@@ -22,24 +22,27 @@ public final class KingPieceImpactRule<COLOR extends Color,
                                        KING  extends KingPiece<COLOR>>
         extends AbstractPieceRule<Impact<?>,Impact.Type> {
 
-    public KingPieceImpactRule(Board board) {
-        this(board, new KingPieceAlgoImpl<>(board));
+    public KingPieceImpactRule(Board board, int castlingLine) {
+        this(board, new KingPieceAlgoImpl<>(board), new KingCastlingAlgo<>(board, castlingLine));
     }
 
     @SuppressWarnings("unchecked")
-    private KingPieceImpactRule(Board board, KingPieceAlgo<COLOR,KING> algo) {
+    private KingPieceImpactRule(Board board,
+                                KingPieceAlgo<COLOR,KING> impactAlgo,
+                                KingCastlingAlgo<COLOR,KING> castlingAlgo) {
+
         super(new CompositePieceRule<>(
-                new PieceAttackPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, algo)),
-                new PieceProtectPositionImpactRule<>(board, algo),
-                new PieceControlPositionImpactRule<>(board, algo),
-                new PieceMotionPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.MOVE, board, algo)),
-                new PieceForkPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, algo)),
-                new PieceDiscoveredAttackPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.DEFAULT, board, algo)),
-                new PieceOverloadingPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, algo)),
-                new PieceUnderminingPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, algo)),
-                new PieceOutpostPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.MOVE, board, algo)),
-                new PieceDominationPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, algo)),
-                new KingCastlingImpactRule<>(board)
+                new PieceAttackPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, impactAlgo)),
+                new PieceProtectPositionImpactRule<>(board, impactAlgo),
+                new PieceControlPositionImpactRule<>(board, impactAlgo),
+                new PieceMotionPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.MOVE, board, impactAlgo)),
+                new PieceForkPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, impactAlgo)),
+                new PieceDiscoveredAttackPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.DEFAULT, board, impactAlgo)),
+                new PieceOverloadingPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, impactAlgo)),
+                new PieceUnderminingPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, impactAlgo)),
+                new PieceOutpostPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.MOVE, board, impactAlgo)),
+                new PieceDominationPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, impactAlgo)),
+                new KingCastlingImpactRule<>(board, castlingAlgo)
             )
         );
     }

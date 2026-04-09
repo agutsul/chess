@@ -32,35 +32,38 @@ public final class RookPieceImpactRule<COLOR extends Color,
                                        PIECE extends RookPiece<COLOR>>
         extends AbstractPieceRule<Impact<?>,Impact.Type> {
 
-    public RookPieceImpactRule(Board board) {
-        this(board, new RookPieceAlgo<>(board));
+    public RookPieceImpactRule(Board board, int castlingLine) {
+        this(board, new RookPieceAlgo<>(board), new RookCastlingAlgo<>(board, castlingLine));
     }
 
     @SuppressWarnings("unchecked")
-    private RookPieceImpactRule(Board board, RookPieceAlgo<COLOR,PIECE> algo) {
+    private RookPieceImpactRule(Board board,
+                                RookPieceAlgo<COLOR,PIECE> actionAlgo,
+                                RookCastlingAlgo<COLOR,PIECE> castlingAlgo) {
+
         super(new CompositePieceRule<>(
-                new PieceCheckLineImpactRule<>(board, algo),
-                new PieceAttackLineImpactRule<>(board, algo),
-                new PieceProtectLineImpactRule<>(board, algo),
-                new PieceMotionLineImpactRule<>(board, algo),
-                new PieceMonitorLineImpactRule<>(board, algo),
-                new PieceControlLineImpactRule<>(board, algo),
-                new PiecePinLineImpactRule<>(board, algo),
-                new PieceDiscoveredAttackLineImpactRule<>(board, algo),
-                new PieceSkewerImpactRule<>(board, algo),
-                new PieceBatteryImpactRule<>(board, algo),
-                new PieceBlockLineImpactRule<>(board, algo),
-                new PieceOverloadingLineImpactRule<>(board, algo),
-                new PieceInterferenceLineImpactRule<>(board, algo),
-                new PieceDeflectionLineImpactRule<>(board, algo),
-                new PieceUnderminingLineImpactRule<>(board, algo),
-                new PieceForkLineImpactRule<>(board, algo),
-                new PieceOutpostLineImpactRule<>(board, algo),
-                new PieceSacrificeLineImpactRule<>(board, algo),
-                new PieceDesperadoLineImpactRule<>(board, algo),
-                new PieceDominationLineImpactRule<>(board, algo),
-                new PieceXRayImpactRule<>(board, algo),
-                new RookCastlingImpactRule<>(board)
+                new PieceCheckLineImpactRule<>(board, actionAlgo),
+                new PieceAttackLineImpactRule<>(board, actionAlgo),
+                new PieceProtectLineImpactRule<>(board, actionAlgo),
+                new PieceMotionLineImpactRule<>(board, actionAlgo),
+                new PieceMonitorLineImpactRule<>(board, actionAlgo),
+                new PieceControlLineImpactRule<>(board, actionAlgo),
+                new PiecePinLineImpactRule<>(board, actionAlgo),
+                new PieceDiscoveredAttackLineImpactRule<>(board, actionAlgo),
+                new PieceSkewerImpactRule<>(board, actionAlgo),
+                new PieceBatteryImpactRule<>(board, actionAlgo),
+                new PieceBlockLineImpactRule<>(board, actionAlgo),
+                new PieceOverloadingLineImpactRule<>(board, actionAlgo),
+                new PieceInterferenceLineImpactRule<>(board, actionAlgo),
+                new PieceDeflectionLineImpactRule<>(board, actionAlgo),
+                new PieceUnderminingLineImpactRule<>(board, actionAlgo),
+                new PieceForkLineImpactRule<>(board, actionAlgo),
+                new PieceOutpostLineImpactRule<>(board, actionAlgo),
+                new PieceSacrificeLineImpactRule<>(board, actionAlgo),
+                new PieceDesperadoLineImpactRule<>(board, actionAlgo),
+                new PieceDominationLineImpactRule<>(board, actionAlgo),
+                new PieceXRayImpactRule<>(board, actionAlgo),
+                new RookCastlingImpactRule<>(board, castlingAlgo)
             )
         );
     }

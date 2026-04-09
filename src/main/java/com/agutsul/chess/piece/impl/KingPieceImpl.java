@@ -44,12 +44,12 @@ final class KingPieceImpl<COLOR extends Color>
     private final CheckMatedPieceState<? extends KingPiece<?>> checkMatedPieceState;
 
     KingPieceImpl(Board board, COLOR color, String unicode,
-                  Position position, int direction) {
+                  Position position, int direction, int castlingLine) {
 
         super(board, position,
                 new PieceContext<>(Piece.Type.KING, color, unicode, direction),
-                new KingPieceActionRule<>(board),
-                new KingPieceImpactRule<>(board),
+                new KingPieceActionRule<>(board, castlingLine),
+                new KingPieceImpactRule<>(board, castlingLine),
                 List.of(Side.values())
         );
 

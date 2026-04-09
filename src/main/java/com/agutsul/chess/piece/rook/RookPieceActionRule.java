@@ -13,16 +13,19 @@ public final class RookPieceActionRule<COLOR extends Color,
                                        PIECE extends RookPiece<COLOR>>
         extends AbstractPieceRule<Action<?>,Action.Type> {
 
-    public RookPieceActionRule(Board board) {
-        this(board, new RookPieceAlgo<>(board));
+    public RookPieceActionRule(Board board, int castlingLine) {
+        this(board, new RookPieceAlgo<>(board), new RookCastlingAlgo<>(board, castlingLine));
     }
 
     @SuppressWarnings("unchecked")
-    private RookPieceActionRule(Board board, RookPieceAlgo<COLOR,PIECE> algo) {
+    private RookPieceActionRule(Board board,
+                                RookPieceAlgo<COLOR,PIECE> actionAlgo,
+                                RookCastlingAlgo<COLOR,PIECE> castlingAlgo) {
+
         super(new CompositePieceRule<>(
-                new PieceCaptureLineActionRule<>(board, algo),
-                new PieceMoveLineActionRule<>(board, algo),
-                new RookCastlingActionRule<>(board)
+                new PieceCaptureLineActionRule<>(board, actionAlgo),
+                new PieceMoveLineActionRule<>(board, actionAlgo),
+                new RookCastlingActionRule<>(board, castlingAlgo)
             )
         );
     }

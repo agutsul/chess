@@ -35,21 +35,13 @@ final class RookPieceImpl<COLOR extends Color>
     private static final Comparator<Action<?>> ROOK_COMPARATOR = new RookActionComparator();
 
     RookPieceImpl(Board board, COLOR color, String unicode,
-                  Position position, int direction) {
+                  Position position, int direction, int castlingLine) {
 
-        this(board, position,
+        super(board, position,
                 new PieceContext<>(Piece.Type.ROOK, color, unicode, direction),
-                Castlings.of(position)
-        );
-    }
-
-    private RookPieceImpl(Board board, Position position,
-                          PieceContext<COLOR> context, Castling castling) {
-
-        super(board, position, context,
-                new RookPieceActionRule<>(board),
-                new RookPieceImpactRule<>(board),
-                nonNull(castling) ? List.of(castling.side()) : emptyList()
+                new RookPieceActionRule<>(board, castlingLine),
+                new RookPieceImpactRule<>(board, castlingLine),
+                castlingSides(position)
         );
     }
 
@@ -68,6 +60,11 @@ final class RookPieceImpl<COLOR extends Color>
     @Override
     DisposedPieceState<?> createDisposedPieceState(Instant instant) {
         return new DisposedCastlingablePieceState<>(instant);
+    }
+
+    private static Collection<Side> castlingSides(Position position) {
+        var castling = Castlings.of(position);
+        return nonNull(castling) ? List.of(castling.side()) : emptyList();
     }
 
     static final class RookActionComparator

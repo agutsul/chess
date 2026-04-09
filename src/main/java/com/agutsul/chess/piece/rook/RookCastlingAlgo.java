@@ -25,9 +25,12 @@ final class RookCastlingAlgo<COLOR extends Color,
 
     private final Collection<AbstractCastlingAlgo<COLOR,KingPiece<COLOR>,ROOK>> algos;
 
-    RookCastlingAlgo(Board board) {
+    RookCastlingAlgo(Board board, int castlingLine) {
         super(board);
-        this.algos = List.of(new KingSideCastlingAlgo<>(board), new QueenSideCastlingAlgo<>(board));
+        this.algos = List.of(
+                new KingSideCastlingAlgo<>(board, castlingLine),
+                new QueenSideCastlingAlgo<>(board, castlingLine)
+        );
     }
 
     @Override
