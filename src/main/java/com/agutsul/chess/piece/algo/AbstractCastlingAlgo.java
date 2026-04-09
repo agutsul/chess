@@ -41,7 +41,11 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
 
     private Castling calculate(PIECE1 king, PIECE2 rook) {
         // Neither the king nor the rook has previously moved.
-        if (king.isMoved() || rook.isMoved()) {
+        if (king.isMoved() || rook.isMoved()
+                // confirm that king and rook on the same horizontal line
+                // required for game created from FEN string
+                || king.getPosition().y() != rook.getPosition().y()) {
+
             return null;
         }
 

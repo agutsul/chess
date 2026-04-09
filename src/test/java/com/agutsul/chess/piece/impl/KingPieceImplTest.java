@@ -704,4 +704,18 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
         assertTrue(castlingImpacts.isEmpty());
     }
+
+    @Test
+    void testKingCastlingWhenKingAndRookNotInline() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e3")
+                .withWhiteRook("h1")
+                .withBlackKing("d6")
+                .build();
+
+        var whiteKing = board.getPiece("e3").get();
+        var castlingActions = board.getActions(whiteKing, Action.Type.CASTLING);
+
+        assertTrue(castlingActions.isEmpty());
+    }
 }
