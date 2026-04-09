@@ -45,12 +45,13 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
 
     private Castling calculate(PIECE1 king, PIECE2 rook) {
         // Neither the king nor the rook has previously moved.
-        if (king.isMoved() || rook.isMoved()
-                // confirm that king and rook on the same horizontal line
-                // required for game created from FEN string
-                || !isCastlingable(king.getPosition())
-                || !isCastlingable(rook.getPosition())) {
+        if (king.isMoved() || rook.isMoved()) {
+            return null;
+        }
 
+        // confirm that king and rook on the same horizontal line
+        // required for game created from FEN string
+        if (isDifferentLines(king, rook)) {
             return null;
         }
 
@@ -70,6 +71,11 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
         }
 
         return Castlings.of(rook.getPosition());
+    }
+
+    private boolean isDifferentLines(PIECE1 king, PIECE2 rook) {
+        return !isCastlingable(king.getPosition())
+                || !isCastlingable(rook.getPosition());
     }
 
     private boolean isCastlingable(Position position) {
