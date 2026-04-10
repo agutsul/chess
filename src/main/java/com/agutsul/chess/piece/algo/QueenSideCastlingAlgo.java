@@ -10,6 +10,8 @@ public final class QueenSideCastlingAlgo<COLOR extends Color,
                                          ROOK  extends RookPiece<COLOR>>
         extends AbstractCastlingAlgo<COLOR,KING,ROOK> {
 
+    private static final int EMPTY_POSITIONS = 3;
+
     public QueenSideCastlingAlgo(Board board, int castlingLine) {
         super(board, castlingLine);
     }
@@ -19,7 +21,7 @@ public final class QueenSideCastlingAlgo<COLOR extends Color,
         var rookPosition = rook.getPosition();
         var kingPosition = king.getPosition();
 
-        int iterations = 0;
+        int counter = 0;
         for (int i = rookPosition.x() + 1; i < kingPosition.x(); i++) {
             var optionalPosition = board.getPosition(i, rookPosition.y());
             if (optionalPosition.isEmpty()
@@ -27,10 +29,10 @@ public final class QueenSideCastlingAlgo<COLOR extends Color,
 
                 return false;
             }
-            iterations++;
+            counter++;
         }
 
-        return iterations == 3;
+        return counter == EMPTY_POSITIONS;
     }
 
     @Override
