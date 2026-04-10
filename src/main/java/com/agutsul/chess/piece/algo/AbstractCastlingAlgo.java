@@ -51,7 +51,7 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
 
         // confirm that king and rook on the same horizontal line
         // required for game created from FEN string
-        if (isDifferentLines(king, rook)) {
+        if (!isSameLine(king, rook)) {
             return null;
         }
 
@@ -73,9 +73,8 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
         return Castlings.of(rook.getPosition());
     }
 
-    private boolean isDifferentLines(PIECE1 king, PIECE2 rook) {
-        return !isCastlingable(king.getPosition())
-                || !isCastlingable(rook.getPosition());
+    private boolean isSameLine(PIECE1 king, PIECE2 rook) {
+        return isCastlingable(king.getPosition()) && isCastlingable(rook.getPosition());
     }
 
     private boolean isCastlingable(Position position) {
