@@ -13,6 +13,7 @@ import com.agutsul.chess.piece.KnightPiece;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.piece.RookPiece;
+import com.agutsul.chess.piece.factory.PieceFactoryContext;
 import com.agutsul.chess.position.Position;
 
 public final class BlackPieceFactory
@@ -28,9 +29,9 @@ public final class BlackPieceFactory
     private static final String PAWN_UNICODE    = "\u265F";
 
     public BlackPieceFactory(Board board) {
-        super(LOGGER, board, Colors.BLACK, Directions.BLACK,
-                Promotions.BLACK, BigMoves.BLACK, Castlings.BLACK
-        );
+        super(LOGGER, board, Colors.BLACK, new PieceFactoryContext(
+                Directions.BLACK, Promotions.BLACK, BigMoves.BLACK, Castlings.BLACK
+        ));
     }
 
     @Override
@@ -62,7 +63,7 @@ public final class BlackPieceFactory
     public PawnPiece<Color> createPawn(Position position) {
         var piece = new TransformablePieceImpl<>(board, this,
                 super.createPawn(position, PAWN_UNICODE),
-                promotion.line()
+                context.getPromotionLine()
         );
 
         return new TransformablePieceAdapter<>(pinnableProxy(piece));

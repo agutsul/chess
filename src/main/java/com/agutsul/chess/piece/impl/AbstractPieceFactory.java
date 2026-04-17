@@ -26,6 +26,7 @@ import com.agutsul.chess.piece.PieceProxy;
 import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.piece.factory.PieceFactory;
+import com.agutsul.chess.piece.factory.PieceFactoryContext;
 import com.agutsul.chess.position.Position;
 
 abstract class AbstractPieceFactory<COLOR extends Color>
@@ -118,22 +119,15 @@ abstract class AbstractPieceFactory<COLOR extends Color>
     final Logger logger;
     final Board board;
     final COLOR color;
-    final Direction direction;
-    final Promotion promotion;
-    final BigMove bigMove;
-    final Castling castling;
+    final PieceFactoryContext context;
 
     AbstractPieceFactory(Logger logger, Board board, COLOR color,
-                         Direction direction, Promotion promotion,
-                         BigMove bigMove, Castling castling) {
+                         PieceFactoryContext context) {
 
         this.logger = logger;
         this.board = board;
         this.color = color;
-        this.direction = direction;
-        this.promotion = promotion;
-        this.bigMove = bigMove;
-        this.castling = castling;
+        this.context = context;
     }
 
     @Override
@@ -168,35 +162,35 @@ abstract class AbstractPieceFactory<COLOR extends Color>
 
     KingPiece<COLOR> createKing(Position position, String unicode) {
         logger.debug("Create '{}' king at '{}'", color, position);
-        return new KingPieceImpl<>(board, color, unicode, position,
-                                   direction.code(), castling.line());
+        return new KingPieceImpl<>(board, color, unicode, position, context.getDirection(),
+                                   context.getCastlingLine());
     }
 
     QueenPiece<COLOR> createQueen(Position position, String unicode) {
         logger.debug("Create '{}' queen at '{}'", color, position);
-        return new QueenPieceImpl<>(board, color, unicode, position, direction.code());
+        return new QueenPieceImpl<>(board, color, unicode, position, context.getDirection());
     }
 
     RookPiece<COLOR> createRook(Position position, String unicode) {
         logger.debug("Create '{}' rook at '{}'", color, position);
-        return new RookPieceImpl<>(board, color, unicode, position,
-                                   direction.code(), castling.line());
+        return new RookPieceImpl<>(board, color, unicode, position, context.getDirection(),
+                                   context.getCastlingLine());
     }
 
     BishopPiece<COLOR> createBishop(Position position, String unicode) {
         logger.debug("Create '{}' bishop at '{}'", color, position);
-        return new BishopPieceImpl<>(board, color, unicode, position, direction.code());
+        return new BishopPieceImpl<>(board, color, unicode, position, context.getDirection());
     }
 
     KnightPiece<COLOR> createKnight(Position position, String unicode) {
         logger.debug("Create '{}' knight at '{}'", color, position);
-        return new KnightPieceImpl<>(board, color, unicode, position, direction.code());
+        return new KnightPieceImpl<>(board, color, unicode, position, context.getDirection());
     }
 
     PawnPiece<COLOR> createPawn(Position position, String unicode) {
         logger.debug("Create '{}' pawn at '{}'", color, position);
-        return new PawnPieceImpl<>(board, color, unicode, position,
-                                   direction.code(), promotion.line(), bigMove.line());
+        return new PawnPieceImpl<>(board, color, unicode, position, context.getDirection(),
+                                   context.getPromotionLine(), context.getBigMoveLine());
     }
 
     <PIECE extends Piece<COLOR> & Demotable,PROXY extends PieceProxy<COLOR,PIECE> & Demotable>

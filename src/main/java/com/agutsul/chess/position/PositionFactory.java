@@ -12,7 +12,7 @@ import java.util.Map;
 public enum PositionFactory {
     INSTANCE;
 
-    private Map<String, Position> positions = new HashMap<>(MAX * MAX);
+    private Map<String,Position> positions = new HashMap<>(MAX * MAX);
 
     PositionFactory() {
         for (int x = MIN; x < MAX; x++) {

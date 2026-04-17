@@ -13,6 +13,7 @@ import com.agutsul.chess.piece.KnightPiece;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.piece.RookPiece;
+import com.agutsul.chess.piece.factory.PieceFactoryContext;
 import com.agutsul.chess.position.Position;
 
 public final class WhitePieceFactory
@@ -28,16 +29,16 @@ public final class WhitePieceFactory
     private static final String PAWN_UNICODE    = "\u2659";
 
     public WhitePieceFactory(Board board) {
-        super(LOGGER, board, Colors.WHITE, Directions.WHITE,
-                Promotions.WHITE, BigMoves.WHITE, Castlings.WHITE
-        );
+        super(LOGGER, board, Colors.WHITE, new PieceFactoryContext(
+                Directions.WHITE, Promotions.WHITE, BigMoves.WHITE, Castlings.WHITE
+        ));
     }
 
     @Override
     public PawnPiece<Color> createPawn(Position position) {
         var piece = new TransformablePieceImpl<>(board, this,
                 super.createPawn(position, PAWN_UNICODE),
-                promotion.line()
+                context.getPromotionLine()
         );
 
         return new TransformablePieceAdapter<>(pinnableProxy(piece));
