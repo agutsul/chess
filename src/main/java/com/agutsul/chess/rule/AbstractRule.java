@@ -2,11 +2,10 @@ package com.agutsul.chess.rule;
 
 import java.util.Collection;
 
-import com.agutsul.chess.Positionable;
 import com.agutsul.chess.activity.Activity;
 import com.agutsul.chess.board.Board;
 
-public abstract class AbstractRule<SOURCE extends Positionable,
+public abstract class AbstractRule<SOURCE,
                                    RESULT extends Activity<TYPE,?>,
                                    TYPE extends Enum<TYPE> & Activity.Type>
         implements Rule<SOURCE,Collection<RESULT>> {

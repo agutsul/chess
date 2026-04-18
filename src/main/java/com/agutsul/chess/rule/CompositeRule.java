@@ -7,10 +7,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Positionable;
 import com.agutsul.chess.activity.Activity;
 
-public final class CompositeRule<SOURCE extends Positionable,
+public final class CompositeRule<SOURCE,
                                  RESULT extends Activity<TYPE,?>,
                                  TYPE   extends Enum<TYPE> & Activity.Type>
         implements Rule<SOURCE,Collection<RESULT>> {

@@ -40,8 +40,8 @@ public final class PawnPieceImpactRule<COLOR extends Color,
                                 PawnCaptureAlgo<COLOR,PAWN> captureAlgo,
                                 PawnEnPassantAlgo<COLOR,PAWN> enPassantAlgo) {
 
-        super(new CompositeRule<>(
-                new PieceCheckPositionImpactRule<>(board,   captureAlgo),
+        super(new CompositeRule<PAWN,Impact<?>,Impact.Type>(
+                new PieceCheckPositionImpactRule<>(board, captureAlgo),
                 new PawnAttackImpactRule<>(board, captureAlgo, enPassantAlgo),
                 new PieceProtectPositionImpactRule<>(board, captureAlgo),
                 new PieceControlPositionImpactRule<>(board, captureAlgo),
