@@ -29,7 +29,8 @@ public final class PawnPieceImpactRule<COLOR extends Color,
                                 PawnCaptureAlgo<COLOR,PAWN> captureAlgo) {
 
         this(board, promotionLine, moveAlgo, bigMoveAlgo,
-                captureAlgo, new PawnEnPassantAlgo<>(board, captureAlgo)
+                captureAlgo, new PawnEnPassantAlgo<>(board, captureAlgo),
+                new PawnPromoteAlgo<>(board, promotionLine, moveAlgo, captureAlgo)
         );
     }
 
@@ -38,7 +39,8 @@ public final class PawnPieceImpactRule<COLOR extends Color,
                                 PawnMoveAlgo<COLOR,PAWN> moveAlgo,
                                 PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
                                 PawnCaptureAlgo<COLOR,PAWN> captureAlgo,
-                                PawnEnPassantAlgo<COLOR,PAWN> enPassantAlgo) {
+                                PawnEnPassantAlgo<COLOR,PAWN> enPassantAlgo,
+                                PawnPromoteAlgo<COLOR,PAWN> promoteAlgo) {
 
         super(new CompositeRule<PAWN,Impact<?>,Impact.Type>(
                 new PieceCheckPositionImpactRule<>(board, captureAlgo),
@@ -64,9 +66,7 @@ public final class PawnPieceImpactRule<COLOR extends Color,
                 new PawnLuftImpactRule<>(board, moveAlgo, bigMoveAlgo, captureAlgo),
                 new PawnDesperadoImpactRule<>(board, captureAlgo, enPassantAlgo),
                 new PawnDominationImpactRule<>(board, captureAlgo, enPassantAlgo),
-                new PiecePromoteImpactRule<>(board,
-                        new PawnPromoteAlgo<>(board, promotionLine, moveAlgo, captureAlgo)
-                )
+                new PiecePromoteImpactRule<>(board, promoteAlgo)
             )
         );
     }

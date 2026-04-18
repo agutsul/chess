@@ -48,10 +48,10 @@ public final class PawnPieceActionRule<COLOR extends Color,
     @SuppressWarnings("unchecked")
     private static <COLOR extends Color,PAWN extends PawnPiece<COLOR>>
             CompositeRule<PAWN,Action<?>,Action.Type> createRule(Board board,
-                                                                      PawnMoveAlgo<COLOR,PAWN> moveAlgo,
-                                                                      PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
-                                                                      PawnCaptureAlgo<COLOR,PAWN> captureAlgo,
-                                                                      PawnPromoteAlgo<COLOR,PAWN> promoteAlgo) {
+                                                                 PawnMoveAlgo<COLOR,PAWN> moveAlgo,
+                                                                 PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
+                                                                 PawnCaptureAlgo<COLOR,PAWN> captureAlgo,
+                                                                 PawnPromoteAlgo<COLOR,PAWN> promoteAlgo) {
 
         var moveActionRule = new PawnMoveActionRule<>(board, moveAlgo);
         var captureActionRule = new PieceCapturePositionActionRule<>(board, captureAlgo);
