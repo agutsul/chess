@@ -5,7 +5,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
-import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.impact.check.PieceCheckPositionImpactRule;
 import com.agutsul.chess.rule.impact.control.PieceControlPositionImpactRule;
 import com.agutsul.chess.rule.impact.promote.PiecePromoteImpactRule;
@@ -13,7 +13,7 @@ import com.agutsul.chess.rule.impact.protect.PieceProtectPositionImpactRule;
 
 public final class PawnPieceImpactRule<COLOR extends Color,
                                        PAWN extends PawnPiece<COLOR>>
-        extends AbstractPieceRule<Impact<?>,Impact.Type> {
+        extends AbstractPieceRule<PAWN,Impact<?>,Impact.Type> {
 
     public PawnPieceImpactRule(Board board, int step, int initialLine, int promotionLine) {
         this(board, promotionLine,
@@ -40,7 +40,7 @@ public final class PawnPieceImpactRule<COLOR extends Color,
                                 PawnCaptureAlgo<COLOR,PAWN> captureAlgo,
                                 PawnEnPassantAlgo<COLOR,PAWN> enPassantAlgo) {
 
-        super(new CompositePieceRule<>(
+        super(new CompositeRule<>(
                 new PieceCheckPositionImpactRule<>(board,   captureAlgo),
                 new PawnAttackImpactRule<>(board, captureAlgo, enPassantAlgo),
                 new PieceProtectPositionImpactRule<>(board, captureAlgo),

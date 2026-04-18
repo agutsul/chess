@@ -172,18 +172,18 @@ final class PawnPieceImpl<COLOR extends Color>
 
         private static final Logger LOGGER = getLogger(ActiveEnPassantablePieceState.class);
 
-        private final AbstractPieceRule<Action<?>,Action.Type> actionRule;
+        private final AbstractPieceRule<PIECE,Action<?>,Action.Type> actionRule;
         private final Board board;
 
         @SuppressWarnings("unchecked")
         ActiveEnPassantablePieceState(Board board,
-                                      Rule<Piece<?>, Collection<Action<?>>> actionRule,
-                                      Rule<Piece<?>, Collection<Impact<?>>> impactRule) {
+                                      Rule<PIECE,Collection<Action<?>>> actionRule,
+                                      Rule<PIECE,Collection<Impact<?>>> impactRule) {
 
             super(LOGGER, new ActivePieceStateImpl<>(board, actionRule, impactRule));
 
             this.board = board;
-            this.actionRule = (AbstractPieceRule<Action<?>,Action.Type>) actionRule;
+            this.actionRule = (AbstractPieceRule<PIECE,Action<?>,Action.Type>) actionRule;
         }
 
         @Override
@@ -212,14 +212,11 @@ final class PawnPieceImpl<COLOR extends Color>
 
         @Override
         public Collection<Action<?>> calculateActions(PIECE piece, Action.Type actionType) {
-            switch (actionType) {
-            case MOVE:
-                return this.actionRule.evaluate(piece, Action.Type.BIG_MOVE, Action.Type.MOVE);
-            case CAPTURE:
-                return this.actionRule.evaluate(piece, Action.Type.EN_PASSANT, Action.Type.CAPTURE);
-            default:
-                return super.calculateActions(piece, actionType);
-            }
+            return switch (actionType) {
+            case MOVE -> this.actionRule.evaluate(piece, Action.Type.BIG_MOVE, Action.Type.MOVE);
+            case CAPTURE -> this.actionRule.evaluate(piece, Action.Type.EN_PASSANT, Action.Type.CAPTURE);
+            default -> super.calculateActions(piece, actionType);
+            };
         }
     }
 

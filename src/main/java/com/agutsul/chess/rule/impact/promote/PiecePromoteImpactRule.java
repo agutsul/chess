@@ -12,7 +12,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.PromotePieceAlgo;
 import com.agutsul.chess.rule.AbstractRule;
-import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.Rule;
 import com.agutsul.chess.rule.impact.PromoteImpactRule;
 
@@ -29,7 +29,7 @@ public final class PiecePromoteImpactRule<COLOR  extends Color,
                                   PromotePieceAlgo<COLOR,PIECE> algo) {
 
         super(board, Impact.Type.PROMOTE);
-        this.rule = new CompositePieceRule<>(
+        this.rule = new CompositeRule<>(
                 new PiecePromoteMoveImpactRule<>(board, algo),
                 new PiecePromoteAttackImpactRule<>(board, algo)
         );

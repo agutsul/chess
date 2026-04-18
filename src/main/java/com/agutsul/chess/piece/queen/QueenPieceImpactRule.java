@@ -5,7 +5,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
-import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.impact.attack.PieceAttackLineImpactRule;
 import com.agutsul.chess.rule.impact.attack.discovered.PieceDiscoveredAttackLineImpactRule;
 import com.agutsul.chess.rule.impact.battery.PieceBatteryImpactRule;
@@ -30,7 +30,7 @@ import com.agutsul.chess.rule.impact.xray.PieceXRayImpactRule;
 
 public final class QueenPieceImpactRule<COLOR extends Color,
                                         PIECE extends QueenPiece<COLOR>>
-        extends AbstractPieceRule<Impact<?>,Impact.Type> {
+        extends AbstractPieceRule<PIECE,Impact<?>,Impact.Type> {
 
     public QueenPieceImpactRule(Board board) {
         this(board, new QueenPieceAlgo<>(board));
@@ -38,7 +38,7 @@ public final class QueenPieceImpactRule<COLOR extends Color,
 
     @SuppressWarnings("unchecked")
     private QueenPieceImpactRule(Board board, QueenPieceAlgo<COLOR,PIECE> algo) {
-        super(new CompositePieceRule<>(
+        super(new CompositeRule<>(
                 new PieceCheckLineImpactRule<>(board, algo),
                 new PieceProtectLineImpactRule<>(board, algo),
                 new PieceAttackLineImpactRule<>(board, algo),

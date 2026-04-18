@@ -6,7 +6,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.king.KingPieceAlgoProxy.Mode;
 import com.agutsul.chess.rule.AbstractPieceRule;
-import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.impact.attack.PieceAttackPositionImpactRule;
 import com.agutsul.chess.rule.impact.attack.discovered.PieceDiscoveredAttackPositionImpactRule;
 import com.agutsul.chess.rule.impact.control.PieceControlPositionImpactRule;
@@ -20,7 +20,7 @@ import com.agutsul.chess.rule.impact.undermining.PieceUnderminingPositionImpactR
 
 public final class KingPieceImpactRule<COLOR extends Color,
                                        KING  extends KingPiece<COLOR>>
-        extends AbstractPieceRule<Impact<?>,Impact.Type> {
+        extends AbstractPieceRule<KING,Impact<?>,Impact.Type> {
 
     public KingPieceImpactRule(Board board, int castlingLine) {
         this(board, new KingPieceAlgoImpl<>(board), new KingCastlingAlgo<>(board, castlingLine));
@@ -31,7 +31,7 @@ public final class KingPieceImpactRule<COLOR extends Color,
                                 KingPieceAlgo<COLOR,KING> impactAlgo,
                                 KingCastlingAlgo<COLOR,KING> castlingAlgo) {
 
-        super(new CompositePieceRule<>(
+        super(new CompositeRule<>(
                 new PieceAttackPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, impactAlgo)),
                 new PieceProtectPositionImpactRule<>(board, impactAlgo),
                 new PieceControlPositionImpactRule<>(board, impactAlgo),

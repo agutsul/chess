@@ -5,13 +5,13 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.BishopPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
-import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.action.PieceCaptureLineActionRule;
 import com.agutsul.chess.rule.action.PieceMoveLineActionRule;
 
 public final class BishopPieceActionRule<COLOR extends Color,
                                          PIECE extends BishopPiece<COLOR>>
-        extends AbstractPieceRule<Action<?>,Action.Type> {
+        extends AbstractPieceRule<PIECE,Action<?>,Action.Type> {
 
     public BishopPieceActionRule(Board board) {
         this(board, new BishopPieceAlgo<>(board));
@@ -19,7 +19,7 @@ public final class BishopPieceActionRule<COLOR extends Color,
 
     @SuppressWarnings("unchecked")
     private BishopPieceActionRule(Board board, BishopPieceAlgo<COLOR,PIECE> algo) {
-        super(new CompositePieceRule<>(
+        super(new CompositeRule<>(
                 new PieceCaptureLineActionRule<>(board, algo),
                 new PieceMoveLineActionRule<>(board, algo)
             )

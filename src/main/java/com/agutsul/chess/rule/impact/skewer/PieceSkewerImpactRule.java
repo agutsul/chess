@@ -15,7 +15,7 @@ import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.FullLineAlgo;
 import com.agutsul.chess.rule.AbstractRule;
-import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.Rule;
 import com.agutsul.chess.rule.impact.SkewerImpactRule;
 
@@ -42,7 +42,7 @@ public final class PieceSkewerImpactRule<COLOR1 extends Color,
                                   Algo<ATTACKER,Collection<Line>> algo) {
 
         super(board, Impact.Type.SKEWER);
-        this.rule = new CompositePieceRule<>(
+        this.rule = new CompositeRule<>(
                 new PieceAbsoluteSkewerLineImpactRule<>(board, algo),
                 new PieceRelativeSkewerLineImpactRule<>(board, algo)
         );

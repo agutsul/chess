@@ -18,6 +18,7 @@ public interface Position
     int y();
 
     Color getColor();
+    String getCode();
 
     static String codeOf(int x, int y) {
         if (x < MIN || y < MIN || x >= MAX || y >= MAX) {

@@ -17,7 +17,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.Rule;
 
 // https://en.wikipedia.org/wiki/Pin_(chess)
@@ -34,7 +34,7 @@ abstract class AbstractPiecePinImpactRule<COLOR1 extends Color,
     @SuppressWarnings("unchecked")
     AbstractPiecePinImpactRule(Board board) {
         super(board);
-        this.rule = new CompositePieceRule<>(
+        this.rule = new CompositeRule<>(
                 new PieceAbsolutePinImpactRule<>(board),
                 new PieceRelativePinImpactRule<>(board)
         );

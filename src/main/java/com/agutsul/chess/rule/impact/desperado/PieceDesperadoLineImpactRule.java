@@ -10,7 +10,7 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter;
 import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter.Mode;
-import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.CompositeRule;
 
 public final class PieceDesperadoLineImpactRule<COLOR1 extends Color,
                                                 COLOR2 extends Color,
@@ -30,7 +30,7 @@ public final class PieceDesperadoLineImpactRule<COLOR1 extends Color,
     private PieceDesperadoLineImpactRule(Board board,
                                          SecureLineAlgoAdapter<COLOR1,DESPERADO> algo) {
 
-        super(board, new CompositePieceRule<>(
+        super(board, new CompositeRule<>(
                 new PieceAbsoluteDesperadoLineImpactRule<>(board, algo),
                 new PieceRelativeDesperadoLineImpactRule<>(board, algo)
         ));

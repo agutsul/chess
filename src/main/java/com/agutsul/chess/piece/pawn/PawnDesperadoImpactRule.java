@@ -25,7 +25,7 @@ import com.agutsul.chess.piece.algo.AbstractAlgo;
 import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.AbstractRule;
-import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.impact.DesperadoImpactRule;
 import com.agutsul.chess.rule.impact.desperado.PieceAbsoluteDesperadoPositionImpactRule;
 import com.agutsul.chess.rule.impact.desperado.PieceDesperadoPositionImpactRule;
@@ -45,7 +45,7 @@ final class PawnDesperadoImpactRule<COLOR1 extends Color,
                             PawnCaptureAlgo<COLOR1,DESPERADO> captureAlgo,
                             PawnEnPassantAlgo<COLOR1,DESPERADO> enPassantAlgo) {
 
-        super(board, new CompositePieceRule<>(
+        super(board, new CompositeRule<>(
                 new PawnAbsoluteDesperadoImpactRule<>(board, captureAlgo, enPassantAlgo),
                 new PawnRelativeDesperadoImpactRule<>(board, captureAlgo, enPassantAlgo)
         ));

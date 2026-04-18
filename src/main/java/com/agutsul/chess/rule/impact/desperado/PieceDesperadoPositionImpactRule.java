@@ -9,7 +9,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.Rule;
 
 public class PieceDesperadoPositionImpactRule<COLOR1 extends Color,
@@ -24,7 +24,7 @@ public class PieceDesperadoPositionImpactRule<COLOR1 extends Color,
     public PieceDesperadoPositionImpactRule(Board board,
                                             Algo<DESPERADO,Collection<Position>> algo) {
 
-        this(board, new CompositePieceRule<>(
+        this(board, new CompositeRule<>(
                 new PieceAbsoluteDesperadoPositionImpactRule<>(board, algo),
                 new PieceRelativeDesperadoPositionImpactRule<>(board, algo)
         ));

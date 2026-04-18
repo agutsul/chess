@@ -44,10 +44,11 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     private final Map<Castlingable.Side,Boolean> sides;
     private Map<Castlingable.Side,Boolean> tmpSides;
 
-    AbstractCastlingPiece(Board board, Position position, PieceContext<COLOR> context,
-                          Rule<Piece<?>,Collection<Action<?>>> actionRule,
-                          Rule<Piece<?>,Collection<Impact<?>>> impactRule,
-                          Collection<Side> sides) {
+    <PIECE extends Piece<COLOR> & Movable & Capturable & Castlingable>
+            AbstractCastlingPiece(Board board, Position position, PieceContext<COLOR> context,
+                                  Rule<PIECE,Collection<Action<?>>> actionRule,
+                                  Rule<PIECE,Collection<Impact<?>>> impactRule,
+                                  Collection<Side> sides) {
 
         super(board, position, context,
                 new ActiveCastlingablePieceState<>(board, actionRule, impactRule)
@@ -203,8 +204,8 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         private final Board board;
 
         ActiveCastlingablePieceState(Board board,
-                                     Rule<Piece<?>,Collection<Action<?>>> actionRule,
-                                     Rule<Piece<?>,Collection<Impact<?>>> impactRule) {
+                                     Rule<PIECE,Collection<Action<?>>> actionRule,
+                                     Rule<PIECE,Collection<Impact<?>>> impactRule) {
 
             super(LOGGER, new ActivePieceStateImpl<>(board, actionRule, impactRule));
             this.board = board;

@@ -28,21 +28,21 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
 
     private static final Logger LOGGER = getLogger(ActivePieceStateImpl.class);
 
-    private final AbstractPieceRule<Action<?>,Action.Type> actionRule;
-    private final AbstractPieceRule<Impact<?>,Impact.Type> impactRule;
+    private final AbstractPieceRule<PIECE,Action<?>,Action.Type> actionRule;
+    private final AbstractPieceRule<PIECE,Impact<?>,Impact.Type> impactRule;
 
     protected final Board board;
 
     @SuppressWarnings("unchecked")
     ActivePieceStateImpl(Board board,
-                         Rule<Piece<?>,Collection<Action<?>>> actionRule,
-                         Rule<Piece<?>,Collection<Impact<?>>> impactRule) {
+                         Rule<PIECE,Collection<Action<?>>> actionRule,
+                         Rule<PIECE,Collection<Impact<?>>> impactRule) {
 
         super(LOGGER, Type.ACTIVE);
 
         this.board = board;
-        this.actionRule = (AbstractPieceRule<Action<?>,Action.Type>) actionRule;
-        this.impactRule = (AbstractPieceRule<Impact<?>,Impact.Type>) impactRule;
+        this.actionRule = (AbstractPieceRule<PIECE,Action<?>,Action.Type>) actionRule;
+        this.impactRule = (AbstractPieceRule<PIECE,Impact<?>,Impact.Type>) impactRule;
     }
 
     @Override

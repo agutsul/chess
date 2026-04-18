@@ -9,7 +9,7 @@ import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
-public class PieceProtectImpact<COLOR extends Color,
+public class PieceProtectImpact<COLOR  extends Color,
                                 PIECE1 extends Piece<COLOR> & Capturable,
                                 PIECE2 extends Piece<COLOR>>
         extends AbstractTargetActivity<Impact.Type,PIECE1,PIECE2>
@@ -31,7 +31,13 @@ public class PieceProtectImpact<COLOR extends Color,
         this(source, target, line);
         this.hidden = hidden;
     }
-
+/*
+    @Override
+    public final Integer getValue() {
+        var value = Math.abs(getSource().getValue()) - Math.abs(getTarget().getValue());
+        return Math.abs(getSource().getValue()) + Math.abs(value);
+    }
+*/
     public final Optional<Line> getLine() {
         return Optional.ofNullable(this.line);
     }

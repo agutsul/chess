@@ -23,9 +23,10 @@ final class PositionImpl
     PositionImpl(int x, int y) {
         var code = codeOf(x,y);
         if (isNull(code)) {
-            throw new IllegalPositionException(
-                    String.format("%s [%d,%d]", INVALID_POSITION_MESSAGE, x, y)
-            );
+            throw new IllegalPositionException(String.format(
+                    "%s [%d,%d]",
+                    INVALID_POSITION_MESSAGE, x, y
+            ));
         }
 
         this.code = code;

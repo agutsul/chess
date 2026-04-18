@@ -14,7 +14,7 @@ import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.FullLineAlgo;
 import com.agutsul.chess.rule.AbstractRule;
-import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.Rule;
 import com.agutsul.chess.rule.impact.XRayImpactRule;
 
@@ -39,7 +39,7 @@ public final class PieceXRayImpactRule<COLOR1 extends Color,
                                 Algo<SOURCE,Collection<Line>> algo) {
 
         super(board, Impact.Type.XRAY);
-        this.rule = new CompositePieceRule<>(
+        this.rule = new CompositeRule<>(
                 new PieceXRayProtectImpactRule<>(board, algo),
                 new PieceXRayAttackImpactRule<>(board, algo)
         );

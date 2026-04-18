@@ -7,18 +7,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Positionable;
 import com.agutsul.chess.activity.Activity;
-import com.agutsul.chess.piece.Piece;
 
-public final class CompositePieceRule<RESULT extends Activity<TYPE,?>,
-                                      TYPE extends Enum<TYPE> & Activity.Type>
-        implements Rule<Piece<?>,Collection<RESULT>> {
+public final class CompositeRule<SOURCE extends Positionable,
+                                 RESULT extends Activity<TYPE,?>,
+                                 TYPE   extends Enum<TYPE> & Activity.Type>
+        implements Rule<SOURCE,Collection<RESULT>> {
 
-    private final List<AbstractRule<Piece<?>,?,TYPE>> rules = new ArrayList<>();
+    private final List<AbstractRule<SOURCE,?,TYPE>> rules = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
-    public CompositePieceRule(Rule<? extends Piece<?>,?> rule,
-                              Rule<? extends Piece<?>,?>... additionalRules) {
+    public CompositeRule(Rule<? extends SOURCE,?> rule,
+                         Rule<? extends SOURCE,?>... additionalRules) {
 
         Stream.of(List.of(rule), List.of(additionalRules))
             .flatMap(Collection::stream)
@@ -26,12 +27,12 @@ public final class CompositePieceRule<RESULT extends Activity<TYPE,?>,
     }
 
     @Override
-    public Collection<RESULT> evaluate(Piece<?> piece) {
-        return evaluate(this.rules, piece);
+    public Collection<RESULT> evaluate(SOURCE source) {
+        return evaluate(this.rules, source);
     }
 
     @SuppressWarnings("unchecked")
-    public Collection<RESULT> evaluate(Piece<?> piece, TYPE type, TYPE... additionalTypes) {
+    public Collection<RESULT> evaluate(SOURCE source, TYPE type, TYPE... additionalTypes) {
         var types = Stream.of(List.of(type), List.of(additionalTypes))
                 .flatMap(Collection::stream)
                 .toList();
@@ -45,16 +46,16 @@ public final class CompositePieceRule<RESULT extends Activity<TYPE,?>,
             return emptyList();
         }
 
-        return evaluate(typeRules, piece);
+        return evaluate(typeRules, source);
     }
 
     @SuppressWarnings("unchecked")
-    private Collection<RESULT> evaluate(Collection<? extends Rule<Piece<?>,?>> rules,
-                                        Piece<?> piece) {
+    private Collection<RESULT> evaluate(Collection<? extends Rule<SOURCE,?>> rules,
+                                        SOURCE source) {
 
         var result = Stream.of(rules)
                 .flatMap(Collection::stream)
-                .map(rule -> (Collection<RESULT>) rule.evaluate(piece))
+                .map(rule -> (Collection<RESULT>) rule.evaluate(source))
                 .flatMap(Collection::stream)
                 .toList();
 
@@ -62,7 +63,7 @@ public final class CompositePieceRule<RESULT extends Activity<TYPE,?>,
     }
 
     @SuppressWarnings("unchecked")
-    private void register(Rule<? extends Piece<?>,?> rule) {
-        this.rules.add((AbstractRule<Piece<?>,?,TYPE>) rule);
+    private void register(Rule<? extends SOURCE,?> rule) {
+        this.rules.add((AbstractRule<SOURCE,?,TYPE>) rule);
     }
 }

@@ -25,7 +25,7 @@ import com.agutsul.chess.piece.algo.AbstractAlgo;
 import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.Rule;
 import com.agutsul.chess.rule.impact.attack.discovered.PieceAbsoluteDiscoveredAttackImpactRule;
 import com.agutsul.chess.rule.impact.attack.discovered.PieceDiscoveredAttackPositionImpactRule;
@@ -49,7 +49,7 @@ final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
 
         super(board, new CompositeAlgo<>(board, moveAlgo, bigMoveAlgo, captureAlgo));
 
-        this.rule = new CompositePieceRule<>(
+        this.rule = new CompositeRule<>(
                 new EnPassantAbsoluteDiscoveredAttackImpactRule<>(board, enPassantAlgo),
                 new EnPassantRelativeDiscoveredAttackImpactRule<>(board, enPassantAlgo)
         );

@@ -13,7 +13,7 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.AbstractRule;
-import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.Rule;
 import com.agutsul.chess.rule.impact.DiscoveredAttackImpactRule;
 
@@ -33,7 +33,7 @@ abstract class AbstractPieceDiscoveredAttackImpactRule<COLOR1 extends Color,
                                             Algo<PIECE,Collection<Position>> algo) {
 
         super(board, Impact.Type.DISCOVERED_ATTACK);
-        this.rule = new CompositePieceRule<>(
+        this.rule = new CompositeRule<>(
                 new PieceAbsoluteDiscoveredAttackImpactRule<>(board, algo),
                 new PieceRelativeDiscoveredAttackImpactRule<>(board, algo)
         );

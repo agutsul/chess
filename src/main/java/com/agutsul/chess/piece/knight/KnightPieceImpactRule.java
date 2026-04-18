@@ -5,7 +5,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KnightPiece;
 import com.agutsul.chess.rule.AbstractPieceRule;
-import com.agutsul.chess.rule.CompositePieceRule;
+import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.impact.attack.PieceAttackPositionImpactRule;
 import com.agutsul.chess.rule.impact.attack.discovered.PieceDiscoveredAttackPositionImpactRule;
 import com.agutsul.chess.rule.impact.block.PieceBlockPositionImpactRule;
@@ -26,7 +26,7 @@ import com.agutsul.chess.rule.impact.undermining.PieceUnderminingPositionImpactR
 
 public final class KnightPieceImpactRule<COLOR extends Color,
                                          PIECE extends KnightPiece<COLOR>>
-        extends AbstractPieceRule<Impact<?>,Impact.Type> {
+        extends AbstractPieceRule<PIECE,Impact<?>,Impact.Type> {
 
     public KnightPieceImpactRule(Board board) {
         this(board, new KnightPieceAlgo<>(board));
@@ -34,7 +34,7 @@ public final class KnightPieceImpactRule<COLOR extends Color,
 
     @SuppressWarnings("unchecked")
     private KnightPieceImpactRule(Board board, KnightPieceAlgo<COLOR,PIECE> algo) {
-        super(new CompositePieceRule<>(
+        super(new CompositeRule<>(
                 new PieceCheckPositionImpactRule<>(board, algo),
                 new PieceAttackPositionImpactRule<>(board, algo),
                 new PieceMotionPositionImpactRule<>(board, algo),
