@@ -241,7 +241,7 @@ final class PawnPieceImpl<COLOR extends Color>
 
         @Override
         public void enpassant(PIECE piece, PawnPiece<?> targetPiece, Position targetPosition) {
-            LOGGER.warn("En-passante by disabled '{}' by '{}'", targetPiece, piece);
+            LOGGER.warn("En-passante by '{}' by disabled '{}'", targetPiece, piece);
             // do nothing
         }
 
