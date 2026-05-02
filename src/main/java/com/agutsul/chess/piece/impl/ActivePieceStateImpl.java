@@ -31,7 +31,7 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
     private final AbstractPieceRule<PIECE,Action<?>,Action.Type> actionRule;
     private final AbstractPieceRule<PIECE,Impact<?>,Impact.Type> impactRule;
 
-    protected final Board board;
+    private final Board board;
 
     @SuppressWarnings("unchecked")
     ActivePieceStateImpl(Board board,
