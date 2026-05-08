@@ -26,7 +26,7 @@ import com.agutsul.chess.activity.action.CancelEnPassantAction;
 import com.agutsul.chess.activity.action.CancelMoveAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.LabeledBoardBuilder;
-import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.board.event.ClearCachedDataEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
@@ -56,7 +56,7 @@ public class CancelActionMementoFactoryTest {
 
         moveAction.execute();
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
 
         var cancelAction = createAction(board, memento);
 
@@ -88,7 +88,7 @@ public class CancelActionMementoFactoryTest {
 
         captureAction.execute();
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.BLACK));
 
         var cancelAction = createAction(board, memento);
 
@@ -118,7 +118,7 @@ public class CancelActionMementoFactoryTest {
 
         promoteAction.execute();
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
 
         var queen = board.getPiece(targetPosition).get();
 
@@ -157,7 +157,7 @@ public class CancelActionMementoFactoryTest {
 
         promoteAction.execute();
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.BLACK));
 
         assertFalse(rook.isActive());
 
@@ -192,7 +192,7 @@ public class CancelActionMementoFactoryTest {
 
         castlingAction.execute();
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
 
         var cancelAction = createAction(board, memento);
 
@@ -215,7 +215,7 @@ public class CancelActionMementoFactoryTest {
         var blackPawn = (PawnPiece<Color>) board.getPiece("a7").get();
         blackPawn.move(board.getPosition("a5").get());
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.BLACK));
 
         var whitePawn = (PawnPiece<Color>) board.getPiece("b5").get();
 
@@ -227,7 +227,7 @@ public class CancelActionMementoFactoryTest {
 
         enPassantAction.execute();
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
 
         var cancelAction = createAction(board, memento);
 

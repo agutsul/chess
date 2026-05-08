@@ -9,7 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.LabeledBoardBuilder;
-import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.board.event.ClearCachedDataEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
@@ -28,7 +28,7 @@ public class PieceEnPassantActionTest {
         var blackPawn = (PawnPiece<Color>) board.getPiece("a7").get();
         blackPawn.move(board.getPosition("a5").get());
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.BLACK));
 
         var whitePawn = (PawnPiece<Color>) board.getPiece("b5").get();
         var targetPosition = board.getPosition("a6").get();
@@ -46,7 +46,7 @@ public class PieceEnPassantActionTest {
 
         enPassantAction.get().execute();
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
 
         assertEquals(targetPosition, whitePawn.getPosition());
         assertFalse(blackPawn.isActive());
@@ -62,7 +62,7 @@ public class PieceEnPassantActionTest {
         var whitePawn = (PawnPiece<Color>) board.getPiece("a2").get();
         whitePawn.move(board.getPosition("a4").get());
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
 
         var blackPawn = (PawnPiece<Color>) board.getPiece("b4").get();
         var targetPosition = board.getPosition("a3").get();
@@ -80,7 +80,7 @@ public class PieceEnPassantActionTest {
 
         enPassantAction.get().execute();
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
 
         assertEquals(targetPosition, blackPawn.getPosition());
         assertFalse(whitePawn.isActive());

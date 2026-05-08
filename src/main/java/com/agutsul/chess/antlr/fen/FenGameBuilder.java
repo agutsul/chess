@@ -26,7 +26,7 @@ import com.agutsul.chess.Castlingable.Castling;
 import com.agutsul.chess.Castlingable.Side;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.PositionedBoardBuilder;
-import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.board.event.ClearCachedDataEvent;
 import com.agutsul.chess.board.event.ResetPawnMoveActionEvent;
 import com.agutsul.chess.board.event.SetCastlingableSideEvent;
 import com.agutsul.chess.color.Color;
@@ -279,7 +279,7 @@ final class FenGameBuilder
         ((Observable) board).notifyObservers(new ResetPawnMoveActionEvent(pawnPiece, sourcePosition));
 
         // clear early calculated piece positions to be able to find pawn on source position
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(color));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(color));
 
         // perform piece 'big move' action to fill journal properly
         // so, during en-passant calculation 'big move' can be resolved in journal

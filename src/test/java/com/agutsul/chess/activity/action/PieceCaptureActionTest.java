@@ -9,7 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.LabeledBoardBuilder;
-import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.board.event.ClearCachedDataEvent;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
 
@@ -38,7 +38,7 @@ public class PieceCaptureActionTest {
 
         captureAction.get().execute();
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
 
         var position = board.getPosition("a3").get();
         assertTrue(board.isEmpty(position));
@@ -71,7 +71,7 @@ public class PieceCaptureActionTest {
 
         captureAction.get().execute();
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.BLACK));
 
         var position = board.getPosition("b4").get();
         assertTrue(board.isEmpty(position));

@@ -44,7 +44,7 @@ import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
-import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.board.event.ClearCachedDataEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
@@ -157,7 +157,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         var blackPawn = (PawnPiece<Color>) board1.getPiece("a7").get();
         blackPawn.move(board1.getPosition("a5").get());
 
-        ((Observable) board1).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
+        ((Observable) board1).notifyObservers(new ClearCachedDataEvent(Colors.BLACK));
 
         assertPawnEnPassantActions(board1, Colors.WHITE, PAWN_TYPE, "b5",
                 List.of("b6"), List.of("a6"));
@@ -170,7 +170,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         var whitePawn = (PawnPiece<Color>) board2.getPiece("a2").get();
         whitePawn.move(board2.getPosition("a4").get());
 
-        ((Observable) board2).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+        ((Observable) board2).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
 
         assertPawnEnPassantActions(board2, Colors.BLACK, PAWN_TYPE, "b4",
                 List.of("b3"), List.of("a3"));
@@ -289,7 +289,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
         blackPawn.move(position);
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.BLACK));
 
         assertEquals(blackPawn.getPosition(), position);
 
@@ -512,7 +512,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         var blackPawn = (PawnPiece<Color>) board.getPiece("d7").get();
         blackPawn.move(board.getPosition("d5").get());
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
 
         var whitePawn = board.getPiece("e5").get();
 
@@ -563,7 +563,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         var blackPawn = (PawnPiece<Color>) board.getPiece("g7").get();
         blackPawn.move(board.getPosition("g5").get());
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
 
         var whitePawn = board.getPiece("h5").get();
 
@@ -732,7 +732,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         var blackPawn = (PawnPiece<Color>) board.getPiece("e7").get();
         blackPawn.move(board.getPosition("e5").get());
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
 
         var whitePawn = board.getPiece("f5").get();
         var blackKing = board.getPiece("d6").get();
@@ -1002,7 +1002,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         var blackPawn = (PawnPiece<Color>) board.getPiece("f7").get();
         blackPawn.move(board.getPosition("f5").get());
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
 
         var whitePawn = board.getPiece("e5").get();
         var desperadoImpacts = Stream.of(board.getImpacts(whitePawn, Impact.Type.DESPERADO))
@@ -1038,7 +1038,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         var blackPawn1 = (PawnPiece<Color>) board.getPiece("f7").get();
         blackPawn1.move(board.getPosition("f5").get());
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
 
         var whitePawn = board.getPiece("e5").get();
         var desperadoImpacts = Stream.of(board.getImpacts(whitePawn, Impact.Type.DESPERADO))
@@ -1108,7 +1108,7 @@ public class PawnPieceImplTest extends AbstractPieceTest {
         var blackPawn2 = (PawnPiece<Color>) board.getPiece("d7").get();
         blackPawn2.move(board.getPosition("d5").get());
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
 
         var expectedPawns = List.of("c6");
         var backwardedPawns = Stream.of(board.getPieces(Colors.BLACK, PAWN_TYPE))

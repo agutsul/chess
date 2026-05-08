@@ -23,7 +23,7 @@ import com.agutsul.chess.activity.action.PiecePromoteAction;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.LabeledBoardBuilder;
-import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.board.event.ClearCachedDataEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
@@ -188,8 +188,8 @@ public class ActionValueComparatorTest {
         var moveAction2 = new PieceBigMoveAction<>(whitePawn2, positionOf("h4"));
         moveAction2.execute();
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.BLACK));
 
         var blackPawn1 = (PawnPiece<?>) board.getPiece("b4").get();
         var blackPawn2 = (PawnPiece<?>) board.getPiece("g4").get();

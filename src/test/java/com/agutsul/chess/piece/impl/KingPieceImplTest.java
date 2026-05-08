@@ -37,7 +37,7 @@ import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
-import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.board.event.ClearCachedDataEvent;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -269,8 +269,8 @@ public class KingPieceImplTest extends AbstractPieceTest {
     void testKingScholarCheckmate() {
         var board = new StandardBoard();
 
-        var whiteActionPerformedEvent = new ClearPieceDataEvent(Colors.WHITE);
-        var blackActionPerformedEvent = new ClearPieceDataEvent(Colors.BLACK);
+        var whiteActionPerformedEvent = new ClearCachedDataEvent(Colors.WHITE);
+        var blackActionPerformedEvent = new ClearCachedDataEvent(Colors.BLACK);
 
         var boardStateEvaluator = new BoardStateEvaluatorImpl(board, new JournalImpl());
 

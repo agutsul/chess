@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.board.LabeledBoardBuilder;
-import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.board.event.ClearCachedDataEvent;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
 
@@ -41,7 +41,7 @@ public class PieceCastlingActionTest {
 
         castlingAction.get().execute();
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
 
         var kingTargetPosition = board.getPosition("g1").get();
         assertEquals(kingTargetPosition, king.getPosition());
@@ -77,7 +77,7 @@ public class PieceCastlingActionTest {
 
         castlingAction.get().execute();
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.BLACK));
 
         var kingTargetPosition = board.getPosition("c8").get();
         assertEquals(kingTargetPosition, king.getPosition());

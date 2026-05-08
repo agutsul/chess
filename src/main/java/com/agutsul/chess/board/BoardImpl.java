@@ -43,7 +43,7 @@ import com.agutsul.chess.activity.impact.PieceControlImpact;
 import com.agutsul.chess.activity.impact.PieceMonitorImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.activity.impact.PieceProtectImpact;
-import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.board.event.ClearCachedDataEvent;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -595,10 +595,10 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     }
 
     private final class RefreshBoardObserver
-            extends AbstractEventObserver<ClearPieceDataEvent> {
+            extends AbstractEventObserver<ClearCachedDataEvent> {
 
         @Override
-        protected void process(ClearPieceDataEvent event) {
+        protected void process(ClearCachedDataEvent event) {
             refresh();
         }
     }

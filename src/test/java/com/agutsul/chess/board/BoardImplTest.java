@@ -26,7 +26,7 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PositionHoleImpact;
-import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.board.event.ClearCachedDataEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.Observable;
@@ -236,7 +236,7 @@ public class BoardImplTest implements TestFileReader {
 
         captureAction.execute();
 
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
 
         var pawn2 = board.getCapturedPiece("a2", whitePawn.getColor()).get();
         assertEquals(whitePawn, pawn2);
@@ -273,7 +273,7 @@ public class BoardImplTest implements TestFileReader {
         blackMoveAction.execute();
 
         // clear cached data
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
 
         // simulate board state initialization
         board.setState(defaultBoardState(board, Colors.BLACK));
@@ -356,7 +356,7 @@ public class BoardImplTest implements TestFileReader {
         whiteMoveAction4.execute();
 
         // clear cached data
-        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.BLACK));
 
         // simulate board state initialization
         board.setState(defaultBoardState(board, Colors.WHITE));

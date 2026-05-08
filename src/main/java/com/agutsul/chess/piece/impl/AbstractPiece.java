@@ -33,7 +33,7 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.board.event.ClearCachedDataEvent;
 import com.agutsul.chess.board.event.CopyVisitedPositionsEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.AbstractEventObserver;
@@ -423,10 +423,10 @@ abstract class AbstractPiece<COLOR extends Color>
     }
 
     final class ClearPieceActivitiesObserver
-            extends AbstractEventObserver<ClearPieceDataEvent> {
+            extends AbstractEventObserver<ClearCachedDataEvent> {
 
         @Override
-        protected void process(ClearPieceDataEvent event) {
+        protected void process(ClearCachedDataEvent event) {
             if (Objects.equals(getColor(), event.getColor())) {
                 clear();
             }

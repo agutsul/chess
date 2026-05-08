@@ -20,7 +20,7 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.activity.action.memento.CheckMatedActionMemento;
 import com.agutsul.chess.activity.action.memento.CheckedActionMemento;
 import com.agutsul.chess.board.Board;
-import com.agutsul.chess.board.event.ClearPieceDataEvent;
+import com.agutsul.chess.board.event.ClearCachedDataEvent;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.AbstractEventObserver;
@@ -211,7 +211,7 @@ public abstract class AbstractPlayableGame
     }
 
     protected final void clearPieceData(Color color) {
-        notifyBoardObservers(new ClearPieceDataEvent(color));
+        notifyBoardObservers(new ClearCachedDataEvent(color));
     }
 
     protected final void notifyBoardObservers(Event event) {
