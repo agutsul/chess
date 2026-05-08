@@ -152,7 +152,7 @@ public abstract class AbstractPlayableGame
         }
 
         var nextPlayer = getOpponentPlayer();
-        clearPieceData(nextPlayer.getColor());
+        clearCacheData(nextPlayer.getColor());
 
         var nextBoardState = evaluateBoardState(nextPlayer);
         this.board.setState(nextBoardState);
@@ -210,7 +210,7 @@ public abstract class AbstractPlayableGame
         return boardState;
     }
 
-    protected final void clearPieceData(Color color) {
+    protected final void clearCacheData(Color color) {
         notifyBoardObservers(new ClearCachedDataEvent(color));
     }
 
@@ -252,7 +252,7 @@ public abstract class AbstractPlayableGame
         @Override
         protected void process(ActionPerformedEvent event) {
             var memento = event.getActionMemento();
-            clearPieceData(memento.getColor());
+            clearCacheData(memento.getColor());
 
             // add current action into journal to be used in board state evaluation
             journal.add(memento);
@@ -271,14 +271,14 @@ public abstract class AbstractPlayableGame
 
         @Override
         protected void process(ActionCancelledEvent event) {
-            clearPieceData(event.getColor());
+            clearCacheData(event.getColor());
             journal.removeLast();
 
             setCurrentPlayer(getOpponentPlayer());
 
             var currentColor = getCurrentPlayer().getColor();
 
-            clearPieceData(currentColor);
+            clearCacheData(currentColor);
             board.setState(boardStateEvaluator.evaluate(currentColor));
         }
     }
