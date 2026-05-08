@@ -195,7 +195,7 @@ public class CompositeBoardStateTest {
         var checkedBoardState = checkedBoardState(board, color, piece);
         var checkedBoardStateMock = spy(checkedBoardState);
         doCallRealMethod()
-            .when(checkedBoardStateMock).getImpacts(any());
+            .when(checkedBoardStateMock).getImpacts(any(Piece.class));
 
         var fiftyMovesBoardState = fiftyMovesBoardState(board, color);
         var fiftyMovesBoardStateMock = spy(fiftyMovesBoardState);
@@ -207,8 +207,8 @@ public class CompositeBoardStateTest {
 
         assertTrue(compositeBoardState.getImpacts(piece).isEmpty());
 
-        verify(checkedBoardStateMock, times(1)).getImpacts(any());
-        verify(fiftyMovesBoardStateMock, never()).getImpacts(any());
+        verify(checkedBoardStateMock, times(1)).getImpacts(any(Piece.class));
+        verify(fiftyMovesBoardStateMock, never()).getImpacts(any(Piece.class));
     }
 
     @Test

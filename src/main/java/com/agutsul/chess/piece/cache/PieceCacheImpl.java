@@ -66,9 +66,9 @@ public final class PieceCacheImpl implements PieceCache {
             this.pieceMap.putAll(map);
 
         } catch (InterruptedException e) {
-            throw new GameInterruptionException("Refreshing board cache interrupted");
+            throw new GameInterruptionException("Refreshing board piece cache interrupted");
         } catch (ExecutionException e) {
-            LOGGER.error("Refreshing board cache failed", e);
+            LOGGER.error("Refreshing board piece cache failed", e);
         }
     }
 

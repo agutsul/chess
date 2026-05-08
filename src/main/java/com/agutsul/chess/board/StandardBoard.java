@@ -104,6 +104,16 @@ public final class StandardBoard
     }
 
     @Override
+    public Collection<Impact<?>> getImpacts(Color color, Position position) {
+        return this.origin.getImpacts(color, position);
+    }
+
+    @Override
+    public Collection<Impact<?>> getImpacts(Color color, Position position, Impact.Type impactType) {
+        return this.origin.getImpacts(color, position, impactType);
+    }
+
+    @Override
     public <COLOR extends Color> Collection<Piece<COLOR>> getAttackers(Piece<?> piece) {
         return this.origin.getAttackers(piece);
     }

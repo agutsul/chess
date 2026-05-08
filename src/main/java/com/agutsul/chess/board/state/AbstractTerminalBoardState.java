@@ -11,6 +11,7 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.position.Position;
 
 abstract class AbstractTerminalBoardState
         extends AbstractBoardState
@@ -29,6 +30,12 @@ abstract class AbstractTerminalBoardState
     @Override
     public final Collection<Impact<?>> getImpacts(Piece<?> piece) {
         logger.info("Getting impacts for piece '{}'", piece);
+        return emptyList();
+    }
+
+    @Override
+    public final Collection<Impact<?>> getImpacts(Position position) {
+        logger.info("Getting impacts for color '{}' and position '{}'", this.color, position);
         return emptyList();
     }
 }

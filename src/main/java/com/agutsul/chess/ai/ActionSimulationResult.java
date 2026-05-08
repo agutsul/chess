@@ -6,7 +6,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 
-public final class ActionSimulationResult<VALUE extends Comparable<VALUE>>
+public final class ActionSimulationResult<VALUE extends Number & Comparable<VALUE>>
         implements TaskResult<Action<?>,VALUE> {
 
     private final Action<?> action;

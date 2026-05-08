@@ -1,7 +1,7 @@
 package com.agutsul.chess.board;
 
+import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -11,7 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.TestFileReader;
+import com.agutsul.chess.activity.action.AbstractMoveAction;
 import com.agutsul.chess.activity.action.Action;
+import com.agutsul.chess.activity.action.PieceMoveAction;
+import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.activity.impact.PositionHoleImpact;
 import com.agutsul.chess.board.event.ClearPieceDataEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
@@ -30,6 +36,8 @@ import com.agutsul.chess.position.PositionFactory;
 
 @ExtendWith(MockitoExtension.class)
 public class BoardImplTest implements TestFileReader {
+
+    private static final int DEFAULT_BOARD_VALUE = 439;
 
     private final Board board;
 
@@ -238,17 +246,147 @@ public class BoardImplTest implements TestFileReader {
     void testCalculateValue() {
         var board = new StandardBoard();
 
-        assertEquals(439,  board.calculateValue(Colors.WHITE));
-        assertEquals(-439, board.calculateValue(Colors.BLACK));
+        assertEquals(DEFAULT_BOARD_VALUE,  board.calculateValue(Colors.WHITE));
+        assertEquals(Math.negateExact(DEFAULT_BOARD_VALUE), board.calculateValue(Colors.BLACK));
     }
 
-    private void testInitialBoardPieceSetup(Color color, Piece.Type pieceType, String... position) {
+    @Test
+    void testGetAbsoluteHoleImpacts() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("b8")
+                .withBlackPawns("a7","b7","c7")
+                .withWhiteKing("e1")
+                .build();
+
+        // simulate pawn actions
+
+        var targetPosition = board.getPosition("b6").get();
+
+        var blackPawn = board.getPiece("b7").get();
+        var blackMoveAction = Stream.of(board.getActions(blackPawn, Action.Type.MOVE))
+                .flatMap(Collection::stream)
+                .map(action -> (PieceMoveAction<?,?>) action)
+                .filter(action -> Objects.equals(action.getPosition(), targetPosition))
+                .findFirst()
+                .get();
+
+        blackMoveAction.execute();
+
+        // clear cached data
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.WHITE));
+
+        // simulate board state initialization
+        board.setState(defaultBoardState(board, Colors.BLACK));
+
+        for (var positionCode : List.of("a6","c6")) {
+            var position = board.getPosition(positionCode).get();
+            var impacts  = board.getImpacts(Colors.BLACK, position, Impact.Type.HOLE);
+
+            assertFalse(impacts.isEmpty());
+            assertEquals(1, impacts.size());
+
+            var holeImpact = Stream.of(impacts)
+                    .flatMap(Collection::stream)
+                    .map(impact -> (PositionHoleImpact<?>) impact)
+                    .findFirst()
+                    .get();
+
+            assertTrue(PositionHoleImpact.isAbsolute(holeImpact));
+            assertEquals(position, holeImpact.getPosition());
+            assertEquals(Colors.BLACK, holeImpact.getColor());
+        }
+    }
+
+    @Test
+    void testGetRelativeHoleImpacts() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("g1")
+                .withWhitePawns("a2","b2","c2","d2","e2","f2","g2","h2")
+                .withBlackKing("e8")
+                .build();
+
+        // simulate pawn actions
+
+        var targetPosition1 = board.getPosition("c3").get();
+
+        var whitePawn1 = board.getPiece("c2").get();
+        var whiteMoveAction1 = Stream.of(board.getActions(whitePawn1, Action.Type.MOVE))
+                .flatMap(Collection::stream)
+                .map(action -> (AbstractMoveAction<?,?>) action)
+                .filter(action -> Objects.equals(action.getPosition(), targetPosition1))
+                .findFirst()
+                .get();
+
+        whiteMoveAction1.execute();
+
+        var targetPosition2 = board.getPosition("d4").get();
+
+        var whitePawn2 = board.getPiece("d2").get();
+        var whiteMoveAction2 = Stream.of(board.getActions(whitePawn2, Action.Type.BIG_MOVE))
+                .flatMap(Collection::stream)
+                .map(action -> (AbstractMoveAction<?,?>) action)
+                .filter(action -> Objects.equals(action.getPosition(), targetPosition2))
+                .findFirst()
+                .get();
+
+        whiteMoveAction2.execute();
+
+        var targetPosition3 = board.getPosition("e3").get();
+
+        var whitePawn3 = board.getPiece("e2").get();
+        var whiteMoveAction3 = Stream.of(board.getActions(whitePawn3, Action.Type.MOVE))
+                .flatMap(Collection::stream)
+                .map(action -> (AbstractMoveAction<?,?>) action)
+                .filter(action -> Objects.equals(action.getPosition(), targetPosition3))
+                .findFirst()
+                .get();
+
+        whiteMoveAction3.execute();
+
+        var targetPosition4 = board.getPosition("f4").get();
+
+        var whitePawn4 = board.getPiece("f2").get();
+        var whiteMoveAction4 = Stream.of(board.getActions(whitePawn4, Action.Type.BIG_MOVE))
+                .flatMap(Collection::stream)
+                .map(action -> (AbstractMoveAction<?,?>) action)
+                .filter(action -> Objects.equals(action.getPosition(), targetPosition4))
+                .findFirst()
+                .get();
+
+        whiteMoveAction4.execute();
+
+        // clear cached data
+        ((Observable) board).notifyObservers(new ClearPieceDataEvent(Colors.BLACK));
+
+        // simulate board state initialization
+        board.setState(defaultBoardState(board, Colors.WHITE));
+
+        for (var positionCode : List.of("d3","e4")) {
+            var position = board.getPosition(positionCode).get();
+            var impacts  = board.getImpacts(Colors.WHITE, position, Impact.Type.HOLE);
+
+            assertFalse(impacts.isEmpty());
+            assertEquals(1, impacts.size());
+
+            var holeImpact = Stream.of(impacts)
+                    .flatMap(Collection::stream)
+                    .map(impact -> (PositionHoleImpact<?>) impact)
+                    .findFirst()
+                    .get();
+
+            assertTrue(PositionHoleImpact.isRelative(holeImpact));
+            assertEquals(position, holeImpact.getPosition());
+            assertEquals(Colors.WHITE, holeImpact.getColor());
+        }
+    }
+
+    private void testInitialBoardPieceSetup(Color color, Piece.Type pieceType, String... positions) {
         var pieces = board.getPieces(color, pieceType);
         assertFalse(pieces.isEmpty());
-        assertEquals(pieces.size(), asList(position).size());
+        assertEquals(pieces.size(), List.of(positions).size());
 
         var piecePositions = pieces.stream().map(Piece::getPosition).toList();
-        var expectedPositions = Stream.of(position)
+        var expectedPositions = Stream.of(positions)
                 .map(PositionFactory::positionOf)
                 .toList();
 

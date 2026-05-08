@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 import com.agutsul.chess.activity.action.Action;
 
 final class CompositeResultMatcher<ACTION extends Action<?>,
-                                   VALUE  extends Comparable<VALUE>,
+                                   VALUE  extends Number & Comparable<VALUE>,
                                    RESULT extends TaskResult<ACTION,VALUE>>
         implements ResultMatcher<ACTION,VALUE,RESULT> {
 

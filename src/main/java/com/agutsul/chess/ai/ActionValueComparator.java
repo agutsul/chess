@@ -7,7 +7,7 @@ import org.apache.commons.lang3.ObjectUtils;
 
 import com.agutsul.chess.activity.action.Action;
 
-final class ActionValueComparator<VALUE extends Comparable<VALUE>>
+final class ActionValueComparator<VALUE extends Number & Comparable<VALUE>>
         implements Comparator<TaskResult<Action<?>,VALUE>>, Serializable {
 
     private static final long serialVersionUID = 1L;

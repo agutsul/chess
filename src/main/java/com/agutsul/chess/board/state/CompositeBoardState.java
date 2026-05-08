@@ -1,6 +1,7 @@
 package com.agutsul.chess.board.state;
 
 import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.join;
 
 import java.util.Collection;
@@ -10,6 +11,7 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.position.Position;
 
 public final class CompositeBoardState
         implements BoardState {
@@ -58,6 +60,16 @@ public final class CompositeBoardState
     @Override
     public Collection<Impact<?>> getImpacts(Piece<?> piece) {
         return boardStates.getFirst().getImpacts(piece);
+    }
+
+    @Override
+    public Collection<Impact<?>> getImpacts(Position position) {
+        var impacts = boardStates.stream()
+                .map(boardState -> boardState.getImpacts(position))
+                .flatMap(Collection::stream)
+                .collect(toSet());
+
+        return impacts;
     }
 
     @Override

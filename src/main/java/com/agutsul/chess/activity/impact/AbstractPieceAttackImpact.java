@@ -46,7 +46,17 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
         var diff = Math.abs(getSource().getValue()) - Math.abs(getTarget().getValue());
         return value + Math.abs(diff);
     }
+/*
+    @Override
+    public final Integer getValue() {
+        var value = ((Protectable) getTarget()).isProtected()
+                ? Impact.super.getValue() - 1
+                : Impact.super.getValue();
 
+        var diff = Math.abs(getSource().getValue()) - Math.abs(getTarget().getValue());
+        return value * Math.abs(getTarget().getValue()) + Math.abs(diff);
+    }
+*/
     public final Optional<Line> getLine() {
         return Optional.ofNullable(nonNull(this.calculated) && this.calculated instanceof Line
                 ? (Line) this.calculated

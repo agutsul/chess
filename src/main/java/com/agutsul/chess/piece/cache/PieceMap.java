@@ -6,6 +6,6 @@ import java.util.Map;
 import com.agutsul.chess.piece.Piece;
 
 public interface PieceMap
-    extends Map<String, Collection<Piece<?>>> {
+        extends Map<String,Collection<Piece<?>>> {
 
 }

@@ -6,6 +6,7 @@ import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.position.Position;
 
 // wrapper class used when opponent board state is returned
 // but state should contain requested color
@@ -50,6 +51,11 @@ public final class BoardStateProxy
     @Override
     public Collection<Impact<?>> getImpacts(Piece<?> piece) {
         return this.origin.getImpacts(piece);
+    }
+
+    @Override
+    public Collection<Impact<?>> getImpacts(Position position) {
+        return this.origin.getImpacts(position);
     }
 
     @Override

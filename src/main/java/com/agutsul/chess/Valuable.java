@@ -1,5 +1,5 @@
 package com.agutsul.chess;
 
-public interface Valuable<T extends Comparable<T>> {
-    T getValue();
+public interface Valuable<V extends Number & Comparable<V>> {
+    V getValue();
 }

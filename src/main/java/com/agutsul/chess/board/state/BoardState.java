@@ -10,6 +10,7 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.position.Position;
 import com.agutsul.chess.state.State;
 
 public interface BoardState
@@ -56,6 +57,8 @@ public interface BoardState
     Collection<Action<?>> getActions(Piece<?> piece);
 
     Collection<Impact<?>> getImpacts(Piece<?> piece);
+
+    Collection<Impact<?>> getImpacts(Position position);
 
     Color getColor();
 

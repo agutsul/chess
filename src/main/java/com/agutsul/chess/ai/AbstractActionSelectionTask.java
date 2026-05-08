@@ -19,7 +19,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 
 abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
-                                           VALUE  extends Comparable<VALUE>,
+                                           VALUE  extends Number & Comparable<VALUE>,
                                            RESULT extends TaskResult<ACTION,VALUE>>
         extends RecursiveTask<RESULT>
         implements ActionSelectionTask<ACTION,VALUE,RESULT> {

@@ -13,9 +13,11 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.state.InsufficientMaterialBoardState.Pattern;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.check.CheckActionEvaluator;
 import com.agutsul.chess.rule.check.KingCheckActionEvaluator;
 import com.agutsul.chess.rule.check.PieceCheckActionEvaluator;
+import com.agutsul.chess.rule.impact.hole.PositionHoleImpactRule;
 
 public abstract class BoardStateFactory {
 
@@ -225,8 +227,13 @@ public abstract class BoardStateFactory {
 
         private static final Logger LOGGER = getLogger(DefaultBoardState.class);
 
+        @SuppressWarnings("unchecked")
         DefaultBoardStateImpl(Board board, Color color) {
-            super(LOGGER, BoardState.Type.DEFAULT, board, color);
+            super(LOGGER, BoardState.Type.DEFAULT, board, color,
+                    new CompositeRule<>(
+                            new PositionHoleImpactRule<>(board, color)
+                    )
+            );
         }
     }
 
@@ -236,8 +243,13 @@ public abstract class BoardStateFactory {
 
         private static final Logger LOGGER = getLogger(FiftyMovesBoardState.class);
 
+        @SuppressWarnings("unchecked")
         FiftyMovesBoardStateImpl(Board board, Color color) {
-            super(LOGGER, BoardState.Type.FIFTY_MOVES, board, color);
+            super(LOGGER, BoardState.Type.FIFTY_MOVES, board, color,
+                    new CompositeRule<>(
+                            new PositionHoleImpactRule<>(board, color)
+                    )
+            );
         }
     }
 
@@ -249,8 +261,13 @@ public abstract class BoardStateFactory {
 
         private final Pattern pattern;
 
+        @SuppressWarnings("unchecked")
         InsufficientMaterialBoardStateImpl(Board board, Color color, Pattern pattern) {
-            super(LOGGER, BoardState.Type.INSUFFICIENT_MATERIAL, board, color);
+            super(LOGGER, BoardState.Type.INSUFFICIENT_MATERIAL, board, color,
+                    new CompositeRule<>(
+                            new PositionHoleImpactRule<>(board, color)
+                    )
+            );
             this.pattern = pattern;
         }
 
@@ -273,8 +290,13 @@ public abstract class BoardStateFactory {
 
         private final ActionMemento<?,?> actionMemento;
 
+        @SuppressWarnings("unchecked")
         ThreeFoldRepetitionBoardStateImpl(Board board, ActionMemento<?,?> actionMemento) {
-            super(LOGGER, BoardState.Type.THREE_FOLD_REPETITION, board, actionMemento.getColor());
+            super(LOGGER, BoardState.Type.THREE_FOLD_REPETITION, board, actionMemento.getColor(),
+                    new CompositeRule<>(
+                            new PositionHoleImpactRule<>(board, actionMemento.getColor())
+                    )
+            );
             this.actionMemento = actionMemento;
         }
 
@@ -297,8 +319,13 @@ public abstract class BoardStateFactory {
 
         private final Piece<Color> checkMaker;
 
+        @SuppressWarnings("unchecked")
         CheckedBoardStateImpl(Board board, Color checkedColor, Piece<Color> checkMaker) {
-            super(LOGGER, BoardState.Type.CHECKED, board, checkedColor);
+            super(LOGGER, BoardState.Type.CHECKED, board, checkedColor,
+                    new CompositeRule<>(
+                            new PositionHoleImpactRule<>(board, checkedColor)
+                    )
+            );
             this.checkMaker = checkMaker;
         }
 

@@ -16,7 +16,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.journal.Journal;
 
-abstract class AbstractActionValueSimulationTask<VALUE extends Comparable<VALUE>>
+abstract class AbstractActionValueSimulationTask<VALUE extends Number & Comparable<VALUE>>
         extends AbstractActionSelectionTask<Action<?>,VALUE,TaskResult<Action<?>,VALUE>>
         implements SimulationTask<Action<?>,VALUE,TaskResult<Action<?>,VALUE>> {
 

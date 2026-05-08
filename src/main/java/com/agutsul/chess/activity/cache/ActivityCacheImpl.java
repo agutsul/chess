@@ -2,7 +2,6 @@ package com.agutsul.chess.activity.cache;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,7 +60,7 @@ public class ActivityCacheImpl<TYPE extends Enum<TYPE> & Activity.Type,
                 .flatMap(Collection::stream)
                 .filter(Objects::nonNull)
                 .distinct()
-                .collect(toList());
+                .toList();
     }
 
     @Override

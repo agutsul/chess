@@ -7,7 +7,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
 
-public interface TaskResult<ACTION extends Action<?>,VALUE extends Comparable<VALUE>>
+public interface TaskResult<ACTION extends Action<?>,VALUE extends Number & Comparable<VALUE>>
         extends Valuable<VALUE> {
 
     Color getColor();

@@ -20,7 +20,7 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.ai.SimulationGame;
 import com.agutsul.chess.journal.Journal;
 
-public final class SimulateGameActionCommand<VALUE extends Comparable<VALUE>>
+public final class SimulateGameActionCommand<VALUE extends Number & Comparable<VALUE>>
         extends AbstractCommand
         implements Closeable, Valuable<VALUE> {
 

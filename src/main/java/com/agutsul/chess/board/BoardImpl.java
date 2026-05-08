@@ -2,6 +2,7 @@ package com.agutsul.chess.board;
 
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
 import static com.agutsul.chess.line.Line.COMMA_SEPARATOR;
+import static java.lang.Thread.MAX_PRIORITY;
 import static java.lang.Thread.currentThread;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
@@ -9,7 +10,6 @@ import static java.util.Comparator.comparing;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.function.Function.identity;
 import static java.util.function.Predicate.not;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.join;
@@ -61,6 +61,8 @@ import com.agutsul.chess.piece.impl.WhitePieceFactory;
 import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.position.PositionComparator;
+import com.agutsul.chess.position.cache.PositionCache;
+import com.agutsul.chess.position.cache.PositionCacheImpl;
 
 final class BoardImpl extends AbstractBoard implements Closeable {
 
@@ -76,6 +78,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     private final ExecutorService executorService;
 
     private PieceCache pieceCache;
+    private PositionCache<?> positionCache;
 
     BoardImpl() {
         this.whitePieceFactory = new WhitePieceFactory(this);
@@ -86,6 +89,8 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         this.observers = new CopyOnWriteArrayList<>();
         this.observers.add(new RefreshBoardObserver());
         this.observers.add(new CloseableGameOverObserver(this));
+
+        this.positionCache = new PositionCacheImpl<>(this);
 
         this.states = new ArrayList<>();
         // first move always for white side, so initial state with white color
@@ -190,6 +195,38 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         );
 
         return piece.getImpacts(impactType);
+    }
+
+    @Override
+    public Collection<Impact<?>> getImpacts(Color color, Position position) {
+        LOGGER.debug("Getting impacts for color '{}' and position '{}'",
+                color, position
+        );
+
+        var impacts = Stream.ofNullable(getState(color))
+                .map(boardState -> boardState.getImpacts(position))
+                .flatMap(Collection::stream)
+                .distinct()
+                .toList();
+
+        return impacts;
+    }
+
+    @Override
+    public Collection<Impact<?>> getImpacts(Color color, Position position,
+                                            Impact.Type impactType) {
+
+        LOGGER.debug("Getting impacts for color '{}' and position '{}' and impact type '{}'",
+                color, position, impactType
+        );
+
+        var impacts = Stream.of(getImpacts(color, position))
+                .flatMap(Collection::stream)
+                .filter(impact -> Objects.equals(impact.getType(), impactType))
+                .distinct()
+                .toList();
+
+        return impacts;
     }
 
     @Override
@@ -425,7 +462,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
                 .filter(impact -> Objects.equals(impact.getTarget(), piece))
                 .map(PieceProtectImpact::getSource)
                 .map(protector -> (Piece<COLOR>) protector)
-                .collect(toList());
+                .toList();
 
         return protectors;
     }
@@ -535,6 +572,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     private void refresh() {
         this.pieceCache.refresh();
+        this.positionCache.refresh();
     }
 
     private static ExecutorService newThreadExecutor(int poolSize) {
@@ -542,7 +580,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
                 new LinkedBlockingQueue<Runnable>(),
                 BasicThreadFactory.builder()
                     .namingPattern("BoardExecutorThread-%d")
-                    .priority(Thread.MAX_PRIORITY)
+                    .priority(MAX_PRIORITY)
                     .build()
         );
     }

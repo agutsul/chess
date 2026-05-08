@@ -40,6 +40,7 @@ public interface Impact<SOURCE>
         BACKWARD,
         ACCUMULATION,
         CONNECTION,
+        HOLE,
         MOTION;
 
         @Override
@@ -282,5 +283,13 @@ public interface Impact<SOURCE>
 
     static boolean isCastling(Impact.Type impactType) {
         return Impact.Type.CASTLING.equals(impactType);
+    }
+
+    static boolean isHole(Impact<?> impact) {
+        return isHole(impact.getType());
+    }
+
+    static boolean isHole(Impact.Type impactType) {
+        return Impact.Type.HOLE.equals(impactType);
     }
 }
