@@ -17,6 +17,24 @@ public final class KingSideCastlingAlgo<COLOR extends Color,
     }
 
     @Override
+    boolean isAnyAttackedBetween(KING king, ROOK rook) {
+        var rookPosition = rook.getPosition();
+        var kingPosition = king.getPosition();
+        var attackerColor = king.getColor().invert();
+
+        for (int i = kingPosition.x() + 1; i < rookPosition.x(); i++) {
+            var optionalPosition = board.getPosition(i, rookPosition.y());
+            if (optionalPosition.isEmpty()
+                    || board.isAttacked(optionalPosition.get(), attackerColor)) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
     boolean isAllEmptyBetween(KING king, ROOK rook) {
         var rookPosition = rook.getPosition();
         var kingPosition = king.getPosition();
@@ -33,23 +51,5 @@ public final class KingSideCastlingAlgo<COLOR extends Color,
         }
 
         return counter == EMPTY_POSITIONS;
-    }
-
-    @Override
-    boolean isAnyAttackedBetween(KING king, ROOK rook) {
-        var rookPosition = rook.getPosition();
-        var kingPosition = king.getPosition();
-        var attackerColor = king.getColor().invert();
-
-        for (int i = kingPosition.x() + 1; i < rookPosition.x(); i++) {
-            var optionalPosition = board.getPosition(i, rookPosition.y());
-            if (optionalPosition.isEmpty()
-                    || board.isAttacked(optionalPosition.get(), attackerColor)) {
-
-                return true;
-            }
-        }
-
-        return false;
     }
 }
