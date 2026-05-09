@@ -14,14 +14,14 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.rule.impact.AbstractImpactRule;
+import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 import com.agutsul.chess.rule.impact.CheckImpactRule;
 
 abstract class AbstractCheckImpactRule<COLOR1 extends Color,
                                        COLOR2 extends Color,
                                        PIECE extends Piece<COLOR1> & Capturable,
                                        KING extends KingPiece<COLOR2>>
-        extends AbstractImpactRule<COLOR1,PIECE,
+        extends AbstractPieceImpactRule<COLOR1,PIECE,
                                    PieceCheckImpact<COLOR1,COLOR2,PIECE,KING>>
         implements CheckImpactRule<COLOR1,COLOR2,PIECE,KING> {
 

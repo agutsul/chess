@@ -19,11 +19,11 @@ import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
-import com.agutsul.chess.rule.impact.AbstractImpactRule;
+import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 
 public final class PieceMonitorLineImpactRule<COLOR extends Color,
                                               PIECE extends Piece<COLOR> & Capturable & Lineable>
-        extends AbstractImpactRule<COLOR,PIECE,PieceMonitorImpact<COLOR,PIECE>> {
+        extends AbstractPieceImpactRule<COLOR,PIECE,PieceMonitorImpact<COLOR,PIECE>> {
 
     private final Algo<PIECE,Collection<Line>> algo;
 

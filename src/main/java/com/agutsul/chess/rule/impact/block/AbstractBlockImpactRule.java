@@ -22,7 +22,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.impact.AbstractImpactRule;
+import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 import com.agutsul.chess.rule.impact.BlockImpactRule;
 import com.agutsul.chess.rule.impact.PieceAttackImpactFactory;
 
@@ -33,7 +33,7 @@ abstract class AbstractBlockImpactRule<COLOR1 extends Color,
                                        ATTACKED extends Piece<COLOR1>,
                                        ATTACKER extends Piece<COLOR2> & Capturable & Lineable,
                                        IMPACT extends PieceBlockImpact<COLOR1,COLOR2,BLOCKER,ATTACKED,ATTACKER>>
-        extends AbstractImpactRule<COLOR1,BLOCKER,IMPACT>
+        extends AbstractPieceImpactRule<COLOR1,BLOCKER,IMPACT>
         implements BlockImpactRule<COLOR1,COLOR2,BLOCKER,ATTACKED,ATTACKER,IMPACT> {
 
     AbstractBlockImpactRule(Board board) {

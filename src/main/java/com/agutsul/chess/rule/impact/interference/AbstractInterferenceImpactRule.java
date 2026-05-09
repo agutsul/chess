@@ -20,7 +20,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.impact.AbstractImpactRule;
+import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 import com.agutsul.chess.rule.impact.InterferenceImpactRule;
 
 // https://en.wikipedia.org/wiki/Interference_(chess)
@@ -30,7 +30,7 @@ abstract class AbstractInterferenceImpactRule<COLOR1 extends Color,
                                               PROTECTOR extends Piece<COLOR2> & Capturable & Lineable,
                                               PROTECTED extends Piece<COLOR2>,
                                               IMPACT extends PieceInterferenceImpact<COLOR1,COLOR2,PIECE,PROTECTOR,PROTECTED>>
-        extends AbstractImpactRule<COLOR1,PIECE,IMPACT>
+        extends AbstractPieceImpactRule<COLOR1,PIECE,IMPACT>
         implements InterferenceImpactRule<COLOR1,COLOR2,PIECE,PROTECTOR,PROTECTED,IMPACT> {
 
     AbstractInterferenceImpactRule(Board board) {

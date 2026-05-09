@@ -14,7 +14,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.impact.AbstractImpactRule;
+import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 import com.agutsul.chess.rule.impact.DominationImpactRule;
 
 // https://en.wikipedia.org/wiki/Domination_(chess)
@@ -23,7 +23,7 @@ abstract class AbstractDominationImpactRule<COLOR1 extends Color,
                                             PIECE1 extends Piece<COLOR1> & Capturable,
                                             PIECE2 extends Piece<COLOR2>,
                                             IMPACT extends PieceDominationImpact<COLOR1,COLOR2,PIECE1,PIECE2>>
-        extends AbstractImpactRule<COLOR1,PIECE1,IMPACT>
+        extends AbstractPieceImpactRule<COLOR1,PIECE1,IMPACT>
         implements DominationImpactRule<COLOR1,COLOR2,PIECE1,PIECE2,IMPACT> {
 
     AbstractDominationImpactRule(Board board) {

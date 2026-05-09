@@ -19,14 +19,14 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.impact.AbstractImpactRule;
+import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 import com.agutsul.chess.rule.impact.OutpostImpactRule;
 
 // https://en.wikipedia.org/wiki/Outpost_(chess)
 abstract class AbstractOutpostImpactRule<COLOR extends Color,
                                          PIECE extends Piece<COLOR> & Capturable & Movable,
                                          IMPACT extends PieceOutpostImpact<COLOR,PIECE>>
-        extends AbstractImpactRule<COLOR,PIECE,IMPACT>
+        extends AbstractPieceImpactRule<COLOR,PIECE,IMPACT>
         implements OutpostImpactRule<COLOR,PIECE,IMPACT> {
 
     AbstractOutpostImpactRule(Board board) {

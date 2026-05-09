@@ -12,12 +12,12 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.rule.AbstractRule;
 
-public abstract class AbstractImpactRule<COLOR extends Color,
-                                         PIECE extends Piece<COLOR>,
-                                         IMPACT extends Impact<PIECE>>
+public abstract class AbstractPieceImpactRule<COLOR extends Color,
+                                              PIECE extends Piece<COLOR>,
+                                              IMPACT extends Impact<PIECE>>
         extends AbstractRule<PIECE,IMPACT,Type> {
 
-    protected AbstractImpactRule(Board board, Type type) {
+    protected AbstractPieceImpactRule(Board board, Type type) {
         super(board, type);
     }
 

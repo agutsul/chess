@@ -18,7 +18,7 @@ import com.agutsul.chess.activity.impact.PieceRelativeForkImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.rule.impact.AbstractImpactRule;
+import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 import com.agutsul.chess.rule.impact.ForkImpactRule;
 
 // https://en.wikipedia.org/wiki/Fork_(chess)
@@ -27,7 +27,7 @@ abstract class AbstractForkImpactRule<COLOR1 extends Color,
                                       ATTACKER extends Piece<COLOR1> & Capturable,
                                       ATTACKED extends Piece<COLOR2>,
                                       IMPACT extends PieceForkImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
-        extends AbstractImpactRule<COLOR1,ATTACKER,IMPACT>
+        extends AbstractPieceImpactRule<COLOR1,ATTACKER,IMPACT>
         implements ForkImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,IMPACT> {
 
     AbstractForkImpactRule(Board board) {

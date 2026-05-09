@@ -18,12 +18,12 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.impact.AbstractImpactRule;
+import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 import com.agutsul.chess.rule.impact.OverloadingImpactRule;
 
 abstract class AbstractOverloadingImpactRule<COLOR extends Color,
                                              PIECE extends Piece<COLOR> & Capturable & Movable>
-        extends AbstractImpactRule<COLOR,PIECE,PieceOverloadingImpact<COLOR,PIECE>>
+        extends AbstractPieceImpactRule<COLOR,PIECE,PieceOverloadingImpact<COLOR,PIECE>>
         implements OverloadingImpactRule<COLOR,PIECE,PieceOverloadingImpact<COLOR,PIECE>> {
 
     AbstractOverloadingImpactRule(Board board) {

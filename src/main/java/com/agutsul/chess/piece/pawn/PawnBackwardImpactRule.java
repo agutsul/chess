@@ -24,13 +24,13 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.impact.AbstractImpactRule;
+import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 import com.agutsul.chess.rule.impact.BackwardImpactRule;
 
 // https://en.wikipedia.org/wiki/Backward_pawn
 final class PawnBackwardImpactRule<COLOR extends Color,
                                    PAWN  extends PawnPiece<COLOR>>
-        extends AbstractImpactRule<COLOR,PAWN,PieceBackwardImpact<COLOR,PAWN>>
+        extends AbstractPieceImpactRule<COLOR,PAWN,PieceBackwardImpact<COLOR,PAWN>>
         implements BackwardImpactRule<COLOR,PAWN,PieceBackwardImpact<COLOR,PAWN>> {
 
     private final Algo<PAWN,Collection<Position>> moveAlgo;

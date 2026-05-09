@@ -19,7 +19,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.PositionedBoardBuilder;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.rule.impact.AbstractImpactRule;
+import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 import com.agutsul.chess.rule.impact.DeflectionImpactRule;
 
 // https://en.wikipedia.org/wiki/Deflection_(chess)
@@ -29,7 +29,7 @@ abstract class AbstractDeflectionImpactRule<COLOR1 extends Color,
                                             ATTACKED extends Piece<COLOR2>,
                                             DEFENDED extends Piece<COLOR2>,
                                             IMPACT extends PieceDeflectionImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>
-        extends AbstractImpactRule<COLOR1,ATTACKER,IMPACT>
+        extends AbstractPieceImpactRule<COLOR1,ATTACKER,IMPACT>
         implements DeflectionImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,IMPACT> {
 
     AbstractDeflectionImpactRule(Board board) {

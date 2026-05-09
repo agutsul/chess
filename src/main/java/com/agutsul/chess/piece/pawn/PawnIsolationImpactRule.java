@@ -16,13 +16,13 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.rule.impact.AbstractImpactRule;
+import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 import com.agutsul.chess.rule.impact.IsolationImpactRule;
 
 // https://en.wikipedia.org/wiki/Isolated_pawn
 final class PawnIsolationImpactRule<COLOR extends Color,
                                     PAWN  extends PawnPiece<COLOR>>
-        extends AbstractImpactRule<COLOR,PAWN,PieceIsolationImpact<COLOR,PAWN>>
+        extends AbstractPieceImpactRule<COLOR,PAWN,PieceIsolationImpact<COLOR,PAWN>>
         implements IsolationImpactRule<COLOR,PAWN,PieceIsolationImpact<COLOR,PAWN>> {
 
     private final PawnCaptureAlgo<COLOR,PAWN> algo;
