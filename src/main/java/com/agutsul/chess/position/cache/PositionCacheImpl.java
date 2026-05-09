@@ -95,7 +95,7 @@ public final class PositionCacheImpl<VP extends Position & Valuable<Integer>>
                     : 0;
 
             return Pair.of(createKey(color, position),
-                    (PV) new ValuablePosition(position, value)
+                    (PV) new ValuablePosition<Integer>(position, value)
             );
         }
 

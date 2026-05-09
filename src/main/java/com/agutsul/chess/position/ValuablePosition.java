@@ -7,21 +7,21 @@ import java.util.Objects;
 import com.agutsul.chess.Valuable;
 import com.agutsul.chess.color.Color;
 
-public final class ValuablePosition
-        implements Position, Valuable<Integer> {
+public final class ValuablePosition<V extends Number & Comparable<V>>
+        implements Position, Valuable<V> {
 
     private static final long serialVersionUID = 1L;
 
     private final Position position;
-    private final Integer  value;
+    private final V value;
 
-    public ValuablePosition(Position position, Integer value) {
+    public ValuablePosition(Position position, V value) {
         this.position = position;
         this.value = value;
     }
 
     @Override
-    public Integer getValue() {
+    public V getValue() {
         return value;
     }
 
@@ -60,7 +60,7 @@ public final class ValuablePosition
             return false;
         }
 
-        var other = (ValuablePosition) obj;
+        var other = (ValuablePosition<?>) obj;
         return Objects.equals(other.x(), x())
                 && Objects.equals(other.y(), y())
                 && Objects.equals(other.getValue(), getValue());
@@ -68,6 +68,6 @@ public final class ValuablePosition
 
     @Override
     public String toString() {
-        return String.format("%s:%d", position, value);
+        return String.format("%s:%s", position, String.valueOf(value));
     }
 }
