@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.impact.hole;
 
+import static com.agutsul.chess.piece.Piece.isKing;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.Collections.emptyList;
 
@@ -8,6 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PositionHoleImpact;
 import com.agutsul.chess.board.Board;
@@ -60,6 +62,7 @@ abstract class AbstractHoleImpactRule<POSITION extends Position,
 
         var isControlledPosition = Stream.of(board.getPieces(color))
                 .flatMap(Collection::stream)
+                .filter(piece -> isKing(piece) || !((Pinnable) piece).isPinned())
                 .map(piece -> board.getImpacts(piece, Impact.Type.CONTROL))
                 .flatMap(Collection::stream)
                 .map(Impact::getPosition)
