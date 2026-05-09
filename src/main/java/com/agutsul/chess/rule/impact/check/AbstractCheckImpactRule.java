@@ -22,7 +22,7 @@ abstract class AbstractCheckImpactRule<COLOR1 extends Color,
                                        PIECE extends Piece<COLOR1> & Capturable,
                                        KING extends KingPiece<COLOR2>>
         extends AbstractPieceImpactRule<COLOR1,PIECE,
-                                   PieceCheckImpact<COLOR1,COLOR2,PIECE,KING>>
+                                        PieceCheckImpact<COLOR1,COLOR2,PIECE,KING>>
         implements CheckImpactRule<COLOR1,COLOR2,PIECE,KING> {
 
     AbstractCheckImpactRule(Board board) {

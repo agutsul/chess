@@ -14,7 +14,7 @@ abstract class AbstractAttackImpactRule<COLOR1 extends Color,
                                         ATTACKER extends Piece<COLOR1> & Capturable,
                                         ATTACKED extends Piece<COLOR2>>
         extends AbstractPieceImpactRule<COLOR1,ATTACKER,
-                                   PieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
+                                        PieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
         implements AttackImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
     AbstractAttackImpactRule(Board board) {
