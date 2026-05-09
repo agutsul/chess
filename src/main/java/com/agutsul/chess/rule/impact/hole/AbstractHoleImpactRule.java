@@ -2,7 +2,6 @@ package com.agutsul.chess.rule.impact.hole;
 
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -59,19 +58,19 @@ abstract class AbstractHoleImpactRule<POSITION extends Position,
             return emptyList();
         }
 
-        var controlledPositions = Stream.of(board.getPieces(color))
+        var isControlledPosition = Stream.of(board.getPieces(color))
                 .flatMap(Collection::stream)
                 .map(piece -> board.getImpacts(piece, Impact.Type.CONTROL))
                 .flatMap(Collection::stream)
                 .map(Impact::getPosition)
-                .collect(toSet());
+                .anyMatch(controlledPosition -> Objects.equals(controlledPosition, position));
 
-        if (controlledPositions.contains(position)) {
-            // if position is under control => it is not a hole
+        // if position is under control => it is not a hole
+        if (isControlledPosition) {
             return emptyList();
         }
 
-        var impacts = Stream.ofNullable(board.getKing(color))
+        var impacts = Stream.of(board.getKing(color))
                 .flatMap(Optional::stream)
                 .filter(kingPiece -> impactExists(kingPiece, position))
                 .map(kingPiece -> createImpact(color, position))
