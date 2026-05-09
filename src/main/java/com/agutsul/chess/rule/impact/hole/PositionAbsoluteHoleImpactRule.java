@@ -15,8 +15,7 @@ final class PositionAbsoluteHoleImpactRule
 
     @Override
     boolean impactExists(KingPiece<?> kingPiece, Position position) {
-        var kingPosition = kingPiece.getPosition();
-        return Math.abs(kingPosition.x() - position.x()) <= 1;
+        return Math.abs(kingPiece.getPosition().x() - position.x()) <= 1;
     }
 
     @Override

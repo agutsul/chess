@@ -10,7 +10,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.activity.impact.Impact;
-import com.agutsul.chess.activity.impact.PieceControlImpact;
 import com.agutsul.chess.activity.impact.PositionHoleImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -64,8 +63,7 @@ abstract class AbstractHoleImpactRule<POSITION extends Position,
                 .flatMap(Collection::stream)
                 .map(piece -> board.getImpacts(piece, Impact.Type.CONTROL))
                 .flatMap(Collection::stream)
-                .map(impact -> (PieceControlImpact<?,?>) impact)
-                .map(PieceControlImpact::getPosition)
+                .map(Impact::getPosition)
                 .collect(toSet());
 
         if (controlledPositions.contains(position)) {
