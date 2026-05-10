@@ -24,7 +24,7 @@
         <commons-collections4.version>4.5.0</commons-collections4.version>
         <commons-cli.version>1.11.0</commons-cli.version>
         <slf4j-api.verion>2.0.17</slf4j-api.verion>
-        <log4j.version>2.25.3</log4j.version>
+        <log4j.version>2.26.0</log4j.version>
         <antlr4.version>4.13.2</antlr4.version>
 
         <spotbugs.version>4.9.8</spotbugs.version>
