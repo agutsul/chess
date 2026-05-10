@@ -89,11 +89,7 @@ public final class PositionCacheImpl<VP extends Position & Valuable<Integer>>
         @Override
         @SuppressWarnings("unchecked")
         public Pair<String,PV> call() throws Exception {
-            var impacts = board.getImpacts(color, position);
-            var value = !impacts.isEmpty()
-                    ? calculateValue(impacts)
-                    : 0;
-
+            var value = calculateValue(board.getImpacts(color, position));
             return Pair.of(createKey(color, position),
                     (PV) new ValuablePosition<Integer>(position, value)
             );
