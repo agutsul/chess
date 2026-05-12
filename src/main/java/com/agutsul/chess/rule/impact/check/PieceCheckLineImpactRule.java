@@ -50,7 +50,7 @@ public final class PieceCheckLineImpactRule<COLOR1 extends Color,
         var impacts = Stream.of(next)
                 .flatMap(Collection::stream)
                 .map(calculated -> new PieceCheckImpact<>(attacker, king, (Line) calculated))
-                .collect(toList());
+                .toList();
 
         return impacts;
     }

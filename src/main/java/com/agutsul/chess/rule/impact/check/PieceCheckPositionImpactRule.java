@@ -2,7 +2,6 @@ package com.agutsul.chess.rule.impact.check;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableCollection;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -49,7 +48,7 @@ public final class PieceCheckPositionImpactRule<COLOR1 extends Color,
                 .flatMap(Collection::stream)
                 .filter(position -> Objects.equals(position, king.getPosition()))
                 .map(position -> new PieceCheckImpact<>(attacker, king))
-                .collect(toList());
+                .toList();
 
         return impacts;
     }

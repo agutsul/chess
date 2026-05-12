@@ -1,7 +1,5 @@
 package com.agutsul.chess.rule.impact.check;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -34,11 +32,11 @@ abstract class AbstractCheckImpactRule<COLOR1 extends Color,
         var opponentColor = piece.getColor().invert();
 
         @SuppressWarnings("unchecked")
-        Collection<Calculatable> next = Stream.of(board.getKing(opponentColor))
+        var next = Stream.of(board.getKing(opponentColor))
                 .flatMap(Optional::stream)
                 .map(opponentKing -> calculate(piece, (KING) opponentKing))
                 .flatMap(Collection::stream)
-                .collect(toList());
+                .toList();
 
         return next;
     }
@@ -54,7 +52,7 @@ abstract class AbstractCheckImpactRule<COLOR1 extends Color,
                 .flatMap(Optional::stream)
                 .map(opponentKing -> createImpacts(piece, (KING) opponentKing, next))
                 .flatMap(Collection::stream)
-                .collect(toList());
+                .toList();
 
         return impacts;
     }
