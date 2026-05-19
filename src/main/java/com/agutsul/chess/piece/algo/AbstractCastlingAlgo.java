@@ -1,10 +1,8 @@
 package com.agutsul.chess.piece.algo;
 
-import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
-
 import java.util.Collection;
-import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -33,10 +31,10 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
 
     @Override
     public final Collection<Castling> calculate(Pair<PIECE1,PIECE2> pieces) {
-        var castling = calculate(pieces.getLeft(), pieces.getRight());
-        return nonNull(castling)
-                ? List.of(castling)
-                : emptyList();
+        return Stream.of(pieces)
+                .map(pair -> Optional.ofNullable(calculate(pair.getLeft(), pair.getRight())))
+                .flatMap(Optional::stream)
+                .toList();
     }
 
     abstract boolean isAllEmptyBetween(PIECE1 king, PIECE2 rook);
