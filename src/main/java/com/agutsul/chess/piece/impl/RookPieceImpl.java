@@ -3,15 +3,12 @@ package com.agutsul.chess.piece.impl;
 import static com.agutsul.chess.activity.action.Action.isCapture;
 import static com.agutsul.chess.activity.action.Action.isCastling;
 import static com.agutsul.chess.activity.action.Action.isMove;
-import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -63,8 +60,10 @@ final class RookPieceImpl<COLOR extends Color>
     }
 
     private static Collection<Side> castlingSides(Position position) {
-        var castling = Castlings.of(position);
-        return nonNull(castling) ? List.of(castling.side()) : emptyList();
+        return Stream.of(Optional.ofNullable(Castlings.of(position)))
+                .flatMap(Optional::stream)
+                .map(Castling::side)
+                .toList();
     }
 
     static final class RookActionComparator
