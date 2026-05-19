@@ -1,7 +1,6 @@
 package com.agutsul.chess.rule.action;
 
 import static java.util.Collections.unmodifiableCollection;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -48,7 +47,7 @@ public class PieceCapturePositionActionRule<COLOR1 extends Color,
                 .flatMap(Optional::stream)
                 .filter(piece -> !Objects.equals(piece.getColor(), attacker.getColor()))
                 .map(attackedPiece -> new PieceCaptureAction<>(attacker, (ATTACKED) attackedPiece))
-                .collect(toList());
+                .toList();
 
         return actions;
     }

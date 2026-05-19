@@ -1,7 +1,6 @@
 package com.agutsul.chess.rule.action;
 
 import static java.util.Collections.unmodifiableCollection;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -53,7 +52,7 @@ public final class PieceCaptureLineActionRule<COLOR1 extends Color,
                                 attacker, (ATTACKED) attackedPiece, line
                         ))
                 )
-                .collect(toList());
+                .toList();
 
         return actions;
     }

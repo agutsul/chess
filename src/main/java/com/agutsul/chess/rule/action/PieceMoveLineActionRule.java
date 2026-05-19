@@ -1,7 +1,6 @@
 package com.agutsul.chess.rule.action;
 
 import static java.util.Collections.unmodifiableCollection;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.stream.Stream;
@@ -45,7 +44,7 @@ public final class PieceMoveLineActionRule<COLOR extends Color,
         var actions = Stream.of(positions)
                 .flatMap(Collection::stream)
                 .map(calculated -> new PieceMoveAction<>(piece, (Position) calculated))
-                .collect(toList());
+                .toList();
 
         return actions;
     }
