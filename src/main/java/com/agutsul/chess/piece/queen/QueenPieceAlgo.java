@@ -7,6 +7,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.piece.algo.AbstractAlgo;
+import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
 import com.agutsul.chess.piece.algo.DiagonalLineAlgo;
@@ -20,7 +21,7 @@ final class QueenPieceAlgo<COLOR extends Color,
         implements MovePieceAlgo<COLOR,QUEEN,Line>,
                    CapturePieceAlgo<COLOR,QUEEN,Line> {
 
-    private final CompositePieceAlgo<COLOR,QUEEN,Line> algo;
+    private final Algo<QUEEN,Collection<Line>> algo;
 
     @SuppressWarnings("unchecked")
     QueenPieceAlgo(Board board) {
