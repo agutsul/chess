@@ -12,11 +12,11 @@ import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Position;
 
-final class KnightPieceAlgo<COLOR extends Color,
+final class KnightPieceAlgo<COLOR  extends Color,
                             KNIGHT extends KnightPiece<COLOR>>
-        extends AbstractAlgo<KNIGHT, Position>
-        implements MovePieceAlgo<COLOR, KNIGHT, Position>,
-                   CapturePieceAlgo<COLOR, KNIGHT, Position> {
+        extends AbstractAlgo<KNIGHT,Position>
+        implements MovePieceAlgo<COLOR,KNIGHT,Position>,
+                   CapturePieceAlgo<COLOR,KNIGHT,Position> {
 
     private enum Move {
         NORTH_WEST(-1,  2),
