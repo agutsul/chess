@@ -39,22 +39,16 @@ final class PgnPlayerInputObserver
 
     @Override
     protected String getActionCommand(Optional<Long> timeout) {
-        if (!actionIterator.hasNext()) {
-            return finalCommand();
-        }
-
-        var action = actionIterator.next();
-        return pieceActionAdapter.adapt(action);
+        return actionIterator.hasNext()
+                ? pieceActionAdapter.adapt(actionIterator.next())
+                : finalCommand();
     }
 
     @Override
     protected String getPromotionPieceType(Optional<Long> timeout) {
-        if (!actionIterator.hasCurrent()) {
-            return null;
-        }
-
-        var action = actionIterator.current();
-        return promotionTypeAdapter.adapt(action);
+        return actionIterator.hasCurrent()
+                ? promotionTypeAdapter.adapt(actionIterator.current())
+                : null;
     }
 
     private String finalCommand() {
