@@ -42,7 +42,7 @@ public final class PositionCacheImpl<VP extends Position & Valuable<Integer>>
         for (var color : Colors.values()) {
             for (var x = Position.MIN; x < Position.MAX; x++) {
                 for (var y = Position.MIN; y < Position.MAX; y++) {
-                    tasks.add(new PositionEvaluationTask<>(board, color, positionOf(x, y)));
+                    tasks.add(createTask(board, color, positionOf(x, y)));
                 }
             }
         }
@@ -69,6 +69,10 @@ public final class PositionCacheImpl<VP extends Position & Valuable<Integer>>
         return this.cache.get(createKey(color, position));
     }
 
+    private PositionEvaluationTask<VP> createTask(Board board, Color color, Position position) {
+        return new PositionEvaluationTask<>(board, createKey(color, position), color, position);
+    }
+
     private static String createKey(Color color, Position position) {
         return String.format("%s_%s", color, position.getCode());
     }
@@ -77,11 +81,14 @@ public final class PositionCacheImpl<VP extends Position & Valuable<Integer>>
             implements Callable<Pair<String,PV>> {
 
         private final Board board;
+
+        private final String code;
         private final Color color;
         private final Position position;
 
-        PositionEvaluationTask(Board board, Color color, Position position) {
+        PositionEvaluationTask(Board board, String code, Color color, Position position) {
             this.board = board;
+            this.code = code;
             this.color = color;
             this.position = position;
         }
@@ -90,9 +97,7 @@ public final class PositionCacheImpl<VP extends Position & Valuable<Integer>>
         @SuppressWarnings("unchecked")
         public Pair<String,PV> call() throws Exception {
             var value = calculateValue(board.getImpacts(color, position));
-            return Pair.of(createKey(color, position),
-                    (PV) new ValuablePosition<Integer>(position, value)
-            );
+            return Pair.of(code, (PV) new ValuablePosition<Integer>(position, value));
         }
 
         private static int calculateValue(Collection<Impact<?>> impacts) {
