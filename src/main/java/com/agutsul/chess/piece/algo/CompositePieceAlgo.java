@@ -4,13 +4,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
 public final class CompositePieceAlgo<COLOR extends Color,
                                       SOURCE extends Piece<COLOR>,
-                                      RESULT>
+                                      RESULT extends Calculatable>
         extends AbstractAlgo<SOURCE,RESULT> {
 
     private final List<Algo<SOURCE,Collection<RESULT>>> algos;
