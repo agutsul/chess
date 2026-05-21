@@ -42,26 +42,24 @@ final class PawnEnPassantAlgo<COLOR extends Color,
     Map<Position,PawnPiece<Color>> calculateData(PAWN pawn) {
         var data = Stream.of(captureAlgo.calculate(pawn))
                 .flatMap(Collection::stream)
-                .map(attackedPosition ->
+                .flatMap(attackedPosition ->
                     Stream.of(findOpponentPawn(pawn, attackedPosition))
                         .flatMap(Optional::stream)
                         .map(opponentPawn -> {
                             // check if it was a big move for 2 positions
-                            var isBigStepActionExist = Stream.of(opponentPawn.getPositions())
+                            var isBigMoveActionExist = Stream.of(opponentPawn.getPositions())
                                     .filter(visitedPositions -> visitedPositions.size() >= 2)
                                     .map(visitedPositions -> visitedPositions.get(visitedPositions.size() - 2))
                                     .map(previousPosition -> Math.abs(previousPosition.y() - opponentPawn.getPosition().y()))
                                     .anyMatch(moveLength -> moveLength == PawnPiece.BIG_STEP_MOVE);
 
-                            return Optional.ofNullable(isBigStepActionExist
+                            return Optional.ofNullable(isBigMoveActionExist
                                     ? Pair.of(attackedPosition, opponentPawn)
                                     : null
                             );
                         })
                         .flatMap(Optional::stream)
-                        .findFirst()
                 )
-                .flatMap(Optional::stream)
                 .collect(toMap(Pair::getLeft, Pair::getRight));
 
         return data;
