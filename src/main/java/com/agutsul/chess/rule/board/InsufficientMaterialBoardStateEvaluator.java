@@ -2,6 +2,7 @@ package com.agutsul.chess.rule.board;
 
 import static com.agutsul.chess.board.state.BoardStateFactory.insufficientMaterialBoardState;
 import static java.util.Objects.nonNull;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -13,8 +14,6 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
-import com.agutsul.chess.Blockadable;
-import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.ai.ActionSelectionStrategy;
@@ -24,6 +23,7 @@ import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.InsufficientMaterialBoardState.Pattern;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
+import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
@@ -147,7 +147,8 @@ final class InsufficientMaterialBoardStateEvaluator
         protected BoardState evaluateBoard(Color color) {
             var isAnyNonLocked = Stream.of(board.getPieces(color, Piece.Type.PAWN))
                     .flatMap(Collection::stream)
-                    .anyMatch(pawn -> !isLocked(pawn));
+                    .map(piece -> (PawnPiece<?>) piece)
+                    .anyMatch(not(this::isLocked));
 
             return isAnyNonLocked
                     ? null
@@ -161,8 +162,8 @@ final class InsufficientMaterialBoardStateEvaluator
             return allPieces.size() == pawns.size() + 1; // +1 for king piece
         }
 
-        private static boolean isLocked(Piece<?> piece) {
-            return ((Blockadable) piece).isBlocked() || ((Pinnable) piece).isPinned();
+        private boolean isLocked(PawnPiece<?> piece) {
+            return piece.isBlocked() || piece.isPinned();
         }
     }
 
