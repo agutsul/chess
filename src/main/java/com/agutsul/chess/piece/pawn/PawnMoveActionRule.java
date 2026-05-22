@@ -14,7 +14,7 @@ import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.action.PieceMovePositionActionRule;
 
 class PawnMoveActionRule<COLOR extends Color,
-                         PAWN extends PawnPiece<COLOR>>
+                         PAWN  extends PawnPiece<COLOR>>
         extends PieceMovePositionActionRule<COLOR,PAWN> {
 
     PawnMoveActionRule(Board board,

@@ -12,6 +12,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.BigMovePieceAlgo;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.interference.PieceInterferencePositionImpactRule;
@@ -23,11 +24,11 @@ final class PawnInterferenceImpactRule<COLOR1 extends Color,
                                        PROTECTED extends Piece<COLOR2>>
         extends PieceInterferencePositionImpactRule<COLOR1,COLOR2,PAWN,PROTECTOR,PROTECTED> {
 
-    private final MovePieceAlgo<COLOR1,PAWN,Position> bigMoveAlgo;
+    private final BigMovePieceAlgo<COLOR1,PAWN,Position> bigMoveAlgo;
 
     PawnInterferenceImpactRule(Board board,
                                MovePieceAlgo<COLOR1,PAWN,Position> moveAlgo,
-                               MovePieceAlgo<COLOR1,PAWN,Position> bigMoveAlgo) {
+                               BigMovePieceAlgo<COLOR1,PAWN,Position> bigMoveAlgo) {
 
         super(board, moveAlgo);
         this.bigMoveAlgo = bigMoveAlgo;

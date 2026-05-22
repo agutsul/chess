@@ -23,10 +23,12 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.Algo;
+import com.agutsul.chess.piece.algo.BigMovePieceAlgo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
 import com.agutsul.chess.piece.algo.EnPassantPieceAlgo;
 import com.agutsul.chess.piece.algo.EnPassantPositionAlgoAdapter;
+import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 import com.agutsul.chess.rule.impact.BackwardImpactRule;
@@ -43,8 +45,8 @@ final class PawnBackwardImpactRule<COLOR extends Color,
 
     @SuppressWarnings("unchecked")
     PawnBackwardImpactRule(Board board,
-                           PawnMoveAlgo<COLOR,PAWN> moveAlgo,
-                           PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
+                           MovePieceAlgo<COLOR,PAWN,Position> moveAlgo,
+                           BigMovePieceAlgo<COLOR,PAWN,Position> bigMoveAlgo,
                            CapturePieceAlgo<COLOR,PAWN,Position> captureAlgo,
                            EnPassantPieceAlgo<COLOR,PAWN,EnPassant> enPassantAlgo) {
 

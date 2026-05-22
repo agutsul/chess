@@ -26,14 +26,17 @@ import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.Algo;
+import com.agutsul.chess.piece.algo.BigMovePieceAlgo;
+import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
+import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.AbstractRule;
 import com.agutsul.chess.rule.impact.LuftImpactRule;
 
 // https://en.wikipedia.org/wiki/Flight_square#Luft
 final class PawnLuftImpactRule<COLOR extends Color,
-                               PAWN extends PawnPiece<COLOR>,
+                               PAWN  extends PawnPiece<COLOR>,
                                IMPACT extends PieceLuftImpact<COLOR,PAWN>>
         extends AbstractRule<PAWN,IMPACT,Impact.Type>
         implements LuftImpactRule<COLOR,PAWN,IMPACT> {
@@ -43,9 +46,9 @@ final class PawnLuftImpactRule<COLOR extends Color,
 
     @SuppressWarnings("unchecked")
     PawnLuftImpactRule(Board board,
-                       PawnMoveAlgo<COLOR,PAWN> moveAlgo,
-                       PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
-                       PawnCaptureAlgo<COLOR,PAWN> captureAlgo) {
+                       MovePieceAlgo<COLOR,PAWN,Position> moveAlgo,
+                       BigMovePieceAlgo<COLOR,PAWN,Position> bigMoveAlgo,
+                       CapturePieceAlgo<COLOR,PAWN,Position> captureAlgo) {
 
         super(board, Impact.Type.LUFT);
 

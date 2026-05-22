@@ -23,9 +23,11 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.Algo;
+import com.agutsul.chess.piece.algo.BigMovePieceAlgo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
 import com.agutsul.chess.piece.algo.EnPassantPieceAlgo;
+import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.sacrifice.PieceSacrificePositionImpactRule;
 
@@ -42,8 +44,8 @@ final class PawnSacrificeImpactRule<COLOR1 extends Color,
 
     @SuppressWarnings("unchecked")
     PawnSacrificeImpactRule(Board board,
-                            PawnMoveAlgo<COLOR1,SACRIFICED> moveAlgo,
-                            PawnBigMoveAlgo<COLOR1,SACRIFICED> bigMoveAlgo,
+                            MovePieceAlgo<COLOR1,SACRIFICED,Position> moveAlgo,
+                            BigMovePieceAlgo<COLOR1,SACRIFICED,Position> bigMoveAlgo,
                             CapturePieceAlgo<COLOR1,SACRIFICED,Position> captureAlgo,
                             EnPassantPieceAlgo<COLOR1,SACRIFICED,EnPassant> enPassantAlgo) {
 

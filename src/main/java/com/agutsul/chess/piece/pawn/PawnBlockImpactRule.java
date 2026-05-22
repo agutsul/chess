@@ -12,22 +12,23 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.BigMovePieceAlgo;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.block.PieceBlockPositionImpactRule;
 
 final class PawnBlockImpactRule<COLOR1 extends Color,
                                 COLOR2 extends Color,
-                                PAWN extends PawnPiece<COLOR1>,
+                                PAWN   extends PawnPiece<COLOR1>,
                                 ATTACKED extends Piece<COLOR1>,
                                 ATTACKER extends Piece<COLOR2> & Capturable & Lineable>
         extends PieceBlockPositionImpactRule<COLOR1,COLOR2,PAWN,ATTACKED,ATTACKER> {
 
-    private final MovePieceAlgo<COLOR1,PAWN,Position> bigMoveAlgo;
+    private final BigMovePieceAlgo<COLOR1,PAWN,Position> bigMoveAlgo;
 
     PawnBlockImpactRule(Board board,
                         MovePieceAlgo<COLOR1,PAWN,Position> moveAlgo,
-                        MovePieceAlgo<COLOR1,PAWN,Position> bigMoveAlgo) {
+                        BigMovePieceAlgo<COLOR1,PAWN,Position> bigMoveAlgo) {
 
         super(board, moveAlgo);
         this.bigMoveAlgo = bigMoveAlgo;

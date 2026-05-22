@@ -9,6 +9,7 @@ import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
+import com.agutsul.chess.piece.algo.BigMovePieceAlgo;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.motion.PieceMotionPositionImpactRule;
@@ -17,11 +18,11 @@ final class PawnMotionPositionImpactRule<COLOR extends Color,
                                          PAWN extends PawnPiece<COLOR>>
         extends PieceMotionPositionImpactRule<COLOR,PAWN> {
 
-    private final MovePieceAlgo<COLOR,PAWN,Position> bigMoveAlgo;
+    private final BigMovePieceAlgo<COLOR,PAWN,Position> bigMoveAlgo;
 
     PawnMotionPositionImpactRule(Board board,
                                  MovePieceAlgo<COLOR,PAWN,Position> moveAlgo,
-                                 MovePieceAlgo<COLOR,PAWN,Position> bigMoveAlgo) {
+                                 BigMovePieceAlgo<COLOR,PAWN,Position> bigMoveAlgo) {
 
         super(board, moveAlgo);
         this.bigMoveAlgo = bigMoveAlgo;

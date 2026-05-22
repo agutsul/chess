@@ -8,11 +8,13 @@ import java.util.Collection;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
+import com.agutsul.chess.piece.algo.BigMovePieceAlgo;
 import com.agutsul.chess.position.Position;
 
 final class PawnBigMoveAlgo<COLOR extends Color,
-                            PAWN extends PawnPiece<COLOR>>
-        extends PawnMoveAlgo<COLOR,PAWN> {
+                            PAWN  extends PawnPiece<COLOR>>
+        extends PawnMoveAlgo<COLOR,PAWN>
+        implements BigMovePieceAlgo<COLOR,PAWN,Position> {
 
     private final int initialLine;
 

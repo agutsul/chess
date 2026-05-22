@@ -14,10 +14,12 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.BigMovePieceAlgo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
 import com.agutsul.chess.piece.algo.EnPassantPieceAlgo;
 import com.agutsul.chess.piece.algo.EnPassantPositionAlgoAdapter;
+import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.outpost.PieceOutpostPositionImpactRule;
 
@@ -30,8 +32,8 @@ final class PawnOutpostImpactRule<COLOR extends Color,
 
     @SuppressWarnings("unchecked")
     PawnOutpostImpactRule(Board board,
-                          PawnMoveAlgo<COLOR,PAWN> moveAlgo,
-                          PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
+                          MovePieceAlgo<COLOR,PAWN,Position> moveAlgo,
+                          BigMovePieceAlgo<COLOR,PAWN,Position> bigMoveAlgo,
                           CapturePieceAlgo<COLOR,PAWN,Position> captureAlgo,
                           EnPassantPieceAlgo<COLOR,PAWN,EnPassant> enPassantAlgo) {
 
@@ -43,7 +45,7 @@ final class PawnOutpostImpactRule<COLOR extends Color,
 
     @Override
     protected Collection<Calculatable> calculate(PAWN piece) {
-        var positions = new LinkedHashSet<Calculatable>(enPassantAlgo.calculate(piece));
+        var positions = new LinkedHashSet<>(enPassantAlgo.calculate(piece));
 
         positions.addAll(Stream.of(super.calculate(piece))
                 .flatMap(Collection::stream)

@@ -11,18 +11,18 @@ import com.agutsul.chess.activity.action.PieceMoveAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
+import com.agutsul.chess.piece.algo.BigMovePieceAlgo;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Position;
 
 final class PawnBigMoveActionRule<COLOR extends Color,
-                                  PAWN extends PawnPiece<COLOR>>
+                                  PAWN  extends PawnPiece<COLOR>>
         extends PawnMoveActionRule<COLOR,PAWN> {
 
+    <ALGO extends MovePieceAlgo<COLOR,PAWN,Position> & BigMovePieceAlgo<COLOR,PAWN,Position>>
+            PawnBigMoveActionRule(Board board, ALGO algo) {
 
-    PawnBigMoveActionRule(Board board,
-                          MovePieceAlgo<COLOR,PAWN,Position> bigMoveAlgo) {
-
-        super(Action.Type.BIG_MOVE, board, bigMoveAlgo);
+        super(Action.Type.BIG_MOVE, board, algo);
     }
 
     @Override

@@ -7,7 +7,11 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.BigMovePieceAlgo;
+import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
+import com.agutsul.chess.piece.algo.MovePieceAlgo;
+import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.pin.PiecePinPositionImpactRule;
 
 final class PawnPinImpactRule<COLOR1 extends Color,
@@ -20,9 +24,9 @@ final class PawnPinImpactRule<COLOR1 extends Color,
 
     @SuppressWarnings("unchecked")
     PawnPinImpactRule(Board board,
-                      PawnMoveAlgo<COLOR1,PINNED> moveAlgo,
-                      PawnBigMoveAlgo<COLOR1,PINNED> bigMoveAlgo,
-                      PawnCaptureAlgo<COLOR1,PINNED> captureAlgo) {
+                      MovePieceAlgo<COLOR1,PINNED,Position> moveAlgo,
+                      BigMovePieceAlgo<COLOR1,PINNED,Position> bigMoveAlgo,
+                      CapturePieceAlgo<COLOR1,PINNED,Position> captureAlgo) {
 
         super(board, new CompositePieceAlgo<>(board,
                 moveAlgo, bigMoveAlgo, captureAlgo

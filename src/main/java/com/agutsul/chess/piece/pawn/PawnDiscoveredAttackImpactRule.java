@@ -26,10 +26,12 @@ import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.AbstractAlgo;
 import com.agutsul.chess.piece.algo.Algo;
+import com.agutsul.chess.piece.algo.BigMovePieceAlgo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
 import com.agutsul.chess.piece.algo.EnPassantPieceAlgo;
 import com.agutsul.chess.piece.algo.EnPassantPositionAlgoAdapter;
+import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.Rule;
@@ -48,8 +50,8 @@ final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
 
     @SuppressWarnings("unchecked")
     PawnDiscoveredAttackImpactRule(Board board,
-                                   PawnMoveAlgo<COLOR1,PIECE> moveAlgo,
-                                   PawnBigMoveAlgo<COLOR1,PIECE> bigMoveAlgo,
+                                   MovePieceAlgo<COLOR1,PIECE,Position> moveAlgo,
+                                   BigMovePieceAlgo<COLOR1,PIECE,Position> bigMoveAlgo,
                                    CapturePieceAlgo<COLOR1,PIECE,Position> captureAlgo,
                                    EnPassantPieceAlgo<COLOR1,PIECE,EnPassant> enPassantAlgo) {
 
@@ -82,8 +84,8 @@ final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
 
         @SuppressWarnings("unchecked")
         CompositeAlgo(Board board,
-                      PawnMoveAlgo<COLOR,PIECE> moveAlgo,
-                      PawnBigMoveAlgo<COLOR,PIECE> bigMoveAlgo,
+                      MovePieceAlgo<COLOR,PIECE,Position> moveAlgo,
+                      BigMovePieceAlgo<COLOR,PIECE,Position> bigMoveAlgo,
                       CapturePieceAlgo<COLOR,PIECE,Position> captureAlgo) {
 
             this(board, new CompositePieceAlgo<>(board, moveAlgo, bigMoveAlgo), captureAlgo);
