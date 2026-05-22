@@ -19,7 +19,7 @@
 
         <commons-io.version>2.21.0</commons-io.version>
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
-        <commons-conf.version>2.13.0</commons-conf.version>
+        <commons-conf.version>2.15.0</commons-conf.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <commons-collections4.version>4.5.0</commons-collections4.version>
         <commons-cli.version>1.11.0</commons-cli.version>
