@@ -414,7 +414,6 @@
                     <targetJdk>${project.java.version}</targetJdk>
                     <inputEncoding>${project.reporting.outputEncoding}</inputEncoding>
                     <excludes>
-                        <exclude>com/agutsul/chess/rule/action/AbstractCastlingActionRule.java</exclude>
                         <!-- antlr generated classes -->
                         <exclude>com/agutsul/chess/antlr/grammar/*</exclude>
                     </excludes>
