@@ -22,6 +22,6 @@ public final class CancelBigMoveAction<COLOR extends Color,
     @Override
     public void execute() {
         LOGGER.info("Cancel big move to '{}' by '{}'", getPosition(), getPiece());
-        super.execute();
+        getPiece().unmove(getPosition());
     }
 }
