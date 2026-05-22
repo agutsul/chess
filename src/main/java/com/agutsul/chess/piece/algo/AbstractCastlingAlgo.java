@@ -32,7 +32,8 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
     @Override
     public final Collection<Castling> calculate(Pair<PIECE1,PIECE2> pieces) {
         return Stream.of(pieces)
-                .map(pair -> Optional.ofNullable(calculate(pair.getLeft(), pair.getRight())))
+                .map(pair -> calculate(pair.getLeft(), pair.getRight()))
+                .map(Optional::ofNullable)
                 .flatMap(Optional::stream)
                 .toList();
     }

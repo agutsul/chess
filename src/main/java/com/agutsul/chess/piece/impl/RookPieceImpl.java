@@ -60,8 +60,7 @@ final class RookPieceImpl<COLOR extends Color>
     }
 
     private static Collection<Side> castlingSides(Position position) {
-        return Stream.of(Optional.ofNullable(Castlings.of(position)))
-                .flatMap(Optional::stream)
+        return Stream.ofNullable(Castlings.of(position))
                 .map(Castling::side)
                 .toList();
     }
