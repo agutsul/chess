@@ -21,6 +21,6 @@ public class PieceBigMoveAction<COLOR extends Color,
     @Override
     public final void execute() {
         LOGGER.info("Executing big move to '{}' by '{}'", getPosition(), getPiece());
-        getPiece().unmove(getPosition());
+        getPiece().move(getPosition());
     }
 }
