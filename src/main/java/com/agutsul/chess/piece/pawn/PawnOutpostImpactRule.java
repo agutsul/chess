@@ -9,37 +9,41 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
+import com.agutsul.chess.EnPassantable.EnPassant;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
+import com.agutsul.chess.piece.algo.EnPassantPieceAlgo;
+import com.agutsul.chess.piece.algo.EnPassantPositionAlgoAdapter;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.outpost.PieceOutpostPositionImpactRule;
 
 final class PawnOutpostImpactRule<COLOR extends Color,
-                                          PAWN extends PawnPiece<COLOR>>
+                                  PAWN  extends PawnPiece<COLOR>>
         extends PieceOutpostPositionImpactRule<COLOR,PAWN> {
 
-    private final PawnCaptureAlgo<COLOR,PAWN> captureAlgo;
-    private final PawnEnPassantAlgo<COLOR,PAWN> enPassantAlgo;
+    private final CapturePieceAlgo<COLOR,PAWN,Position> captureAlgo;
+    private final EnPassantPieceAlgo<COLOR,PAWN,Position> enPassantAlgo;
 
     @SuppressWarnings("unchecked")
     PawnOutpostImpactRule(Board board,
                           PawnMoveAlgo<COLOR,PAWN> moveAlgo,
                           PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
-                          PawnCaptureAlgo<COLOR,PAWN> captureAlgo,
-                          PawnEnPassantAlgo<COLOR,PAWN> enPassantAlgo) {
+                          CapturePieceAlgo<COLOR,PAWN,Position> captureAlgo,
+                          EnPassantPieceAlgo<COLOR,PAWN,EnPassant> enPassantAlgo) {
 
         super(board, new CompositePieceAlgo<>(board, moveAlgo, bigMoveAlgo));
 
         this.captureAlgo = captureAlgo;
-        this.enPassantAlgo = enPassantAlgo;
+        this.enPassantAlgo = new EnPassantPositionAlgoAdapter<>(enPassantAlgo);
     }
 
     @Override
     protected Collection<Calculatable> calculate(PAWN piece) {
-        var positions = new LinkedHashSet<Calculatable>();
+        var positions = new LinkedHashSet<Calculatable>(enPassantAlgo.calculate(piece));
 
         positions.addAll(Stream.of(super.calculate(piece))
                 .flatMap(Collection::stream)
@@ -57,8 +61,6 @@ final class PawnOutpostImpactRule<COLOR extends Color,
                 .map(Piece::getPosition)
                 .toList()
         );
-
-        positions.addAll(enPassantAlgo.calculate(piece));
 
         return unmodifiableCollection(positions);
     }

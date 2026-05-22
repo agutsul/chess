@@ -27,13 +27,14 @@ abstract class AbstractDiscoveredAttackModeImpactRule<COLOR1 extends Color,
                                                       PIECE  extends Piece<COLOR1> & Movable & Capturable,
                                                       ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
                                                       ATTACKED extends Piece<COLOR2>,
+                                                      CALCULATED extends Calculatable,
                                                       IMPACT extends PieceDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED>>
         extends AbstractDiscoveredAttackImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,IMPACT> {
 
-    protected final Algo<PIECE,Collection<Position>> algo;
+    protected final Algo<PIECE,Collection<CALCULATED>> algo;
 
     AbstractDiscoveredAttackModeImpactRule(Board board,
-                                           Algo<PIECE,Collection<Position>> algo) {
+                                           Algo<PIECE,Collection<CALCULATED>> algo) {
         super(board);
         this.algo = algo;
     }
@@ -42,6 +43,7 @@ abstract class AbstractDiscoveredAttackModeImpactRule<COLOR1 extends Color,
     protected Collection<Calculatable> calculate(PIECE piece) {
         Collection<Calculatable> positions = Stream.of(algo.calculate(piece))
                 .flatMap(Collection::stream)
+                .map(calculated -> (Position) calculated)
                 .filter(position -> {
                     var optionalPiece = board.getPiece(position);
                     if (optionalPiece.isEmpty()) {
@@ -83,8 +85,8 @@ abstract class AbstractDiscoveredAttackModeImpactRule<COLOR1 extends Color,
                         .filter(position -> !line.contains(position))
                         .map(position -> createImpact(piece, position, (ATTACKER) attacker, opponentPiece, line))
                         .map(Optional::ofNullable)
-                        .flatMap(Optional::stream)
                 )
+                .flatMap(Optional::stream)
                 .toList();
 
         return impacts;

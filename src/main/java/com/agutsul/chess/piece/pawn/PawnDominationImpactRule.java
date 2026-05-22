@@ -1,15 +1,14 @@
 package com.agutsul.chess.piece.pawn;
 
 import static java.util.Collections.unmodifiableCollection;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.LinkedHashSet;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
+import com.agutsul.chess.EnPassantable.EnPassant;
 import com.agutsul.chess.activity.impact.PieceAttackImpact;
 import com.agutsul.chess.activity.impact.PieceDominationAttackImpact;
 import com.agutsul.chess.activity.impact.PieceDominationImpact;
@@ -17,6 +16,10 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.Algo;
+import com.agutsul.chess.piece.algo.CapturePieceAlgo;
+import com.agutsul.chess.piece.algo.EnPassantPieceAlgo;
+import com.agutsul.chess.piece.algo.EnPassantPositionAlgoAdapter;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.domination.PieceDominationPositionImpactRule;
 
@@ -27,31 +30,32 @@ final class PawnDominationImpactRule<COLOR1 extends Color,
                                      IMPACT extends PieceDominationImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
         extends PieceDominationPositionImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,IMPACT> {
 
-    private final PawnEnPassantAlgo<COLOR1,ATTACKER> enPassantAlgo;
+    private final EnPassantPieceAlgo<COLOR1,ATTACKER,EnPassant> enPassantAlgo;
+    private final Algo<ATTACKER,Collection<Position>> algoAdapter;
 
     PawnDominationImpactRule(Board board,
-                             PawnCaptureAlgo<COLOR1,ATTACKER> captureAlgo,
-                             PawnEnPassantAlgo<COLOR1,ATTACKER> enPassantAlgo) {
+                             CapturePieceAlgo<COLOR1,ATTACKER,Position> captureAlgo,
+                             EnPassantPieceAlgo<COLOR1,ATTACKER,EnPassant> enPassantAlgo) {
 
         super(board, captureAlgo);
         this.enPassantAlgo = enPassantAlgo;
+        this.algoAdapter = new EnPassantPositionAlgoAdapter<>(enPassantAlgo);
     }
 
     @Override
     protected Collection<Calculatable> calculate(ATTACKER pawn) {
-        var positions = new ArrayList<>(super.calculate(pawn));
-        positions.addAll(enPassantAlgo.calculate(pawn));
+        var positions = new LinkedHashSet<>(super.calculate(pawn));
+        positions.addAll(algoAdapter.calculate(pawn));
         return unmodifiableCollection(positions);
     }
 
     @Override
     protected Collection<IMPACT> createImpacts(ATTACKER pawn, Collection<Calculatable> next) {
-        var impacts = new ArrayList<IMPACT>();
-
         var attackedPositions = getAttackedPositions(pawn.getColor());
-        impacts.addAll(super.createImpacts(pawn, next, attackedPositions));
 
-        var enPassantData = enPassantAlgo.calculateData(pawn);
+        var enPassantData = Stream.of(enPassantAlgo.calculate(pawn))
+                .flatMap(Collection::stream)
+                .collect(toMap(EnPassant::getPosition, EnPassant::getPiece));
 
         @SuppressWarnings("unchecked")
         var enPassantImpacts = Stream.of(next)
@@ -60,19 +64,18 @@ final class PawnDominationImpactRule<COLOR1 extends Color,
                 .filter(position -> board.isEmpty(position))
                 .filter(position -> enPassantData.containsKey(position))
                 .filter(position -> attackedPositions.contains(position))
-                .map(position -> Stream.ofNullable(enPassantData.get(position))
-                        .filter(foundPiece -> !Objects.equals(foundPiece.getColor(), pawn.getColor()))
-                        .filter(Piece::isPawn)
-                        .map(opponentPawn -> new PieceAttackImpact<>(pawn, (ATTACKED) opponentPawn, position)) // enPassant attack
-                        .findFirst()
-                )
-                .flatMap(Optional::stream)
-                .map(impact -> new PieceDominationAttackImpact<>(impact))
+                .map(position -> {
+                    var opponentPawn = enPassantData.get(position);
+                    return new PieceDominationAttackImpact<>(
+                            new PieceAttackImpact<>(pawn, (ATTACKED) opponentPawn, position)
+                    );
+                })
                 .map(impact -> (IMPACT) impact)
-                .collect(toList());
+                .toList();
 
-        impacts.addAll(enPassantImpacts);
-
-        return unmodifiableCollection(impacts);
+        var captureImpacts = super.createImpacts(pawn, next, attackedPositions);
+        return Stream.of(captureImpacts, enPassantImpacts)
+                .flatMap(Collection::stream)
+                .toList();
     }
 }

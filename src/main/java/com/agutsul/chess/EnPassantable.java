@@ -6,4 +6,8 @@ import com.agutsul.chess.position.Position;
 public interface EnPassantable {
     void enpassant(PawnPiece<?> targetPiece, Position targetPosition);
     void unenpassant(PawnPiece<?> targetPiece);
+
+    interface EnPassant extends Calculatable, Positionable {
+        PawnPiece<?> getPiece(); // target piece
+    }
 }

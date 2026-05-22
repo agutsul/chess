@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.agutsul.chess.Calculatable;
+import com.agutsul.chess.EnPassantable.EnPassant;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceBackwardImpact;
@@ -22,7 +23,10 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.Algo;
+import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
+import com.agutsul.chess.piece.algo.EnPassantPieceAlgo;
+import com.agutsul.chess.piece.algo.EnPassantPositionAlgoAdapter;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 import com.agutsul.chess.rule.impact.BackwardImpactRule;
@@ -34,21 +38,21 @@ final class PawnBackwardImpactRule<COLOR extends Color,
         implements BackwardImpactRule<COLOR,PAWN,PieceBackwardImpact<COLOR,PAWN>> {
 
     private final Algo<PAWN,Collection<Position>> moveAlgo;
-    private final PawnCaptureAlgo<COLOR,PAWN> captureAlgo;
-    private final PawnEnPassantAlgo<COLOR,PAWN> enPassantAlgo;
+    private final CapturePieceAlgo<COLOR,PAWN,Position> captureAlgo;
+    private final EnPassantPieceAlgo<COLOR,PAWN,Position> enPassantAlgo;
 
     @SuppressWarnings("unchecked")
     PawnBackwardImpactRule(Board board,
                            PawnMoveAlgo<COLOR,PAWN> moveAlgo,
                            PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
-                           PawnCaptureAlgo<COLOR,PAWN> captureAlgo,
-                           PawnEnPassantAlgo<COLOR,PAWN> enPassantAlgo) {
+                           CapturePieceAlgo<COLOR,PAWN,Position> captureAlgo,
+                           EnPassantPieceAlgo<COLOR,PAWN,EnPassant> enPassantAlgo) {
 
         super(board, Impact.Type.BACKWARD);
 
         this.moveAlgo = new CompositePieceAlgo<>(board, moveAlgo, bigMoveAlgo);
         this.captureAlgo = captureAlgo;
-        this.enPassantAlgo = enPassantAlgo;
+        this.enPassantAlgo = new EnPassantPositionAlgoAdapter<>(enPassantAlgo);
     }
 
     @Override
@@ -108,7 +112,7 @@ final class PawnBackwardImpactRule<COLOR extends Color,
                 .flatMap(Collection::stream)
                 .filter(position -> board.isEmpty(position))
                 .filter(position -> !board.isAttacked(position, opponentColor))
-                .collect(toList());
+                .toList();
     }
 
     private Collection<Position> capturePositions(PAWN piece) {
@@ -119,15 +123,14 @@ final class PawnBackwardImpactRule<COLOR extends Color,
                 .filter(foundPiece -> !Objects.equals(foundPiece.getColor(), piece.getColor()))
                 .filter(opponentPiece -> !((Protectable) opponentPiece).isProtected())
                 .map(Piece::getPosition)
-                .collect(toList());
+                .toList();
     }
 
     private Collection<Position> enPassantPositions(PAWN piece) {
         var opponentColor = piece.getColor().invert();
         return Stream.of(enPassantAlgo.calculate(piece))
                 .flatMap(Collection::stream)
-                .filter(position -> board.isEmpty(position))
                 .filter(position -> !board.isAttacked(position, opponentColor))
-                .collect(toList());
+                .toList();
     }
 }

@@ -5,12 +5,12 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.EnPassantable.EnPassant;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteDesperadoImpact;
 import com.agutsul.chess.activity.impact.PieceControlImpact;
@@ -21,8 +21,10 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.AbstractAlgo;
 import com.agutsul.chess.piece.algo.Algo;
+import com.agutsul.chess.piece.algo.CapturePieceAlgo;
+import com.agutsul.chess.piece.algo.EnPassantPieceAlgo;
+import com.agutsul.chess.piece.algo.EnPassantPositionAlgoAdapter;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.AbstractRule;
 import com.agutsul.chess.rule.CompositeRule;
@@ -35,15 +37,15 @@ import com.agutsul.chess.rule.impact.desperado.PieceRelativeDesperadoPositionImp
 final class PawnDesperadoImpactRule<COLOR1 extends Color,
                                     COLOR2 extends Color,
                                     DESPERADO extends PawnPiece<COLOR1>,
-                                    ATTACKER extends Piece<COLOR2> & Capturable,
-                                    ATTACKED extends Piece<COLOR2>>
+                                    ATTACKER  extends Piece<COLOR2> & Capturable,
+                                    ATTACKED  extends Piece<COLOR2>>
         extends PieceDesperadoPositionImpactRule<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,
                                                  PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>> {
 
     @SuppressWarnings("unchecked")
     PawnDesperadoImpactRule(Board board,
-                            PawnCaptureAlgo<COLOR1,DESPERADO> captureAlgo,
-                            PawnEnPassantAlgo<COLOR1,DESPERADO> enPassantAlgo) {
+                            CapturePieceAlgo<COLOR1,DESPERADO,Position> captureAlgo,
+                            EnPassantPieceAlgo<COLOR1,DESPERADO,EnPassant> enPassantAlgo) {
 
         super(board, new CompositeRule<>(
                 new PawnAbsoluteDesperadoImpactRule<>(board, captureAlgo, enPassantAlgo),
@@ -63,12 +65,12 @@ final class PawnDesperadoImpactRule<COLOR1 extends Color,
         private final DesperadoImpactRule<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?> enPassantRule;
 
         PawnAbsoluteDesperadoImpactRule(Board board,
-                                        PawnCaptureAlgo<COLOR1,DESPERADO> captureAlgo,
-                                        PawnEnPassantAlgo<COLOR1,DESPERADO> enPassantAlgo) {
+                                        CapturePieceAlgo<COLOR1,DESPERADO,Position> captureAlgo,
+                                        EnPassantPieceAlgo<COLOR1,DESPERADO,EnPassant> enPassantAlgo) {
 
             super(board, captureAlgo);
 
-            this.enPassantAlgo = new PawnEnPassantDesperadoAlgoAdapter<>(board, enPassantAlgo);
+            this.enPassantAlgo = new EnPassantPositionAlgoAdapter<>(enPassantAlgo);
             this.enPassantRule = new PawnEnPassantDesperadoImpactRule<>(Mode.ABSOLUTE, board, enPassantAlgo);
         }
 
@@ -110,12 +112,12 @@ final class PawnDesperadoImpactRule<COLOR1 extends Color,
         private final PieceRelativeDesperadoExchangeImpactRule<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED> exchangeRule;
 
         PawnRelativeDesperadoImpactRule(Board board,
-                                        PawnCaptureAlgo<COLOR1,DESPERADO> captureAlgo,
-                                        PawnEnPassantAlgo<COLOR1,DESPERADO> enPassantAlgo) {
+                                        CapturePieceAlgo<COLOR1,DESPERADO,Position> captureAlgo,
+                                        EnPassantPieceAlgo<COLOR1,DESPERADO,EnPassant> enPassantAlgo) {
 
             super(board, captureAlgo);
 
-            this.enPassantAlgo = new PawnEnPassantDesperadoAlgoAdapter<>(board, enPassantAlgo);
+            this.enPassantAlgo = new EnPassantPositionAlgoAdapter<>(enPassantAlgo);
 
             this.enPassantRule = new PawnEnPassantDesperadoImpactRule<>(Mode.RELATIVE, board, enPassantAlgo);
             this.exchangeRule  = new PieceRelativeDesperadoExchangeImpactRule<>(board);
@@ -159,10 +161,10 @@ final class PawnDesperadoImpactRule<COLOR1 extends Color,
             implements DesperadoImpactRule<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,IMPACT> {
 
         private final Mode mode;
-        private final PawnEnPassantAlgo<COLOR1,DESPERADO> algo;
+        private final EnPassantPieceAlgo<COLOR1,DESPERADO,EnPassant> algo;
 
         PawnEnPassantDesperadoImpactRule(Mode mode, Board board,
-                                         PawnEnPassantAlgo<COLOR1,DESPERADO> algo) {
+                                         EnPassantPieceAlgo<COLOR1,DESPERADO,EnPassant> algo) {
 
             super(board, Impact.Type.DESPERADO);
 
@@ -175,14 +177,12 @@ final class PawnDesperadoImpactRule<COLOR1 extends Color,
             var opponentColor = piece.getColor().invert();
 
             @SuppressWarnings("unchecked")
-            var impacts = Stream.of(algo.calculateData(piece))
-                    .map(Map::entrySet)
+            var impacts = Stream.of(algo.calculate(piece))
                     .flatMap(Collection::stream)
-                    .filter(entry -> board.isAttacked(entry.getKey(), opponentColor))
-                    .filter(entry -> !Objects.equals(entry.getValue().getColor(), piece.getColor()))
-                    .flatMap(entry -> {
-                        var position = entry.getKey();
-                        var opponentPawn = entry.getValue();
+                    .filter(enPassant -> board.isAttacked(enPassant.getPosition(), opponentColor))
+                    .flatMap(enPassant -> {
+                        var position = enPassant.getPosition();
+                        var opponentPawn = enPassant.getPiece();
 
                         return Stream.of(board.getPieces(opponentPawn.getColor()))
                                 .flatMap(Collection::stream)
@@ -198,32 +198,9 @@ final class PawnDesperadoImpactRule<COLOR1 extends Color,
                                 ));
                     })
                     .map(impact -> (IMPACT) impact)
-                    .collect(toList());
+                    .toList();
 
             return impacts;
-        }
-    }
-
-    private static final class PawnEnPassantDesperadoAlgoAdapter<COLOR extends Color,
-                                                                 PAWN extends PawnPiece<COLOR>>
-            extends AbstractAlgo<PAWN,Position> {
-
-        private final PawnEnPassantAlgo<COLOR,PAWN> algo;
-
-        PawnEnPassantDesperadoAlgoAdapter(Board board,
-                                          PawnEnPassantAlgo<COLOR,PAWN> algo) {
-            super(board);
-            this.algo = algo;
-        }
-
-        @Override
-        public Collection<Position> calculate(PAWN piece) {
-            return Stream.ofNullable(algo.calculateData(piece))
-                    .map(Map::entrySet)
-                    .flatMap(Collection::stream)
-                    .map(Map.Entry::getValue)
-                    .map(Piece::getPosition)
-                    .collect(toList());
         }
     }
 }

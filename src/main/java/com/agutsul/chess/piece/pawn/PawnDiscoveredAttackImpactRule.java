@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.pawn;
 
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Comparator.comparing;
 
 import java.util.Collection;
@@ -7,7 +8,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.EnPassantable.EnPassant;
 import com.agutsul.chess.Lineable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.activity.impact.Impact;
@@ -23,7 +26,10 @@ import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.AbstractAlgo;
 import com.agutsul.chess.piece.algo.Algo;
+import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
+import com.agutsul.chess.piece.algo.EnPassantPieceAlgo;
+import com.agutsul.chess.piece.algo.EnPassantPositionAlgoAdapter;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.Rule;
@@ -44,8 +50,8 @@ final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
     PawnDiscoveredAttackImpactRule(Board board,
                                    PawnMoveAlgo<COLOR1,PIECE> moveAlgo,
                                    PawnBigMoveAlgo<COLOR1,PIECE> bigMoveAlgo,
-                                   PawnCaptureAlgo<COLOR1,PIECE> captureAlgo,
-                                   PawnEnPassantAlgo<COLOR1,PIECE> enPassantAlgo) {
+                                   CapturePieceAlgo<COLOR1,PIECE,Position> captureAlgo,
+                                   EnPassantPieceAlgo<COLOR1,PIECE,EnPassant> enPassantAlgo) {
 
         super(board, new CompositeAlgo<>(board, moveAlgo, bigMoveAlgo, captureAlgo));
 
@@ -78,7 +84,7 @@ final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
         CompositeAlgo(Board board,
                       PawnMoveAlgo<COLOR,PIECE> moveAlgo,
                       PawnBigMoveAlgo<COLOR,PIECE> bigMoveAlgo,
-                      PawnCaptureAlgo<COLOR,PIECE> captureAlgo) {
+                      CapturePieceAlgo<COLOR,PIECE,Position> captureAlgo) {
 
             this(board, new CompositePieceAlgo<>(board, moveAlgo, bigMoveAlgo), captureAlgo);
         }
@@ -127,11 +133,20 @@ final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
                                                                            ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
                                                                            ATTACKED extends KingPiece<COLOR2>,
                                                                            SOURCE extends AbstractTargetActivity<Impact.Type,PIECE,?> & Impact<PIECE>>
-            extends PieceAbsoluteDiscoveredAttackImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,SOURCE> {
+            extends PieceAbsoluteDiscoveredAttackImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,EnPassant,SOURCE> {
+
+        private final Algo<PIECE,Collection<Position>> algoAdapter;
 
         EnPassantAbsoluteDiscoveredAttackImpactRule(Board board,
-                                                    Algo<PIECE,Collection<Position>> algo) {
+                                                    Algo<PIECE,Collection<EnPassant>> algo) {
+
             super(board, algo);
+            this.algoAdapter = new EnPassantPositionAlgoAdapter<>(algo);
+        }
+
+        @Override
+        protected Collection<Calculatable> calculate(PIECE piece) {
+            return unmodifiableCollection(algoAdapter.calculate(piece));
         }
 
         @Override
@@ -143,15 +158,18 @@ final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
                 return null;
             }
 
-            var enPassantData = ((PawnEnPassantAlgo<COLOR1,PIECE>) this.algo).calculateData(piece);
-            if (enPassantData.isEmpty()) {
-                return null;
-            }
+            var impact = Stream.of(algo.calculate(piece))
+                    .flatMap(Collection::stream)
+                    .filter(enPassant -> Objects.equals(enPassant.getPosition(), position))
+                    .map(EnPassant::getPiece)
+                    .map(opponentPawn ->  new PieceAbsoluteDiscoveredAttackImpact<>(
+                            new PieceAttackImpact<>(piece, (PawnPiece<COLOR2>) opponentPawn, position),
+                            attacker, attacked, line
+                    ))
+                    .findFirst()
+                    .orElse(null);
 
-            return new PieceAbsoluteDiscoveredAttackImpact<>(
-                    new PieceAttackImpact<>(piece, (PawnPiece<COLOR2>) enPassantData.get(position), position),
-                    attacker, attacked, line
-            );
+            return (PieceAbsoluteDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,SOURCE>) impact;
         }
     }
 
@@ -161,11 +179,20 @@ final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
                                                                            ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
                                                                            ATTACKED extends Piece<COLOR2>,
                                                                            SOURCE extends AbstractTargetActivity<Impact.Type,PIECE,?> & Impact<PIECE>>
-            extends PieceRelativeDiscoveredAttackImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,SOURCE> {
+            extends PieceRelativeDiscoveredAttackImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,EnPassant,SOURCE> {
+
+        private final Algo<PIECE,Collection<Position>> algoAdapter;
 
         EnPassantRelativeDiscoveredAttackImpactRule(Board board,
-                                                    Algo<PIECE,Collection<Position>> algo) {
+                                                    Algo<PIECE,Collection<EnPassant>> algo) {
+
             super(board, algo);
+            this.algoAdapter = new EnPassantPositionAlgoAdapter<>(algo);
+        }
+
+        @Override
+        protected Collection<Calculatable> calculate(PIECE piece) {
+            return unmodifiableCollection(algoAdapter.calculate(piece));
         }
 
         @Override
@@ -177,15 +204,18 @@ final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
                 return null;
             }
 
-            var enPassantData = ((PawnEnPassantAlgo<COLOR1,PIECE>) this.algo).calculateData(piece);
-            if (enPassantData.isEmpty()) {
-                return null;
-            }
+            var impact = Stream.of(algo.calculate(piece))
+                    .flatMap(Collection::stream)
+                    .filter(enPassant -> Objects.equals(enPassant.getPosition(), position))
+                    .map(EnPassant::getPiece)
+                    .map(opponentPawn ->  new PieceRelativeDiscoveredAttackImpact<>(
+                            new PieceAttackImpact<>(piece, (PawnPiece<COLOR2>) opponentPawn, position),
+                            attacker, attacked, line
+                    ))
+                    .findFirst()
+                    .orElse(null);
 
-            return new PieceRelativeDiscoveredAttackImpact<>(
-                    new PieceAttackImpact<>(piece, (PawnPiece<COLOR2>) enPassantData.get(position), position),
-                    attacker, attacked, line
-            );
+            return (PieceRelativeDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,SOURCE>) impact;
         }
     }
 }

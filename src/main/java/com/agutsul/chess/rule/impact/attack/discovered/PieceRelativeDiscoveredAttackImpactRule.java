@@ -30,12 +30,13 @@ public class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
                                                      PIECE  extends Piece<COLOR1> & Movable & Capturable,
                                                      ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
                                                      ATTACKED extends Piece<COLOR2>,
+                                                     CALCULATED extends Calculatable,
                                                      SOURCE extends AbstractTargetActivity<Impact.Type,PIECE,?> & Impact<PIECE>>
-        extends AbstractDiscoveredAttackModeImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,
+        extends AbstractDiscoveredAttackModeImpactRule<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,CALCULATED,
                                                        PieceRelativeDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,SOURCE>> {
 
     protected PieceRelativeDiscoveredAttackImpactRule(Board board,
-                                                      Algo<PIECE,Collection<Position>> algo) {
+                                                      Algo<PIECE,Collection<CALCULATED>> algo) {
         super(board, algo);
     }
 
