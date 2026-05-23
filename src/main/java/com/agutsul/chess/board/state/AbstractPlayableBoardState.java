@@ -5,6 +5,7 @@ import static java.util.Collections.unmodifiableCollection;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -47,7 +48,10 @@ abstract class AbstractPlayableBoardState
         );
 
         if (impactCache.containsKey(position)) {
-            return impactCache.get(position).getAll();
+            return Stream.ofNullable(impactCache.get(position))
+                .map(ActivityCache::getAll)
+                .flatMap(Collection::stream)
+                .toList();
         }
 
         logger.info("Calculate impacts for color '{}' and position '{}'",
