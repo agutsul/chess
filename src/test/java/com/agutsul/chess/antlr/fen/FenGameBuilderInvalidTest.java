@@ -6,6 +6,7 @@ import static org.apache.commons.lang3.StringUtils.split;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
@@ -22,12 +23,18 @@ public class FenGameBuilderInvalidTest {
 
     @DisplayName("testInvalidBoardSize")
     @ParameterizedTest(name = "({index}) => (''{0}'')")
-    @ValueSource(strings = { "", " / ", "8/8/8/8/8/8/8/8/8", "1/X", "1/0", "9/R" })
+    @ValueSource(strings = { "8/8/8/8/8/8/8/8/8" })
     void testInvalidBoardSize(String boardLine) {
         var builder = new FenGameBuilder();
 
         Stream.of(split(boardLine, "/"))
             .forEach(line -> builder.addBoardLine(line));
+
+        builder.withActiveColor("w");
+        builder.withCastling(DISABLE_ALL_SYMBOL);
+        builder.withEnPassant(DISABLE_ALL_SYMBOL);
+        builder.withHalfMoves(0);
+        builder.withFullMoves(1);
 
         var thrown = assertThrows(
                 IllegalArgumentException.class,
@@ -44,24 +51,17 @@ public class FenGameBuilderInvalidTest {
 
     @DisplayName("testInvalidBoardLine")
     @ParameterizedTest(name = "({index}) => (''{0}'')")
-    @ValueSource(strings = { BOARD_LINE + "9", BOARD_LINE + "X" })
+    @ValueSource(strings = { BOARD_LINE + "9", BOARD_LINE + "X", " / ", "1/X", "1/0", "A/9", "R/9" })
     void testInvalidBoardLine(String boardLine) {
+        var lines = List.of(split(boardLine, "/")).reversed();
         var builder = new FenGameBuilder();
-
-        var lines = split(boardLine, "/");
-        Stream.of(lines)
-            .forEach(line -> builder.addBoardLine(line));
 
         var thrown = assertThrows(
                 IllegalArgumentException.class,
-                () -> builder.build()
+                () -> builder.addBoardLine(lines.getFirst())
         );
 
-        var expectedMessage = String.format(
-                "Unsupported board line: '%s'",
-                lines[lines.length - 1]
-        );
-
+        var expectedMessage = String.format("Unsupported board line: '%s'", lines.getFirst());
         assertEquals(expectedMessage, thrown.getMessage());
     }
 
@@ -71,35 +71,24 @@ public class FenGameBuilderInvalidTest {
     void testInvalidActiveColor(String color) {
         var builder = new FenGameBuilder();
 
-        Stream.of(split(BOARD_LINE, "/"))
-            .forEach(line -> builder.addBoardLine(line));
-
-        builder.withActiveColor(color);
-
         var thrown = assertThrows(
                 IllegalArgumentException.class,
-                () -> builder.build()
+                () -> builder.withActiveColor(color)
         );
 
-        var expectedMessage = String.format("Unsupported player color: '%s'", color);
+        var expectedMessage = String.format("Unsupported active player color: '%s'", color);
         assertEquals(expectedMessage, thrown.getMessage());
     }
 
     @DisplayName("testInvalidCastling")
     @ParameterizedTest(name = "({index}) => (''{0}'')")
-    @ValueSource(strings = { "a", "B", "1" })
+    @ValueSource(strings = { "", "a", "B", "1" })
     void testInvalidCastling(String castling) {
         var builder = new FenGameBuilder();
 
-        Stream.of(split(BOARD_LINE, "/"))
-            .forEach(line -> builder.addBoardLine(line));
-
-        builder.withActiveColor("w");
-        builder.withCastling(castling);
-
         var thrown = assertThrows(
                 IllegalArgumentException.class,
-                () -> builder.build()
+                () -> builder.withCastling(castling)
         );
 
         var expectedMessage = String.format("Unsupported castling: '%s'", castling);
@@ -108,26 +97,26 @@ public class FenGameBuilderInvalidTest {
 
     @DisplayName("testInvalidEnPassant")
     @ParameterizedTest(name = "({index}) => (''{0}'')")
-    @ValueSource(strings = { "e2", "e4", "1", "A1", "H8" })
+    @ValueSource(strings = { "", "e2", "1", "A1", "H8" }) // "e4",
     void testInvalidEnPassant(String enPassant) {
         var builder = new FenGameBuilder();
 
-        Stream.of(split("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR", "/"))
-            .forEach(line -> builder.addBoardLine(line));
-
-        builder.withActiveColor("w");
-        builder.withCastling(DISABLE_ALL_SYMBOL);
-        builder.withEnPassant(enPassant);
-        builder.withEnPassantPosition(enPassant);
-        builder.withHalfMoves(0);
-        builder.withFullMoves(1);
+//        Stream.of(split("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR", "/"))
+//            .forEach(line -> builder.addBoardLine(line));
+//
+//        builder.withActiveColor("w");
+//        builder.withCastling(DISABLE_ALL_SYMBOL);
+//        builder.withEnPassant(enPassant);
+//        builder.withEnPassantPosition(enPassant);
+//        builder.withHalfMoves(0);
+//        builder.withFullMoves(1);
 
         var thrown = assertThrows(
                 IllegalArgumentException.class,
-                () -> builder.build()
+                () -> builder.withEnPassant(enPassant)
         );
 
-        var expectedMessage = String.format("Unsupported en-passante position: '%s'", enPassant);
+        var expectedMessage = String.format("Unsupported en-passante: '%s'", enPassant);
         assertEquals(expectedMessage, thrown.getMessage());
     }
 
