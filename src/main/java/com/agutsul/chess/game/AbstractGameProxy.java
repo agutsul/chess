@@ -23,6 +23,10 @@ public abstract class AbstractGameProxy<GAME extends Game & Observable>
         this.game = game;
     }
 
+    public final GAME getOrigin() {
+        return this.game;
+    }
+
     @Override
     public Player getCurrentPlayer() {
         return this.game.getCurrentPlayer();

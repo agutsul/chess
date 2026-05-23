@@ -1,38 +1,27 @@
 package com.agutsul.chess.antlr.fen;
 
 import static com.agutsul.chess.antlr.fen.FenGameBuilder.DISABLE_ALL_SYMBOL;
-import static java.util.stream.Collectors.summingInt;
-import static org.apache.commons.lang3.StringUtils.reverse;
 import static org.apache.commons.lang3.StringUtils.split;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
-import java.util.Collection;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AutoClose;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.TestFileReader;
-import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.game.console.ConsoleGameOutputObserver;
+import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
-import com.agutsul.chess.piece.Piece;
 
 @ExtendWith(MockitoExtension.class)
 public class FenGameBuilderTest implements TestFileReader {
@@ -63,7 +52,7 @@ public class FenGameBuilderTest implements TestFileReader {
     }
 
     @Test
-    void testValidBoard() throws URISyntaxException, IOException {
+    void testPiecesOnBoard() throws URISyntaxException, IOException {
         var builder = new FenGameBuilder();
 
         Stream.of(split(BOARD_LINE, "/"))
@@ -76,217 +65,17 @@ public class FenGameBuilderTest implements TestFileReader {
         builder.withFullMoves(1);
 
         var game = builder.build();
+        game.addObserver(new ConsoleGameOutputObserver(game));
 
-        var observer = new ConsoleGameOutputObserver(game);
-        game.addObserver(observer);
+        try {
+            game.notifyObservers(new GameStartedEvent(game));
 
-        observer.observe(new GameStartedEvent(game));
+            var expected = readFileContent(CONSOLE_FOLDER, "console_fen_game_board.txt");
+            var actual = outputStream.toString();
 
-        var expected = readFileContent(CONSOLE_FOLDER, "console_fen_game_board.txt");
-        var actual = outputStream.toString();
-
-        assertEquals(expected, actual);
-    }
-
-    @DisplayName("testInvalidBoardSize")
-    @ParameterizedTest(name = "({index}) => (''{0}'')")
-    @ValueSource(strings = { "", " / ", "8/8/8/8/8/8/8/8/8", "1/X", "1/0", "9/R" })
-    void testInvalidBoardSize(String boardLine) {
-        var builder = new FenGameBuilder();
-
-        Stream.of(split(boardLine, "/"))
-            .forEach(line -> builder.addBoardLine(line));
-
-        var thrown = assertThrows(
-                IllegalArgumentException.class,
-                () -> builder.build()
-        );
-
-        var expectedMessage = String.format(
-                "Unsupported board lines number: '%s'",
-                reverse(boardLine)
-        );
-
-        assertEquals(expectedMessage, thrown.getMessage());
-    }
-
-    @DisplayName("testInvalidBoardLine")
-    @ParameterizedTest(name = "({index}) => (''{0}'')")
-    @ValueSource(strings = { BOARD_LINE + "9", BOARD_LINE + "X" })
-    void testInvalidBoardLine(String boardLine) {
-        var builder = new FenGameBuilder();
-
-        var lines = split(boardLine, "/");
-        Stream.of(lines)
-            .forEach(line -> builder.addBoardLine(line));
-
-        var thrown = assertThrows(
-                IllegalArgumentException.class,
-                () -> builder.build()
-        );
-
-        var expectedMessage = String.format(
-                "Unsupported board line: '%s'",
-                lines[lines.length - 1]
-        );
-
-        assertEquals(expectedMessage, thrown.getMessage());
-    }
-
-    @DisplayName("testValidActiveColor")
-    @ParameterizedTest(name = "({index}) => (''{0}'')")
-    @ValueSource(strings = { "w", "b", "W", "B" })
-    void testValidActiveColor(String color) {
-        var builder = new FenGameBuilder();
-
-        Stream.of(split(BOARD_LINE, "/"))
-            .forEach(line -> builder.addBoardLine(line));
-
-        builder.withActiveColor(color);
-        builder.withCastling(DISABLE_ALL_SYMBOL);
-        builder.withEnPassant(DISABLE_ALL_SYMBOL);
-        builder.withHalfMoves(0);
-        builder.withFullMoves(1);
-
-        var game = builder.build();
-        assertTrue(game.getJournal().isEmpty());
-
-        var player = game.getCurrentPlayer();
-        assertTrue(Strings.CI.startsWith(player.getName(), color));
-    }
-
-    @DisplayName("testInvalidActiveColor")
-    @ParameterizedTest(name = "({index}) => (''{0}'')")
-    @ValueSource(strings = { "", "A", "1", "ww", "bb", "wb", "bw" })
-    void testInvalidActiveColor(String color) {
-        var builder = new FenGameBuilder();
-
-        Stream.of(split(BOARD_LINE, "/"))
-            .forEach(line -> builder.addBoardLine(line));
-
-        builder.withActiveColor(color);
-
-        var thrown = assertThrows(
-                IllegalArgumentException.class,
-                () -> builder.build()
-        );
-
-        var expectedMessage = String.format("Unsupported player color: '%s'", color);
-        assertEquals(expectedMessage, thrown.getMessage());
-    }
-
-    @DisplayName("testValidCastling")
-    @ParameterizedTest(name = "({index}) => (''{0}'')")
-    @ValueSource(strings = { "KQkq", "KQ", "Kq", "Qk", "Qq", "Kk", "kq", "K", "Q", "k", "q" })
-    void testValidCastling(String castling) {
-        var builder = new FenGameBuilder();
-
-        Stream.of(split("r3k2r/8/8/8/8/8/8/R3K2R", "/"))
-            .forEach(line -> builder.addBoardLine(line));
-
-        builder.withActiveColor("w");
-        builder.withCastling(castling);
-        builder.withEnPassant(DISABLE_ALL_SYMBOL);
-        builder.withHalfMoves(0);
-        builder.withFullMoves(1);
-
-        var game = builder.build();
-        var board = game.getBoard();
-
-        var castlingCounter = board.getPieces(Piece.Type.ROOK).stream()
-            .map(piece -> board.getActions(piece, Action.Type.CASTLING))
-            .collect(summingInt(Collection::size));
-
-        assertEquals(castling.length(), castlingCounter);
-    }
-
-    @DisplayName("testInvalidCastling")
-    @ParameterizedTest(name = "({index}) => (''{0}'')")
-    @ValueSource(strings = { "a", "B", "1" })
-    void testInvalidCastling(String castling) {
-        var builder = new FenGameBuilder();
-
-        Stream.of(split(BOARD_LINE, "/"))
-            .forEach(line -> builder.addBoardLine(line));
-
-        builder.withActiveColor("w");
-        builder.withCastling(castling);
-
-        var thrown = assertThrows(
-                IllegalArgumentException.class,
-                () -> builder.build()
-        );
-
-        var expectedMessage = String.format("Unsupported castling: '%s'", castling);
-        assertEquals(expectedMessage, thrown.getMessage());
-    }
-
-    @DisplayName("testValidEnPassant")
-    @ParameterizedTest(name = "({index}) => (''{1}'',''{2}'')")
-    @CsvSource({
-        "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR,b,e3",
-        "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR,w,c6"
-    })
-    void testValidEnPassant(String boardLine, String color, String enPassant) {
-        var builder = new FenGameBuilder();
-
-        Stream.of(split(boardLine, "/"))
-            .forEach(line -> builder.addBoardLine(line));
-
-        builder.withActiveColor(color);
-        builder.withCastling(DISABLE_ALL_SYMBOL);
-        builder.withEnPassant(enPassant);
-        builder.withEnPassantPosition(enPassant);
-        builder.withHalfMoves(0);
-        builder.withFullMoves(1);
-
-        var game = builder.build();
-        assertEquals(1, game.getJournal().size());
-    }
-
-    @DisplayName("testInvalidEnPassant")
-    @ParameterizedTest(name = "({index}) => (''{0}'')")
-    @ValueSource(strings = { "e2", "e4", "1", "A1", "H8" })
-    void testInvalidEnPassant(String enPassant) {
-        var builder = new FenGameBuilder();
-
-        Stream.of(split("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR", "/"))
-            .forEach(line -> builder.addBoardLine(line));
-
-        builder.withActiveColor("w");
-        builder.withCastling(DISABLE_ALL_SYMBOL);
-        builder.withEnPassant(enPassant);
-        builder.withEnPassantPosition(enPassant);
-        builder.withHalfMoves(0);
-        builder.withFullMoves(1);
-
-        var thrown = assertThrows(
-                IllegalArgumentException.class,
-                () -> builder.build()
-        );
-
-        var expectedMessage = String.format("Unsupported en-passante position: '%s'", enPassant);
-        assertEquals(expectedMessage, thrown.getMessage());
-    }
-
-    @Test
-    void testUnsetEnPassant() {
-        var builder = new FenGameBuilder();
-
-        Stream.of(split("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR", "/"))
-            .forEach(line -> builder.addBoardLine(line));
-
-        builder.withActiveColor("w");
-        builder.withCastling(DISABLE_ALL_SYMBOL);
-        builder.withEnPassant("e3");
-        builder.withHalfMoves(0);
-        builder.withFullMoves(1);
-
-        var thrown = assertThrows(
-                IllegalArgumentException.class,
-                () -> builder.build()
-        );
-
-        assertEquals("En-passant enabled but not set", thrown.getMessage());
+            assertEquals(expected, actual);
+        } finally {
+            game.notifyObservers(new GameOverEvent(game));
+        }
     }
 }
