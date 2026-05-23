@@ -1,7 +1,15 @@
 package com.agutsul.chess.antlr.fen;
 
 import static com.agutsul.chess.antlr.fen.FenGameBuilder.DISABLE_ALL_SYMBOL;
-import static org.apache.commons.lang3.StringUtils.reverse;
+import static com.agutsul.chess.antlr.fen.FenGameBuilder.INVALID_CASTLING_FORMAT;
+import static com.agutsul.chess.antlr.fen.FenGameBuilder.INVALID_COLOR_FORMAT;
+import static com.agutsul.chess.antlr.fen.FenGameBuilder.INVALID_ENPASSANT_FORMAT;
+import static com.agutsul.chess.antlr.fen.FenGameBuilder.INVALID_ENPASSANT_POSITION_FORMAT;
+import static com.agutsul.chess.antlr.fen.FenGameBuilder.INVALID_FULL_MOVES_FORMAT;
+import static com.agutsul.chess.antlr.fen.FenGameBuilder.INVALID_HALF_MOVES_FORMAT;
+import static com.agutsul.chess.antlr.fen.FenGameBuilder.INVALID_LINES_NUMBER_FORMAT;
+import static com.agutsul.chess.antlr.fen.FenGameBuilder.INVALID_LINE_FORMAT;
+import static com.agutsul.chess.antlr.fen.FenGameBuilder.UNSET_ENPASSANT_MESSAGE;
 import static org.apache.commons.lang3.StringUtils.split;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -23,7 +31,7 @@ public class FenGameBuilderInvalidTest {
 
     @DisplayName("testInvalidBoardSize")
     @ParameterizedTest(name = "({index}) => (''{0}'')")
-    @ValueSource(strings = { "8/8/8/8/8/8/8/8/8" })
+    @ValueSource(strings = { "8/8/8/8/8/8/8/8/8", "8/8/8/8/8/8/8" })
     void testInvalidBoardSize(String boardLine) {
         var builder = new FenGameBuilder();
 
@@ -41,11 +49,7 @@ public class FenGameBuilderInvalidTest {
                 () -> builder.build()
         );
 
-        var expectedMessage = String.format(
-                "Unsupported board lines number: '%s'",
-                reverse(boardLine)
-        );
-
+        var expectedMessage = String.format(INVALID_LINES_NUMBER_FORMAT, boardLine);
         assertEquals(expectedMessage, thrown.getMessage());
     }
 
@@ -61,7 +65,7 @@ public class FenGameBuilderInvalidTest {
                 () -> builder.addBoardLine(lines.getFirst())
         );
 
-        var expectedMessage = String.format("Unsupported board line: '%s'", lines.getFirst());
+        var expectedMessage = String.format(INVALID_LINE_FORMAT, lines.getFirst());
         assertEquals(expectedMessage, thrown.getMessage());
     }
 
@@ -76,7 +80,7 @@ public class FenGameBuilderInvalidTest {
                 () -> builder.withActiveColor(color)
         );
 
-        var expectedMessage = String.format("Unsupported active player color: '%s'", color);
+        var expectedMessage = String.format(INVALID_COLOR_FORMAT, color);
         assertEquals(expectedMessage, thrown.getMessage());
     }
 
@@ -91,32 +95,37 @@ public class FenGameBuilderInvalidTest {
                 () -> builder.withCastling(castling)
         );
 
-        var expectedMessage = String.format("Unsupported castling: '%s'", castling);
+        var expectedMessage = String.format(INVALID_CASTLING_FORMAT, castling);
         assertEquals(expectedMessage, thrown.getMessage());
     }
 
     @DisplayName("testInvalidEnPassant")
     @ParameterizedTest(name = "({index}) => (''{0}'')")
-    @ValueSource(strings = { "", "e2", "1", "A1", "H8" }) // "e4",
+    @ValueSource(strings = { "", "e2", "e4", "1", "A1", "H8" })
     void testInvalidEnPassant(String enPassant) {
         var builder = new FenGameBuilder();
-
-//        Stream.of(split("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR", "/"))
-//            .forEach(line -> builder.addBoardLine(line));
-//
-//        builder.withActiveColor("w");
-//        builder.withCastling(DISABLE_ALL_SYMBOL);
-//        builder.withEnPassant(enPassant);
-//        builder.withEnPassantPosition(enPassant);
-//        builder.withHalfMoves(0);
-//        builder.withFullMoves(1);
 
         var thrown = assertThrows(
                 IllegalArgumentException.class,
                 () -> builder.withEnPassant(enPassant)
         );
 
-        var expectedMessage = String.format("Unsupported en-passante: '%s'", enPassant);
+        var expectedMessage = String.format(INVALID_ENPASSANT_FORMAT, enPassant);
+        assertEquals(expectedMessage, thrown.getMessage());
+    }
+
+    @DisplayName("testInvalidEnPassantPosition")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
+    @ValueSource(strings = { "", "e2", "e4", "1", "A1", "H8" })
+    void testInvalidEnPassantPosition(String enPassantPosition) {
+        var builder = new FenGameBuilder();
+
+        var thrown = assertThrows(
+                IllegalArgumentException.class,
+                () -> builder.withEnPassantPosition(enPassantPosition)
+        );
+
+        var expectedMessage = String.format(INVALID_ENPASSANT_POSITION_FORMAT, enPassantPosition);
         assertEquals(expectedMessage, thrown.getMessage());
     }
 
@@ -138,6 +147,36 @@ public class FenGameBuilderInvalidTest {
                 () -> builder.build()
         );
 
-        assertEquals("En-passant enabled but not set", thrown.getMessage());
+        assertEquals(UNSET_ENPASSANT_MESSAGE, thrown.getMessage());
+    }
+
+    @DisplayName("testInvalidHalfMoves")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
+    @ValueSource(ints = { -1 })
+    void testInvalidHalfMoves(int halfMoves) {
+        var builder = new FenGameBuilder();
+
+        var thrown = assertThrows(
+                IllegalArgumentException.class,
+                () -> builder.withHalfMoves(halfMoves)
+        );
+
+        var expectedMessage = String.format(INVALID_HALF_MOVES_FORMAT, halfMoves);
+        assertEquals(expectedMessage, thrown.getMessage());
+    }
+
+    @DisplayName("testInvalidFullMoves")
+    @ParameterizedTest(name = "({index}) => (''{0}'')")
+    @ValueSource(ints = { -1, 0 })
+    void testInvalidFullMoves(int fullMoves) {
+        var builder = new FenGameBuilder();
+
+        var thrown = assertThrows(
+                IllegalArgumentException.class,
+                () -> builder.withFullMoves(fullMoves)
+        );
+
+        var expectedMessage = String.format(INVALID_FULL_MOVES_FORMAT, fullMoves);
+        assertEquals(expectedMessage, thrown.getMessage());
     }
 }

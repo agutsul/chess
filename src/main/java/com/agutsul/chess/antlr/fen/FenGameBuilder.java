@@ -44,12 +44,23 @@ import com.agutsul.chess.position.Position;
 final class FenGameBuilder
         implements GameBuilder<FenGame<?>> {
 
-    private static final String BOARD_LINE_PATTERN = "([p,P,n,N,b,B,r,R,q,Q,k,K,1-8]){1,8}";
+    static final String INVALID_LINE_FORMAT = "Unsupported board line: '%s'";
+    static final String INVALID_LINES_NUMBER_FORMAT = "Unsupported board lines number: '%s'";
+    static final String INVALID_COLOR_FORMAT = "Unsupported active player color: '%s'";
+    static final String INVALID_CASTLING_FORMAT = "Unsupported castling: '%s'";
+    static final String INVALID_ENPASSANT_FORMAT = "Unsupported en-passante: '%s'";
+    static final String INVALID_ENPASSANT_POSITION_FORMAT = "Unsupported en-passante position: '%s'";
+    static final String INVALID_HALF_MOVES_FORMAT = "Unsupported half moves: '%s'";
+    static final String INVALID_FULL_MOVES_FORMAT = "Unsupported full moves: '%s'";
+
+    static final String UNSET_ENPASSANT_MESSAGE = "En-passant enabled but not set";
+
+    static final String DISABLE_ALL_SYMBOL = "-";
+
+    private static final String LINE_PATTERN       = "([p,P,n,N,b,B,r,R,q,Q,k,K,1-8]){1,8}";
     private static final String COLOR_PATTERN      = "([w,b]){1}";
     private static final String CASTLING_PATTERN   = "([q,Q,k,K]){1,4}";
     private static final String ENPASSANT_PATTERN  = "([a-h]{1}[3,6]{1}){1}";
-
-    static final String DISABLE_ALL_SYMBOL = "-";
 
     private final Pattern linePattern;
     private final Pattern colorPattern;
@@ -67,7 +78,7 @@ final class FenGameBuilder
     private int fullMoveClock;
 
     FenGameBuilder() {
-        this.linePattern = compile(BOARD_LINE_PATTERN);
+        this.linePattern = compile(LINE_PATTERN);
         this.colorPattern = compile(COLOR_PATTERN);
         this.castlingPattern = compile(CASTLING_PATTERN);
         this.enPassantPattern = compile(ENPASSANT_PATTERN);
@@ -78,14 +89,11 @@ final class FenGameBuilder
     public FenGame<?> build() {
 
         if (nonNull(activeEnPassant) && isNull(enPassantPosition)) {
-            throw new IllegalArgumentException("En-passant enabled but not set");
+            throw new IllegalArgumentException(UNSET_ENPASSANT_MESSAGE);
         }
 
         if (parsedBoardLines.size() != Position.MAX) {
-            throw new IllegalArgumentException(String.format(
-                    "Unsupported board lines number: '%s'",
-                    join(parsedBoardLines, "/")
-            ));
+            throw createArgumentException(INVALID_LINES_NUMBER_FORMAT, join(parsedBoardLines, "/"));
         }
 
         var playerColor = resolveColor(activeColor);
@@ -98,8 +106,8 @@ final class FenGameBuilder
                 board, playerColor, halfMoveClock, fullMoveClock
         );
 
+        // by default all castling sides are enabled
         if (nonNull(activeCastling)) {
-            // by default all castling sides are enabled
             if (activeCastling.length() != 4) {
                 // in case when only some should be enabled => disable all
                 disableAllCastlings(board);
@@ -108,6 +116,8 @@ final class FenGameBuilder
             }
             // save string of enabled castling sides
             game.setParsedCastling(activeCastling);
+        } else {
+            disableAllCastlings(board);
         }
 
         if (nonNull(activeEnPassant)) {
@@ -123,18 +133,12 @@ final class FenGameBuilder
 
     GameBuilder<FenGame<?>> addBoardLine(String line) {
         if (isBlank(line)) {
-            throw new IllegalArgumentException(String.format(
-                    "Unsupported board line: '%s'",
-                    line
-            ));
+            throw createArgumentException(INVALID_LINE_FORMAT, line);
         }
 
         var matcher = this.linePattern.matcher(line);
         if (!matcher.matches()) {
-            throw new IllegalArgumentException(String.format(
-                    "Unsupported board line: '%s'",
-                    line
-            ));
+            throw createArgumentException(INVALID_LINE_FORMAT, line);
         }
 
         this.parsedBoardLines.add(line);
@@ -143,18 +147,12 @@ final class FenGameBuilder
 
     GameBuilder<FenGame<?>> withActiveColor(String color) {
         if (isBlank(color)) {
-            throw new IllegalArgumentException(String.format(
-                    "Unsupported active player color: '%s'",
-                    color
-            ));
+            throw createArgumentException(INVALID_COLOR_FORMAT, color);
         }
 
         var matcher = this.colorPattern.matcher(lowerCase(color));
         if (!matcher.matches()) {
-            throw new IllegalArgumentException(String.format(
-                    "Unsupported active player color: '%s'",
-                    color
-            ));
+            throw createArgumentException(INVALID_COLOR_FORMAT, color);
         }
 
         this.activeColor = color;
@@ -168,19 +166,13 @@ final class FenGameBuilder
         }
 
         if (isBlank(castling)) {
-            throw new IllegalArgumentException(String.format(
-                    "Unsupported castling: '%s'",
-                    castling
-            ));
+            throw createArgumentException(INVALID_CASTLING_FORMAT, castling);
         }
 
         for (int i = 0; i < castling.length(); i++) {
             var matcher = this.castlingPattern.matcher(String.valueOf(castling.charAt(i)));
             if (!matcher.matches()) {
-                throw new IllegalArgumentException(String.format(
-                        "Unsupported castling: '%s'",
-                        castling
-                ));
+                throw createArgumentException(INVALID_CASTLING_FORMAT, castling);
             }
         }
 
@@ -195,18 +187,12 @@ final class FenGameBuilder
         }
 
         if (isBlank(enPassant)) {
-            throw new IllegalArgumentException(String.format(
-                    "Unsupported en-passante: '%s'",
-                    enPassant
-            ));
+            throw createArgumentException(INVALID_ENPASSANT_FORMAT, enPassant);
         }
 
         var matcher = this.enPassantPattern.matcher(enPassant);
         if (!matcher.matches()) {
-            throw new IllegalArgumentException(String.format(
-                    "Unsupported en-passante: '%s'",
-                    enPassant
-            ));
+            throw createArgumentException(INVALID_ENPASSANT_FORMAT, enPassant);
         }
 
         this.activeEnPassant = enPassant;
@@ -216,10 +202,7 @@ final class FenGameBuilder
     GameBuilder<FenGame<?>> withEnPassantPosition(String enPassantPosition) {
         var matcher = this.enPassantPattern.matcher(enPassantPosition);
         if (!matcher.matches()) {
-            throw new IllegalArgumentException(String.format(
-                    "Unsupported en-passante position: '%s'",
-                    enPassantPosition
-            ));
+            throw createArgumentException(INVALID_ENPASSANT_POSITION_FORMAT, enPassantPosition);
         }
 
         this.enPassantPosition = enPassantPosition;
@@ -228,10 +211,7 @@ final class FenGameBuilder
 
     GameBuilder<FenGame<?>> withHalfMoves(int halfMoves) {
         if (halfMoves < 0) {
-            throw new IllegalArgumentException(String.format(
-                    "Unsupported half moves: '%d'",
-                    halfMoves
-            ));
+            throw createArgumentException(INVALID_HALF_MOVES_FORMAT, String.valueOf(halfMoves));
         }
 
         this.halfMoveClock = halfMoves;
@@ -240,10 +220,7 @@ final class FenGameBuilder
 
     GameBuilder<FenGame<?>> withFullMoves(int fullMoves) {
         if (fullMoves < 1) {
-            throw new IllegalArgumentException(String.format(
-                    "Unsupported full moves: '%d'",
-                    fullMoves
-            ));
+            throw createArgumentException(INVALID_FULL_MOVES_FORMAT, String.valueOf(fullMoves));
         }
 
         this.fullMoveClock = fullMoves;
@@ -281,11 +258,7 @@ final class FenGameBuilder
         case "b" -> Piece.Type.BISHOP;
         case "q" -> Piece.Type.QUEEN;
         case "k" -> Piece.Type.KING;
-        default  ->
-            throw new IllegalArgumentException(String.format(
-                    "Unsupported piece type: '%s'",
-                    pieceCode
-            ));
+        default  -> throw createArgumentException("Unsupported piece type: '%s'", pieceCode);
         };
     }
 
@@ -293,11 +266,7 @@ final class FenGameBuilder
         return switch (lowerCase(colorCode)) {
         case "b" -> Colors.BLACK;
         case "w" -> Colors.WHITE;
-        default  ->
-            throw new IllegalArgumentException(String.format(
-                    "Unsupported player color: '%s'",
-                    colorCode
-            ));
+        default  -> throw createArgumentException("Unsupported player color: '%s'", colorCode);
         };
     }
 
@@ -305,11 +274,7 @@ final class FenGameBuilder
         return switch(code) {
         case "q","Q" -> QUEEN_SIDE;
         case "k","K" -> KING_SIDE;
-        default ->
-            throw new IllegalArgumentException(String.format(
-                "Unsupported castling: '%s'",
-                code
-            ));
+        default -> throw createArgumentException("Unsupported castling: '%s'", code);
         };
     }
 
@@ -368,5 +333,9 @@ final class FenGameBuilder
         command.setTarget(targetPosition);
 
         command.execute();
+    }
+
+    private static IllegalArgumentException createArgumentException(String format, String arg) {
+        return new IllegalArgumentException(String.format(format, arg));
     }
 }
