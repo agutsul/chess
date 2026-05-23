@@ -52,6 +52,7 @@ final class FenGameBuilder
     static final String INVALID_ENPASSANT_POSITION_FORMAT = "Unsupported en-passante position: '%s'";
     static final String INVALID_HALF_MOVES_FORMAT = "Unsupported half moves: '%s'";
     static final String INVALID_FULL_MOVES_FORMAT = "Unsupported full moves: '%s'";
+    static final String INVALID_PIECE_TYPE = "Unsupported piece type: '%s'";
 
     static final String UNSET_ENPASSANT_MESSAGE = "En-passant enabled but not set";
 
@@ -258,7 +259,7 @@ final class FenGameBuilder
         case "b" -> Piece.Type.BISHOP;
         case "q" -> Piece.Type.QUEEN;
         case "k" -> Piece.Type.KING;
-        default  -> throw createArgumentException("Unsupported piece type: '%s'", pieceCode);
+        default  -> throw createArgumentException(INVALID_PIECE_TYPE, pieceCode);
         };
     }
 
@@ -266,7 +267,7 @@ final class FenGameBuilder
         return switch (lowerCase(colorCode)) {
         case "b" -> Colors.BLACK;
         case "w" -> Colors.WHITE;
-        default  -> throw createArgumentException("Unsupported player color: '%s'", colorCode);
+        default  -> throw createArgumentException(INVALID_COLOR_FORMAT, colorCode);
         };
     }
 
@@ -274,7 +275,7 @@ final class FenGameBuilder
         return switch(code) {
         case "q","Q" -> QUEEN_SIDE;
         case "k","K" -> KING_SIDE;
-        default -> throw createArgumentException("Unsupported castling: '%s'", code);
+        default -> throw createArgumentException(INVALID_CASTLING_FORMAT, code);
         };
     }
 
