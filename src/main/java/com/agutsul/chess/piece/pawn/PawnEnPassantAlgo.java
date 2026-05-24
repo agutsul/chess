@@ -67,10 +67,8 @@ final class PawnEnPassantAlgo<COLOR extends Color,
     // check if there was a big move for 2 positions in opponent piece's history
     private static boolean containsBigMoveAction(PawnPiece<Color> opponentPawn) {
         return Stream.of(opponentPawn.getPositions())
-                .filter(visitedPositions -> visitedPositions.size() == 2)
-                .map(visitedPositions -> visitedPositions.get(visitedPositions.size() - 2))
-                .map(previousPosition -> Math.abs(previousPosition.y() - opponentPawn.getPosition().y()))
-                .anyMatch(moveLength -> moveLength == PawnPiece.BIG_STEP_MOVE);
+                // confirm only one action was performed and it was big move
+                .anyMatch(positions -> positions.size() == 2 && opponentPawn.isBigMoved());
     }
 
     private record EnPassantImpl(Position position, PawnPiece<?> piece) implements EnPassant {

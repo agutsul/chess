@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.agutsul.chess.Accumulatable;
 import com.agutsul.chess.Backwardable;
+import com.agutsul.chess.BigMovable;
 import com.agutsul.chess.Blockadable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Castlingable;
@@ -85,6 +86,11 @@ abstract class AbstractTransformablePieceProxy<COLOR extends Color,
     @Override
     public boolean isPassed() {
         return ((Passable) this.origin).isPassed();
+    }
+
+    @Override
+    public boolean isBigMoved() {
+        return ((BigMovable) this.origin).isBigMoved();
     }
 
     @Override

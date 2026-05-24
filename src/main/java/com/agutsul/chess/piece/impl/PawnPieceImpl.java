@@ -94,6 +94,12 @@ final class PawnPieceImpl<COLOR extends Color>
     }
 
     @Override
+    public boolean isBigMoved() {
+        return isMoved()
+                && Math.abs(getPositions().get(1).y() - getPositions().get(0).y()) == BIG_STEP_MOVE;
+    }
+
+    @Override
     public boolean isBlocked() {
         return hasImpact(Impact.Type.BLOCKADE);
     }

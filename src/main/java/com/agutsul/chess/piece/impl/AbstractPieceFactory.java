@@ -512,6 +512,12 @@ abstract class AbstractPieceFactory<COLOR extends Color>
                 logger.info("Check if piece '{}' is passed", this);
                 return this.origin.isPassed();
             }
+
+            @Override
+            public boolean isBigMoved() {
+                logger.info("Check if piece '{}' is big moved", this);
+                return this.origin.isBigMoved();
+            }
         }
     }
 }

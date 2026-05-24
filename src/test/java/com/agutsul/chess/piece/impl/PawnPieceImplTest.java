@@ -1205,6 +1205,45 @@ public class PawnPieceImplTest extends AbstractPieceTest {
     }
 
     @Test
+    void testPawnIsBigMoved() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e8")
+                .withBlackKnight("d7")
+                .withBlackPawns("f7","e7","b7","c7")
+                .withWhiteKing("e1")
+                .withWhitePawns("b2","c2","e2","f2")
+                .build();
+
+        var blackPawn1 = (PawnPiece<Color>) board.getPiece("f7").get();
+        blackPawn1.move(board.getPosition("f5").get());
+
+        var blackPawn2 = (PawnPiece<Color>) board.getPiece("e7").get();
+        blackPawn2.move(board.getPosition("e6").get());
+
+        var blackPawn3 = (PawnPiece<Color>) board.getPiece("b7").get();
+
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.WHITE));
+
+        var whitePawn1 = (PawnPiece<Color>) board.getPiece("c2").get();
+        whitePawn1.move(board.getPosition("c4").get());
+
+        var whitePawn2 = (PawnPiece<Color>) board.getPiece("e2").get();
+        whitePawn2.move(board.getPosition("e3").get());
+
+        var whitePawn3 = (PawnPiece<Color>) board.getPiece("f2").get();
+
+        ((Observable) board).notifyObservers(new ClearCachedDataEvent(Colors.BLACK));
+
+        assertTrue(blackPawn1.isBigMoved());
+        assertFalse(blackPawn2.isBigMoved());
+        assertFalse(blackPawn3.isBigMoved());
+
+        assertTrue(whitePawn1.isBigMoved());
+        assertFalse(whitePawn2.isBigMoved());
+        assertFalse(whitePawn3.isBigMoved());
+    }
+
+    @Test
     void testPawnPromotionMoveImpact() {
         var board = new LabeledBoardBuilder()
                 .withBlackKing("h8")
