@@ -37,7 +37,9 @@ final class PawnEnPassantAlgo<COLOR extends Color,
                 .flatMap(Collection::stream)
                 .flatMap(attackedPosition -> Stream.of(findOpponentPawn(attacker, attackedPosition))
                         .flatMap(Optional::stream)
-                        .map(opponentPawn -> containsBigMoveAction(opponentPawn)
+                        // confirm only one action was performed and it was a big move
+                        .filter(opponentPawn -> opponentPawn.getPositions().size() == 2)
+                        .map(opponentPawn -> opponentPawn.isBigMoved()
                                     ? new EnPassantImpl(attackedPosition, opponentPawn)
                                     : null
                         )
@@ -62,13 +64,6 @@ final class PawnEnPassantAlgo<COLOR extends Color,
                 .findFirst();
 
         return optionalPawn;
-    }
-
-    // check if there was a big move for 2 positions in opponent piece's history
-    private static boolean containsBigMoveAction(PawnPiece<Color> opponentPawn) {
-        return Stream.of(opponentPawn.getPositions())
-                // confirm only one action was performed and it was big move
-                .anyMatch(positions -> positions.size() == 2 && opponentPawn.isBigMoved());
     }
 
     private record EnPassantImpl(Position position, PawnPiece<?> piece) implements EnPassant {
