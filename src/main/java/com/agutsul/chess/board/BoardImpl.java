@@ -544,10 +544,10 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         try {
             this.executorService.shutdown();
 
-            if (!this.executorService.awaitTermination(1, MILLISECONDS)) {
+            if (!this.executorService.awaitTermination(10, MILLISECONDS)) {
                 this.executorService.shutdownNow();
 
-                if (!this.executorService.awaitTermination(1, MILLISECONDS)) {
+                if (!this.executorService.awaitTermination(10, MILLISECONDS)) {
                     LOGGER.error("Board executor did not terminate");
                 }
             }
