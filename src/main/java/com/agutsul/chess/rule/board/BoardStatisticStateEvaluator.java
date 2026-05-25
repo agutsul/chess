@@ -3,6 +3,7 @@ package com.agutsul.chess.rule.board;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -52,10 +53,12 @@ final class BoardStatisticStateEvaluator
     }
 
     private static Optional<BoardState> wrapBoardState(Optional<BoardState> boardState) {
-        if (boardState.isEmpty()) {
-            return boardState;
-        }
-
-        return Optional.of(new BoardStateProxy(boardState.get()));
+        return Stream.of(boardState)
+            .flatMap(Optional::stream)
+            .map(BoardStateProxy::new)
+            .map(bs -> (BoardState) bs)
+            .map(Optional::of)
+            .findFirst()
+            .orElse(boardState);
     }
 }
