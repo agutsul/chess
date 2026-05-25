@@ -1,0 +1,3 @@
+WHITE: Board state: (CHECKED(f7),THREE_FOLD_REPETITION(Nb3))
+Action: fxe8
+

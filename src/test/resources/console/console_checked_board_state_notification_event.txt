@@ -1,0 +1,3 @@
+WHITE: Board state: CHECKED(f7)
+Action: fxe8
+
