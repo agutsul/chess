@@ -1,7 +1,5 @@
 package com.agutsul.chess.piece.pawn;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -12,58 +10,63 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.AbstractAlgo;
-import com.agutsul.chess.piece.algo.CapturePieceAlgo;
+import com.agutsul.chess.piece.algo.AbstractPositionAlgo;
 import com.agutsul.chess.piece.algo.EnPassantPieceAlgo;
 import com.agutsul.chess.position.Position;
 
 final class PawnEnPassantAlgo<COLOR extends Color,
                               PAWN  extends PawnPiece<COLOR>>
-        extends AbstractAlgo<PAWN,EnPassant>
+        extends AbstractPositionAlgo<PAWN,EnPassant>
         implements EnPassantPieceAlgo<COLOR,PAWN,EnPassant> {
 
-    private final CapturePieceAlgo<COLOR,PAWN,Position> captureAlgo;
+    private final PawnCaptureAlgo<COLOR,PAWN> captureAlgo;
+    private final COLOR color;
 
-    PawnEnPassantAlgo(Board board,
-                      CapturePieceAlgo<COLOR,PAWN,Position> captureAlgo) {
+    PawnEnPassantAlgo(Board board, COLOR color,
+                      PawnCaptureAlgo<COLOR,PAWN> captureAlgo) {
 
         super(board);
+        this.color = color;
         this.captureAlgo = captureAlgo;
     }
 
     @Override
-    public Collection<EnPassant> calculate(PAWN attacker) {
-        Collection<EnPassant> enPassants = Stream.of(captureAlgo.calculate(attacker))
+    public Collection<EnPassant> calculate(Position attackerPosition) {
+        var enPassants = Stream.of(captureAlgo.calculate(attackerPosition))
                 .flatMap(Collection::stream)
-                .flatMap(attackedPosition -> Stream.of(findOpponentPawn(attacker, attackedPosition))
+                .flatMap(attackedPosition -> Stream.of(findOpponentPawn(attackerPosition, attackedPosition))
                         .flatMap(Optional::stream)
-                        // confirm only one action was performed and it was a big move
-                        .filter(opponentPawn -> opponentPawn.getPositions().size() == 2)
-                        .map(opponentPawn -> opponentPawn.isBigMoved()
-                                    ? new EnPassantImpl(attackedPosition, opponentPawn)
-                                    : null
-                        )
+                        .map(opponentPawn -> createEnPassant(attackedPosition, opponentPawn))
                         .map(Optional::ofNullable)
                 )
                 .flatMap(Optional::stream)
-                .collect(toList());
+                .toList();
 
         return enPassants;
     }
 
-    private Optional<PawnPiece<Color>> findOpponentPawn(PAWN pawn, Position position) {
-        var optionalPawn = Stream.of(position)
+    private Optional<PawnPiece<Color>> findOpponentPawn(Position attackerPosition,
+                                                        Position attackedPosition) {
+
+        var optionalPawn = Stream.of(attackedPosition)
                 .filter(opponentPosition -> board.isEmpty(opponentPosition))
-                .map(opponentPosition -> board.getPosition(opponentPosition.x(), pawn.getPosition().y()))
+                .map(opponentPosition -> board.getPosition(opponentPosition.x(), attackerPosition.y()))
                 .flatMap(Optional::stream)
                 .map(opponentPosition -> board.getPiece(opponentPosition))
                 .flatMap(Optional::stream)
-                .filter(opponentPiece -> !Objects.equals(opponentPiece.getColor(), pawn.getColor()))
+                .filter(opponentPiece -> !Objects.equals(opponentPiece.getColor(), this.color))
                 .filter(Piece::isPawn)
                 .map(piece -> (PawnPiece<Color>) piece)
                 .findFirst();
 
         return optionalPawn;
+    }
+
+    private static EnPassant createEnPassant(Position attackedPosition, PawnPiece<?> opponentPawn) {
+        // confirm only one action was performed and it was a big move
+        return opponentPawn.getPositions().size() == 2 && opponentPawn.isBigMoved()
+                ? new EnPassantImpl(attackedPosition, opponentPawn)
+                : null;
     }
 
     private record EnPassantImpl(Position position, PawnPiece<?> piece) implements EnPassant {

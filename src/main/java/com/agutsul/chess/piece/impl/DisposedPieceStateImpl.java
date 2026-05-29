@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Disposable;
 import com.agutsul.chess.Movable;
@@ -65,6 +66,12 @@ final class DisposedPieceStateImpl<PIECE extends Piece<?> & Movable & Capturable
                 piece
         );
 
+        return emptyList();
+    }
+
+    @Override
+    public Collection<Calculatable> calculateNext(PIECE piece, Position position) {
+        LOGGER.warn("Calculate next positions of disabled piece '{}'", position);
         return emptyList();
     }
 

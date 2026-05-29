@@ -12,24 +12,26 @@ import com.agutsul.chess.rule.impact.promote.PiecePromoteImpactRule;
 import com.agutsul.chess.rule.impact.protect.PieceProtectPositionImpactRule;
 
 public final class PawnPieceImpactRule<COLOR extends Color,
-                                       PAWN extends PawnPiece<COLOR>>
+                                       PAWN  extends PawnPiece<COLOR>>
         extends AbstractPieceRule<PAWN,Impact<?>,Impact.Type> {
 
-    public PawnPieceImpactRule(Board board, int step, int initialLine, int promotionLine) {
-        this(board, promotionLine,
+    public PawnPieceImpactRule(Board board, COLOR color,
+                               int step, int initialLine, int promotionLine) {
+
+        this(board, color, promotionLine,
                 new PawnMoveAlgo<>(board, step),
                 new PawnBigMoveAlgo<>(board, step, initialLine),
                 new PawnCaptureAlgo<>(board, step)
         );
     }
 
-    private PawnPieceImpactRule(Board board, int promotionLine,
+    private PawnPieceImpactRule(Board board, COLOR color, int promotionLine,
                                 PawnMoveAlgo<COLOR,PAWN> moveAlgo,
                                 PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
                                 PawnCaptureAlgo<COLOR,PAWN> captureAlgo) {
 
         this(board, promotionLine, moveAlgo, bigMoveAlgo,
-                captureAlgo, new PawnEnPassantAlgo<>(board, captureAlgo),
+                captureAlgo, new PawnEnPassantAlgo<>(board, color, captureAlgo),
                 new PawnPromoteAlgo<>(board, promotionLine, moveAlgo, captureAlgo)
         );
     }

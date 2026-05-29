@@ -6,19 +6,19 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.BishopPiece;
-import com.agutsul.chess.piece.algo.AbstractAlgo;
-import com.agutsul.chess.piece.algo.Algo;
+import com.agutsul.chess.piece.algo.AbstractPositionAlgo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.DiagonalLineAlgo;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
+import com.agutsul.chess.position.Position;
 
 final class BishopPieceAlgo<COLOR  extends Color,
                             BISHOP extends BishopPiece<COLOR>>
-        extends AbstractAlgo<BISHOP,Line>
+        extends AbstractPositionAlgo<BISHOP,Line>
         implements MovePieceAlgo<COLOR,BISHOP,Line>,
                    CapturePieceAlgo<COLOR,BISHOP,Line> {
 
-    private final Algo<BISHOP,Collection<Line>> algo;
+    private final DiagonalLineAlgo<COLOR,BISHOP> algo;
 
     BishopPieceAlgo(Board board) {
         super(board);
@@ -28,5 +28,10 @@ final class BishopPieceAlgo<COLOR  extends Color,
     @Override
     public Collection<Line> calculate(BISHOP piece) {
         return algo.calculate(piece);
+    }
+
+    @Override
+    public Collection<Line> calculate(Position position) {
+        return algo.calculate(position);
     }
 }

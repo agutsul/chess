@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Disposable;
 import com.agutsul.chess.Movable;
@@ -165,6 +166,12 @@ abstract class AbstractPiece<COLOR extends Color>
 
         LOGGER.info("Calculating '{}' impacts({})", this, impactType.name());
         return getState().calculateImpacts(this, impactType);
+    }
+
+    @Override
+    public Collection<Calculatable> getNext(Position position) {
+        LOGGER.info("Calculating '{}' next positions for '{}'", this, position);
+        return getState().calculateNext(this, position);
     }
 
     @Override

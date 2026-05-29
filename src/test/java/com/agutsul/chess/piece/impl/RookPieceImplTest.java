@@ -1,6 +1,7 @@
 package com.agutsul.chess.piece.impl;
 
 import static com.agutsul.chess.piece.Piece.isRook;
+import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,6 +20,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.Castlingable;
+import com.agutsul.chess.Castlingable.Castling;
+import com.agutsul.chess.Castlingable.Side;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
 import com.agutsul.chess.activity.impact.PieceAttackImpact;
@@ -33,9 +36,12 @@ import com.agutsul.chess.activity.impact.PieceXRayAttackImpact;
 import com.agutsul.chess.activity.impact.PieceXRayImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
+import com.agutsul.chess.board.event.SetCastlingableSideEvent;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.IllegalActionException;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.Piece.Type;
 import com.agutsul.chess.piece.RookPiece;
@@ -249,6 +255,90 @@ public class RookPieceImplTest extends AbstractPieceTest {
 
         assertTrue(board2.getActions(blackRook).isEmpty());
         assertTrue(board2.getImpacts(blackRook).isEmpty());
+    }
+
+    @Test
+    void testRookGetNextLines() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteRook("a1")
+                .withWhiteKing("e1")
+                .build();
+
+        var whiteRook = board.getPiece("a1").get();
+        var whiteRookNext = whiteRook.getNext(positionOf("a3"));
+
+        assertFalse(whiteRookNext.isEmpty());
+        assertEquals(3, whiteRookNext.size());
+
+        var lines = Stream.of(whiteRookNext)
+                .flatMap(Collection::stream)
+                .filter(calculated -> calculated instanceof Line)
+                .map(calculated -> (Line) calculated)
+                .toList();
+
+        assertEquals(3, lines.size());
+    }
+
+    @Test
+    void testRookGetNextEmpty() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteRook("a1")
+                .withWhiteKing("e1")
+                .build();
+
+        var whiteRook = board.getPiece("a1").get();
+        var whiteRookNext = whiteRook.getNext(positionOf("b2"));
+        assertTrue(whiteRookNext.isEmpty());
+    }
+
+    @Test
+    void testRookGetNextCastling() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteRook("a1")
+                .withWhiteKing("e1")
+                .build();
+
+        var whiteRook = board.getPiece("a1").get();
+        var whiteRookNext = whiteRook.getNext(positionOf("a1"));
+
+        assertFalse(whiteRookNext.isEmpty());
+        assertEquals(3, whiteRookNext.size());
+
+        var castlings = Stream.of(whiteRookNext)
+                .flatMap(Collection::stream)
+                .filter(calculated -> calculated instanceof Castling)
+                .map(calculated -> (Castling) calculated)
+                .toList();
+
+        assertFalse(castlings.isEmpty());
+        assertEquals(1, castlings.size());
+        assertEquals(Side.QUEEN, castlings.getFirst().side());
+    }
+
+    @Test
+    void testRookGetNextWithDisabledCastlingSide() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteRook("a1")
+                .withWhiteKing("e1")
+                .build();
+
+        ((Observable) board).notifyObservers(
+                new SetCastlingableSideEvent(Colors.WHITE, Side.QUEEN, false)
+        );
+
+        var whiteRook = board.getPiece("a1").get();
+        var whiteRookNext = whiteRook.getNext(positionOf("a1"));
+
+        assertFalse(whiteRookNext.isEmpty());
+        assertEquals(2, whiteRookNext.size());
+
+        var castlings = Stream.of(whiteRookNext)
+                .flatMap(Collection::stream)
+                .filter(calculated -> calculated instanceof Castling)
+                .map(calculated -> (Castling) calculated)
+                .toList();
+
+        assertTrue(castlings.isEmpty());
     }
 
     @Test

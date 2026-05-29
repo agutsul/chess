@@ -1,9 +1,11 @@
 package com.agutsul.chess.piece.algo;
 
+import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.RookPiece;
+import com.agutsul.chess.position.Position;
 
 public final class KingSideCastlingAlgo<COLOR extends Color,
                                         KING  extends KingPiece<COLOR>,
@@ -12,15 +14,13 @@ public final class KingSideCastlingAlgo<COLOR extends Color,
 
     private static final int EMPTY_POSITIONS = 2;
 
-    public KingSideCastlingAlgo(Board board, int castlingLine) {
-        super(board, castlingLine);
+    public KingSideCastlingAlgo(Board board, COLOR color, int castlingLine) {
+        super(Castlingable.Side.KING, board, color, castlingLine);
     }
 
     @Override
-    boolean isAnyAttackedBetween(KING king, ROOK rook) {
-        var rookPosition = rook.getPosition();
-        var kingPosition = king.getPosition();
-        var attackerColor = king.getColor().invert();
+    public boolean isAnyAttackedBetween(Position kingPosition, Position rookPosition) {
+        var attackerColor = getColor().invert();
 
         for (int i = kingPosition.x() + 1; i < rookPosition.x(); i++) {
             var optionalPosition = board.getPosition(i, rookPosition.y());
@@ -35,10 +35,7 @@ public final class KingSideCastlingAlgo<COLOR extends Color,
     }
 
     @Override
-    boolean isAllEmptyBetween(KING king, ROOK rook) {
-        var rookPosition = rook.getPosition();
-        var kingPosition = king.getPosition();
-
+    public boolean isAllEmptyBetween(Position kingPosition, Position rookPosition) {
         int counter = 0;
         for (int i = kingPosition.x() + 1; i < rookPosition.x(); i++) {
             var optionalPosition = board.getPosition(i, rookPosition.y());

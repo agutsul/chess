@@ -15,7 +15,7 @@ import com.agutsul.chess.piece.Piece;
 
 public final class MoveLineAlgoAdapter<COLOR extends Color,
                                        PIECE extends Piece<COLOR> & Movable & Lineable>
-        extends AbstractLineAlgo<PIECE,Line>
+        extends AbstractAlgo<PIECE,Line>
         implements MovePieceAlgo<COLOR,PIECE,Line> {
 
     private final Algo<PIECE,Collection<Line>> algo;

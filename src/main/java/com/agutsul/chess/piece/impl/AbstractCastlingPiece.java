@@ -80,6 +80,11 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     }
 
     @Override
+    public final boolean isEnabled(Side side) {
+        return getSides().contains(side);
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public final void castling(Position position) {
         LOGGER.info("'{}' castling to '{}'", this, position);

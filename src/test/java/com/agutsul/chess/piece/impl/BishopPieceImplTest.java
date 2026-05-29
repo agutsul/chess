@@ -1,6 +1,7 @@
 package com.agutsul.chess.piece.impl;
 
 import static com.agutsul.chess.piece.Piece.isBishop;
+import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -42,6 +43,7 @@ import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.BishopPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.Piece.Type;
@@ -165,6 +167,60 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         var whiteBishop = board.getPiece("e4").get();
         var bishopActions = board.getActions(whiteBishop);
         assertTrue(bishopActions.isEmpty());
+    }
+
+    @Test
+    void testBishopGetNext() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteBishops("f1","c1")
+                .withWhiteKing("e1")
+                .build();
+
+        var whiteBishop1 = board.getPiece("f1").get();
+        var whiteBishop1Next = whiteBishop1.getNext(positionOf("h3"));
+
+        assertFalse(whiteBishop1Next.isEmpty());
+        assertEquals(2, whiteBishop1Next.size());
+
+        var lines1 = Stream.of(whiteBishop1Next)
+                .flatMap(Collection::stream)
+                .filter(calculated -> calculated instanceof Line)
+                .map(calculated -> (Line) calculated)
+                .toList();
+
+        assertEquals(2, lines1.size());
+
+        var whiteBishop2 = board.getPiece("c1").get();
+        var whiteBishop2Next = whiteBishop2.getNext(positionOf("a3"));
+
+        assertFalse(whiteBishop2Next.isEmpty());
+        assertEquals(2, whiteBishop2Next.size());
+
+        var lines2 = Stream.of(whiteBishop2Next)
+                .flatMap(Collection::stream)
+                .filter(calculated -> calculated instanceof Line)
+                .map(calculated -> (Line) calculated)
+                .toList();
+
+        assertEquals(2, lines2.size());
+    }
+
+    @Test
+    void testBishopGetNextEmpty() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteBishops("f1","c1")
+                .withWhiteKing("e1")
+                .build();
+
+        var whiteBishop1 = board.getPiece("f1").get();
+        var whiteBishop1Next = whiteBishop1.getNext(positionOf("f2"));
+
+        assertTrue(whiteBishop1Next.isEmpty());
+
+        var whiteBishop2 = board.getPiece("c1").get();
+        var whiteBishop2Next = whiteBishop2.getNext(positionOf("c2"));
+
+        assertTrue(whiteBishop2Next.isEmpty());
     }
 
     @Test

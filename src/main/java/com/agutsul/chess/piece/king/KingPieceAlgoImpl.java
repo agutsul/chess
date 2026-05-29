@@ -7,12 +7,12 @@ import java.util.stream.Stream;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
-import com.agutsul.chess.piece.algo.AbstractAlgo;
+import com.agutsul.chess.piece.algo.AbstractPositionAlgo;
 import com.agutsul.chess.position.Position;
 
 final class KingPieceAlgoImpl<COLOR extends Color,
                               KING  extends KingPiece<COLOR>>
-        extends AbstractAlgo<KING,Position>
+        extends AbstractPositionAlgo<KING,Position>
         implements KingPieceAlgo<COLOR,KING> {
 
     private enum Move {
@@ -46,12 +46,11 @@ final class KingPieceAlgoImpl<COLOR extends Color,
     }
 
     @Override
-    public Collection<Position> calculate(KING king) {
-        var currentPosition = king.getPosition();
+    public Collection<Position> calculate(Position position) {
         var nextPositions = Stream.of(Move.values())
                 .map(move -> board.getPosition(
-                        currentPosition.x() + move.x(),
-                        currentPosition.y() + move.y()
+                        position.x() + move.x(),
+                        position.y() + move.y()
                 ))
                 .flatMap(Optional::stream)
                 .toList();

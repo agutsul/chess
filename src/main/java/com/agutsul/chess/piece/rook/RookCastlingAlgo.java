@@ -1,35 +1,44 @@
 package com.agutsul.chess.piece.rook;
 
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.tuple.Pair;
 
 import com.agutsul.chess.Castlingable.Castling;
+import com.agutsul.chess.Castlingable.Castlings;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
+import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.RookPiece;
-import com.agutsul.chess.piece.algo.AbstractAlgo;
 import com.agutsul.chess.piece.algo.AbstractCastlingAlgo;
+import com.agutsul.chess.piece.algo.AbstractPositionAlgo;
 import com.agutsul.chess.piece.algo.CastlingPieceAlgo;
 import com.agutsul.chess.piece.algo.KingSideCastlingAlgo;
 import com.agutsul.chess.piece.algo.QueenSideCastlingAlgo;
+import com.agutsul.chess.position.Position;
 
 final class RookCastlingAlgo<COLOR extends Color,
                              ROOK  extends RookPiece<COLOR>>
-        extends AbstractAlgo<ROOK,Castling>
+        extends AbstractPositionAlgo<ROOK,Castling>
         implements CastlingPieceAlgo<COLOR,ROOK,Castling> {
 
     private final Collection<AbstractCastlingAlgo<COLOR,KingPiece<COLOR>,ROOK>> algos;
+    private final COLOR color;
 
-    RookCastlingAlgo(Board board, int castlingLine) {
+    RookCastlingAlgo(Board board, COLOR color, int castlingLine) {
         super(board);
+        this.color = color;
         this.algos = List.of(
-                new KingSideCastlingAlgo<>(board, castlingLine),
-                new QueenSideCastlingAlgo<>(board, castlingLine)
+                new KingSideCastlingAlgo<>(board,  color, castlingLine),
+                new QueenSideCastlingAlgo<>(board, color, castlingLine)
         );
     }
 
@@ -38,10 +47,40 @@ final class RookCastlingAlgo<COLOR extends Color,
 
         var castlings = Stream.of(board.getKing(rook.getColor()))
                 .flatMap(Optional::stream)
-                .map(king -> Pair.of(king, rook))
-                .flatMap(pieces -> Stream.of(algos)
+                .flatMap(king -> Stream.of(algos)
                         .flatMap(Collection::stream)
-                        .map(algo -> algo.calculate(pieces))
+                        .map(algo -> algo.calculate(Pair.of(king, rook)))
+                )
+                .flatMap(Collection::stream)
+                .toList();
+
+        return castlings;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Collection<Castling> calculate(Position position) {
+
+        var rooks = Stream.of(board.getPieces(color, Piece.Type.ROOK))
+                .flatMap(Collection::stream)
+                .map(piece -> (ROOK) piece)
+                .collect(toMap(Piece::getPosition, identity()));
+
+        var castlings = Stream.of(board.getKing(color))
+                .flatMap(Optional::stream)
+                .flatMap(king -> Stream.of(algos)
+                        .flatMap(Collection::stream)
+                        .filter(algo -> king.isEnabled(algo.getSide()))
+                        .flatMap(algo -> Stream.ofNullable(Castlings.of(algo.getSide()))
+                                .map(castling -> board.getPosition(castling.getRookSource(), algo.getCastlingLine()))
+                                .flatMap(Optional::stream)
+                                .filter(rookPosition -> Objects.equals(rookPosition, position))
+                                .map(rookPosition -> rooks.get(rookPosition))
+                                .map(Optional::ofNullable)
+                                .flatMap(Optional::stream)
+                                .filter(rook -> rook.isEnabled(algo.getSide()))
+                                .map(rook -> algo.calculate(Pair.of(king, rook)))
+                        )
                 )
                 .flatMap(Collection::stream)
                 .toList();

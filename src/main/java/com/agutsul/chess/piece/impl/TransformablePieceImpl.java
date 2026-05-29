@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Demotable;
 import com.agutsul.chess.Disposable;
@@ -122,6 +123,12 @@ final class TransformablePieceImpl<COLOR extends Color,
     public Collection<Impact<?>> getImpacts(Impact.Type impactType) {
         var originState = super.getState();
         return originState.calculateImpacts(this, impactType);
+    }
+
+    @Override
+    public Collection<Calculatable> getNext(Position position) {
+        var originState = super.getState();
+        return originState.calculateNext(this, position);
     }
 
     @Override
@@ -267,6 +274,12 @@ final class TransformablePieceImpl<COLOR extends Color,
                     impactType.name(), piece
             );
 
+            return emptyList();
+        }
+
+        @Override
+        public Collection<Calculatable> calculateNext(PIECE piece, Position position) {
+            logger.warn("Calculating next positions for '{}'", position);
             return emptyList();
         }
 

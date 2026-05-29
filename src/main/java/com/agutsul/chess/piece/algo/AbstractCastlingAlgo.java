@@ -20,13 +20,34 @@ import com.agutsul.chess.position.Position;
 public abstract class AbstractCastlingAlgo<COLOR  extends Color,
                                            PIECE1 extends Piece<COLOR> & Movable & Castlingable & Checkable,
                                            PIECE2 extends Piece<COLOR> & Movable & Castlingable>
-        extends AbstractAlgo<Pair<PIECE1,PIECE2>,Castling> {
+        extends AbstractAlgo<Pair<PIECE1,PIECE2>,Castling>
+        implements SideCastlingAlgo {
 
+    private final Castlingable.Side side;
+    private final COLOR color;
     private final int castlingLine;
 
-    AbstractCastlingAlgo(Board board, int castlingLine) {
+    AbstractCastlingAlgo(Castlingable.Side side, Board board,
+                         COLOR color, int castlingLine) {
         super(board);
+
+        this.side = side;
+        this.color = color;
         this.castlingLine = castlingLine;
+    }
+
+    public final int getCastlingLine() {
+        return this.castlingLine;
+    }
+
+    @Override
+    public final Castlingable.Side getSide() {
+        return this.side;
+    }
+
+    @Override
+    public final Color getColor() {
+        return this.color;
     }
 
     @Override
@@ -38,9 +59,14 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
                 .toList();
     }
 
-    abstract boolean isAllEmptyBetween(PIECE1 king, PIECE2 rook);
+    @Override
+    public final boolean isSameLine(Position kingPosition, Position rookPosition) {
+        return isCastlingable(kingPosition) && isCastlingable(rookPosition);
+    }
 
-    abstract boolean isAnyAttackedBetween(PIECE1 king, PIECE2 rook);
+    private boolean isCastlingable(Position position) {
+        return position.y() == getCastlingLine();
+    }
 
     private Castling calculate(PIECE1 king, PIECE2 rook) {
         // Neither the king nor the rook has previously moved.
@@ -48,9 +74,22 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
             return null;
         }
 
+        var kingPosition = king.getPosition();
+        var rookPosition = rook.getPosition();
+
         // confirm that king and rook on the same horizontal line
         // required for game created from FEN string
-        if (!isSameLine(king, rook)) {
+        if (!isSameLine(kingPosition, rookPosition)) {
+            return null;
+        }
+
+        // There are no pieces between the king and the rook.
+        if (!isAllEmptyBetween(kingPosition, rookPosition)) {
+            return null;
+        }
+
+        // The king does not pass through or finish on a square that is attacked by an enemy piece.
+        if (isAnyAttackedBetween(kingPosition, rookPosition)) {
             return null;
         }
 
@@ -59,24 +98,6 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
             return null;
         }
 
-        // There are no pieces between the king and the rook.
-        if (!isAllEmptyBetween(king, rook)) {
-            return null;
-        }
-
-        // The king does not pass through or finish on a square that is attacked by an enemy piece.
-        if (isAnyAttackedBetween(king, rook)) {
-            return null;
-        }
-
-        return Castlings.of(rook.getPosition());
-    }
-
-    private boolean isSameLine(PIECE1 king, PIECE2 rook) {
-        return isCastlingable(king.getPosition()) && isCastlingable(rook.getPosition());
-    }
-
-    private boolean isCastlingable(Position position) {
-        return position.y() == this.castlingLine;
+        return Castlings.of(rookPosition);
     }
 }

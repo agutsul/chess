@@ -19,6 +19,7 @@ public interface Castlingable {
     void uncastling(Position position);
 
     Collection<Side> getSides();
+    boolean isEnabled(Side side);
 
     interface Castling extends Calculatable {
 
@@ -39,6 +40,9 @@ public interface Castlingable {
 
         private static final Map<Integer,Castling> BY_ROOK_POSITION = Stream.of(values())
                 .collect(toMap(entry -> Integer.valueOf(entry.getRookSource()), identity()));
+
+        private static final Map<Side,Castling> BY_SIDE = Stream.of(values())
+                .collect(toMap(Castling::side, identity()));
 
         private int rookSource, rookTarget, kingTarget;
         private Side side;
@@ -77,6 +81,10 @@ public interface Castlingable {
 
         public static Castling of(Position rookPosition) {
             return BY_ROOK_POSITION.get(Integer.valueOf(rookPosition.x()));
+        }
+
+        public static Castling of(Side side) {
+            return BY_SIDE.get(side);
         }
     }
 }

@@ -2,6 +2,7 @@ package com.agutsul.chess.piece.impl;
 
 import static com.agutsul.chess.activity.action.Action.isCastling;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableSet;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -10,9 +11,12 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
@@ -48,13 +52,25 @@ final class KingPieceImpl<COLOR extends Color>
 
         super(board, position,
                 new PieceContext<>(Piece.Type.KING, color, unicode, direction),
-                new KingPieceActionRule<>(board, castlingLine),
-                new KingPieceImpactRule<>(board, castlingLine),
+                new KingPieceActionRule<>(board, color, castlingLine),
+                new KingPieceImpactRule<>(board, color, castlingLine),
                 List.of(Side.values())
         );
 
         this.checkedPieceState = new KingCheckedPieceState<>(getState());
         this.checkMatedPieceState = new KingCheckMatedPieceState<>(getState());
+    }
+
+    @Override
+    public Collection<Calculatable> getNext(Position position) {
+        var next = super.getNext(position);
+        if (Objects.equals(position, getPosition())) {
+            return next;
+        }
+
+        var result = new HashSet<>(next);
+        result.add(getPosition());
+        return unmodifiableCollection(result);
     }
 
     @Override
@@ -148,6 +164,18 @@ final class KingPieceImpl<COLOR extends Color>
         }
 
         @Override
+        public Collection<Calculatable> calculateNext(PIECE piece, Position position) {
+            var next = super.calculateNext(piece, position);
+            if (Objects.equals(position, piece.getPosition())) {
+                return filter(next);
+            }
+
+            var result = new HashSet<>(next);
+            result.add(piece.getPosition());
+            return filter(result);
+        }
+
+        @Override
         public void castling(PIECE piece, Position position) {
             throw new IllegalActionException(formatErrorMessage(Action.Type.CASTLING));
         }
@@ -159,6 +187,13 @@ final class KingPieceImpl<COLOR extends Color>
 
         protected String formatErrorMessage(Action.Type actionType) {
             return String.format(ERROR_MESSAGE, lowerCase(actionType.name()));
+        }
+
+        private Collection<Calculatable> filter(Collection<Calculatable> next) {
+            return Stream.of(next)
+                    .flatMap(Collection::stream)
+                    .filter(calculated -> !(calculated instanceof Castling))
+                    .toList();
         }
     }
 
@@ -191,6 +226,11 @@ final class KingPieceImpl<COLOR extends Color>
 
         @Override
         public Collection<Impact<?>> calculateImpacts(PIECE piece, Impact.Type impactType) {
+            return emptyList();
+        }
+
+        @Override
+        public Collection<Calculatable> calculateNext(PIECE piece, Position position) {
             return emptyList();
         }
 

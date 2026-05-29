@@ -46,6 +46,11 @@ final class KingPieceProxy<COLOR extends Color>
     }
 
     @Override
+    public boolean isEnabled(Side side) {
+        return this.origin.isEnabled(side);
+    }
+
+    @Override
     public void castling(Position position) {
         this.origin.castling(position);
     }

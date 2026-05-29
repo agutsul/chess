@@ -8,11 +8,12 @@ import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.position.Position;
 
-public final class CompositePieceAlgo<COLOR extends Color,
+public final class CompositePieceAlgo<COLOR  extends Color,
                                       SOURCE extends Piece<COLOR>,
                                       RESULT extends Calculatable>
-        extends AbstractAlgo<SOURCE,RESULT> {
+        extends AbstractPositionAlgo<SOURCE,RESULT> {
 
     private final List<Algo<SOURCE,Collection<RESULT>>> algos;
 
@@ -32,6 +33,21 @@ public final class CompositePieceAlgo<COLOR extends Color,
                 .flatMap(Collection::stream)
                 .map(algo -> algo.calculate(source))
                 .flatMap(Collection::stream)
+                .toList();
+
+        return results;
+    }
+
+    @Override
+    public Collection<RESULT> calculate(Position position) {
+        @SuppressWarnings("unchecked")
+        var results = Stream.of(this.algos)
+                .flatMap(Collection::stream)
+                .filter(algo -> algo instanceof PositionAlgo<?>)
+                .map(algo -> (PositionAlgo<?>) algo)
+                .map(algo -> algo.calculate(position))
+                .flatMap(Collection::stream)
+                .map(calculated -> (RESULT) calculated)
                 .toList();
 
         return results;

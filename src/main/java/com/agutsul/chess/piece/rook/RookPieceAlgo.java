@@ -6,21 +6,21 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.RookPiece;
-import com.agutsul.chess.piece.algo.AbstractAlgo;
-import com.agutsul.chess.piece.algo.Algo;
+import com.agutsul.chess.piece.algo.AbstractPositionAlgo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
 import com.agutsul.chess.piece.algo.HorizontalLineAlgo;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.piece.algo.VerticalLineAlgo;
+import com.agutsul.chess.position.Position;
 
 final class RookPieceAlgo<COLOR extends Color,
                           ROOK  extends RookPiece<COLOR>>
-        extends AbstractAlgo<ROOK,Line>
+        extends AbstractPositionAlgo<ROOK,Line>
         implements MovePieceAlgo<COLOR,ROOK,Line>,
                    CapturePieceAlgo<COLOR,ROOK,Line> {
 
-    private final Algo<ROOK,Collection<Line>> algo;
+    private final CompositePieceAlgo<COLOR,ROOK,Line> algo;
 
     @SuppressWarnings("unchecked")
     RookPieceAlgo(Board board) {
@@ -34,5 +34,10 @@ final class RookPieceAlgo<COLOR extends Color,
     @Override
     public Collection<Line> calculate(ROOK piece) {
         return algo.calculate(piece);
+    }
+
+    @Override
+    public Collection<Line> calculate(Position position) {
+        return algo.calculate(position);
     }
 }

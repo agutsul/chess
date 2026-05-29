@@ -4,35 +4,39 @@ import static java.util.Objects.nonNull;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.AbstractPieceRule;
+import com.agutsul.chess.rule.AbstractPiecePositionRule;
 import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.action.PieceCapturePositionActionRule;
 
 public final class PawnPieceActionRule<COLOR extends Color,
-                                       PAWN extends PawnPiece<COLOR>>
-        extends AbstractPieceRule<PAWN,Action<?>,Action.Type> {
+                                       PAWN  extends PawnPiece<COLOR>>
+        extends AbstractPiecePositionRule<PAWN,Action<?>,Action.Type> {
 
-    public PawnPieceActionRule(Board board, int step, int initialLine, int promotionLine) {
-        this(board, promotionLine,
+    public PawnPieceActionRule(Board board, COLOR color,
+                               int step, int initialLine, int promotionLine) {
+
+        this(board, color, promotionLine,
                 new PawnMoveAlgo<>(board, step),
                 new PawnBigMoveAlgo<>(board, step, initialLine),
                 new PawnCaptureAlgo<>(board, step)
         );
     }
 
-    private PawnPieceActionRule(Board board, int promotionLine,
+    private PawnPieceActionRule(Board board, COLOR color, int promotionLine,
                                 PawnMoveAlgo<COLOR,PAWN> moveAlgo,
                                 PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
                                 PawnCaptureAlgo<COLOR,PAWN> captureAlgo) {
 
         this(board, moveAlgo, bigMoveAlgo, captureAlgo,
-                new PawnPromoteAlgo<>(board, promotionLine, moveAlgo, captureAlgo)
+                new PawnPromoteAlgo<>(board, promotionLine, moveAlgo, captureAlgo),
+                new PawnEnPassantAlgo<>(board, color, captureAlgo)
         );
     }
 
@@ -40,9 +44,12 @@ public final class PawnPieceActionRule<COLOR extends Color,
                                 PawnMoveAlgo<COLOR,PAWN> moveAlgo,
                                 PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
                                 PawnCaptureAlgo<COLOR,PAWN> captureAlgo,
-                                PawnPromoteAlgo<COLOR,PAWN> promoteAlgo) {
+                                PawnPromoteAlgo<COLOR,PAWN> promoteAlgo,
+                                PawnEnPassantAlgo<COLOR,PAWN> enPassantAlgo) {
 
-        super(createRule(board, moveAlgo, bigMoveAlgo, captureAlgo, promoteAlgo));
+        super(createRule(board, moveAlgo, bigMoveAlgo, captureAlgo, promoteAlgo, enPassantAlgo),
+                List.of(moveAlgo, bigMoveAlgo, captureAlgo, promoteAlgo, enPassantAlgo)
+        );
     }
 
     @SuppressWarnings("unchecked")
@@ -51,13 +58,14 @@ public final class PawnPieceActionRule<COLOR extends Color,
                                                                  PawnMoveAlgo<COLOR,PAWN> moveAlgo,
                                                                  PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
                                                                  PawnCaptureAlgo<COLOR,PAWN> captureAlgo,
-                                                                 PawnPromoteAlgo<COLOR,PAWN> promoteAlgo) {
+                                                                 PawnPromoteAlgo<COLOR,PAWN> promoteAlgo,
+                                                                 PawnEnPassantAlgo<COLOR,PAWN> enPassantAlgo) {
 
         var moveActionRule = new PawnMoveActionRule<>(board, moveAlgo);
         var captureActionRule = new PieceCapturePositionActionRule<>(board, captureAlgo);
 
         return new CompositeRule<>(
-                new PawnEnPassantActionRule<>(board, new PawnEnPassantAlgo<>(board, captureAlgo)),
+                new PawnEnPassantActionRule<>(board, enPassantAlgo),
                 new PawnPromoteActionRule<>(board, promoteAlgo, captureActionRule),
                 new PawnPromoteActionRule<>(board, promoteAlgo, moveActionRule),
                 captureActionRule,

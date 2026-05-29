@@ -3,6 +3,7 @@ package com.agutsul.chess.piece.impl;
 import java.util.Collection;
 import java.util.List;
 
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.Protectable;
@@ -52,6 +53,11 @@ abstract class AbstractPieceProxy<COLOR extends Color,
     @Override
     public Collection<Impact<?>> getImpacts(Impact.Type impactType) {
         return this.origin.getImpacts(impactType);
+    }
+
+    @Override
+    public Collection<Calculatable> getNext(Position position) {
+        return this.origin.getNext(position);
     }
 
     @Override

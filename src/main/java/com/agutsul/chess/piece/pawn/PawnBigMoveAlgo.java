@@ -1,6 +1,6 @@
 package com.agutsul.chess.piece.pawn;
 
-import static com.agutsul.chess.piece.PawnPiece.BIG_STEP_MOVE;
+import static com.agutsul.chess.BigMovable.BIG_STEP_MOVE;
 import static java.util.Collections.emptyList;
 
 import java.util.Collection;
@@ -25,15 +25,19 @@ final class PawnBigMoveAlgo<COLOR extends Color,
 
     @Override
     public Collection<Position> calculate(PAWN pawn) {
-        var currentPosition = pawn.getPosition();
-        if (currentPosition.y() != this.initialLine) {
+        return calculate(pawn.getPosition());
+    }
+
+    @Override
+    public Collection<Position> calculate(Position position) {
+        if (position.y() != this.initialLine) {
             return emptyList();
         }
 
-        if (super.calculate(pawn).isEmpty()) {
+        if (super.calculate(position).isEmpty()) {
             return emptyList();
         }
 
-        return collect(super.calculate(pawn, this.step * BIG_STEP_MOVE));
+        return collect(super.calculate(position, this.step * BIG_STEP_MOVE));
     }
 }

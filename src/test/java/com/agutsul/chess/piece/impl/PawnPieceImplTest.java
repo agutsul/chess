@@ -52,6 +52,7 @@ import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.Piece.Type;
+import com.agutsul.chess.position.Position;
 
 @ExtendWith(MockitoExtension.class)
 public class PawnPieceImplTest extends AbstractPieceTest {
@@ -414,6 +415,41 @@ public class PawnPieceImplTest extends AbstractPieceTest {
 
         assertTrue(board2.getActions(blackPawn).isEmpty());
         assertTrue(board2.getImpacts(blackPawn).isEmpty());
+    }
+
+    @Test
+    void testPawnGetNext() {
+        var board = new LabeledBoardBuilder()
+                .withWhitePawn("b2")
+                .withWhiteKing("e1")
+                .build();
+
+        var whitePawn = board.getPiece("b2").get();
+        var whitePawnNext = whitePawn.getNext(positionOf("b4"));
+
+        assertFalse(whitePawnNext.isEmpty());
+        assertEquals(3, whitePawnNext.size());
+
+        var positions = Stream.of(whitePawnNext)
+                .flatMap(Collection::stream)
+                .filter(calculated -> calculated instanceof Position)
+                .map(calculated -> (Position) calculated)
+                .toList();
+
+        assertEquals(3, positions.size());
+    }
+
+    @Test
+    void testPawnGetNextEmpty() {
+        var board = new LabeledBoardBuilder()
+                .withWhitePawn("b2")
+                .withWhiteKing("e1")
+                .build();
+
+        var whitePawn = board.getPiece("b2").get();
+        var whitePawnNext = whitePawn.getNext(positionOf("c4"));
+
+        assertTrue(whitePawnNext.isEmpty());
     }
 
     @Test

@@ -3,6 +3,7 @@ package com.agutsul.chess.piece.impl;
 import static com.agutsul.chess.activity.action.Action.isCapture;
 import static com.agutsul.chess.activity.action.Action.isMove;
 import static java.time.Instant.now;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -14,6 +15,7 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
@@ -34,7 +36,7 @@ import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.piece.state.EnPassantablePieceState;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
-import com.agutsul.chess.rule.AbstractPieceRule;
+import com.agutsul.chess.rule.AbstractPiecePositionRule;
 import com.agutsul.chess.rule.Rule;
 
 final class PawnPieceImpl<COLOR extends Color>
@@ -47,8 +49,8 @@ final class PawnPieceImpl<COLOR extends Color>
         this(board, position,
                 new PieceContext<>(Piece.Type.PAWN, color, unicode, direction),
                 new ActiveEnPassantablePieceState<>(board,
-                        new PawnPieceActionRule<>(board, direction, initialLine, promotionLine),
-                        new PawnPieceImpactRule<>(board, direction, initialLine, promotionLine)
+                        new PawnPieceActionRule<>(board, color, direction, initialLine, promotionLine),
+                        new PawnPieceImpactRule<>(board, color, direction, initialLine, promotionLine)
                 )
         );
     }
@@ -178,7 +180,7 @@ final class PawnPieceImpl<COLOR extends Color>
 
         private static final Logger LOGGER = getLogger(ActiveEnPassantablePieceState.class);
 
-        private final AbstractPieceRule<PIECE,Action<?>,Action.Type> actionRule;
+        private final AbstractPiecePositionRule<PIECE,Action<?>,Action.Type> actionRule;
         private final Board board;
 
         @SuppressWarnings("unchecked")
@@ -189,7 +191,7 @@ final class PawnPieceImpl<COLOR extends Color>
             super(LOGGER, new ActivePieceStateImpl<>(board, actionRule, impactRule));
 
             this.board = board;
-            this.actionRule = (AbstractPieceRule<PIECE,Action<?>,Action.Type>) actionRule;
+            this.actionRule = (AbstractPiecePositionRule<PIECE,Action<?>,Action.Type>) actionRule;
         }
 
         @Override
@@ -223,6 +225,21 @@ final class PawnPieceImpl<COLOR extends Color>
             case CAPTURE -> this.actionRule.evaluate(piece, Action.Type.EN_PASSANT, Action.Type.CAPTURE);
             default -> super.calculateActions(piece, actionType);
             };
+        }
+
+        @Override
+        public Collection<Calculatable> calculateNext(PIECE piece, Position position) {
+            // because pawn capture and move are different both impacts should be checked
+            var isAccessible = Stream.of(
+                        piece.getImpacts(Impact.Type.CONTROL),
+                        piece.getImpacts(Impact.Type.MOTION)
+                    )
+                    .flatMap(Collection::stream)
+                    .anyMatch(impact -> Objects.equals(impact.getPosition(), position));
+
+            return isAccessible || Objects.equals(position, piece.getPosition())
+                    ? this.actionRule.evaluate(position)
+                    : emptyList();
         }
     }
 

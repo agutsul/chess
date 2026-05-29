@@ -59,6 +59,11 @@ abstract class AbstractTransformablePieceProxy<COLOR extends Color,
     }
 
     @Override
+    public boolean isEnabled(Side side) {
+        return ((Castlingable) this.origin).isEnabled(side);
+    }
+
+    @Override
     public boolean isBlocked() {
         return ((Blockadable) this.origin).isBlocked();
     }

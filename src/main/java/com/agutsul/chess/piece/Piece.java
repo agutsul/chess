@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Positionable;
 import com.agutsul.chess.Rankable;
 import com.agutsul.chess.Valuable;
@@ -72,6 +73,8 @@ public interface Piece<COLOR extends Color>
 
     Collection<Impact<?>> getImpacts();
     Collection<Impact<?>> getImpacts(Impact.Type impactType);
+
+    Collection<Calculatable> getNext(Position position);
 
     boolean isActive();
 

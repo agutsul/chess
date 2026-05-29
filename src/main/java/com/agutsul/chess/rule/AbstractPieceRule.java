@@ -22,8 +22,9 @@ public abstract class AbstractPieceRule<SOURCE extends Piece<?>,
         return compositeRule.evaluate(source);
     }
 
+
     @SuppressWarnings("unchecked")
-    public final Collection<RESULT> evaluate(SOURCE source, TYPE type, TYPE... additionalTypes) {
+    public Collection<RESULT> evaluate(SOURCE source, TYPE type, TYPE... additionalTypes) {
         return compositeRule.evaluate(source, type, additionalTypes);
     }
 }

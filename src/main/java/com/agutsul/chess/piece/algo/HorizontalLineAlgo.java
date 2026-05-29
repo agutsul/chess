@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.algo;
 
+import static java.util.function.Predicate.not;
+
 import java.util.Collection;
 import java.util.stream.Stream;
 
@@ -9,6 +11,7 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.line.LineFactory;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.position.Position;
 
 public final class HorizontalLineAlgo<COLOR extends Color,
                                       PIECE extends Piece<COLOR> & Lineable>
@@ -19,12 +22,12 @@ public final class HorizontalLineAlgo<COLOR extends Color,
     }
 
     @Override
-    public Collection<Line> calculate(PIECE piece) {
-        var currentPosition = piece.getPosition();
-        var lines = Stream.of(calculate(currentPosition,  1, 0),
-                              calculate(currentPosition, -1, 0)
+    public Collection<Line> calculate(Position position) {
+        var lines = Stream.of(calculate(position,  1, 0),
+                              calculate(position, -1, 0)
                 )
                 .map(LineFactory::lineOf)
+                .filter(not(Line::isEmpty))
                 .toList();
 
         return lines;

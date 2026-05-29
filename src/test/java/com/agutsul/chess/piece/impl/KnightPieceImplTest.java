@@ -1,6 +1,7 @@
 package com.agutsul.chess.piece.impl;
 
 import static com.agutsul.chess.piece.Piece.isKnight;
+import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -33,6 +34,7 @@ import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.Piece.Type;
+import com.agutsul.chess.position.Position;
 
 @ExtendWith(MockitoExtension.class)
 public class KnightPieceImplTest extends AbstractPieceTest {
@@ -102,6 +104,41 @@ public class KnightPieceImplTest extends AbstractPieceTest {
                 .build();
 
         assertPieceActions(board2, Colors.BLACK, KNIGHT_TYPE, "g8", List.of("f6", "e7"), List.of("h6"));
+    }
+
+    @Test
+    void testKnightGetNext() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKnight("b1")
+                .withWhiteKing("e1")
+                .build();
+
+        var whiteKnight = board.getPiece("b1").get();
+        var whiteKnightNext = whiteKnight.getNext(positionOf("c3"));
+
+        assertFalse(whiteKnightNext.isEmpty());
+        assertEquals(8, whiteKnightNext.size());
+
+        var positions = Stream.of(whiteKnightNext)
+                .flatMap(Collection::stream)
+                .filter(calculated -> calculated instanceof Position)
+                .map(calculated -> (Position) calculated)
+                .toList();
+
+        assertEquals(8, positions.size());
+    }
+
+    @Test
+    void testKnightGetNextEmpty() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKnight("b1")
+                .withWhiteKing("e1")
+                .build();
+
+        var whiteKnight = board.getPiece("b1").get();
+        var whiteKnightNext = whiteKnight.getNext(positionOf("b3"));
+
+        assertTrue(whiteKnightNext.isEmpty());
     }
 
     @Test

@@ -7,17 +7,17 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Lineable;
+import com.agutsul.chess.Positionable;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.position.Position;
 
-abstract class AbstractLineAlgo<SOURCE extends Lineable,RESULT extends Line>
+abstract class AbstractLineAlgo<SOURCE extends Lineable & Positionable,RESULT extends Line>
+        extends AbstractPositionAlgo<SOURCE,RESULT>
         implements Algo<SOURCE,Collection<RESULT>> {
 
-    protected final Board board;
-
     protected AbstractLineAlgo(Board board) {
-        this.board = board;
+        super(board);
     }
 
     protected List<Position> calculate(Position current, int xStep, int yStep) {

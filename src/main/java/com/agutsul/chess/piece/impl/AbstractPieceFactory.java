@@ -331,6 +331,11 @@ abstract class AbstractPieceFactory<COLOR extends Color>
             public Collection<Side> getSides() {
                 return this.origin.getSides();
             }
+
+            @Override
+            public boolean isEnabled(Side side) {
+                return this.origin.isEnabled(side);
+            }
         }
     }
 
@@ -441,7 +446,14 @@ abstract class AbstractPieceFactory<COLOR extends Color>
 
             @Override
             public Collection<Side> getSides() {
+                logger.info("Get castling sides for piece '{}'", this);
                 return this.origin.getSides();
+            }
+
+            @Override
+            public boolean isEnabled(Side side) {
+                logger.info("Is castling side '{}' enabled for piece '{}'", side, this);
+                return this.origin.isEnabled(side);
             }
         }
 

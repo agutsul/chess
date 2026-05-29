@@ -32,8 +32,10 @@ public final class RookPieceImpactRule<COLOR extends Color,
                                        PIECE extends RookPiece<COLOR>>
         extends AbstractPieceRule<PIECE,Impact<?>,Impact.Type> {
 
-    public RookPieceImpactRule(Board board, int castlingLine) {
-        this(board, new RookPieceAlgo<>(board), new RookCastlingAlgo<>(board, castlingLine));
+    public RookPieceImpactRule(Board board, COLOR color, int castlingLine) {
+        this(board, new RookPieceAlgo<>(board),
+                new RookCastlingAlgo<>(board, color, castlingLine)
+        );
     }
 
     @SuppressWarnings("unchecked")

@@ -1,17 +1,19 @@
 package com.agutsul.chess.piece.bishop;
 
+import java.util.List;
+
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.BishopPiece;
-import com.agutsul.chess.rule.AbstractPieceRule;
+import com.agutsul.chess.rule.AbstractPiecePositionRule;
 import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.action.PieceCaptureLineActionRule;
 import com.agutsul.chess.rule.action.PieceMoveLineActionRule;
 
 public final class BishopPieceActionRule<COLOR extends Color,
                                          PIECE extends BishopPiece<COLOR>>
-        extends AbstractPieceRule<PIECE,Action<?>,Action.Type> {
+        extends AbstractPiecePositionRule<PIECE,Action<?>,Action.Type> {
 
     public BishopPieceActionRule(Board board) {
         this(board, new BishopPieceAlgo<>(board));
@@ -22,7 +24,8 @@ public final class BishopPieceActionRule<COLOR extends Color,
         super(new CompositeRule<>(
                 new PieceCaptureLineActionRule<>(board, algo),
                 new PieceMoveLineActionRule<>(board, algo)
-            )
+            ),
+            List.of(algo)
         );
     }
 }

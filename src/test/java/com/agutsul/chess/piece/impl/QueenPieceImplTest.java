@@ -2,6 +2,7 @@ package com.agutsul.chess.piece.impl;
 
 import static com.agutsul.chess.activity.impact.Impact.isAttack;
 import static com.agutsul.chess.piece.Piece.isQueen;
+import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,6 +36,7 @@ import com.agutsul.chess.activity.impact.PieceXRayImpact;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.Piece.Type;
 
@@ -129,6 +131,41 @@ public class QueenPieceImplTest extends AbstractPieceTest {
                 List.of("g7", "e7", "d6", "c5", "b4", "a3", "f7", "f6", "f5", "g8",
                         "f4", "f3", "f2", "f1", "a8", "b8", "c8", "d8", "e8", "h8"),
                 List.of("h6"));
+    }
+
+    @Test
+    void testQueenGetNext() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteQueen("d1")
+                .withWhiteKing("e1")
+                .build();
+
+        var whiteQueen = board.getPiece("d1").get();
+        var whiteQueenNext = whiteQueen.getNext(positionOf("d3"));
+
+        assertFalse(whiteQueenNext.isEmpty());
+        assertEquals(8, whiteQueenNext.size());
+
+        var lines1 = Stream.of(whiteQueenNext)
+                .flatMap(Collection::stream)
+                .filter(calculated -> calculated instanceof Line)
+                .map(calculated -> (Line) calculated)
+                .toList();
+
+        assertEquals(8, lines1.size());
+    }
+
+    @Test
+    void testQueenGetNextEmpty() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteQueen("d1")
+                .withWhiteKing("e1")
+                .build();
+
+        var whiteQueen = board.getPiece("d1").get();
+        var whiteQueenNext = whiteQueen.getNext(positionOf("c3"));
+
+        assertTrue(whiteQueenNext.isEmpty());
     }
 
     @Test

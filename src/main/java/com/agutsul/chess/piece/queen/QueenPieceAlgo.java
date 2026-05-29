@@ -6,22 +6,22 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.QueenPiece;
-import com.agutsul.chess.piece.algo.AbstractAlgo;
-import com.agutsul.chess.piece.algo.Algo;
+import com.agutsul.chess.piece.algo.AbstractPositionAlgo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
 import com.agutsul.chess.piece.algo.DiagonalLineAlgo;
 import com.agutsul.chess.piece.algo.HorizontalLineAlgo;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.piece.algo.VerticalLineAlgo;
+import com.agutsul.chess.position.Position;
 
 final class QueenPieceAlgo<COLOR extends Color,
                            QUEEN extends QueenPiece<COLOR>>
-        extends AbstractAlgo<QUEEN,Line>
+        extends AbstractPositionAlgo<QUEEN,Line>
         implements MovePieceAlgo<COLOR,QUEEN,Line>,
                    CapturePieceAlgo<COLOR,QUEEN,Line> {
 
-    private final Algo<QUEEN,Collection<Line>> algo;
+    private final CompositePieceAlgo<COLOR,QUEEN,Line> algo;
 
     @SuppressWarnings("unchecked")
     QueenPieceAlgo(Board board) {
@@ -36,5 +36,10 @@ final class QueenPieceAlgo<COLOR extends Color,
     @Override
     public Collection<Line> calculate(QUEEN piece) {
         return algo.calculate(piece);
+    }
+
+    @Override
+    public Collection<Line> calculate(Position position) {
+        return algo.calculate(position);
     }
 }

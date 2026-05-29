@@ -1,13 +1,16 @@
 package com.agutsul.chess.piece.impl;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
@@ -19,6 +22,7 @@ import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.state.ActivePieceState;
 import com.agutsul.chess.position.Position;
+import com.agutsul.chess.rule.AbstractPiecePositionRule;
 import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.Rule;
 
@@ -28,7 +32,7 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
 
     private static final Logger LOGGER = getLogger(ActivePieceStateImpl.class);
 
-    private final AbstractPieceRule<PIECE,Action<?>,Action.Type> actionRule;
+    private final AbstractPiecePositionRule<PIECE,Action<?>,Action.Type> actionRule;
     private final AbstractPieceRule<PIECE,Impact<?>,Impact.Type> impactRule;
 
     private final Board board;
@@ -41,7 +45,7 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
         super(LOGGER, Type.ACTIVE);
 
         this.board = board;
-        this.actionRule = (AbstractPieceRule<PIECE,Action<?>,Action.Type>) actionRule;
+        this.actionRule = (AbstractPiecePositionRule<PIECE,Action<?>,Action.Type>) actionRule;
         this.impactRule = (AbstractPieceRule<PIECE,Impact<?>,Impact.Type>) impactRule;
     }
 
@@ -67,6 +71,19 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
     public Collection<Impact<?>> calculateImpacts(PIECE piece, Impact.Type impactType) {
         LOGGER.info("Calculate '{}' impacts ({})", piece, impactType.name());
         return impactRule.evaluate(piece, impactType);
+    }
+
+    @Override
+    public Collection<Calculatable> calculateNext(PIECE piece, Position position) {
+        LOGGER.info("Calculate '{}' next positions for '{}'", piece, position);
+
+        var isAccessible = Stream.of(piece.getImpacts(Impact.Type.CONTROL))
+                .flatMap(Collection::stream)
+                .anyMatch(impact -> Objects.equals(impact.getPosition(), position));
+
+        return isAccessible || Objects.equals(position, piece.getPosition())
+                ? actionRule.evaluate(position)
+                : emptyList();
     }
 
     @Override

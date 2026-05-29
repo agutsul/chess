@@ -1,9 +1,11 @@
 package com.agutsul.chess.piece.algo;
 
 import static java.util.Collections.unmodifiableList;
+import static java.util.function.Predicate.not;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import com.agutsul.chess.Lineable;
 import com.agutsul.chess.board.Board;
@@ -13,7 +15,7 @@ import com.agutsul.chess.piece.Piece;
 
 public final class FullLineAlgo<COLOR extends Color,
                                 PIECE extends Piece<COLOR> & Lineable>
-        extends AbstractLineAlgo<PIECE,Line> {
+        extends AbstractAlgo<PIECE,Line> {
 
     private final Algo<PIECE,Collection<Line>> pieceAlgo;
 
@@ -24,7 +26,10 @@ public final class FullLineAlgo<COLOR extends Color,
 
     @Override
     public Collection<Line> calculate(PIECE piece) {
-        var pieceLines = pieceAlgo.calculate(piece);
+        var pieceLines = Stream.of(pieceAlgo.calculate(piece))
+                .flatMap(Collection::stream)
+                .filter(not(Line::isEmpty))
+                .toList();
 
         var fullLines = new ArrayList<Line>();
         for (var fullLine : board.getLines(piece.getPosition())) {

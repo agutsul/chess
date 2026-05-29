@@ -17,7 +17,7 @@ import com.agutsul.chess.piece.Piece;
 
 public final class SecureLineAlgoAdapter<COLOR extends Color,
                                          PIECE extends Piece<COLOR> & Capturable & Lineable>
-        extends AbstractLineAlgo<PIECE,Line>
+        extends AbstractAlgo<PIECE,Line>
         implements CapturePieceAlgo<COLOR,PIECE,Line> {
 
     public enum Mode implements BiPredicate<Piece<?>,Piece<?>> {

@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.action.Action;
@@ -39,6 +40,11 @@ abstract class AbstractPieceStateProxy<PIECE extends Piece<?> & Movable & Captur
     @Override
     public Collection<Impact<?>> calculateImpacts(PIECE piece, Impact.Type impactType) {
         return this.origin.calculateImpacts(piece, impactType);
+    }
+
+    @Override
+    public Collection<Calculatable> calculateNext(PIECE piece, Position position) {
+        return this.origin.calculateNext(piece, position);
     }
 
     @Override

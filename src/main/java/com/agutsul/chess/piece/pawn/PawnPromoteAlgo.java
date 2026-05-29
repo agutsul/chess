@@ -6,8 +6,7 @@ import java.util.stream.Stream;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
-import com.agutsul.chess.piece.algo.AbstractAlgo;
-import com.agutsul.chess.piece.algo.Algo;
+import com.agutsul.chess.piece.algo.AbstractPositionAlgo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
@@ -15,11 +14,11 @@ import com.agutsul.chess.piece.algo.PromotePieceAlgo;
 import com.agutsul.chess.position.Position;
 
 final class PawnPromoteAlgo<COLOR extends Color,
-                            PAWN extends PawnPiece<COLOR>>
-        extends AbstractAlgo<PAWN,Position>
+                            PAWN  extends PawnPiece<COLOR>>
+        extends AbstractPositionAlgo<PAWN,Position>
         implements PromotePieceAlgo<COLOR,PAWN> {
 
-    private final Algo<PAWN,Collection<Position>> algo;
+    private final CompositePieceAlgo<COLOR,PAWN,Position> algo;
     private final int promotionLine;
 
     @SuppressWarnings("unchecked")
@@ -37,6 +36,14 @@ final class PawnPromoteAlgo<COLOR extends Color,
         return Stream.of(algo.calculate(pawn))
                 .flatMap(Collection::stream)
                 .filter(position -> position.y() == promotionLine)
+                .toList();
+    }
+
+    @Override
+    public Collection<Position> calculate(Position position) {
+        return Stream.of(algo.calculate(position))
+                .flatMap(Collection::stream)
+                .filter(calculated -> calculated.y() == promotionLine)
                 .toList();
     }
 }

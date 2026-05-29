@@ -7,14 +7,14 @@ import java.util.stream.Stream;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KnightPiece;
-import com.agutsul.chess.piece.algo.AbstractAlgo;
+import com.agutsul.chess.piece.algo.AbstractPositionAlgo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Position;
 
 final class KnightPieceAlgo<COLOR  extends Color,
                             KNIGHT extends KnightPiece<COLOR>>
-        extends AbstractAlgo<KNIGHT,Position>
+        extends AbstractPositionAlgo<KNIGHT,Position>
         implements MovePieceAlgo<COLOR,KNIGHT,Position>,
                    CapturePieceAlgo<COLOR,KNIGHT,Position> {
 
@@ -49,12 +49,11 @@ final class KnightPieceAlgo<COLOR  extends Color,
     }
 
     @Override
-    public Collection<Position> calculate(KNIGHT piece) {
-        var currentPosition = piece.getPosition();
+    public Collection<Position> calculate(Position position) {
         var nextPositions = Stream.of(Move.values())
                 .map(move -> board.getPosition(
-                        currentPosition.x() + move.x(),
-                        currentPosition.y() + move.y()
+                        position.x() + move.x(),
+                        position.y() + move.y()
                 ))
                 .flatMap(Optional::stream)
                 .toList();

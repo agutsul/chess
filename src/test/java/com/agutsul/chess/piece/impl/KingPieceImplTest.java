@@ -2,6 +2,7 @@ package com.agutsul.chess.piece.impl;
 
 import static com.agutsul.chess.activity.impact.Impact.isAttack;
 import static com.agutsul.chess.piece.Piece.isKing;
+import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.time.Instant.now;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,6 +24,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.Castlingable;
+import com.agutsul.chess.Castlingable.Castling;
+import com.agutsul.chess.Castlingable.Side;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
@@ -38,9 +41,11 @@ import com.agutsul.chess.board.AbstractBoard;
 import com.agutsul.chess.board.LabeledBoardBuilder;
 import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.event.ClearCachedDataEvent;
+import com.agutsul.chess.board.event.SetCastlingableSideEvent;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.exception.IllegalActionException;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.piece.BishopPiece;
@@ -503,6 +508,69 @@ public class KingPieceImplTest extends AbstractPieceTest {
         );
 
         assertTrue(Strings.CS.startsWith(thrown.getMessage(), "Unable to dispose KING piece at"));
+    }
+
+    @Test
+    void testKingGetNextActions() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .build();
+
+        var whiteKing = board.getPiece("e1").get();
+        var whiteKingNext = whiteKing.getNext(positionOf("e2"));
+
+        assertFalse(whiteKingNext.isEmpty());
+        assertEquals(8, whiteKingNext.size());
+    }
+
+    @Test
+    void testKingGetNextCastling() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteRook("h1")
+                .withWhiteKing("e1")
+                .build();
+
+        var whiteKing = board.getPiece("e1").get();
+        var whiteKingNext = whiteKing.getNext(positionOf("e1"));
+
+        assertFalse(whiteKingNext.isEmpty());
+        assertEquals(6, whiteKingNext.size());
+
+        var castlings = Stream.of(whiteKingNext)
+                .flatMap(Collection::stream)
+                .filter(calculated -> calculated instanceof Castling)
+                .map(calculated -> (Castling) calculated)
+                .toList();
+
+        assertFalse(castlings.isEmpty());
+        assertEquals(1, castlings.size());
+        assertEquals(Side.KING, castlings.getFirst().side());
+    }
+
+    @Test
+    void testKingGetNextWithDisabledCastlingSide() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteRook("h1")
+                .withWhiteKing("e1")
+                .build();
+
+        ((Observable) board).notifyObservers(
+                new SetCastlingableSideEvent(Colors.WHITE, Side.KING, false)
+        );
+
+        var whiteKing = board.getPiece("e1").get();
+        var whiteKingNext = whiteKing.getNext(positionOf("e1"));
+
+        assertFalse(whiteKingNext.isEmpty());
+        assertEquals(5, whiteKingNext.size());
+
+        var castlings = Stream.of(whiteKingNext)
+                .flatMap(Collection::stream)
+                .filter(calculated -> calculated instanceof Castling)
+                .map(calculated -> (Castling) calculated)
+                .toList();
+
+        assertTrue(castlings.isEmpty());
     }
 
     @Test

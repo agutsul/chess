@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.king;
 
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.function.Predicate.not;
 
 import java.util.Collection;
@@ -12,12 +13,12 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.AbstractAlgo;
+import com.agutsul.chess.piece.algo.AbstractPositionAlgo;
 import com.agutsul.chess.position.Position;
 
 final class KingPieceAlgoProxy<COLOR extends Color,
                                KING  extends KingPiece<COLOR>>
-        extends AbstractAlgo<KING,Position>
+        extends AbstractPositionAlgo<KING,Position>
         implements KingPieceAlgo<COLOR,KING> {
 
     enum Mode {
@@ -27,36 +28,47 @@ final class KingPieceAlgoProxy<COLOR extends Color,
     }
 
     private final Mode mode;
-    private final KingPieceAlgo<COLOR,KING> algo;
+    private final COLOR color;
+    private final KingPieceAlgoImpl<COLOR,KING> algo;
 
-    KingPieceAlgoProxy(Mode mode, Board board,
-                       KingPieceAlgo<COLOR,KING> algo) {
+    KingPieceAlgoProxy(Mode mode, Board board, COLOR color,
+                       KingPieceAlgoImpl<COLOR,KING> algo) {
 
         super(board);
 
         this.mode = mode;
+        this.color = color;
         this.algo = algo;
     }
 
     @Override
     public Collection<Position> calculate(KING piece) {
-        var opponentColor = piece.getColor().invert();
+        var positions = algo.calculate(piece);
+        return filterPositions(positions, color.invert());
+    }
 
-        var calculatedPositions = algo.calculate(piece);
+    @Override
+    public Collection<Position> calculate(Position position) {
+        var positions = algo.calculate(position);
+        return filterPositions(positions, color.invert());
+    }
 
-        var positions = switch (mode) {
-        case MOVE -> movePositions(calculatedPositions, opponentColor);
-        case CAPTURE -> capturePositions(calculatedPositions, opponentColor);
+    private Collection<Position> filterPositions(Collection<Position> positions,
+                                                 Color opponentColor) {
+
+        var filtered = switch (mode) {
+        case MOVE -> movePositions(positions, opponentColor);
+        case CAPTURE -> capturePositions(positions, opponentColor);
         default -> Stream.of(
-                movePositions(calculatedPositions, opponentColor),
-                capturePositions(calculatedPositions, opponentColor)
+                movePositions(positions, opponentColor),
+                capturePositions(positions, opponentColor)
             )
             .flatMap(Collection::parallelStream)
             .distinct()
             .toList();
         };
 
-        return positions;
+        return unmodifiableCollection(filtered);
     }
 
     private Collection<Position> movePositions(Collection<Position> positions,
