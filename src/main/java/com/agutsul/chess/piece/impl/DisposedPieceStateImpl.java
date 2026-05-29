@@ -71,7 +71,7 @@ final class DisposedPieceStateImpl<PIECE extends Piece<?> & Movable & Capturable
 
     @Override
     public Collection<Calculatable> calculateNext(PIECE piece, Position position) {
-        LOGGER.warn("Calculate next positions of disabled piece '{}'", position);
+        LOGGER.warn("Calculate next positions of disabled piece '{}'", piece);
         return emptyList();
     }
 
