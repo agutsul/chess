@@ -68,6 +68,8 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
     private static final Logger LOGGER = getLogger(BoardImpl.class);
 
+    private static final long TERMINATION_TIMEOUT = 10;
+
     private static final Comparator<Position> COMPARATOR = new PositionComparator();
 
     private final PieceFactory<?> whitePieceFactory;
@@ -544,10 +546,10 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         try {
             this.executorService.shutdown();
 
-            if (!this.executorService.awaitTermination(10, MILLISECONDS)) {
+            if (!this.executorService.awaitTermination(TERMINATION_TIMEOUT, MILLISECONDS)) {
                 this.executorService.shutdownNow();
 
-                if (!this.executorService.awaitTermination(10, MILLISECONDS)) {
+                if (!this.executorService.awaitTermination(TERMINATION_TIMEOUT, MILLISECONDS)) {
                     LOGGER.error("Board executor did not terminate");
                 }
             }

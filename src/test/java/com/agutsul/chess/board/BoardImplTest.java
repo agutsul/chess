@@ -380,6 +380,28 @@ public class BoardImplTest implements TestFileReader {
         }
     }
 
+    @Test
+    void testGetProtectors() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhitePawn("e2")
+                .withWhiteBishop("d2")
+                .withWhiteKnight("g1")
+                .withBlackKing("e8")
+                .build();
+
+        var whitePawn = board.getPiece("e2").get();
+        var protectors = board.getProtectors(whitePawn);
+
+        assertFalse(protectors.isEmpty());
+        assertEquals(2, protectors.size());
+
+        var whiteKing = board.getPiece("e1").get();
+        var whiteKnight = board.getPiece("g1").get();
+
+        assertTrue(protectors.containsAll(List.of(whiteKing, whiteKnight)));
+    }
+
     private void testInitialBoardPieceSetup(Color color, Piece.Type pieceType, String... positions) {
         var pieces = board.getPieces(color, pieceType);
         assertFalse(pieces.isEmpty());
