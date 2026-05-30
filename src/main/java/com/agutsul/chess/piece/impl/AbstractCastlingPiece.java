@@ -1,6 +1,5 @@
 package com.agutsul.chess.piece.impl;
 
-import static com.agutsul.chess.activity.action.Action.isCastling;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
@@ -56,16 +55,6 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
     }
 
     @Override
-    public Collection<Action<?>> getActions() {
-        return filterEnabledActions(super.getActions());
-    }
-
-    @Override
-    public Collection<Action<?>> getActions(Action.Type actionType) {
-        return filterEnabledActions(super.getActions(actionType));
-    }
-
-    @Override
     public final Collection<Side> getSides() {
         var enabledSides = Stream.of(this.sides.entrySet())
                 .flatMap(Collection::stream)
@@ -112,25 +101,6 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         if (this.sides.containsKey(side)) {
             this.sides.put(side, enabled);
         }
-    }
-
-    private Collection<Action<?>> filterEnabledActions(Collection<Action<?>> actions) {
-        var filteredActions = Stream.of(actions)
-                .flatMap(Collection::stream)
-                .filter(Objects::nonNull)
-                .filter(action -> {
-                    if (!isCastling(action)) {
-                        // return all non-castling related actions
-                        return true;
-                    }
-
-                    var castlingAction = (PieceCastlingAction<?,?,?>) action;
-                    // filter castling actions to return ones for enabled sides only
-                    return isEnabled(castlingAction.getSide());
-                })
-                .toList();
-
-        return filteredActions;
     }
 
     private void doCastling(Position position) {

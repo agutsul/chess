@@ -102,11 +102,6 @@ final class FenGameBuilder
         // reverse parsed lines to process board from position(0,0) and up to position(7,7)
         var board = createBoard(parsedBoardLines.reversed());
 
-        var game = new FenGame<>(
-                playerOf(Colors.WHITE), playerOf(Colors.BLACK),
-                board, playerColor, halfMoveClock, fullMoveClock
-        );
-
         // by default all castling sides are enabled
         if (nonNull(activeCastling)) {
             if (activeCastling.length() != 4) {
@@ -115,10 +110,18 @@ final class FenGameBuilder
                 // toggle available castling sides
                 enableCastlings(board, activeCastling);
             }
-            // save string of enabled castling sides
-            game.setParsedCastling(activeCastling);
         } else {
             disableAllCastlings(board);
+        }
+
+        var game = new FenGame<>(
+                playerOf(Colors.WHITE), playerOf(Colors.BLACK),
+                board, playerColor, halfMoveClock, fullMoveClock
+        );
+
+        if (nonNull(activeCastling)) {
+            // save string of enabled castling sides
+            game.setParsedCastling(activeCastling);
         }
 
         if (nonNull(activeEnPassant)) {

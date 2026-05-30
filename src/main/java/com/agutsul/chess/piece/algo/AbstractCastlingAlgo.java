@@ -9,6 +9,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Castlingable.Castling;
 import com.agutsul.chess.Castlingable.Castlings;
+import com.agutsul.chess.Castlingable.Side;
 import com.agutsul.chess.Checkable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.board.Board;
@@ -23,11 +24,11 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
         extends AbstractAlgo<Pair<PIECE1,PIECE2>,Castling>
         implements SideCastlingAlgo {
 
-    private final Castlingable.Side side;
+    private final Side side;
     private final COLOR color;
     private final int castlingLine;
 
-    AbstractCastlingAlgo(Castlingable.Side side, Board board,
+    AbstractCastlingAlgo(Side side, Board board,
                          COLOR color, int castlingLine) {
         super(board);
 
@@ -41,7 +42,7 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
     }
 
     @Override
-    public final Castlingable.Side getSide() {
+    public final Side getSide() {
         return this.side;
     }
 
@@ -69,6 +70,11 @@ public abstract class AbstractCastlingAlgo<COLOR  extends Color,
     }
 
     private Castling calculate(PIECE1 king, PIECE2 rook) {
+        // confirm that castling side is enabled for both rook and king
+        if (!king.isEnabled(getSide()) || !rook.isEnabled(getSide())) {
+            return null;
+        }
+
         // Neither the king nor the rook has previously moved.
         if (king.isMoved() || rook.isMoved()) {
             return null;
