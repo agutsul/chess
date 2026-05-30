@@ -574,6 +574,258 @@ public class KingPieceImplTest extends AbstractPieceTest {
     }
 
     @Test
+    void testKingCheckedGetNext() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhiteRook("h1")
+                .withBlackKing("e8")
+                .withBlackQueen("a5")
+                .build();
+
+        var whiteKing = (KingPiece<?>) board.getPiece("e1").get();
+        whiteKing.setChecked(true);
+
+        var whiteKingNext1 = whiteKing.getNext(positionOf("e1"));
+
+        assertFalse(whiteKingNext1.isEmpty());
+        assertEquals(4, whiteKingNext1.size());
+        assertFalse(whiteKingNext1.contains(whiteKing.getPosition()));
+
+        var castlings1 = Stream.of(whiteKingNext1)
+                .flatMap(Collection::stream)
+                .filter(calculated -> calculated instanceof Castling)
+                .map(calculated -> (Castling) calculated)
+                .toList();
+
+        assertTrue(castlings1.isEmpty());
+
+        var whiteKingNext2 = whiteKing.getNext(positionOf("e2"));
+
+        assertFalse(whiteKingNext2.isEmpty());
+        assertEquals(6, whiteKingNext2.size());
+        assertFalse(whiteKingNext2.contains(whiteKing.getPosition()));
+
+        var castlings2 = Stream.of(whiteKingNext2)
+                .flatMap(Collection::stream)
+                .filter(calculated -> calculated instanceof Castling)
+                .map(calculated -> (Castling) calculated)
+                .toList();
+
+        assertTrue(castlings2.isEmpty());
+    }
+
+    @Test
+    void testKingCheckedGetActions() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhiteRook("h1")
+                .withBlackKing("e8")
+                .withBlackQueen("a5")
+                .build();
+
+        var whiteKing = (KingPiece<?>) board.getPiece("e1").get();
+        whiteKing.setChecked(true);
+
+        var actions = whiteKing.getActions();
+
+        assertFalse(actions.isEmpty());
+        assertEquals(4, actions.size());
+
+        var castlings = Stream.of(actions)
+                .flatMap(Collection::stream)
+                .filter(Action::isCastling)
+                .toList();
+
+        assertTrue(castlings.isEmpty());
+    }
+
+    @Test
+    void testKingCheckedGetCastling() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhiteRook("h1")
+                .withBlackKing("e8")
+                .withBlackQueen("a5")
+                .build();
+
+        var whiteKing = (KingPiece<?>) board.getPiece("e1").get();
+        whiteKing.setChecked(true);
+
+        var actions = whiteKing.getActions(Action.Type.CASTLING);
+        assertTrue(actions.isEmpty());
+    }
+
+    @Test
+    void testKingCheckedProhibitedCastling() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhiteRook("h1")
+                .withBlackKing("e8")
+                .withBlackQueen("a5")
+                .build();
+
+        var whiteKing = (KingPiece<?>) board.getPiece("e1").get();
+        whiteKing.setChecked(true);
+
+        var thrown = assertThrows(
+                IllegalActionException.class,
+                () -> whiteKing.castling(positionOf("g1"))
+        );
+
+        assertEquals("Unable to perform castling for checked king", thrown.getMessage());
+    }
+
+    @Test
+    void testKingCheckMatedGetActions() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhiteRook("h1")
+                .withBlackKing("d8")
+                .withBlackQueen("e2")
+                .withBlackRook("e8")
+                .build();
+
+        var whiteKing = (KingPiece<?>) board.getPiece("e1").get();
+        whiteKing.setCheckMated(true);
+
+        var actions = whiteKing.getActions();
+        assertTrue(actions.isEmpty());
+    }
+
+    @Test
+    void testKingCheckMatedGetActionsMove() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhiteRook("h1")
+                .withBlackKing("d8")
+                .withBlackQueen("e2")
+                .withBlackRook("e8")
+                .build();
+
+        var whiteKing = (KingPiece<?>) board.getPiece("e1").get();
+        whiteKing.setCheckMated(true);
+
+        var actions = whiteKing.getActions(Action.Type.MOVE);
+        assertTrue(actions.isEmpty());
+    }
+
+    @Test
+    void testKingCheckMatedGetImpacts() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhiteRook("h1")
+                .withBlackKing("d8")
+                .withBlackQueen("e2")
+                .withBlackRook("e8")
+                .build();
+
+        var whiteKing = (KingPiece<?>) board.getPiece("e1").get();
+        whiteKing.setCheckMated(true);
+
+        var impacts = whiteKing.getImpacts();
+        assertTrue(impacts.isEmpty());
+    }
+
+    @Test
+    void testKingCheckMatedGetImpactsControl() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhiteRook("h1")
+                .withBlackKing("d8")
+                .withBlackQueen("e2")
+                .withBlackRook("e8")
+                .build();
+
+        var whiteKing = (KingPiece<?>) board.getPiece("e1").get();
+        whiteKing.setCheckMated(true);
+
+        var impacts = whiteKing.getImpacts(Impact.Type.CONTROL);
+        assertTrue(impacts.isEmpty());
+    }
+
+    @Test
+    void testKingCheckMatedGetNext() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhiteRook("h1")
+                .withBlackKing("d8")
+                .withBlackQueen("e2")
+                .withBlackRook("e8")
+                .build();
+
+        var whiteKing = (KingPiece<?>) board.getPiece("e1").get();
+        whiteKing.setCheckMated(true);
+
+        var actions = whiteKing.getNext(positionOf("f1"));
+        assertTrue(actions.isEmpty());
+    }
+
+    @Test
+    void testKingCheckMatedProhibitedCastling() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhiteRook("h1")
+                .withBlackKing("d8")
+                .withBlackQueen("e2")
+                .withBlackRook("e8")
+                .build();
+
+        var whiteKing = (KingPiece<?>) board.getPiece("e1").get();
+        whiteKing.setCheckMated(true);
+
+        var thrown = assertThrows(
+                IllegalActionException.class,
+                () -> whiteKing.castling(positionOf("g1"))
+        );
+
+        assertEquals("Unable to perform castling for check mated king", thrown.getMessage());
+    }
+
+    @Test
+    void testKingCheckMatedProhibitedMove() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhiteRook("h1")
+                .withBlackKing("d8")
+                .withBlackQueen("e2")
+                .withBlackRook("e8")
+                .build();
+
+        var whiteKing = (KingPiece<?>) board.getPiece("e1").get();
+        whiteKing.setCheckMated(true);
+
+        var thrown = assertThrows(
+                IllegalActionException.class,
+                () -> whiteKing.move(positionOf("f1"))
+        );
+
+        assertEquals("Unable to perform move for check mated king", thrown.getMessage());
+    }
+
+    @Test
+    void testKingCheckMatedProhibitedCapture() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhiteRook("h1")
+                .withBlackKing("d8")
+                .withBlackQueen("e2")
+                .withBlackRook("e8")
+                .build();
+
+        var whiteKing = (KingPiece<?>) board.getPiece("e1").get();
+        whiteKing.setCheckMated(true);
+
+        var blackQueen = board.getPiece("e2").get();
+
+        var thrown = assertThrows(
+                IllegalActionException.class,
+                () -> whiteKing.capture(blackQueen)
+        );
+
+        assertEquals("Unable to perform capture for check mated king", thrown.getMessage());
+    }
+
+    @Test
     void testKingRelativeForkImpact() {
         var board = new LabeledBoardBuilder()
                 .withBlackKing("a5")

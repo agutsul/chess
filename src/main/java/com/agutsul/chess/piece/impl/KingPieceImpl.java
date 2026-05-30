@@ -138,7 +138,7 @@ final class KingPieceImpl<COLOR extends Color>
 
             var result = new HashSet<>(next);
             result.add(piece.getPosition());
-            return result;
+            return unmodifiableSet(result);
         }
     }
 
@@ -178,14 +178,13 @@ final class KingPieceImpl<COLOR extends Color>
 
         @Override
         public Collection<Calculatable> calculateNext(PIECE piece, Position position) {
-            var next = super.calculateNext(piece, position);
-            if (Objects.equals(position, piece.getPosition())) {
-                return filter(next);
-            }
-
-            var result = new HashSet<>(next);
-            result.add(piece.getPosition());
-            return filter(result);
+            return Stream.of(super.calculateNext(piece, position))
+                    .flatMap(Collection::stream)
+                    // skip current position because it is under the check
+                    .filter(calculated -> !Objects.equals(calculated, piece.getPosition()))
+                    // skip any castling-related positions
+                    .filter(calculated -> !(calculated instanceof Castling))
+                    .toList();
         }
 
         @Override
@@ -200,13 +199,6 @@ final class KingPieceImpl<COLOR extends Color>
 
         protected String formatErrorMessage(Action.Type actionType) {
             return String.format(ERROR_MESSAGE, lowerCase(actionType.name()));
-        }
-
-        private Collection<Calculatable> filter(Collection<Calculatable> next) {
-            return Stream.of(next)
-                    .flatMap(Collection::stream)
-                    .filter(calculated -> !(calculated instanceof Castling))
-                    .toList();
         }
     }
 
