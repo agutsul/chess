@@ -2,6 +2,7 @@ package com.agutsul.chess.piece.impl;
 
 import java.util.Collection;
 
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.color.Color;
@@ -38,6 +39,11 @@ final class KingPieceProxy<COLOR extends Color>
     @Override
     public Collection<Impact<?>> getImpacts(Impact.Type impactType) {
         return getState().calculateImpacts(this, impactType);
+    }
+
+    @Override
+    public Collection<Calculatable> getNext(Position position) {
+        return getState().calculateNext(this, position);
     }
 
     @Override

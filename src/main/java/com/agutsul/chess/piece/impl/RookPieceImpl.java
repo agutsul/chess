@@ -36,8 +36,10 @@ final class RookPieceImpl<COLOR extends Color>
 
         super(board, position,
                 new PieceContext<>(Piece.Type.ROOK, color, unicode, direction),
-                new RookPieceActionRule<>(board, color, castlingLine),
-                new RookPieceImpactRule<>(board, color, castlingLine),
+                new ActiveCastlingablePieceState<>(board,
+                        new RookPieceActionRule<>(board, color, castlingLine),
+                        new RookPieceImpactRule<>(board, color, castlingLine)
+                ),
                 castlingSides(position)
         );
     }

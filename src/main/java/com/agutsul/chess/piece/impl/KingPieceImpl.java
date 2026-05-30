@@ -2,7 +2,6 @@ package com.agutsul.chess.piece.impl;
 
 import static com.agutsul.chess.activity.action.Action.isCastling;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableSet;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -33,6 +32,7 @@ import com.agutsul.chess.piece.state.CheckedPieceState;
 import com.agutsul.chess.piece.state.DisposedPieceState;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
+import com.agutsul.chess.rule.Rule;
 
 final class KingPieceImpl<COLOR extends Color>
         extends AbstractCastlingPiece<COLOR>
@@ -52,25 +52,15 @@ final class KingPieceImpl<COLOR extends Color>
 
         super(board, position,
                 new PieceContext<>(Piece.Type.KING, color, unicode, direction),
-                new KingPieceActionRule<>(board, color, castlingLine),
-                new KingPieceImpactRule<>(board, color, castlingLine),
+                new KingActivePieceState<>(board,
+                        new KingPieceActionRule<>(board, color, castlingLine),
+                        new KingPieceImpactRule<>(board, color, castlingLine)
+                ),
                 List.of(Side.values())
         );
 
         this.checkedPieceState = new KingCheckedPieceState<>(getState());
         this.checkMatedPieceState = new KingCheckMatedPieceState<>(getState());
-    }
-
-    @Override
-    public Collection<Calculatable> getNext(Position position) {
-        var next = super.getNext(position);
-        if (Objects.equals(position, getPosition())) {
-            return next;
-        }
-
-        var result = new HashSet<>(next);
-        result.add(getPosition());
-        return unmodifiableCollection(result);
     }
 
     @Override
@@ -127,6 +117,29 @@ final class KingPieceImpl<COLOR extends Color>
                 "%s at '%s'",
                 DISPOSE_ERROR_MESSAGE, instant
         ));
+    }
+
+    static final class KingActivePieceState<PIECE extends KingPiece<?>>
+            extends ActiveCastlingablePieceState<PIECE> {
+
+        KingActivePieceState(Board board,
+                             Rule<PIECE,Collection<Action<?>>> actionRule,
+                             Rule<PIECE,Collection<Impact<?>>> impactRule) {
+
+            super(board, actionRule, impactRule);
+        }
+
+        @Override
+        public Collection<Calculatable> calculateNext(PIECE piece, Position position) {
+            var next = super.calculateNext(piece, position);
+            if (Objects.equals(position, piece.getPosition())) {
+                return next;
+            }
+
+            var result = new HashSet<>(next);
+            result.add(piece.getPosition());
+            return result;
+        }
     }
 
     static class KingCheckedPieceState<PIECE extends KingPiece<?>>

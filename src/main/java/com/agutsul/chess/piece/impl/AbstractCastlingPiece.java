@@ -46,13 +46,10 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
     <PIECE extends Piece<COLOR> & Movable & Capturable & Castlingable>
             AbstractCastlingPiece(Board board, Position position, PieceContext<COLOR> context,
-                                  Rule<PIECE,Collection<Action<?>>> actionRule,
-                                  Rule<PIECE,Collection<Impact<?>>> impactRule,
+                                  AbstractPieceState<? extends Piece<COLOR>> state,
                                   Collection<Side> sides) {
 
-        super(board, position, context,
-                new ActiveCastlingablePieceState<>(board, actionRule, impactRule)
-        );
+        super(board, position, context, state);
 
         // by default enable castling
         this.sides = sides.stream().collect(toMap(identity(), entry -> true));
@@ -129,7 +126,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
                     var castlingAction = (PieceCastlingAction<?,?,?>) action;
                     // filter castling actions to return ones for enabled sides only
-                    return isTrue(sides.get(castlingAction.getSide()));
+                    return isEnabled(castlingAction.getSide());
                 })
                 .toList();
 
@@ -198,7 +195,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         }
     }
 
-    static final class ActiveCastlingablePieceState<PIECE extends Piece<?> & Movable & Capturable & Castlingable>
+    static class ActiveCastlingablePieceState<PIECE extends Piece<?> & Movable & Capturable & Castlingable>
             extends AbstractCastlingablePieceState<PIECE>
             implements ActivePieceState<PIECE> {
 
