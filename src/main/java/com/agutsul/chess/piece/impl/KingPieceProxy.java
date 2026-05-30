@@ -78,11 +78,11 @@ final class KingPieceProxy<COLOR extends Color>
 
     @Override
     public void setChecked(boolean checked) {
-        ((KingPiece<?>) this.origin).setChecked(checked);
+        this.origin.setChecked(checked);
     }
 
     @Override
     public void setCheckMated(boolean checkMated) {
-        ((KingPiece<?>) this.origin).setCheckMated(checkMated);
+        this.origin.setCheckMated(checkMated);
     }
 }
