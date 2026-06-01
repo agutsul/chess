@@ -40,13 +40,12 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
     private static final Logger LOGGER = getLogger(AbstractCastlingPiece.class);
 
-    private final Map<Castlingable.Side,Boolean> sides;
-    private Map<Castlingable.Side,Boolean> tmpSides;
+    private final Map<Side,Boolean> sides;
+    private Map<Side,Boolean> tmpSides;
 
     <PIECE extends Piece<COLOR> & Movable & Capturable & Castlingable>
             AbstractCastlingPiece(Board board, Position position, PieceContext<COLOR> context,
-                                  AbstractPieceState<? extends Piece<COLOR>> state,
-                                  Collection<Side> sides) {
+                                  AbstractPieceState<PIECE> state, Collection<Side> sides) {
 
         super(board, position, context, state);
 
@@ -97,7 +96,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
         );
     }
 
-    private void set(Castlingable.Side side, Boolean enabled) {
+    private void set(Side side, Boolean enabled) {
         if (this.sides.containsKey(side)) {
             this.sides.put(side, enabled);
         }
