@@ -39,8 +39,7 @@ final class TransformablePieceAdapter<COLOR extends Color,
         if (piece instanceof Demotable) {
             ((Demotable) piece).demote();
         } else {
-            var proxy = (PieceProxy<?,?>) piece;
-            demote(proxy.getOrigin());
+            demote(((PieceProxy<?,?>) piece).getOrigin());
         }
     }
 }

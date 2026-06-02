@@ -204,9 +204,7 @@ final class TransformablePieceImpl<COLOR extends Color,
         private Piece.Type type;
         private BiFunction<PieceFactory<?>,Position,Piece<?>> function;
 
-        PromotionFactory(Piece.Type type,
-                         BiFunction<PieceFactory<?>,Position,Piece<?>> function) {
-
+        PromotionFactory(Piece.Type type, BiFunction<PieceFactory<?>,Position,Piece<?>> function) {
             this.type = type;
             this.function = function;
         }
