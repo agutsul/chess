@@ -66,7 +66,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
     @Override
     public final boolean isEnabled(Side side) {
-        return getSides().contains(side);
+        return isTrue(this.sides.get(side));
     }
 
     @Override
