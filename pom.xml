@@ -17,13 +17,13 @@
         <project.java.version>21</project.java.version>
         <argLine>-Xms512m -Xmx512m -Xss512m</argLine>
 
-        <commons-io.version>2.21.0</commons-io.version>
+        <commons-io.version>2.22.0</commons-io.version>
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
-        <commons-conf.version>2.15.0</commons-conf.version>
+        <commons-conf.version>2.15.1</commons-conf.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <commons-collections4.version>4.5.0</commons-collections4.version>
         <commons-cli.version>1.11.0</commons-cli.version>
-        <slf4j-api.verion>2.0.17</slf4j-api.verion>
+        <slf4j-api.verion>2.0.18</slf4j-api.verion>
         <log4j.version>2.26.0</log4j.version>
         <antlr4.version>4.13.2</antlr4.version>
 
