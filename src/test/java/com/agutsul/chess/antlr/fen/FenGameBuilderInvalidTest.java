@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,22 +30,13 @@ public class FenGameBuilderInvalidTest {
 
     @DisplayName("testInvalidBoardSize")
     @ParameterizedTest(name = "({index}) => (''{0}'')")
-    @ValueSource(strings = { "8/8/8/8/8/8/8/8/8", "8/8/8/8/8/8/8" })
+    @ValueSource(strings = { "8/8/8/8/8/8/8/8/8", "8/8/8/8/8/8/8", " / ", "1/X", "1/0", "A/9", "R/9" })
     void testInvalidBoardSize(String boardLine) {
         var builder = new FenGameBuilder();
 
-        Stream.of(split(boardLine, "/"))
-            .forEach(line -> builder.addBoardLine(line));
-
-        builder.withActiveColor("w");
-        builder.withCastling(DISABLE_ALL_SYMBOL);
-        builder.withEnPassant(DISABLE_ALL_SYMBOL);
-        builder.withHalfMoves(0);
-        builder.withFullMoves(1);
-
         var thrown = assertThrows(
                 IllegalArgumentException.class,
-                () -> builder.build()
+                () -> builder.withBoardLine(boardLine)
         );
 
         var expectedMessage = String.format(INVALID_LINES_NUMBER_FORMAT, boardLine);
@@ -55,16 +45,16 @@ public class FenGameBuilderInvalidTest {
 
     @DisplayName("testInvalidBoardLine")
     @ParameterizedTest(name = "({index}) => (''{0}'')")
-    @ValueSource(strings = { BOARD_LINE + "9", BOARD_LINE + "X", " / ", "1/X", "1/0", "A/9", "R/9" })
+    @ValueSource(strings = { BOARD_LINE + "9", BOARD_LINE + "X" })
     void testInvalidBoardLine(String boardLine) {
-        var lines = List.of(split(boardLine, "/")).reversed();
         var builder = new FenGameBuilder();
 
         var thrown = assertThrows(
                 IllegalArgumentException.class,
-                () -> builder.addBoardLine(lines.getFirst())
+                () -> builder.withBoardLine(boardLine)
         );
 
+        var lines = List.of(split(boardLine, "/")).reversed();
         var expectedMessage = String.format(INVALID_LINE_FORMAT, lines.getFirst());
         assertEquals(expectedMessage, thrown.getMessage());
     }
@@ -133,9 +123,7 @@ public class FenGameBuilderInvalidTest {
     void testUnsetEnPassant() {
         var builder = new FenGameBuilder();
 
-        Stream.of(split("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR", "/"))
-            .forEach(line -> builder.addBoardLine(line));
-
+        builder.withBoardLine("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR");
         builder.withActiveColor("w");
         builder.withCastling(DISABLE_ALL_SYMBOL);
         builder.withEnPassant("e3");

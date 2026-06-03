@@ -8,15 +8,18 @@ import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.regex.Pattern.compile;
+import static org.apache.commons.lang3.StringUtils.countMatches;
 import static org.apache.commons.lang3.StringUtils.isAllLowerCase;
 import static org.apache.commons.lang3.StringUtils.isAllUpperCase;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
+import static org.apache.commons.lang3.StringUtils.split;
 import static org.apache.commons.lang3.math.NumberUtils.toInt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -58,6 +61,7 @@ final class FenGameBuilder
 
     static final String DISABLE_ALL_SYMBOL = "-";
 
+    private static final String LINE_SEPARATOR     = "/";
     private static final String LINE_PATTERN       = "([p,P,n,N,b,B,r,R,q,Q,k,K,1-8]){1,8}";
     private static final String COLOR_PATTERN      = "([w,b]){1}";
     private static final String CASTLING_PATTERN   = "([q,Q,k,K]){1,4}";
@@ -94,7 +98,10 @@ final class FenGameBuilder
         }
 
         if (parsedBoardLines.size() != Position.MAX) {
-            throw createArgumentException(INVALID_LINES_NUMBER_FORMAT, join(parsedBoardLines, "/"));
+            throw createArgumentException(
+                    INVALID_LINES_NUMBER_FORMAT,
+                    join(parsedBoardLines, LINE_SEPARATOR)
+            );
         }
 
         var playerColor = resolveColor(activeColor);
@@ -133,6 +140,20 @@ final class FenGameBuilder
         }
 
         return game;
+    }
+
+    GameBuilder<FenGame<?>> withBoardLine(String fenBoardLine) {
+        if (isBlank(fenBoardLine)
+                || countMatches(fenBoardLine, LINE_SEPARATOR) != Position.MAX - 1) {
+
+            throw createArgumentException(INVALID_LINES_NUMBER_FORMAT, fenBoardLine);
+        }
+
+        Stream.ofNullable(split(fenBoardLine, LINE_SEPARATOR))
+            .flatMap(Arrays::stream)
+            .forEach(line -> addBoardLine(line));
+
+        return this;
     }
 
     GameBuilder<FenGame<?>> addBoardLine(String line) {

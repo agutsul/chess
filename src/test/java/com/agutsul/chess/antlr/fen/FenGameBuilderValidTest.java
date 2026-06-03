@@ -2,12 +2,10 @@ package com.agutsul.chess.antlr.fen;
 
 import static com.agutsul.chess.antlr.fen.FenGameBuilder.DISABLE_ALL_SYMBOL;
 import static java.util.stream.Collectors.summingInt;
-import static org.apache.commons.lang3.StringUtils.split;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.DisplayName;
@@ -33,9 +31,7 @@ public class FenGameBuilderValidTest {
     void testValidActiveColor(String color) {
         var builder = new FenGameBuilder();
 
-        Stream.of(split(BOARD_LINE, "/"))
-            .forEach(line -> builder.addBoardLine(line));
-
+        builder.withBoardLine(BOARD_LINE);
         builder.withActiveColor(color);
         builder.withCastling(DISABLE_ALL_SYMBOL);
         builder.withEnPassant(DISABLE_ALL_SYMBOL);
@@ -60,9 +56,7 @@ public class FenGameBuilderValidTest {
     void testValidCastling(String castling) {
         var builder = new FenGameBuilder();
 
-        Stream.of(split("r3k2r/8/8/8/8/8/8/R3K2R", "/"))
-            .forEach(line -> builder.addBoardLine(line));
-
+        builder.withBoardLine("r3k2r/8/8/8/8/8/8/R3K2R");
         builder.withActiveColor("w");
         builder.withCastling(castling);
         builder.withEnPassant(DISABLE_ALL_SYMBOL);
@@ -94,9 +88,7 @@ public class FenGameBuilderValidTest {
     void testValidEnPassant(String boardLine, String color, String enPassant) {
         var builder = new FenGameBuilder();
 
-        Stream.of(split(boardLine, "/"))
-            .forEach(line -> builder.addBoardLine(line));
-
+        builder.withBoardLine(boardLine);
         builder.withActiveColor(color);
         builder.withCastling(DISABLE_ALL_SYMBOL);
         builder.withEnPassant(enPassant);

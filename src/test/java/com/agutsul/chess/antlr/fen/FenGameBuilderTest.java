@@ -1,7 +1,6 @@
 package com.agutsul.chess.antlr.fen;
 
 import static com.agutsul.chess.antlr.fen.FenGameBuilder.DISABLE_ALL_SYMBOL;
-import static org.apache.commons.lang3.StringUtils.split;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.ByteArrayOutputStream;
@@ -9,7 +8,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
-import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AutoClose;
@@ -55,9 +53,7 @@ public class FenGameBuilderTest implements TestFileReader {
     void testPiecesOnBoard() throws URISyntaxException, IOException {
         var builder = new FenGameBuilder();
 
-        Stream.of(split(BOARD_LINE, "/"))
-            .forEach(line -> builder.addBoardLine(line));
-
+        builder.withBoardLine(BOARD_LINE);
         builder.withActiveColor("w");
         builder.withCastling(DISABLE_ALL_SYMBOL);
         builder.withEnPassant(DISABLE_ALL_SYMBOL);
