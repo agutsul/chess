@@ -381,6 +381,7 @@
                     <show>private</show>
                     <nohelp>true</nohelp>
                     <failOnError>false</failOnError>
+                    <doclint>none</doclint>
                 </configuration>
             </plugin>
         </plugins>
@@ -474,6 +475,7 @@
                 <configuration>
                     <show>public</show>
                     <failOnError>false</failOnError>
+                    <doclint>none</doclint>>
                 </configuration>
             </plugin>
         </plugins>
