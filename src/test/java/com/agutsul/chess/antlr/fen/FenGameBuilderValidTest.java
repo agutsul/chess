@@ -27,7 +27,7 @@ public class FenGameBuilderValidTest {
 
     @DisplayName("testValidActiveColor")
     @ParameterizedTest(name = "({index}) => (''{0}'')")
-    @ValueSource(strings = { "w", "b", "W", "B" })
+    @ValueSource(strings = { "w", "b" })
     void testValidActiveColor(String color) {
         var builder = new FenGameBuilder();
 

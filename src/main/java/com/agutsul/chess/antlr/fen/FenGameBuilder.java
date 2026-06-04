@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -66,6 +67,14 @@ final class FenGameBuilder
     private static final String COLOR_PATTERN      = "([w,b]){1}";
     private static final String CASTLING_PATTERN   = "([q,Q,k,K]){1,4}";
     private static final String ENPASSANT_PATTERN  = "([a-h]{1}[3,6]{1}){1}";
+
+    private static final Map<String,Piece.Type> PIECE_TYPES = Map.of(
+            "p", Piece.Type.PAWN, "n", Piece.Type.KNIGHT, "r", Piece.Type.ROOK,
+            "b", Piece.Type.BISHOP, "q", Piece.Type.QUEEN, "k", Piece.Type.KING
+    );
+
+    private static final Map<String,Color> COLORS = Map.of("b", Colors.BLACK, "w", Colors.WHITE);
+    private static final Map<String,Castling> CASTLINGS = Map.of("q", QUEEN_SIDE, "k", KING_SIDE);
 
     private final Pattern linePattern;
     private final Pattern colorPattern;
@@ -151,7 +160,7 @@ final class FenGameBuilder
 
         Stream.ofNullable(split(fenBoardLine, LINE_SEPARATOR))
             .flatMap(Arrays::stream)
-            .forEach(line -> addBoardLine(line));
+            .forEach(this::addBoardLine);
 
         return this;
     }
@@ -257,7 +266,7 @@ final class FenGameBuilder
         for (int i = 0; i < lines.size(); i++) {
             var line = lines.get(i);
 
-            for (int j = 0, k = 0; j < line.length() && k < Position.MAX; j++) {
+            for (int j = 0, k = Position.MIN; j < line.length() && k < Position.MAX; j++) {
                 var symbol = String.valueOf(line.charAt(j));
 
                 if (isNumeric(symbol)) {
@@ -276,31 +285,30 @@ final class FenGameBuilder
     }
 
     private static Piece.Type resolvePieceType(String pieceCode) {
-        return switch (lowerCase(pieceCode)) {
-        case "p" -> Piece.Type.PAWN;
-        case "n" -> Piece.Type.KNIGHT;
-        case "r" -> Piece.Type.ROOK;
-        case "b" -> Piece.Type.BISHOP;
-        case "q" -> Piece.Type.QUEEN;
-        case "k" -> Piece.Type.KING;
-        default  -> throw createArgumentException(INVALID_PIECE_TYPE, pieceCode);
-        };
+        var pieceType = PIECE_TYPES.get(lowerCase(pieceCode));
+        if (isNull(pieceType)) {
+            throw createArgumentException(INVALID_PIECE_TYPE, pieceCode);
+        }
+
+        return pieceType;
     }
 
     private static Color resolveColor(String colorCode) {
-        return switch (lowerCase(colorCode)) {
-        case "b" -> Colors.BLACK;
-        case "w" -> Colors.WHITE;
-        default  -> throw createArgumentException(INVALID_COLOR_FORMAT, colorCode);
-        };
+        var color = COLORS.get(lowerCase(colorCode));
+        if (isNull(color)) {
+            throw createArgumentException(INVALID_COLOR_FORMAT, colorCode);
+        }
+
+        return color;
     }
 
     private static Castling resolveCastling(String code) {
-        return switch(code) {
-        case "q","Q" -> QUEEN_SIDE;
-        case "k","K" -> KING_SIDE;
-        default -> throw createArgumentException(INVALID_CASTLING_FORMAT, code);
-        };
+        var castling = CASTLINGS.get(lowerCase(code));
+        if (isNull(castling)) {
+            throw createArgumentException(INVALID_CASTLING_FORMAT, code);
+        }
+
+        return castling;
     }
 
     private static void enableCastlings(Board board, String castlingString) {
