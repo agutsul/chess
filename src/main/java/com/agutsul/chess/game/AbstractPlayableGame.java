@@ -220,7 +220,7 @@ public abstract class AbstractPlayableGame
 
     protected void initObservers() {
         this.observers.addAll(List.of(
-                new CloseableGameOverObserver(this.context),
+                new CloseableGameOverObserver(getContext()),
                 new GameStartedObserver(),
                 new GameOverObserver(),
                 new PlayerActionObserver(this),
