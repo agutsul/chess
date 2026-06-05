@@ -332,11 +332,11 @@ public abstract class BoardStateFactory {
         @Override
         public Collection<Action<?>> getActions(Piece<?> piece) {
             var actions = super.getActions(piece);
-            if (!Objects.equals(piece.getColor(), color)) {
+            if (!Objects.equals(piece.getColor(), getColor())) {
                 return actions;
             }
 
-            var optionalKing = board.getKing(color);
+            var optionalKing = board.getKing(getColor());
             if (optionalKing.isEmpty()) {
                 return actions;
             }

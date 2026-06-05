@@ -44,7 +44,7 @@ abstract class AbstractPlayableBoardState
     @Override
     public Collection<Impact<?>> getImpacts(Position position) {
         logger.info("Getting impacts for color '{}' and position '{}'",
-                this.color, position
+                getColor(), position
         );
 
         if (impactCache.containsKey(position)) {
@@ -55,7 +55,7 @@ abstract class AbstractPlayableBoardState
         }
 
         logger.info("Calculate impacts for color '{}' and position '{}'",
-                this.color, position
+                getColor(), position
         );
 
         var impacts = impactRule.evaluate(position);

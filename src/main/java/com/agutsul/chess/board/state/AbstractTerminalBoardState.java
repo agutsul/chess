@@ -35,7 +35,7 @@ abstract class AbstractTerminalBoardState
 
     @Override
     public final Collection<Impact<?>> getImpacts(Position position) {
-        logger.info("Getting impacts for color '{}' and position '{}'", this.color, position);
+        logger.info("Getting impacts for color '{}' and position '{}'", getColor(), position);
         return emptyList();
     }
 }

@@ -13,9 +13,10 @@ abstract class AbstractBoardState
         implements BoardState {
 
     protected final Logger logger;
-    protected final Type type;
     protected final Board board;
-    protected final Color color;
+
+    private final Type type;
+    private final Color color;
 
     AbstractBoardState(Logger logger, Type type, Board board, Color color) {
         this.logger = logger;

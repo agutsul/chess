@@ -54,17 +54,9 @@ public abstract class AbstractGame
         return this.players.get(color);
     }
 
-    public final void setStartedAt(LocalDateTime dateTime) {
-        this.startedAt = dateTime;
-    }
-
     @Override
     public final LocalDateTime getStartedAt() {
         return this.startedAt;
-    }
-
-    public final void setFinishedAt(LocalDateTime dateTime) {
-        this.finishedAt = dateTime;
     }
 
     @Override
@@ -103,6 +95,14 @@ public abstract class AbstractGame
     @Override
     public final Optional<Player> getWinnerPlayer() {
         return Optional.ofNullable(this.winnerPlayer);
+    }
+
+    public final void setStartedAt(LocalDateTime dateTime) {
+        this.startedAt = dateTime;
+    }
+
+    public final void setFinishedAt(LocalDateTime dateTime) {
+        this.finishedAt = dateTime;
     }
 
     protected void setWinnerPlayer(Player player) {
