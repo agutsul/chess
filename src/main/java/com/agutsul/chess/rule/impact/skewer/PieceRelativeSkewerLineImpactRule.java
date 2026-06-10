@@ -3,7 +3,6 @@ package com.agutsul.chess.rule.impact.skewer;
 import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static java.util.Collections.emptyList;
 import static java.util.function.Predicate.not;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,20 +38,22 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
     protected Collection<PieceRelativeSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>
             createImpacts(ATTACKER piece, Collection<Calculatable> next) {
 
-        var opponentColor  = piece.getColor().invert();
+        var opponentPieces = Stream.of(board.getPieces(piece.getColor().invert()))
+                .flatMap(Collection::stream)
+                .filter(not(Piece::isKing))
+                .toList();
 
-        var attackedPieces  = Stream.of(board.getImpacts(piece, Impact.Type.CONTROL))
+        var attackedPieces = Stream.of(board.getImpacts(piece, Impact.Type.CONTROL))
                 .flatMap(Collection::stream)
                 .map(Impact::getPosition)
-                .map(attackedPosition -> Stream.of(board.getPieces(opponentColor))
+                .map(attackedPosition -> Stream.of(opponentPieces)
                         .flatMap(Collection::stream)
-                        .filter(not(Piece::isKing))
                         .filter(opponentPiece -> Objects.equals(attackedPosition, opponentPiece.getPosition()))
                         .findFirst()
                 )
                 .flatMap(Optional::stream)
                 .map(attackedPiece -> (ATTACKED) attackedPiece)
-                .collect(toList());
+                .toList();
 
         if (attackedPieces.isEmpty()) {
             return emptyList();
@@ -93,7 +94,7 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
                    return impact;
                })
                .filter(Objects::nonNull)
-               .collect(toList());
+               .toList();
 
         return impacts;
     }

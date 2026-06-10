@@ -44,11 +44,11 @@ final class PieceXRayProtectImpactRule<COLOR1 extends Color,
     protected Collection<PieceXRayProtectImpact<COLOR1,COLOR2,SOURCE,TARGET>>
             createImpacts(SOURCE piece, Collection<Line> next) {
 
-        var opponentColor = piece.getColor().invert();
+        var opponentPieces = board.getPieces(piece.getColor().invert());
         var attackedPieces = Stream.of(board.getImpacts(piece, Impact.Type.CONTROL))
                 .flatMap(Collection::stream)
                 .map(Impact::getPosition)
-                .map(attackedPosition -> Stream.of(board.getPieces(opponentColor))
+                .map(attackedPosition -> Stream.of(opponentPieces)
                         .flatMap(Collection::stream)
                         .filter(opponentPiece -> Objects.equals(attackedPosition, opponentPiece.getPosition()))
                         .findFirst()

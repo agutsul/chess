@@ -2,7 +2,6 @@ package com.agutsul.chess.rule.impact.skewer;
 
 import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,8 +37,7 @@ final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
     protected Collection<PieceAbsoluteSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>
             createImpacts(ATTACKER piece, Collection<Calculatable> next) {
 
-        var opponentColor = piece.getColor().invert();
-        var optionalKing = board.getKing(opponentColor);
+        var optionalKing = board.getKing(piece.getColor().invert());
         if (optionalKing.isEmpty()) {
             return emptyList();
         }
@@ -79,7 +77,7 @@ final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
                     return impact;
                 })
                 .filter(Objects::nonNull)
-                .collect(toList());
+                .toList();
 
         return impacts;
     }
