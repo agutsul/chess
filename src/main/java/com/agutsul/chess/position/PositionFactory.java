@@ -6,11 +6,15 @@ import static com.agutsul.chess.position.Position.codeOf;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public enum PositionFactory {
     INSTANCE;
+
+    private Collection<String> CENTER_POSITION_CODES = List.of("d4","d5","e4","e5");
 
     private Map<String,Position> positions = new HashMap<>(MAX * MAX);
 
@@ -18,7 +22,12 @@ public enum PositionFactory {
         for (int x = MIN; x < MAX; x++) {
             for (int y = MIN; y < MAX; y++) {
                 var position = new PositionImpl(x, y);
-                positions.put(position.getCode(), position);
+                var code = position.getCode();
+
+                positions.put(code, CENTER_POSITION_CODES.contains(code)
+                        ? new CentralPosition(position)
+                        : position
+                );
             }
         }
     }

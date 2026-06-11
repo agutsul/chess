@@ -30,4 +30,8 @@ public interface Position
     static String codeOf(Position position) {
         return codeOf(position.x(), position.y());
     }
+
+    static boolean isCentral(Position position) {
+        return position instanceof CentralPosition;
+    }
 }
