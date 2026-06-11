@@ -4,33 +4,26 @@ import static com.agutsul.chess.position.Position.MAX;
 import static com.agutsul.chess.position.Position.MIN;
 import static com.agutsul.chess.position.Position.codeOf;
 import static java.util.Objects.nonNull;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.IntStream.range;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public enum PositionFactory {
     INSTANCE;
 
-    private Collection<String> CENTER_POSITION_CODES = List.of("d4","d5","e4","e5");
+    private Collection<String> centerPositionCodes = Set.of("d4","d5","e4","e5");
 
-    private Map<String,Position> positions = new HashMap<>(MAX * MAX);
-
-    PositionFactory() {
-        for (int x = MIN; x < MAX; x++) {
-            for (int y = MIN; y < MAX; y++) {
-                var position = new PositionImpl(x, y);
-                var code = position.getCode();
-
-                positions.put(code, CENTER_POSITION_CODES.contains(code)
-                        ? new CentralPosition(position)
-                        : position
-                );
-            }
-        }
-    }
+    private Map<String,Position> positions = range(MIN, MAX)
+            .mapToObj(x -> range(MIN, MAX)
+                    .mapToObj(y -> createPosition(x, y))
+            )
+            .flatMap(identity())
+            .collect(toMap(Position::getCode, identity()));
 
     public Position create(String code) {
         return positions.get(code);
@@ -39,6 +32,13 @@ public enum PositionFactory {
     public Position create(int x, int y) {
         var code = codeOf(x, y);
         return nonNull(code) ? create(code) : null;
+    }
+
+    private Position createPosition(int x, int y) {
+        var position = new PositionImpl(x, y);
+        return centerPositionCodes.contains(position.getCode())
+                ? new CentralPosition(position)
+                : position;
     }
 
     public static Position positionOf(int x, int y) {
