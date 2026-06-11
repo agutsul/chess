@@ -25,11 +25,11 @@ public enum PositionFactory {
             .flatMap(identity())
             .collect(toMap(Position::getCode, identity()));
 
-    public Position create(String code) {
+    private Position create(String code) {
         return positions.get(code);
     }
 
-    public Position create(int x, int y) {
+    private Position create(int x, int y) {
         var code = codeOf(x, y);
         return nonNull(code) ? create(code) : null;
     }
