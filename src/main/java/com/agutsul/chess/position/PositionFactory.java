@@ -10,6 +10,7 @@ import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -32,6 +33,8 @@ public enum PositionFactory {
     private Position create(int x, int y) {
         return Stream.ofNullable(codeOf(x, y))
                 .map(this::create)
+                .map(Optional::ofNullable)
+                .flatMap(Optional::stream)
                 .findFirst()
                 .orElse(null);
     }
