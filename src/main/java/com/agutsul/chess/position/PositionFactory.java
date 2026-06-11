@@ -3,7 +3,6 @@ package com.agutsul.chess.position;
 import static com.agutsul.chess.position.Position.MAX;
 import static com.agutsul.chess.position.Position.MIN;
 import static com.agutsul.chess.position.Position.codeOf;
-import static java.util.Objects.nonNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.IntStream.range;
@@ -12,6 +11,7 @@ import static org.apache.commons.lang3.StringUtils.lowerCase;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public enum PositionFactory {
     INSTANCE;
@@ -30,8 +30,10 @@ public enum PositionFactory {
     }
 
     private Position create(int x, int y) {
-        var code = codeOf(x, y);
-        return nonNull(code) ? create(code) : null;
+        return Stream.ofNullable(codeOf(x, y))
+                .map(this::create)
+                .findFirst()
+                .orElse(null);
     }
 
     private Position createPosition(int x, int y) {
