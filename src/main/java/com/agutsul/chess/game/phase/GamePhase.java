@@ -1,8 +1,10 @@
 package com.agutsul.chess.game.phase;
 
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.game.Game;
+import com.agutsul.chess.state.State;
 
-public interface GamePhase {
+public interface GamePhase extends State<Game> {
 
     enum Type {
         OPENING,
