@@ -21,25 +21,25 @@ public enum PositionFactory {
 
     private Map<String,Position> positions = range(MIN, MAX)
             .mapToObj(x -> range(MIN, MAX)
-                    .mapToObj(y -> createPosition(x, y))
+                    .mapToObj(y -> create(x, y))
             )
             .flatMap(identity())
             .collect(toMap(Position::getCode, identity()));
 
-    private Position create(String code) {
+    private Position get(String code) {
         return positions.get(code);
     }
 
-    private Position create(int x, int y) {
+    private Position get(int x, int y) {
         return Stream.ofNullable(codeOf(x, y))
-                .map(this::create)
+                .map(this::get)
                 .map(Optional::ofNullable)
                 .flatMap(Optional::stream)
                 .findFirst()
                 .orElse(null);
     }
 
-    private Position createPosition(int x, int y) {
+    private Position create(int x, int y) {
         var position = new PositionImpl(x, y);
         return centerPositionCodes.contains(position.getCode())
                 ? new CentralPosition(position)
@@ -47,10 +47,10 @@ public enum PositionFactory {
     }
 
     public static Position positionOf(int x, int y) {
-        return INSTANCE.create(x, y);
+        return INSTANCE.get(x, y);
     }
 
     public static Position positionOf(String code) {
-        return INSTANCE.create(lowerCase(code));
+        return INSTANCE.get(lowerCase(code));
     }
 }
