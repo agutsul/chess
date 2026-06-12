@@ -11,12 +11,12 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.game.phase.GamePhase;
 import com.agutsul.chess.journal.Journal;
 
-public final class GamePhaseEvaluatotImpl
+public final class GamePhaseEvaluatorImpl
         implements GamePhaseEvaluator<GamePhase> {
 
     private final Collection<GamePhaseEvaluator<Optional<GamePhase>>> evaluators;
 
-    public GamePhaseEvaluatotImpl(Board board, Journal<ActionMemento<?,?>> journal) {
+    public GamePhaseEvaluatorImpl(Board board, Journal<ActionMemento<?,?>> journal) {
         this(List.of(
                 new OpeningGamePhaseEvaluator(board, journal),
                 new MiddleGamePhaseEvaluator(board, journal),
@@ -24,7 +24,7 @@ public final class GamePhaseEvaluatotImpl
         ));
     }
 
-    GamePhaseEvaluatotImpl(Collection<GamePhaseEvaluator<Optional<GamePhase>>> evaluators) {
+    GamePhaseEvaluatorImpl(Collection<GamePhaseEvaluator<Optional<GamePhase>>> evaluators) {
         this.evaluators = evaluators;
     }
 

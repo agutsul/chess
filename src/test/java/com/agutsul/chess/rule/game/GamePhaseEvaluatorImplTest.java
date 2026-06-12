@@ -21,7 +21,7 @@ import com.agutsul.chess.game.phase.MiddleGamePhase;
 import com.agutsul.chess.game.phase.OpeningGamePhase;
 
 @ExtendWith(MockitoExtension.class)
-public class GamePhaseEvaluatotImplTest {
+public class GamePhaseEvaluatorImplTest {
 
     @Mock
     OpeningGamePhaseEvaluator openingGamePhaseEvaluator;
@@ -35,7 +35,7 @@ public class GamePhaseEvaluatotImplTest {
         when(openingGamePhaseEvaluator.evaluate(any(Color.class)))
             .thenAnswer(inv -> Optional.of(new OpeningGamePhase(inv.getArgument(0, Color.class))));
 
-        var evaluator = new GamePhaseEvaluatotImpl(List.of(
+        var evaluator = new GamePhaseEvaluatorImpl(List.of(
                 openingGamePhaseEvaluator,
                 middleGamePhaseEvaluator,
                 endGamePhaseEvaluator
@@ -53,7 +53,7 @@ public class GamePhaseEvaluatotImplTest {
         when(middleGamePhaseEvaluator.evaluate(any(Color.class)))
             .thenAnswer(inv -> Optional.of(new MiddleGamePhase(inv.getArgument(0, Color.class))));
 
-        var evaluator = new GamePhaseEvaluatotImpl(List.of(
+        var evaluator = new GamePhaseEvaluatorImpl(List.of(
                 openingGamePhaseEvaluator,
                 middleGamePhaseEvaluator,
                 endGamePhaseEvaluator
@@ -73,7 +73,7 @@ public class GamePhaseEvaluatotImplTest {
         when(endGamePhaseEvaluator.evaluate(any(Color.class)))
             .thenAnswer(inv -> Optional.of(new EndGamePhase(inv.getArgument(0, Color.class))));
 
-        var evaluator = new GamePhaseEvaluatotImpl(List.of(
+        var evaluator = new GamePhaseEvaluatorImpl(List.of(
                 openingGamePhaseEvaluator,
                 middleGamePhaseEvaluator,
                 endGamePhaseEvaluator
