@@ -25,8 +25,8 @@ final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
                                               ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
                                               ATTACKED extends KingPiece<COLOR2>,
                                               DEFENDED extends Piece<COLOR2>>
-        extends AbstractPieceSkewerImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,
-                                              PieceAbsoluteSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>> {
+        extends AbstractSkewerImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,
+                                         PieceAbsoluteSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>> {
 
     PieceAbsoluteSkewerLineImpactRule(Board board, Algo<ATTACKER,Collection<Line>> algo) {
         super(board, algo);

@@ -2,7 +2,9 @@ package com.agutsul.chess.rule.impact.skewer;
 
 import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static java.util.Collections.emptyList;
+import static java.util.function.Function.identity;
 import static java.util.function.Predicate.not;
+import static java.util.stream.Collectors.toMap;
 
 import java.util.Collection;
 import java.util.List;
@@ -26,8 +28,8 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
                                               ATTACKER extends Piece<COLOR1> & Capturable & Lineable,
                                               ATTACKED extends Piece<COLOR2>,
                                               DEFENDED extends Piece<COLOR2>>
-        extends AbstractPieceSkewerImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,
-                                              PieceRelativeSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>> {
+        extends AbstractSkewerImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,
+                                         PieceRelativeSkewerImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>> {
 
     PieceRelativeSkewerLineImpactRule(Board board, Algo<ATTACKER,Collection<Line>> algo) {
         super(board, algo);
@@ -41,16 +43,13 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
         var opponentPieces = Stream.of(board.getPieces(piece.getColor().invert()))
                 .flatMap(Collection::stream)
                 .filter(not(Piece::isKing))
-                .toList();
+                .collect(toMap(Piece::getPosition, identity()));
 
         var attackedPieces = Stream.of(board.getImpacts(piece, Impact.Type.CONTROL))
                 .flatMap(Collection::stream)
                 .map(Impact::getPosition)
-                .map(attackedPosition -> Stream.of(opponentPieces)
-                        .flatMap(Collection::stream)
-                        .filter(opponentPiece -> Objects.equals(attackedPosition, opponentPiece.getPosition()))
-                        .findFirst()
-                )
+                .map(attackedPosition -> opponentPieces.get(attackedPosition))
+                .map(Optional::ofNullable)
                 .flatMap(Optional::stream)
                 .map(attackedPiece -> (ATTACKED) attackedPiece)
                 .toList();

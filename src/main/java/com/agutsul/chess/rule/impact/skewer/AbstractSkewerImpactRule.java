@@ -1,12 +1,19 @@
 package com.agutsul.chess.rule.impact.skewer;
 
+import static java.util.Collections.unmodifiableCollection;
+
+import java.util.Collection;
+
+import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceSkewerImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 import com.agutsul.chess.rule.impact.SkewerImpactRule;
 
@@ -19,7 +26,15 @@ abstract class AbstractSkewerImpactRule<COLOR1 extends Color,
         extends AbstractPieceImpactRule<COLOR1,ATTACKER,IMPACT>
         implements SkewerImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,IMPACT> {
 
-    AbstractSkewerImpactRule(Board board) {
+    private final Algo<ATTACKER,Collection<Line>> algo;
+
+    AbstractSkewerImpactRule(Board board, Algo<ATTACKER,Collection<Line>> algo) {
         super(board, Impact.Type.SKEWER);
+        this.algo = algo;
+    }
+
+    @Override
+    protected Collection<Calculatable> calculate(ATTACKER piece) {
+        return unmodifiableCollection(algo.calculate(piece));
     }
 }
