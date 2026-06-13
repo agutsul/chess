@@ -14,11 +14,11 @@ import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.game.pgn.PgnGame;
 import com.agutsul.chess.game.pgn.PgnTermination;
 import com.agutsul.chess.game.pgn.PgnTimeControl;
-import com.agutsul.chess.game.state.BlackWinGameState;
-import com.agutsul.chess.game.state.DefaultGameState;
-import com.agutsul.chess.game.state.DrawnGameState;
-import com.agutsul.chess.game.state.GameState;
-import com.agutsul.chess.game.state.WhiteWinGameState;
+import com.agutsul.chess.game.result.BlackWinGameResult;
+import com.agutsul.chess.game.result.DefaultGameResult;
+import com.agutsul.chess.game.result.DrawnGameResult;
+import com.agutsul.chess.game.result.GameResult;
+import com.agutsul.chess.game.result.WhiteWinGameResult;
 
 final class PgnGameBuilder
         implements GameBuilder<PgnGame<?>> {
@@ -116,16 +116,16 @@ final class PgnGameBuilder
         return this;
     }
 
-    private static GameState resolveState(String state) {
-        switch (GameState.Type.codeOf(state)) {
+    private static GameResult resolveState(String state) {
+        switch (GameResult.Type.codeOf(state)) {
         case WHITE_WIN:
-            return new WhiteWinGameState();
+            return new WhiteWinGameResult();
         case BLACK_WIN:
-            return new BlackWinGameState();
+            return new BlackWinGameResult();
         case DRAWN_GAME:
-            return new DrawnGameState();
+            return new DrawnGameResult();
         default:
-            return new DefaultGameState();
+            return new DefaultGameResult();
         }
     }
 }

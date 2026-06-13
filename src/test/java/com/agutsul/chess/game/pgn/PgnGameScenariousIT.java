@@ -9,7 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.game.state.GameState;
+import com.agutsul.chess.game.result.GameResult;
 
 @ExtendWith(MockitoExtension.class)
 public final class PgnGameScenariousIT extends AbstractPgnGameTest {
@@ -21,6 +21,6 @@ public final class PgnGameScenariousIT extends AbstractPgnGameTest {
             throws URISyntaxException, IOException {
 
         var game = parseGame(readFileContent(PGN_FOLDER, file));
-        assertGame(game, GameState.Type.valueOf(status), actions, tags);
+        assertGame(game, GameResult.Type.valueOf(status), actions, tags);
     }
 }

@@ -39,6 +39,7 @@ import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
+import com.agutsul.chess.rule.game.GamePhaseEvaluatorImpl;
 
 public final class SimulationGame
         extends AbstractPlayableGame
@@ -67,6 +68,7 @@ public final class SimulationGame
 
         super(LOGGER, whitePlayer, blackPlayer, board, journal,
                 new BoardStateEvaluatorImpl(board, journal),
+                new GamePhaseEvaluatorImpl(board, journal),
                 new GameContext(forkJoinPool)
         );
 

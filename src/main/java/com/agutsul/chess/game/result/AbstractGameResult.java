@@ -1,11 +1,11 @@
-package com.agutsul.chess.game.state;
+package com.agutsul.chess.game.result;
 
-abstract class AbstractGameState
-        implements GameState {
+abstract class AbstractGameResult
+        implements GameResult {
 
     private final Type type;
 
-    AbstractGameState(Type type) {
+    AbstractGameResult(Type type) {
         this.type = type;
     }
 

@@ -62,11 +62,13 @@ import com.agutsul.chess.game.observer.GameExceptionObserver;
 import com.agutsul.chess.game.observer.GameOverObserver;
 import com.agutsul.chess.game.observer.GameStartedObserver;
 import com.agutsul.chess.game.observer.SwitchPlayerObserver;
-import com.agutsul.chess.game.state.BlackWinGameState;
-import com.agutsul.chess.game.state.DefaultGameState;
-import com.agutsul.chess.game.state.DrawnGameState;
-import com.agutsul.chess.game.state.GameState;
-import com.agutsul.chess.game.state.WhiteWinGameState;
+import com.agutsul.chess.game.phase.GamePhase;
+import com.agutsul.chess.game.phase.OpeningGamePhase;
+import com.agutsul.chess.game.result.BlackWinGameResult;
+import com.agutsul.chess.game.result.DefaultGameResult;
+import com.agutsul.chess.game.result.DrawnGameResult;
+import com.agutsul.chess.game.result.GameResult;
+import com.agutsul.chess.game.result.WhiteWinGameResult;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.mock.PlayerActionObserverMock;
@@ -80,6 +82,8 @@ import com.agutsul.chess.player.event.PlayerTerminateActionEvent;
 import com.agutsul.chess.player.event.PlayerTerminateActionExceptionEvent;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
+import com.agutsul.chess.rule.game.GamePhaseEvaluator;
+import com.agutsul.chess.rule.game.GamePhaseEvaluatorImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class GameImplTest {
@@ -96,6 +100,8 @@ public class GameImplTest {
     Journal<ActionMemento<?,?>> journal;
     @Mock
     BoardStateEvaluator<BoardState> boardStateEvaluator;
+    @Mock
+    GamePhaseEvaluator<GamePhase> gamePhaseEvaluator;
 
     @Spy
     PlayerImpl whitePlayer = new PlayerImpl("test1", Colors.WHITE);
@@ -112,27 +118,27 @@ public class GameImplTest {
     }
 
     @Test
-    void testGetStateReturningDefault() {
+    void testGetResultReturningDefault() {
         var game = new GameMock(whitePlayer, blackPlayer, board);
-        var state = game.getState();
+        var result = game.getResult();
 
-        assertTrue(state instanceof DefaultGameState);
-        assertEquals(GameState.Type.UNKNOWN, state.getType());
+        assertTrue(result instanceof DefaultGameResult);
+        assertEquals(GameResult.Type.UNKNOWN, result.getType());
     }
 
     @Test
-    void testGetStateReturningDrawn() {
+    void testGetResultReturningDrawn() {
         var game = new GameMock(whitePlayer, blackPlayer, board);
         game.setFinishedAt(now());
 
-        var state = game.getState();
+        var result = game.getResult();
 
-        assertTrue(state instanceof DrawnGameState);
-        assertEquals(GameState.Type.DRAWN_GAME, state.getType());
+        assertTrue(result instanceof DrawnGameResult);
+        assertEquals(GameResult.Type.DRAWN_GAME, result.getType());
     }
 
     @Test
-    void testGetStateReturningWhiteWin() {
+    void testGetResultReturningWhiteWin() {
         var board = spy(new StandardBoard());
         when(board.getState())
             .thenReturn(checkMatedBoardState(board, Colors.WHITE, piece));
@@ -141,20 +147,21 @@ public class GameImplTest {
 
         var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
                 new BoardStateEvaluatorImpl(board, journal),
+                new GamePhaseEvaluatorImpl(board, journal),
                 context
         );
 
         game.setFinishedAt(now());
         game.run();
 
-        var state = game.getState();
+        var result = game.getResult();
 
-        assertTrue(state instanceof WhiteWinGameState);
-        assertEquals(GameState.Type.WHITE_WIN, state.getType());
+        assertTrue(result instanceof WhiteWinGameResult);
+        assertEquals(GameResult.Type.WHITE_WIN, result.getType());
     }
 
     @Test
-    void testGetStateReturningBlackWin() {
+    void testGetResultReturningBlackWin() {
         when(board.getState())
             .thenReturn(agreedDefeatBoardState(board, Colors.BLACK));
 
@@ -162,16 +169,17 @@ public class GameImplTest {
 
         var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
                 new BoardStateEvaluatorImpl(board, journal),
+                new GamePhaseEvaluatorImpl(board, journal),
                 context
         );
 
         game.setFinishedAt(now());
         game.run();
 
-        var state = game.getState();
+        var result = game.getResult();
 
-        assertTrue(state instanceof BlackWinGameState);
-        assertEquals(GameState.Type.BLACK_WIN, state.getType());
+        assertTrue(result instanceof BlackWinGameResult);
+        assertEquals(GameResult.Type.BLACK_WIN, result.getType());
     }
 
     @Test
@@ -187,8 +195,11 @@ public class GameImplTest {
                     : checkMatedBoardState(board, color, piece);
             });
 
-        var game = new GameImpl(whitePlayer, blackPlayer,
-                board, journal, boardStateEvaluator, context
+        when(gamePhaseEvaluator.evaluate(any(Color.class)))
+            .thenAnswer(inv -> new OpeningGamePhase(inv.getArgument(0, Color.class)));
+
+        var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
+                boardStateEvaluator, gamePhaseEvaluator, context
         );
         game.run();
 
@@ -205,6 +216,7 @@ public class GameImplTest {
 
         var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
                 new BoardStateEvaluatorImpl(board, journal),
+                new GamePhaseEvaluatorImpl(board, journal),
                 context
         );
 
@@ -224,6 +236,7 @@ public class GameImplTest {
 
         var game = spy(new GameImpl(whitePlayer, blackPlayer, board, journal,
                 new BoardStateEvaluatorImpl(board, journal),
+                new GamePhaseEvaluatorImpl(board, journal),
                 context
         ));
 
@@ -246,6 +259,7 @@ public class GameImplTest {
 
         var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
                 new BoardStateEvaluatorImpl(board, journal),
+                new GamePhaseEvaluatorImpl(board, journal),
                 context
         );
 
@@ -272,14 +286,17 @@ public class GameImplTest {
                     : staleMatedBoardState(board, color);
             });
 
+        when(gamePhaseEvaluator.evaluate(any(Color.class)))
+            .thenAnswer(inv -> new OpeningGamePhase(inv.getArgument(0, Color.class)));
+
         doCallRealMethod()
             .when(whitePlayer).notifyObservers(any());
 
         doCallRealMethod()
             .when(blackPlayer).notifyObservers(any());
 
-        var game = new GameImpl(whitePlayer, blackPlayer,
-                board, journal, boardStateEvaluator, context
+        var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
+                boardStateEvaluator, gamePhaseEvaluator, context
         );
 
         board.addObserver(new PlayerInputObserverInteratorMock(whitePlayer, game, "e2 e4"));
@@ -333,6 +350,9 @@ public class GameImplTest {
         doCallRealMethod()
             .when(board).notifyObservers(any());
 
+        when(gamePhaseEvaluator.evaluate(any(Color.class)))
+            .thenAnswer(inv -> new OpeningGamePhase(inv.getArgument(0, Color.class)));
+
         doCallRealMethod()
             .when(whitePlayer).notifyObservers(any());
         doCallRealMethod()
@@ -340,8 +360,8 @@ public class GameImplTest {
 
         var journal = new JournalImpl();
 
-        var game = new GameImpl(whitePlayer, blackPlayer,
-                board, journal, boardStateEvaluator, context
+        var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
+                boardStateEvaluator, gamePhaseEvaluator, context
         );
 
         var whitePlayerInputObserver =
@@ -399,6 +419,9 @@ public class GameImplTest {
         doCallRealMethod()
             .when(board).notifyObservers(any());
 
+        when(gamePhaseEvaluator.evaluate(any(Color.class)))
+            .thenAnswer(inv -> new OpeningGamePhase(inv.getArgument(0, Color.class)));
+
         doCallRealMethod()
             .when(whitePlayer).notifyObservers(any());
         doCallRealMethod()
@@ -406,8 +429,8 @@ public class GameImplTest {
 
         var journal = new JournalImpl();
 
-        var game = new GameImpl(whitePlayer, blackPlayer,
-                board, journal, boardStateEvaluator, context
+        var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
+                boardStateEvaluator, gamePhaseEvaluator, context
         );
 
         var whitePlayerInputObserver =
@@ -462,6 +485,9 @@ public class GameImplTest {
         doCallRealMethod()
             .when(board).notifyObservers(any());
 
+        when(gamePhaseEvaluator.evaluate(any(Color.class)))
+            .thenAnswer(inv -> new OpeningGamePhase(inv.getArgument(0, Color.class)));
+
         doCallRealMethod()
             .when(whitePlayer).notifyObservers(any());
         doCallRealMethod()
@@ -469,8 +495,8 @@ public class GameImplTest {
 
         var journal = new JournalImpl();
 
-        var game = new GameImpl(whitePlayer, blackPlayer,
-                board, journal, boardStateEvaluator, context
+        var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
+                boardStateEvaluator, gamePhaseEvaluator, context
         );
 
         var whitePlayerInputObserver =
@@ -544,6 +570,9 @@ public class GameImplTest {
         doCallRealMethod()
             .when(board).notifyObservers(any());
 
+        when(gamePhaseEvaluator.evaluate(any(Color.class)))
+            .thenAnswer(inv -> new OpeningGamePhase(inv.getArgument(0, Color.class)));
+
         doCallRealMethod()
             .when(whitePlayer).notifyObservers(any());
         doCallRealMethod()
@@ -551,8 +580,8 @@ public class GameImplTest {
 
         var journal = new JournalImpl();
 
-        var game = new GameExceptionMock(
-                whitePlayer, blackPlayer, board, journal, boardStateEvaluator
+        var game = new GameExceptionMock(whitePlayer, blackPlayer,
+                board, journal, boardStateEvaluator, gamePhaseEvaluator
         );
 
         var whitePlayerInputObserver =
@@ -601,6 +630,9 @@ public class GameImplTest {
         doCallRealMethod()
             .when(board).notifyObservers(any());
 
+        when(gamePhaseEvaluator.evaluate(any(Color.class)))
+            .thenAnswer(inv -> new OpeningGamePhase(inv.getArgument(0, Color.class)));
+
         doCallRealMethod()
             .when(whitePlayer).notifyObservers(any());
         doCallRealMethod()
@@ -608,8 +640,8 @@ public class GameImplTest {
 
         var journal = new JournalImpl();
 
-        var game = new GameImpl(whitePlayer, blackPlayer,
-                board, journal, boardStateEvaluator, context
+        var game = new GameImpl(whitePlayer, blackPlayer, board, journal,
+                boardStateEvaluator, gamePhaseEvaluator, context
         );
 
         var whitePlayerInputObserver =
@@ -684,6 +716,9 @@ public class GameImplTest {
         doCallRealMethod()
             .when(board).notifyObservers(any());
 
+        when(gamePhaseEvaluator.evaluate(any(Color.class)))
+            .thenAnswer(inv -> new OpeningGamePhase(inv.getArgument(0, Color.class)));
+
         doCallRealMethod()
             .when(whitePlayer).notifyObservers(any());
         doCallRealMethod()
@@ -691,8 +726,8 @@ public class GameImplTest {
 
         var journal = new JournalImpl();
 
-        var game = new GameExceptionMock(whitePlayer, blackPlayer,
-                board, journal, boardStateEvaluator
+        var game = new GameExceptionMock(whitePlayer, blackPlayer, board, journal,
+                boardStateEvaluator, gamePhaseEvaluator
         );
 
         var whitePlayerInputObserver =
@@ -779,10 +814,11 @@ public class GameImplTest {
 
         GameExceptionMock(Player whitePlayer, Player blackPlayer,
                           Board board, Journal<ActionMemento<?,?>> journal,
-                          BoardStateEvaluator<BoardState> boardStateEvaluator) {
+                          BoardStateEvaluator<BoardState> boardStateEvaluator,
+                          GamePhaseEvaluator<GamePhase> gamePhaseEvaluator) {
 
-            super(whitePlayer, blackPlayer,
-                    board, journal, boardStateEvaluator, new GameContext()
+            super(whitePlayer, blackPlayer, board, journal,
+                    boardStateEvaluator, gamePhaseEvaluator, new GameContext()
             );
         }
 

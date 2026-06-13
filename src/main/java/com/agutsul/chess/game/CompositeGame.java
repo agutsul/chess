@@ -1,6 +1,6 @@
 package com.agutsul.chess.game;
 
-import static com.agutsul.chess.game.state.GameState.isUnknown;
+import static com.agutsul.chess.game.result.GameResult.isUnknown;
 import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -51,7 +51,7 @@ final class CompositeGame<GAME extends Game & Observable>
 
                 playableGame.run();
 
-                var isGameFinished = !isUnknown(playableGame.getState());
+                var isGameFinished = !isUnknown(playableGame.getResult());
                 if (isGameFinished) {
                     LOGGER.info("Game iteration with timeout '{}' stopped", timeout);
                     return;

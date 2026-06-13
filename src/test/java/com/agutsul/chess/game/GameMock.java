@@ -20,6 +20,7 @@ import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.mock.PlayerActionObserverMock;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
+import com.agutsul.chess.rule.game.GamePhaseEvaluatorImpl;
 
 public class GameMock
         extends AbstractPlayableGame {
@@ -55,7 +56,10 @@ public class GameMock
                     BoardStateEvaluator<BoardState> boardStateEvaluator,
                     GameContext context) {
 
-        super(LOGGER, whitePlayer, blackPlayer, board, journal, boardStateEvaluator, context);
+        super(LOGGER, whitePlayer, blackPlayer, board, journal,
+                boardStateEvaluator, new GamePhaseEvaluatorImpl(board, journal),
+                context
+        );
     }
 
     @Override

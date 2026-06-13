@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.TestFileReader;
 import com.agutsul.chess.game.pgn.PgnGame;
-import com.agutsul.chess.game.state.GameState;
+import com.agutsul.chess.game.result.GameResult;
 
 @ExtendWith(MockitoExtension.class)
 public class PgnGameParserTest implements TestFileReader {
@@ -21,28 +21,28 @@ public class PgnGameParserTest implements TestFileReader {
     @Test
     void testParsingWhiteWinsGameFile() throws URISyntaxException, IOException {
         var games = parseGames("chess_white.pgn", 1);
-        assertGame(games.getFirst(), GameState.Type.WHITE_WIN, 157, 5);
+        assertGame(games.getFirst(), GameResult.Type.WHITE_WIN, 157, 5);
     }
 
     @Test
     void testParsingBlackWinsGameFile() throws URISyntaxException, IOException {
         var games = parseGames("chess_black.pgn", 1);
-        assertGame(games.getFirst(), GameState.Type.BLACK_WIN, 90, 9);
+        assertGame(games.getFirst(), GameResult.Type.BLACK_WIN, 90, 9);
     }
 
     @Test
     void testParsingDrawnGameFile() throws URISyntaxException, IOException {
         var games = parseGames("chess_drawn.pgn", 1);
-        assertGame(games.getFirst(), GameState.Type.DRAWN_GAME, 121, 6);
+        assertGame(games.getFirst(), GameResult.Type.DRAWN_GAME, 121, 6);
     }
 
     @Test
     void testParsingEvalFormatGameFile() throws URISyntaxException, IOException {
         var games = parseGames("chess_eval_format.pgn", 1);
-        assertGame(games.getFirst(), GameState.Type.BLACK_WIN, 26, 9);
+        assertGame(games.getFirst(), GameResult.Type.BLACK_WIN, 26, 9);
     }
 
-    private static void assertGame(PgnGame<?> game, GameState.Type expectedGameState,
+    private static void assertGame(PgnGame<?> game, GameResult.Type expectedGameState,
                                    int expectedActionsCount, int expectedTagsCount) {
 
         assertEquals(expectedActionsCount, game.getParsedActions().size());

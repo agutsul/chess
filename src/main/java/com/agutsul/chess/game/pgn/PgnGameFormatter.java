@@ -1,6 +1,7 @@
 package com.agutsul.chess.game.pgn;
 
 import static java.lang.System.lineSeparator;
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.ObjectUtils.getIfNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.SPACE;
@@ -12,7 +13,7 @@ import java.util.stream.Stream;
 
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.game.Game;
-import com.agutsul.chess.game.state.GameState;
+import com.agutsul.chess.game.result.GameResult;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalFormatter;
 import com.agutsul.chess.journal.JournalFormatter.Mode;
@@ -34,7 +35,7 @@ public class PgnGameFormatter {
     private static final String DATE_PATTERN = "yyyy.MM.dd";
 
     public static String format(Game game) {
-        var gameState = format(game.getState());
+        var result  = format(game.getResult());
         var context = game.getContext();
 
         var builder = new StringBuilder();
@@ -45,14 +46,14 @@ public class PgnGameFormatter {
         builder.append(format(ROUND_TAG,  context.getRound()));
         builder.append(format(WHITE_TAG,  format(game.getWhitePlayer())));
         builder.append(format(BLACK_TAG,  format(game.getBlackPlayer())));
-        builder.append(format(RESULT_TAG, gameState));
+        builder.append(format(RESULT_TAG, result));
         builder.append(format(TIME_CONTROL_TAG, format(context.getTimeout())));
 
         builder.append(lineSeparator());
 
         builder.append(format(game.getJournal()));
         builder.append(SPACE);
-        builder.append(gameState);
+        builder.append(result);
 
         builder.append(lineSeparator());
         return builder.toString();
@@ -66,7 +67,7 @@ public class PgnGameFormatter {
                 .orElse("-");
     }
 
-    private static String format(GameState gameState) {
+    private static String format(GameResult gameState) {
         return String.valueOf(gameState);
     }
 
@@ -75,11 +76,9 @@ public class PgnGameFormatter {
     }
 
     private static String format(LocalDateTime dateTime) {
-        if (dateTime == null) {
-            return EMPTY;
-        }
-
-        return dateTime.format(DateTimeFormatter.ofPattern(DATE_PATTERN));
+        return nonNull(dateTime)
+                ? dateTime.format(DateTimeFormatter.ofPattern(DATE_PATTERN))
+                : EMPTY;
     }
 
     private static String format(Journal<ActionMemento<?,?>> journal) {

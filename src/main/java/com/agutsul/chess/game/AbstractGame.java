@@ -13,11 +13,11 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.color.Colors;
-import com.agutsul.chess.game.state.BlackWinGameState;
-import com.agutsul.chess.game.state.DefaultGameState;
-import com.agutsul.chess.game.state.DrawnGameState;
-import com.agutsul.chess.game.state.GameState;
-import com.agutsul.chess.game.state.WhiteWinGameState;
+import com.agutsul.chess.game.result.BlackWinGameResult;
+import com.agutsul.chess.game.result.DefaultGameResult;
+import com.agutsul.chess.game.result.DrawnGameResult;
+import com.agutsul.chess.game.result.GameResult;
+import com.agutsul.chess.game.result.WhiteWinGameResult;
 import com.agutsul.chess.player.Player;
 
 public abstract class AbstractGame
@@ -65,19 +65,21 @@ public abstract class AbstractGame
     }
 
     @Override
-    public final GameState getState() {
+    public final GameResult getResult() {
         if (isNull(getFinishedAt())) {
-            return new DefaultGameState();
+            return new DefaultGameResult();
         }
 
-        var state = Stream.of(getWinnerPlayer())
+        var result = Stream.of(getWinnerPlayer())
                 .flatMap(Optional::stream)
                 .findFirst()
-                .map(Player::getColor)
-                .map(AbstractGame::winnerState)
-                .orElse(new DrawnGameState());
+                .map(player -> (GameResult) (Colors.WHITE.equals(player.getColor())
+                            ? new WhiteWinGameResult()
+                            : new BlackWinGameResult()
+                ))
+                .orElse(new DrawnGameResult());
 
-        return state;
+        return result;
     }
 
     @Override
@@ -111,11 +113,5 @@ public abstract class AbstractGame
 
     protected void setCurrentPlayer(Player player) {
         this.currentPlayer = player;
-    }
-
-    private static GameState winnerState(Color color) {
-        return Colors.WHITE.equals(color)
-                ? new WhiteWinGameState()
-                : new BlackWinGameState();
     }
 }

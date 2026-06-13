@@ -5,8 +5,10 @@ import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.DEFAULT;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
@@ -23,6 +25,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.event.ClearCachedDataEvent;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.event.AbstractEventObserver;
 import com.agutsul.chess.event.AbstractObserverProxy;
 import com.agutsul.chess.event.CompositeEventObserver;
@@ -37,6 +40,7 @@ import com.agutsul.chess.game.observer.GameExceptionObserver;
 import com.agutsul.chess.game.observer.GameOverObserver;
 import com.agutsul.chess.game.observer.GameStartedObserver;
 import com.agutsul.chess.game.observer.SwitchPlayerObserver;
+import com.agutsul.chess.game.phase.GamePhase;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
@@ -45,6 +49,8 @@ import com.agutsul.chess.player.observer.PlayableObserver;
 import com.agutsul.chess.player.observer.PlayerActionObserver;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
+import com.agutsul.chess.rule.game.GamePhaseEvaluator;
+import com.agutsul.chess.rule.game.GamePhaseEvaluatorImpl;
 import com.agutsul.chess.rule.winner.ActionTimeoutWinnerEvaluator;
 import com.agutsul.chess.rule.winner.GameTimeoutWinnerEvaluator;
 import com.agutsul.chess.rule.winner.StandardWinnerEvaluator;
@@ -55,11 +61,13 @@ public abstract class AbstractPlayableGame
         implements Iterator<Player>, Playable, Executable {
 
     private final List<Observer> observers = new CopyOnWriteArrayList<>();
+    private final Map<Color,GamePhase> gamePhases = new HashMap<>(Colors.values().length);
 
     private final Board board;
     private final Journal<ActionMemento<?,?>> journal;
 
     private final BoardStateEvaluator<BoardState> boardStateEvaluator;
+    private final GamePhaseEvaluator<GamePhase>   gamePhaseEvaluator;
 
     private final GameContext context;
 
@@ -79,6 +87,7 @@ public abstract class AbstractPlayableGame
 
         this(logger, whitePlayer, blackPlayer, board, journal,
                 new BoardStateEvaluatorImpl(board, journal, context.getForkJoinPool()),
+                new GamePhaseEvaluatorImpl(board, journal),
                 context
         );
     }
@@ -86,6 +95,7 @@ public abstract class AbstractPlayableGame
     protected AbstractPlayableGame(Logger logger, Player whitePlayer, Player blackPlayer,
                                    Board board, Journal<ActionMemento<?,?>> journal,
                                    BoardStateEvaluator<BoardState> boardStateEvaluator,
+                                   GamePhaseEvaluator<GamePhase> gamePhaseEvaluator,
                                    GameContext context) {
 
         super(logger, whitePlayer, blackPlayer);
@@ -95,6 +105,7 @@ public abstract class AbstractPlayableGame
         this.context = context;
 
         this.boardStateEvaluator = boardStateEvaluator;
+        this.gamePhaseEvaluator  = gamePhaseEvaluator;
 
         var playableObserver = new PlayableObserver(board);
         ((Observable) whitePlayer).addObserver(playableObserver);
@@ -154,6 +165,8 @@ public abstract class AbstractPlayableGame
         var nextPlayer = getOpponentPlayer();
         clearCacheData(nextPlayer.getColor());
 
+        setPhase(evaluateGamePhase(nextPlayer));
+
         var nextBoardState = evaluateBoardState(nextPlayer);
         this.board.setState(nextBoardState);
 
@@ -189,9 +202,22 @@ public abstract class AbstractPlayableGame
     }
 
     @Override
+    public final GamePhase getPhase(Color color) {
+        return this.gamePhases.get(color);
+    }
+
+    @Override
     protected final void setCurrentPlayer(Player player) {
         super.setCurrentPlayer(player);
         notifyObservers(new SwitchPlayerEvent());
+    }
+
+    protected final void setPhase(GamePhase gamePhase) {
+        this.gamePhases.put(gamePhase.getColor(), gamePhase);
+    }
+
+    protected final GamePhase evaluateGamePhase(Player player) {
+        return this.gamePhaseEvaluator.evaluate(player.getColor());
     }
 
     protected final BoardState evaluateBoardState(Player player) {

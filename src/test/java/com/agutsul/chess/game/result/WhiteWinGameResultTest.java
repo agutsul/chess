@@ -1,4 +1,4 @@
-package com.agutsul.chess.game.state;
+package com.agutsul.chess.game.result;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -7,11 +7,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class DefaultGameStateTest {
+public class WhiteWinGameResultTest {
 
     @Test
-    void testGameState() {
-        var state = new DefaultGameState();
-        assertEquals(GameState.Type.UNKNOWN, state.getType());
+    void testGameResult() {
+        var result = new WhiteWinGameResult();
+        assertEquals(GameResult.Type.WHITE_WIN, result.getType());
     }
 }

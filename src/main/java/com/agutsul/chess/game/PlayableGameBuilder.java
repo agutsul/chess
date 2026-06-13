@@ -11,11 +11,14 @@ import com.agutsul.chess.board.StandardBoard;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.game.observer.GameTimeoutTerminationObserver;
+import com.agutsul.chess.game.phase.GamePhase;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
+import com.agutsul.chess.rule.game.GamePhaseEvaluator;
+import com.agutsul.chess.rule.game.GamePhaseEvaluatorImpl;
 import com.agutsul.chess.timeout.CompositeTimeout;
 
 public final class PlayableGameBuilder<GAME extends Game & Playable>
@@ -30,6 +33,7 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
     private Journal<ActionMemento<?,?>> journal;
     private GameContext context;
     private BoardStateEvaluator<BoardState> boardStateEvaluator;
+    private GamePhaseEvaluator<GamePhase> gamePhaseEvaluator;
 
     public PlayableGameBuilder(Player whitePlayer, Player blackPlayer) {
         this.whitePlayer = whitePlayer;
@@ -61,6 +65,11 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
         return this;
     }
 
+    public PlayableGameBuilder<GAME> withGamePhaseEvaluator(GamePhaseEvaluator<GamePhase> evaluator) {
+        this.gamePhaseEvaluator = evaluator;
+        return this;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public GAME build() {
@@ -72,8 +81,12 @@ public final class PlayableGameBuilder<GAME extends Game & Playable>
                 ? this.boardStateEvaluator
                 : new BoardStateEvaluatorImpl(board, journal, context.getForkJoinPool());
 
+        var gamePhaseEvaluator = nonNull(this.gamePhaseEvaluator)
+                ? this.gamePhaseEvaluator
+                : new GamePhaseEvaluatorImpl(board, journal);
+
         var game = new GameImpl(this.whitePlayer, this.blackPlayer,
-                board, journal, boardStateEvaluator, context
+                board, journal, boardStateEvaluator, gamePhaseEvaluator, context
         );
 
         if (nonNull(this.color)) {

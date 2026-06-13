@@ -12,7 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.game.state.GameState;
+import com.agutsul.chess.game.result.GameResult;
 
 @ExtendWith(MockitoExtension.class)
 public class PgnGameBuilderTest {
@@ -40,7 +40,7 @@ public class PgnGameBuilderTest {
         assertEquals(WHITE_PLAYER, game.getWhitePlayer().getName());
         assertEquals(BLACK_PLAYER, game.getBlackPlayer().getName());
 
-        assertEquals(GameState.Type.UNKNOWN, game.getParsedGameState().getType());
+        assertEquals(GameResult.Type.UNKNOWN, game.getParsedGameState().getType());
 
         assertTrue(game.getParsedActions().contains(ACTION));
         assertTrue(game.getParsedTags().containsKey(TAG_KEY));

@@ -1,4 +1,4 @@
-package com.agutsul.chess.game.state;
+package com.agutsul.chess.game.result;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
@@ -13,7 +13,7 @@ import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.state.State;
 
-public interface GameState
+public interface GameResult
         extends State<Game> {
 
     enum Type {
@@ -55,35 +55,35 @@ public interface GameState
 
     // utilities
 
-    static boolean isUnknown(GameState gameState) {
+    static boolean isUnknown(GameResult gameState) {
         return isUnknown(gameState.getType());
     }
 
-    static boolean isUnknown(GameState.Type type) {
-        return GameState.Type.UNKNOWN.equals(type);
+    static boolean isUnknown(GameResult.Type type) {
+        return GameResult.Type.UNKNOWN.equals(type);
     }
 
-    static boolean isWhiteWin(GameState gameState) {
+    static boolean isWhiteWin(GameResult gameState) {
         return isWhiteWin(gameState.getType());
     }
 
-    static boolean isWhiteWin(GameState.Type type) {
-        return GameState.Type.WHITE_WIN.equals(type);
+    static boolean isWhiteWin(GameResult.Type type) {
+        return GameResult.Type.WHITE_WIN.equals(type);
     }
 
-    static boolean isBlackWin(GameState gameState) {
+    static boolean isBlackWin(GameResult gameState) {
         return isWhiteWin(gameState.getType());
     }
 
-    static boolean isBlackWin(GameState.Type type) {
-        return GameState.Type.BLACK_WIN.equals(type);
+    static boolean isBlackWin(GameResult.Type type) {
+        return GameResult.Type.BLACK_WIN.equals(type);
     }
 
-    static boolean isDrawn(GameState gameState) {
+    static boolean isDrawn(GameResult gameState) {
         return isUnknown(gameState.getType());
     }
 
-    static boolean isDrawn(GameState.Type type) {
-        return GameState.Type.DRAWN_GAME.equals(type);
+    static boolean isDrawn(GameResult.Type type) {
+        return GameResult.Type.DRAWN_GAME.equals(type);
     }
 }

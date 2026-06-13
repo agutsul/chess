@@ -10,7 +10,8 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.event.Event;
 import com.agutsul.chess.event.Observable;
 import com.agutsul.chess.event.Observer;
-import com.agutsul.chess.game.state.GameState;
+import com.agutsul.chess.game.phase.GamePhase;
+import com.agutsul.chess.game.result.GameResult;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.player.Player;
 
@@ -78,8 +79,13 @@ public abstract class AbstractGameProxy<GAME extends Game & Observable>
     }
 
     @Override
-    public GameState getState() {
-        return this.game.getState();
+    public GameResult getResult() {
+        return this.game.getResult();
+    }
+
+    @Override
+    public GamePhase getPhase(Color color) {
+        return this.game.getPhase(color);
     }
 
     @Override

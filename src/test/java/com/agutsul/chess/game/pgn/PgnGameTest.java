@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.board.state.CompositeBoardState;
-import com.agutsul.chess.game.state.GameState;
+import com.agutsul.chess.game.result.GameResult;
 
 @ExtendWith(MockitoExtension.class)
 public final class PgnGameTest extends AbstractPgnGameTest {
@@ -25,19 +25,19 @@ public final class PgnGameTest extends AbstractPgnGameTest {
     @Test
     void testPgnGameFileWhiteWins() throws URISyntaxException, IOException {
         var game = parseGame(readFileContent("chess_white.pgn"));
-        assertGame(game, GameState.Type.WHITE_WIN, 157, 5);
+        assertGame(game, GameResult.Type.WHITE_WIN, 157, 5);
     }
 
     @Test
     void testPgnGameFileBlackWins() throws URISyntaxException, IOException {
         var game = parseGame(readFileContent("chess_black.pgn"));
-        assertGame(game, GameState.Type.BLACK_WIN, 90, 9);
+        assertGame(game, GameResult.Type.BLACK_WIN, 90, 9);
     }
 
     @Test
     void testPgnGameFileDrawn() throws URISyntaxException, IOException {
         var game = parseGame(readFileContent("chess_drawn.pgn"));
-        assertGame(game, GameState.Type.DRAWN_GAME, 121, 6);
+        assertGame(game, GameResult.Type.DRAWN_GAME, 121, 6);
     }
 
     @Test
@@ -45,7 +45,7 @@ public final class PgnGameTest extends AbstractPgnGameTest {
         var game = parseGame(readFileContent("chess_five_repetition_failure.pgn"));
 
         assertEquals(140, game.getParsedActions().size());
-        assertEquals(GameState.Type.BLACK_WIN, game.getParsedGameState().getType());
+        assertEquals(GameResult.Type.BLACK_WIN, game.getParsedGameState().getType());
         assertEquals(9, game.getParsedTags().size());
 
         game.run();
@@ -56,7 +56,7 @@ public final class PgnGameTest extends AbstractPgnGameTest {
 
         // NOTE: actual state differs from expected because of five repetitions rule ('Ke2')
         // Looks like this rule was not applied while performing this game.
-        assertEquals(GameState.Type.DRAWN_GAME, game.getState().getType());
+        assertEquals(GameResult.Type.DRAWN_GAME, game.getResult().getType());
         // NOTE: actual journal size is not equal to expected because not all actions applied
         assertEquals(111, game.getJournal().size());
     }
@@ -66,7 +66,7 @@ public final class PgnGameTest extends AbstractPgnGameTest {
         var game = parseGame(readFileContent("chess_five_repetition_failure2.pgn"));
 
         assertEquals(93, game.getParsedActions().size());
-        assertEquals(GameState.Type.WHITE_WIN, game.getParsedGameState().getType());
+        assertEquals(GameResult.Type.WHITE_WIN, game.getParsedGameState().getType());
         assertEquals(9, game.getParsedTags().size());
 
         game.run();
@@ -77,7 +77,7 @@ public final class PgnGameTest extends AbstractPgnGameTest {
 
         // NOTE: actual state differs from expected because of five repetitions rule ('Ke2')
         // Looks like this rule was not applied while performing this game.
-        assertEquals(GameState.Type.DRAWN_GAME, game.getState().getType());
+        assertEquals(GameResult.Type.DRAWN_GAME, game.getResult().getType());
         assertEquals(93, game.getJournal().size());
     }
 
@@ -86,7 +86,7 @@ public final class PgnGameTest extends AbstractPgnGameTest {
         var game = parseGame(readFileContent("chess_composite_board_state.pgn"));
 
         assertEquals(255, game.getParsedActions().size());
-        assertEquals(GameState.Type.DRAWN_GAME, game.getParsedGameState().getType());
+        assertEquals(GameResult.Type.DRAWN_GAME, game.getParsedGameState().getType());
         assertEquals(9, game.getParsedTags().size());
 
         game.run();
@@ -97,7 +97,7 @@ public final class PgnGameTest extends AbstractPgnGameTest {
         assertTrue(boardState.isType(BoardState.Type.FIVE_FOLD_REPETITION));
         assertTrue(boardState.isType(BoardState.Type.CHECKED));
 
-        assertEquals(GameState.Type.DRAWN_GAME, game.getState().getType());
+        assertEquals(GameResult.Type.DRAWN_GAME, game.getResult().getType());
         // NOTE: actual journal size is not equal to expected because not all actions applied
         assertEquals(129, game.getJournal().size());
     }

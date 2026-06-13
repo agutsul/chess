@@ -21,9 +21,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.game.observer.GameTimeoutTerminationObserver;
-import com.agutsul.chess.game.state.DefaultGameState;
-import com.agutsul.chess.game.state.DrawnGameState;
-import com.agutsul.chess.game.state.WhiteWinGameState;
+import com.agutsul.chess.game.result.DefaultGameResult;
+import com.agutsul.chess.game.result.DrawnGameResult;
+import com.agutsul.chess.game.result.WhiteWinGameResult;
 import com.agutsul.chess.timeout.CompositeTimeout;
 import com.agutsul.chess.timeout.Timeout;
 
@@ -38,8 +38,8 @@ public class CompositeGameTest {
 
     @Test
     void testDefaultGameWithActionTimeout() {
-        when(game.getState())
-            .thenReturn(new DefaultGameState());
+        when(game.getResult())
+            .thenReturn(new DefaultGameResult());
         when(game.getContext())
             .thenReturn(gameContext);
 
@@ -55,8 +55,8 @@ public class CompositeGameTest {
 
     @Test
     void testDefaultGameWithUnknownTimeout() {
-        when(game.getState())
-            .thenReturn(new DefaultGameState());
+        when(game.getResult())
+            .thenReturn(new DefaultGameResult());
         when(game.getContext())
             .thenReturn(gameContext);
 
@@ -86,8 +86,8 @@ public class CompositeGameTest {
 
     @Test
     void testTimeoutGameWithGenericTimeout() {
-        when(game.getState())
-            .thenReturn(new WhiteWinGameState());
+        when(game.getResult())
+            .thenReturn(new WhiteWinGameResult());
         when(game.getContext())
             .thenReturn(gameContext);
 
@@ -103,8 +103,8 @@ public class CompositeGameTest {
 
     @Test
     void testTimeoutGameWithMixedTimeout() {
-        when(game.getState())
-            .thenReturn(new DrawnGameState());
+        when(game.getResult())
+            .thenReturn(new DrawnGameResult());
         when(game.getContext())
             .thenReturn(gameContext);
 
@@ -123,12 +123,12 @@ public class CompositeGameTest {
         var counter = new AtomicInteger();
         counter.set(0);
 
-        when(game.getState())
+        when(game.getResult())
             .thenAnswer(inv -> {
                 var invocations = counter.get();
                 var state = invocations == 0
-                        ? new DefaultGameState()
-                        : new WhiteWinGameState();
+                        ? new DefaultGameResult()
+                        : new WhiteWinGameResult();
 
                 counter.set(invocations++);
                 return state;

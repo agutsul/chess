@@ -6,7 +6,8 @@ import java.util.Optional;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.game.state.GameState;
+import com.agutsul.chess.game.phase.GamePhase;
+import com.agutsul.chess.game.result.GameResult;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.player.Player;
 
@@ -25,7 +26,8 @@ public interface Game extends Runnable {
     LocalDateTime getStartedAt();
     LocalDateTime getFinishedAt();
 
-    GameState getState();
+    GameResult getResult();
+    GamePhase  getPhase(Color color);
 
     Journal<ActionMemento<?,?>> getJournal();
     Optional<Player> getWinnerPlayer();

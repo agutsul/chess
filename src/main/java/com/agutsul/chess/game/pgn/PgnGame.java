@@ -17,13 +17,13 @@ import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.GameContext;
 import com.agutsul.chess.game.PlayableGameBuilder;
 import com.agutsul.chess.game.Termination;
-import com.agutsul.chess.game.state.GameState;
+import com.agutsul.chess.game.result.GameResult;
 import com.agutsul.chess.player.Player;
 
 public final class PgnGame<T extends Game & Observable>
         extends AbstractGameProxy<T> {
 
-    private GameState parsedGameState;
+    private GameResult parsedGameState;
     private Termination parsedTermination;
     private Map<String,String> parsedTags;
     private List<String> parsedActions;
@@ -50,11 +50,11 @@ public final class PgnGame<T extends Game & Observable>
 //        addObserver(new ConsoleGameOutputObserver(this));
     }
 
-    public GameState getParsedGameState() {
+    public GameResult getParsedGameState() {
         return this.parsedGameState;
     }
 
-    public void setParsedGameState(GameState parsedGameState) {
+    public void setParsedGameState(GameResult parsedGameState) {
         this.parsedGameState = parsedGameState;
     }
 

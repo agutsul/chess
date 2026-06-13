@@ -18,10 +18,12 @@ import com.agutsul.chess.game.event.GameOverEvent;
 import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.game.event.GameTerminationEvent.Type;
 import com.agutsul.chess.game.event.GameWinnerEvent;
+import com.agutsul.chess.game.phase.GamePhase;
 import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.player.Player;
 import com.agutsul.chess.player.event.PlayerTerminateActionEvent;
 import com.agutsul.chess.rule.board.BoardStateEvaluator;
+import com.agutsul.chess.rule.game.GamePhaseEvaluator;
 
 class GameImpl extends AbstractPlayableGame {
 
@@ -30,10 +32,11 @@ class GameImpl extends AbstractPlayableGame {
     GameImpl(Player whitePlayer, Player blackPlayer,
              Board board, Journal<ActionMemento<?,?>> journal,
              BoardStateEvaluator<BoardState> boardStateEvaluator,
+             GamePhaseEvaluator<GamePhase> gamePhaseEvaluator,
              GameContext context) {
 
-        super(LOGGER, whitePlayer, blackPlayer,
-                board, journal, boardStateEvaluator, context
+        super(LOGGER, whitePlayer, blackPlayer, board, journal,
+                boardStateEvaluator, gamePhaseEvaluator, context
         );
     }
 
