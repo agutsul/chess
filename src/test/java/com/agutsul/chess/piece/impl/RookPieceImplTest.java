@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsoluteForkImpact;
 import com.agutsul.chess.activity.impact.PieceAttackImpact;
 import com.agutsul.chess.activity.impact.PieceBatteryImpact;
+import com.agutsul.chess.activity.impact.PieceBlankFileImpact;
 import com.agutsul.chess.activity.impact.PieceCastlingImpact;
 import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.activity.impact.PieceDesperadoImpact;
@@ -713,7 +715,7 @@ public class RookPieceImplTest extends AbstractPieceTest {
         var castlingImpacts = Stream.of(board.getImpacts(blackKing, Impact.Type.CASTLING))
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceCastlingImpact<?,?,?>) impact)
-                .collect(toList());
+                .toList();
 
         assertFalse(castlingImpacts.isEmpty());
         assertEquals(1, castlingImpacts.size());
@@ -738,7 +740,7 @@ public class RookPieceImplTest extends AbstractPieceTest {
         var castlingImpacts = Stream.of(board.getImpacts(blackKing, Impact.Type.CASTLING))
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceCastlingImpact<?,?,?>) impact)
-                .collect(toList());
+                .toList();
 
         assertFalse(castlingImpacts.isEmpty());
         assertEquals(1, castlingImpacts.size());
@@ -749,5 +751,131 @@ public class RookPieceImplTest extends AbstractPieceTest {
         assertEquals(Castlingable.Side.QUEEN, castlingImpact.getSide());
         assertEquals(blackKing, castlingImpact.getSource().getSource());
         assertEquals(blackRook, castlingImpact.getTarget().getSource());
+    }
+
+    @Test
+    void testRookAbsoluteBlankFileImpact() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("g1")
+                .withWhiteRook("e1")
+                .withWhitePawns("a2","b2","c3","f2","g2","h3")
+                .withBlackKing("g8")
+                .withBlackPawns("a7","b7","d5","f7","g7","h7")
+                .build();
+
+        var whiteRook = board.getPiece("e1").get();
+        var impacts = Stream.of(board.getImpacts(whiteRook, Impact.Type.BLANK_FILE))
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceBlankFileImpact<?,?>) impact)
+                .toList();
+
+        assertFalse(impacts.isEmpty());
+        assertEquals(1, impacts.size());
+
+        var line = Stream.of(board.getLine("e1","e8"))
+                .flatMap(Optional::stream)
+                .map(fullLine -> fullLine.subLine(positionOf("e2"), positionOf("e8")))
+                .findFirst()
+                .get();
+
+        var impact = impacts.getFirst();
+        assertEquals(line, impact.getLine());
+        assertTrue(PieceBlankFileImpact.isAbsolute(impact));
+    }
+
+    @Test
+    void testRookRelativeBlankFileImpact() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("f2")
+                .withWhiteRooks("d1","d2")
+                .withWhiteKnight("c4")
+                .withWhitePawns("a5","b3","c2","e5","f3","g2","h3")
+                .withBlackKing("e7")
+                .withBlackRooks("b5","e6")
+                .withBlackKnight("e8")
+                .withBlackPawns("a6","b4","c5","d6","f7","g5","h6")
+                .build();
+
+        var whiteRook1 = board.getPiece("d2").get();
+        var impacts1 = Stream.of(board.getImpacts(whiteRook1, Impact.Type.BLANK_FILE))
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceBlankFileImpact<?,?>) impact)
+                .toList();
+
+        assertFalse(impacts1.isEmpty());
+        assertEquals(1, impacts1.size());
+
+        var line = Stream.of(board.getLine("d1","d8"))
+                .flatMap(Optional::stream)
+                .map(fullLine -> fullLine.subLine(positionOf("d3"), positionOf("d8")))
+                .findFirst()
+                .get();
+
+        var impact = impacts1.getFirst();
+        assertEquals(line, impact.getLine());
+        assertTrue(PieceBlankFileImpact.isRelative(impact));
+
+        var whiteRook2 = board.getPiece("d1").get();
+        var impacts2 = board.getImpacts(whiteRook2, Impact.Type.BLANK_FILE);
+        assertTrue(impacts2.isEmpty());
+    }
+
+    @Test
+    void testRookAbsoluteBlankFileImpactWithDuplicatedRooks() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("f2")
+                .withWhiteRooks("d1","d2")
+                .withWhiteKnight("c4")
+                .withWhitePawns("a5","b3","c2","f3","g2","h3")
+                .withBlackKing("e7")
+                .withBlackRooks("b5","e6")
+                .withBlackKnight("e8")
+                .withBlackPawns("a6","b4","c5","e5","f7","g5","h6")
+                .build();
+
+        var whiteRook1 = board.getPiece("d2").get();
+        var impacts1 = Stream.of(board.getImpacts(whiteRook1, Impact.Type.BLANK_FILE))
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceBlankFileImpact<?,?>) impact)
+                .toList();
+
+        assertFalse(impacts1.isEmpty());
+        assertEquals(1, impacts1.size());
+
+        var line = Stream.of(board.getLine("d1","d8"))
+                .flatMap(Optional::stream)
+                .map(fullLine -> fullLine.subLine(positionOf("d3"), positionOf("d8")))
+                .findFirst()
+                .get();
+
+        var impact = impacts1.getFirst();
+        assertEquals(line, impact.getLine());
+        assertTrue(PieceBlankFileImpact.isAbsolute(impact));
+
+        var whiteRook2 = board.getPiece("d1").get();
+        var impacts2 = board.getImpacts(whiteRook2, Impact.Type.BLANK_FILE);
+        assertTrue(impacts2.isEmpty());
+    }
+
+    @Test
+    void testRookNoBlankFileImpact() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("f2")
+                .withWhiteRooks("d8","a7")
+                .withWhiteKnight("c4")
+                .withWhitePawns("a5","b3","c2","e5","f3","g2","h3")
+                .withBlackKing("g6")
+                .withBlackRooks("b5","e6")
+                .withBlackKnight("e8")
+                .withBlackPawns("a6","b4","c5","d6","f7","g5","h6")
+                .build();
+
+        var whiteRook = board.getPiece("d8").get();
+        var impacts = Stream.of(board.getImpacts(whiteRook, Impact.Type.BLANK_FILE))
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceBlankFileImpact<?,?>) impact)
+                .toList();
+
+        assertTrue(impacts.isEmpty());
     }
 }

@@ -32,13 +32,13 @@ final class RookPieceImpl<COLOR extends Color>
     private static final Comparator<Action<?>> ROOK_COMPARATOR = new RookActionComparator();
 
     RookPieceImpl(Board board, COLOR color, String unicode,
-                  Position position, int direction, int castlingLine) {
+                  Position position, int direction, int promotionLine, int castlingLine) {
 
         super(board, position,
                 new PieceContext<>(Piece.Type.ROOK, color, unicode, direction),
                 new ActiveCastlingablePieceState<>(board,
                         new RookPieceActionRule<>(board, color, castlingLine),
-                        new RookPieceImpactRule<>(board, color, castlingLine)
+                        new RookPieceImpactRule<>(board, color, castlingLine, promotionLine)
                 ),
                 castlingSides(position)
         );

@@ -29,6 +29,7 @@ public interface Impact<SOURCE>
         OVERLOADING,
         OUTPOST,
         LUFT,
+        BLANK_FILE,
         DOMINATION,
         PROTECT,
         CONTROL,
@@ -291,5 +292,13 @@ public interface Impact<SOURCE>
 
     static boolean isHole(Impact.Type impactType) {
         return Impact.Type.HOLE.equals(impactType);
+    }
+
+    static boolean isBlankFile(Impact<?> impact) {
+        return isBlankFile(impact.getType());
+    }
+
+    static boolean isBlankFile(Impact.Type impactType) {
+        return Impact.Type.BLANK_FILE.equals(impactType);
     }
 }

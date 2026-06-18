@@ -163,18 +163,22 @@ abstract class AbstractPieceFactory<COLOR extends Color>
     KingPiece<COLOR> createKing(Position position, String unicode) {
         logger.debug("Create '{}' king at '{}'", color, position);
         return new KingPieceImpl<>(board, color, unicode, position, context.getDirection(),
-                                   context.getCastlingLine());
+                                   context.getCastlingLine()
+        );
     }
 
     QueenPiece<COLOR> createQueen(Position position, String unicode) {
         logger.debug("Create '{}' queen at '{}'", color, position);
-        return new QueenPieceImpl<>(board, color, unicode, position, context.getDirection());
+        return new QueenPieceImpl<>(board, color, unicode, position,
+                context.getDirection(), context.getPromotionLine()
+        );
     }
 
     RookPiece<COLOR> createRook(Position position, String unicode) {
         logger.debug("Create '{}' rook at '{}'", color, position);
-        return new RookPieceImpl<>(board, color, unicode, position, context.getDirection(),
-                                   context.getCastlingLine());
+        return new RookPieceImpl<>(board, color, unicode, position,
+                context.getDirection(), context.getPromotionLine(), context.getCastlingLine()
+        );
     }
 
     BishopPiece<COLOR> createBishop(Position position, String unicode) {
@@ -189,8 +193,9 @@ abstract class AbstractPieceFactory<COLOR extends Color>
 
     PawnPiece<COLOR> createPawn(Position position, String unicode) {
         logger.debug("Create '{}' pawn at '{}'", color, position);
-        return new PawnPieceImpl<>(board, color, unicode, position, context.getDirection(),
-                                   context.getPromotionLine(), context.getBigMoveLine());
+        return new PawnPieceImpl<>(board, color, unicode, position,
+                context.getDirection(), context.getPromotionLine(), context.getBigMoveLine()
+        );
     }
 
     <PIECE extends Piece<COLOR> & Demotable,PROXY extends PieceProxy<COLOR,PIECE> & Demotable>

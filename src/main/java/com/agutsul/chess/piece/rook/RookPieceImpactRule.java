@@ -15,6 +15,7 @@ import com.agutsul.chess.rule.impact.control.PieceControlLineImpactRule;
 import com.agutsul.chess.rule.impact.deflection.PieceDeflectionLineImpactRule;
 import com.agutsul.chess.rule.impact.desperado.PieceDesperadoLineImpactRule;
 import com.agutsul.chess.rule.impact.domination.PieceDominationLineImpactRule;
+import com.agutsul.chess.rule.impact.file.PieceBlankFileImpactRule;
 import com.agutsul.chess.rule.impact.fork.PieceForkLineImpactRule;
 import com.agutsul.chess.rule.impact.interference.PieceInterferenceLineImpactRule;
 import com.agutsul.chess.rule.impact.monitor.PieceMonitorLineImpactRule;
@@ -32,14 +33,14 @@ public final class RookPieceImpactRule<COLOR extends Color,
                                        PIECE extends RookPiece<COLOR>>
         extends AbstractPieceRule<PIECE,Impact<?>,Impact.Type> {
 
-    public RookPieceImpactRule(Board board, COLOR color, int castlingLine) {
-        this(board, new RookPieceAlgo<>(board),
+    public RookPieceImpactRule(Board board, COLOR color, int castlingLine, int promotionLine) {
+        this(board, promotionLine, new RookPieceAlgo<>(board),
                 new RookCastlingAlgo<>(board, color, castlingLine)
         );
     }
 
     @SuppressWarnings("unchecked")
-    private RookPieceImpactRule(Board board,
+    private RookPieceImpactRule(Board board, int promotionLine,
                                 RookPieceAlgo<COLOR,PIECE> actionAlgo,
                                 RookCastlingAlgo<COLOR,PIECE> castlingAlgo) {
 
@@ -65,6 +66,7 @@ public final class RookPieceImpactRule<COLOR extends Color,
                 new PieceDesperadoLineImpactRule<>(board, actionAlgo),
                 new PieceDominationLineImpactRule<>(board, actionAlgo),
                 new PieceXRayImpactRule<>(board, actionAlgo),
+                new PieceBlankFileImpactRule<>(board, actionAlgo, promotionLine),
                 new RookCastlingImpactRule<>(board, castlingAlgo)
             )
         );

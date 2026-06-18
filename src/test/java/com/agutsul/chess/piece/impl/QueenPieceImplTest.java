@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceBatteryImpact;
+import com.agutsul.chess.activity.impact.PieceBlankFileImpact;
 import com.agutsul.chess.activity.impact.PieceDesperadoImpact;
 import com.agutsul.chess.activity.impact.PieceDominationImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
@@ -496,5 +498,46 @@ public class QueenPieceImplTest extends AbstractPieceTest {
 
         var protectImpact = (PieceProtectImpact<?,?,?>) originImpact;
         assertTrue(protectImpact.isHidden());
+    }
+
+    @Test
+    void testQueenRelativeBlankFileImpact() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhiteQueen("b3")
+                .withWhiteRooks("a1","h1")
+                .withWhiteKnight("g1")
+                .withWhiteBishop("d2")
+                .withWhitePawns("a2","b2","c2","d5","g2","h2")
+                .withBlackKing("g8")
+                .withBlackQueen("c4")
+                .withBlackRooks("a8","f8")
+                .withBlackKnight("b8")
+                .withBlackBishop("f5")
+                .withBlackPawns("a7","c6","e5","g7","h7")
+                .build();
+
+        System.out.println(board);
+
+        var blackQueen = board.getPiece("c4").get();
+        var blankFileImpacts = Stream.of(board.getImpacts(blackQueen, Impact.Type.BLANK_FILE))
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceBlankFileImpact<?,?>) impact)
+                .toList();
+
+        assertFalse(blankFileImpacts.isEmpty());
+        assertEquals(1, blankFileImpacts.size());
+
+        var line = Stream.of(board.getLine("c8","c1"))
+                .flatMap(Optional::stream)
+                .map(fullLine -> fullLine.subLine(positionOf("c3"), positionOf("c1")))
+                .findFirst()
+                .get();
+
+        var impact = blankFileImpacts.getFirst();
+
+        assertEquals(positionOf("c1"), impact.getPosition());
+        assertEquals(line, impact.getLine());
+        assertTrue(PieceBlankFileImpact.isRelative(impact));
     }
 }
