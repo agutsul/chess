@@ -85,9 +85,7 @@ abstract class AbstractActionIntegerValueSimulationTask
             var board = game.getBoard();
             var boardState = board.getState();
 
-            var value = calculateValue(board, action, game.getColor());
-            value *= boardState.getType().rank();
-
+            var value = calculateValue(board, action, game.getColor()) * boardState.getValue();
             return boardState.isType(CHECK_MATED)
                     ? CHECK_MATE_COEF * value * sourcePiece.getDirection()
                     : value;

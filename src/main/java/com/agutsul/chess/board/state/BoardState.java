@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Rankable;
+import com.agutsul.chess.Valuable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
@@ -14,7 +15,7 @@ import com.agutsul.chess.position.Position;
 import com.agutsul.chess.state.State;
 
 public interface BoardState
-        extends State<Board> {
+        extends State<Board>, Valuable<Integer> {
 
     // https://en.wikipedia.org/wiki/Draw_(chess)
     enum Type implements Rankable {
@@ -63,6 +64,11 @@ public interface BoardState
     Color getColor();
 
     Type getType();
+
+    @Override
+    default Integer getValue() {
+        return getType().rank();
+    }
 
     default boolean isType(Type type) {
         return Objects.equals(getType(), type);

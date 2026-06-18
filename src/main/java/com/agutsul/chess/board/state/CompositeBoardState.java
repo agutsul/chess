@@ -1,11 +1,13 @@
 package com.agutsul.chess.board.state;
 
 import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.summingInt;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.join;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
@@ -28,6 +30,15 @@ public final class CompositeBoardState
 
     public Collection<BoardState> getBoardStates() {
         return boardStates;
+    }
+
+    @Override
+    public Integer getValue() {
+        var value = boardStates.stream()
+                .filter(boardState -> Objects.equals(getColor(), boardState.getColor()))
+                .collect(summingInt(BoardState::getValue));
+
+        return value;
     }
 
     @Override
