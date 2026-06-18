@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
+import static org.apache.commons.lang3.StringUtils.join;
+
 import java.util.Collection;
 import java.util.stream.Stream;
 
@@ -42,5 +44,12 @@ abstract class AbstractPieceForkImpact<COLOR1 extends Color,
     @Override
     public final Position getPosition() {
         return getSource().getPosition();
+    }
+
+    @Override
+    public final String toString() {
+        return String.format("%sx(%s)",
+                getSource(), join(getTarget(), ",")
+        );
     }
 }

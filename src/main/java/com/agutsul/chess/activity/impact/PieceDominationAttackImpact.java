@@ -9,10 +9,10 @@ import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
-public class PieceDominationAttackImpact<COLOR1 extends Color,
-                                         COLOR2 extends Color,
-                                         ATTACKER extends Piece<COLOR1> & Capturable,
-                                         ATTACKED extends Piece<COLOR2>>
+public final class PieceDominationAttackImpact<COLOR1 extends Color,
+                                               COLOR2 extends Color,
+                                               ATTACKER extends Piece<COLOR1> & Capturable,
+                                               ATTACKED extends Piece<COLOR2>>
         extends AbstractTargetActivity<Impact.Type,ATTACKER,ATTACKED>
         implements PieceDominationImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
@@ -41,5 +41,10 @@ public class PieceDominationAttackImpact<COLOR1 extends Color,
     @Override
     public Optional<Line> getLine() {
         return this.attackImpact.getLine();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s", this.attackImpact);
     }
 }

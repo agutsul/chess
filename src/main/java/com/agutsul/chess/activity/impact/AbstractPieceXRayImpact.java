@@ -70,6 +70,11 @@ abstract class AbstractPieceXRayImpact<COLOR1 extends Color,
         return unmodifiableCollection(pieces);
     }
 
+    @Override
+    public final String toString() {
+        return String.format("%s", getSource());
+    }
+
     protected final int getPieceValues(Color color) {
         return Stream.of(pieces)
                 .flatMap(Collection::stream)
