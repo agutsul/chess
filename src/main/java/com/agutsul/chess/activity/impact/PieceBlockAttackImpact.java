@@ -59,8 +59,8 @@ public final class PieceBlockAttackImpact<COLOR1 extends Color,
 
     @Override
     public String toString() {
-        return String.format("%s (%s [%s] %s)",
-                getBlocker(), getAttacker(), getPosition(), getAttacked()
+        return String.format("%s:%s (%s [%s] %s)",
+                getType(), getBlocker(), getAttacker(), getPosition(), getAttacked()
         );
     }
 }

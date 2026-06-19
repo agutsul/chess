@@ -72,7 +72,7 @@ abstract class AbstractPieceXRayImpact<COLOR1 extends Color,
 
     @Override
     public final String toString() {
-        return String.format("%s", getSource());
+        return String.format("%s:%s:%s", getType(), getMode(), getSource());
     }
 
     protected final int getPieceValues(Color color) {

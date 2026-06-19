@@ -23,8 +23,8 @@ public final class PieceSacrificeAttackImpact<COLOR1 extends Color,
 
     @Override
     public String toString() {
-        return String.format("%sx(%sx%s)",
-                getAttacker(), getSacrificed(), getSource().getTarget()
+        return String.format("%s:%sx(%sx%s)",
+                getType(), getAttacker(), getSacrificed(), getSource().getTarget()
         );
     }
 }

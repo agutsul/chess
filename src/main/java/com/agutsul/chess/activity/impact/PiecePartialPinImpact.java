@@ -68,6 +68,6 @@ public final class PiecePartialPinImpact<COLOR1 extends Color,
 
     @Override
     public String toString() {
-        return String.valueOf(impact);
+        return String.format("%s:%s:%s", getType(), getMode(), impact);
     }
 }

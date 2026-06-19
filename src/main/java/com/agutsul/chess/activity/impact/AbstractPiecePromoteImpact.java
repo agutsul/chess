@@ -45,6 +45,6 @@ abstract class AbstractPiecePromoteImpact<COLOR  extends Color,
 
     @Override
     public final String toString() {
-        return String.format("(%s)=%s", getSource(), getPieceType());
+        return String.format("%s:(%s)=%s", getType(), getSource(), getPieceType());
     }
 }

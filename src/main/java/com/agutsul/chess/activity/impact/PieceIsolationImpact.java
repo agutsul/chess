@@ -17,7 +17,7 @@ public class PieceIsolationImpact<COLOR extends Color,
 
     @Override
     public final String toString() {
-        return String.format("|%s|", getSource());
+        return String.format("%s:|%s|", getType(), getSource());
     }
 
     @Override

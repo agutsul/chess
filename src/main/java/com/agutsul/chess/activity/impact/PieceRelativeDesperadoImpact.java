@@ -60,7 +60,8 @@ public final class PieceRelativeDesperadoImpact<COLOR1 extends Color,
 
     @Override
     public String toString() {
-        return String.format("{%s%s%s}",
+        return String.format("%s:%s:{%s%s%s}",
+                getType(), getMode(),
                 lineSeparator(),
                 Stream.of(getTarget())
                     .flatMap(Collection::stream)

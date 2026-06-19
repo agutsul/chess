@@ -50,4 +50,11 @@ public final class PieceInterferenceProtectImpact<COLOR1 extends Color,
     public PROTECTOR getProtector() {
         return protectImpact.getSource();
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s:%s %s %s",
+                getType(), getProtector(), getInterferencor(), getProtected()
+        );
+    }
 }

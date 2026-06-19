@@ -34,6 +34,8 @@ abstract class AbstractPositionHoleImpact
 
     @Override
     public final String toString() {
-        return String.format("[%s:%s]", getColor(), getPosition());
+        return String.format("%s:%s:[%s:%s]",
+                getType(), getMode(), getColor(), getPosition()
+        );
     }
 }

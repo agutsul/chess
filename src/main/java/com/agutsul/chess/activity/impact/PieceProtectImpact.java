@@ -53,6 +53,6 @@ public class PieceProtectImpact<COLOR  extends Color,
 
     @Override
     public final String toString() {
-        return String.format("%s(%s)", getSource(), getTarget());
+        return String.format("%s:%s(%s)", getType(), getSource(), getTarget());
     }
 }

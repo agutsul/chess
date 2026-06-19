@@ -39,6 +39,6 @@ abstract class AbstractPieceBlankFileImpact<COLOR extends Color,
 
     @Override
     public final String toString() {
-        return String.format("%s [%s]", getSource(), getLine());
+        return String.format("%s:%s:%s [%s]", getType(), getMode(), getSource(), getLine());
     }
 }

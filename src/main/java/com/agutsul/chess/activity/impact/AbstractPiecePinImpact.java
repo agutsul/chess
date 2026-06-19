@@ -48,6 +48,8 @@ abstract class AbstractPiecePinImpact<COLOR1 extends Color,
 
     @Override
     public final String toString() {
-        return String.format("%s{%s}", getPinned(), getTarget());
+        return String.format("%s:%s:%s{%s}",
+                getType(), getMode(), getPinned(), getTarget()
+        );
     }
 }

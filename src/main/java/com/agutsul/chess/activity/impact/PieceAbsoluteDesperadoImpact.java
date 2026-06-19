@@ -46,6 +46,6 @@ public final class PieceAbsoluteDesperadoImpact<COLOR1 extends Color,
 
     @Override
     public String toString() {
-        return String.valueOf(getSource());
+        return String.format("%s:%s:%s", getType(), getMode(), getSource());
     }
 }

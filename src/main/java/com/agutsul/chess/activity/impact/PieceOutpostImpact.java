@@ -18,7 +18,7 @@ public class PieceOutpostImpact<COLOR extends Color,
 
     @Override
     public final String toString() {
-        return String.format("%s ~ %s", getSource(), getPosition());
+        return String.format("%s:%s ~ %s", getType(), getSource(), getPosition());
     }
 
     @Override

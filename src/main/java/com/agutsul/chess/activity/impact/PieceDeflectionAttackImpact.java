@@ -23,4 +23,11 @@ public final class PieceDeflectionAttackImpact<COLOR1 extends Color,
     public AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> getAttackImpact() {
         return attackImpact;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s:%sx%s %s",
+                getType(), getSource(), getTarget(), getDefended()
+        );
+    }
 }

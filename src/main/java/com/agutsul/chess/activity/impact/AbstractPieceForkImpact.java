@@ -48,8 +48,8 @@ abstract class AbstractPieceForkImpact<COLOR1 extends Color,
 
     @Override
     public final String toString() {
-        return String.format("%sx(%s)",
-                getSource(), join(getTarget(), ",")
+        return String.format("%s:%s:%sx(%s)",
+                getType(), getMode(), getSource(), join(getTarget(), ",")
         );
     }
 }

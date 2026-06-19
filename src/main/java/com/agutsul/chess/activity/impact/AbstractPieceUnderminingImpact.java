@@ -46,6 +46,6 @@ abstract class AbstractPieceUnderminingImpact<COLOR1 extends Color,
 
     @Override
     public final String toString() {
-        return String.format("%s_X_%s", getAttacker(), getAttacked());
+        return String.format("%s:%s_X_%s", getType(), getAttacker(), getAttacked());
     }
 }

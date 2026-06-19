@@ -18,7 +18,7 @@ public class PieceOverloadingImpact<COLOR extends Color,
 
     @Override
     public final String toString() {
-        return String.format("%s over %s", getSource(), getPosition());
+        return String.format("%s:%s over %s", getType(), getSource(), getPosition());
     }
 
     @Override

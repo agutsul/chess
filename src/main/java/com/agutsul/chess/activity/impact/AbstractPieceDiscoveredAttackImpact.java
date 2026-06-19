@@ -79,6 +79,8 @@ abstract class AbstractPieceDiscoveredAttackImpact<COLOR1 extends Color,
 
     @Override
     public final String toString() {
-        return String.format("%s %s", getSource(), getTarget());
+        return String.format("%s:%s:%s %s",
+                getType(), getMode(), getSource(), getTarget()
+        );
     }
 }

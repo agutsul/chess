@@ -31,6 +31,6 @@ public final class PieceAttackImpact<COLOR1 extends Color,
 
     @Override
     public String toString() {
-        return String.format("%sx%s", getSource(), getTarget());
+        return String.format("%s:%sx%s", getType(), getSource(), getTarget());
     }
 }

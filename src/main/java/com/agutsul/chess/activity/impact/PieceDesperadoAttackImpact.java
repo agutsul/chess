@@ -55,8 +55,8 @@ public final class PieceDesperadoAttackImpact<COLOR1 extends Color,
 
     @Override
     public String toString() {
-        return String.format("[ %s ] => [ %s ]", getSource(),
-                isNull(getTarget()) ? EMPTY : getTarget()
+        return String.format("%s:%s:[ %s ] => [ %s ]",
+                getType(), getMode(), getSource(), isNull(getTarget()) ? EMPTY : getTarget()
         );
     }
 

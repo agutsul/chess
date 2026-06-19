@@ -30,4 +30,9 @@ public class PieceBatteryImpact<COLOR extends Color,
     public Line getLine() {
         return this.line;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s:%s&%s", getType(), getSource(), getTarget());
+    }
 }

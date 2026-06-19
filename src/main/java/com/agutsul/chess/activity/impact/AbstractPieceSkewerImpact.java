@@ -64,6 +64,8 @@ abstract class AbstractPieceSkewerImpact<COLOR1 extends Color,
 
     @Override
     public final String toString() {
-        return String.format("%s %s", impact, getTarget());
+        return String.format("%s:%s:%s %s",
+                getType(), getMode(), impact, getTarget()
+        );
     }
 }

@@ -54,7 +54,9 @@ abstract class AbstractPieceCastlingImpact<COLOR  extends Color,
 
     @Override
     public final String toString() {
-        return String.format("[%s] [%s]", getSource(), getTarget());
+        return String.format("%s:%s:[%s] [%s]",
+                getType(), getSide(), getSource(), getTarget()
+        );
     }
 
     private PieceMotionImpact<COLOR,?> getImpact(Piece.Type pieceType) {

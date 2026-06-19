@@ -21,8 +21,8 @@ public final class PieceSacrificeMoveImpact<COLOR1 extends Color,
 
     @Override
     public String toString() {
-        return String.format("%sx(%s %s)",
-                getAttacker(), getSacrificed(), getPosition()
+        return String.format("%s:%sx(%s %s)",
+                getType(), getAttacker(), getSacrificed(), getPosition()
         );
     }
 }

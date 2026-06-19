@@ -32,7 +32,7 @@ public class PieceAccumulationImpact<COLOR extends Color,
 
     @Override
     public final String toString() {
-        return String.format("[%s]", join(getSource(), ":"));
+        return String.format("%s:[%s]", getType(), join(getSource(), ":"));
     }
 
     @Override
