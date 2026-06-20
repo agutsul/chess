@@ -17,16 +17,16 @@ public class PieceMotionImpact<COLOR extends Color,
 
     @Override
     public final Integer getValue() {
-        return Impact.super.getValue() * Math.abs(getSource().getValue());
-    }
-
-    @Override
-    public final String toString() {
-        return String.format("%s:%s->%s", getType(), getSource(), getPosition());
+        return getSource().getDirection();
     }
 
     @Override
     public final Position getPosition() {
         return getTarget();
+    }
+
+    @Override
+    public final String toString() {
+        return String.format("%s:%s->%s", getType(), getSource(), getPosition());
     }
 }
