@@ -2,7 +2,6 @@ package com.agutsul.chess.rule.impact.fork;
 
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.List;
@@ -52,9 +51,8 @@ abstract class AbstractForkImpactRule<COLOR1 extends Color,
                                 piece2.getType().rank(),
                                 piece1.getType().rank()
                         )
-                    )
-                )
-                .collect(toList());
+                ))
+                .toList();
 
         return createForkImpacts(piece, sortedImpacts);
     }
