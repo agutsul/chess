@@ -1,10 +1,10 @@
 package com.agutsul.chess.rule.impact.attack.discovered;
 
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
-import static java.util.Collections.emptyList;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
@@ -43,18 +43,15 @@ public class PieceAbsoluteDiscoveredAttackImpactRule<COLOR1 extends Color,
     protected Collection<PieceAbsoluteDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED,SOURCE>>
             createImpacts(PIECE piece, Collection<Calculatable> next) {
 
-        var optionalKing  = board.getKing(piece.getColor().invert());
-        if (optionalKing.isEmpty()) {
-            return emptyList();
-        }
-
-        var opponentKing = (ATTACKED) optionalKing.get();
-        var impacts = Stream.of(board.getLines(piece.getPosition()))
-                .flatMap(Collection::stream)
-                // check if there is piece action position outside line
-                .filter(line -> !line.containsAll(next))
-                .filter(line -> line.contains(opponentKing.getPosition()))
-                .map(line -> createImpacts(piece, next, opponentKing, line))
+        var impacts = Stream.of(board.getKing(piece.getColor().invert()))
+                .flatMap(Optional::stream)
+                .flatMap(opponentKing -> Stream.of(board.getLines(piece.getPosition()))
+                        .flatMap(Collection::stream)
+                        // check if there is piece action position outside line
+                        .filter(line -> !line.containsAll(next))
+                        .filter(line -> line.contains(opponentKing.getPosition()))
+                        .map(line -> createImpacts(piece, next, (ATTACKED) opponentKing, line))
+                 )
                 .flatMap(Collection::stream)
                 .distinct()
                 .toList();
