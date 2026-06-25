@@ -517,8 +517,6 @@ public class QueenPieceImplTest extends AbstractPieceTest {
                 .withBlackPawns("a7","c6","e5","g7","h7")
                 .build();
 
-        System.out.println(board);
-
         var blackQueen = board.getPiece("c4").get();
         var blankFileImpacts = Stream.of(board.getImpacts(blackQueen, Impact.Type.BLANK_FILE))
                 .flatMap(Collection::stream)
