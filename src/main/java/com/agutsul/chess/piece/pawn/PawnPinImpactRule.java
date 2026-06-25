@@ -27,12 +27,12 @@ import com.agutsul.chess.rule.impact.pin.PiecePinPositionImpactRule;
 final class PawnPinImpactRule<COLOR1 extends Color,
                               COLOR2 extends Color,
                               PINNED extends PawnPiece<COLOR1>,
-                              PIECE  extends Piece<COLOR1>,
+                              DEFENDED extends Piece<COLOR1>,
                               ATTACKER extends Piece<COLOR2> & Capturable & Lineable>
-        extends PiecePinPositionImpactRule<COLOR1,COLOR2,PINNED,PIECE,ATTACKER,
-                                           PiecePinImpact<COLOR1,COLOR2,PINNED,PIECE,ATTACKER>> {
+        extends PiecePinPositionImpactRule<COLOR1,COLOR2,PINNED,DEFENDED,ATTACKER,
+                                           PiecePinImpact<COLOR1,COLOR2,PINNED,DEFENDED,ATTACKER>> {
 
-    private final Algo<PINNED,Collection<Position>> algoAdapter;
+    private final Algo<PINNED,Collection<Position>> enPassantAlgo;
 
     @SuppressWarnings("unchecked")
     PawnPinImpactRule(Board board,
@@ -45,13 +45,13 @@ final class PawnPinImpactRule<COLOR1 extends Color,
                 moveAlgo, bigMoveAlgo, captureAlgo
         ));
 
-        this.algoAdapter = new EnPassantPositionAlgoAdapter<>(enPassantAlgo);
+        this.enPassantAlgo = new EnPassantPositionAlgoAdapter<>(enPassantAlgo);
     }
 
     @Override
     protected Collection<Calculatable> calculate(PINNED pawn) {
         var positions = new LinkedHashSet<>(super.calculate(pawn));
-        positions.addAll(algoAdapter.calculate(pawn));
+        positions.addAll(enPassantAlgo.calculate(pawn));
         return unmodifiableCollection(positions);
     }
 }

@@ -1,6 +1,7 @@
 package com.agutsul.chess.rule.impact.pin;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -16,6 +17,7 @@ import com.agutsul.chess.activity.impact.PiecePinImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.Rule;
@@ -30,14 +32,21 @@ abstract class AbstractPiecePinImpactRule<COLOR1 extends Color,
         extends AbstractPinImpactRule<COLOR1,COLOR2,PINNED,DEFENDED,ATTACKER,IMPACT> {
 
     private final Rule<Piece<?>,Collection<IMPACT>> rule;
+    private final Algo<PINNED,Collection<Position>> algo;
 
     @SuppressWarnings("unchecked")
-    AbstractPiecePinImpactRule(Board board) {
+    AbstractPiecePinImpactRule(Board board, Algo<PINNED,Collection<Position>> algo) {
         super(board);
+        this.algo = algo;
         this.rule = new CompositeRule<>(
                 new PieceAbsolutePinImpactRule<>(board),
                 new PieceRelativePinImpactRule<>(board)
         );
+    }
+
+    @Override
+    protected Collection<Calculatable> calculate(PINNED piece) {
+        return unmodifiableCollection(algo.calculate(piece));
     }
 
     @Override
