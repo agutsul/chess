@@ -1,9 +1,8 @@
 package com.agutsul.chess.rule.impact.pin;
 
-import static java.util.Collections.emptyList;
-
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
@@ -14,6 +13,7 @@ import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsolutePinImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
+import com.agutsul.chess.activity.impact.PieceXRayImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
@@ -36,28 +36,16 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
     protected Collection<PiecePinImpact<COLOR1,COLOR2,PINNED,KING,ATTACKER>>
             createImpacts(PINNED piece, Collection<Calculatable> next) {
 
-        var optionalKing = board.getKing(piece.getColor());
-        if (optionalKing.isEmpty()) {
-            return emptyList();
-        }
-
         @SuppressWarnings("unchecked")
-        var king = (KING) optionalKing.get();
-
-        var impactLines = Stream.of(next)
-                .flatMap(Collection::stream)
-                .map(calculated -> (Line) calculated)
-                .filter(line -> line.contains(king.getPosition()))
-                .filter(line -> line.contains(piece.getPosition()))
-                .toList();
-
-        if (impactLines.isEmpty()) {
-            return emptyList();
-        }
-
-        var impacts = Stream.of(impactLines)
-                .flatMap(Collection::stream)
-                .map(line -> createImpacts(piece, king, line))
+        var impacts = Stream.of(board.getKing(piece.getColor()))
+                .flatMap(Optional::stream)
+                .flatMap(king -> Stream.of(next)
+                        .flatMap(Collection::stream)
+                        .map(calculated -> (Line) calculated)
+                        .filter(line -> line.contains(king.getPosition()))
+                        .filter(line -> line.contains(piece.getPosition()))
+                        .map(line -> createImpacts(piece, (KING) king, line))
+                )
                 .flatMap(Collection::stream)
                 .distinct()
                 .toList();
@@ -71,13 +59,13 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
             return false;
         }
 
-        // check if king is monitored by line attacker
-        var isKingMonitored = Stream.of(board.getImpacts(attacker, Impact.Type.MONITOR))
+        // check if king is x-rayed by line attacker
+        var isKingAttacked = Stream.of(board.getImpacts(attacker, Impact.Type.XRAY))
                 .flatMap(Collection::stream)
-                .map(Impact::getPosition)
-                .anyMatch(position -> Objects.equals(position, defendedPiece.getPosition()));
+                .map(impact -> (PieceXRayImpact<?,?,?,?>) impact)
+                .anyMatch(impact -> Objects.equals(impact.getTarget(), defendedPiece));
 
-        return isKingMonitored;
+        return isKingAttacked;
     }
 
     @Override

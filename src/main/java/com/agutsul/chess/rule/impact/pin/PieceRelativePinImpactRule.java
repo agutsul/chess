@@ -34,10 +34,10 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Collection<PiecePinImpact<COLOR1,COLOR2,PINNED,DEFENDED,ATTACKER>>
             createImpacts(PINNED piece, Collection<Calculatable> next) {
 
+        @SuppressWarnings("unchecked")
         var valuablePieces = Stream.of(board.getPieces(piece.getColor()))
                 .flatMap(Collection::stream)
                 .filter(not(Piece::isKing))

@@ -38,10 +38,10 @@ abstract class AbstractPinModeImpactRule<COLOR1 extends Color,
         return unmodifiableCollection(board.getLines(piece.getPosition()));
     }
 
-    @SuppressWarnings("unchecked")
     protected Collection<IMPACT> createImpacts(PINNED pinnedPiece, DEFENDED defendedPiece, Line line) {
-
         var linePieces = board.getPieces(line);
+
+        @SuppressWarnings("unchecked")
         var impacts = Stream.of(linePieces)
                 .filter(pieces -> pieces.size() >= 3)
                 .flatMap(Collection::stream)
