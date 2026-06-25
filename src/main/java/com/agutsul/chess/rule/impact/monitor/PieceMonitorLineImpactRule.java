@@ -4,6 +4,7 @@ import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -19,6 +20,7 @@ import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
+import com.agutsul.chess.piece.algo.FullLineAlgo;
 import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 
 public final class PieceMonitorLineImpactRule<COLOR extends Color,
@@ -31,16 +33,15 @@ public final class PieceMonitorLineImpactRule<COLOR extends Color,
                                       CapturePieceAlgo<COLOR,PIECE,Line> algo) {
 
         super(board, Impact.Type.MONITOR);
-        this.algo = algo;
+        this.algo = new FullLineAlgo<>(board, algo);
     }
 
     @Override
     protected Collection<Calculatable> calculate(PIECE piece) {
         var lines = algo.calculate(piece);
-        var opponentKing = board.getKing(piece.getColor().invert());
 
         // positions behind opponent king
-        Collection<Calculatable> monitoredLines = Stream.of(opponentKing)
+        Collection<Calculatable> monitoredLines = Stream.of(board.getKing(piece.getColor().invert()))
                 .flatMap(Optional::stream)
                 .map(KingPiece::getPosition)
                 .flatMap(kingPosition -> Stream.of(lines)
@@ -60,12 +61,16 @@ public final class PieceMonitorLineImpactRule<COLOR extends Color,
     protected Collection<PieceMonitorImpact<COLOR,PIECE>>
             createImpacts(PIECE piece, Collection<Calculatable> lines) {
 
-        var impacts = Stream.of(lines)
-                .flatMap(Collection::stream)
-                .map(calculated -> (Line) calculated)
-                .flatMap(Collection::stream)
-                .map(position -> new PieceMonitorImpact<>(piece, position))
-                .collect(toList());
+        var impacts = Stream.of(board.getKing(piece.getColor().invert()))
+                .flatMap(Optional::stream)
+                .flatMap(king -> Stream.of(lines)
+                        .flatMap(Collection::stream)
+                        .map(calculated -> (Line) calculated)
+                        .flatMap(Collection::stream)
+                        .filter(position -> !Objects.equals(position, king.getPosition()))
+                        .map(position -> new PieceMonitorImpact<>(piece, position))
+                )
+                .toList();
 
         return impacts;
     }
