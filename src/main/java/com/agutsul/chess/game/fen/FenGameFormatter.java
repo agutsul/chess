@@ -1,6 +1,8 @@
 package com.agutsul.chess.game.fen;
 
 import static com.agutsul.chess.activity.action.Action.isBigMove;
+import static com.agutsul.chess.color.Colors.isBlack;
+import static com.agutsul.chess.color.Colors.isWhite;
 import static java.util.stream.Collectors.joining;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -46,7 +48,7 @@ public class FenGameFormatter {
     }
 
     private static int fullMoves(Journal<ActionMemento<?,?>> journal, Player player) {
-        return Colors.BLACK.equals(player.getColor())
+        return isBlack(player.getColor())
                 ? fullMoves(journal) - 1
                 : fullMoves(journal);
     }
@@ -172,7 +174,7 @@ public class FenGameFormatter {
 
     private static String formatPiece(Piece<?> piece) {
         var pieceType = resolvePieceType(piece.getType());
-        return Colors.WHITE.equals(piece.getColor())
+        return isWhite(piece.getColor())
                 ? upperCase(pieceType)
                 : lowerCase(pieceType);
     }

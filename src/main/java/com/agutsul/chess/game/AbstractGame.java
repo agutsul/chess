@@ -1,4 +1,5 @@
 package com.agutsul.chess.game;
+import static com.agutsul.chess.color.Colors.isWhite;
 import static java.util.Objects.isNull;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
@@ -73,7 +74,7 @@ public abstract class AbstractGame
         var result = Stream.of(getWinnerPlayer())
                 .flatMap(Optional::stream)
                 .findFirst()
-                .map(player -> (GameResult) (Colors.WHITE.equals(player.getColor())
+                .map(player -> (GameResult) (isWhite(player.getColor())
                             ? new WhiteWinGameResult()
                             : new BlackWinGameResult()
                 ))

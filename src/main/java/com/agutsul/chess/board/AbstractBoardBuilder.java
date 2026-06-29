@@ -1,5 +1,6 @@
 package com.agutsul.chess.board;
 
+import static com.agutsul.chess.color.Colors.isWhite;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.collections4.ListUtils.partition;
@@ -22,7 +23,6 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.exception.GameInterruptionException;
 import com.agutsul.chess.piece.BishopPiece;
 import com.agutsul.chess.piece.KingPiece;
@@ -86,7 +86,7 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
 
     @Override
     public BoardBuilder<T> withPiece(Piece.Type pieceType, Color color, T position) {
-        return Colors.WHITE.equals(color)
+        return isWhite(color)
                 ? withWhitePiece(pieceType, position)
                 : withBlackPiece(pieceType, position);
     }

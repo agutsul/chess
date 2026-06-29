@@ -1,5 +1,6 @@
 package com.agutsul.chess.game.fen;
 
+import static com.agutsul.chess.color.Colors.isWhite;
 import static java.util.Objects.nonNull;
 
 import java.io.InputStream;
@@ -47,7 +48,7 @@ public final class FenGame<T extends Game & Observable>
 
         super(createGame(whitePlayer, blackPlayer, board,
                 new FenJournal(Map.of(
-                        Colors.WHITE, Colors.WHITE.equals(color) ? fullMoves : fullMoves + 1,
+                        Colors.WHITE, isWhite(color) ? fullMoves : fullMoves + 1,
                         Colors.BLACK, fullMoves
                 )),
                 inputStream,
