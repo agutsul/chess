@@ -24,11 +24,11 @@ public enum Colors implements Color {
     // utilities
 
     public static boolean isWhite(Color color) {
-        return Colors.WHITE.equals(color);
+        return WHITE.equals(color);
     }
 
     public static boolean isBlack(Color color) {
-        return Colors.BLACK.equals(color);
+        return BLACK.equals(color);
     }
 
     public static boolean isEqual(Color color1, Color color2) {
