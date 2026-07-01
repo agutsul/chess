@@ -17,7 +17,7 @@ public final class PieceRelativeBlankFileImpact<COLOR extends Color,
     }
 
     @Override
-    public Integer getValue() {
-        return 0; // no direct impact
+    protected Integer calculateValue() {
+        return getSource().getDirection();
     }
 }

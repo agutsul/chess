@@ -17,10 +17,21 @@ public final class PieceDominationAttackImpact<COLOR1 extends Color,
         implements PieceDominationImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
     private final AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> attackImpact;
+    private Integer value;
 
     public PieceDominationAttackImpact(AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> attackImpact) {
         super(Impact.Type.DOMINATION, attackImpact.getSource(), attackImpact.getTarget());
         this.attackImpact = attackImpact;
+    }
+
+    @Override
+    public Integer getValue() {
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -46,5 +57,9 @@ public final class PieceDominationAttackImpact<COLOR1 extends Color,
     @Override
     public String toString() {
         return String.format("%s:%s", getType(), this.attackImpact);
+    }
+
+    private Integer calculateValue() {
+        return this.attackImpact.getValue();
     }
 }

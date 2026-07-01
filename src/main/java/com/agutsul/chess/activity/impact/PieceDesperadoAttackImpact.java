@@ -4,6 +4,9 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
+import java.util.Objects;
+import java.util.stream.Stream;
+
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
@@ -22,6 +25,7 @@ public final class PieceDesperadoAttackImpact<COLOR1 extends Color,
                                         AbstractPieceAttackImpact<COLOR1,COLOR2,DESPERADO,ATTACKED>> {
 
     private final Mode mode;
+    private Integer value;
 
     public PieceDesperadoAttackImpact(Mode mode,
                                       AbstractPieceAttackImpact<COLOR1,COLOR2,DESPERADO,ATTACKED> source,
@@ -29,6 +33,16 @@ public final class PieceDesperadoAttackImpact<COLOR1 extends Color,
 
         super(Impact.Type.DESPERADO, source, target);
         this.mode = mode;
+    }
+
+    @Override
+    public Integer getValue() {
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -63,5 +77,12 @@ public final class PieceDesperadoAttackImpact<COLOR1 extends Color,
     @Override
     public Mode getMode() {
         return this.mode;
+    }
+
+    private Integer calculateValue() {
+        return Stream.of(getSource(), getTarget())
+                .filter(Objects::nonNull)
+                .mapToInt(Impact::getValue)
+                .sum();
     }
 }

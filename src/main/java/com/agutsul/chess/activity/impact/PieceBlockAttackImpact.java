@@ -21,12 +21,23 @@ public final class PieceBlockAttackImpact<COLOR1 extends Color,
         implements PieceBlockImpact<COLOR1,COLOR2,BLOCKER,DEFENDED,ATTACKER> {
 
     private final AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,DEFENDED> attackImpact;
+    private Integer value;
 
     public PieceBlockAttackImpact(BLOCKER piece, Position position,
                                   AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,DEFENDED> attackImpact) {
 
         super(Impact.Type.BLOCK, piece, position);
         this.attackImpact = attackImpact;
+    }
+
+    @Override
+    public Integer getValue() {
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -62,5 +73,11 @@ public final class PieceBlockAttackImpact<COLOR1 extends Color,
         return String.format("%s:%s (%s [%s] %s)",
                 getType(), getBlocker(), getAttacker(), getPosition(), getAttacked()
         );
+    }
+
+    private Integer calculateValue() {
+        var diff = Math.abs(getBlocker().getValue()) - Math.abs(getAttacked().getValue());
+        var value = attackImpact.getValue() + Math.negateExact(getBlocker().getDirection()) * diff;
+        return Math.negateExact(value);
     }
 }

@@ -12,8 +12,20 @@ public class PieceOutpostImpact<COLOR extends Color,
         extends AbstractTargetActivity<Impact.Type,PIECE,Position>
         implements Impact<PIECE> {
 
+    private Integer value;
+
     public PieceOutpostImpact(PIECE piece, Position position) {
         super(Impact.Type.OUTPOST, piece, position);
+    }
+
+    @Override
+    public final Integer getValue() {
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -24,5 +36,9 @@ public class PieceOutpostImpact<COLOR extends Color,
     @Override
     public final Position getPosition() {
         return getTarget();
+    }
+
+    private Integer calculateValue() {
+        return getSource().getValue();
     }
 }

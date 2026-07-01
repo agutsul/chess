@@ -26,16 +26,21 @@ public final class PieceXRayAttackImpact<COLOR1 extends Color,
     }
 
     @Override
-    public Integer getValue() {
-        return super.getValue() + getPieceValues(getPiece().getColor().invert());
-    }
-
-    @Override
     public Line getLine() {
         return Stream.of(getSource())
                 .map(AbstractPieceAttackImpact::getLine)
                 .flatMap(Optional::stream)
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    Integer calculateValue() {
+        var opponentPieceValues = getPieceValues(getPiece().getColor().invert());
+        var currentPieceValues  = getPieceValues(getPiece().getColor());
+
+        // decrease by the amount of attack blocker piece
+        // increase by the amount of opponent piece values
+        return super.calculateValue() - currentPieceValues + opponentPieceValues;
     }
 }

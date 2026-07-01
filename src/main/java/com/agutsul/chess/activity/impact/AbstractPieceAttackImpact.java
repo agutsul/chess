@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
-import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
@@ -22,41 +21,36 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
 
     private final Calculatable calculated;
     private final boolean hidden;
+    private Integer value;
 
-    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED piece,
+    AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED attacked,
                               Calculatable calculated, boolean hidden) {
 
-        super(impactType, attacker, piece);
+        super(impactType, attacker, attacked);
 
         this.calculated = calculated;
         this.hidden = hidden;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s:%sx%s", getType(), getSource(), getTarget());
+    }
+
+    @Override
+    public final Integer getValue() {
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     public final boolean isHidden() {
         return this.hidden;
     }
 
-    @Override
-    public final Integer getValue() {
-        var value = Impact.super.getValue() * Math.abs(getTarget().getValue());
-        if (((Protectable) getTarget()).isProtected()) {
-            return value;
-        }
-
-        var diff = Math.abs(getSource().getValue()) - Math.abs(getTarget().getValue());
-        return value + Math.abs(diff);
-    }
-/*
-    @Override
-    public final Integer getValue() {
-        var value = ((Protectable) getTarget()).isProtected()
-                ? Impact.super.getValue() - 1
-                : Impact.super.getValue();
-
-        var diff = Math.abs(getSource().getValue()) - Math.abs(getTarget().getValue());
-        return value * Math.abs(getTarget().getValue()) + Math.abs(diff);
-    }
-*/
     public final Optional<Line> getLine() {
         return Optional.ofNullable(nonNull(this.calculated) && this.calculated instanceof Line
                 ? (Line) this.calculated
@@ -69,5 +63,9 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
         return nonNull(this.calculated) && this.calculated instanceof Position
                 ? (Position) this.calculated
                 : getTarget().getPosition();
+    }
+
+    Integer calculateValue() {
+        return Math.negateExact(getTarget().getValue());
     }
 }

@@ -11,13 +11,20 @@ public class PieceMotionImpact<COLOR extends Color,
         extends AbstractTargetActivity<Impact.Type,PIECE,Position>
         implements Impact<PIECE> {
 
+    private Integer value;
+
     public PieceMotionImpact(PIECE piece, Position position) {
         super(Impact.Type.MOTION, piece, position);
     }
 
     @Override
     public final Integer getValue() {
-        return getSource().getDirection();
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -28,5 +35,9 @@ public class PieceMotionImpact<COLOR extends Color,
     @Override
     public final String toString() {
         return String.format("%s:%s->%s", getType(), getSource(), getPosition());
+    }
+
+    private Integer calculateValue() {
+        return getSource().getDirection();
     }
 }

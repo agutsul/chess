@@ -1,5 +1,6 @@
 package com.agutsul.chess.activity.impact;
 
+import java.util.Collection;
 import java.util.Objects;
 
 import com.agutsul.chess.Capturable;
@@ -22,6 +23,7 @@ public interface PieceForkImpact<COLOR1 extends Color,
     }
 
     Mode getMode();
+    Collection<ATTACKED> getAttacked();
 
     // utilities
 

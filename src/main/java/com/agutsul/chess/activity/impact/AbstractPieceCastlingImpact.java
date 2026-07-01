@@ -20,6 +20,7 @@ abstract class AbstractPieceCastlingImpact<COLOR  extends Color,
         implements Impact<SOURCE> {
 
     private final Side side;
+    private Integer value;
 
     AbstractPieceCastlingImpact(Side side, SOURCE source, TARGET target) {
         super(Impact.Type.CASTLING, source, target);
@@ -44,7 +45,12 @@ abstract class AbstractPieceCastlingImpact<COLOR  extends Color,
 
     @Override
     public final Integer getValue() {
-        return Impact.super.getValue() * Math.abs(super.getSource().getValue() + super.getTarget().getValue());
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -57,6 +63,14 @@ abstract class AbstractPieceCastlingImpact<COLOR  extends Color,
         return String.format("%s:%s:[%s] [%s]",
                 getType(), getSide(), getSource(), getTarget()
         );
+    }
+
+    private Integer calculateValue() {
+        var value = Stream.of(super.getSource(), super.getTarget())
+                .mapToInt(Impact::getValue)
+                .sum();
+
+        return (int) Math.pow(value, 9);
     }
 
     private PieceMotionImpact<COLOR,?> getImpact(Piece.Type pieceType) {

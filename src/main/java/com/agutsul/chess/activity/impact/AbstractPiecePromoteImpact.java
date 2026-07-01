@@ -13,13 +13,20 @@ abstract class AbstractPiecePromoteImpact<COLOR  extends Color,
         extends AbstractTargetActivity<Impact.Type,AbstractSourceActivity<Impact.Type,PIECE>,Piece.Type>
         implements PiecePromoteImpact<COLOR,PIECE> {
 
+    private Integer value;
+
     AbstractPiecePromoteImpact(SOURCE sourceImpact, Piece.Type pieceType) {
         super(Impact.Type.PROMOTE, sourceImpact, pieceType);
     }
 
     @Override
     public final Integer getValue() {
-        return PiecePromoteImpact.super.getValue() * Math.abs(getSource().getValue()) + getPieceType().rank();
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -46,5 +53,10 @@ abstract class AbstractPiecePromoteImpact<COLOR  extends Color,
     @Override
     public final String toString() {
         return String.format("%s:(%s)=%s", getType(), getSource(), getPieceType());
+    }
+
+    private Integer calculateValue() {
+        var value = (int) Math.pow(2, getPieceType().rank());
+        return getSource().getValue() + getPiece().getDirection() * value;
     }
 }

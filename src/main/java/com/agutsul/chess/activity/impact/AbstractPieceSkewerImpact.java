@@ -2,6 +2,7 @@ package com.agutsul.chess.activity.impact;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
+import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
@@ -19,6 +20,7 @@ abstract class AbstractPieceSkewerImpact<COLOR1 extends Color,
 
     private final Mode mode;
     private final IMPACT impact;
+    private Integer value;
 
     AbstractPieceSkewerImpact(Mode mode, IMPACT impact, DEFENDED target) {
         super(Impact.Type.SKEWER, impact.getSource(), target);
@@ -28,8 +30,12 @@ abstract class AbstractPieceSkewerImpact<COLOR1 extends Color,
 
     @Override
     public final Integer getValue() {
-        return PieceSkewerImpact.super.getValue() * Math.abs(impact.getValue())
-                + Math.abs(getDefended().getValue());
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -67,5 +73,16 @@ abstract class AbstractPieceSkewerImpact<COLOR1 extends Color,
         return String.format("%s:%s:%s %s",
                 getType(), getMode(), impact, getTarget()
         );
+    }
+
+    private Integer calculateValue() {
+        var diff = Math.negateExact(getAttacked().getValue())
+                 - Math.negateExact(getDefended().getValue());
+
+        if (((Protectable) getDefended()).isProtected()) {
+            diff += Math.negateExact(getAttacker().getValue());
+        }
+
+        return impact.getValue() + diff;
     }
 }

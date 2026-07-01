@@ -19,6 +19,7 @@ abstract class AbstractPiecePinImpact<COLOR1 extends Color,
         implements PiecePinImpact<COLOR1,COLOR2,PINNED,DEFENDED,ATTACKER> {
 
     private final Mode mode;
+    private Integer value;
 
     AbstractPiecePinImpact(Mode mode, PINNED piece, IMPACT impact) {
         super(Impact.Type.PIN, piece, impact);
@@ -27,8 +28,12 @@ abstract class AbstractPiecePinImpact<COLOR1 extends Color,
 
     @Override
     public final Integer getValue() {
-        var value = Math.abs(getDefended().getValue()) - Math.abs(getPinned().getValue());
-        return PiecePinImpact.super.getValue() * Math.abs(value) + Math.abs(getTarget().getValue());
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -51,5 +56,13 @@ abstract class AbstractPiecePinImpact<COLOR1 extends Color,
         return String.format("%s:%s:%s{%s}",
                 getType(), getMode(), getPinned(), getTarget()
         );
+    }
+
+    private Integer calculateValue() {
+        var diff = Math.abs(getDefended().getValue()) - Math.abs(getPinned().getValue());
+        return getSource().getDirection() * diff
+                + Math.negateExact(getTarget().getValue())
+                - getDefended().getValue();
+
     }
 }

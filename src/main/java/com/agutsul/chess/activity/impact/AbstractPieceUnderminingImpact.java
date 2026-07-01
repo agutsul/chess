@@ -18,10 +18,21 @@ abstract class AbstractPieceUnderminingImpact<COLOR1 extends Color,
         implements PieceUnderminingImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
     private final IMPACT impact;
+    private Integer value;
 
     AbstractPieceUnderminingImpact(IMPACT impact) {
         super(Impact.Type.UNDERMINING, impact.getSource(), impact.getTarget());
         this.impact = impact;
+    }
+
+    @Override
+    public final Integer getValue() {
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -47,5 +58,9 @@ abstract class AbstractPieceUnderminingImpact<COLOR1 extends Color,
     @Override
     public final String toString() {
         return String.format("%s:%s_X_%s", getType(), getAttacker(), getAttacked());
+    }
+
+    private Integer calculateValue() {
+        return 2 * impact.getValue();
     }
 }

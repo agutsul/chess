@@ -12,8 +12,20 @@ public class PieceLuftImpact<COLOR extends Color,
         extends AbstractTargetActivity<Impact.Type,PIECE,Position>
         implements Impact<PIECE> {
 
+    private Integer value;
+
     public PieceLuftImpact(PIECE piece, Position position) {
         super(Impact.Type.LUFT, piece, position);
+    }
+
+    @Override
+    public final Integer getValue() {
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -25,5 +37,9 @@ public class PieceLuftImpact<COLOR extends Color,
     public final Position getPosition() {
         // luft is position left by the pawn while performing an action
         return getSource().getPosition();
+    }
+
+    private Integer calculateValue() {
+        return getSource().getValue();
     }
 }

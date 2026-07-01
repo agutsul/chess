@@ -24,16 +24,21 @@ public final class PieceXRayProtectImpact<COLOR1 extends Color,
     }
 
     @Override
-    public Integer getValue() {
-        return super.getValue() + getPieceValues(getPiece().getColor());
-    }
-
-    @Override
     public Line getLine() {
         return Stream.of(getSource())
                 .map(PieceProtectImpact::getLine)
                 .flatMap(Optional::stream)
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    Integer calculateValue() {
+        var opponentPieceValues = getPieceValues(getPiece().getColor().invert());
+        var currentPieceValues  = getPieceValues(getPiece().getColor());
+
+        // decrease by the amount of opponent piece values
+        // increase by the amount of protected piece values
+        return super.calculateValue() - opponentPieceValues + currentPieceValues;
     }
 }

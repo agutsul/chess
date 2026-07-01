@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
+import static com.agutsul.chess.color.Colors.isWhite;
+
 import com.agutsul.chess.activity.AbstractSourceActivity;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.position.Position;
@@ -10,11 +12,22 @@ abstract class AbstractPositionHoleImpact
 
     private final Color color;
     private final Mode mode;
+    private Integer value;
 
     AbstractPositionHoleImpact(Mode mode, Color color, Position position) {
         super(Impact.Type.HOLE, position);
         this.mode = mode;
         this.color = color;
+    }
+
+    @Override
+    public final Integer getValue() {
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -37,5 +50,9 @@ abstract class AbstractPositionHoleImpact
         return String.format("%s:%s:[%s:%s]",
                 getType(), getMode(), getColor(), getPosition()
         );
+    }
+
+    Integer calculateValue() {
+        return isWhite(getColor()) ? -1 : 1;
     }
 }

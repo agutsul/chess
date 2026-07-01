@@ -25,6 +25,7 @@ abstract class AbstractPieceDiscoveredAttackImpact<COLOR1 extends Color,
         implements PieceDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED> {
 
     private final Mode mode;
+    private Integer value;
 
     AbstractPieceDiscoveredAttackImpact(Mode mode, SOURCE sourceImpact, TARGET discoveredAttack) {
         super(Impact.Type.DISCOVERED_ATTACK, sourceImpact, discoveredAttack);
@@ -33,8 +34,12 @@ abstract class AbstractPieceDiscoveredAttackImpact<COLOR1 extends Color,
 
     @Override
     public final Integer getValue() {
-        var value = Math.abs(getSource().getValue()) + Math.abs(getTarget().getValue());
-        return PieceDiscoveredAttackImpact.super.getValue() * value;
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -82,5 +87,11 @@ abstract class AbstractPieceDiscoveredAttackImpact<COLOR1 extends Color,
         return String.format("%s:%s:%s %s",
                 getType(), getMode(), getSource(), getTarget()
         );
+    }
+
+    private Integer calculateValue() {
+        return Stream.of(getSource(), getTarget())
+                .mapToInt(Impact::getValue)
+                .sum();
     }
 }

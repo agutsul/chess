@@ -2,6 +2,7 @@ package com.agutsul.chess.activity.impact;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Protectable;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
@@ -11,26 +12,33 @@ public final class PieceAttackImpact<COLOR1 extends Color,
                                      ATTACKED extends Piece<COLOR2>>
         extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
-    public PieceAttackImpact(ATTACKER attacker, ATTACKED piece) {
-        this(attacker, piece, false);
+    public PieceAttackImpact(ATTACKER attacker, ATTACKED attacked) {
+        this(attacker, attacked, false);
     }
 
-    public PieceAttackImpact(ATTACKER attacker, ATTACKED piece, boolean hidden) {
-        this(attacker, piece, null, hidden);
+    public PieceAttackImpact(ATTACKER attacker, ATTACKED attacked, boolean hidden) {
+        this(attacker, attacked, null, hidden);
     }
 
-    public PieceAttackImpact(ATTACKER attacker, ATTACKED piece, Calculatable calculated) {
-        this(attacker, piece, calculated, false);
+    public PieceAttackImpact(ATTACKER attacker, ATTACKED attacked, Calculatable calculated) {
+        this(attacker, attacked, calculated, false);
     }
 
-    public PieceAttackImpact(ATTACKER attacker, ATTACKED piece,
+    public PieceAttackImpact(ATTACKER attacker, ATTACKED attacked,
                              Calculatable calculated, boolean hidden) {
 
-        super(Impact.Type.ATTACK, attacker, piece, calculated, hidden);
+        super(Impact.Type.ATTACK, attacker, attacked, calculated, hidden);
     }
 
     @Override
-    public String toString() {
-        return String.format("%s:%sx%s", getType(), getSource(), getTarget());
+    Integer calculateValue() {
+        var value = super.calculateValue();
+        if (((Protectable) getTarget()).isProtected()) {
+            // if target piece is protected attacking it means loosing source piece ( attacker )
+            return value + Math.negateExact(getSource().getValue());
+        }
+
+        var diff = Math.abs(getSource().getValue()) - Math.abs(getTarget().getValue());
+        return value + getSource().getDirection() * Math.abs(diff);
     }
 }

@@ -22,20 +22,25 @@ public final class PieceRelativeDesperadoImpact<COLOR1 extends Color,
         extends AbstractTargetActivity<Impact.Type,IMPACT,Collection<IMPACT>>
         implements PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,IMPACT> {
 
+    private Integer value;
+
     public PieceRelativeDesperadoImpact(IMPACT source, IMPACT target) {
         super(Impact.Type.DESPERADO, source, List.of(source, target));
-    }
-
-    public PieceRelativeDesperadoImpact(Collection<IMPACT> target) {
-        super(Impact.Type.DESPERADO,
-                Stream.of(target).flatMap(Collection::stream).findFirst().get(),
-                target
-        );
     }
 
     @Override
     public Mode getMode() {
         return Mode.RELATIVE;
+    }
+
+    @Override
+    public Integer getValue() {
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -69,5 +74,12 @@ public final class PieceRelativeDesperadoImpact<COLOR1 extends Color,
                     .collect(joining(lineSeparator())),
                 lineSeparator()
         );
+    }
+
+    private Integer calculateValue() {
+        return Stream.of(getTarget())
+                .flatMap(Collection::stream)
+                .mapToInt(Impact::getValue)
+                .sum();
     }
 }

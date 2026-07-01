@@ -16,15 +16,28 @@ abstract class AbstractPieceBlankFileImpact<COLOR extends Color,
         implements PieceBlankFileImpact<COLOR,PIECE> {
 
     private final Mode mode;
+    private Integer value;
 
     AbstractPieceBlankFileImpact(Mode mode, PIECE piece, Line line) {
         super(Impact.Type.BLANK_FILE, piece, line);
         this.mode = mode;
     }
 
+    abstract Integer calculateValue();
+
     @Override
     public final Mode getMode() {
         return mode;
+    }
+
+    @Override
+    public final Integer getValue() {
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -39,6 +52,8 @@ abstract class AbstractPieceBlankFileImpact<COLOR extends Color,
 
     @Override
     public final String toString() {
-        return String.format("%s:%s:%s [%s]", getType(), getMode(), getSource(), getLine());
+        return String.format("%s:%s:%s [%s]",
+                getType(), getMode(), getSource(), getLine()
+        );
     }
 }

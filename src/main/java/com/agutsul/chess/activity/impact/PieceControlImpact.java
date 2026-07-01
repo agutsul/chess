@@ -12,13 +12,20 @@ public class PieceControlImpact<COLOR extends Color,
         extends AbstractTargetActivity<Impact.Type,PIECE,Position>
         implements Impact<PIECE> {
 
+    private Integer value;
+
     public PieceControlImpact(PIECE piece, Position position) {
         super(Impact.Type.CONTROL, piece, position);
     }
 
     @Override
     public final Integer getValue() {
-        return Impact.super.getValue();
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -29,5 +36,9 @@ public class PieceControlImpact<COLOR extends Color,
     @Override
     public final Position getPosition() {
         return getTarget();
+    }
+
+    private Integer calculateValue() {
+        return getSource().getDirection();
     }
 }

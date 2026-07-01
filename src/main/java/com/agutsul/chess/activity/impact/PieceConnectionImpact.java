@@ -17,6 +17,8 @@ public class PieceConnectionImpact<COLOR extends Color,
         extends AbstractSourceActivity<Impact.Type,Collection<PIECE>>
         implements Impact<Collection<PIECE>> {
 
+    private Integer value;
+
     public PieceConnectionImpact(PIECE piece1, PIECE piece2,
                                  @SuppressWarnings("unchecked") PIECE... piece3) {
 
@@ -31,6 +33,16 @@ public class PieceConnectionImpact<COLOR extends Color,
     }
 
     @Override
+    public final Integer getValue() {
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
+    }
+
+    @Override
     public final String toString() {
         return String.format("%s:(%s)", getType(), join(getSource(), ":"));
     }
@@ -42,5 +54,12 @@ public class PieceConnectionImpact<COLOR extends Color,
                 .map(Piece::getPosition)
                 .findFirst()
                 .orElse(null);
+    }
+
+    private Integer calculateValue() {
+        return Stream.of(getSource())
+                .flatMap(Collection::stream)
+                .mapToInt(Piece::getValue)
+                .sum();
     }
 }

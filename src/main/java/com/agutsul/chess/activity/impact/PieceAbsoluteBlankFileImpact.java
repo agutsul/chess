@@ -15,4 +15,9 @@ public final class PieceAbsoluteBlankFileImpact<COLOR extends Color,
     public PieceAbsoluteBlankFileImpact(PIECE piece, Line line) {
         super(Mode.ABSOLUTE, piece, line);
     }
+
+    @Override
+    protected Integer calculateValue() {
+        return getSource().getValue() + getSource().getDirection() * getLine().size();
+    }
 }

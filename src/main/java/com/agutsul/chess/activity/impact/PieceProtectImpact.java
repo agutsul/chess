@@ -17,6 +17,7 @@ public class PieceProtectImpact<COLOR  extends Color,
 
     private Line line;
     private boolean hidden;
+    private Integer value;
 
     public PieceProtectImpact(PIECE1 source, PIECE2 target) {
         super(Impact.Type.PROTECT, source, target);
@@ -31,13 +32,17 @@ public class PieceProtectImpact<COLOR  extends Color,
         this(source, target, line);
         this.hidden = hidden;
     }
-/*
+
     @Override
     public final Integer getValue() {
-        var value = Math.abs(getSource().getValue()) - Math.abs(getTarget().getValue());
-        return Math.abs(getSource().getValue()) + Math.abs(value);
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
-*/
+
     public final Optional<Line> getLine() {
         return Optional.ofNullable(this.line);
     }
@@ -54,5 +59,10 @@ public class PieceProtectImpact<COLOR  extends Color,
     @Override
     public final String toString() {
         return String.format("%s:%s(%s)", getType(), getSource(), getTarget());
+    }
+
+    private Integer calculateValue() {
+        var diff = Math.abs(getTarget().getValue()) - Math.abs(getSource().getValue());
+        return getSource().getValue() + getSource().getDirection() * diff;
     }
 }

@@ -2,6 +2,7 @@ package com.agutsul.chess.activity.impact;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Checkable;
+import com.agutsul.chess.Protectable;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
@@ -24,14 +25,23 @@ public final class PieceCheckImpact<COLOR1 extends Color,
         this(attacker, king, line, false);
     }
 
-    public PieceCheckImpact(ATTACKER attacker, ATTACKED king,
-                            Line line, boolean hidden) {
-
+    public PieceCheckImpact(ATTACKER attacker, ATTACKED king, Line line, boolean hidden) {
         super(Impact.Type.CHECK, attacker, king, line, hidden);
     }
 
     @Override
     public String toString() {
-        return String.format("%s:%sx%s!", getType(), getSource(), getTarget());
+        return String.format("%s!", super.toString());
+    }
+
+    @Override
+    Integer calculateValue() {
+        var diff = getSource().getDirection()
+                * (Math.abs(getTarget().getValue()) - Math.abs(getSource().getValue()));
+
+        var value = super.calculateValue();
+        return ((Protectable) getSource()).isProtected()
+                ? value + diff
+                : value/2 + diff; // decrease check value for unprotected piece
     }
 }

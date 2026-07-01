@@ -11,8 +11,20 @@ public class PieceIsolationImpact<COLOR extends Color,
         extends AbstractSourceActivity<Impact.Type,PIECE>
         implements Impact<PIECE> {
 
+    private Integer value;
+
     public PieceIsolationImpact(PIECE piece) {
         super(Impact.Type.ISOLATION, piece);
+    }
+
+    @Override
+    public final Integer getValue() {
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -23,5 +35,9 @@ public class PieceIsolationImpact<COLOR extends Color,
     @Override
     public final Position getPosition() {
         return getSource().getPosition();
+    }
+
+    private Integer calculateValue() {
+        return Math.negateExact(getSource().getValue());
     }
 }

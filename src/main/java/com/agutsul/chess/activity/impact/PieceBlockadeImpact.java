@@ -12,8 +12,20 @@ public class PieceBlockadeImpact<COLOR extends Color,
         extends AbstractTargetActivity<Impact.Type,PIECE1,PIECE2>
         implements Impact<PIECE1> {
 
+    private Integer value;
+
     public PieceBlockadeImpact(PIECE1 source, PIECE2 blocker) {
         super(Impact.Type.BLOCKADE, source, blocker);
+    }
+
+    @Override
+    public final Integer getValue() {
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -24,5 +36,9 @@ public class PieceBlockadeImpact<COLOR extends Color,
     @Override
     public final Position getPosition() {
         return getTarget().getPosition();
+    }
+
+    private Integer calculateValue() {
+        return Math.negateExact(getSource().getDirection());
     }
 }

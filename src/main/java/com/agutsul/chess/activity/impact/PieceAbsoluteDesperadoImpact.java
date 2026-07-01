@@ -15,6 +15,8 @@ public final class PieceAbsoluteDesperadoImpact<COLOR1 extends Color,
         extends AbstractSourceActivity<Impact.Type,IMPACT>
         implements PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,IMPACT> {
 
+    private Integer value;
+
     public PieceAbsoluteDesperadoImpact(IMPACT source) {
         super(Impact.Type.DESPERADO, source);
     }
@@ -22,6 +24,16 @@ public final class PieceAbsoluteDesperadoImpact<COLOR1 extends Color,
     @Override
     public Mode getMode() {
         return Mode.ABSOLUTE;
+    }
+
+    @Override
+    public Integer getValue() {
+        if (this.value != null) {
+            return this.value;
+        }
+
+        this.value = calculateValue();
+        return this.value;
     }
 
     @Override
@@ -47,5 +59,9 @@ public final class PieceAbsoluteDesperadoImpact<COLOR1 extends Color,
     @Override
     public String toString() {
         return String.format("%s:%s:%s", getType(), getMode(), getSource());
+    }
+
+    private Integer calculateValue() {
+        return getSource().getValue();
     }
 }

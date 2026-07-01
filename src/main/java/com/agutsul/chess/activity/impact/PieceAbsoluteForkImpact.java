@@ -16,5 +16,4 @@ public final class PieceAbsoluteForkImpact<COLOR1 extends Color,
     public PieceAbsoluteForkImpact(ATTACKER piece, Collection<IMPACT> impacts) {
         super(Mode.ABSOLUTE, piece, impacts);
     }
-
 }
