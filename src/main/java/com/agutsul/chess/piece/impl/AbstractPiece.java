@@ -268,18 +268,17 @@ abstract class AbstractPiece<COLOR extends Color>
     public final boolean isProtected() {
         LOGGER.info("Checking if piece '{}' is protected by the other piece", this);
 
-        // piece can't protect itself. only the other piece with the same color ( if it is not pinned )
-        var protectors = Stream.of(board.getPieces(getColor()))
+        // get pieces with the same color
+        var isProtected = Stream.of(board.getPieces(getColor()))
                 .flatMap(Collection::stream)
+                // piece can't protect itself
                 .filter(piece -> !Objects.equals(piece, this))
+                // skip pinned pieces but allow king
                 .filter(piece -> isKing(piece) || !((Pinnable) piece).isPinned())
-                .toList();
-
-        var isProtected = Stream.of(protectors)
-                .flatMap(Collection::stream)
                 .map(piece -> board.getImpacts(piece, Impact.Type.PROTECT))
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceProtectImpact<?,?,?>) impact)
+                // check if there is protect impact saving current piece
                 .anyMatch(protector -> Objects.equals(protector.getTarget(), this));
 
         return isProtected;
