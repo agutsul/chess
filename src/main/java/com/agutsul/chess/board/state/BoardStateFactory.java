@@ -213,7 +213,7 @@ public abstract class BoardStateFactory {
             extends AbstractTerminalBoardState
             implements SeventyFiveMovesBoardState {
 
-        private static final Logger LOGGER = getLogger(FiveFoldRepetitionBoardState.class);
+        private static final Logger LOGGER = getLogger(SeventyFiveMovesBoardState.class);
 
         private static final int COEF = 100;
 
