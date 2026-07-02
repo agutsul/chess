@@ -29,6 +29,11 @@ public final class BoardStateProxy
     }
 
     @Override
+    public Integer getValue() {
+        return this.origin.getValue();
+    }
+
+    @Override
     public Type getType() {
         return this.origin.getType();
     }
@@ -41,6 +46,11 @@ public final class BoardStateProxy
     @Override
     public boolean isAnyType(Type type, Type... types) {
         return this.origin.isAnyType(type, types);
+    }
+
+    @Override
+    public boolean isTerminal() {
+        return this.origin.isTerminal();
     }
 
     @Override
