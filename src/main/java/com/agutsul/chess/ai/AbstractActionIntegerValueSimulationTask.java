@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCastlingAction;
-import com.agutsul.chess.activity.action.PieceCastlingAction.CastlingMoveAction;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
@@ -68,8 +67,6 @@ abstract class AbstractActionIntegerValueSimulationTask
     static abstract class AbstractIntegerGameEvaluator
             extends AbstractSimulationGameEvaluator<Integer> {
 
-        private static final int CHECK_MATE_COEF = 1000;
-
         protected final Logger logger;
 
         AbstractIntegerGameEvaluator(Logger logger, int limit) {
@@ -87,36 +84,36 @@ abstract class AbstractActionIntegerValueSimulationTask
 
             var value = calculateValue(board, action, game.getColor()) * boardState.getValue();
             return boardState.isType(CHECK_MATED)
-                    ? CHECK_MATE_COEF * value * sourcePiece.getDirection()
+                    ? value * sourcePiece.getDirection()
                     : value;
         }
 
         protected int calculateValue(Board board, Action<?> action, Color color) {
             var sourcePiece = action.getPiece();
-            var direction = sourcePiece.getDirection();
 
-            var currentPlayerValue  = board.calculateValue(color) * direction;
-            var opponentPlayerValue = board.calculateValue(color.invert()) * Math.negateExact(direction);
+            var currentPlayerValue  = board.calculateValue(color);
+            var opponentPlayerValue = board.calculateValue(color.invert());
 
+            // calculate impact for action piece on its new position
             var impactValue = isCastling(action)
                     ? calculateImpact(board, (PieceCastlingAction<?,?,?>) action)
                     : calculateImpact(board, getActionPiece(board, action));
 
             var value = action.getValue()                       // action type influence
-                    + impactValue * direction                   // impacts influence
-                    + this.limit * direction                    // depth influence
+                    + impactValue                               // impacts influence
+                    + this.limit * sourcePiece.getDirection()   // depth influence
                     + currentPlayerValue + opponentPlayerValue; // current board value
 
             return value;
         }
 
         private static int calculateImpact(Board board, PieceCastlingAction<?,?,?> action) {
-            return calculateImpact(board, action.getSource())       // king impacts
-                    + calculateImpact(board, action.getTarget());   // rook impacts
-        }
+            var value = Stream.of(action.getSource(), action.getTarget())
+                    .map(moveAction -> getActionPiece(board, moveAction))
+                    .mapToInt(piece -> calculateImpact(board, piece))
+                    .sum();
 
-        private static int calculateImpact(Board board, CastlingMoveAction<?,?> action) {
-            return calculateImpact(board, getActionPiece(board, action));
+            return value;
         }
 
         private static int calculateImpact(Board board, Optional<Piece<Color>> targetPiece) {
