@@ -136,6 +136,8 @@ public abstract class BoardStateFactory {
 
         private static final Logger LOGGER = getLogger(CheckMatedBoardState.class);
 
+        private static final int COEF = 1000;
+
         private final Piece<Color> checkMaker;
 
         CheckMatedBoardStateImpl(Board board, Color checkMatedColor, Piece<Color> checkMaker) {
@@ -146,6 +148,11 @@ public abstract class BoardStateFactory {
         @Override
         public Piece<Color> getPiece() {
             return this.checkMaker;
+        }
+
+        @Override
+        public Integer getValue() {
+            return super.getValue() * COEF;
         }
     }
 
@@ -177,6 +184,8 @@ public abstract class BoardStateFactory {
 
         private static final Logger LOGGER = getLogger(FiveFoldRepetitionBoardState.class);
 
+        private static final int COEF = 100;
+
         private final ActionMemento<?,?> actionMemento;
 
         FiveFoldRepetitionBoardStateImpl(Board board, ActionMemento<?,?> actionMemento) {
@@ -187,6 +196,11 @@ public abstract class BoardStateFactory {
         @Override
         public ActionMemento<?,?> getActionMemento() {
             return this.actionMemento;
+        }
+
+        @Override
+        public Integer getValue() {
+            return super.getValue() * COEF;
         }
 
         @Override
@@ -201,9 +215,16 @@ public abstract class BoardStateFactory {
 
         private static final Logger LOGGER = getLogger(FiveFoldRepetitionBoardState.class);
 
+        private static final int COEF = 100;
+
         // draw
         SeventyFiveMovesBoardStateImpl(Board board, Color color) {
             super(LOGGER, BoardState.Type.SEVENTY_FIVE_MOVES, board, color);
+        }
+
+        @Override
+        public Integer getValue() {
+            return super.getValue() * COEF;
         }
     }
 
@@ -213,9 +234,16 @@ public abstract class BoardStateFactory {
 
         private static final Logger LOGGER = getLogger(StaleMatedBoardState.class);
 
+        private static final int COEF = 10;
+
         // draw
         StaleMatedBoardStateImpl(Board board, Color checkMatedColor) {
             super(LOGGER, BoardState.Type.STALE_MATED, board, checkMatedColor);
+        }
+
+        @Override
+        public Integer getValue() {
+            return super.getValue() * COEF;
         }
     }
 
