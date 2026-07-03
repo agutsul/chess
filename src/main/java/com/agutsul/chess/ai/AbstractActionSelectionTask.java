@@ -1,6 +1,5 @@
 package com.agutsul.chess.ai;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.ListUtils.partition;
 
 import java.util.Collection;
@@ -76,11 +75,7 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
     protected abstract RESULT compute(ACTION action);
 
     protected boolean isDone(RESULT result) {
-        if (this.limit == 0) {
-            return true;
-        }
-
-        return resultMatcher.match(result);
+        return this.limit == 0 || resultMatcher.match(result);
     }
 
     protected static List<Action<?>> getActions(Board board, Color color) {
@@ -91,7 +86,7 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
                 .map(ADAPTER::adapt)
                 .flatMap(Collection::stream)
                 .distinct()
-                .collect(toList());
+                .toList();
 
         return actions;
     }

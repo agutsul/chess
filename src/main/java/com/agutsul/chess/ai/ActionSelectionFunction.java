@@ -16,8 +16,8 @@ import com.agutsul.chess.color.Colors;
 
 enum ActionSelectionFunction {
 
-    WHITE_MODE(Colors.WHITE, actionValues -> actionValues.getLast()),  // max
-    BLACK_MODE(Colors.BLACK, actionValues -> actionValues.getFirst()); // min
+    WHITE_MODE(Colors.WHITE, List::getLast),  // max
+    BLACK_MODE(Colors.BLACK, List::getFirst); // min
 
     private static final Map<Color,ActionSelectionFunction> MODES =
             Stream.of(values()).collect(toMap(ActionSelectionFunction::color,identity()));
