@@ -13,6 +13,7 @@ import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceAbsolutePinImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
+import com.agutsul.chess.activity.impact.PieceXRayAttackImpact;
 import com.agutsul.chess.activity.impact.PieceXRayImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -42,8 +43,8 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
                 .flatMap(king -> Stream.of(next)
                         .flatMap(Collection::stream)
                         .map(calculated -> (Line) calculated)
-                        .filter(line -> line.contains(king.getPosition()))
                         .filter(line -> line.contains(piece.getPosition()))
+                        .filter(line -> line.contains(king.getPosition()))
                         .map(line -> createImpacts(piece, (KING) king, line))
                 )
                 .flatMap(Collection::stream)
@@ -63,6 +64,7 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
         var isKingAttacked = Stream.of(board.getImpacts(attacker, Impact.Type.XRAY))
                 .flatMap(Collection::stream)
                 .map(impact -> (PieceXRayImpact<?,?,?,?>) impact)
+                .filter(impact -> impact instanceof PieceXRayAttackImpact<?,?,?,?>)
                 .anyMatch(impact -> Objects.equals(impact.getTarget(), defendedPiece));
 
         return isKingAttacked;
