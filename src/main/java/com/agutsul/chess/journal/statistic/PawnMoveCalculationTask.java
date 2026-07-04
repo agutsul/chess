@@ -28,7 +28,7 @@ final class PawnMoveCalculationTask extends AbstractCalculationTask {
         }
 
         var isCountable = isMoveMemento(memento)
-                || isBigMove(memento.getActionType())
+                || isBigMoveMemento(memento)
                 || isPromoteMemento(memento);
 
         return toInteger(!isCountable);
@@ -41,5 +41,9 @@ final class PawnMoveCalculationTask extends AbstractCalculationTask {
 
     private static boolean isMoveMemento(ActionMemento<?,?> memento) {
         return isMove(memento.getActionType());
+    }
+
+    private static boolean isBigMoveMemento(ActionMemento<?,?> memento) {
+        return isBigMove(memento.getActionType());
     }
 }

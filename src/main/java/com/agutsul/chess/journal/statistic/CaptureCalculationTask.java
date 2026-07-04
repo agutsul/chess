@@ -23,7 +23,7 @@ final class CaptureCalculationTask extends AbstractCalculationTask {
     @Override
     int count(ActionMemento<?,?> memento) {
         var isCountable = isCaptureMemento(memento)
-                || isEnPassant(memento.getActionType())
+                || isEnPassantMemento(memento)
                 || isPromoteMemento(memento);
 
         return toInteger(!isCountable);
@@ -36,5 +36,9 @@ final class CaptureCalculationTask extends AbstractCalculationTask {
 
     private static boolean isCaptureMemento(ActionMemento<?,?> memento) {
         return isCapture(memento.getActionType());
+    }
+
+    private static boolean isEnPassantMemento(ActionMemento<?,?> memento) {
+        return isEnPassant(memento.getActionType());
     }
 }
