@@ -3,6 +3,7 @@ package com.agutsul.chess.game;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.DEFAULT;
+import static java.lang.Thread.currentThread;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -186,7 +187,7 @@ public abstract class AbstractPlayableGame
 
     @Override
     public final void execute() {
-        while (true) {
+        while (!currentThread().isInterrupted()) {
             requestPlayerAction(getCurrentPlayer());
 
             if (!hasNext()) {
