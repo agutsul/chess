@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static com.agutsul.chess.piece.Piece.isKing;
 import static java.time.Instant.now;
 import static java.util.Collections.emptyList;
@@ -335,7 +336,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
         var other = (Piece<?>) obj;
         return Objects.equals(getType(), other.getType())
-                && Objects.equals(getColor(), other.getColor())
+                && isEqual(getColor(), other.getColor())
                 && Objects.equals(getPosition(), other.getPosition());
     }
 
@@ -433,7 +434,7 @@ abstract class AbstractPiece<COLOR extends Color>
 
         @Override
         protected void process(ClearCachedDataEvent event) {
-            if (Objects.equals(getColor(), event.getColor())) {
+            if (isEqual(getColor(), event.getColor())) {
                 clear();
             }
         }

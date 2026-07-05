@@ -1,5 +1,6 @@
 package com.agutsul.chess.game.pgn;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static com.agutsul.chess.game.pgn.PgnTermination.TIME_FORFEIT;
 
 import java.util.List;
@@ -97,7 +98,7 @@ final class PgnPlayerInputObserver
     }
 
     private static PlayerCommand finalCommand(Player player, Color color) {
-        return Objects.equals(player.getColor(), color)
+        return isEqual(player.getColor(), color)
                 ? PlayerCommand.WIN
                 : PlayerCommand.DEFEAT;
     }

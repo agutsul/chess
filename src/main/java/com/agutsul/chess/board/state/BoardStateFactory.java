@@ -1,5 +1,6 @@
 package com.agutsul.chess.board.state;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
@@ -360,7 +361,7 @@ public abstract class BoardStateFactory {
         @Override
         public Collection<Action<?>> getActions(Piece<?> piece) {
             var actions = super.getActions(piece);
-            if (!Objects.equals(piece.getColor(), getColor())) {
+            if (!isEqual(piece.getColor(), getColor())) {
                 return actions;
             }
 

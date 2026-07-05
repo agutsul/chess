@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.pawn;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static com.agutsul.chess.piece.Piece.isLinear;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.Collections.emptyList;
@@ -212,7 +213,7 @@ final class PawnLuftImpactRule<COLOR extends Color,
                 .filter(position -> Stream.of(board.getPiece(position))
                         .flatMap(Optional::stream)
                         .map(Piece::getColor)
-                        .anyMatch(color -> !Objects.equals(color, piece.getColor()))
+                        .anyMatch(color -> !isEqual(color, piece.getColor()))
                 )
                 .map(position -> new PieceLuftImpact<>(piece, position))
                 .collect(toList());

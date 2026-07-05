@@ -1,5 +1,7 @@
 package com.agutsul.chess.ai;
 
+import static com.agutsul.chess.color.Colors.isEqual;
+
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -39,7 +41,7 @@ final class PlayerBoardStateResultMatcher<RESULT extends TaskResult<Action<?>,In
         var journal = result.getJournal();
         var actionMemento = journal.getLast();
 
-        var matched = Objects.equals(this.color, actionMemento.getColor())
+        var matched = isEqual(this.color, actionMemento.getColor())
                 && boardState.isType(this.boardState);
 
         if (matched) {

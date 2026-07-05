@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.impact.hole;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static com.agutsul.chess.piece.Piece.isKing;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.Collections.emptyList;
@@ -52,7 +53,7 @@ abstract class AbstractHoleImpactRule<POSITION extends Position,
                 // skip calculating holes:
                 // - when it is different color
                 // - when pawn is far away it's initial position
-                .anyMatch(pawn -> Objects.equals(pawn.getColor(), color)
+                .anyMatch(pawn -> isEqual(pawn.getColor(), color)
                         && pawn.isMoved() && pawn.getPositions().size() <= 3
                 );
 

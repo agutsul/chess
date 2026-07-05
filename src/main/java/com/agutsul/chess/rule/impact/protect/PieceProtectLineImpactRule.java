@@ -1,9 +1,9 @@
 package com.agutsul.chess.rule.impact.protect;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
@@ -48,7 +48,7 @@ public final class PieceProtectLineImpactRule<COLOR extends Color,
                 .map(calculated -> (Line) calculated)
                 .flatMap(line -> Stream.of(board.getPieces(line))
                         .flatMap(Collection::parallelStream)
-                        .filter(protectedPiece -> Objects.equals(protectedPiece.getColor(), piece.getColor()))
+                        .filter(protectedPiece -> isEqual(protectedPiece.getColor(), piece.getColor()))
                         .map(protectedPiece -> new PieceProtectImpact<>(
                                 piece, (PIECE2) protectedPiece, line
                         ))

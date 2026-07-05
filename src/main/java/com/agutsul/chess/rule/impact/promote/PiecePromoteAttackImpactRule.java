@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.impact.promote;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
@@ -49,7 +50,7 @@ final class PiecePromoteAttackImpactRule<COLOR1 extends Color,
                 .filter(position -> !Objects.equals(position.x(), piece.getPosition().x()))
                 .map(position -> board.getPiece(position))
                 .flatMap(Optional::stream)
-                .filter(attacked -> !Objects.equals(attacked.getColor(), piece.getColor()))
+                .filter(attacked -> !isEqual(attacked.getColor(), piece.getColor()))
                 .map(attacked -> (ATTACKED) attacked)
                 .flatMap(attacked -> Stream.of(Promotable.TARGET_TYPES)
                         .flatMap(Collection::parallelStream)

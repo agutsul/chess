@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.impact.attack.discovered;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static java.util.stream.Collectors.toList;
 
@@ -51,7 +52,7 @@ abstract class AbstractDiscoveredAttackModeImpactRule<COLOR1 extends Color,
                     }
 
                     var foundPiece = optionalPiece.get();
-                    return !Objects.equals(foundPiece.getColor(), piece.getColor());
+                    return !isEqual(foundPiece.getColor(), piece.getColor());
                 })
                 .collect(toList());
 
@@ -67,7 +68,7 @@ abstract class AbstractDiscoveredAttackModeImpactRule<COLOR1 extends Color,
                 .filter(pieces -> pieces.size() >= 3)
                 .flatMap(Collection::parallelStream)
                 .filter(Piece::isLinear)
-                .filter(attacker -> Objects.equals(piece.getColor(), attacker.getColor()))
+                .filter(attacker -> isEqual(piece.getColor(), attacker.getColor()))
                 // searched pattern: 'attacker - piece - attacked' or reverse
                 .filter(attacker -> containsPattern(linePieces, List.of(attacker, piece, opponentPiece)))
                 .filter(attacker -> {

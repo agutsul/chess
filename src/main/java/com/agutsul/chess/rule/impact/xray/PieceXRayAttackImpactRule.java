@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.impact.xray;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static java.util.function.Predicate.not;
 
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ final class PieceXRayAttackImpactRule<COLOR1 extends Color,
                 pieces.add(linePieces.get(i + 1));
 
                 var attacked = linePieces.get(j);
-                if (!Objects.equals(attacker.getColor(), attacked.getColor())) {
+                if (!isEqual(attacker.getColor(), attacked.getColor())) {
                     impacts.add(new PieceXRayAttackImpact<>(
                             (SOURCE) attacker,
                             (TARGET) attacked,

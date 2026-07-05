@@ -1,13 +1,13 @@
 package com.agutsul.chess.command;
 
 import static com.agutsul.chess.activity.action.memento.ActionMementoFactory.createMemento;
+import static com.agutsul.chess.color.Colors.isEqual;
 import static org.apache.commons.lang3.ObjectUtils.getIfNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -69,7 +69,7 @@ public final class PerformActionCommand
         }
 
         var piece = foundPiece.get();
-        if (!Objects.equals(piece.getColor(), player.getColor())) {
+        if (!isEqual(piece.getColor(), player.getColor())) {
             throw new IllegalActionException(String.format(
                     "%s: %s",
                     OPPONENT_PIECE_MESSAGE,

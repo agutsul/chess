@@ -1,10 +1,10 @@
 package com.agutsul.chess.rule.impact.fork;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -48,7 +48,7 @@ public class PieceForkPositionImpactRule<COLOR1 extends Color,
                 .flatMap(Collection::parallelStream)
                 .map(calculated -> board.getPiece((Position) calculated))
                 .flatMap(Optional::stream)
-                .filter(attackedPiece -> !Objects.equals(attackedPiece.getColor(), piece.getColor()))
+                .filter(attackedPiece -> !isEqual(attackedPiece.getColor(), piece.getColor()))
                 .map(attackedPiece -> createAttackImpact(piece, attackedPiece))
                 .map(impact -> (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) impact)
                 .toList();

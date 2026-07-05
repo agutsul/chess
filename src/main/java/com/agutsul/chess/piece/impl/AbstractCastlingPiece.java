@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
@@ -8,7 +9,6 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -130,7 +130,7 @@ abstract class AbstractCastlingPiece<COLOR extends Color>
 
         @Override
         protected void process(SetCastlingableSideEvent event) {
-            if (Objects.equals(getColor(), event.getColor())) {
+            if (isEqual(getColor(), event.getColor())) {
                 set(event.getSide(), event.isEnabled());
             }
         }

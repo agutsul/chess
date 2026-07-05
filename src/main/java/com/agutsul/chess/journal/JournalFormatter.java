@@ -1,14 +1,12 @@
 package com.agutsul.chess.journal;
 
+import static com.agutsul.chess.color.Colors.isWhite;
 import static java.lang.System.lineSeparator;
 import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.apache.commons.lang3.StringUtils.repeat;
 
-import java.util.Objects;
-
 import com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
-import com.agutsul.chess.color.Colors;
 
 public final class JournalFormatter {
 
@@ -50,7 +48,7 @@ public final class JournalFormatter {
 
             var actionMemento = journal.get(i);
             if (i == 0) {
-                builder.append(isWhite(actionMemento) ? DOT : repeat(DOT, 3));
+                builder.append(isWhite(actionMemento.getColor()) ? DOT : repeat(DOT, 3));
             } else {
                 builder.append(DOT);
             }
@@ -58,7 +56,7 @@ public final class JournalFormatter {
             builder.append(SPACE);
             builder.append(format(actionMemento));
 
-            if (i + 1 < journal.size() && isWhite(actionMemento)) {
+            if (i + 1 < journal.size() && isWhite(actionMemento.getColor())) {
                 builder.append(SPACE);
                 builder.append(format(journal.get(i + 1)));
 
@@ -69,10 +67,6 @@ public final class JournalFormatter {
         }
 
         return builder.toString();
-    }
-
-    private static boolean isWhite(ActionMemento<?,?> actionMemento) {
-        return Objects.equals(Colors.WHITE, actionMemento.getColor());
     }
 
     private static String format(ActionMemento<?,?> memento) {

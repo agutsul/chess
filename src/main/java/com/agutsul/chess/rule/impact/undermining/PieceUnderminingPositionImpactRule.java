@@ -1,10 +1,10 @@
 package com.agutsul.chess.rule.impact.undermining;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -48,7 +48,7 @@ public class PieceUnderminingPositionImpactRule<COLOR1 extends Color,
                 .flatMap(Collection::parallelStream)
                 .map(calculated -> board.getPiece((Position) calculated))
                 .flatMap(Optional::stream)
-                .filter(attackedPiece -> !Objects.equals(attackedPiece.getColor(), piece.getColor()))
+                .filter(attackedPiece -> !isEqual(attackedPiece.getColor(), piece.getColor()))
                 .filter(attackedPiece -> isPieceAttackable(attackedPiece))
                 .map(attackedPiece -> new PieceUnderminingAttackImpact<>(piece, (ATTACKED) attackedPiece))
                 .collect(toList());

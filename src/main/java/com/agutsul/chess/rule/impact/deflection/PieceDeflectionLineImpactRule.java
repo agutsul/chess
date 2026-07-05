@@ -1,10 +1,10 @@
 package com.agutsul.chess.rule.impact.deflection;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -52,7 +52,7 @@ public final class PieceDeflectionLineImpactRule<COLOR1 extends Color,
                 .map(calculated -> (Line) calculated)
                 .flatMap(line -> Stream.of(board.getPiece(line.getLast()))
                         .flatMap(Optional::stream)
-                        .filter(attackedPiece -> !Objects.equals(attackedPiece.getColor(), piece.getColor()))
+                        .filter(attackedPiece -> !isEqual(attackedPiece.getColor(), piece.getColor()))
                         .map(attackedPiece -> super.createImpacts(
                                 createAttackImpact(piece, (ATTACKED) attackedPiece, line)
                         ))

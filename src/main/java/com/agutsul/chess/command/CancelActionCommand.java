@@ -1,8 +1,7 @@
 package com.agutsul.chess.command;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static org.slf4j.LoggerFactory.getLogger;
-
-import java.util.Objects;
 
 import org.slf4j.Logger;
 
@@ -50,7 +49,7 @@ public final class CancelActionCommand
 
         // get last executed action from journal
         var actionMemento = journal.getLast();
-        if (!Objects.equals(this.color, actionMemento.getColor())) {
+        if (!isEqual(this.color, actionMemento.getColor())) {
             throw new CommandException(UNEXPECTED_ACTION_MESSAGE);
         }
 

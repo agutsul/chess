@@ -1,10 +1,10 @@
 package com.agutsul.chess.rule.impact.domination;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -40,7 +40,7 @@ public class PieceDominationPositionImpactRule<COLOR1 extends Color,
                 .flatMap(Collection::parallelStream)
                 .map(position -> board.getPiece(position))
                 .flatMap(Optional::stream)
-                .filter(foundPiece -> !Objects.equals(foundPiece.getColor(), piece.getColor()))
+                .filter(foundPiece -> !isEqual(foundPiece.getColor(), piece.getColor()))
                 .map(Piece::getPosition)
                 .collect(toList());
     }

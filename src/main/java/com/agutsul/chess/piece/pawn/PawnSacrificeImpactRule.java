@@ -1,12 +1,12 @@
 package com.agutsul.chess.piece.pawn;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -108,7 +108,7 @@ final class PawnSacrificeImpactRule<COLOR1 extends Color,
                         .map(Map.Entry::getKey)
                         .flatMap(piece -> Stream.of(board.getPiece(position))
                                 .flatMap(Optional::stream)
-                                .filter(foundPiece -> !Objects.equals(foundPiece.getColor(), pawn.getColor()))
+                                .filter(foundPiece -> !isEqual(foundPiece.getColor(), pawn.getColor()))
                                 .map(opponentPiece -> new PieceSacrificeAttackImpact<>(
                                         createAttackImpact(pawn, (ATTACKED) opponentPiece),
                                         createAttackImpact((ATTACKER) piece, pawn, getAttackLine(piece, pawn))

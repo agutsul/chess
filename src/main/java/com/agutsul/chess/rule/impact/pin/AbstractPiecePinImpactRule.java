@@ -1,10 +1,10 @@
 package com.agutsul.chess.rule.impact.pin;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
@@ -63,7 +63,7 @@ abstract class AbstractPiecePinImpactRule<COLOR1 extends Color,
                     }
 
                     var foundPiece = optionalPiece.get();
-                    return !Objects.equals(foundPiece.getColor(), piece.getColor());
+                    return !isEqual(foundPiece.getColor(), piece.getColor());
                 })
                 .toList();
 

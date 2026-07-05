@@ -1,10 +1,10 @@
 package com.agutsul.chess.rule.impact.attack;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.function.Predicate.not;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -52,7 +52,7 @@ public final class PieceAttackLineImpactRule<COLOR1 extends Color,
                         .flatMap(Optional::stream)
                         // attacking king means check and it is handled by appropriate impact
                         .filter(not(Piece::isKing))
-                        .filter(attacked -> !Objects.equals(attacked.getColor(), piece.getColor()))
+                        .filter(attacked -> !isEqual(attacked.getColor(), piece.getColor()))
                         .map(attacked -> new PieceAttackImpact<>(piece, (ATTACKED) attacked, line))
                 )
                 .toList();

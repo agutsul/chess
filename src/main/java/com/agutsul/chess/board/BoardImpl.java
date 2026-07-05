@@ -1,6 +1,7 @@
 package com.agutsul.chess.board;
 
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
+import static com.agutsul.chess.color.Colors.isEqual;
 import static com.agutsul.chess.line.Line.COMMA_SEPARATOR;
 import static java.lang.Thread.MAX_PRIORITY;
 import static java.lang.Thread.currentThread;
@@ -117,7 +118,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     public BoardState getState(Color color) {
         var states = Stream.of(this.states)
                 .flatMap(Collection::stream)
-                .filter(state -> Objects.equals(color, state.getColor()))
+                .filter(state -> isEqual(color, state.getColor()))
                 .toList();
 
         // returns last calculated state for the specified color

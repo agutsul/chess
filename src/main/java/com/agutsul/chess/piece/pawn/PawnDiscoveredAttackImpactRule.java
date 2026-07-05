@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.pawn;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Comparator.comparing;
 
@@ -123,7 +124,7 @@ final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
                     .flatMap(Collection::stream)
                     .map(position -> board.getPiece(position))
                     .flatMap(Optional::stream)
-                    .filter(foundPiece -> !Objects.equals(foundPiece.getColor(), piece.getColor()))
+                    .filter(foundPiece -> !isEqual(foundPiece.getColor(), piece.getColor()))
                     .map(Piece::getPosition)
                     .toList();
         }

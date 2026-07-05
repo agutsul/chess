@@ -4,13 +4,13 @@ import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
 import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 import static com.agutsul.chess.board.state.BoardState.Type.THREE_FOLD_REPETITION;
 import static com.agutsul.chess.board.state.BoardStateFactory.defaultBoardState;
+import static com.agutsul.chess.color.Colors.isEqual;
 import static java.util.Comparator.comparing;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Stream;
@@ -120,12 +120,12 @@ public final class BoardStateEvaluatorImpl
     private static boolean isBoardStateMatchColor(BoardState boardState, Color color) {
         return boardState.isType(THREE_FOLD_REPETITION)
                 ? isThreeFoldStateMatchColor((ThreeFoldRepetitionBoardState) boardState, color)
-                : Objects.equals(boardState.getColor(), color);
+                : isEqual(boardState.getColor(), color);
     }
 
     private static boolean isThreeFoldStateMatchColor(ThreeFoldRepetitionBoardState boardState, Color color) {
         var actionMemento = boardState.getActionMemento();
-        return Objects.equals(actionMemento.getColor(), color);
+        return isEqual(actionMemento.getColor(), color);
     }
 
     @SuppressWarnings("unchecked")

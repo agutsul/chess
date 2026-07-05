@@ -1,10 +1,10 @@
 package com.agutsul.chess.activity.impact;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static com.agutsul.chess.piece.Piece.isKing;
 import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
@@ -83,7 +83,7 @@ abstract class AbstractPieceXRayImpact<COLOR1 extends Color,
     final int getPieceValues(Color color) {
         return Stream.of(pieces)
                 .flatMap(Collection::parallelStream)
-                .filter(piece -> Objects.equals(piece.getColor(), color))
+                .filter(piece -> isEqual(piece.getColor(), color))
                 .mapToInt(Piece::getValue)
                 .sum();
     }

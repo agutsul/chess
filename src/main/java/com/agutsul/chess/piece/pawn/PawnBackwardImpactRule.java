@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.pawn;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -122,7 +123,7 @@ final class PawnBackwardImpactRule<COLOR extends Color,
                 .flatMap(Collection::stream)
                 .map(position -> board.getPiece(position))
                 .flatMap(Optional::stream)
-                .filter(foundPiece -> !Objects.equals(foundPiece.getColor(), piece.getColor()))
+                .filter(foundPiece -> !isEqual(foundPiece.getColor(), piece.getColor()))
                 .filter(opponentPiece -> !((Protectable) opponentPiece).isProtected())
                 .map(Piece::getPosition)
                 .toList();

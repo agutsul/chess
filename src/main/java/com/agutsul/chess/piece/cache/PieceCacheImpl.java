@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.cache;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.function.Predicate.not;
@@ -163,7 +164,7 @@ public final class PieceCacheImpl implements PieceCache {
             for (var color : Colors.values()) {
                 var piecesByColor = Stream.of(pieces)
                         .flatMap(Collection::parallelStream)
-                        .filter(piece -> Objects.equals(piece.getColor(), color))
+                        .filter(piece -> isEqual(piece.getColor(), color))
                         .toList();
 
                 for (var pieceType : Piece.Type.values()) {

@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.impact.pin;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static java.util.Collections.unmodifiableCollection;
 
@@ -46,7 +47,7 @@ abstract class AbstractPinModeImpactRule<COLOR1 extends Color,
                 .filter(pieces -> pieces.size() >= 3)
                 .flatMap(Collection::parallelStream)
                 .filter(Piece::isLinear)
-                .filter(attacker -> !Objects.equals(attacker.getColor(), pinnedPiece.getColor()))
+                .filter(attacker -> !isEqual(attacker.getColor(), pinnedPiece.getColor()))
                 // searched pattern: 'attacker - pinned piece - defended piece' or reverse
                 .filter(attacker -> containsPattern(linePieces, List.of(attacker, pinnedPiece, defendedPiece)))
                 .filter(attacker -> isAttacked((ATTACKER) attacker, pinnedPiece, defendedPiece))

@@ -1,12 +1,12 @@
 package com.agutsul.chess.journal;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static java.util.Collections.unmodifiableList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -78,7 +78,7 @@ public final class JournalImpl
         LOGGER.debug("Journal get memento '{}'", color);
         return Stream.of(this.list)
                 .flatMap(Collection::stream)
-                .filter(am -> Objects.equals(color, am.getColor()))
+                .filter(am -> isEqual(color, am.getColor()))
                 .toList();
     }
 

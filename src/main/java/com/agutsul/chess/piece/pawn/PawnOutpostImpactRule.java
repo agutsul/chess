@@ -1,10 +1,10 @@
 package com.agutsul.chess.piece.pawn;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static java.util.Collections.unmodifiableCollection;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -59,7 +59,7 @@ final class PawnOutpostImpactRule<COLOR extends Color,
                 .filter(position -> !board.isEmpty(position))
                 .map(position -> board.getPiece(position))
                 .flatMap(Optional::stream)
-                .filter(foundPiece -> !Objects.equals(piece.getColor(), foundPiece.getColor()))
+                .filter(foundPiece -> !isEqual(piece.getColor(), foundPiece.getColor()))
                 .map(Piece::getPosition)
                 .toList()
         );

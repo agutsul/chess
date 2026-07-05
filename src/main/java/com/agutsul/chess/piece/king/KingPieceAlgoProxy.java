@@ -1,10 +1,10 @@
 package com.agutsul.chess.piece.king;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.function.Predicate.not;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -91,7 +91,7 @@ final class KingPieceAlgoProxy<COLOR extends Color,
                 .flatMap(Collection::parallelStream)
                 .map(position -> board.getPiece(position))
                 .flatMap(Optional::stream)
-                .filter(foundPiece -> Objects.equals(foundPiece.getColor(), opponentColor))
+                .filter(foundPiece -> isEqual(foundPiece.getColor(), opponentColor))
                 .filter(not(Piece::isKing))
                 .filter(opponentPiece -> !((Protectable) opponentPiece).isProtected())
                 .filter(opponentPiece -> !board.isMonitored(opponentPiece.getPosition(), opponentColor))

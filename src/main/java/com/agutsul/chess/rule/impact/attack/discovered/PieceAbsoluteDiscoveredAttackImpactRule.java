@@ -1,9 +1,9 @@
 package com.agutsul.chess.rule.impact.attack.discovered;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -73,7 +73,7 @@ public class PieceAbsoluteDiscoveredAttackImpactRule<COLOR1 extends Color,
         }
 
         var oPiece = optionalPiece.get();
-        if (!Objects.equals(oPiece.getColor(), piece.getColor())) {
+        if (!isEqual(oPiece.getColor(), piece.getColor())) {
             return new PieceAbsoluteDiscoveredAttackImpact<>(
                     createAttackImpact(piece, (Piece<COLOR2>) oPiece),
                     attacker, attacked, line

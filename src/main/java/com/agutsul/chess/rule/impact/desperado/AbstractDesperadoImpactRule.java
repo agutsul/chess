@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.impact.desperado;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
@@ -51,7 +52,7 @@ abstract class AbstractDesperadoImpactRule<COLOR1 extends Color,
     protected Collection<PieceProtectImpact<?,?,?>> findProtectImpacts(Piece<?> piece, Position position) {
         Collection<PieceProtectImpact<?,?,?>> impacts = Stream.of(board.getPiece(position))
                 .flatMap(Optional::stream)
-                .filter(foundPiece -> !Objects.equals(foundPiece.getColor(), piece.getColor()))
+                .filter(foundPiece -> !isEqual(foundPiece.getColor(), piece.getColor()))
                 .flatMap(opponentPiece -> Stream.of(board.getPieces(opponentPiece.getColor()))
                         .flatMap(Collection::parallelStream)
                         .filter(foundPiece -> !Objects.equals(foundPiece, opponentPiece))

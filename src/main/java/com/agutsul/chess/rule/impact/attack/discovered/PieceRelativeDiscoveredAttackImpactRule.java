@@ -1,11 +1,11 @@
 package com.agutsul.chess.rule.impact.attack.discovered;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.emptyList;
 import static java.util.function.Predicate.not;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
@@ -89,7 +89,7 @@ public class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
         }
 
         var oPiece = optionalPiece.get();
-        if (!Objects.equals(oPiece.getColor(), piece.getColor())) {
+        if (!isEqual(oPiece.getColor(), piece.getColor())) {
             return new PieceRelativeDiscoveredAttackImpact<>(
                     createAttackImpact(piece, (Piece<COLOR2>) oPiece),
                     attacker, attacked, line

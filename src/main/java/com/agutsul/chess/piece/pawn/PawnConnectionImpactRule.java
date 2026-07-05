@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.pawn;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 
@@ -7,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -71,7 +71,7 @@ final class PawnConnectionImpactRule<COLOR extends Color,
                 .flatMap(Optional::stream)
                 .map(position -> board.getPiece(position))
                 .flatMap(Optional::stream)
-                .filter(foundPiece -> Objects.equals(piece.getColor(), foundPiece.getColor()))
+                .filter(foundPiece -> isEqual(piece.getColor(), foundPiece.getColor()))
                 .filter(Piece::isPawn)
                 .map(pawn -> (PAWN) pawn)
                 .toList();

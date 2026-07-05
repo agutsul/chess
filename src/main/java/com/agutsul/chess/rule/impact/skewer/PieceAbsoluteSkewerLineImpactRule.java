@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.impact.skewer;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static java.util.Collections.emptyList;
 
@@ -68,7 +69,7 @@ final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
                             .flatMap(Collection::parallelStream)
                             .filter(defended -> !Objects.equals(king,  defended))
                             .filter(defended -> !Objects.equals(piece, defended))
-                            .filter(defended -> !Objects.equals(defended.getColor(), piece.getColor()))
+                            .filter(defended -> !isEqual(defended.getColor(), piece.getColor()))
                             .filter(defended -> containsPattern(linePieces, List.of(piece, king, defended)))
                             .findFirst()
                             .map(defended -> new PieceAbsoluteSkewerImpact<>(piece, king, (DEFENDED) defended, line))

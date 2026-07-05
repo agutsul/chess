@@ -1,7 +1,8 @@
 package com.agutsul.chess.piece.pawn;
 
+import static com.agutsul.chess.color.Colors.isEqual;
+
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -54,7 +55,7 @@ final class PawnEnPassantAlgo<COLOR extends Color,
                 .flatMap(Optional::stream)
                 .map(opponentPosition -> board.getPiece(opponentPosition))
                 .flatMap(Optional::stream)
-                .filter(opponentPiece -> !Objects.equals(opponentPiece.getColor(), this.color))
+                .filter(opponentPiece -> !isEqual(opponentPiece.getColor(), this.color))
                 .filter(Piece::isPawn)
                 .map(piece -> (PawnPiece<Color>) piece)
                 .findFirst();
