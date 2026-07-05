@@ -50,7 +50,7 @@ public final class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color
                 .map(opponentPiece -> board.getImpacts(opponentPiece, Impact.Type.PROTECT))
                 .flatMap(Collection::parallelStream)
                 .map(impact -> (PieceProtectImpact<?,?,?>) impact)
-                .collect(toList());
+                .toList();
 
         @SuppressWarnings("unchecked")
         Collection<PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>> impacts =

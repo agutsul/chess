@@ -1,6 +1,7 @@
 package com.agutsul.chess.rule.impact.overloading;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.collections4.CollectionUtils.intersection;
 
@@ -16,6 +17,7 @@ import com.agutsul.chess.activity.impact.PieceOverloadingImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 import com.agutsul.chess.rule.impact.OverloadingImpactRule;
@@ -25,8 +27,18 @@ abstract class AbstractOverloadingImpactRule<COLOR extends Color,
         extends AbstractPieceImpactRule<COLOR,PIECE,PieceOverloadingImpact<COLOR,PIECE>>
         implements OverloadingImpactRule<COLOR,PIECE,PieceOverloadingImpact<COLOR,PIECE>> {
 
-    AbstractOverloadingImpactRule(Board board) {
+    private final Algo<PIECE,Collection<Position>> algo;
+
+    AbstractOverloadingImpactRule(Board board,
+                                  Algo<PIECE,Collection<Position>> algo) {
+
         super(board, Impact.Type.OVERLOADING);
+        this.algo = algo;
+    }
+
+    @Override
+    protected Collection<Calculatable> calculate(PIECE piece) {
+        return unmodifiableCollection(algo.calculate(piece));
     }
 
     @Override

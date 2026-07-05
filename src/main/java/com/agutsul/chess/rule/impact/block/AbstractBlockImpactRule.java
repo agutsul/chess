@@ -1,7 +1,6 @@
 package com.agutsul.chess.rule.impact.block;
 
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
@@ -75,7 +74,7 @@ abstract class AbstractBlockImpactRule<COLOR1 extends Color,
                 )
                 .map(impact -> (IMPACT) impact)
                 .distinct()
-                .collect(toList());
+                .toList();
 
         return impacts;
     }

@@ -1,7 +1,5 @@
 package com.agutsul.chess.rule.impact.control;
 
-import static java.util.Collections.unmodifiableCollection;
-
 import java.util.Collection;
 import java.util.stream.Stream;
 
@@ -12,7 +10,6 @@ import com.agutsul.chess.activity.impact.PieceControlImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.position.Position;
 
@@ -20,17 +17,10 @@ public final class PieceControlPositionImpactRule<COLOR extends Color,
                                                   PIECE extends Piece<COLOR> & Capturable & Movable>
         extends AbstractControlImpactRule<COLOR,PIECE,PieceControlImpact<COLOR,PIECE>> {
 
-    private final Algo<PIECE,Collection<Position>> algo;
-
     public PieceControlPositionImpactRule(Board board,
                                           CapturePieceAlgo<COLOR,PIECE,Position> algo) {
-        super(board);
-        this.algo = algo;
-    }
 
-    @Override
-    protected Collection<Calculatable> calculate(PIECE piece) {
-        return unmodifiableCollection(algo.calculate(piece));
+        super(board, algo);
     }
 
     @Override

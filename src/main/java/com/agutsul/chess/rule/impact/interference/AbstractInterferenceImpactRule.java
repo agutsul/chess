@@ -1,5 +1,6 @@
 package com.agutsul.chess.rule.impact.interference;
 
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
 
@@ -18,6 +19,7 @@ import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 import com.agutsul.chess.rule.impact.InterferenceImpactRule;
@@ -32,8 +34,18 @@ abstract class AbstractInterferenceImpactRule<COLOR1 extends Color,
         extends AbstractPieceImpactRule<COLOR1,PIECE,IMPACT>
         implements InterferenceImpactRule<COLOR1,COLOR2,PIECE,PROTECTOR,PROTECTED,IMPACT> {
 
-    AbstractInterferenceImpactRule(Board board) {
+    private final Algo<PIECE,Collection<Position>> algo;
+
+    AbstractInterferenceImpactRule(Board board,
+                                   Algo<PIECE,Collection<Position>> algo) {
+
         super(board, Impact.Type.INTERFERENCE);
+        this.algo = algo;
+    }
+
+    @Override
+    protected Collection<Calculatable> calculate(PIECE piece) {
+        return unmodifiableCollection(algo.calculate(piece));
     }
 
     @Override

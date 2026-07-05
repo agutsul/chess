@@ -1,7 +1,6 @@
 package com.agutsul.chess.piece.pawn;
 
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.Collection;
@@ -66,8 +65,8 @@ final class PawnSacrificeImpactRule<COLOR1 extends Color,
                         createSacrificeAttackImpacts(pawn, opponentControls),
                         createSacrificeEnPassantImpacts(pawn, opponentControls)
                 )
-                .flatMap(Collection::stream)
-                .collect(toList());
+                .flatMap(Collection::parallelStream)
+                .toList();
 
         return impacts;
     }

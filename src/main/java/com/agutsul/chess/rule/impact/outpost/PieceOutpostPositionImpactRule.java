@@ -1,10 +1,7 @@
 package com.agutsul.chess.rule.impact.outpost;
 
-import static java.util.Collections.unmodifiableCollection;
-
 import java.util.Collection;
 
-import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.impact.PieceOutpostImpact;
@@ -19,16 +16,9 @@ public class PieceOutpostPositionImpactRule<COLOR extends Color,
         extends AbstractOutpostImpactRule<COLOR,PIECE,
                                           PieceOutpostImpact<COLOR,PIECE>> {
 
-    private final Algo<PIECE,Collection<Position>> algo;
-
     public PieceOutpostPositionImpactRule(Board board,
                                           Algo<PIECE,Collection<Position>> algo) {
-        super(board);
-        this.algo = algo;
-    }
 
-    @Override
-    protected Collection<Calculatable> calculate(PIECE piece) {
-        return unmodifiableCollection(algo.calculate(piece));
+        super(board, algo);
     }
 }

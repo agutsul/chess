@@ -64,7 +64,7 @@ public class PieceDominationPositionImpactRule<COLOR1 extends Color,
                 .map(opponentPiece -> createAttackImpact(piece, opponentPiece))
                 .map(PieceDominationAttackImpact::new)
                 .map(impact -> (IMPACT) impact)
-                .collect(toList());
+                .toList();
 
         return impacts;
     }

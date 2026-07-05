@@ -2,7 +2,6 @@ package com.agutsul.chess.rule.impact.domination;
 
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.unmodifiableCollection;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -58,7 +57,7 @@ public final class PieceDominationLineImpactRule<COLOR1 extends Color,
                 )
                 .map(PieceDominationAttackImpact::new)
                 .map(impact -> (IMPACT) impact)
-                .collect(toList());
+                .toList();
 
         return impacts;
     }

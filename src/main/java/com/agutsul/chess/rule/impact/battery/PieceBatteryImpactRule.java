@@ -2,7 +2,6 @@ package com.agutsul.chess.rule.impact.battery;
 
 import static java.util.Collections.emptyList;
 import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.collections4.CollectionUtils.intersection;
 
@@ -106,13 +105,13 @@ public class PieceBatteryImpactRule<COLOR extends Color,
                             .map(protectedPiece -> new PieceBatteryImpact<>(
                                     piece, (PIECE2) protectedPiece, line
                             ))
-                            .collect(toList());
+                            .toList();
 
                     return batteryImpacts;
                 })
                 .flatMap(Collection::parallelStream)
                 .map(impact -> (IMPACT) impact)
-                .collect(toList());
+                .toList();
 
         return impacts;
     }

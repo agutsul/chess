@@ -1,6 +1,5 @@
 package com.agutsul.chess.rule.impact.control;
 
-import static java.util.Collections.unmodifiableCollection;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
@@ -15,7 +14,6 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
 import com.agutsul.chess.piece.Piece;
-import com.agutsul.chess.piece.algo.Algo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.LinePositionAlgoAdapter;
 import com.agutsul.chess.piece.algo.SecureLineAlgoAdapter;
@@ -26,19 +24,12 @@ public final class PieceControlLineImpactRule<COLOR extends Color,
                                               PIECE extends Piece<COLOR> & Capturable & Movable & Lineable>
         extends AbstractControlImpactRule<COLOR,PIECE,PieceControlImpact<COLOR,PIECE>> {
 
-    private final Algo<PIECE,Collection<Position>> algo;
-
     public PieceControlLineImpactRule(Board board,
                                       CapturePieceAlgo<COLOR,PIECE,Line> algo) {
-        super(board);
-        this.algo = new LinePositionAlgoAdapter<>(
-                new SecureLineAlgoAdapter<>(Mode.OPPOSITE_COLORS, board, algo)
-        );
-    }
 
-    @Override
-    protected Collection<Calculatable> calculate(PIECE piece) {
-        return unmodifiableCollection(algo.calculate(piece));
+        super(board, new LinePositionAlgoAdapter<>(
+                new SecureLineAlgoAdapter<>(Mode.OPPOSITE_COLORS, board, algo)
+        ));
     }
 
     @Override
