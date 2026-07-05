@@ -69,7 +69,7 @@ final class PawnPieceImpl<COLOR extends Color>
             var promoteActions = super.getActions(Action.Type.PROMOTE);
             if (!promoteActions.isEmpty()) {
                 return Stream.of(promoteActions)
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .map(action -> (PiecePromoteAction<?,?>) action)
                         .map(PiecePromoteAction::getSource)
                         .map(action -> (Action<?>) action)
@@ -199,7 +199,7 @@ final class PawnPieceImpl<COLOR extends Color>
             LOGGER.info("En-passante '{}' by '{}'", targetPiece, piece);
 
             var isValid = Stream.of(board.getActions(piece, Action.Type.EN_PASSANT))
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .map(action -> (PieceEnPassantAction<?,?,?,?>) action)
                     .anyMatch(action -> Objects.equals(action.getTarget(), targetPiece)
                                             && Objects.equals(action.getPosition(), targetPosition));
@@ -234,7 +234,7 @@ final class PawnPieceImpl<COLOR extends Color>
                         piece.getImpacts(Impact.Type.CONTROL),
                         piece.getImpacts(Impact.Type.MOTION)
                     )
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .anyMatch(impact -> Objects.equals(impact.getPosition(), position));
 
             return isAccessible || Objects.equals(position, piece.getPosition())

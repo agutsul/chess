@@ -42,9 +42,9 @@ public class PieceRelativeDesperadoPositionImpactRule<COLOR1 extends Color,
         }
 
         Collection<PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>> desperadoImpacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> findProtectImpacts(piece, (Position) calculated))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(protectImpact -> createImpact(Mode.RELATIVE, piece, protectImpact))
                 .collect(toList());
 

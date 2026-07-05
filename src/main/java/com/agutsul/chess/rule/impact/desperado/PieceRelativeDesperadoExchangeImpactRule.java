@@ -46,16 +46,16 @@ public final class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color
         }
 
         var opponentProtectImpacts = Stream.of(board.getPieces(piece.getColor().invert()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(opponentPiece -> board.getImpacts(opponentPiece, Impact.Type.PROTECT))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(impact -> (PieceProtectImpact<?,?,?>) impact)
                 .collect(toList());
 
         @SuppressWarnings("unchecked")
         Collection<PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>> impacts =
                 Stream.of(actions)
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                         .map(action -> createAttackImpact(
                                 (DESPERADO) action.getSource(),
@@ -63,9 +63,9 @@ public final class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color
                         ))
                         .flatMap(attackImpact -> {
                             var opponentProtects = Stream.of(opponentProtectImpacts)
-                                    .flatMap(Collection::stream)
+                                    .flatMap(Collection::parallelStream)
                                     .filter(protectImpact -> Objects.equals(protectImpact.getTarget(), attackImpact.getTarget()))
-                                    .collect(toList());
+                                    .toList();
 
                             if (opponentProtects.isEmpty()) {
                                 // unprotected piece
@@ -75,7 +75,7 @@ public final class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color
                             }
 
                             return Stream.of(opponentProtects)
-                                    .flatMap(Collection::stream)
+                                    .flatMap(Collection::parallelStream)
                                     .map(protectImpact -> createAttackImpact(
                                             (ATTACKER) protectImpact.getSource(),
                                             attackImpact.getSource(),
@@ -94,10 +94,10 @@ public final class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color
 
     private Collection<AbstractCaptureAction<?,?,?,?>> findExchangeActions(Piece<?> piece) {
         Collection<AbstractCaptureAction<?,?,?,?>> actions = Stream.of(board.getPieces(piece.getColor()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(foundPiece -> !Objects.equals(piece, foundPiece))
                 .flatMap(attacker -> Stream.of(board.getActions(attacker, Action.Type.CAPTURE))
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                         // check if there is same or more valuable opponent piece under attack
                         .filter(action -> {

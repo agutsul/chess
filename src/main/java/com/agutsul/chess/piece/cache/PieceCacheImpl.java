@@ -138,7 +138,7 @@ public final class PieceCacheImpl implements PieceCache {
         @Override
         public PieceMap call() throws Exception {
             var filteredPieces = Stream.of(this.pieces)
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .filter(predicate)
                     .toList();
 
@@ -162,13 +162,13 @@ public final class PieceCacheImpl implements PieceCache {
 
             for (var color : Colors.values()) {
                 var piecesByColor = Stream.of(pieces)
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .filter(piece -> Objects.equals(piece.getColor(), color))
                         .toList();
 
                 for (var pieceType : Piece.Type.values()) {
                     var piecesByType = Stream.of(piecesByColor)
-                            .flatMap(Collection::stream)
+                            .flatMap(Collection::parallelStream)
                             .filter(piece -> Objects.equals(piece.getType(), pieceType))
                             .toList();
 

@@ -27,7 +27,7 @@ final class KingCapturePieceActionEvaluator
     @Override
     public Collection<Action<?>> evaluate(KingPiece<?> king) {
         var filteredActions = Stream.of(pieceActions)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(Action::isCapture)
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .toList();
@@ -35,7 +35,7 @@ final class KingCapturePieceActionEvaluator
         var opponentColor = king.getColor().invert();
 
         Collection<Action<?>> actions = Stream.of(board.getPieces(opponentColor))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(piece -> !((Protectable) piece).isProtected())
                 .filter(piece -> !board.isMonitored(piece.getPosition(), opponentColor))
                 .flatMap(piece -> filteredActions.stream()

@@ -44,21 +44,21 @@ abstract class AbstractBlockImpactRule<COLOR1 extends Color,
     @SuppressWarnings("unchecked")
     protected Collection<IMPACT> createImpacts(BLOCKER piece, Collection<Calculatable> next) {
         var piecePositions = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (Position) calculated)
                 .collect(toSet());
 
         var impacts = Stream.of(board.getPieces(piece.getColor().invert()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(Piece::isLinear)
                 .map(opponentPiece -> board.getActions(opponentPiece, Action.Type.CAPTURE))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(action -> (PieceCaptureAction<COLOR2,COLOR1,ATTACKER,ATTACKED>) action)
                 .flatMap(action -> Stream.of(action.getLine())
                         .flatMap(Optional::stream)
                         .filter(attackLine -> attackLine.containsAny(piecePositions))
                         .flatMap(attackLine -> Stream.of(attackLine.intersection(piecePositions))
-                                .flatMap(Collection::stream)
+                                .flatMap(Collection::parallelStream)
                                 .filter(blockPosition -> board.isEmpty(blockPosition))
                                 .map(blockPosition -> new PieceBlockAttackImpact<>(
                                         piece, blockPosition, createAttackImpact(action)

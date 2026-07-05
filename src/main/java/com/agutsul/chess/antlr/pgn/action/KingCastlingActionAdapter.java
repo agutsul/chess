@@ -44,7 +44,7 @@ final class KingCastlingActionAdapter
         var king = kingPiece.get();
 
         var targetPosition = Stream.of(board.getActions(king, Action.Type.CASTLING))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(castlingAction -> (PieceCastlingAction<?,?,?>) castlingAction)
                 .filter(castlingAction -> Objects.equals(castlingSide, castlingAction.getSide()))
                 .map(PieceCastlingAction::getSource)

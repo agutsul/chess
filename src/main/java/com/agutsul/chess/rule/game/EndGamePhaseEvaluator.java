@@ -28,7 +28,7 @@ final class EndGamePhaseEvaluator
 
         var allPieces = board.getPieces(color);
         var isPassedPawn = Stream.of(allPieces)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(Piece::isPawn)
                 .map(piece -> (PawnPiece<?>) piece)
                 .anyMatch(PawnPiece::isPassed);
@@ -38,7 +38,7 @@ final class EndGamePhaseEvaluator
         }
 
         var majorPieces = Stream.of(allPieces)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(not(Piece::isPawn))
                 .toList();
 

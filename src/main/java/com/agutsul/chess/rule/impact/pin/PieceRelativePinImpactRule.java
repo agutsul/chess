@@ -39,7 +39,7 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
 
         @SuppressWarnings("unchecked")
         var valuablePieces = Stream.of(board.getPieces(piece.getColor()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(not(Piece::isKing))
                 .filter(vp -> !Objects.equals(piece, vp))
                 .filter(vp -> Math.abs(vp.getValue()) > Math.abs(piece.getValue()))
@@ -48,7 +48,7 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
 
         var impactLines = new ArrayListValuedHashMap<Line,DEFENDED>();
         Stream.of(next)
-            .flatMap(Collection::stream)
+            .flatMap(Collection::parallelStream)
             .map(calculated -> (Line) calculated)
             .filter(line  -> line.contains(piece.getPosition()))
             .forEach(line -> valuablePieces.stream()
@@ -61,9 +61,9 @@ final class PieceRelativePinImpactRule<COLOR1 extends Color,
         }
 
         var impacts = Stream.of(impactLines.entries())
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(entry -> createImpacts(piece, entry.getValue(), entry.getKey()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .distinct()
                 .toList();
 

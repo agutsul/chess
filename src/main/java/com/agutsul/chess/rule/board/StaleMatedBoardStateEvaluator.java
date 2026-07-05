@@ -35,7 +35,7 @@ final class StaleMatedBoardStateEvaluator
         var attackerColor = color.invert();
 
         var pieces = Stream.of(board.getPieces(color))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .sorted(comparing(Piece::getType)) // make king piece the last
                 .toList();
 
@@ -48,7 +48,7 @@ final class StaleMatedBoardStateEvaluator
                     }
 
                     var kingActions = Stream.of(pieceActions)
-                            .flatMap(Collection::stream)
+                            .flatMap(Collection::parallelStream)
                             .filter(action -> !board.isAttacked(action.getPosition(),  attackerColor))
                             .filter(action -> !board.isMonitored(action.getPosition(), attackerColor))
                             .findFirst()

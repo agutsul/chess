@@ -2,7 +2,6 @@ package com.agutsul.chess.rule.impact.fork;
 
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.unmodifiableCollection;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -49,7 +48,7 @@ public final class PieceForkLineImpactRule<COLOR1 extends Color,
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (Line) calculated)
                 .map(line -> Stream.of(board.getPiece(line.getLast()))
                         .flatMap(Optional::stream)
@@ -59,7 +58,7 @@ public final class PieceForkLineImpactRule<COLOR1 extends Color,
                 )
                 .flatMap(Optional::stream)
                 .map(impact -> (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) impact)
-                .collect(toList());
+                .toList();
 
         return impacts;
     }

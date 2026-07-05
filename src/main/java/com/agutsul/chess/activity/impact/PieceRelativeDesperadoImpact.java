@@ -78,7 +78,7 @@ public final class PieceRelativeDesperadoImpact<COLOR1 extends Color,
 
     private Integer calculateValue() {
         return Stream.of(getTarget())
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .mapToInt(Impact::getValue)
                 .sum();
     }

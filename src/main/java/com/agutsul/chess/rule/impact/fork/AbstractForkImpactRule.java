@@ -44,7 +44,7 @@ abstract class AbstractForkImpactRule<COLOR1 extends Color,
 
         // sort impacts to make most valuable targets first
         var sortedImpacts = Stream.of(impacts)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .sorted(comparing(
                         AbstractPieceAttackImpact::getTarget,
                         (piece1,piece2) -> Integer.compare(
@@ -65,7 +65,7 @@ abstract class AbstractForkImpactRule<COLOR1 extends Color,
                                                  Collection<AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>> impacts) {
 
         var hasCheckImpact = Stream.of(impacts)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .anyMatch(Impact::isCheck);
 
         var impact = hasCheckImpact

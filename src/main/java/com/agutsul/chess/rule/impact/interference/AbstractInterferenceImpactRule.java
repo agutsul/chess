@@ -1,7 +1,6 @@
 package com.agutsul.chess.rule.impact.interference;
 
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
@@ -38,19 +37,19 @@ abstract class AbstractInterferenceImpactRule<COLOR1 extends Color,
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Collection<IMPACT> createImpacts(PIECE piece, Collection<Calculatable> next) {
 
         var piecePositions = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (Position) calculated)
                 .collect(toSet());
 
+        @SuppressWarnings("unchecked")
         var impacts = Stream.of(board.getPieces(piece.getColor().invert()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(Piece::isLinear)
                 .map(opponentPiece -> board.getImpacts(opponentPiece, Impact.Type.PROTECT))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(impact -> (PieceProtectImpact<COLOR2,PROTECTOR,PROTECTED>) impact)
                 .filter(impact -> {
                     // protected piece should be more valuable than interference piece
@@ -61,7 +60,7 @@ abstract class AbstractInterferenceImpactRule<COLOR1 extends Color,
                         .flatMap(Optional::stream)
                         .filter(protectLine -> protectLine.containsAny(piecePositions))
                         .flatMap(protectLine -> Stream.of(protectLine.intersection(piecePositions))
-                                .flatMap(Collection::stream)
+                                .flatMap(Collection::parallelStream)
                                 .filter(interPosition -> board.isEmpty(interPosition))
                                 .map(interPosition -> new PieceInterferenceProtectImpact<>(
                                         piece, interPosition, impact
@@ -79,7 +78,7 @@ abstract class AbstractInterferenceImpactRule<COLOR1 extends Color,
                 )
                 .map(impact -> (IMPACT) impact)
                 .distinct()
-                .collect(toList());
+                .toList();
 
         return impacts;
     }

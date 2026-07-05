@@ -32,9 +32,9 @@ abstract class AbstractDominationImpactRule<COLOR1 extends Color,
 
     protected Collection<Position> getAttackedPositions(Color color) {
         var positions = Stream.of(board.getPieces(color))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(attacker -> board.getImpacts(attacker, Impact.Type.CONTROL))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(impact -> (PieceControlImpact<?,?>) impact)
                 .map(PieceControlImpact::getPosition)
                 .collect(toSet());
@@ -46,7 +46,7 @@ abstract class AbstractDominationImpactRule<COLOR1 extends Color,
                                                      Collection<Position> attackedPositions) {
 
         var opponentActionPositions = Stream.of(board.getActions(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(Action::getPosition)
                 .collect(toSet());
 

@@ -17,6 +17,7 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
+import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.ai.SimulationGame;
 import com.agutsul.chess.journal.Journal;
@@ -91,8 +92,9 @@ abstract class AbstractActionIntegerValueSimulationTask
         protected int calculateValue(Board board, Action<?> action, Color color) {
             var sourcePiece = action.getPiece();
 
-            var currentPlayerValue  = board.calculateValue(color);
-            var opponentPlayerValue = board.calculateValue(color.invert());
+            var materialValue = Stream.of(Colors.values())
+                    .mapToInt(playerColor -> board.calculateValue(color))
+                    .sum();
 
             // calculate impact for action piece on its new position
             var impactValue = isCastling(action)
@@ -102,13 +104,14 @@ abstract class AbstractActionIntegerValueSimulationTask
             var value = action.getValue()                       // action type influence
                     + impactValue                               // impacts influence
                     + this.limit * sourcePiece.getDirection()   // depth influence
-                    + currentPlayerValue + opponentPlayerValue; // current board value
+                    + materialValue;
 
             return value;
         }
 
         private static int calculateImpact(Board board, PieceCastlingAction<?,?,?> action) {
             var value = Stream.of(action.getSource(), action.getTarget())
+                    .parallel()
                     .map(moveAction -> getActionPiece(board, moveAction))
                     .mapToInt(piece -> calculateImpact(board, piece))
                     .sum();
@@ -117,10 +120,40 @@ abstract class AbstractActionIntegerValueSimulationTask
         }
 
         private static int calculateImpact(Board board, Optional<Piece<Color>> targetPiece) {
+/*
+            var startTimepoint = System.currentTimeMillis();
+
+            var impacts = board.getImpacts(targetPiece.get());
+            logger.error("Loading '{}' impacts: {}ms",
+                    targetPiece.get(), (System.currentTimeMillis() - startTimepoint)
+            );
+
+            startTimepoint = System.currentTimeMillis();
+
+            int value = 0;
+            for (var impact : impacts) {
+                var valStartTimepoint = System.currentTimeMillis();
+
+                var val = impact.getValue();
+
+//                logger.error("Calc '{}' impact value '{}': {}ms",
+//                        impact.getType(), val, (System.currentTimeMillis() - valStartTimepoint)
+//                );
+
+                value += val;
+            }
+
+            logger.error("Calculating '{}' impact value - '{}': {}ms",
+                    targetPiece.get(), value, (System.currentTimeMillis() - startTimepoint)
+            );
+
+            return value;
+*/
+
             var value = Stream.of(targetPiece)
                     .flatMap(Optional::stream)
                     .map(piece -> board.getImpacts(piece))
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .mapToInt(Impact::getValue)
                     .sum();
 

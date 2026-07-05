@@ -1,7 +1,6 @@
 package com.agutsul.chess.rule.impact.protect;
 
 import static java.util.Collections.unmodifiableCollection;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -45,16 +44,16 @@ public final class PieceProtectLineImpactRule<COLOR extends Color,
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(lines)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (Line) calculated)
                 .flatMap(line -> Stream.of(board.getPieces(line))
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .filter(protectedPiece -> Objects.equals(protectedPiece.getColor(), piece.getColor()))
                         .map(protectedPiece -> new PieceProtectImpact<>(
                                 piece, (PIECE2) protectedPiece, line
                         ))
                 )
-                .collect(toList());
+                .toList();
 
         return impacts;
     }

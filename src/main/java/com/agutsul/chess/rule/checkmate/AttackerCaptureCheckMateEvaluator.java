@@ -33,13 +33,13 @@ final class AttackerCaptureCheckMateEvaluator
         LOGGER.info("Evaluate attacker capture by any piece except king '{}'", king);
 
         var actions = Stream.of(board.getAttackers(king))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .flatMap(checkMaker -> Stream.of(board.getAttackers(checkMaker))
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .filter(not(Piece::isKing))
                         .filter(attacker -> !((Pinnable) attacker).isPinned())
                         .map(attacker -> board.getActions(attacker, Action.Type.CAPTURE))
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                         .filter(action -> Objects.equals(action.getTarget(), checkMaker))
                 )

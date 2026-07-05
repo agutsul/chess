@@ -62,7 +62,7 @@ public class PieceBatteryImpactRule<COLOR extends Color,
     @Override
     public Collection<IMPACT> evaluate(PIECE1 piece) {
         var protectedLocations = Stream.of(board.getImpacts(piece, Impact.Type.PROTECT))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(impact -> (PieceProtectImpact<?,?,?>) impact)
                 .map(PieceProtectImpact::getTarget)
                 .filter(Piece::isLinear)
@@ -73,7 +73,7 @@ public class PieceBatteryImpactRule<COLOR extends Color,
         }
 
         var pieceLocations = Stream.of(board.getPieces(piece.getColor()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(Piece::isLinear)
                 .collect(toMap(Piece::getPosition, identity()));
 
@@ -83,7 +83,7 @@ public class PieceBatteryImpactRule<COLOR extends Color,
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(algo.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(line -> {
                     var linePiecePositions = line.intersection(pieceLocations.keySet());
                     if (linePiecePositions.size() < 2) {
@@ -96,10 +96,10 @@ public class PieceBatteryImpactRule<COLOR extends Color,
                     }
 
                     var batteryImpacts = Stream.of(matchedPositions)
-                            .flatMap(Collection::stream)
+                            .flatMap(Collection::parallelStream)
                             .map(position -> protectedLocations.get(position))
                             .map(protectedPiece -> board.getImpacts(protectedPiece, Impact.Type.PROTECT))
-                            .flatMap(Collection::stream)
+                            .flatMap(Collection::parallelStream)
                             .map(protectImpact -> (PieceProtectImpact<?,?,?>) protectImpact)
                             .filter(protectImpact -> Objects.equals(protectImpact.getTarget(), piece))
                             .map(PieceProtectImpact::getSource)
@@ -110,7 +110,7 @@ public class PieceBatteryImpactRule<COLOR extends Color,
 
                     return batteryImpacts;
                 })
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(impact -> (IMPACT) impact)
                 .collect(toList());
 

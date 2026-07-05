@@ -44,7 +44,7 @@ abstract class AbstractPinModeImpactRule<COLOR1 extends Color,
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(linePieces)
                 .filter(pieces -> pieces.size() >= 3)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(Piece::isLinear)
                 .filter(attacker -> !Objects.equals(attacker.getColor(), pinnedPiece.getColor()))
                 // searched pattern: 'attacker - pinned piece - defended piece' or reverse
@@ -61,7 +61,7 @@ abstract class AbstractPinModeImpactRule<COLOR1 extends Color,
     protected boolean isAttacked(ATTACKER attacker, PINNED pinnedPiece, DEFENDED defendedPiece) {
         // check if piece is attacked by line attacker
         var isPieceAttacked = Stream.of(board.getImpacts(attacker, Impact.Type.CONTROL))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(Impact::getPosition)
                 .anyMatch(position -> Objects.equals(position, pinnedPiece.getPosition()));
 

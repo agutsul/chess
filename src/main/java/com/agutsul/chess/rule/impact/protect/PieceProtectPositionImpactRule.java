@@ -1,7 +1,6 @@
 package com.agutsul.chess.rule.impact.protect;
 
 import static java.util.Collections.unmodifiableCollection;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -43,12 +42,12 @@ public final class PieceProtectPositionImpactRule<COLOR extends Color,
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> board.getPiece((Position) calculated))
                 .flatMap(Optional::stream)
                 .filter(protectedPiece -> Objects.equals(protectedPiece.getColor(), piece.getColor()))
                 .map(protectedPiece -> new PieceProtectImpact<>(piece, (PIECE2) protectedPiece))
-                .collect(toList());
+                .toList();
 
         return impacts;
     }

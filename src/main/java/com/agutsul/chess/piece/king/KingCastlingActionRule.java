@@ -33,7 +33,7 @@ final class KingCastlingActionRule<COLOR extends Color,
 
         @SuppressWarnings("unchecked")
         var actions = Stream.of(algo.calculate(king))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .flatMap(castling -> Stream.of(board.getPosition(castling.getRookSource(), king.getPosition().y()))
                         .flatMap(Optional::stream)
                         .map(position -> board.getPiece(position))

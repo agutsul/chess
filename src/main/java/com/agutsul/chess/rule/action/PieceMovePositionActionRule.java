@@ -38,7 +38,7 @@ public class PieceMovePositionActionRule<COLOR extends Color,
     @Override
     protected Collection<Calculatable> calculate(PIECE piece) {
         Collection<Calculatable> positions = Stream.of(algo.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(position -> board.isEmpty(position))
                 .collect(toList());
 
@@ -50,7 +50,7 @@ public class PieceMovePositionActionRule<COLOR extends Color,
             createActions(PIECE piece, Collection<Calculatable> next) {
 
         var actions = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> createAction(piece, (Position) calculated))
                 .toList();
 

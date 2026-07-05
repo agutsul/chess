@@ -33,19 +33,17 @@ public final class CompositeRule<SOURCE,
     @SuppressWarnings("unchecked")
     public Collection<RESULT> evaluate(SOURCE source, TYPE type, TYPE... additionalTypes) {
         var types = Stream.of(List.of(type), List.of(additionalTypes))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .toList();
 
         var typeRules = Stream.of(rules)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(rule -> types.contains(rule.getType()))
                 .toList();
 
-        if (typeRules.isEmpty()) {
-            return emptyList();
-        }
-
-        return evaluate(typeRules, source);
+        return typeRules.isEmpty()
+                ? emptyList()
+                : evaluate(typeRules, source);
     }
 
     @SuppressWarnings("unchecked")
@@ -53,9 +51,9 @@ public final class CompositeRule<SOURCE,
                                         SOURCE source) {
 
         var result = Stream.of(rules)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(rule -> (Collection<RESULT>) rule.evaluate(source))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .toList();
 
         return result;

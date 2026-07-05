@@ -91,7 +91,7 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
         LOGGER.info("Move '{}' to '{}'", piece, position);
 
         var possiblePositions = Stream.of(board.getActions(piece, Action.Type.MOVE))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(action -> (AbstractMoveAction<?,?>) action)
                 .map(AbstractMoveAction::getPosition)
                 .collect(toSet());
@@ -111,7 +111,7 @@ final class ActivePieceStateImpl<PIECE extends Piece<?> & Movable & Capturable>
         LOGGER.info("Capture '{}' by '{}'", targetPiece, piece);
 
         var possibleTargets = Stream.of(board.getActions(piece, Action.Type.CAPTURE))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .map(AbstractCaptureAction::getTarget)
                 .collect(toSet());

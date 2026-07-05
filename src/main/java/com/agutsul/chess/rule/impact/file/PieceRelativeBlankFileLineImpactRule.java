@@ -35,7 +35,7 @@ final class PieceRelativeBlankFileLineImpactRule<COLOR extends Color,
     @Override
     protected Collection<Calculatable> calculate(PIECE piece) {
         return Stream.of(super.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (Line) calculated)
                 // confirm that line contains two pieces:
                 // current piece and some pawn ( between the current piece and target position )
@@ -43,7 +43,7 @@ final class PieceRelativeBlankFileLineImpactRule<COLOR extends Color,
                 .filter(line -> Stream.of(board.getPieces(line))
                         .filter(pieces -> pieces.size() == 2)
                         .anyMatch(pieces -> Stream.of(pieces)
-                                .flatMap(Collection::stream)
+                                .flatMap(Collection::parallelStream)
                                 .filter(foundPiece -> !Objects.equals(foundPiece, piece))
                                 .anyMatch(Piece::isPawn)
                         )
@@ -51,7 +51,7 @@ final class PieceRelativeBlankFileLineImpactRule<COLOR extends Color,
                 // skip current piece position from result line
                 .map(line -> {
                     var positions = Stream.of(line)
-                            .flatMap(Collection::stream)
+                            .flatMap(Collection::parallelStream)
                             .filter(position -> !Objects.equals(piece.getPosition(), position))
                             .toList();
 
@@ -65,7 +65,7 @@ final class PieceRelativeBlankFileLineImpactRule<COLOR extends Color,
             createImpacts(PIECE piece, Collection<Calculatable> next) {
 
         return Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> new PieceRelativeBlankFileImpact<>(piece, (Line) calculated))
                 .toList();
     }

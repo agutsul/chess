@@ -27,7 +27,7 @@ public final class FullLineAlgo<COLOR extends Color,
     @Override
     public Collection<Line> calculate(PIECE piece) {
         var pieceLines = Stream.of(pieceAlgo.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(not(Line::isEmpty))
                 .toList();
 

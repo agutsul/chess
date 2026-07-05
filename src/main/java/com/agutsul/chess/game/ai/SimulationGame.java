@@ -130,9 +130,9 @@ public final class SimulationGame
         // copy piece visited positions to properly resolve en-passant and castling actions
         var observableBoard = (Observable) board;
         Stream.of(PIECE_TYPES)
-            .flatMap(Collection::stream)
+            .flatMap(Collection::parallelStream)
             .map(pieceType -> originBoard.getPieces(pieceType))
-            .flatMap(Collection::stream)
+            .flatMap(Collection::parallelStream)
             .map(CopyVisitedPositionsEvent::new)
             .forEach(event -> observableBoard.notifyObservers(event));
 

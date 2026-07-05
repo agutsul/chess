@@ -29,16 +29,16 @@ abstract class AbstractGamePhaseEvaluator
 
     boolean isInCenter(Collection<Piece<Color>> pieces) {
         return Stream.of(pieces)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(Piece::getPosition)
                 .anyMatch(Position::isCentral);
     }
 
     boolean isCenterControlled(Collection<Piece<Color>> pieces) {
         return Stream.of(pieces)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(piece -> board.getImpacts(piece, Impact.Type.CONTROL))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(impact -> (PieceControlImpact<?,?>) impact)
                 .map(Impact::getPosition)
                 .anyMatch(Position::isCentral);

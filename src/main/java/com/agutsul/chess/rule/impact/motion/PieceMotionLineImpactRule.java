@@ -33,7 +33,7 @@ public final class PieceMotionLineImpactRule<COLOR extends Color,
             createImpacts(PIECE piece, Collection<Calculatable> positions) {
 
         var impacts = Stream.of(positions)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> new PieceMotionImpact<>(piece, (Position) calculated))
                 .toList();
 

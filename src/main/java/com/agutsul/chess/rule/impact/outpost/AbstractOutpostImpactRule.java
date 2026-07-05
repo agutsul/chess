@@ -1,7 +1,6 @@
 package com.agutsul.chess.rule.impact.outpost;
 
 import static com.agutsul.chess.position.PositionFactory.positionOf;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -43,16 +42,16 @@ abstract class AbstractOutpostImpactRule<COLOR extends Color,
         }
 
         var attackedPositions = Stream.of(opponentPawns)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(opponentPawn -> board.getImpacts(opponentPawn, Impact.Type.CONTROL))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(impact -> (PieceControlImpact<?,?>) impact)
                 .map(PieceControlImpact::getTarget)
                 .toList();
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (Position) calculated)
                 // confirm that position is not attacked by any opponent pawn
                 .filter(position -> !attackedPositions.contains(position))
@@ -66,7 +65,7 @@ abstract class AbstractOutpostImpactRule<COLOR extends Color,
                             }
 
                             var isVisited = Stream.of(opponentPawnsCache.get(opponentPosition.x()))
-                                    .flatMap(Collection::stream)
+                                    .flatMap(Collection::parallelStream)
                                     .map(Piece::getPositions)
                                     .allMatch(visitedPositions -> visitedPositions.contains(opponentPosition));
 
@@ -75,15 +74,15 @@ abstract class AbstractOutpostImpactRule<COLOR extends Color,
                 )
                 // confirm that position is under control by any player's pawn
                 .filter(position -> Stream.of(board.getPieces(piece.getColor(), Piece.Type.PAWN))
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .map(pawn -> board.getImpacts(pawn, Impact.Type.CONTROL))
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .map(impact -> (PieceControlImpact<?,?>) impact)
                         .anyMatch(impact -> Objects.equals(impact.getTarget(), position))
                 )
                 .map(position -> new PieceOutpostImpact<>(piece, position))
                 .map(impact -> (IMPACT) impact)
-                .collect(toList());
+                .toList();
 
         return impacts;
     }

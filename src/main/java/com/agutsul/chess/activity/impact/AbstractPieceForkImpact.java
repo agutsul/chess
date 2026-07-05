@@ -52,7 +52,7 @@ abstract class AbstractPieceForkImpact<COLOR1 extends Color,
     @Override
     public final Collection<ATTACKED> getAttacked() {
         var pieces = Stream.of(getTarget())
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(AbstractPieceAttackImpact::getTarget)
                 .sorted(comparing(
                         Piece::getType,
@@ -72,7 +72,7 @@ abstract class AbstractPieceForkImpact<COLOR1 extends Color,
 
     private Integer calculateValue() {
         var value = Stream.of(getTarget())
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .mapToInt(Impact::getValue)
                 .sum();
 

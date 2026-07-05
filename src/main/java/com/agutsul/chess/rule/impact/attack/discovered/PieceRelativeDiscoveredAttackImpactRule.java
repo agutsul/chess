@@ -46,14 +46,14 @@ public class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
             createImpacts(PIECE piece, Collection<Calculatable> next) {
 
         var opponentPieces = Stream.of(board.getPieces(piece.getColor().invert()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(not(Piece::isKing))
                 .map(opponentPiece -> (ATTACKED) opponentPiece)
                 .toList();
 
         var impactLines = new ArrayListValuedHashMap<Line,ATTACKED>();
         Stream.of(board.getLines(piece.getPosition()))
-            .flatMap(Collection::stream)
+            .flatMap(Collection::parallelStream)
             // check if there is piece action position outside line
             .filter(line  -> !line.containsAll(next))
             .forEach(line -> opponentPieces.stream()
@@ -66,9 +66,9 @@ public class PieceRelativeDiscoveredAttackImpactRule<COLOR1 extends Color,
         }
 
         var impacts = Stream.of(impactLines.entries())
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(entry -> createImpacts(piece, next, entry.getValue(), entry.getKey()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .distinct()
                 .toList();
 

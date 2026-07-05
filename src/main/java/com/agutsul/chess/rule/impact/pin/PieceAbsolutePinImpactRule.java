@@ -41,13 +41,13 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
         var impacts = Stream.of(board.getKing(piece.getColor()))
                 .flatMap(Optional::stream)
                 .flatMap(king -> Stream.of(next)
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .map(calculated -> (Line) calculated)
                         .filter(line -> line.contains(piece.getPosition()))
                         .filter(line -> line.contains(king.getPosition()))
                         .map(line -> createImpacts(piece, (KING) king, line))
                 )
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .distinct()
                 .toList();
 
@@ -62,7 +62,7 @@ final class PieceAbsolutePinImpactRule<COLOR1 extends Color,
 
         // check if king is x-rayed by line attacker
         var isKingAttacked = Stream.of(board.getImpacts(attacker, Impact.Type.XRAY))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(impact -> (PieceXRayImpact<?,?,?,?>) impact)
                 .filter(impact -> impact instanceof PieceXRayAttackImpact<?,?,?,?>)
                 .anyMatch(impact -> Objects.equals(impact.getTarget(), defendedPiece));

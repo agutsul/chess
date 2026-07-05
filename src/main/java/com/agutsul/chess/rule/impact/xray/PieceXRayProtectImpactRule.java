@@ -2,7 +2,6 @@ package com.agutsul.chess.rule.impact.xray;
 
 import static com.agutsul.chess.rule.impact.LineImpactRule.containsPattern;
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.List;
@@ -46,10 +45,10 @@ final class PieceXRayProtectImpactRule<COLOR1 extends Color,
 
         var opponentPieces = board.getPieces(piece.getColor().invert());
         var attackedPieces = Stream.of(board.getImpacts(piece, Impact.Type.CONTROL))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(Impact::getPosition)
                 .map(attackedPosition -> Stream.of(opponentPieces)
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .filter(opponentPiece -> Objects.equals(attackedPosition, opponentPiece.getPosition()))
                         .findFirst()
                 )
@@ -62,7 +61,7 @@ final class PieceXRayProtectImpactRule<COLOR1 extends Color,
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(line -> {
                     var linePieces = board.getPieces(line);
                     if (linePieces.size() < 3) {
@@ -70,7 +69,7 @@ final class PieceXRayProtectImpactRule<COLOR1 extends Color,
                     }
 
                     var optionalPiece = Stream.of(linePieces)
-                            .flatMap(Collection::stream)
+                            .flatMap(Collection::parallelStream)
                             .filter(attacked -> !Objects.equals(piece, attacked))
                             .filter(attacked -> attackedPieces.contains(attacked))
                             .findFirst();
@@ -81,7 +80,7 @@ final class PieceXRayProtectImpactRule<COLOR1 extends Color,
 
                     var attackedPiece = optionalPiece.get();
                     var impact = Stream.of(linePieces)
-                            .flatMap(Collection::stream)
+                            .flatMap(Collection::parallelStream)
                             .filter(defended -> !Objects.equals(piece, defended))
                             .filter(defended -> !attackedPieces.contains(defended))
                             .filter(defended -> Objects.equals(defended.getColor(), piece.getColor()))
@@ -94,7 +93,7 @@ final class PieceXRayProtectImpactRule<COLOR1 extends Color,
                 })
                 .filter(Objects::nonNull)
                 .map(impact -> (PieceXRayProtectImpact<COLOR1,COLOR2,SOURCE,TARGET>) impact)
-                .collect(toList());
+                .toList();
 
         return impacts;
     }

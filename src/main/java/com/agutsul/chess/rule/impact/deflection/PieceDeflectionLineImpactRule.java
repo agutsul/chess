@@ -2,7 +2,6 @@ package com.agutsul.chess.rule.impact.deflection;
 
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.unmodifiableCollection;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -49,7 +48,7 @@ public final class PieceDeflectionLineImpactRule<COLOR1 extends Color,
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (Line) calculated)
                 .flatMap(line -> Stream.of(board.getPiece(line.getLast()))
                         .flatMap(Optional::stream)
@@ -58,8 +57,8 @@ public final class PieceDeflectionLineImpactRule<COLOR1 extends Color,
                                 createAttackImpact(piece, (ATTACKED) attackedPiece, line)
                         ))
                 )
-                .flatMap(Collection::stream)
-                .collect(toList());
+                .flatMap(Collection::parallelStream)
+                .toList();
 
         return impacts;
     }

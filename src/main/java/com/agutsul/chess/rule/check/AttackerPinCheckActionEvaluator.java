@@ -32,7 +32,7 @@ final class AttackerPinCheckActionEvaluator
         }
 
         Collection<Action<?>> pinActions = Stream.of(checkActions)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(PieceCaptureAction::getLine)
                 .flatMap(Optional::stream)
                 .flatMap(line -> actions.stream()

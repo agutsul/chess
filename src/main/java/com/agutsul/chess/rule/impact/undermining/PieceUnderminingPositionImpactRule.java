@@ -45,7 +45,7 @@ public class PieceUnderminingPositionImpactRule<COLOR1 extends Color,
 
         @SuppressWarnings("unchecked")
         Collection<PieceUnderminingImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>> impacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> board.getPiece((Position) calculated))
                 .flatMap(Optional::stream)
                 .filter(attackedPiece -> !Objects.equals(attackedPiece.getColor(), piece.getColor()))

@@ -43,7 +43,7 @@ public class PieceAttackPositionImpactRule<COLOR1 extends Color,
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> board.getPiece((Position) calculated))
                 .flatMap(Optional::stream)
                 // attacking king means check and it is handled by appropriate impact

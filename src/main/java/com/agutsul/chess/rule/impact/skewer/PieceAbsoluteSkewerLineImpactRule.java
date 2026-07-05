@@ -46,7 +46,7 @@ final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
 
         // check if king is attacked by line attacker
         var isKingAttacked = Stream.of(board.getImpacts(piece, Impact.Type.CONTROL))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(Impact::getPosition)
                 .anyMatch(position -> Objects.equals(position, king.getPosition()));
 
@@ -56,7 +56,7 @@ final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
 
         var expectedPieces = List.of(piece, king);
         var impacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (Line) calculated)
                 .map(line -> {
                     var linePieces = board.getPieces(line);
@@ -65,7 +65,7 @@ final class PieceAbsoluteSkewerLineImpactRule<COLOR1 extends Color,
                     }
 
                     var impact = Stream.of(linePieces)
-                            .flatMap(Collection::stream)
+                            .flatMap(Collection::parallelStream)
                             .filter(defended -> !Objects.equals(king,  defended))
                             .filter(defended -> !Objects.equals(piece, defended))
                             .filter(defended -> !Objects.equals(defended.getColor(), piece.getColor()))

@@ -3,7 +3,6 @@ package com.agutsul.chess.rule.impact.desperado;
 import static com.agutsul.chess.piece.Piece.isLinear;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.stream.Stream;
@@ -50,7 +49,7 @@ abstract class AbstractPieceDesperadoImpactRule<COLOR1 extends Color,
         }
 
         var impacts = Stream.of(rule.evaluate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .distinct()
                 .sorted(comparing(
                         // sort most valuable attacked pieces first
@@ -61,7 +60,7 @@ abstract class AbstractPieceDesperadoImpactRule<COLOR1 extends Color,
                         )
                     )
                 )
-                .collect(toList());
+                .toList();
 
         return impacts;
     }

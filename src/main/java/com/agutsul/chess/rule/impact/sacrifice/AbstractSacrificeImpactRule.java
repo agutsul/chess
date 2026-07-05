@@ -3,7 +3,6 @@ package com.agutsul.chess.rule.impact.sacrifice;
 import static com.agutsul.chess.piece.Piece.isLinear;
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 import java.util.Collection;
@@ -64,10 +63,10 @@ abstract class AbstractSacrificeImpactRule<COLOR1 extends Color,
 
        @SuppressWarnings("unchecked")
        var impacts = Stream.of(next)
-               .flatMap(Collection::stream)
+               .flatMap(Collection::parallelStream)
                .map(calculated -> (Position) calculated)
                .flatMap(position -> Stream.of(opponentControls.entrySet())
-                       .flatMap(Collection::stream)
+                       .flatMap(Collection::parallelStream)
                        .filter(entry -> entry.getValue().contains(position))
                        .map(entry -> (ATTACKER) entry.getKey())
                        .map(attacker -> {
@@ -92,21 +91,21 @@ abstract class AbstractSacrificeImpactRule<COLOR1 extends Color,
                )
                .flatMap(Optional::stream)
                .map(impact -> (IMPACT) impact)
-               .collect(toList());
+               .toList();
 
         return impacts;
     }
 
     protected Map<Piece<Color>,List<Position>> getPieceControls(Color color) {
         return Stream.of(board.getPieces(color))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(piece -> {
                     var controlPositions = Stream.of(board.getImpacts(piece, Impact.Type.CONTROL))
-                            .flatMap(Collection::stream)
+                            .flatMap(Collection::parallelStream)
                             .map(impact -> (PieceControlImpact<?,?>) impact)
                             .map(PieceControlImpact::getPosition)
                             .distinct()
-                            .collect(toList());
+                            .toList();
 
                     return Pair.of(piece, controlPositions);
                 })

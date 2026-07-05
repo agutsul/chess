@@ -43,8 +43,8 @@ final class PieceMultiMap implements PieceMap {
     @Override
     public Collection<Piece<?>> get(Object key) {
         return Stream.of(this.map.get(String.valueOf(key)))
-                .flatMap(Collection::stream)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
+                .flatMap(Collection::parallelStream)
                 .toList();
     }
 

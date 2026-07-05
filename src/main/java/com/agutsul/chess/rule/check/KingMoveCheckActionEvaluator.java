@@ -1,6 +1,5 @@
 package com.agutsul.chess.rule.check;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
@@ -30,7 +29,7 @@ final class KingMoveCheckActionEvaluator
         var attackerColor = king.getColor().invert();
 
         var availableActions = Stream.of(actions)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 // skip positions attacked by any opponent piece
                 .filter(action -> !board.isAttacked(action.getPosition(), attackerColor))
                 // skip monitored positions
@@ -39,9 +38,9 @@ final class KingMoveCheckActionEvaluator
                 .toList();
 
         var filteredActions = Stream.of(checkActions)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .flatMap(checkAction -> Stream.of(availableActions)
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         // skip moves on positions inside attack line
                         .filter(action -> checkAction.getLine().stream()
                                     .noneMatch(line -> line.contains(action.getPosition()))
@@ -52,10 +51,10 @@ final class KingMoveCheckActionEvaluator
                             // but as soon as position not directly attacked by the opponent piece
                             // it is valid for move action
                             var monitoredPositions = Stream.of(board.getImpacts(checkAction.getSource(), Impact.Type.MONITOR))
-                                    .flatMap(Collection::stream)
+                                    .flatMap(Collection::parallelStream)
                                     .map(impact -> (PieceMonitorImpact<?,?>) impact)
                                     .map(PieceMonitorImpact::getPosition)
-                                    .collect(toList());
+                                    .toList();
 
                             return !monitoredPositions.contains(action.getPosition());
                         })

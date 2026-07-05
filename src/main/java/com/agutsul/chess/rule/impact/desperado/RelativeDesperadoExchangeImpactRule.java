@@ -23,9 +23,9 @@ interface RelativeDesperadoExchangeImpactRule<COLOR1 extends Color,
                                   Collection<PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>> exchangeImpacts) {
 
         return Stream.of(desperadoImpacts)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .flatMap(desperadoImpact -> Stream.of(exchangeImpacts)
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .filter(exchangeImpact -> {
                             Piece<?> attacker = exchangeImpact.getAttacker();
                             return !Objects.equals(attacker, desperadoImpact.getAttacked())

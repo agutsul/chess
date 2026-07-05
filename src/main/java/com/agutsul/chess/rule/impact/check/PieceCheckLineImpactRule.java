@@ -36,7 +36,7 @@ public final class PieceCheckLineImpactRule<COLOR1 extends Color,
     @Override
     protected Collection<Calculatable> calculate(ATTACKER attacker, KING king) {
         Collection<Calculatable> lines = Stream.of(algo.calculate(attacker))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(line -> line.contains(king.getPosition()))
                 .collect(toList());
 
@@ -48,7 +48,7 @@ public final class PieceCheckLineImpactRule<COLOR1 extends Color,
             createImpacts(ATTACKER attacker, KING king, Collection<Calculatable> next) {
 
         var impacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> new PieceCheckImpact<>(attacker, king, (Line) calculated))
                 .toList();
 

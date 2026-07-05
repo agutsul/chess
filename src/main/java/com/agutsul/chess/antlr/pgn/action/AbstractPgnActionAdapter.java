@@ -63,7 +63,7 @@ abstract class AbstractPgnActionAdapter
 
     Collection<Piece<Color>> findPieces(Piece.Type pieceType, String code) {
         var pieces = Stream.of(board.getPieces(color, pieceType))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(piece -> code == null
                         || Strings.CI.contains(codeOf(piece.getPosition()), code)
                 )
@@ -74,7 +74,7 @@ abstract class AbstractPgnActionAdapter
 
     boolean containsAction(Piece<Color> piece, String position, Action.Type actionType) {
         var actionExists = Stream.of(board.getActions(piece, actionType))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(Action::getPosition)
                 .map(Position::codeOf)
                 .anyMatch(targetPosition -> Objects.equals(targetPosition, position));
@@ -143,7 +143,7 @@ abstract class AbstractPgnActionAdapter
 
         // TODO: confirm that targetPiece is related to provided position
         var isCapturable = Stream.of(board.getActions(piece, Action.Type.CAPTURE))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .map(AbstractCaptureAction::getTarget)
                 .anyMatch(targetPiece -> Objects.equals(targetPiece, attacker));

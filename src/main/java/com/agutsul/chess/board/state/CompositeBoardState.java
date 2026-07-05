@@ -77,7 +77,7 @@ public final class CompositeBoardState
     public Collection<Impact<?>> getImpacts(Position position) {
         var impacts = boardStates.stream()
                 .map(boardState -> boardState.getImpacts(position))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .collect(toSet());
 
         return impacts;

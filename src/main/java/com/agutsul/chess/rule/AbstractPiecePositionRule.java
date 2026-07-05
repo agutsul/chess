@@ -27,9 +27,9 @@ public abstract class AbstractPiecePositionRule<SOURCE extends Piece<?>,
     @Override
     public final Collection<Calculatable> evaluate(Position position) {
         return Stream.of(algos)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(algo -> algo.calculate(position))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(result -> (Calculatable) result)
                 .distinct()
                 .toList();

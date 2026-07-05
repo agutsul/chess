@@ -80,11 +80,11 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
 
     protected static List<Action<?>> getActions(Board board, Color color) {
         var actions = Stream.of(board.getPieces(color))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(piece -> board.getActions(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(ADAPTER::adapt)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .distinct()
                 .toList();
 

@@ -25,7 +25,7 @@ final class PromoteActionAdapter
     @Override
     public Collection<Action<?>> adapt(PiecePromoteAction<?,?> action) {
         Collection<Action<?>> actions = Stream.of(Promotable.TARGET_TYPES)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(pieceType -> create(action, pieceType))
                 .collect(toList());
 

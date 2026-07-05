@@ -29,7 +29,7 @@ final class KingMoveCheckMateEvaluator
         var attackerColor = king.getColor().invert();
 
         var availablePositions = Stream.of(board.getActions(king, Action.Type.MOVE))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(Action::getPosition)
                 .filter(targetPosition -> !board.isAttacked(targetPosition,  attackerColor))
                 .filter(targetPosition -> !board.isMonitored(targetPosition, attackerColor))

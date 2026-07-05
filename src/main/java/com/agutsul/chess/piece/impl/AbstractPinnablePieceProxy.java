@@ -52,7 +52,7 @@ abstract class AbstractPinnablePieceProxy<COLOR extends Color,
         logger.info("Filter line actions for pinned piece '{}'", this);
         // filter actions for pinned piece
         var lineActions = Stream.of(pinImpacts(PiecePinImpact.Mode.ABSOLUTE))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(PiecePinImpact::getLine)
                 .flatMap(line -> allActions.stream()
                         .filter(action -> line.contains(action.getPosition()))
@@ -74,7 +74,7 @@ abstract class AbstractPinnablePieceProxy<COLOR extends Color,
 
         // return actions to capture king's attacker
         Collection<Action<?>> checkActions = Stream.of(allActions)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(Action::isCapture)
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), king))
@@ -88,7 +88,7 @@ abstract class AbstractPinnablePieceProxy<COLOR extends Color,
         logger.info("Checking if piece '{}' is pinned", this);
 
         var isPinned = Stream.of(pinImpacts(PiecePinImpact.Mode.ABSOLUTE))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(Impact::getSource)
                 .anyMatch(piece -> Objects.equals(piece, this));
 
@@ -97,7 +97,7 @@ abstract class AbstractPinnablePieceProxy<COLOR extends Color,
 
     private Collection<PiecePinImpact<?,?,?,?,?>> pinImpacts(PiecePinImpact.Mode mode) {
         Collection<PiecePinImpact<?,?,?,?,?>> impacts = Stream.of(super.getImpacts(Impact.Type.PIN))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
                 .filter(impact -> impact.isMode(mode))
                 .collect(toList());

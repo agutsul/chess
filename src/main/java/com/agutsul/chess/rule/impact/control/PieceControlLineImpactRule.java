@@ -46,7 +46,7 @@ public final class PieceControlLineImpactRule<COLOR extends Color,
             createImpacts(PIECE piece, Collection<Calculatable> next) {
 
         var impacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> new PieceControlImpact<>(piece, (Position) calculated))
                 .collect(toList());
 

@@ -44,7 +44,7 @@ public final class PieceCaptureLineActionRule<COLOR1 extends Color,
 
         @SuppressWarnings("unchecked")
         var actions = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (Line) calculated)
                 .flatMap(line -> Stream.of(board.getPiece(line.getLast()))
                         .flatMap(Optional::stream)

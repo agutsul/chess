@@ -38,9 +38,9 @@ final class PieceXRayAttackImpactRule<COLOR1 extends Color,
         var opponentColor = piece.getColor().invert();
 
         var lines = Stream.of(algo.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(line -> line.split(piece.getPosition()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(not(Collection::isEmpty))
                 .filter(line -> board.getPieces(line).size() >= 3)
                 .filter(line -> !board.getPieces(opponentColor, line).isEmpty())

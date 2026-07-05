@@ -37,7 +37,7 @@ public class PieceDominationPositionImpactRule<COLOR1 extends Color,
     @Override
     protected Collection<Calculatable> calculate(ATTACKER piece) {
         return Stream.of(algo.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(position -> board.getPiece(position))
                 .flatMap(Optional::stream)
                 .filter(foundPiece -> !Objects.equals(foundPiece.getColor(), piece.getColor()))
@@ -56,7 +56,7 @@ public class PieceDominationPositionImpactRule<COLOR1 extends Color,
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> board.getPiece((Position) calculated))
                 .flatMap(Optional::stream)
                 .map(opponentPiece -> (ATTACKED) opponentPiece)

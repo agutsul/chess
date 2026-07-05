@@ -37,7 +37,7 @@ abstract class AbstractDesperadoLineImpactRule<COLOR1 extends Color,
     @Override
     protected Collection<Calculatable> calculate(DESPERADO piece) {
         return Stream.of(algo.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(line -> !board.isEmpty(line.getLast()))
                 .collect(toList());
     }

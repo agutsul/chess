@@ -40,7 +40,7 @@ abstract class AbstractDeflectionImpactRule<COLOR1 extends Color,
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(board.getImpacts(attackImpact.getTarget(), Impact.Type.PROTECT))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(impact -> (PieceProtectImpact<?,?,?>) impact)
                 .map(PieceProtectImpact::getTarget)
                 .map(protectedPiece -> (DEFENDED) protectedPiece)
@@ -60,7 +60,7 @@ abstract class AbstractDeflectionImpactRule<COLOR1 extends Color,
         // skip adding predator on board to simulate its capture by victim piece
         var tmpBoardBuilder = new PositionedBoardBuilder();
         Stream.of(board.getPieces())
-            .flatMap(Collection::stream)
+            .flatMap(Collection::parallelStream)
             .filter(piece -> !Objects.equals(piece, attackImpact.getSource()))
             .filter(piece -> !Objects.equals(piece, attackImpact.getTarget()))
             .forEach(piece ->
@@ -80,7 +80,7 @@ abstract class AbstractDeflectionImpactRule<COLOR1 extends Color,
             var isProtected = Stream.of(tmpBoard.getPiece(attackImpact.getSource().getPosition()))
                     .flatMap(Optional::stream)
                     .anyMatch(piece -> Stream.of(tmpBoard.getImpacts(piece, Impact.Type.PROTECT))
-                            .flatMap(Collection::stream)
+                            .flatMap(Collection::parallelStream)
                             .map(impact -> (PieceProtectImpact<?,?,?>) impact)
                             .map(PieceProtectImpact::getTarget)
                             .map(Piece::getPosition)

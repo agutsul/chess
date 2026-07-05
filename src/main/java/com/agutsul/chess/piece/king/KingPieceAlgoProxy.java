@@ -75,7 +75,7 @@ final class KingPieceAlgoProxy<COLOR extends Color,
                                                Color opponentColor) {
 
         var filtered = Stream.of(positions)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(position -> board.isEmpty(position))
                 .filter(position -> !board.isAttacked(position,  opponentColor))
                 .filter(position -> !board.isMonitored(position, opponentColor))
@@ -88,7 +88,7 @@ final class KingPieceAlgoProxy<COLOR extends Color,
                                                   Color opponentColor) {
 
         var filtered = Stream.of(positions)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(position -> board.getPiece(position))
                 .flatMap(Optional::stream)
                 .filter(foundPiece -> Objects.equals(foundPiece.getColor(), opponentColor))

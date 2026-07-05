@@ -48,7 +48,7 @@ public final class PieceUnderminingLineImpactRule<COLOR1 extends Color,
 
         @SuppressWarnings("unchecked")
         Collection<PieceUnderminingImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>> impacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (Line) calculated)
                 .map(line -> Stream.of(board.getPiece(line.getLast()))
                         .flatMap(Optional::stream)

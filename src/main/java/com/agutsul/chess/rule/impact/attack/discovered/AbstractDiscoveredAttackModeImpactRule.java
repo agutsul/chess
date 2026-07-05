@@ -42,7 +42,7 @@ abstract class AbstractDiscoveredAttackModeImpactRule<COLOR1 extends Color,
     @Override
     protected Collection<Calculatable> calculate(PIECE piece) {
         Collection<Calculatable> positions = Stream.of(algo.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (Position) calculated)
                 .filter(position -> {
                     var optionalPiece = board.getPiece(position);
@@ -65,7 +65,7 @@ abstract class AbstractDiscoveredAttackModeImpactRule<COLOR1 extends Color,
         var linePieces = board.getPieces(line);
         var impacts = Stream.of(linePieces)
                 .filter(pieces -> pieces.size() >= 3)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(Piece::isLinear)
                 .filter(attacker -> Objects.equals(piece.getColor(), attacker.getColor()))
                 // searched pattern: 'attacker - piece - attacked' or reverse
@@ -73,14 +73,14 @@ abstract class AbstractDiscoveredAttackModeImpactRule<COLOR1 extends Color,
                 .filter(attacker -> {
                     // check if piece is protected by line attacker
                     var isPieceProtected = Stream.of(board.getImpacts(attacker, Impact.Type.PROTECT))
-                            .flatMap(Collection::stream)
+                            .flatMap(Collection::parallelStream)
                             .map(Impact::getPosition)
                             .anyMatch(position -> Objects.equals(position, piece.getPosition()));
 
                     return isPieceProtected;
                 })
                 .flatMap(attacker -> Stream.of(positions)
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .map(position -> (Position) position)
                         .filter(position -> !line.contains(position))
                         .map(position -> createImpact(piece, position, (ATTACKER) attacker, opponentPiece, line))

@@ -30,9 +30,9 @@ public final class CompositePieceAlgo<COLOR  extends Color,
     @Override
     public Collection<RESULT> calculate(SOURCE source) {
         var results = Stream.of(this.algos)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(algo -> algo.calculate(source))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .toList();
 
         return results;
@@ -42,11 +42,11 @@ public final class CompositePieceAlgo<COLOR  extends Color,
     public Collection<RESULT> calculate(Position position) {
         @SuppressWarnings("unchecked")
         var results = Stream.of(this.algos)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(algo -> algo instanceof PositionAlgo<?>)
                 .map(algo -> (PositionAlgo<?>) algo)
                 .map(algo -> algo.calculate(position))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (RESULT) calculated)
                 .toList();
 

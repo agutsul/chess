@@ -1,7 +1,6 @@
 package com.agutsul.chess.rule.impact.control;
 
 import static java.util.Collections.unmodifiableCollection;
-import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.stream.Stream;
@@ -39,9 +38,9 @@ public final class PieceControlPositionImpactRule<COLOR extends Color,
             createImpacts(PIECE piece, Collection<Calculatable> positions) {
 
         var impacts = Stream.of(positions)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> new PieceControlImpact<>(piece, (Position) calculated))
-                .collect(toList());
+                .toList();
 
         return impacts;
     }

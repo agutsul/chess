@@ -39,7 +39,7 @@ public final class PieceBlockLineImpactRule<COLOR1 extends Color,
     @Override
     protected Collection<Calculatable> calculate(BLOCKER piece) {
         Collection<Calculatable> positions = Stream.of(algo.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .distinct()
                 .collect(toList());
 

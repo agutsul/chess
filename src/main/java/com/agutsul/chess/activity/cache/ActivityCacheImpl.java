@@ -56,8 +56,8 @@ public class ActivityCacheImpl<TYPE extends Enum<TYPE> & Activity.Type,
     @Override
     public final Collection<ACTIVITY> getAll() {
         return Stream.of(this.cache.values())
-                .flatMap(Collection::stream)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
+                .flatMap(Collection::parallelStream)
                 .filter(Objects::nonNull)
                 .distinct()
                 .toList();

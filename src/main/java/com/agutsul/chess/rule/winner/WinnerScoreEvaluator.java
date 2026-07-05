@@ -37,7 +37,7 @@ final class WinnerScoreEvaluator
         var pieces = board.getPieces(player.getColor());
         int result = Stream.of(Action.Type.values())
                 .map(action -> Stream.of(pieces)
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .map(piece -> board.getActions(piece, action))
                         .mapToInt(Collection::size)
                         .sum()

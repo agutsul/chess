@@ -34,10 +34,10 @@ public final class PieceAbsoluteDesperadoLineImpactRule<COLOR1 extends Color,
             createImpacts(DESPERADO piece, Collection<Calculatable> next) {
 
         Collection<PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>> impacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (Line) calculated)
                 .flatMap(attackLine -> Stream.of(findProtectImpacts(piece, attackLine.getLast()))
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .map(protectImpact -> createImpact(Mode.ABSOLUTE,
                                 piece, protectImpact, attackLine
                         ))

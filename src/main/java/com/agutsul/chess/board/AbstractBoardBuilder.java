@@ -300,7 +300,7 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
             );
 
             var tasks = Stream.of(optionalTasks)
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .flatMap(Optional::stream)
                     .toList();
 

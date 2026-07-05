@@ -1,7 +1,6 @@
 package com.agutsul.chess.rule.impact.overloading;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.collections4.CollectionUtils.intersection;
 
@@ -35,14 +34,14 @@ abstract class AbstractOverloadingImpactRule<COLOR extends Color,
             createImpacts(PIECE piece, Collection<Calculatable> next) {
 
         var protectedPositions = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (Position) calculated)
                 .collect(toSet());
 
         var attackedPositions = Stream.of(board.getPieces(piece.getColor().invert()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(opponentPiece -> board.getImpacts(opponentPiece, Impact.Type.CONTROL))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(impact -> (PieceControlImpact<?,?>) impact)
                 .map(PieceControlImpact::getPosition)
                 .collect(toSet());
@@ -53,9 +52,9 @@ abstract class AbstractOverloadingImpactRule<COLOR extends Color,
         }
 
         var impacts = Stream.of(overloadedPositions)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(position -> new PieceOverloadingImpact<>(piece, position))
-                .collect(toList());
+                .toList();
 
         return impacts;
     }

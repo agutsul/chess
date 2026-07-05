@@ -1,6 +1,5 @@
 package com.agutsul.chess.rule.checkmate;
 
-import static java.util.stream.Collectors.toList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import java.util.Collection;
@@ -32,12 +31,12 @@ final class KingCaptureCheckMateEvaluator
         var attackerColor = king.getColor().invert();
 
         var capturedPieces = Stream.of(board.getActions(king, Action.Type.CAPTURE))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                 .map(PieceCaptureAction::getTarget)
                 .filter(piece -> !((Protectable) piece).isProtected())
                 .filter(piece -> !board.isMonitored(piece.getPosition(), attackerColor))
-                .collect(toList());
+                .toList();
 
         return !capturedPieces.isEmpty();
     }

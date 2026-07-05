@@ -146,7 +146,7 @@ final class InsufficientMaterialBoardStateEvaluator
         @Override
         protected BoardState evaluateBoard(Color color) {
             var isAnyNonLocked = Stream.of(board.getPieces(color, Piece.Type.PAWN))
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .map(piece -> (PawnPiece<?>) piece)
                     .anyMatch(not(this::isLocked));
 
@@ -348,7 +348,7 @@ final class InsufficientMaterialBoardStateEvaluator
 
             // all the pieces of pieceType are located on the positions with the same color
             var positionColors = Stream.of(pieces)
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .map(Piece::getPosition)
                     .map(Position::getColor)
                     .collect(toSet());

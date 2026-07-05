@@ -102,7 +102,7 @@ public final class PositionCacheImpl<VP extends Position & Valuable<Integer>>
 
         private static int calculateValue(Collection<Impact<?>> impacts) {
             return Stream.of(impacts)
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .mapToInt(Impact::getValue)
                     .sum();
         }

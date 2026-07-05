@@ -3,7 +3,6 @@ package com.agutsul.chess.rule.check;
 import static com.agutsul.chess.activity.action.Action.isBigMove;
 import static com.agutsul.chess.activity.action.Action.isMove;
 import static com.agutsul.chess.activity.action.Action.isPromote;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
@@ -30,20 +29,20 @@ abstract class AbstractMoveCheckActionEvaluator
     @Override
     public Collection<Action<?>> evaluate(KingPiece<?> king) {
         Collection<PieceCaptureAction<?,?,?,?>> checkActions = Stream.of(board.getAttackers(king))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(attacker -> board.getActions(attacker, Action.Type.CAPTURE))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(Action::isCapture)
                 .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(king, action.getTarget()))
                 .collect(toSet());
 
         var filteredActions = Stream.of(pieceActions)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(action -> isMove(action) || isBigMove(action)
                         || (isPromote(action) && isMove((Action<?>) action.getSource()))
                 )
-                .collect(toList());
+                .toList();
 
         return process(king, checkActions, filteredActions);
     }

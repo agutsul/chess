@@ -45,7 +45,7 @@ public final class PieceCheckPositionImpactRule<COLOR1 extends Color,
             createImpacts(ATTACKER attacker, KING king, Collection<Calculatable> positions) {
 
         var impacts = Stream.of(positions)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(position -> Objects.equals(position, king.getPosition()))
                 .map(position -> new PieceCheckImpact<>(attacker, king))
                 .toList();

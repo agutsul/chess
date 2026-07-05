@@ -35,7 +35,7 @@ abstract class AbstractCheckImpactRule<COLOR1 extends Color,
         var next = Stream.of(board.getKing(opponentColor))
                 .flatMap(Optional::stream)
                 .map(opponentKing -> calculate(piece, (KING) opponentKing))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .toList();
 
         return next;
@@ -51,7 +51,7 @@ abstract class AbstractCheckImpactRule<COLOR1 extends Color,
         var impacts = Stream.of(board.getKing(opponentColor))
                 .flatMap(Optional::stream)
                 .map(opponentKing -> createImpacts(piece, (KING) opponentKing, next))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .toList();
 
         return impacts;

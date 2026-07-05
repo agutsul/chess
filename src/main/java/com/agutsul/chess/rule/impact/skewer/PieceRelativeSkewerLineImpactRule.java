@@ -41,12 +41,12 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
             createImpacts(ATTACKER piece, Collection<Calculatable> next) {
 
         var opponentPieces = Stream.of(board.getPieces(piece.getColor().invert()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(not(Piece::isKing))
                 .collect(toMap(Piece::getPosition, identity()));
 
         var attackedPieces = Stream.of(board.getImpacts(piece, Impact.Type.CONTROL))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(Impact::getPosition)
                 .map(attackedPosition -> opponentPieces.get(attackedPosition))
                 .map(Optional::ofNullable)
@@ -59,7 +59,7 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
         }
 
         var impacts = Stream.of(next)
-               .flatMap(Collection::stream)
+               .flatMap(Collection::parallelStream)
                .map(calculated -> (Line) calculated)
                .map(line -> {
                    var linePieces = board.getPieces(line);
@@ -68,7 +68,7 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
                    }
 
                    var optionalPiece = Stream.of(linePieces)
-                           .flatMap(Collection::stream)
+                           .flatMap(Collection::parallelStream)
                            .filter(attacked -> !Objects.equals(piece, attacked))
                            .filter(attacked -> attackedPieces.contains(attacked))
                            .findFirst();
@@ -80,7 +80,7 @@ final class PieceRelativeSkewerLineImpactRule<COLOR1 extends Color,
                    var attackedPiece = (ATTACKED) optionalPiece.get();
 
                    var impact = Stream.of(linePieces)
-                           .flatMap(Collection::stream)
+                           .flatMap(Collection::parallelStream)
                            .filter(defended -> !Objects.equals(piece, defended))
                            .filter(defended -> !attackedPieces.contains(defended))
                            .filter(defended -> !Objects.equals(defended.getColor(), piece.getColor()))

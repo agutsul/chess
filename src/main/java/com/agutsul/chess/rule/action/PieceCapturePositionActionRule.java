@@ -42,7 +42,7 @@ public class PieceCapturePositionActionRule<COLOR1 extends Color,
 
         @SuppressWarnings("unchecked")
         var actions = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> board.getPiece((Position) calculated))
                 .flatMap(Optional::stream)
                 .filter(piece -> !Objects.equals(piece.getColor(), attacker.getColor()))

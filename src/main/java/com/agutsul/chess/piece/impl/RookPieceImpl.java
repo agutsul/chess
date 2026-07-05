@@ -51,7 +51,7 @@ final class RookPieceImpl<COLOR extends Color>
         // and as result be the last in the result collection.
         // Action order influences action auto-detection used by PerformActionCommand.
         return Stream.of(super.getActions())
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .sorted(ROOK_COMPARATOR)
                 .toList();
     }

@@ -32,9 +32,9 @@ public class PieceAbsoluteDesperadoPositionImpactRule<COLOR1 extends Color,
             createImpacts(DESPERADO piece, Collection<Calculatable> next) {
 
         Collection<PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>> impacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> findProtectImpacts(piece, (Position) calculated))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(protectImpact -> createImpact(Mode.ABSOLUTE, piece, protectImpact))
                 .map(PieceAbsoluteDesperadoImpact::new)
                 .collect(toList());

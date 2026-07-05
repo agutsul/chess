@@ -36,21 +36,21 @@ final class AttackerPinCheckMateEvaluator
 
         // get all piece moves of the same color as king except the king itself
         var pieceMovePositions = Stream.of(board.getPieces(king.getColor()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(not(Piece::isKing))
                 // confirm that piece not already pinned
                 .filter(piece -> !((Pinnable) piece).isPinned())
                 // find all possible move actions
                 .map(piece -> board.getActions(piece, Action.Type.MOVE))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(action -> (PieceMoveAction<?,?>) action)
                 .map(PieceMoveAction::getPosition)
                 .collect(toSet());
 
         var isPinnable = Stream.of(board.getAttackers(king))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(checkMaker -> board.getActions(checkMaker, Action.Type.CAPTURE))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(Action::isCapture)
                 .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), king))

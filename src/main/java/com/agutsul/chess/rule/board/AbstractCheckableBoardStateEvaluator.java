@@ -28,10 +28,10 @@ abstract class AbstractCheckableBoardStateEvaluator
     final Collection<Piece<Color>> getCheckMakers(KingPiece<Color> king) {
         @SuppressWarnings("unchecked")
         var checkMakers = Stream.of(board.getPieces(king.getColor().invert()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(not(Piece::isKing))
                 .map(piece -> board.getImpacts(piece, Impact.Type.CHECK))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(impact -> (PieceCheckImpact<?,?,?,?>) impact)
                 .filter(impact -> Objects.equals(impact.getTarget(), king))
                 .map(PieceCheckImpact::getSource)

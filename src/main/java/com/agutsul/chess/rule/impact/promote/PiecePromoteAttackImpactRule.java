@@ -44,7 +44,7 @@ final class PiecePromoteAttackImpactRule<COLOR1 extends Color,
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (Position) calculated)
                 .filter(position -> !Objects.equals(position.x(), piece.getPosition().x()))
                 .map(position -> board.getPiece(position))
@@ -52,7 +52,7 @@ final class PiecePromoteAttackImpactRule<COLOR1 extends Color,
                 .filter(attacked -> !Objects.equals(attacked.getColor(), piece.getColor()))
                 .map(attacked -> (ATTACKED) attacked)
                 .flatMap(attacked -> Stream.of(Promotable.TARGET_TYPES)
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .map(pieceType -> new PiecePromoteAttackImpact<>(
                                 piece, attacked, pieceType
                         ))

@@ -82,7 +82,7 @@ abstract class AbstractPieceXRayImpact<COLOR1 extends Color,
 
     final int getPieceValues(Color color) {
         return Stream.of(pieces)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(piece -> Objects.equals(piece.getColor(), color))
                 .mapToInt(Piece::getValue)
                 .sum();

@@ -61,10 +61,10 @@ abstract class AbstractHoleImpactRule<POSITION extends Position,
         }
 
         var isControlledPosition = Stream.of(board.getPieces(color))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(piece -> isKing(piece) || !((Pinnable) piece).isPinned())
                 .map(piece -> board.getImpacts(piece, Impact.Type.CONTROL))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(Impact::getPosition)
                 .anyMatch(controlledPosition -> Objects.equals(controlledPosition, position));
 

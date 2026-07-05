@@ -49,7 +49,7 @@ final class PawnCaptureActionAdapter
     @Override
     boolean containsAction(Piece<Color> piece, String position, Action.Type actionType) {
         var actionExists = Stream.of(board.getActions(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(action -> isCapture(action) || isEnPassant(action))
                 .anyMatch(action -> Objects.equals(codeOf(action.getPosition()), position));
 

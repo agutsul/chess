@@ -46,13 +46,13 @@ public class PieceAbsoluteDiscoveredAttackImpactRule<COLOR1 extends Color,
         var impacts = Stream.of(board.getKing(piece.getColor().invert()))
                 .flatMap(Optional::stream)
                 .flatMap(opponentKing -> Stream.of(board.getLines(piece.getPosition()))
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         // check if there is piece action position outside line
                         .filter(line -> !line.containsAll(next))
                         .filter(line -> line.contains(opponentKing.getPosition()))
                         .map(line -> createImpacts(piece, next, (ATTACKED) opponentKing, line))
                  )
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .distinct()
                 .toList();
 

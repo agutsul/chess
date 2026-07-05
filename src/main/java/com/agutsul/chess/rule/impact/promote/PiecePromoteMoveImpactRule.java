@@ -40,12 +40,12 @@ final class PiecePromoteMoveImpactRule<COLOR extends Color,
             createImpacts(PIECE piece, Collection<Calculatable> next) {
 
         var impacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (Position) calculated)
                 .filter(position -> board.isEmpty(position))
                 .filter(position -> Objects.equals(position.x(), piece.getPosition().x()))
                 .flatMap(position -> Stream.of(Promotable.TARGET_TYPES)
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .map(pieceType -> new PiecePromoteMoveImpact<>(
                                 piece, position, pieceType
                         ))

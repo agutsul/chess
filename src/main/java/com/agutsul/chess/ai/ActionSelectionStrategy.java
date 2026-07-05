@@ -139,7 +139,7 @@ public final class ActionSelectionStrategy
 
     private boolean isAnyAction(Color color) {
         return Stream.of(board.getPieces(color))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(piece -> board.getActions(piece))
                 .anyMatch(not(Collection::isEmpty));
     }

@@ -161,7 +161,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         LOGGER.debug("'{}' value...", color);
 
         var value = Stream.of(getPieces(color))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .mapToInt(Piece::getValue)
                 .sum();
 
@@ -207,7 +207,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
         var impacts = Stream.ofNullable(getState(color))
                 .map(boardState -> boardState.getImpacts(position))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .distinct()
                 .toList();
 
@@ -223,7 +223,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         );
 
         var impacts = Stream.of(getImpacts(color, position))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(impact -> Objects.equals(impact.getType(), impactType))
                 .distinct()
                 .toList();
@@ -237,7 +237,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
         @SuppressWarnings("unchecked")
         var pieces = Stream.of(pieceCache.getActive())
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(piece -> (Piece<Color>) piece)
                 .toList();
 
@@ -250,7 +250,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
         @SuppressWarnings("unchecked")
         var pieces = Stream.of(pieceCache.getActive(color))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(piece -> (Piece<COLOR>) piece)
                 .toList();
 
@@ -263,7 +263,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
         @SuppressWarnings("unchecked")
         var pieces = Stream.of(pieceCache.getActive(pieceType))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(piece -> (Piece<Color>) piece)
                 .toList();
 
@@ -282,7 +282,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
         @SuppressWarnings("unchecked")
         var pieces = Stream.of(pieceCache.getActive())
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(piece -> positions.contains(piece.getPosition()))
                 .sorted(comparing(Piece::getPosition, COMPARATOR))
                 .map(piece -> (Piece<Color>) piece)
@@ -301,7 +301,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
         @SuppressWarnings("unchecked")
         var pieces = Stream.of(pieceCache.getActive(color, pieceType))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(piece -> (Piece<COLOR>) piece)
                 .toList();
 
@@ -314,7 +314,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
                                                                     String... positions) {
 
         var requestedPositions = Stream.of(List.of(position), List.of(positions))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(this::getPosition)
                 .flatMap(Optional::stream)
                 .collect(toSet());
@@ -336,7 +336,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
         @SuppressWarnings("unchecked")
         var pieces = Stream.of(pieceCache.getActive(color))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(piece -> positions.contains(piece.getPosition()))
                 .sorted(comparing(Piece::getPosition, COMPARATOR))
                 .map(piece -> (Piece<COLOR>) piece)
@@ -382,13 +382,13 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         var capturedPieces = Stream.of(getPosition(position))
                 .flatMap(Optional::stream)
                 .map(capturedPosition -> pieceCache.getCaptured(color, capturedPosition))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(not(Piece::isActive))
                 .collect(toMap(identity(), piece -> capturedAt(piece)));
 
         @SuppressWarnings("unchecked")
         var capturedPiece = Stream.of(capturedPieces.entrySet())
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(entry -> entry.getValue().isPresent())
                 .map(entry -> Pair.of(entry.getKey(), entry.getValue().get()))
                 .sorted(comparing(pair -> ((Pair<Piece<?>,Instant>) pair).getValue()).reversed())
@@ -420,9 +420,9 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         );
 
         var isAttacked = Stream.of(getPieces(attackerColor))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(piece -> getImpacts(piece, Impact.Type.CONTROL))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(impact -> (PieceControlImpact<?,?>) impact)
                 .map(PieceControlImpact::getPosition)
                 .anyMatch(targetPosition -> Objects.equals(targetPosition, position));
@@ -438,9 +438,9 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
         @SuppressWarnings("unchecked")
         var attackers = Stream.of(getPieces(attackerColor))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(foundPiece -> getActions(foundPiece, Action.Type.CAPTURE))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), piece))
                 .map(AbstractCaptureAction::getSource)
@@ -456,10 +456,10 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
         @SuppressWarnings("unchecked")
         var protectors = Stream.of(getPieces(piece.getColor()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(foundPiece -> !Objects.equals(foundPiece, piece))
                 .map(foundPiece -> getImpacts(foundPiece, Impact.Type.PROTECT))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(impact -> (PieceProtectImpact<?,?,?>) impact)
                 .filter(impact -> Objects.equals(impact.getTarget(), piece))
                 .map(PieceProtectImpact::getSource)
@@ -476,9 +476,9 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         );
 
         var isMonitored = Stream.of(getPieces(attackerColor))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(piece -> getImpacts(piece, Impact.Type.MONITOR))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(Impact::getPosition)
                 .anyMatch(targetPosition -> Objects.equals(targetPosition, position));
 
@@ -495,9 +495,9 @@ final class BoardImpl extends AbstractBoard implements Closeable {
 
         var king = optionalKing.get();
         var isCheckMakerMonitored = Stream.of(getAttackers(king))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(piece -> getImpacts(piece, Impact.Type.MONITOR))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(Impact::getPosition)
                 .anyMatch(targetPosition -> Objects.equals(targetPosition, position));
 
@@ -509,20 +509,20 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         // and attacker monitoring that position.
         // So, actual attack is blocked and as result position should be available for move
         var pinnedPieces = Stream.of(getPieces(color))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(not(Piece::isKing))
                 .filter(piece -> ((Pinnable) piece).isPinned())
                 .toList();
 
         for (var piece : pinnedPieces) {
             var isBlocked = Stream.of(getImpacts(piece, Impact.Type.PIN))
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .map(impact -> (PiecePinImpact<?,?,?,?,?>) impact)
                     .filter(impact -> impact.isMode(PiecePinImpact.Mode.ABSOLUTE))
                     .filter(impact -> Objects.equals(impact.getDefended(), king))
                     .map(PiecePinImpact::getAttacker)
                     .map(attacker -> getImpacts(attacker, Impact.Type.MONITOR))
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .map(impact -> (PieceMonitorImpact<?,?>) impact)
                     .map(PieceMonitorImpact::getPosition)
                     .anyMatch(monitoredPosition -> Objects.equals(monitoredPosition, position));

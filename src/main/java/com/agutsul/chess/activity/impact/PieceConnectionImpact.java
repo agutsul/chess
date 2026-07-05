@@ -58,7 +58,7 @@ public class PieceConnectionImpact<COLOR extends Color,
 
     private Integer calculateValue() {
         return Stream.of(getSource())
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .mapToInt(Piece::getValue)
                 .sum();
     }

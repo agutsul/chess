@@ -37,7 +37,7 @@ final class OpeningGamePhaseEvaluator
 
         var isMinorPiecesMoved = Stream.of(Piece.Type.KNIGHT, Piece.Type.BISHOP)
                 .map(pieceType -> board.getPieces(color, pieceType))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(piece -> (Movable) piece)
                 .allMatch(Movable::isMoved);
 
@@ -59,7 +59,7 @@ final class OpeningGamePhaseEvaluator
     private boolean isCastlingPerformed(Color color) {
         // search castling action in journal
         var isCastlingFound = Stream.of(journal.get(color))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(ActionMemento::getActionType)
                 .anyMatch(Action::isCastling);
 

@@ -50,7 +50,7 @@ abstract class AbstractPieceBlankFileImpactRule<COLOR extends Color,
         }
 
         Collection<Calculatable> lines = Stream.of(algo.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(line -> line.contains(targetPosition))
                 .collect(toList());
 

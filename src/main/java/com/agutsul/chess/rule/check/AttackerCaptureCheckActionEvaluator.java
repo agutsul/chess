@@ -49,10 +49,10 @@ final class AttackerCaptureCheckActionEvaluator
         }
 
         var actions = Stream.of(kingAttackers)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(attacker -> actionTargets.containsKey(attacker))
                 .map(attacker -> actionTargets.get(attacker))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .collect(toSet());
 
         return actions;

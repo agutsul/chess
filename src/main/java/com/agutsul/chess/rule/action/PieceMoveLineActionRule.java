@@ -42,7 +42,7 @@ public final class PieceMoveLineActionRule<COLOR extends Color,
             createActions(PIECE piece, Collection<Calculatable> positions) {
 
         var actions = Stream.of(positions)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> new PieceMoveAction<>(piece, (Position) calculated))
                 .toList();
 

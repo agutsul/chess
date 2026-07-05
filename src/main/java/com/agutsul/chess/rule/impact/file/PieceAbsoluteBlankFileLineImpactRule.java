@@ -22,7 +22,7 @@ final class PieceAbsoluteBlankFileLineImpactRule<COLOR extends Color,
                                                  PieceAbsoluteBlankFileImpact<COLOR,PIECE>> {
 
     PieceAbsoluteBlankFileLineImpactRule(Board board, Algo<PIECE,Collection<Line>> algo,
-                                    int promotionLine) {
+                                         int promotionLine) {
 
         super(board, algo, promotionLine);
     }
@@ -30,7 +30,7 @@ final class PieceAbsoluteBlankFileLineImpactRule<COLOR extends Color,
     @Override
     protected Collection<Calculatable> calculate(PIECE piece) {
         return Stream.of(super.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(calculated -> board.getPieces((Line) calculated).isEmpty())
                 .toList();
     }
@@ -40,7 +40,7 @@ final class PieceAbsoluteBlankFileLineImpactRule<COLOR extends Color,
             createImpacts(PIECE piece, Collection<Calculatable> next) {
 
         return Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> new PieceAbsoluteBlankFileImpact<>(piece, (Line) calculated))
                 .toList();
     }

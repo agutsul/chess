@@ -22,8 +22,8 @@ public final class LinePositionAlgoAdapter<COLOR extends Color,
     @Override
     public Collection<Position> calculate(PIECE piece) {
         return Stream.of(algo.calculate(piece))
-                .flatMap(Collection::stream) // unwrap calculated lines
-                .flatMap(Collection::stream) // unwrap line positions
+                .flatMap(Collection::parallelStream) // unwrap calculated lines
+                .flatMap(Collection::parallelStream) // unwrap line positions
                 .toList();
     }
 }

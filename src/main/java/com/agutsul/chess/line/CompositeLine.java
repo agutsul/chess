@@ -37,7 +37,7 @@ final class CompositeLine extends AbstractLine {
     public Collection<Position> intersection(Collection<Position> positions) {
         return Stream.of(left, right)
                 .map(line -> line.intersection(positions))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .distinct()
                 .toList();
     }

@@ -50,7 +50,7 @@ abstract class AbstractPlayableBoardState
         if (impactCache.containsKey(position)) {
             return Stream.ofNullable(impactCache.get(position))
                 .map(ActivityCache::getAll)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .toList();
         }
 

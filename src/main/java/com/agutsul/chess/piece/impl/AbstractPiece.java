@@ -270,13 +270,13 @@ abstract class AbstractPiece<COLOR extends Color>
 
         // get pieces with the same color
         var isProtected = Stream.of(board.getPieces(getColor()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 // piece can't protect itself
                 .filter(piece -> !Objects.equals(piece, this))
                 // skip pinned pieces but allow king
                 .filter(piece -> isKing(piece) || !((Pinnable) piece).isPinned())
                 .map(piece -> board.getImpacts(piece, Impact.Type.PROTECT))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(impact -> (PieceProtectImpact<?,?,?>) impact)
                 // check if there is protect impact saving current piece
                 .anyMatch(protector -> Objects.equals(protector.getTarget(), this));

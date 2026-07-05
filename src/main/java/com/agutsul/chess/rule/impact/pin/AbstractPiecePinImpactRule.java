@@ -54,7 +54,7 @@ abstract class AbstractPiecePinImpactRule<COLOR1 extends Color,
                                                Collection<Calculatable> next) {
 
         var positions = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (Position) calculated)
                 .filter(position -> {
                     var optionalPiece = board.getPiece(position);
@@ -73,7 +73,7 @@ abstract class AbstractPiecePinImpactRule<COLOR1 extends Color,
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(rule.evaluate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(impact -> {
                     var line = impact.getLine();
                     return line.containsAny(positions)
