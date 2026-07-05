@@ -120,36 +120,6 @@ abstract class AbstractActionIntegerValueSimulationTask
         }
 
         private static int calculateImpact(Board board, Optional<Piece<Color>> targetPiece) {
-/*
-            var startTimepoint = System.currentTimeMillis();
-
-            var impacts = board.getImpacts(targetPiece.get());
-            logger.error("Loading '{}' impacts: {}ms",
-                    targetPiece.get(), (System.currentTimeMillis() - startTimepoint)
-            );
-
-            startTimepoint = System.currentTimeMillis();
-
-            int value = 0;
-            for (var impact : impacts) {
-                var valStartTimepoint = System.currentTimeMillis();
-
-                var val = impact.getValue();
-
-//                logger.error("Calc '{}' impact value '{}': {}ms",
-//                        impact.getType(), val, (System.currentTimeMillis() - valStartTimepoint)
-//                );
-
-                value += val;
-            }
-
-            logger.error("Calculating '{}' impact value - '{}': {}ms",
-                    targetPiece.get(), value, (System.currentTimeMillis() - startTimepoint)
-            );
-
-            return value;
-*/
-
             var value = Stream.of(targetPiece)
                     .flatMap(Optional::stream)
                     .map(piece -> board.getImpacts(piece))
