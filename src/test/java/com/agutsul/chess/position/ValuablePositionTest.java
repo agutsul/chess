@@ -1,32 +1,22 @@
 package com.agutsul.chess.position;
 
 import static com.agutsul.chess.position.Position.isCentral;
+import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agutsul.chess.exception.IllegalPositionException;
-
 @ExtendWith(MockitoExtension.class)
-public class PositionImplTest {
+public class ValuablePositionTest {
 
     @Test
-    void testInvalildPositionCreation() {
-        var thrown = assertThrows(
-                IllegalPositionException.class,
-                () -> new PositionImpl(-1, -1)
-            );
-
-        assertEquals("Invalid position [-1,-1]", thrown.getMessage());
-    }
-
-    @Test
-    void testValidPositionCreation() {
-        var position = new PositionImpl(0,0);
+    void testValuablePosition() {
+        var position = new ValuablePosition<Integer>(positionOf(0, 0), 10);
+        assertEquals(10, position.getValue());
+        assertEquals("a1:10", String.valueOf(position));
         assertEquals("a1", position.getCode());
         assertEquals(0, position.x());
         assertEquals(0, position.y());
