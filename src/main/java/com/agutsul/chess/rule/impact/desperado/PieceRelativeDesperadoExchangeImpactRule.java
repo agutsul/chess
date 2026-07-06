@@ -6,6 +6,7 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -20,6 +21,7 @@ import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.PieceComparator;
 import com.agutsul.chess.rule.AbstractRule;
 import com.agutsul.chess.rule.impact.DesperadoImpactRule;
 
@@ -33,6 +35,8 @@ public final class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color
                              Impact.Type>
         implements DesperadoImpactRule<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,
                                        PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>> {
+
+    private static final Comparator<Piece<?>> COMPARATOR = new PieceComparator();
 
     public PieceRelativeDesperadoExchangeImpactRule(Board board) {
         super(board, Impact.Type.DESPERADO);
@@ -105,15 +109,8 @@ public final class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color
                             return attacked.getType().rank() >= piece.getType().rank();
                         })
                 )
-                .sorted(comparing(
-                        // sort most valuable attacked pieces first
-                        AbstractCaptureAction::getTarget,
-                        (piece1,piece2) -> Integer.compare(
-                                piece2.getType().rank(),
-                                piece1.getType().rank()
-                        )
-                    )
-                )
+                // sort most valuable attacked pieces first
+                .sorted(comparing(AbstractCaptureAction::getTarget, COMPARATOR))
                 .collect(toList());
 
         return actions;

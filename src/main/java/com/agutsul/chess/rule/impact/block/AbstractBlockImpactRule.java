@@ -4,6 +4,7 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -20,6 +21,7 @@ import com.agutsul.chess.activity.impact.PieceBlockImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.PieceComparator;
 import com.agutsul.chess.position.Position;
 import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 import com.agutsul.chess.rule.impact.BlockImpactRule;
@@ -34,6 +36,8 @@ abstract class AbstractBlockImpactRule<COLOR1 extends Color,
                                        IMPACT extends PieceBlockImpact<COLOR1,COLOR2,BLOCKER,ATTACKED,ATTACKER>>
         extends AbstractPieceImpactRule<COLOR1,BLOCKER,IMPACT>
         implements BlockImpactRule<COLOR1,COLOR2,BLOCKER,ATTACKED,ATTACKER,IMPACT> {
+
+    private static final Comparator<Piece<?>> COMPARATOR = new PieceComparator();
 
     AbstractBlockImpactRule(Board board) {
         super(board, Impact.Type.BLOCK);
@@ -64,14 +68,8 @@ abstract class AbstractBlockImpactRule<COLOR1 extends Color,
                                 ))
                         )
                 )
-                .sorted(comparing(
-                        PieceBlockAttackImpact::getAttacked, // sort most valuable defended pieces first
-                        (piece1,piece2) -> Integer.compare(
-                                piece2.getType().rank(),
-                                piece1.getType().rank()
-                        )
-                    )
-                )
+                // sort most valuable defended pieces first
+                .sorted(comparing(PieceBlockAttackImpact::getAttacked, COMPARATOR))
                 .map(impact -> (IMPACT) impact)
                 .distinct()
                 .toList();

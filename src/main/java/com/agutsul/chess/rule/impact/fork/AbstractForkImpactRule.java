@@ -4,6 +4,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -17,6 +18,7 @@ import com.agutsul.chess.activity.impact.PieceRelativeForkImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.PieceComparator;
 import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 import com.agutsul.chess.rule.impact.ForkImpactRule;
 
@@ -28,6 +30,8 @@ abstract class AbstractForkImpactRule<COLOR1 extends Color,
                                       IMPACT extends PieceForkImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
         extends AbstractPieceImpactRule<COLOR1,ATTACKER,IMPACT>
         implements ForkImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,IMPACT> {
+
+    private static final Comparator<Piece<?>> COMPARATOR = new PieceComparator();
 
     AbstractForkImpactRule(Board board) {
         super(board, Impact.Type.FORK);
@@ -45,13 +49,7 @@ abstract class AbstractForkImpactRule<COLOR1 extends Color,
         // sort impacts to make most valuable targets first
         var sortedImpacts = Stream.of(impacts)
                 .flatMap(Collection::parallelStream)
-                .sorted(comparing(
-                        AbstractPieceAttackImpact::getTarget,
-                        (piece1,piece2) -> Integer.compare(
-                                piece2.getType().rank(),
-                                piece1.getType().rank()
-                        )
-                ))
+                .sorted(comparing(AbstractPieceAttackImpact::getTarget, COMPARATOR))
                 .toList();
 
         return createForkImpacts(piece, sortedImpacts);
