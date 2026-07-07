@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.knight;
 
+import org.apache.commons.lang3.Range;
+
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -28,12 +30,13 @@ public final class KnightPieceImpactRule<COLOR extends Color,
                                          PIECE extends KnightPiece<COLOR>>
         extends AbstractPieceRule<PIECE,Impact<?>,Impact.Type> {
 
-    public KnightPieceImpactRule(Board board) {
-        this(board, new KnightPieceAlgo<>(board));
+    public KnightPieceImpactRule(Board board, Range<Integer> lineRange) {
+        this(board, lineRange, new KnightPieceAlgo<>(board));
     }
 
     @SuppressWarnings("unchecked")
-    private KnightPieceImpactRule(Board board, KnightPieceAlgo<COLOR,PIECE> algo) {
+    private KnightPieceImpactRule(Board board, Range<Integer> lineRange,
+                                  KnightPieceAlgo<COLOR,PIECE> algo) {
         super(new CompositeRule<>(
                 new PieceCheckPositionImpactRule<>(board, algo),
                 new PieceAttackPositionImpactRule<>(board, algo),
@@ -48,7 +51,7 @@ public final class KnightPieceImpactRule<COLOR extends Color,
                 new PieceUnderminingPositionImpactRule<>(board, algo),
                 new PieceInterferencePositionImpactRule<>(board, algo),
                 new PieceDeflectionPositionImpactRule<>(board, algo),
-                new PieceOutpostPositionImpactRule<>(board, algo),
+                new PieceOutpostPositionImpactRule<>(board, lineRange, algo),
                 new PieceSacrificePositionImpactRule<>(board, algo),
                 new PieceDesperadoPositionImpactRule<>(board, algo),
                 new PieceDominationPositionImpactRule<>(board, algo)

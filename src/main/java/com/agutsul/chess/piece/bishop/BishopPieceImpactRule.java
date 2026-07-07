@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.bishop;
 
+import org.apache.commons.lang3.Range;
+
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -32,12 +34,14 @@ public final class BishopPieceImpactRule<COLOR extends Color,
                                          PIECE extends BishopPiece<COLOR>>
         extends AbstractPieceRule<PIECE,Impact<?>,Impact.Type> {
 
-    public BishopPieceImpactRule(Board board) {
-        this(board, new BishopPieceAlgo<>(board));
+    public BishopPieceImpactRule(Board board, Range<Integer> lineRange) {
+        this(board, lineRange, new BishopPieceAlgo<>(board));
     }
 
     @SuppressWarnings("unchecked")
-    private BishopPieceImpactRule(Board board, BishopPieceAlgo<COLOR,PIECE> algo) {
+    private BishopPieceImpactRule(Board board, Range<Integer> lineRange,
+                                  BishopPieceAlgo<COLOR,PIECE> algo) {
+
         super(new CompositeRule<>(
                 new PieceCheckLineImpactRule<>(board, algo),
                 new PieceMotionLineImpactRule<>(board, algo),
@@ -55,7 +59,7 @@ public final class BishopPieceImpactRule<COLOR extends Color,
                 new PieceInterferenceLineImpactRule<>(board, algo),
                 new PieceSkewerImpactRule<>(board, algo),
                 new PieceBatteryImpactRule<>(board, algo),
-                new PieceOutpostLineImpactRule<>(board, algo),
+                new PieceOutpostLineImpactRule<>(board, lineRange, algo),
                 new PieceSacrificeLineImpactRule<>(board, algo),
                 new PieceDesperadoLineImpactRule<>(board, algo),
                 new PieceDominationLineImpactRule<>(board, algo),

@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.rook;
 
+import org.apache.commons.lang3.Range;
+
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -33,14 +35,16 @@ public final class RookPieceImpactRule<COLOR extends Color,
                                        PIECE extends RookPiece<COLOR>>
         extends AbstractPieceRule<PIECE,Impact<?>,Impact.Type> {
 
-    public RookPieceImpactRule(Board board, COLOR color, int castlingLine, int promotionLine) {
-        this(board, promotionLine, new RookPieceAlgo<>(board),
+    public RookPieceImpactRule(Board board, COLOR color, int castlingLine,
+                               int promotionLine, Range<Integer> lineRange) {
+
+        this(board, promotionLine, lineRange, new RookPieceAlgo<>(board),
                 new RookCastlingAlgo<>(board, color, castlingLine)
         );
     }
 
     @SuppressWarnings("unchecked")
-    private RookPieceImpactRule(Board board, int promotionLine,
+    private RookPieceImpactRule(Board board, int promotionLine, Range<Integer> lineRange,
                                 RookPieceAlgo<COLOR,PIECE> actionAlgo,
                                 RookCastlingAlgo<COLOR,PIECE> castlingAlgo) {
 
@@ -61,7 +65,7 @@ public final class RookPieceImpactRule<COLOR extends Color,
                 new PieceDeflectionLineImpactRule<>(board, actionAlgo),
                 new PieceUnderminingLineImpactRule<>(board, actionAlgo),
                 new PieceForkLineImpactRule<>(board, actionAlgo),
-                new PieceOutpostLineImpactRule<>(board, actionAlgo),
+                new PieceOutpostLineImpactRule<>(board, lineRange, actionAlgo),
                 new PieceSacrificeLineImpactRule<>(board, actionAlgo),
                 new PieceDesperadoLineImpactRule<>(board, actionAlgo),
                 new PieceDominationLineImpactRule<>(board, actionAlgo),

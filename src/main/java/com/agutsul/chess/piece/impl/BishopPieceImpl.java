@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import com.agutsul.chess.activity.ActivityContext;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.BishopPiece;
@@ -13,13 +14,13 @@ final class BishopPieceImpl<COLOR extends Color>
         implements BishopPiece<COLOR> {
 
     BishopPieceImpl(Board board, COLOR color, String unicode,
-                    Position position, int direction) {
+                    Position position, ActivityContext context) {
 
         super(board, position,
-                new PieceContext<>(Piece.Type.BISHOP, color, unicode, direction),
+                new PieceContext<>(Piece.Type.BISHOP, color, unicode, context.getDirection()),
                 new ActivePieceStateImpl<>(board,
                                            new BishopPieceActionRule<>(board),
-                                           new BishopPieceImpactRule<>(board)
+                                           new BishopPieceImpactRule<>(board, context.getOutpostLines())
                 )
         );
     }

@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.pawn;
 
+import org.apache.commons.lang3.Range;
+
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -15,29 +17,30 @@ public final class PawnPieceImpactRule<COLOR extends Color,
                                        PAWN  extends PawnPiece<COLOR>>
         extends AbstractPieceRule<PAWN,Impact<?>,Impact.Type> {
 
-    public PawnPieceImpactRule(Board board, COLOR color,
-                               int step, int initialLine, int promotionLine) {
+    public PawnPieceImpactRule(Board board, COLOR color, int step,
+                               int initialLine, int promotionLine, Range<Integer> lineRange) {
 
-        this(board, color, promotionLine,
+        this(board, color, promotionLine, lineRange,
                 new PawnMoveAlgo<>(board, step),
                 new PawnBigMoveAlgo<>(board, step, initialLine),
                 new PawnCaptureAlgo<>(board, step)
         );
     }
 
-    private PawnPieceImpactRule(Board board, COLOR color, int promotionLine,
+    private PawnPieceImpactRule(Board board, COLOR color,
+                                int promotionLine, Range<Integer> lineRange,
                                 PawnMoveAlgo<COLOR,PAWN> moveAlgo,
                                 PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
                                 PawnCaptureAlgo<COLOR,PAWN> captureAlgo) {
 
-        this(board, promotionLine, moveAlgo, bigMoveAlgo,
+        this(board, promotionLine, lineRange, moveAlgo, bigMoveAlgo,
                 captureAlgo, new PawnEnPassantAlgo<>(board, color, captureAlgo),
                 new PawnPromoteAlgo<>(board, promotionLine, moveAlgo, captureAlgo)
         );
     }
 
     @SuppressWarnings("unchecked")
-    private PawnPieceImpactRule(Board board, int promotionLine,
+    private PawnPieceImpactRule(Board board, int promotionLine, Range<Integer> lineRange,
                                 PawnMoveAlgo<COLOR,PAWN> moveAlgo,
                                 PawnBigMoveAlgo<COLOR,PAWN> bigMoveAlgo,
                                 PawnCaptureAlgo<COLOR,PAWN> captureAlgo,
@@ -63,7 +66,7 @@ public final class PawnPieceImpactRule<COLOR extends Color,
                 new PawnOverloadingImpactRule<>(board, captureAlgo, enPassantAlgo),
                 new PawnUnderminingImpactRule<>(board, captureAlgo, enPassantAlgo),
                 new PawnDeflectionImpactRule<>(board,  captureAlgo, enPassantAlgo),
-                new PawnOutpostImpactRule<>(board, moveAlgo, bigMoveAlgo, captureAlgo, enPassantAlgo),
+                new PawnOutpostImpactRule<>(board, lineRange, moveAlgo, bigMoveAlgo, captureAlgo, enPassantAlgo),
                 new PawnSacrificeImpactRule<>(board, moveAlgo, bigMoveAlgo, captureAlgo, enPassantAlgo),
                 new PawnLuftImpactRule<>(board, moveAlgo, bigMoveAlgo, captureAlgo),
                 new PawnDesperadoImpactRule<>(board, captureAlgo, enPassantAlgo),

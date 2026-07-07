@@ -632,6 +632,32 @@ public class BishopPieceImplTest extends AbstractPieceTest {
     }
 
     @Test
+    void testBishopNoOutputImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("e8")
+                .withBlackQueen("d8")
+                .withBlackRooks("a8","h8")
+                .withBlackKnights("b8","g8")
+                .withBlackBishops("c8","f8")
+                .withBlackPawns("a7","b7","c7","d7","e5","f7","g7","h7")
+                .withWhiteKing("e1")
+                .withWhiteQueen("d1")
+                .withWhiteRooks("a1","h1")
+                .withWhiteKnights("b1","g1")
+                .withWhiteBishops("c1","f1")
+                .withWhitePawns("a2","b2","c2","d2","e4","f2","g2","h2")
+                .build();
+
+        var whiteBishop = board.getPiece("f1").get();
+        var whiteOutpostImpacts = board.getImpacts(whiteBishop, Impact.Type.OUTPOST);
+        assertTrue(whiteOutpostImpacts.isEmpty());
+
+        var blackBishop = board.getPiece("f8").get();
+        var blackOutpostImpacts = board.getImpacts(blackBishop, Impact.Type.OUTPOST);
+        assertTrue(blackOutpostImpacts.isEmpty());
+    }
+
+    @Test
     // https://www.chess.com/forum/view/chess-openings/bishop-knight-sacrifice-gambits
     void testBishopSacrificeImpact() {
         var board = new LabeledBoardBuilder()

@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.queen;
 
+import org.apache.commons.lang3.Range;
+
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -33,12 +35,14 @@ public final class QueenPieceImpactRule<COLOR extends Color,
                                         PIECE extends QueenPiece<COLOR>>
         extends AbstractPieceRule<PIECE,Impact<?>,Impact.Type> {
 
-    public QueenPieceImpactRule(Board board, int promotionLine) {
-        this(board, new QueenPieceAlgo<>(board), promotionLine);
+    public QueenPieceImpactRule(Board board, int promotionLine, Range<Integer> lineRange) {
+        this(board, new QueenPieceAlgo<>(board), promotionLine, lineRange);
     }
 
     @SuppressWarnings("unchecked")
-    private QueenPieceImpactRule(Board board, QueenPieceAlgo<COLOR,PIECE> algo, int promotionLine) {
+    private QueenPieceImpactRule(Board board, QueenPieceAlgo<COLOR,PIECE> algo,
+                                 int promotionLine, Range<Integer> lineRange) {
+
         super(new CompositeRule<>(
                 new PieceCheckLineImpactRule<>(board, algo),
                 new PieceProtectLineImpactRule<>(board, algo),
@@ -56,7 +60,7 @@ public final class QueenPieceImpactRule<COLOR extends Color,
                 new PieceUnderminingLineImpactRule<>(board, algo),
                 new PieceInterferenceLineImpactRule<>(board, algo),
                 new PieceDeflectionLineImpactRule<>(board, algo),
-                new PieceOutpostLineImpactRule<>(board, algo),
+                new PieceOutpostLineImpactRule<>(board, lineRange, algo),
                 new PieceSacrificeLineImpactRule<>(board, algo),
                 new PieceDesperadoLineImpactRule<>(board, algo),
                 new PieceDominationLineImpactRule<>(board, algo),

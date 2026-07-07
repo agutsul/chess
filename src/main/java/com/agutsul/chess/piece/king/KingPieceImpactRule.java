@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.king;
 
+import org.apache.commons.lang3.Range;
+
 import com.agutsul.chess.Castlingable.Castling;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
@@ -24,14 +26,16 @@ public final class KingPieceImpactRule<COLOR extends Color,
                                        KING  extends KingPiece<COLOR>>
         extends AbstractPieceRule<KING,Impact<?>,Impact.Type> {
 
-    public KingPieceImpactRule(Board board, COLOR color, int castlingLine) {
-        this(board, color, new KingPieceAlgoImpl<>(board),
+    public KingPieceImpactRule(Board board, COLOR color, int castlingLine,
+                               Range<Integer> lineRange) {
+
+        this(board, color, lineRange, new KingPieceAlgoImpl<>(board),
                 new KingCastlingAlgo<>(board, color, castlingLine)
         );
     }
 
     @SuppressWarnings("unchecked")
-    private KingPieceImpactRule(Board board, COLOR color,
+    private KingPieceImpactRule(Board board, COLOR color, Range<Integer> lineRange,
                                 KingPieceAlgoImpl<COLOR,KING> impactAlgo,
                                 CastlingPieceAlgo<COLOR,KING,Castling> castlingAlgo) {
 
@@ -44,7 +48,7 @@ public final class KingPieceImpactRule<COLOR extends Color,
                 new PieceDiscoveredAttackPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.DEFAULT, board, color, impactAlgo)),
                 new PieceOverloadingPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, color, impactAlgo)),
                 new PieceUnderminingPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, color, impactAlgo)),
-                new PieceOutpostPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.MOVE, board, color, impactAlgo)),
+                new PieceOutpostPositionImpactRule<>(board, lineRange, new KingPieceAlgoProxy<>(Mode.MOVE, board, color, impactAlgo)),
                 new PieceDominationPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, color, impactAlgo)),
                 new KingCastlingImpactRule<>(board, castlingAlgo)
             )

@@ -1,5 +1,7 @@
 package com.agutsul.chess.rule.impact.outpost;
 
+import org.apache.commons.lang3.Range;
+
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
 import com.agutsul.chess.Movable;
@@ -18,9 +20,10 @@ public final class PieceOutpostLineImpactRule<COLOR extends Color,
         extends AbstractOutpostImpactRule<COLOR,PIECE,
                                           PieceOutpostImpact<COLOR,PIECE>> {
 
-    public PieceOutpostLineImpactRule(Board board,
+    public PieceOutpostLineImpactRule(Board board, Range<Integer> lineRange,
                                       CapturePieceAlgo<COLOR,PIECE,Line> algo) {
-        super(board, new LinePositionAlgoAdapter<>(
+
+        super(board, lineRange, new LinePositionAlgoAdapter<>(
                 new SecureLineAlgoAdapter<>(Mode.OPPOSITE_COLORS, board, algo)
         ));
     }

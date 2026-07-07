@@ -1,5 +1,7 @@
 package com.agutsul.chess.piece.factory;
 
+import org.apache.commons.lang3.Range;
+
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.BishopPiece;
 import com.agutsul.chess.piece.KingPiece;
@@ -25,6 +27,10 @@ public interface PieceFactory<COLOR extends Color> {
 
     interface Castling {
         int line();
+    }
+
+    interface Outpost {
+        Range<Integer> lines();
     }
 
     KingPiece<COLOR> createKing(Position position);

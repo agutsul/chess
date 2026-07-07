@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.activity.ActivityContext;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
@@ -32,13 +33,15 @@ final class RookPieceImpl<COLOR extends Color>
     private static final Comparator<Action<?>> ROOK_COMPARATOR = new RookActionComparator();
 
     RookPieceImpl(Board board, COLOR color, String unicode,
-                  Position position, int direction, int promotionLine, int castlingLine) {
+                  Position position, ActivityContext context) {
 
         super(board, position,
-                new PieceContext<>(Piece.Type.ROOK, color, unicode, direction),
+                new PieceContext<>(Piece.Type.ROOK, color, unicode, context.getDirection()),
                 new ActiveCastlingablePieceState<>(board,
-                        new RookPieceActionRule<>(board, color, castlingLine),
-                        new RookPieceImpactRule<>(board, color, castlingLine, promotionLine)
+                        new RookPieceActionRule<>(board, color, context.getCastlingLine()),
+                        new RookPieceImpactRule<>(board, color, context.getCastlingLine(),
+                                context.getPromotionLine(), context.getOutpostLines()
+                        )
                 ),
                 castlingSides(position)
         );

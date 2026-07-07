@@ -1,13 +1,15 @@
 package com.agutsul.chess.rule.impact.outpost;
 
-import static com.agutsul.chess.position.PositionFactory.positionOf;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableCollection;
+import static java.util.stream.Collectors.toSet;
 
 import java.util.Collection;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
+import org.apache.commons.lang3.Range;
 
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
@@ -31,12 +33,14 @@ abstract class AbstractOutpostImpactRule<COLOR extends Color,
         implements OutpostImpactRule<COLOR,PIECE,IMPACT> {
 
     private final Algo<PIECE,Collection<Position>> algo;
+    private final Range<Integer> lineRange;
 
-    AbstractOutpostImpactRule(Board board,
+    AbstractOutpostImpactRule(Board board, Range<Integer> lineRange,
                               Algo<PIECE,Collection<Position>> algo) {
 
         super(board, Impact.Type.OUTPOST);
         this.algo = algo;
+        this.lineRange = lineRange;
     }
 
     @Override
@@ -46,37 +50,40 @@ abstract class AbstractOutpostImpactRule<COLOR extends Color,
 
     @Override
     protected Collection<IMPACT> createImpacts(PIECE piece, Collection<Calculatable> next) {
-        var opponentPawns = board.getPieces(piece.getColor().invert(), Piece.Type.PAWN);
+        var opponentColor = piece.getColor().invert();
 
-        var opponentPawnsCache = new ArrayListValuedHashMap<Integer,Piece<Color>>();
-        for (var opponentPawn : opponentPawns) {
-            opponentPawnsCache.put(opponentPawn.getPosition().x(), opponentPawn);
+        var opponentPawnControlledPositions = getPawnControlledPositions(opponentColor);
+        var playerPawnControlledPositions = getPawnControlledPositions(piece.getColor());
+
+        if (opponentPawnControlledPositions.isEmpty()
+                || playerPawnControlledPositions.isEmpty()) {
+
+            return emptyList();
         }
 
-        var attackedPositions = Stream.of(opponentPawns)
-                .flatMap(Collection::parallelStream)
-                .map(opponentPawn -> board.getImpacts(opponentPawn, Impact.Type.CONTROL))
-                .flatMap(Collection::parallelStream)
-                .map(impact -> (PieceControlImpact<?,?>) impact)
-                .map(PieceControlImpact::getTarget)
-                .toList();
+        var opponentPawns = new ArrayListValuedHashMap<Integer,Piece<?>>();
+        for (var opponentPawn : board.getPieces(opponentColor, Piece.Type.PAWN)) {
+            opponentPawns.put(opponentPawn.getPosition().x(), opponentPawn);
+        }
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(next)
                 .flatMap(Collection::parallelStream)
                 .map(calculated -> (Position) calculated)
+                // confirm that position inside specified horizontal line range
+                .filter(position -> lineRange.contains(position.y()))
                 // confirm that position is not attacked by any opponent pawn
-                .filter(position -> !attackedPositions.contains(position))
+                .filter(position -> !opponentPawnControlledPositions.contains(position))
                 // confirm that position can't be attacked by any opponent pawn in future
                 .filter(position -> Stream.of(position.x() + 1, position.x() - 1)
-                        .map(x -> positionOf(x, position.y()))
-                        .filter(Objects::nonNull)
+                        .map(x -> board.getPosition(x, position.y()))
+                        .flatMap(Optional::stream)
                         .anyMatch(opponentPosition -> {
-                            if (!opponentPawnsCache.containsKey(opponentPosition.x())) {
+                            if (!opponentPawns.containsKey(opponentPosition.x())) {
                                 return true;
                             }
 
-                            var isVisited = Stream.of(opponentPawnsCache.get(opponentPosition.x()))
+                            var isVisited = Stream.of(opponentPawns.get(opponentPosition.x()))
                                     .flatMap(Collection::parallelStream)
                                     .map(Piece::getPositions)
                                     .allMatch(visitedPositions -> visitedPositions.contains(opponentPosition));
@@ -85,17 +92,21 @@ abstract class AbstractOutpostImpactRule<COLOR extends Color,
                         })
                 )
                 // confirm that position is under control by any player's pawn
-                .filter(position -> Stream.of(board.getPieces(piece.getColor(), Piece.Type.PAWN))
-                        .flatMap(Collection::parallelStream)
-                        .map(pawn -> board.getImpacts(pawn, Impact.Type.CONTROL))
-                        .flatMap(Collection::parallelStream)
-                        .map(impact -> (PieceControlImpact<?,?>) impact)
-                        .anyMatch(impact -> Objects.equals(impact.getTarget(), position))
-                )
+                .filter(position -> playerPawnControlledPositions.contains(position))
                 .map(position -> new PieceOutpostImpact<>(piece, position))
                 .map(impact -> (IMPACT) impact)
                 .toList();
 
         return impacts;
+    }
+
+    private Collection<Position> getPawnControlledPositions(Color color) {
+        return Stream.of(board.getPieces(color, Piece.Type.PAWN))
+                .flatMap(Collection::parallelStream)
+                .map(pawn -> board.getImpacts(pawn, Impact.Type.CONTROL))
+                .flatMap(Collection::parallelStream)
+                .map(impact -> (PieceControlImpact<?,?>) impact)
+                .map(PieceControlImpact::getTarget)
+                .collect(toSet());
     }
 }

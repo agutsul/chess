@@ -11,10 +11,12 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.Range;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Demotable;
 import com.agutsul.chess.Pinnable;
+import com.agutsul.chess.activity.ActivityContext;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.BishopPiece;
@@ -116,10 +118,31 @@ abstract class AbstractPieceFactory<COLOR extends Color>
         }
     }
 
+    enum Outposts implements Outpost {
+        WHITE(Position.MIN + 3, Position.MAX - 2),
+        BLACK(Position.MAX - 3, Position.MIN + 1);
+
+        private Range<Integer> range;
+
+        Outposts(int start, int finish) {
+            this.range = Range.of(start, finish);
+        }
+
+        @Override
+        public Range<Integer> lines() {
+            return this.range;
+        }
+
+        @Override
+        public String toString() {
+            return name();
+        }
+    }
+
     final Logger logger;
     final Board board;
     final COLOR color;
-    final PieceFactoryContext context;
+    final ActivityContext context;
 
     AbstractPieceFactory(Logger logger, Board board, COLOR color,
                          PieceFactoryContext context) {
@@ -127,7 +150,7 @@ abstract class AbstractPieceFactory<COLOR extends Color>
         this.logger = logger;
         this.board = board;
         this.color = color;
-        this.context = context;
+        this.context = createContext(context);
     }
 
     @Override
@@ -162,40 +185,32 @@ abstract class AbstractPieceFactory<COLOR extends Color>
 
     KingPiece<COLOR> createKing(Position position, String unicode) {
         logger.debug("Create '{}' king at '{}'", color, position);
-        return new KingPieceImpl<>(board, color, unicode, position, context.getDirection(),
-                                   context.getCastlingLine()
-        );
+        return new KingPieceImpl<>(board, color, unicode, position, context);
     }
 
     QueenPiece<COLOR> createQueen(Position position, String unicode) {
         logger.debug("Create '{}' queen at '{}'", color, position);
-        return new QueenPieceImpl<>(board, color, unicode, position,
-                context.getDirection(), context.getPromotionLine()
-        );
+        return new QueenPieceImpl<>(board, color, unicode, position, context);
     }
 
     RookPiece<COLOR> createRook(Position position, String unicode) {
         logger.debug("Create '{}' rook at '{}'", color, position);
-        return new RookPieceImpl<>(board, color, unicode, position,
-                context.getDirection(), context.getPromotionLine(), context.getCastlingLine()
-        );
+        return new RookPieceImpl<>(board, color, unicode, position, context);
     }
 
     BishopPiece<COLOR> createBishop(Position position, String unicode) {
         logger.debug("Create '{}' bishop at '{}'", color, position);
-        return new BishopPieceImpl<>(board, color, unicode, position, context.getDirection());
+        return new BishopPieceImpl<>(board, color, unicode, position, context);
     }
 
     KnightPiece<COLOR> createKnight(Position position, String unicode) {
         logger.debug("Create '{}' knight at '{}'", color, position);
-        return new KnightPieceImpl<>(board, color, unicode, position, context.getDirection());
+        return new KnightPieceImpl<>(board, color, unicode, position, context);
     }
 
     PawnPiece<COLOR> createPawn(Position position, String unicode) {
         logger.debug("Create '{}' pawn at '{}'", color, position);
-        return new PawnPieceImpl<>(board, color, unicode, position,
-                context.getDirection(), context.getPromotionLine(), context.getBigMoveLine()
-        );
+        return new PawnPieceImpl<>(board, color, unicode, position, context);
     }
 
     <PIECE extends Piece<COLOR> & Demotable,PROXY extends PieceProxy<COLOR,PIECE> & Demotable>
@@ -208,6 +223,12 @@ abstract class AbstractPieceFactory<COLOR extends Color>
             PROXY pinnableProxy(PIECE piece) {
 
         return PinnablePieceProxyFactory.createProxy(board, piece);
+    }
+
+    private static ActivityContext createContext(PieceFactoryContext context) {
+        return new ActivityContext(context.getDirection(), context.getCastlingLine(),
+                context.getBigMoveLine(), context.getPromotionLine(), context.getOutpostLines()
+        );
     }
 
     private enum DemotablePieceProxyFactory {

@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import com.agutsul.chess.activity.ActivityContext;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
@@ -13,13 +14,15 @@ final class QueenPieceImpl<COLOR extends Color>
         implements QueenPiece<COLOR> {
 
     QueenPieceImpl(Board board, COLOR color, String unicode,
-                   Position position, int direction, int promotionLine) {
+                   Position position, ActivityContext context) {
 
         super(board, position,
-                new PieceContext<>(Piece.Type.QUEEN, color, unicode, direction),
+                new PieceContext<>(Piece.Type.QUEEN, color, unicode, context.getDirection()),
                 new ActivePieceStateImpl<>(board,
                                            new QueenPieceActionRule<>(board),
-                                           new QueenPieceImpactRule<>(board, promotionLine)
+                                           new QueenPieceImpactRule<>(board, context.getPromotionLine(),
+                                                   context.getOutpostLines()
+                                           )
                 )
         );
     }

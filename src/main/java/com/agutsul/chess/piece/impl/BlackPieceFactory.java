@@ -30,7 +30,8 @@ public final class BlackPieceFactory
 
     public BlackPieceFactory(Board board) {
         super(LOGGER, board, Colors.BLACK, new PieceFactoryContext(
-                Directions.BLACK, Promotions.BLACK, BigMoves.BLACK, Castlings.BLACK
+                Directions.BLACK, Promotions.BLACK, BigMoves.BLACK,
+                Castlings.BLACK, Outposts.BLACK
         ));
     }
 

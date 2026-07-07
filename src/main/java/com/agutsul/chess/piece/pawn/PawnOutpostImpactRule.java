@@ -8,6 +8,8 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.Range;
+
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.EnPassantable.EnPassant;
 import com.agutsul.chess.board.Board;
@@ -31,13 +33,13 @@ final class PawnOutpostImpactRule<COLOR extends Color,
     private final EnPassantPieceAlgo<COLOR,PAWN,Position> enPassantAlgo;
 
     @SuppressWarnings("unchecked")
-    PawnOutpostImpactRule(Board board,
+    PawnOutpostImpactRule(Board board, Range<Integer> lineRange,
                           MovePieceAlgo<COLOR,PAWN,Position> moveAlgo,
                           BigMovePieceAlgo<COLOR,PAWN,Position> bigMoveAlgo,
                           CapturePieceAlgo<COLOR,PAWN,Position> captureAlgo,
                           EnPassantPieceAlgo<COLOR,PAWN,EnPassant> enPassantAlgo) {
 
-        super(board, new CompositePieceAlgo<>(board, moveAlgo, bigMoveAlgo));
+        super(board, lineRange, new CompositePieceAlgo<>(board, moveAlgo, bigMoveAlgo));
 
         this.captureAlgo = captureAlgo;
         this.enPassantAlgo = new EnPassantPositionAlgoAdapter<>(enPassantAlgo);

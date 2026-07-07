@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Calculatable;
+import com.agutsul.chess.activity.ActivityContext;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
 import com.agutsul.chess.activity.action.PiecePromoteAction;
@@ -43,14 +44,19 @@ final class PawnPieceImpl<COLOR extends Color>
         extends AbstractPiece<COLOR>
         implements PawnPiece<COLOR> {
 
-    PawnPieceImpl(Board board, COLOR color, String unicode, Position position,
-                  int direction, int promotionLine, int initialLine) {
+    PawnPieceImpl(Board board, COLOR color, String unicode,
+                  Position position, ActivityContext context) {
 
         this(board, position,
-                new PieceContext<>(Piece.Type.PAWN, color, unicode, direction),
+                new PieceContext<>(Piece.Type.PAWN, color, unicode, context.getDirection()),
                 new ActiveEnPassantablePieceState<>(board,
-                        new PawnPieceActionRule<>(board, color, direction, initialLine, promotionLine),
-                        new PawnPieceImpactRule<>(board, color, direction, initialLine, promotionLine)
+                        new PawnPieceActionRule<>(board, color, context.getDirection(),
+                                context.getBigMoveLine(), context.getPromotionLine()
+                        ),
+                        new PawnPieceImpactRule<>(board, color, context.getDirection(),
+                                context.getBigMoveLine(), context.getPromotionLine(),
+                                context.getOutpostLines()
+                        )
                 )
         );
     }

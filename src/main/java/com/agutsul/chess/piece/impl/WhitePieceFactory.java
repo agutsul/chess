@@ -30,7 +30,8 @@ public final class WhitePieceFactory
 
     public WhitePieceFactory(Board board) {
         super(LOGGER, board, Colors.WHITE, new PieceFactoryContext(
-                Directions.WHITE, Promotions.WHITE, BigMoves.WHITE, Castlings.WHITE
+                Directions.WHITE, Promotions.WHITE, BigMoves.WHITE,
+                Castlings.WHITE, Outposts.WHITE
         ));
     }
 

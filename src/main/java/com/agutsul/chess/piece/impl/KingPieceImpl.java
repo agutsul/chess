@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Calculatable;
+import com.agutsul.chess.activity.ActivityContext;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
@@ -48,13 +49,15 @@ final class KingPieceImpl<COLOR extends Color>
     private final CheckMatedPieceState<? extends KingPiece<?>> checkMatedPieceState;
 
     KingPieceImpl(Board board, COLOR color, String unicode,
-                  Position position, int direction, int castlingLine) {
+                  Position position, ActivityContext context) {
 
         super(board, position,
-                new PieceContext<>(Piece.Type.KING, color, unicode, direction),
+                new PieceContext<>(Piece.Type.KING, color, unicode, context.getDirection()),
                 new KingActivePieceState<>(board,
-                        new KingPieceActionRule<>(board, color, castlingLine),
-                        new KingPieceImpactRule<>(board, color, castlingLine)
+                        new KingPieceActionRule<>(board, color, context.getCastlingLine()),
+                        new KingPieceImpactRule<>(board, color,
+                                context.getCastlingLine(), context.getOutpostLines()
+                        )
                 ),
                 List.of(Side.values())
         );

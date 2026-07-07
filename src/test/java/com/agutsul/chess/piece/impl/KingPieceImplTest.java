@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,11 +22,13 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.Strings;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Castlingable.Castling;
 import com.agutsul.chess.Castlingable.Side;
+import com.agutsul.chess.activity.ActivityContext;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceMoveAction;
@@ -62,6 +65,9 @@ import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 public class KingPieceImplTest extends AbstractPieceTest {
 
     private static final Type KING_TYPE = Piece.Type.KING;
+
+    @Mock
+    ActivityContext context;
 
     @Test
     void testDefaultKingActionsOnStandardBoard() {
@@ -460,8 +466,13 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testProhibitedIsPinned() {
+        when(context.getDirection())
+            .thenReturn(1);
+        when(context.getCastlingLine())
+            .thenReturn(0);
+
         var kingPiece = new KingPieceImpl<Color>(mock(AbstractBoard.class),
-                Colors.WHITE, "", mock(Position.class), 1, 0);
+                Colors.WHITE, "", mock(Position.class), context);
 
         var thrown = assertThrows(
                 UnsupportedOperationException.class,
@@ -473,8 +484,13 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testProhibitedDispose() {
+        when(context.getDirection())
+            .thenReturn(1);
+        when(context.getCastlingLine())
+            .thenReturn(0);
+
         var kingPiece = new KingPieceImpl<Color>(mock(AbstractBoard.class),
-                Colors.WHITE, "", mock(Position.class), 1, 0);
+                Colors.WHITE, "", mock(Position.class), context);
 
         var thrown = assertThrows(
                 UnsupportedOperationException.class,
@@ -486,8 +502,13 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testProhibitedRestore() {
+        when(context.getDirection())
+            .thenReturn(1);
+        when(context.getCastlingLine())
+            .thenReturn(0);
+
         var kingPiece = new KingPieceImpl<Color>(mock(AbstractBoard.class),
-                Colors.WHITE, "", mock(Position.class), 1, 0);
+                Colors.WHITE, "", mock(Position.class), context);
 
         var thrown = assertThrows(
                 UnsupportedOperationException.class,
@@ -499,8 +520,13 @@ public class KingPieceImplTest extends AbstractPieceTest {
 
     @Test
     void testProhibitedCreateDisposedPieceState() {
+        when(context.getDirection())
+            .thenReturn(1);
+        when(context.getCastlingLine())
+            .thenReturn(0);
+
         var kingPiece = new KingPieceImpl<Color>(mock(AbstractBoard.class),
-                Colors.WHITE, "", mock(Position.class), 1, 0);
+                Colors.WHITE, "", mock(Position.class), context);
 
         var thrown = assertThrows(
                 UnsupportedOperationException.class,
