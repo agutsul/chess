@@ -1,10 +1,10 @@
 package com.agutsul.chess.piece.algo;
 
+import static com.agutsul.chess.color.Colors.isEqual;
 import static java.util.Collections.unmodifiableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.function.BiPredicate;
 
 import com.agutsul.chess.Capturable;
@@ -21,8 +21,8 @@ public final class SecureLineAlgoAdapter<COLOR extends Color,
         implements CapturePieceAlgo<COLOR,PIECE,Line> {
 
     public enum Mode implements BiPredicate<Piece<?>,Piece<?>> {
-        OPPOSITE_COLORS((color1,color2) -> !Objects.equals(color1, color2)),
-        SAME_COLORS((color1,color2)     ->  Objects.equals(color1, color2));
+        OPPOSITE_COLORS((color1,color2) -> !isEqual(color1, color2)),
+        SAME_COLORS((color1,color2)     ->  isEqual(color1, color2));
 
         private BiPredicate<Color,Color> predicate;
 
