@@ -67,11 +67,8 @@ abstract class AbstractInterferenceImpactRule<COLOR1 extends Color,
                 .map(opponentPiece -> board.getImpacts(opponentPiece, Impact.Type.PROTECT))
                 .flatMap(Collection::parallelStream)
                 .map(impact -> (PieceProtectImpact<COLOR2,PROTECTOR,PROTECTED>) impact)
-                .filter(impact -> {
-                    // protected piece should be more valuable than interference piece
-                    var protectedPiece = impact.getTarget();
-                    return protectedPiece.getType().rank() > piece.getType().rank();
-                })
+                // protected piece should be more valuable than interference piece
+                .filter(impact -> COMPARATOR.compare(piece, impact.getTarget()) > 0)
                 .flatMap(impact -> Stream.of(impact.getLine())
                         .flatMap(Optional::stream)
                         .filter(protectLine -> protectLine.containsAny(piecePositions))
