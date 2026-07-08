@@ -104,10 +104,7 @@ public final class PieceRelativeDesperadoExchangeImpactRule<COLOR1 extends Color
                         .flatMap(Collection::parallelStream)
                         .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
                         // check if there is same or more valuable opponent piece under attack
-                        .filter(action -> {
-                            var attacked = action.getTarget();
-                            return attacked.getType().rank() >= piece.getType().rank();
-                        })
+                        .filter(action -> COMPARATOR.compare(piece, action.getTarget()) >= 0)
                 )
                 // sort most valuable attacked pieces first
                 .sorted(comparing(AbstractCaptureAction::getTarget, COMPARATOR))
