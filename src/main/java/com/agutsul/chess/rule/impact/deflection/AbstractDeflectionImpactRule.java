@@ -1,10 +1,10 @@
 package com.agutsul.chess.rule.impact.deflection;
 
-import static java.util.stream.Collectors.toList;
 import static org.apache.commons.io.IOUtils.closeQuietly;
 
 import java.io.Closeable;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -19,6 +19,7 @@ import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.PositionedBoardBuilder;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.PieceComparator;
 import com.agutsul.chess.rule.impact.AbstractPieceImpactRule;
 import com.agutsul.chess.rule.impact.DeflectionImpactRule;
 
@@ -31,6 +32,8 @@ abstract class AbstractDeflectionImpactRule<COLOR1 extends Color,
                                             IMPACT extends PieceDeflectionImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED>>
         extends AbstractPieceImpactRule<COLOR1,ATTACKER,IMPACT>
         implements DeflectionImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED,IMPACT> {
+
+    private static final Comparator<Piece<?>> COMPARATOR = new PieceComparator();
 
     AbstractDeflectionImpactRule(Board board) {
         super(board, Impact.Type.DEFLECTION);
@@ -46,11 +49,11 @@ abstract class AbstractDeflectionImpactRule<COLOR1 extends Color,
                 .map(protectedPiece -> (DEFENDED) protectedPiece)
                 .filter(protectedPiece -> !board.getAttackers(protectedPiece).isEmpty())
                 // protected piece should be more valuable than attacker piece
-                .filter(protectedPiece -> protectedPiece.getType().rank() > attackImpact.getSource().getType().rank())
+                .filter(protectedPiece -> COMPARATOR.compare(attackImpact.getSource(), protectedPiece) > 0)
                 .filter(protectedPiece -> !confirmProtection(attackImpact, protectedPiece))
                 .map(protectedPiece -> new PieceDeflectionAttackImpact<>(attackImpact, protectedPiece))
                 .map(impact -> (IMPACT) impact)
-                .collect(toList());
+                .toList();
 
         return impacts;
     }
@@ -79,13 +82,12 @@ abstract class AbstractDeflectionImpactRule<COLOR1 extends Color,
             // check if protection from victim piece is still valid for protected piece
             var isProtected = Stream.of(tmpBoard.getPiece(attackImpact.getSource().getPosition()))
                     .flatMap(Optional::stream)
-                    .anyMatch(piece -> Stream.of(tmpBoard.getImpacts(piece, Impact.Type.PROTECT))
-                            .flatMap(Collection::parallelStream)
-                            .map(impact -> (PieceProtectImpact<?,?,?>) impact)
-                            .map(PieceProtectImpact::getTarget)
-                            .map(Piece::getPosition)
-                            .anyMatch(position -> Objects.equals(position, protectedPiece.getPosition()))
-                    );
+                    .map(piece -> tmpBoard.getImpacts(piece, Impact.Type.PROTECT))
+                    .flatMap(Collection::parallelStream)
+                    .map(impact -> (PieceProtectImpact<?,?,?>) impact)
+                    .map(PieceProtectImpact::getTarget)
+                    .map(Piece::getPosition)
+                    .anyMatch(position -> Objects.equals(position, protectedPiece.getPosition()));
 
             return isProtected;
         } finally {
