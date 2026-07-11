@@ -55,14 +55,14 @@ final class PawnDeflectionImpactRule<COLOR1 extends Color,
         var captureImpacts = super.createImpacts(piece, next);
 
         var enPassantImpacts = Stream.of(enPassantAlgo.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(enPassant -> new PieceAttackImpact<>(piece, (ATTACKED) enPassant.getPiece(), enPassant.getPosition()))
                 .map(impact -> super.createImpacts(impact))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .toList();
 
         return Stream.of(captureImpacts, enPassantImpacts)
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .toList();
     }
 }

@@ -50,14 +50,14 @@ final class PawnOutpostImpactRule<COLOR extends Color,
         var positions = new LinkedHashSet<>(enPassantAlgo.calculate(piece));
 
         positions.addAll(Stream.of(super.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated  -> (Position) calculated)
                 .filter(position -> board.isEmpty(position))
                 .toList()
         );
 
         positions.addAll(Stream.of(captureAlgo.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(position -> !board.isEmpty(position))
                 .map(position -> board.getPiece(position))
                 .flatMap(Optional::stream)

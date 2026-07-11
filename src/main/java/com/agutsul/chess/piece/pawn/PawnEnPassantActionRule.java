@@ -35,7 +35,7 @@ final class PawnEnPassantActionRule<COLOR1 extends Color,
 
         @SuppressWarnings("unchecked")
         var actions = Stream.of(algo.calculate(pawn))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(enPassant -> new PieceEnPassantAction<>(
                         pawn, (PAWN2) enPassant.getPiece(), enPassant.getPosition()
                 ))

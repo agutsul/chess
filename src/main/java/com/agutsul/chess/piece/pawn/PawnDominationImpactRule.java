@@ -54,12 +54,12 @@ final class PawnDominationImpactRule<COLOR1 extends Color,
         var attackedPositions = getAttackedPositions(pawn.getColor());
 
         var enPassantData = Stream.of(enPassantAlgo.calculate(pawn))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .collect(toMap(EnPassant::getPosition, EnPassant::getPiece));
 
         @SuppressWarnings("unchecked")
         var enPassantImpacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (Position) calculated)
                 .filter(position -> board.isEmpty(position))
                 .filter(position -> enPassantData.containsKey(position))
@@ -75,7 +75,7 @@ final class PawnDominationImpactRule<COLOR1 extends Color,
 
         var captureImpacts = super.createImpacts(pawn, next, attackedPositions);
         return Stream.of(captureImpacts, enPassantImpacts)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .toList();
     }
 }

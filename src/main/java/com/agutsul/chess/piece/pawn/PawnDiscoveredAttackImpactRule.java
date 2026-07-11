@@ -69,7 +69,7 @@ final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
             evaluate(PIECE piece) {
 
         var impacts = Stream.of(super.evaluate(piece), this.rule.evaluate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .sorted(comparing(PieceDiscoveredAttackImpact::getMode))
                 .toList();
 
@@ -105,7 +105,7 @@ final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
         @Override
         public Collection<Position> calculate(PIECE piece) {
             var positions = Stream.of(movePositions(piece), capturePositions(piece))
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .distinct()
                     .toList();
 
@@ -114,14 +114,14 @@ final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
 
         private Collection<Position> movePositions(PIECE piece) {
             return Stream.of(moveAlgo.calculate(piece))
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .filter(position -> board.isEmpty(position))
                     .toList();
         }
 
         private Collection<Position> capturePositions(PIECE piece) {
             return Stream.of(captureAlgo.calculate(piece))
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .map(position -> board.getPiece(position))
                     .flatMap(Optional::stream)
                     .filter(foundPiece -> !isEqual(foundPiece.getColor(), piece.getColor()))
@@ -162,7 +162,7 @@ final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
             }
 
             var impact = Stream.of(algo.calculate(piece))
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .filter(enPassant -> Objects.equals(enPassant.getPosition(), position))
                     .map(EnPassant::getPiece)
                     .map(opponentPawn ->  new PieceAbsoluteDiscoveredAttackImpact<>(
@@ -208,7 +208,7 @@ final class PawnDiscoveredAttackImpactRule<COLOR1 extends Color,
             }
 
             var impact = Stream.of(algo.calculate(piece))
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .filter(enPassant -> Objects.equals(enPassant.getPosition(), position))
                     .map(EnPassant::getPiece)
                     .map(opponentPawn ->  new PieceRelativeDiscoveredAttackImpact<>(

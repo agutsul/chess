@@ -77,7 +77,7 @@ final class PawnDesperadoImpactRule<COLOR1 extends Color,
         @Override
         protected Collection<Calculatable> calculate(DESPERADO piece) {
             return Stream.of(super.calculate(piece), enPassantAlgo.calculate(piece))
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .collect(toList());
         }
 
@@ -88,13 +88,13 @@ final class PawnDesperadoImpactRule<COLOR1 extends Color,
             var captureImpacts = super.createImpacts(piece, super.calculate(piece));
 
             var enPassantImpacts = Stream.of(enPassantRule.evaluate(piece))
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .map(PieceAbsoluteDesperadoImpact::new)
                     .map(impact -> (PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,?>) impact)
                     .collect(toList());
 
             return Stream.of(captureImpacts, enPassantImpacts)
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .collect(toList());
         }
     }

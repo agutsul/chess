@@ -55,10 +55,10 @@ final class PawnUnderminingImpactRule<COLOR1 extends Color,
         impacts.addAll(super.createImpacts(pawn, next));
 
         var enPassantUnderminingImpacts = Stream.of(enPassantAlgo.calculate(pawn))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(EnPassant::getPiece)
                 .map(opponentPawn -> super.createImpacts(pawn, List.of(opponentPawn.getPosition())))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .toList();
 
         impacts.addAll(enPassantUnderminingImpacts);

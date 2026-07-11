@@ -64,7 +64,7 @@ final class PawnBackwardImpactRule<COLOR extends Color,
 
         // calculate pawn stat: [ pawn - visited positions counter ]
         var pawnStat = Stream.of(board.getPieces(piece.getColor(), piece.getType()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(pawn -> {
                     var currentPosition  = pawn.getPosition();
                     var visitedPositions = Math.abs(currentPosition.y() - initPosition.y());
@@ -74,14 +74,14 @@ final class PawnBackwardImpactRule<COLOR extends Color,
                 .collect(toMap(Pair::getKey, Pair::getValue));
 
         var minVisitedCounter = Stream.of(pawnStat.entrySet())
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .min(Map.Entry.comparingByValue())
                 .map(Map.Entry::getValue);
 
         Collection<Calculatable> positions = Stream.of(minVisitedCounter)
                 .flatMap(Optional::stream)
                 .map(counter -> Stream.of(pawnStat.entrySet())
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .filter(entry -> Objects.equals(entry.getValue(), counter))
                         .filter(entry -> Objects.equals(entry.getKey(), piece))
                         .map(Map.Entry::getKey)
@@ -112,7 +112,7 @@ final class PawnBackwardImpactRule<COLOR extends Color,
     private Collection<Position> movePositions(PAWN piece) {
         var opponentColor = piece.getColor().invert();
         return Stream.of(moveAlgo.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(position -> board.isEmpty(position))
                 .filter(position -> !board.isAttacked(position, opponentColor))
                 .toList();
@@ -120,7 +120,7 @@ final class PawnBackwardImpactRule<COLOR extends Color,
 
     private Collection<Position> capturePositions(PAWN piece) {
         return Stream.of(captureAlgo.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(position -> board.getPiece(position))
                 .flatMap(Optional::stream)
                 .filter(foundPiece -> !isEqual(foundPiece.getColor(), piece.getColor()))
@@ -132,7 +132,7 @@ final class PawnBackwardImpactRule<COLOR extends Color,
     private Collection<Position> enPassantPositions(PAWN piece) {
         var opponentColor = piece.getColor().invert();
         return Stream.of(enPassantAlgo.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(position -> !board.isAttacked(position, opponentColor))
                 .toList();
     }

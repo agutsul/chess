@@ -75,10 +75,10 @@ final class PawnLuftImpactRule<COLOR extends Color,
         }
 
         var kingProtectors = Stream.of(board.getPieces(piece.getColor()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(not(Piece::isKing))
                 .filter(protectorPiece -> Stream.of(board.getImpacts(protectorPiece, Impact.Type.PROTECT))
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .map(impact -> (PieceProtectImpact<?,?,?>) impact)
                         .anyMatch(impact -> Objects.equals(impact.getTarget(), king)
                                 && initLine.stream()
@@ -97,7 +97,7 @@ final class PawnLuftImpactRule<COLOR extends Color,
 
         var opponentColor = piece.getColor().invert();
         var kingMovePositions = Stream.of(board.getActions(king, Action.Type.MOVE))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(Action::getPosition)
                 .filter(position -> !board.isAttacked(position, opponentColor))
                 .collect(toSet());
@@ -108,10 +108,10 @@ final class PawnLuftImpactRule<COLOR extends Color,
         }
 
         var opponentPieces = Stream.of(board.getPieces(opponentColor))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(not(Piece::isKing))
                 .filter(opponentPiece -> Stream.of(board.getImpacts(opponentPiece, Impact.Type.CONTROL))
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .map(impact -> (PieceControlImpact<?,?>) impact)
                         .map(PieceControlImpact::getPosition)
                         .anyMatch(controlledPosition -> initLine.stream()
@@ -126,7 +126,7 @@ final class PawnLuftImpactRule<COLOR extends Color,
         }
 
         var pawns = Stream.of(board.getImpacts(king, Impact.Type.PROTECT))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(impact -> (PieceProtectImpact<?,?,?>) impact)
                 .map(PieceProtectImpact::getTarget)
                 .filter(Piece::isPawn)
@@ -153,14 +153,14 @@ final class PawnLuftImpactRule<COLOR extends Color,
 
         // capture piece making a pin by pawn itself
         var isAttackerCapturable = Stream.of(board.getActions(piece, Action.Type.CAPTURE))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                 .map(PieceCaptureAction::getTarget)
                 .anyMatch(opponentPiece -> Objects.equals(opponentPiece, pawnAttacker));
 
         if (isAttackerCapturable) {
             return Stream.of(createCaptureLuftImpact(piece))
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .map(impact -> (IMPACT) impact)
                     .collect(toList());
         }
@@ -172,14 +172,14 @@ final class PawnLuftImpactRule<COLOR extends Color,
         // move inside attack line for pinned piece
         var pawnMovePositions = moveAlgo.calculate(piece);
         var impacts = Stream.of(board.getActions(pawnAttacker, Action.Type.CAPTURE))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                 .filter(action -> Objects.equals(action.getTarget(), piece))
                 .map(PieceCaptureAction::getLine)
                 .flatMap(Optional::stream)
                 .filter(line -> line.containsAny(pawnMovePositions))
                 .flatMap(line -> Stream.of(line.intersection(pawnMovePositions))
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .filter(position -> board.isEmpty(position))
                         .map(position -> new PieceLuftImpact<>(piece, position))
                 )
@@ -192,14 +192,14 @@ final class PawnLuftImpactRule<COLOR extends Color,
     @SuppressWarnings("unchecked")
     private Collection<IMPACT> createLuftImpacts(PAWN piece) {
         return Stream.of(createMoveLuftImpact(piece), createCaptureLuftImpact(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(impact -> (IMPACT) impact)
                 .collect(toList());
     }
 
     private Collection<PieceLuftImpact<COLOR,PAWN>> createMoveLuftImpact(PAWN piece) {
         var impacts = Stream.of(moveAlgo.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(position -> board.isEmpty(position))
                 .map(position -> new PieceLuftImpact<>(piece, position))
                 .collect(toList());
@@ -209,7 +209,7 @@ final class PawnLuftImpactRule<COLOR extends Color,
 
     private Collection<PieceLuftImpact<COLOR,PAWN>> createCaptureLuftImpact(PAWN piece) {
         var impacts = Stream.of(captureAlgo.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(position -> Stream.of(board.getPiece(position))
                         .flatMap(Optional::stream)
                         .map(Piece::getColor)

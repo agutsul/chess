@@ -48,7 +48,7 @@ final class PawnBlockadeImpactRule<COLOR extends Color,
                 .toList();
 
         var sameColorBlockImpacts = Stream.of(board.getPieces(pawn.getColor()))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(piece -> !Objects.equals(piece, pawn))
                 .filter(piece -> possibleMovePositions.contains(piece.getPosition()))
                 .map(piece -> new PieceBlockadeImpact<>(pawn, (PIECE) piece))

@@ -77,10 +77,10 @@ final class PawnSacrificeImpactRule<COLOR1 extends Color,
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(moveAlgo.calculate(pawn))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(position -> board.isEmpty(position))
                 .flatMap(position -> Stream.of(pieceControls.entrySet())
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .filter(entry -> entry.getValue().contains(position))
                         .map(Map.Entry::getKey)
                         .map(piece -> new PieceSacrificeMoveImpact<>(
@@ -100,10 +100,10 @@ final class PawnSacrificeImpactRule<COLOR1 extends Color,
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(captureAlgo.calculate(pawn))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(position  -> !board.isEmpty(position))
                 .flatMap(position -> Stream.of(pieceControls.entrySet())
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .filter(entry -> entry.getValue().contains(position))
                         .map(Map.Entry::getKey)
                         .flatMap(piece -> Stream.of(board.getPiece(position))
@@ -126,15 +126,15 @@ final class PawnSacrificeImpactRule<COLOR1 extends Color,
                                             Map<Piece<Color>,List<Position>> pieceControls) {
 
         var enPassantData = Stream.of(enPassantAlgo.calculate(pawn))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .collect(toMap(EnPassant::getPosition, EnPassant::getPiece));
 
         @SuppressWarnings("unchecked")
         var impacts = Stream.of(enPassantData.keySet())
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .filter(position  -> board.isEmpty(position))
                 .flatMap(position -> Stream.of(pieceControls.entrySet())
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .filter(entry -> entry.getValue().contains(position))
                         .map(Map.Entry::getKey)
                         .flatMap(piece -> Stream.ofNullable(enPassantData.get(position))

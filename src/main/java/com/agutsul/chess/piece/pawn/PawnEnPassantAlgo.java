@@ -34,7 +34,7 @@ final class PawnEnPassantAlgo<COLOR extends Color,
     @Override
     public Collection<EnPassant> calculate(Position attackerPosition) {
         var enPassants = Stream.of(captureAlgo.calculate(attackerPosition))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .flatMap(attackedPosition -> Stream.of(findOpponentPawn(attackerPosition, attackedPosition))
                         .flatMap(Optional::stream)
                         .map(opponentPawn -> createEnPassant(attackedPosition, opponentPawn))

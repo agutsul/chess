@@ -54,7 +54,7 @@ final class PawnAttackImpactRule<COLOR1 extends Color,
         var captureAttackImpacts = super.createImpacts(attacker, next);
 
         var enPassantData = Stream.of(enPassantAlgo.calculate(attacker))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .collect(toMap(EnPassant::getPosition, EnPassant::getPiece));
 
         if (enPassantData.isEmpty()) {
@@ -65,7 +65,7 @@ final class PawnAttackImpactRule<COLOR1 extends Color,
 
         @SuppressWarnings("unchecked")
         var enPassantAttackImpacts = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> (Position) calculated)
                 .filter(position -> board.isEmpty(position))
                 .filter(position -> enPassantData.containsKey(position))

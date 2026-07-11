@@ -38,7 +38,7 @@ final class PawnIsolationImpactRule<COLOR extends Color,
 
         // find vertical lines aside of pawn based on its attacked positions
         Collection<Calculatable> lines = Stream.of(algo.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(position -> Stream.of(board.getPosition(position.x(), piecePosition.y()))
                         .flatMap(Optional::stream)
                         .map(previousPosition -> board.getLine(position, previousPosition))
@@ -57,9 +57,9 @@ final class PawnIsolationImpactRule<COLOR extends Color,
 
         // search friendly pawns inside found line
         var pawns = Stream.of(next)
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(calculated -> Stream.of(board.getPieces(piece.getColor(), (Line) calculated))
-                        .flatMap(Collection::stream)
+                        .flatMap(Collection::parallelStream)
                         .filter(Piece::isPawn)
                         .findFirst()
                 )

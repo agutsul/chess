@@ -33,7 +33,7 @@ final class PawnOverloadingImpactRule<COLOR extends Color,
     @Override
     protected Collection<Calculatable> calculate(PAWN piece) {
         var enPassantOpponentPositions = Stream.of(enPassantAlgo.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .map(EnPassant::getPiece)
                 .map(Piece::getPosition)
                 .toList();
@@ -43,7 +43,7 @@ final class PawnOverloadingImpactRule<COLOR extends Color,
         }
 
         return Stream.of(enPassantOpponentPositions, super.calculate(piece))
-                .flatMap(Collection::stream)
+                .flatMap(Collection::parallelStream)
                 .distinct()
                 .collect(toList());
     }
