@@ -35,7 +35,7 @@ final class PawnPromoteAlgo<COLOR extends Color,
     public Collection<Position> calculate(PAWN pawn) {
         return Stream.of(algo.calculate(pawn))
                 .flatMap(Collection::parallelStream)
-                .filter(position -> position.y() == promotionLine)
+                .filter(this::isPromotion)
                 .toList();
     }
 
@@ -43,7 +43,11 @@ final class PawnPromoteAlgo<COLOR extends Color,
     public Collection<Position> calculate(Position position) {
         return Stream.of(algo.calculate(position))
                 .flatMap(Collection::parallelStream)
-                .filter(calculated -> calculated.y() == promotionLine)
+                .filter(this::isPromotion)
                 .toList();
+    }
+
+    private boolean isPromotion(Position position) {
+        return position.y() == this.promotionLine;
     }
 }
