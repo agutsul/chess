@@ -235,7 +235,11 @@ public class QueenPieceImplTest extends AbstractPieceTest {
 
         var relativeForkImpact = relativeForkImpacts.getFirst();
 
-        var forkedImpacts = new ArrayList<>(relativeForkImpact.getTarget());
+        var forkedImpacts = Stream.of(relativeForkImpact.getTarget())
+                .flatMap(Collection::stream)
+                .filter(Impact::isAttack)
+                .toList();
+
         assertEquals(whiteQueen, relativeForkImpact.getSource());
         assertEquals(3, forkedImpacts.size());
 

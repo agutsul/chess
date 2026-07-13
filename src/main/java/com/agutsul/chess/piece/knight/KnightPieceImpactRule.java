@@ -10,6 +10,7 @@ import com.agutsul.chess.rule.AbstractPieceRule;
 import com.agutsul.chess.rule.CompositeRule;
 import com.agutsul.chess.rule.impact.attack.PieceAttackPositionImpactRule;
 import com.agutsul.chess.rule.impact.attack.discovered.PieceDiscoveredAttackPositionImpactRule;
+import com.agutsul.chess.rule.impact.attack.impending.PieceImpendingAttackPositionImpactRule;
 import com.agutsul.chess.rule.impact.block.PieceBlockPositionImpactRule;
 import com.agutsul.chess.rule.impact.check.PieceCheckPositionImpactRule;
 import com.agutsul.chess.rule.impact.control.PieceControlPositionImpactRule;
@@ -54,7 +55,8 @@ public final class KnightPieceImpactRule<COLOR extends Color,
                 new PieceOutpostPositionImpactRule<>(board, lineRange, algo),
                 new PieceSacrificePositionImpactRule<>(board, algo),
                 new PieceDesperadoPositionImpactRule<>(board, algo),
-                new PieceDominationPositionImpactRule<>(board, algo)
+                new PieceDominationPositionImpactRule<>(board, algo),
+                new PieceImpendingAttackPositionImpactRule<>(board, algo)
             )
         );
     }

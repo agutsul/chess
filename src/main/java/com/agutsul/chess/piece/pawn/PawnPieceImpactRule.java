@@ -71,7 +71,9 @@ public final class PawnPieceImpactRule<COLOR extends Color,
                 new PawnLuftImpactRule<>(board, moveAlgo, bigMoveAlgo, captureAlgo),
                 new PawnDesperadoImpactRule<>(board, captureAlgo, enPassantAlgo),
                 new PawnDominationImpactRule<>(board, captureAlgo, enPassantAlgo),
+                new PawnImpendingAttackPositionImpactRule<>(board, moveAlgo, bigMoveAlgo, captureAlgo, enPassantAlgo, promoteAlgo),
                 new PiecePromoteImpactRule<>(board, promoteAlgo)
+                // TODO implement impending attack for promotion
             )
         );
     }

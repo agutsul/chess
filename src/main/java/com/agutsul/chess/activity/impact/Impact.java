@@ -15,6 +15,7 @@ public interface Impact<SOURCE>
         CHECK,
         PIN,
         ATTACK,
+        IMPENDING_ATTACK,
         DESPERADO,
         FORK,
         SKEWER,
@@ -156,6 +157,14 @@ public interface Impact<SOURCE>
 
     static boolean isDiscoveredAttack(Impact.Type impactType) {
         return Impact.Type.DISCOVERED_ATTACK.equals(impactType);
+    }
+
+    static boolean isImpendingAttack(Impact<?> impact) {
+        return isImpendingAttack(impact.getType());
+    }
+
+    static boolean isImpendingAttack(Impact.Type impactType) {
+        return Impact.Type.IMPENDING_ATTACK.equals(impactType);
     }
 
     static boolean isFork(Impact<?> impact) {

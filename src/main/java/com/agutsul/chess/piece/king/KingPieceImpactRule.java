@@ -50,6 +50,7 @@ public final class KingPieceImpactRule<COLOR extends Color,
                 new PieceUnderminingPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, color, impactAlgo)),
                 new PieceOutpostPositionImpactRule<>(board, lineRange, new KingPieceAlgoProxy<>(Mode.MOVE, board, color, impactAlgo)),
                 new PieceDominationPositionImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.CAPTURE, board, color, impactAlgo)),
+                new KingImpendingAttackImpactRule<>(board, new KingPieceAlgoProxy<>(Mode.DEFAULT, board, color, impactAlgo), castlingAlgo),
                 new KingCastlingImpactRule<>(board, castlingAlgo)
             )
         );
