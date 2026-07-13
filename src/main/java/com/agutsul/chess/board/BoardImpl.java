@@ -551,7 +551,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
                 this.executorService.shutdownNow();
 
                 if (!this.executorService.awaitTermination(TERMINATION_TIMEOUT, MILLISECONDS)) {
-                    LOGGER.error("Board executor did not terminate");
+                    LOGGER.warn("Board executor did not terminate");
                 }
             }
         } catch (InterruptedException e) {
