@@ -30,6 +30,7 @@ import com.agutsul.chess.activity.impact.PieceCheckImpact;
 import com.agutsul.chess.activity.impact.PieceDeflectionAttackImpact;
 import com.agutsul.chess.activity.impact.PieceDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceForkImpact;
+import com.agutsul.chess.activity.impact.PieceImpendingAttackImpact;
 import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeDiscoveredAttackImpact;
 import com.agutsul.chess.activity.impact.PieceRelativeSkewerImpact;
@@ -805,7 +806,7 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         var blackPawn = board.getPiece("f7").get();
         var whiteKnight = board.getPiece("d5").get();
 
-        var xRayImpact = relativeXRayImpacts.get(0);
+        var xRayImpact = relativeXRayImpacts.getFirst();
 
         var source = xRayImpact.getSource();
         assertTrue(Impact.isAttack((Impact<?>) source));
@@ -816,5 +817,41 @@ public class BishopPieceImplTest extends AbstractPieceTest {
         assertTrue(xRayImpact.getPieces().contains(whiteKnight));
         assertTrue(xRayImpact instanceof PieceXRayAttackImpact);
         assertNotNull(xRayImpact.getLine());
+    }
+
+    @Test
+    void testBishopImpendingAttackImpact() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("h8")
+                .withBlackQueen("g7")
+                .withBlackRooks("d8","e8")
+                .withBlackPawn("h7")
+                .withWhiteKing("b1")
+                .withWhiteQueen("h5")
+                .withWhiteRook("h3")
+                .withWhiteBishop("h4")
+                .withWhitePawns("a2","b2","c2","d3","e4")
+                .build();
+
+        var whiteBishop = board.getPiece("h4").get();
+        var impendingAttackImpacts = board.getImpacts(whiteBishop, Impact.Type.IMPENDING_ATTACK);
+
+        assertFalse(impendingAttackImpacts.isEmpty());
+        assertEquals(1, impendingAttackImpacts.size());
+
+        var relativeImpendingAttackImpacts = Stream.of(impendingAttackImpacts)
+                .flatMap(Collection::stream)
+                .map(impact -> (PieceImpendingAttackImpact<?,?,?,?>) impact)
+                .filter(PieceImpendingAttackImpact::isRelative)
+                .toList();
+
+        assertEquals(1, relativeImpendingAttackImpacts.size());
+
+        var impendingAttack = relativeImpendingAttackImpacts.getFirst();
+        assertEquals(whiteBishop, impendingAttack.getAttacker());
+
+        var blackQueen = board.getPiece("g7").get();
+        assertEquals(blackQueen, impendingAttack.getAttacked());
+        assertEquals(board.getPosition("f6").get(), impendingAttack.getPosition());
     }
 }

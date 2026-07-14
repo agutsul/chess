@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.toMap;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Calculatable;
@@ -59,13 +60,16 @@ public class PieceImpendingAttackLineImpactRule<COLOR1 extends Color,
                                 .map(nextCalculated -> (Line) nextCalculated)
                                 .filter(nextLine -> !nextLine.contains(piece.getPosition()))
                                 .filter(nextLine -> nextLine.containsAny(opponentPositions))
-                                .flatMap(nextLine -> Stream.of(nextLine)
+                                .map(nextLine -> Stream.of(nextLine)
                                         .flatMap(Collection::parallelStream)
                                         .filter(nextPosition -> !Objects.equals(nextPosition, line.getLast()))
                                         .filter(nextPosition -> opponentPositions.contains(nextPosition))
                                         .map(nextPosition -> opponentPieces.get(nextPosition))
-                                        .map(opponentPiece -> createImpact(piece, position, (ATTACKED) opponentPiece))
+                                        .map(opponentPiece -> (ATTACKED) opponentPiece)
+                                        .findFirst()
                                 )
+                                .flatMap(Optional::stream)
+                                .map(opponentPiece -> createImpact(piece, position, opponentPiece))
                         )
                 )
                 .filter(Objects::nonNull)
