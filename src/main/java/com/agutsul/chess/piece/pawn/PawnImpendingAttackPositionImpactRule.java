@@ -4,6 +4,7 @@ import static com.agutsul.chess.piece.Piece.isKing;
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableCollection;
+import static java.util.Comparator.comparing;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.io.IOUtils.closeQuietly;
@@ -32,6 +33,7 @@ import com.agutsul.chess.board.PositionedBoardBuilder;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.PieceComparator;
 import com.agutsul.chess.piece.algo.BigMovePieceAlgo;
 import com.agutsul.chess.piece.algo.CapturePieceAlgo;
 import com.agutsul.chess.piece.algo.CompositePieceAlgo;
@@ -146,6 +148,8 @@ final class PawnImpendingAttackPositionImpactRule<COLOR1 extends Color,
             extends AbstractRule<ATTACKER,IMPACT,Impact.Type>
             implements ImpendingAttackImpactRule<COLOR1,COLOR2,ATTACKER,ATTACKED,IMPACT> {
 
+        private static final PieceComparator COMPARATOR = new PieceComparator();
+
         private final PromoteImpactRule<COLOR1,ATTACKER,PiecePromoteImpact<COLOR1,ATTACKER>> rule;
 
         PawnImpendingAttackPromoteImpactRule(Board board,
@@ -187,6 +191,10 @@ final class PawnImpendingAttackPositionImpactRule<COLOR1 extends Color,
                                 return (IMPACT) impact;
                             })
                     )
+                    .sorted(comparing(
+                        PieceImpendingAttackImpact::getAttacked,
+                        (piece1,piece2) -> COMPARATOR.compare(piece1,piece2)
+                    ))
                     .toList();
 
             return impacts;
