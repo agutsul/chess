@@ -1,6 +1,5 @@
 package com.agutsul.chess.activity.impact;
 
-import static java.util.Comparator.comparing;
 import static org.apache.commons.lang3.StringUtils.join;
 
 import java.util.Collection;
@@ -11,6 +10,7 @@ import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.PieceComparator;
 import com.agutsul.chess.position.Position;
 
 abstract class AbstractPieceForkImpact<COLOR1 extends Color,
@@ -20,6 +20,8 @@ abstract class AbstractPieceForkImpact<COLOR1 extends Color,
                                        IMPACT extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>>
         extends AbstractTargetActivity<Impact.Type,ATTACKER,Collection<IMPACT>>
         implements PieceForkImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> {
+
+    private static final PieceComparator COMPARATOR = new PieceComparator();
 
     private final Mode mode;
     private Integer value;
@@ -54,10 +56,7 @@ abstract class AbstractPieceForkImpact<COLOR1 extends Color,
         var pieces = Stream.of(getTarget())
                 .flatMap(Collection::parallelStream)
                 .map(AbstractPieceAttackImpact::getTarget)
-                .sorted(comparing(
-                        Piece::getType,
-                        (type1,type2) -> Integer.compare(type2.rank(), type1.rank())
-                ))
+                .sorted(COMPARATOR)
                 .toList();
 
         return pieces;
