@@ -9,6 +9,7 @@ import com.agutsul.chess.Movable;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.PieceProxy;
@@ -28,6 +29,11 @@ abstract class AbstractPieceProxy<COLOR extends Color,
     @Override
     public final PIECE getOrigin() {
         return this.origin;
+    }
+
+    @Override
+    public final Board getBoard() {
+        return this.origin.getBoard();
     }
 
     @Override

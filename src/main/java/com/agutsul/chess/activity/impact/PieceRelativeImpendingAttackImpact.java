@@ -2,6 +2,8 @@ package com.agutsul.chess.activity.impact;
 
 import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 
+import java.util.stream.Stream;
+
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
@@ -35,5 +37,12 @@ public final class PieceRelativeImpendingAttackImpact<COLOR1 extends Color,
                                               PieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> targetImpact) {
 
         super(Mode.RELATIVE, sourceImpact, targetImpact);
+    }
+
+    @Override
+    Integer calculateValue() {
+        return Stream.of(getSource(), getTarget())
+                .mapToInt(Impact::getValue)
+                .sum();
     }
 }

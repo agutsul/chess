@@ -103,6 +103,11 @@ abstract class AbstractPiece<COLOR extends Color>
     }
 
     @Override
+    public final Board getBoard() {
+        return this.board;
+    }
+
+    @Override
     public final PieceState<Piece<COLOR>> getState() {
         return this.currentState;
     }

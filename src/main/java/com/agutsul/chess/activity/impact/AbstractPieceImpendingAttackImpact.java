@@ -1,7 +1,6 @@
 package com.agutsul.chess.activity.impact;
 
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
@@ -30,6 +29,8 @@ abstract class AbstractPieceImpendingAttackImpact<COLOR1 extends Color,
         this.mode = mode;
     }
 
+    abstract Integer calculateValue();
+
     @Override
     public final Integer getValue() {
         if (this.value != null) {
@@ -49,6 +50,11 @@ abstract class AbstractPieceImpendingAttackImpact<COLOR1 extends Color,
     @SuppressWarnings("unchecked")
     public final SOURCE getSource() {
         return (SOURCE) super.getSource();
+    }
+
+    @Override
+    public final TARGET getTarget() {
+        return super.getTarget();
     }
 
     @Override
@@ -77,11 +83,5 @@ abstract class AbstractPieceImpendingAttackImpact<COLOR1 extends Color,
         return String.format("%s:%s:(%s)x%s",
                 getType(), getMode(), getSource(), getAttacked()
         );
-    }
-
-    private Integer calculateValue() {
-        return Stream.of(getSource(), getTarget())
-                .mapToInt(Impact::getValue)
-                .sum();
     }
 }

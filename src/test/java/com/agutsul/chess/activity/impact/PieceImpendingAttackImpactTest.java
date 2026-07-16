@@ -165,7 +165,7 @@ public class PieceImpendingAttackImpactTest extends AbstractImpactTest {
         var impact = impendingAttackImpact(board, "h1");
         assertNotNull(impact);
         assertTrue(isAbsolute(impact));
-        assertEquals(596, impact.getValue());
+        assertEquals(796, impact.getValue());
     }
 
     @Test
@@ -179,7 +179,7 @@ public class PieceImpendingAttackImpactTest extends AbstractImpactTest {
         var impact = impendingAttackImpact(board, "h8");
         assertNotNull(impact);
         assertTrue(isAbsolute(impact));
-        assertEquals(-596, impact.getValue());
+        assertEquals(-796, impact.getValue());
     }
 
     @Test

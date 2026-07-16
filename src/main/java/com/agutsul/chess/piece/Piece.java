@@ -14,6 +14,7 @@ import com.agutsul.chess.Rankable;
 import com.agutsul.chess.Valuable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
+import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
@@ -60,6 +61,7 @@ public interface Piece<COLOR extends Color>
     }
 
     Type getType();
+    Board getBoard();
     COLOR getColor();
     String getUnicode();
     int getDirection();
