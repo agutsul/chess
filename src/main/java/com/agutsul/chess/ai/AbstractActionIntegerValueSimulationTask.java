@@ -1,7 +1,6 @@
 package com.agutsul.chess.ai;
 
 import static com.agutsul.chess.activity.action.Action.isCastling;
-import static com.agutsul.chess.board.state.BoardState.Type.CHECK_MATED;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,7 +16,6 @@ import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
-import com.agutsul.chess.color.Colors;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.ai.SimulationGame;
 import com.agutsul.chess.journal.Journal;
@@ -77,36 +75,23 @@ abstract class AbstractActionIntegerValueSimulationTask
 
         @Override
         public final Integer evaluate(SimulationGame game) {
-            var action = game.getAction();
-            var sourcePiece = action.getPiece();
-
-            var board = game.getBoard();
-            var boardState = board.getState();
-
-            var value = calculateValue(board, action, game.getColor()) * boardState.getValue();
-            return boardState.isType(CHECK_MATED)
-                    ? value * sourcePiece.getDirection()
-                    : value;
+            return calculateValue(game.getBoard(), game.getAction(), game.getColor());
         }
 
         protected int calculateValue(Board board, Action<?> action, Color color) {
-            var sourcePiece = action.getPiece();
-
-            var materialValue = Stream.of(Colors.values())
-                    .mapToInt(playerColor -> board.calculateValue(color))
-                    .sum();
+            var materialValue = board.calculateValue(color);
 
             // calculate impact for action piece on its new position
             var impactValue = isCastling(action)
                     ? calculateImpact(board, (PieceCastlingAction<?,?,?>) action)
                     : calculateImpact(board, getActionPiece(board, action));
 
-            var value = action.getValue()                       // action type influence
-                    + impactValue                               // impacts influence
-                    + this.limit * sourcePiece.getDirection()   // depth influence
+            var value = action.getValue()                           // action type influence
+                    + impactValue                                   // impacts influence
+                    + this.limit * action.getPiece().getDirection() // depth influence
                     + materialValue;
 
-            return value;
+            return value * board.getState().getValue();
         }
 
         private static int calculateImpact(Board board, PieceCastlingAction<?,?,?> action) {
