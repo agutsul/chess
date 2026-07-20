@@ -1,8 +1,11 @@
 package com.agutsul.chess.ai;
+
+import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 import static org.apache.commons.collections4.ListUtils.partition;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
@@ -16,6 +19,8 @@ import com.agutsul.chess.adapter.Adapter;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.journal.Journal;
+import com.agutsul.chess.piece.Piece;
+import com.agutsul.chess.piece.PieceComparator;
 
 abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
                                            VALUE  extends Number & Comparable<VALUE>,
@@ -26,6 +31,7 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
     private static final long serialVersionUID = 1L;
 
     private static final Adapter<Action<?>,Collection<Action<?>>> ADAPTER = new ActionAdapter();
+    private static final Comparator<Piece<?>> COMPARATOR = new PieceComparator();
 
     protected final Logger logger;
 
@@ -85,6 +91,7 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
                 .flatMap(Collection::parallelStream)
                 .map(ADAPTER::adapt)
                 .flatMap(Collection::parallelStream)
+                .sorted(comparing(Action::getPiece, COMPARATOR.reversed()))
                 .distinct()
                 .toList();
 
