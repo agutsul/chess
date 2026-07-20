@@ -49,7 +49,7 @@ public class FenGameScenariousIT extends AbstractFenGameTest {
 
     @TestFactory
     @Execution(CONCURRENT)
-    @DisplayName("testScenarious")
+    @DisplayName("testScenario")
     Stream<DynamicNode> testScenarious() throws URISyntaxException, IOException {
         var testData = new LinkedHashMap<String,List<FenScenarioExecutable>>();
 
