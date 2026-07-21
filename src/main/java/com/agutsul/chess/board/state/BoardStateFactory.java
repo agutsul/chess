@@ -137,7 +137,7 @@ public abstract class BoardStateFactory {
 
         private static final Logger LOGGER = getLogger(CheckMatedBoardState.class);
 
-        private static final int COEF = 1000;
+        private static final int COEF = 10000;
 
         private final Piece<Color> checkMaker;
 
@@ -185,7 +185,7 @@ public abstract class BoardStateFactory {
 
         private static final Logger LOGGER = getLogger(FiveFoldRepetitionBoardState.class);
 
-        private static final int COEF = 100;
+        private static final int COEF = 1000;
 
         private final ActionMemento<?,?> actionMemento;
 
@@ -216,7 +216,7 @@ public abstract class BoardStateFactory {
 
         private static final Logger LOGGER = getLogger(SeventyFiveMovesBoardState.class);
 
-        private static final int COEF = 100;
+        private static final int COEF = 1000;
 
         // draw
         SeventyFiveMovesBoardStateImpl(Board board, Color color) {
@@ -235,11 +235,11 @@ public abstract class BoardStateFactory {
 
         private static final Logger LOGGER = getLogger(StaleMatedBoardState.class);
 
-        private static final int COEF = 10;
+        private static final int COEF = 100;
 
         // draw
-        StaleMatedBoardStateImpl(Board board, Color checkMatedColor) {
-            super(LOGGER, BoardState.Type.STALE_MATED, board, checkMatedColor);
+        StaleMatedBoardStateImpl(Board board, Color color) {
+            super(LOGGER, BoardState.Type.STALE_MATED, board, color);
         }
 
         @Override
@@ -346,6 +346,8 @@ public abstract class BoardStateFactory {
 
         private static final Logger LOGGER = getLogger(CheckedBoardState.class);
 
+        private static final int COEF = 10;
+
         private final Piece<Color> checkMaker;
 
         @SuppressWarnings("unchecked")
@@ -382,6 +384,11 @@ public abstract class BoardStateFactory {
         @Override
         public Piece<Color> getPiece() {
             return this.checkMaker;
+        }
+
+        @Override
+        public Integer getValue() {
+            return super.getValue() * COEF;
         }
     }
 }

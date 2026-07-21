@@ -1,6 +1,8 @@
 package com.agutsul.chess.ai;
 
 import static com.agutsul.chess.activity.action.Action.isCastling;
+import static com.agutsul.chess.board.state.BoardState.Type.DEFAULT;
+import static com.agutsul.chess.board.state.BoardState.Type.INSUFFICIENT_MATERIAL;
 
 import java.util.Collection;
 import java.util.List;
@@ -91,7 +93,10 @@ abstract class AbstractActionIntegerValueSimulationTask
                     + this.limit * action.getPiece().getDirection() // depth influence
                     + materialValue;
 
-            return value * board.getState().getValue();
+            var boardState = board.getState();
+            return boardState.isAnyType(DEFAULT, INSUFFICIENT_MATERIAL)
+                    ? value
+                    : value * boardState.getValue();
         }
 
         private static int calculateImpact(Board board, PieceCastlingAction<?,?,?> action) {
