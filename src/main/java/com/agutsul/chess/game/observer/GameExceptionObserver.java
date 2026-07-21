@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 
 import com.agutsul.chess.event.AbstractEventObserver;
 import com.agutsul.chess.game.event.GameExceptionEvent;
+import com.agutsul.chess.game.fen.FenGameFormatter;
 import com.agutsul.chess.game.pgn.PgnGameFormatter;
 import com.agutsul.chess.player.Player;
 
@@ -42,7 +43,7 @@ public final class GameExceptionObserver
     protected void process(GameExceptionEvent event) {
         var game = event.getGame();
 
-        var fileName = String.format("%s_%s_%d.pgn",
+        var fileName = String.format("%s_%s_%d",
                 formatPlayer(game.getWhitePlayer()),
                 formatPlayer(game.getBlackPlayer()),
                 currentTimeMillis()
@@ -53,7 +54,8 @@ public final class GameExceptionObserver
             return;
         }
 
-        writeFile(fileName, PgnGameFormatter.format(game));
+        writeFile(fileName + ".fen", FenGameFormatter.format(game));
+        writeFile(fileName + ".pgn", PgnGameFormatter.format(game));
         writeFile(fileName + ".err", getStackTrace(event.getThrowable()));
     }
 
