@@ -64,9 +64,9 @@ public final class GameExceptionObserver
         try {
             writeStringToFile(file, content, UTF_8);
         } catch (IOException exception) {
-            LOGGER.error(String.format("Error writting file: '%s'",
+            LOGGER.error(String.format("Error writting file '%s': %s",
                     file.getAbsolutePath()),
-                    exception
+                    getStackTrace(exception)
             );
         }
     }
