@@ -144,7 +144,7 @@ public class GameContext implements Closeable {
                 forkJoinPool.shutdownNow();
 
                 if (!forkJoinPool.awaitTermination(1, MILLISECONDS)) {
-                    LOGGER.error("Game context executor did not terminate");
+                    LOGGER.warn("Game context executor did not terminate");
                 }
             }
         } catch (InterruptedException e) {
