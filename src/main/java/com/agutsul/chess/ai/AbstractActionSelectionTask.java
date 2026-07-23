@@ -1,5 +1,6 @@
 package com.agutsul.chess.ai;
 
+import static java.lang.String.format;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 import static org.apache.commons.collections4.ListUtils.partition;
@@ -59,23 +60,18 @@ abstract class AbstractActionSelectionTask<ACTION extends Action<?>,
 
     @Override
     public final String toString() {
-        return String.format("[%s]", Stream.of(this.actions)
+        return format("[%s]", Stream.of(this.actions)
                 .flatMap(Collection::stream)
-                .map(Action::toString)
+                .map(String::valueOf)
                 .collect(joining(",")
         ));
     }
 
     @Override
     protected final RESULT compute() {
-        if (this.actions.size() == 1) {
-            // simulate action
-            return compute(this.actions.getFirst());
-        }
-
-        // split actions
-        var actions = partition(this.actions, this.actions.size() / 2);
-        return process(actions);
+        return this.actions.size() == 1
+            ? compute(this.actions.getFirst())                           // simulate action
+            : process(partition(this.actions, this.actions.size() / 2)); // split actions
     }
 
     protected abstract RESULT compute(ACTION action);
