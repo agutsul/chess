@@ -1,8 +1,11 @@
 package com.agutsul.chess.game.observer;
 
+import static com.agutsul.chess.player.PlayerFactory.playerOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.list;
+import static java.util.function.Function.identity;
 import static java.util.function.Predicate.not;
+import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.io.FileUtils.readFileToString;
 import static org.apache.commons.io.FilenameUtils.getExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,6 +16,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -29,7 +33,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.agutsul.chess.TestFileReader;
 import com.agutsul.chess.antlr.pgn.PgnGameParser;
+import com.agutsul.chess.board.Board;
+import com.agutsul.chess.board.StandardBoard;
+import com.agutsul.chess.color.Colors;
+import com.agutsul.chess.game.GameMock;
 import com.agutsul.chess.game.event.GameExceptionEvent;
+import com.agutsul.chess.game.event.GameOverEvent;
+import com.agutsul.chess.game.event.GameStartedEvent;
 import com.agutsul.chess.player.Player;
 
 @ExtendWith(MockitoExtension.class)
@@ -72,28 +82,37 @@ public class GameExceptionObserverTest implements TestFileReader {
     void testProcessingGameExceptionEvent()
             throws URISyntaxException, IOException {
 
-        var parser = new PgnGameParser();
+        var whitePlayer = playerOf(Colors.WHITE);
+        var blackPlayer = playerOf(Colors.BLACK);
 
-        var games = parser.parse(readFileContent("scholar_mate.pgn"));
-        var game = games.getFirst();
+        var game = new ExceptionGameMock(whitePlayer, blackPlayer, new StandardBoard());
+        game.addObserver(new GameExceptionObserver(tempDir.toString()));
 
         assertTrue(listFileNames(tempDir).isEmpty());
 
         game.run();
 
-        var observer = new GameExceptionObserver(tempDir.toString());
-        observer.observe(new GameExceptionEvent(game, new Exception(ERROR_MESSAGE)));
+        var fileNames = Stream.of(listFileNames(tempDir))
+                .flatMap(Collection::stream)
+                .collect(toMap(fileName -> getExtension(fileName), identity()));
 
-        var fileNames = listFileNames(tempDir);
-        assertEquals(2, fileNames.size());
+        assertEquals(3, fileNames.size());
 
-        var pgnFileName = fileNames.getFirst();
+        var fenFileName = fileNames.get("fen");
+        assertEquals(getExtension(fenFileName), "fen");
+
+        var fenFile = new File(tempDir.toFile(), fenFileName);
+        var fenContent = readFileToString(fenFile, UTF_8);
+
+        assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0", fenContent);
+
+        var pgnFileName = fileNames.get("pgn");
         assertEquals(getExtension(pgnFileName), "pgn");
 
         assertTrue(containsPlayerName(pgnFileName, game.getWhitePlayer()));
         assertTrue(containsPlayerName(pgnFileName, game.getBlackPlayer()));
 
-        var errorFileName = fileNames.get(1);
+        var errorFileName = fileNames.get("err");
         assertEquals(getExtension(errorFileName), "err");
 
         var errorFile = new File(tempDir.toFile(), errorFileName);
@@ -113,6 +132,32 @@ public class GameExceptionObserverTest implements TestFileReader {
                     .map(Path::toString)
                     .sorted()
                     .toList();
+        }
+    }
+
+    private static final class ExceptionGameMock extends GameMock {
+
+        ExceptionGameMock(Player whitePlayer, Player blackPlayer, Board board) {
+            super(whitePlayer, blackPlayer, board);
+        }
+
+        @Override
+        protected void initObservers() {
+            Stream.of(
+                    new CloseableGameOverObserver(getContext()),
+                    new GameStartedObserver(),
+                    new GameOverObserver()
+            ).forEach(this::addObserver);
+        }
+
+        @Override
+        public void run() {
+            notifyObservers(new GameStartedEvent(this));
+            try {
+                notifyObservers(new GameExceptionEvent(this, new Exception(ERROR_MESSAGE)));
+            } finally {
+                notifyObservers(new GameOverEvent(this));
+            }
         }
     }
 }
