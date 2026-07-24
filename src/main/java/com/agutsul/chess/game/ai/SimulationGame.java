@@ -38,6 +38,7 @@ import com.agutsul.chess.journal.Journal;
 import com.agutsul.chess.journal.JournalImpl;
 import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.player.Player;
+import com.agutsul.chess.rule.board.BoardStateEvaluator;
 import com.agutsul.chess.rule.board.BoardStateEvaluatorImpl;
 import com.agutsul.chess.rule.game.GamePhaseEvaluatorImpl;
 
@@ -84,6 +85,10 @@ public final class SimulationGame
 
     public Action<?> getAction() {
         return this.originAction;
+    }
+
+    public BoardStateEvaluator<BoardState> getBoardStateEvaluator() {
+        return this.boardStateEvaluator;
     }
 
     @Override

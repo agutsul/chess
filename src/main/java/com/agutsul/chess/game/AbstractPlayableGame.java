@@ -67,8 +67,8 @@ public abstract class AbstractPlayableGame
     private final Board board;
     private final Journal<ActionMemento<?,?>> journal;
 
-    private final BoardStateEvaluator<BoardState> boardStateEvaluator;
-    private final GamePhaseEvaluator<GamePhase>   gamePhaseEvaluator;
+    protected final BoardStateEvaluator<BoardState> boardStateEvaluator;
+    protected final GamePhaseEvaluator<GamePhase>   gamePhaseEvaluator;
 
     private final GameContext context;
 

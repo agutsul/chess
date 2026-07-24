@@ -1,8 +1,11 @@
 package com.agutsul.chess.ai;
 
 import static com.agutsul.chess.activity.action.Action.isCastling;
-import static com.agutsul.chess.board.state.BoardState.Type.DEFAULT;
-import static com.agutsul.chess.board.state.BoardState.Type.INSUFFICIENT_MATERIAL;
+import static com.agutsul.chess.board.state.BoardState.Type.CHECKED;
+import static com.agutsul.chess.board.state.BoardState.Type.FIFTY_MOVES;
+import static com.agutsul.chess.board.state.BoardState.Type.THREE_FOLD_REPETITION;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,6 +20,7 @@ import com.agutsul.chess.activity.action.PieceCastlingAction;
 import com.agutsul.chess.activity.action.memento.ActionMemento;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.board.Board;
+import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.game.Game;
 import com.agutsul.chess.game.ai.SimulationGame;
@@ -77,7 +81,49 @@ abstract class AbstractActionIntegerValueSimulationTask
 
         @Override
         public final Integer evaluate(SimulationGame game) {
-            return calculateValue(game.getBoard(), game.getAction(), game.getColor());
+            var board = game.getBoard();
+            var action = game.getAction();
+            var boardStateEvaluator = game.getBoardStateEvaluator();
+
+            var baseValue = calculateValue(board, action, game.getColor());
+
+            var opponentBoardState = board.getState(game.getColor().invert());
+            if (isValuable(opponentBoardState)) {
+                var value = baseValue * opponentBoardState.getValue();
+
+                var currentBoardState = boardStateEvaluator.evaluate(game.getColor());
+                var previousBoardState = board.getState(game.getColor());
+
+                if (isNull(currentBoardState) || isNull(previousBoardState)) {
+                    return value;
+                }
+
+                // return positive influence for current player
+                var stateImprovement = previousBoardState.getValue() - currentBoardState.getValue();
+                return stateImprovement > 0
+                        ? value * stateImprovement
+                        : value;
+            }
+
+            var currentBoardState = boardStateEvaluator.evaluate(game.getColor());
+            if (isValuable(currentBoardState)) {
+                var value = baseValue * currentBoardState.getValue();
+
+                var previousBoardState = board.getState(game.getColor());
+                if (isNull(previousBoardState)) {
+                    return value;
+                }
+
+                var stateImprovement = previousBoardState.getValue() - currentBoardState.getValue();
+                return stateImprovement > 0
+                        // return positive influence because situation for current player improved
+                        ? value * stateImprovement
+                        // return negative influence for current player
+                        : value * Math.negateExact(action.getPiece().getDirection());
+            }
+
+            // return basic impact for current player
+            return baseValue;
         }
 
         protected int calculateValue(Board board, Action<?> action, Color color) {
@@ -93,10 +139,7 @@ abstract class AbstractActionIntegerValueSimulationTask
                     + this.limit * action.getPiece().getDirection() // depth influence
                     + materialValue;
 
-            var boardState = board.getState();
-            return boardState.isAnyType(DEFAULT, INSUFFICIENT_MATERIAL)
-                    ? value
-                    : value * boardState.getValue();
+            return value;
         }
 
         private static int calculateImpact(Board board, PieceCastlingAction<?,?,?> action) {
@@ -123,6 +166,12 @@ abstract class AbstractActionIntegerValueSimulationTask
         private static Optional<Piece<Color>> getActionPiece(Board board, Action<?> action) {
             // same source piece but located on target position after executing an action
             return board.getPiece(action.getPosition());
+        }
+
+        private static boolean isValuable(BoardState boardState) {
+            return nonNull(boardState) && (boardState.isTerminal()
+                    || boardState.isAnyType(CHECKED, FIFTY_MOVES, THREE_FOLD_REPETITION)
+            );
         }
     }
 }
