@@ -21,23 +21,19 @@ public final class PieceBlockAttackImpact<COLOR1 extends Color,
         implements PieceBlockImpact<COLOR1,COLOR2,BLOCKER,DEFENDED,ATTACKER> {
 
     private final AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,DEFENDED> attackImpact;
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     public PieceBlockAttackImpact(BLOCKER piece, Position position,
                                   AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,DEFENDED> attackImpact) {
 
         super(Impact.Type.BLOCK, piece, position);
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
         this.attackImpact = attackImpact;
     }
 
     @Override
     public Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override

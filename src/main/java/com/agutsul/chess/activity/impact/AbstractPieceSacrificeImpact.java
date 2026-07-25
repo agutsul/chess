@@ -20,20 +20,16 @@ abstract class AbstractPieceSacrificeImpact<COLOR1 extends Color,
                                        TARGET>
         implements PieceSacrificeImpact<COLOR1,COLOR2,SACRIFICED,ATTACKER> {
 
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     AbstractPieceSacrificeImpact(SOURCE sourceImpact, TARGET sacrificeImpact) {
         super(Impact.Type.SACRIFICE, sourceImpact, sacrificeImpact);
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
     }
 
     @Override
     public final Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override

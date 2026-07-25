@@ -24,11 +24,12 @@ abstract class AbstractPieceForkImpact<COLOR1 extends Color,
     private static final PieceComparator COMPARATOR = new PieceComparator();
 
     private final Mode mode;
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     AbstractPieceForkImpact(Mode mode, ATTACKER piece, Collection<IMPACT> impacts) {
         super(Impact.Type.FORK, piece, impacts);
         this.mode = mode;
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
     }
 
     @Override
@@ -43,12 +44,7 @@ abstract class AbstractPieceForkImpact<COLOR1 extends Color,
 
     @Override
     public final Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override

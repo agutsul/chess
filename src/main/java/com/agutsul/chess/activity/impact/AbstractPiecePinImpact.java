@@ -19,21 +19,17 @@ abstract class AbstractPiecePinImpact<COLOR1 extends Color,
         implements PiecePinImpact<COLOR1,COLOR2,PINNED,DEFENDED,ATTACKER> {
 
     private final Mode mode;
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     AbstractPiecePinImpact(Mode mode, PINNED piece, IMPACT impact) {
         super(Impact.Type.PIN, piece, impact);
         this.mode = mode;
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
     }
 
     @Override
     public final Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override

@@ -17,7 +17,7 @@ public class PieceConnectionImpact<COLOR extends Color,
         extends AbstractSourceActivity<Impact.Type,Collection<PIECE>>
         implements Impact<Collection<PIECE>> {
 
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     public PieceConnectionImpact(PIECE piece1, PIECE piece2,
                                  @SuppressWarnings("unchecked") PIECE... piece3) {
@@ -30,16 +30,12 @@ public class PieceConnectionImpact<COLOR extends Color,
 
     public PieceConnectionImpact(Collection<PIECE> pieces) {
         super(Impact.Type.CONNECTION, pieces);
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
     }
 
     @Override
     public final Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override

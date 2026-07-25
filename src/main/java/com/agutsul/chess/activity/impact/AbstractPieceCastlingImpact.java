@@ -20,11 +20,12 @@ abstract class AbstractPieceCastlingImpact<COLOR  extends Color,
         implements Impact<SOURCE> {
 
     private final Side side;
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     AbstractPieceCastlingImpact(Side side, SOURCE source, TARGET target) {
         super(Impact.Type.CASTLING, source, target);
         this.side = side;
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
     }
 
     public final Side getSide() {
@@ -45,12 +46,7 @@ abstract class AbstractPieceCastlingImpact<COLOR  extends Color,
 
     @Override
     public final Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override

@@ -17,10 +17,11 @@ public class PieceProtectImpact<COLOR  extends Color,
 
     private Line line;
     private boolean hidden;
-    private Integer value;
+    private ImpactValueProvider valueProvider;
 
     public PieceProtectImpact(PIECE1 source, PIECE2 target) {
         super(Impact.Type.PROTECT, source, target);
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
     }
 
     public PieceProtectImpact(PIECE1 source, PIECE2 target, Line line) {
@@ -35,12 +36,7 @@ public class PieceProtectImpact<COLOR  extends Color,
 
     @Override
     public final Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     public final Optional<Line> getLine() {

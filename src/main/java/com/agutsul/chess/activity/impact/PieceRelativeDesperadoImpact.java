@@ -22,10 +22,11 @@ public final class PieceRelativeDesperadoImpact<COLOR1 extends Color,
         extends AbstractTargetActivity<Impact.Type,IMPACT,Collection<IMPACT>>
         implements PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,IMPACT> {
 
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     public PieceRelativeDesperadoImpact(IMPACT source, IMPACT target) {
         super(Impact.Type.DESPERADO, source, List.of(source, target));
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
     }
 
     @Override
@@ -35,12 +36,7 @@ public final class PieceRelativeDesperadoImpact<COLOR1 extends Color,
 
     @Override
     public Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override

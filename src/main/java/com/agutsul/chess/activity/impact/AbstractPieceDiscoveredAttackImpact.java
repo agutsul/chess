@@ -25,21 +25,17 @@ abstract class AbstractPieceDiscoveredAttackImpact<COLOR1 extends Color,
         implements PieceDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED> {
 
     private final Mode mode;
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     AbstractPieceDiscoveredAttackImpact(Mode mode, SOURCE sourceImpact, TARGET discoveredAttack) {
         super(Impact.Type.DISCOVERED_ATTACK, sourceImpact, discoveredAttack);
         this.mode = mode;
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
     }
 
     @Override
     public final Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override

@@ -11,20 +11,16 @@ public class PieceIsolationImpact<COLOR extends Color,
         extends AbstractSourceActivity<Impact.Type,PIECE>
         implements Impact<PIECE> {
 
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     public PieceIsolationImpact(PIECE piece) {
         super(Impact.Type.ISOLATION, piece);
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
     }
 
     @Override
     public final Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override

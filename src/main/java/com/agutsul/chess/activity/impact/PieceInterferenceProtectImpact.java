@@ -21,23 +21,19 @@ public final class PieceInterferenceProtectImpact<COLOR1 extends Color,
         implements PieceInterferenceImpact<COLOR1,COLOR2,PIECE,PROTECTOR,PROTECTED> {
 
     private final PieceProtectImpact<COLOR2,PROTECTOR,PROTECTED> protectImpact;
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     public PieceInterferenceProtectImpact(PIECE source, Position target,
                                           PieceProtectImpact<COLOR2,PROTECTOR,PROTECTED> impact) {
 
         super(Impact.Type.INTERFERENCE, source, target);
         this.protectImpact = impact;
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
     }
 
     @Override
     public Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override

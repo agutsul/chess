@@ -25,7 +25,7 @@ public final class PieceDesperadoAttackImpact<COLOR1 extends Color,
                                         AbstractPieceAttackImpact<COLOR1,COLOR2,DESPERADO,ATTACKED>> {
 
     private final Mode mode;
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     public PieceDesperadoAttackImpact(Mode mode,
                                       AbstractPieceAttackImpact<COLOR1,COLOR2,DESPERADO,ATTACKED> source,
@@ -33,16 +33,12 @@ public final class PieceDesperadoAttackImpact<COLOR1 extends Color,
 
         super(Impact.Type.DESPERADO, source, target);
         this.mode = mode;
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
     }
 
     @Override
     public Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override

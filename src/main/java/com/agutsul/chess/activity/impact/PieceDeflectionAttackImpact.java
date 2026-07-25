@@ -12,13 +12,14 @@ public final class PieceDeflectionAttackImpact<COLOR1 extends Color,
         extends AbstractPieceDeflectionImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED> {
 
     private final AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> attackImpact;
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     public PieceDeflectionAttackImpact(AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> attackImpact,
                                        DEFENDED defended) {
 
         super(attackImpact.getSource(), attackImpact.getTarget(), defended);
         this.attackImpact = attackImpact;
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
     }
 
     public AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> getAttackImpact() {
@@ -27,12 +28,7 @@ public final class PieceDeflectionAttackImpact<COLOR1 extends Color,
 
     @Override
     public Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override

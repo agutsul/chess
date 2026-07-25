@@ -20,22 +20,18 @@ abstract class AbstractPieceSkewerImpact<COLOR1 extends Color,
 
     private final Mode mode;
     private final IMPACT impact;
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     AbstractPieceSkewerImpact(Mode mode, IMPACT impact, DEFENDED target) {
         super(Impact.Type.SKEWER, impact.getSource(), target);
         this.mode = mode;
         this.impact = impact;
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
     }
 
     @Override
     public final Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override

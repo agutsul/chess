@@ -25,23 +25,20 @@ abstract class AbstractPieceXRayImpact<COLOR1 extends Color,
 
     private final Mode mode;
     private final Collection<Piece<?>> pieces;
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     AbstractPieceXRayImpact(IMPACT impact, Collection<Piece<?>> pieces) {
         super(Impact.Type.XRAY, impact);
 
         this.mode = createMode(impact.getTarget());
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
         this.pieces = pieces;
+
     }
 
     @Override
     public final Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override

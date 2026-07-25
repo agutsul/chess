@@ -12,22 +12,18 @@ abstract class AbstractPositionHoleImpact
 
     private final Color color;
     private final Mode mode;
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     AbstractPositionHoleImpact(Mode mode, Color color, Position position) {
         super(Impact.Type.HOLE, position);
         this.mode = mode;
         this.color = color;
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
     }
 
     @Override
     public final Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override

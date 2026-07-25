@@ -11,20 +11,16 @@ public class PieceBackwardImpact<COLOR extends Color,
         extends AbstractSourceActivity<Impact.Type,PIECE>
         implements Impact<PIECE> {
 
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     public PieceBackwardImpact(PIECE piece) {
         super(Impact.Type.BACKWARD, piece);
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
     }
 
     @Override
     public final Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override

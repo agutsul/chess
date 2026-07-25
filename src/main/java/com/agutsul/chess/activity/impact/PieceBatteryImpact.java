@@ -18,21 +18,17 @@ public class PieceBatteryImpact<COLOR extends Color,
         implements Impact<PIECE1> {
 
     private final Line line;
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     public PieceBatteryImpact(PIECE1 piece1, PIECE2 piece2, Line fullLine) {
         super(Impact.Type.BATTERY, piece1, piece2);
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
         this.line = fullLine;
     }
 
     @Override
     public Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override

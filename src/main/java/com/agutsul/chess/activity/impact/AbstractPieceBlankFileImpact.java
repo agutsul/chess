@@ -16,11 +16,12 @@ abstract class AbstractPieceBlankFileImpact<COLOR extends Color,
         implements PieceBlankFileImpact<COLOR,PIECE> {
 
     private final Mode mode;
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     AbstractPieceBlankFileImpact(Mode mode, PIECE piece, Line line) {
         super(Impact.Type.BLANK_FILE, piece, line);
         this.mode = mode;
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
     }
 
     abstract Integer calculateValue();
@@ -32,12 +33,7 @@ abstract class AbstractPieceBlankFileImpact<COLOR extends Color,
 
     @Override
     public final Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override

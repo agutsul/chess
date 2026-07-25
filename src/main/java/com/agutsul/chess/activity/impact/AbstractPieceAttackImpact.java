@@ -21,7 +21,7 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
 
     private final Calculatable calculated;
     private final boolean hidden;
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     protected AbstractPieceAttackImpact(Impact.Type impactType, ATTACKER attacker, ATTACKED attacked,
                                         Calculatable calculated, boolean hidden) {
@@ -30,6 +30,7 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
 
         this.calculated = calculated;
         this.hidden = hidden;
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
     }
 
     @Override
@@ -39,12 +40,7 @@ public abstract class AbstractPieceAttackImpact<COLOR1 extends Color,
 
     @Override
     public Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     public final boolean isHidden() {

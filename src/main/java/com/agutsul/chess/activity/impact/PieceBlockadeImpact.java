@@ -12,20 +12,16 @@ public class PieceBlockadeImpact<COLOR extends Color,
         extends AbstractTargetActivity<Impact.Type,PIECE1,PIECE2>
         implements Impact<PIECE1> {
 
-    private Integer value;
+    private final ImpactValueProvider valueProvider;
 
     public PieceBlockadeImpact(PIECE1 source, PIECE2 blocker) {
         super(Impact.Type.BLOCKADE, source, blocker);
+        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
     }
 
     @Override
     public final Integer getValue() {
-        if (this.value != null) {
-            return this.value;
-        }
-
-        this.value = calculateValue();
-        return this.value;
+        return this.valueProvider.get();
     }
 
     @Override
