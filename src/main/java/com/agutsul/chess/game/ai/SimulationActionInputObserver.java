@@ -1,6 +1,7 @@
 package com.agutsul.chess.game.ai;
 
 import static com.agutsul.chess.activity.action.Action.isPromote;
+import static java.util.Objects.isNull;
 
 import java.util.Optional;
 
@@ -53,7 +54,7 @@ public final class SimulationActionInputObserver
 
     @Override
     public String getPromotionPieceType(Optional<Long> timeout) {
-        if (this.promoteAction == null) {
+        if (isNull(this.promoteAction)) {
             throw new IllegalStateException(UNKNOWN_PROMOTION_ERROR_MESSAGE);
         }
 

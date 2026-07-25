@@ -2,6 +2,7 @@ package com.agutsul.chess.antlr.pgn.action;
 
 import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter.CASTLING_KING_SIDE_CODE;
 import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActionFormatter.CASTLING_QUEEN_SIDE_CODE;
+import static java.util.Objects.isNull;
 
 import java.util.Collection;
 import java.util.Map;
@@ -32,7 +33,7 @@ final class KingCastlingActionAdapter
     @Override
     public String adapt(String action) {
         var castlingSide = CASTLING_SIDES.get(action);
-        if (castlingSide == null) {
+        if (isNull(castlingSide)) {
             throw new IllegalActionException(formatInvalidActionMessage(action));
         }
 

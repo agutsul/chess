@@ -7,6 +7,7 @@ import static com.agutsul.chess.activity.action.formatter.StandardAlgebraicActio
 import static com.agutsul.chess.piece.Piece.isKing;
 import static com.agutsul.chess.position.Position.codeOf;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.function.Predicate.not;
 
@@ -64,7 +65,7 @@ abstract class AbstractPgnActionAdapter
     Collection<Piece<Color>> findPieces(Piece.Type pieceType, String code) {
         var pieces = Stream.of(board.getPieces(color, pieceType))
                 .flatMap(Collection::parallelStream)
-                .filter(piece -> code == null
+                .filter(piece -> isNull(code)
                         || Strings.CI.contains(codeOf(piece.getPosition()), code)
                 )
                 .toList();

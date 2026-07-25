@@ -1,5 +1,6 @@
 package com.agutsul.chess;
 
+import static java.util.Objects.isNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 import org.apache.commons.configuration2.Configuration;
@@ -51,7 +52,7 @@ public class Application
     }
 
     public static String getProperty(String key) {
-        if (CONFIGURATION == null) {
+        if (isNull(CONFIGURATION)) {
             LOGGER.error("Initializing application properties failed");
             return null;
         }

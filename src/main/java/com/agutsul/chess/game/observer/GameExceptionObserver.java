@@ -4,6 +4,7 @@ import static com.agutsul.chess.Application.getProperty;
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.isNull;
 import static org.apache.commons.io.FileUtils.writeStringToFile;
 import static org.apache.commons.lang3.StringUtils.deleteWhitespace;
 import static org.apache.commons.lang3.StringUtils.stripAccents;
@@ -54,7 +55,7 @@ public final class GameExceptionObserver
                 currentTimeMillis()
         );
 
-        if (this.folderName == null) {
+        if (isNull(this.folderName)) {
             LOGGER.error("Unknown folder: unable to write game file '{}'", fileName);
             LOGGER.error("Game exception: {}", getStackTrace(event.getThrowable()));
             return;
