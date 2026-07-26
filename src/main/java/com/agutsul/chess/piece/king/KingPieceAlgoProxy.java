@@ -94,6 +94,7 @@ final class KingPieceAlgoProxy<COLOR extends Color,
                 .filter(foundPiece -> isEqual(foundPiece.getColor(), opponentColor))
                 .filter(not(Piece::isKing))
                 .filter(opponentPiece -> !((Protectable) opponentPiece).isProtected())
+                .filter(opponentPiece -> !board.isAttacked(opponentPiece.getPosition(), opponentColor))
                 .filter(opponentPiece -> !board.isMonitored(opponentPiece.getPosition(), opponentColor))
                 .map(Piece::getPosition)
                 .toList();

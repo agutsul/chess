@@ -37,6 +37,7 @@ final class KingCapturePieceActionEvaluator
         Collection<Action<?>> actions = Stream.of(board.getPieces(opponentColor))
                 .flatMap(Collection::parallelStream)
                 .filter(piece -> !((Protectable) piece).isProtected())
+                .filter(piece -> !board.isAttacked(piece.getPosition(), opponentColor))
                 .filter(piece -> !board.isMonitored(piece.getPosition(), opponentColor))
                 .flatMap(piece -> filteredActions.stream()
                         .filter(action -> Objects.equals(action.getTarget(), piece))

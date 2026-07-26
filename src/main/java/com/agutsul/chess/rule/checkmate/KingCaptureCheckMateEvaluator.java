@@ -35,6 +35,7 @@ final class KingCaptureCheckMateEvaluator
                 .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                 .map(PieceCaptureAction::getTarget)
                 .filter(piece -> !((Protectable) piece).isProtected())
+                .filter(piece -> !board.isAttacked(piece.getPosition(), attackerColor))
                 .filter(piece -> !board.isMonitored(piece.getPosition(), attackerColor))
                 .toList();
 

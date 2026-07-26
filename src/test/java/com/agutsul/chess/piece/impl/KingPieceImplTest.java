@@ -28,6 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Castlingable.Castling;
 import com.agutsul.chess.Castlingable.Side;
+import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.activity.ActivityContext;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
@@ -1077,5 +1078,31 @@ public class KingPieceImplTest extends AbstractPieceTest {
         var castlingActions = board.getActions(whiteKing, Action.Type.CASTLING);
 
         assertTrue(castlingActions.isEmpty());
+    }
+
+    @Test
+    void testKingPreventCaptureAttackerProtectedByPinnedPiece() {
+        var board = new LabeledBoardBuilder()
+                .withBlackKing("h8")
+                .withBlackQueen("a5")
+                .withBlackRook("g8")
+                .withBlackBishop("f6")
+                .withBlackKnight("d7")
+                .withBlackPawns("a6","b7","c5","e7","h6")
+                .withWhiteKing("g1")
+                .withWhiteQueen("h7")
+                .withWhiteRook("f1")
+                .withWhiteBishop("e3")
+                .withWhiteKnight("g5")
+                .withWhitePawns("a2","b2","c4","d5","h2")
+                .build();
+
+        var blackKing = (KingPiece<?>) board.getPiece("h8").get();
+        var captureActions = board.getActions(blackKing, Action.Type.CAPTURE);
+
+        assertTrue(captureActions.isEmpty());
+
+        var whiteKnight = board.getPiece("g5").get();
+        assertTrue(((Pinnable) whiteKnight).isPinned());
     }
 }
