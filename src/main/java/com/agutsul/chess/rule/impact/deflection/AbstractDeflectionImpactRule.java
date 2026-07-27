@@ -47,9 +47,9 @@ abstract class AbstractDeflectionImpactRule<COLOR1 extends Color,
                 .map(impact -> (PieceProtectImpact<?,?,?>) impact)
                 .map(PieceProtectImpact::getTarget)
                 .map(protectedPiece -> (DEFENDED) protectedPiece)
-                .filter(protectedPiece -> !board.getAttackers(protectedPiece).isEmpty())
                 // protected piece should be more valuable than attacker piece
                 .filter(protectedPiece -> COMPARATOR.compare(attackImpact.getSource(), protectedPiece) > 0)
+                .filter(protectedPiece -> !board.getAttackers(protectedPiece).isEmpty())
                 .filter(protectedPiece -> !confirmProtection(attackImpact, protectedPiece))
                 .map(protectedPiece -> new PieceDeflectionAttackImpact<>(attackImpact, protectedPiece))
                 .map(impact -> (IMPACT) impact)
