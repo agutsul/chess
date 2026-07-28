@@ -30,15 +30,15 @@ final class KingCaptureCheckMateEvaluator
 
         var attackerColor = king.getColor().invert();
 
-        var capturedPieces = Stream.of(board.getActions(king, Action.Type.CAPTURE))
+        var attackedPiece = Stream.of(board.getActions(king, Action.Type.CAPTURE))
                 .flatMap(Collection::parallelStream)
                 .map(action -> (PieceCaptureAction<?,?,?,?>) action)
                 .map(PieceCaptureAction::getTarget)
                 .filter(piece -> !((Protectable) piece).isProtected())
                 .filter(piece -> !board.isAttacked(piece.getPosition(), attackerColor))
                 .filter(piece -> !board.isMonitored(piece.getPosition(), attackerColor))
-                .toList();
+                .findFirst();
 
-        return !capturedPieces.isEmpty();
+        return !attackedPiece.isEmpty();
     }
 }
