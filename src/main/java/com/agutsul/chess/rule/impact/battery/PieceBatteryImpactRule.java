@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
 import com.agutsul.chess.Movable;
+import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceBatteryImpact;
 import com.agutsul.chess.activity.impact.PieceProtectImpact;
@@ -60,10 +61,8 @@ public class PieceBatteryImpactRule<COLOR extends Color,
     */
     @Override
     public Collection<IMPACT> evaluate(PIECE1 piece) {
-        var protectedLocations = Stream.of(board.getImpacts(piece, Impact.Type.PROTECT))
+        var protectedLocations = Stream.of(((Protectable) piece).getProtected())
                 .flatMap(Collection::parallelStream)
-                .map(impact -> (PieceProtectImpact<?,?,?>) impact)
-                .map(PieceProtectImpact::getTarget)
                 .filter(Piece::isLinear)
                 .collect(toMap(Piece::getPosition, identity()));
 
