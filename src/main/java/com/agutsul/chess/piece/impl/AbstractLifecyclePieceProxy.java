@@ -2,6 +2,7 @@ package com.agutsul.chess.piece.impl;
 
 import java.time.Instant;
 
+import com.agutsul.chess.Attackable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Disposable;
 import com.agutsul.chess.Movable;
@@ -11,8 +12,8 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
 abstract class AbstractLifecyclePieceProxy<COLOR extends Color,
-                                           PIECE extends Piece<COLOR>
-                                                    & Movable & Capturable & Protectable
+                                           PIECE extends Piece<COLOR> & Movable & Capturable
+                                                    & Protectable & Attackable
                                                     & Restorable & Disposable>
         extends AbstractPieceProxy<COLOR,PIECE>
         implements Restorable, Disposable {

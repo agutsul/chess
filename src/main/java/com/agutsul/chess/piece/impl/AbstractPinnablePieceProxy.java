@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Attackable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Disposable;
 import com.agutsul.chess.Movable;
@@ -24,9 +25,9 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
 abstract class AbstractPinnablePieceProxy<COLOR extends Color,
-                                          PIECE extends Piece<COLOR>
-                                                & Movable & Capturable & Protectable
-                                                & Restorable & Disposable & Pinnable>
+                                          PIECE extends Piece<COLOR> & Movable & Capturable
+                                                  & Protectable & Attackable & Pinnable
+                                                  & Restorable & Disposable>
         extends AbstractLifecyclePieceProxy<COLOR,PIECE>
         implements Pinnable {
 

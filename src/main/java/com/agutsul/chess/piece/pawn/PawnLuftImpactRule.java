@@ -141,7 +141,7 @@ final class PawnLuftImpactRule<COLOR extends Color,
             return createLuftImpacts(piece);
         }
 
-        var pawnAttackers = new ArrayList<>(board.getAttackers(piece));
+        var pawnAttackers = new ArrayList<>(piece.getAttackers());
         // skip luft impact when there are multiple pawn attackers
         if (pawnAttackers.size() > 1) {
             return emptyList();

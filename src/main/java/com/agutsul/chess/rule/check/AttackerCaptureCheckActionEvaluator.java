@@ -31,7 +31,7 @@ final class AttackerCaptureCheckActionEvaluator
 
     @Override
     public Collection<Action<?>> evaluate(KingPiece<?> king) {
-        var kingAttackers = board.getAttackers(king);
+        var kingAttackers = king.getAttackers();
         if (kingAttackers.size() > 1) {
             // there is no sense to capture one of king's attackers during double check
             return emptyList();

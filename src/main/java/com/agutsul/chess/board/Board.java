@@ -33,8 +33,6 @@ public interface Board {
     Collection<Impact<?>> getImpacts(Color color, Position position);
     Collection<Impact<?>> getImpacts(Color color, Position position, Impact.Type impactType);
 
-    <COLOR extends Color> Collection<Piece<COLOR>> getAttackers(Piece<?> piece);
-
     Collection<Piece<Color>> getPieces();
     Collection<Piece<Color>> getPieces(Collection<Position> positions);
     Collection<Piece<Color>> getPieces(Piece.Type pieceType);

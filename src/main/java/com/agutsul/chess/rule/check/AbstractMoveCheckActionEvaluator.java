@@ -28,7 +28,7 @@ abstract class AbstractMoveCheckActionEvaluator
 
     @Override
     public Collection<Action<?>> evaluate(KingPiece<?> king) {
-        Collection<PieceCaptureAction<?,?,?,?>> checkActions = Stream.of(board.getAttackers(king))
+        Collection<PieceCaptureAction<?,?,?,?>> checkActions = Stream.of(king.getAttackers())
                 .flatMap(Collection::parallelStream)
                 .map(attacker -> board.getActions(attacker, Action.Type.CAPTURE))
                 .flatMap(Collection::parallelStream)

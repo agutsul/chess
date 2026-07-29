@@ -8,8 +8,6 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Protectable;
-import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 
@@ -30,10 +28,8 @@ final class KingCaptureCheckMateEvaluator
 
         var attackerColor = king.getColor().invert();
 
-        var attackedPiece = Stream.of(board.getActions(king, Action.Type.CAPTURE))
+        var attackedPiece = Stream.of(king.getAttacked())
                 .flatMap(Collection::parallelStream)
-                .map(action -> (PieceCaptureAction<?,?,?,?>) action)
-                .map(PieceCaptureAction::getTarget)
                 .filter(piece -> !((Protectable) piece).isProtected())
                 .filter(piece -> !board.isAttacked(piece.getPosition(), attackerColor))
                 .filter(piece -> !board.isMonitored(piece.getPosition(), attackerColor))

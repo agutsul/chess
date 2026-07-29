@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Attackable;
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Demotable;
@@ -50,9 +51,9 @@ import com.agutsul.chess.position.Position;
  * to properly proxy those newly created pieces
  */
 final class TransformablePieceImpl<COLOR extends Color,
-                                   PIECE extends Piece<COLOR>
-                                            & Movable & Capturable & Protectable
-                                            & Restorable & Disposable & Pinnable>
+                                   PIECE extends Piece<COLOR> & Movable & Capturable
+                                            & Protectable & Attackable & Pinnable
+                                            & Restorable & Disposable>
         extends AbstractTransformablePieceProxy<COLOR,PIECE> {
 
     private static final Logger LOGGER = getLogger(TransformablePieceImpl.class);

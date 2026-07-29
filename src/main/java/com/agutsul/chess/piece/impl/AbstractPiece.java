@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Attackable;
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Disposable;
@@ -29,6 +30,7 @@ import com.agutsul.chess.Movable;
 import com.agutsul.chess.Pinnable;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.Restorable;
+import com.agutsul.chess.activity.action.AbstractCaptureAction;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.cache.ActivityCache;
 import com.agutsul.chess.activity.cache.ActivityCacheImpl;
@@ -53,7 +55,7 @@ import com.agutsul.chess.position.Position;
 
 abstract class AbstractPiece<COLOR extends Color>
         implements Piece<COLOR>, Movable, Capturable, Protectable,
-                   Comparable<Piece<COLOR>> {
+                   Attackable, Comparable<Piece<COLOR>> {
 
     private static final Logger LOGGER = getLogger(AbstractPiece.class);
 
@@ -274,6 +276,7 @@ abstract class AbstractPiece<COLOR extends Color>
                 // find protect impacts related to this piece
                 .filter(impact -> Objects.equals(impact.getTarget(), this))
                 .map(PieceProtectImpact::getSource)
+                .distinct()
                 .collect(toList());
 
         return protectors;
@@ -287,9 +290,41 @@ abstract class AbstractPiece<COLOR extends Color>
                 .flatMap(Collection::parallelStream)
                 .map(impact -> (PieceProtectImpact<?,?,?>) impact)
                 .map(PieceProtectImpact::getTarget)
+                .distinct()
                 .collect(toList());
 
         return pieces;
+    }
+
+    @Override
+    public final Collection<Piece<?>> getAttackers() {
+        LOGGER.debug("Get piece '{}' attackers", this);
+
+        Collection<Piece<?>> attackers = Stream.of(board.getPieces(getColor().invert()))
+                .flatMap(Collection::parallelStream)
+                .map(foundPiece -> board.getActions(foundPiece, Action.Type.CAPTURE))
+                .flatMap(Collection::parallelStream)
+                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
+                .filter(action -> Objects.equals(action.getTarget(), this))
+                .map(AbstractCaptureAction::getSource)
+                .distinct()
+                .collect(toList());
+
+        return attackers;
+    }
+
+    @Override
+    public final Collection<Piece<?>> getAttacked() {
+        LOGGER.debug("Get pieces attacked by '{}'", this);
+
+        Collection<Piece<?>> attacked = Stream.of(board.getActions(this, Action.Type.CAPTURE))
+                .flatMap(Collection::parallelStream)
+                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
+                .map(AbstractCaptureAction::getTarget)
+                .distinct()
+                .collect(toList());
+
+        return attacked;
     }
 
     @Override
@@ -307,8 +342,23 @@ abstract class AbstractPiece<COLOR extends Color>
     }
 
     @Override
+    public final boolean isAttacked() {
+        LOGGER.info("Checking if piece '{}' is attacked by any other piece", this);
+
+        var isAttacked = Stream.of(board.getPieces(getColor().invert()))
+                .flatMap(Collection::parallelStream)
+                .map(foundPiece -> board.getActions(foundPiece, Action.Type.CAPTURE))
+                .flatMap(Collection::parallelStream)
+                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
+                .map(AbstractCaptureAction::getTarget)
+                .anyMatch(attackedPiece -> Objects.equals(attackedPiece, this));
+
+        return isAttacked;
+    }
+
+    @Override
     public final boolean isProtected() {
-        LOGGER.info("Checking if piece '{}' is protected by the other piece", this);
+        LOGGER.info("Checking if piece '{}' is protected by any other piece", this);
 
         // get pieces with the same color
         var isProtected = Stream.of(board.getPieces(getColor()))

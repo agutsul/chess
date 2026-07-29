@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.agutsul.chess.Attackable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.impact.AbstractPieceAttackImpact;
@@ -48,7 +49,7 @@ abstract class AbstractDeflectionImpactRule<COLOR1 extends Color,
                 .map(protectedPiece -> (DEFENDED) protectedPiece)
                 // protected piece should be more valuable than attacker piece
                 .filter(protectedPiece -> COMPARATOR.compare(attackImpact.getSource(), protectedPiece) > 0)
-                .filter(protectedPiece -> !board.getAttackers(protectedPiece).isEmpty())
+                .filter(protectedPiece -> ((Attackable) protectedPiece).isAttacked())
                 .filter(protectedPiece -> !confirmProtection(attackImpact, protectedPiece))
                 .map(protectedPiece -> new PieceDeflectionAttackImpact<>(attackImpact, protectedPiece))
                 .map(impact -> (IMPACT) impact)

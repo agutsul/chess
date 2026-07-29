@@ -2,6 +2,7 @@ package com.agutsul.chess.piece.impl;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Attackable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Demotable;
 import com.agutsul.chess.Disposable;
@@ -12,9 +13,9 @@ import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
 abstract class AbstractDemotablePieceProxy<COLOR extends Color,
-                                           PIECE extends Piece<COLOR>
-                                                    & Movable & Capturable & Protectable
-                                                    & Restorable & Disposable & Demotable>
+                                           PIECE extends Piece<COLOR> & Movable & Capturable
+                                                    & Protectable & Attackable & Demotable
+                                                    & Restorable & Disposable>
         extends AbstractLifecyclePieceProxy<COLOR,PIECE>
         implements Demotable {
 

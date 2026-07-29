@@ -3,6 +3,7 @@ package com.agutsul.chess.piece.impl;
 import java.util.Collection;
 
 import com.agutsul.chess.Accumulatable;
+import com.agutsul.chess.Attackable;
 import com.agutsul.chess.Backwardable;
 import com.agutsul.chess.BigMovable;
 import com.agutsul.chess.Blockadable;
@@ -23,9 +24,9 @@ import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.position.Position;
 
 abstract class AbstractTransformablePieceProxy<COLOR extends Color,
-                                               PIECE extends Piece<COLOR>
-                                                     & Movable & Capturable & Protectable
-                                                     & Restorable & Disposable & Pinnable>
+                                               PIECE extends Piece<COLOR> & Movable & Capturable
+                                                       & Protectable & Attackable & Pinnable
+                                                       & Restorable & Disposable>
         extends AbstractLifecyclePieceProxy<COLOR,PIECE>
         implements TransformablePieceProxy<COLOR,PIECE> {
 

@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece.impl;
 
+import com.agutsul.chess.Attackable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Demotable;
 import com.agutsul.chess.Disposable;
@@ -14,10 +15,9 @@ import com.agutsul.chess.piece.PieceProxy;
 import com.agutsul.chess.position.Position;
 
 final class TransformablePieceAdapter<COLOR extends Color,
-                                      PIECE extends Piece<COLOR>
-                                            & Movable & Capturable & Protectable
-                                            & Restorable & Disposable & Pinnable
-                                            & Promotable>
+                                      PIECE extends Piece<COLOR> & Movable & Capturable
+                                            & Protectable & Attackable & Pinnable
+                                            & Restorable & Disposable & Promotable>
         extends AbstractTransformablePieceProxy<COLOR,PIECE> {
 
     TransformablePieceAdapter(PIECE piece) {

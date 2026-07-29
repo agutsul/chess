@@ -1,6 +1,7 @@
 package com.agutsul.chess.piece;
 
 import com.agutsul.chess.Accumulatable;
+import com.agutsul.chess.Attackable;
 import com.agutsul.chess.Backwardable;
 import com.agutsul.chess.BigMovable;
 import com.agutsul.chess.Blockadable;
@@ -19,8 +20,8 @@ import com.agutsul.chess.color.Color;
 
 public interface PawnPiece<COLOR extends Color>
         extends Piece<COLOR>, Movable, BigMovable, Capturable,
-                Promotable, Protectable, EnPassantable,
-                Disposable, Restorable, Pinnable,
+                Promotable, Protectable, Attackable, Pinnable,
+                EnPassantable, Disposable, Restorable,
                 Blockadable, Isolatable, Backwardable,
                 Accumulatable, Connectable, Passable {
 

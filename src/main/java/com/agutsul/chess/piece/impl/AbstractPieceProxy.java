@@ -3,6 +3,7 @@ package com.agutsul.chess.piece.impl;
 import java.util.Collection;
 import java.util.List;
 
+import com.agutsul.chess.Attackable;
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
@@ -17,8 +18,9 @@ import com.agutsul.chess.piece.state.PieceState;
 import com.agutsul.chess.position.Position;
 
 abstract class AbstractPieceProxy<COLOR extends Color,
-                                  PIECE extends Piece<COLOR> & Movable & Capturable & Protectable>
-        implements PieceProxy<COLOR,PIECE>, Movable, Capturable, Protectable {
+                                  PIECE extends Piece<COLOR> & Movable & Capturable
+                                                  & Protectable & Attackable>
+        implements PieceProxy<COLOR,PIECE>, Movable, Capturable, Protectable, Attackable {
 
     protected PIECE origin;
 
@@ -112,8 +114,23 @@ abstract class AbstractPieceProxy<COLOR extends Color,
     }
 
     @Override
+    public final Collection<Piece<?>> getAttackers() {
+        return this.origin.getAttackers();
+    }
+
+    @Override
+    public final Collection<Piece<?>> getAttacked() {
+        return this.origin.getAttacked();
+    }
+
+    @Override
     public final boolean isActive() {
         return this.origin.isActive();
+    }
+
+    @Override
+    public final boolean isAttacked() {
+        return this.origin.isAttacked();
     }
 
     @Override

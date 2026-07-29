@@ -37,7 +37,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 
 import com.agutsul.chess.Pinnable;
-import com.agutsul.chess.activity.action.AbstractCaptureAction;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceControlImpact;
@@ -431,26 +430,6 @@ final class BoardImpl extends AbstractBoard implements Closeable {
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getAttackers(Piece<?> piece) {
-        LOGGER.debug("Get piece '{}' attackers", piece);
-
-        var attackerColor = piece.getColor().invert();
-
-        @SuppressWarnings("unchecked")
-        var attackers = Stream.of(getPieces(attackerColor))
-                .flatMap(Collection::parallelStream)
-                .map(foundPiece -> getActions(foundPiece, Action.Type.CAPTURE))
-                .flatMap(Collection::parallelStream)
-                .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                .filter(action -> Objects.equals(action.getTarget(), piece))
-                .map(AbstractCaptureAction::getSource)
-                .map(attacker -> (Piece<COLOR>) attacker)
-                .collect(toSet());
-
-        return attackers;
-    }
-
-    @Override
     public boolean isMonitored(Position position, Color attackerColor) {
         LOGGER.debug("Checking if position '{}' is monitored by the other piece of '{}'",
                 position, attackerColor
@@ -475,7 +454,7 @@ final class BoardImpl extends AbstractBoard implements Closeable {
         }
 
         var king = optionalKing.get();
-        var isCheckMakerMonitored = Stream.of(getAttackers(king))
+        var isCheckMakerMonitored = Stream.of(king.getAttackers())
                 .flatMap(Collection::parallelStream)
                 .map(piece -> getImpacts(piece, Impact.Type.MONITOR))
                 .flatMap(Collection::parallelStream)

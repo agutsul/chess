@@ -9,9 +9,8 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
+import com.agutsul.chess.Attackable;
 import com.agutsul.chess.Pinnable;
-import com.agutsul.chess.activity.action.AbstractCaptureAction;
-import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
@@ -29,18 +28,18 @@ final class AttackerCaptureCheckMateEvaluator
 
     @Override
     public Boolean evaluate(KingPiece<?> king) {
-        LOGGER.info("Evaluate attacker capture by any piece except king '{}'", king);
+        LOGGER.info("Evaluate checkmaker capture by any piece except king '{}'", king);
 
-        var isCaptured = Stream.of(board.getAttackers(king))
+        var isCaptured = Stream.of(king.getAttackers())
                 .flatMap(Collection::parallelStream)
-                .anyMatch(checkMaker -> Stream.of(board.getAttackers(checkMaker))
+                .anyMatch(checkMaker -> Stream.of(((Attackable) checkMaker).getAttackers())
                         .flatMap(Collection::parallelStream)
                         .filter(not(Piece::isKing))
-                        .filter(attacker -> !((Pinnable) attacker).isPinned())
-                        .map(attacker -> board.getActions(attacker, Action.Type.CAPTURE))
+                        .filter(checkMakeAttacker -> !((Pinnable) checkMakeAttacker).isPinned())
+                        .map(checkMakeAttacker -> (Attackable) checkMakeAttacker)
+                        .map(Attackable::getAttacked)
                         .flatMap(Collection::parallelStream)
-                        .map(action -> (AbstractCaptureAction<?,?,?,?>) action)
-                        .anyMatch(action -> Objects.equals(action.getTarget(), checkMaker))
+                        .anyMatch(attacked -> Objects.equals(attacked, checkMaker))
                 );
 
         return isCaptured;

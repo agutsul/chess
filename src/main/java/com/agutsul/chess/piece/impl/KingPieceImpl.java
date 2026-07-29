@@ -1,8 +1,11 @@
 package com.agutsul.chess.piece.impl;
 
 import static com.agutsul.chess.activity.action.Action.isCastling;
+import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableSet;
+import static java.util.function.Predicate.not;
+import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -103,7 +106,7 @@ final class KingPieceImpl<COLOR extends Color>
 
     @Override
     public void dispose(Instant instant) {
-        throw new UnsupportedOperationException(String.format(
+        throw new UnsupportedOperationException(format(
                 "%s at '%s'",
                 DISPOSE_ERROR_MESSAGE, instant
         ));
@@ -116,7 +119,7 @@ final class KingPieceImpl<COLOR extends Color>
 
     @Override
     DisposedPieceState<?> createDisposedPieceState(Instant instant) {
-        throw new UnsupportedOperationException(String.format(
+        throw new UnsupportedOperationException(format(
                 "%s at '%s'",
                 DISPOSE_ERROR_MESSAGE, instant
         ));
@@ -147,8 +150,7 @@ final class KingPieceImpl<COLOR extends Color>
 
     static class KingCheckedPieceState<PIECE extends KingPiece<?>>
             extends AbstractPieceStateProxy<PIECE>
-            implements CheckedPieceState<PIECE>,
-                       CastlingablePieceState<PIECE>,
+            implements CheckedPieceState<PIECE>, CastlingablePieceState<PIECE>,
                        ActivePieceState<PIECE> {
 
         private static final Logger LOGGER = getLogger(KingCheckedPieceState.class);
@@ -166,10 +168,13 @@ final class KingPieceImpl<COLOR extends Color>
 
         @Override
         public Collection<Action<?>> calculateActions(PIECE piece) {
-            var actions = new HashSet<Action<?>>();
-            actions.addAll(calculateActions(piece, Action.Type.MOVE));
-            actions.addAll(calculateActions(piece, Action.Type.CAPTURE));
-            return unmodifiableSet(actions);
+            var actions = Stream.of(Action.Type.MOVE, Action.Type.CAPTURE)
+                    .map(actionType -> calculateActions(piece, actionType))
+                    .filter(not(Collection::isEmpty))
+                    .flatMap(Collection::parallelStream)
+                    .collect(toSet());
+
+            return actions;
         }
 
         @Override
@@ -183,10 +188,10 @@ final class KingPieceImpl<COLOR extends Color>
         public Collection<Calculatable> calculateNext(PIECE piece, Position position) {
             return Stream.of(super.calculateNext(piece, position))
                     .flatMap(Collection::stream)
-                    // skip current position because it is under the check
-                    .filter(calculated -> !Objects.equals(calculated, piece.getPosition()))
                     // skip any castling-related positions
                     .filter(calculated -> !(calculated instanceof Castling))
+                    // skip current position because it is under the check
+                    .filter(calculated -> !Objects.equals(calculated, piece.getPosition()))
                     .toList();
         }
 
@@ -201,7 +206,7 @@ final class KingPieceImpl<COLOR extends Color>
         }
 
         protected String formatErrorMessage(Action.Type actionType) {
-            return String.format(ERROR_MESSAGE, lowerCase(actionType.name()));
+            return format(ERROR_MESSAGE, lowerCase(actionType.name()));
         }
     }
 
@@ -254,7 +259,7 @@ final class KingPieceImpl<COLOR extends Color>
 
         @Override
         protected String formatErrorMessage(Action.Type actionType) {
-            return String.format(ERROR_MESSAGE, lowerCase(actionType.name()));
+            return format(ERROR_MESSAGE, lowerCase(actionType.name()));
         }
     }
 }

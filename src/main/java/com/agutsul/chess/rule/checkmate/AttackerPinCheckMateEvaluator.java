@@ -47,7 +47,7 @@ final class AttackerPinCheckMateEvaluator
                 .map(PieceMoveAction::getPosition)
                 .collect(toSet());
 
-        var isPinnable = Stream.of(board.getAttackers(king))
+        var isPinnable = Stream.of(king.getAttackers())
                 .flatMap(Collection::parallelStream)
                 .map(checkMaker -> board.getActions(checkMaker, Action.Type.CAPTURE))
                 .flatMap(Collection::parallelStream)

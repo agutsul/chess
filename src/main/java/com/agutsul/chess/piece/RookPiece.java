@@ -1,5 +1,6 @@
 package com.agutsul.chess.piece;
 
+import com.agutsul.chess.Attackable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Castlingable;
 import com.agutsul.chess.Demotable;
@@ -14,8 +15,8 @@ import com.agutsul.chess.color.Color;
 
 public interface RookPiece<COLOR extends Color>
         extends Piece<COLOR>, Movable, Capturable,
-                Castlingable, Protectable, Demotable,
-                Disposable, Restorable, Pinnable,
-                Lineable, Fileable {
+                Castlingable, Protectable, Attackable,
+                Demotable, Disposable, Restorable,
+                Pinnable, Lineable, Fileable {
 
 }

@@ -57,7 +57,7 @@ public final class CompositeCheckMateEvaluator
     }
 
     private List<Callable<Boolean>> createEvaluationTasks(KingPiece<?> king) {
-        var checkMakers = board.getAttackers(king);
+        var checkMakers = king.getAttackers();
 
         var evaluators = checkMakers.size() == 1
                 ? List.of(kingMoveEvaluator, kingCaptureEvaluator, attackerCaptureEvaluator, attackerPinEvaluator)
