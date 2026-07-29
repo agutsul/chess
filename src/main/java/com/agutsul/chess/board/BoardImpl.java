@@ -43,7 +43,6 @@ import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceControlImpact;
 import com.agutsul.chess.activity.impact.PieceMonitorImpact;
 import com.agutsul.chess.activity.impact.PiecePinImpact;
-import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.board.event.ClearCachedDataEvent;
 import com.agutsul.chess.board.state.BoardState;
 import com.agutsul.chess.color.Color;
@@ -449,25 +448,6 @@ final class BoardImpl extends AbstractBoard implements Closeable {
                 .collect(toSet());
 
         return attackers;
-    }
-
-    @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getProtectors(Piece<?> piece) {
-        LOGGER.debug("Get piece '{}' protectors", piece);
-
-        @SuppressWarnings("unchecked")
-        var protectors = Stream.of(getPieces(piece.getColor()))
-                .flatMap(Collection::parallelStream)
-                .filter(foundPiece -> !Objects.equals(foundPiece, piece))
-                .map(foundPiece -> getImpacts(foundPiece, Impact.Type.PROTECT))
-                .flatMap(Collection::parallelStream)
-                .map(impact -> (PieceProtectImpact<?,?,?>) impact)
-                .filter(impact -> Objects.equals(impact.getTarget(), piece))
-                .map(PieceProtectImpact::getSource)
-                .map(protector -> (Piece<COLOR>) protector)
-                .toList();
-
-        return protectors;
     }
 
     @Override

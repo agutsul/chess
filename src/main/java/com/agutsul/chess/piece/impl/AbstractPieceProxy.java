@@ -102,6 +102,16 @@ abstract class AbstractPieceProxy<COLOR extends Color,
     }
 
     @Override
+    public final Collection<Piece<?>> getProtectors() {
+        return this.origin.getProtectors();
+    }
+
+    @Override
+    public final Collection<Piece<?>> getProtected() {
+        return this.origin.getProtected();
+    }
+
+    @Override
     public final boolean isActive() {
         return this.origin.isActive();
     }

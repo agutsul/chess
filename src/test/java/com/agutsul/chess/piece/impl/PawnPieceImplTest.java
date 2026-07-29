@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.action.PieceEnPassantAction;
@@ -1339,6 +1340,28 @@ public class PawnPieceImplTest extends AbstractPieceTest {
                 .collect(toList());
 
         assertTrue(promoteImpacts.isEmpty());
+    }
+
+    @Test
+    void testGetProtectors() {
+        var board = new LabeledBoardBuilder()
+                .withWhiteKing("e1")
+                .withWhitePawn("e2")
+                .withWhiteBishop("d2")
+                .withWhiteKnight("g1")
+                .withBlackKing("e8")
+                .build();
+
+        var whitePawn = board.getPiece("e2").get();
+        var protectors = ((Protectable) whitePawn).getProtectors();
+
+        assertFalse(protectors.isEmpty());
+        assertEquals(2, protectors.size());
+
+        var whiteKing = board.getPiece("e1").get();
+        var whiteKnight = board.getPiece("g1").get();
+
+        assertTrue(protectors.containsAll(List.of(whiteKing, whiteKnight)));
     }
 
     static void assertPawnEnPassantActions(Board board, Color color, Piece.Type type,

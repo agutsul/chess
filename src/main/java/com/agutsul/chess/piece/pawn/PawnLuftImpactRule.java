@@ -125,10 +125,8 @@ final class PawnLuftImpactRule<COLOR extends Color,
             return emptyList();
         }
 
-        var pawns = Stream.of(board.getImpacts(king, Impact.Type.PROTECT))
+        var pawns = Stream.of(king.getProtected())
                 .flatMap(Collection::parallelStream)
-                .map(impact -> (PieceProtectImpact<?,?,?>) impact)
-                .map(PieceProtectImpact::getTarget)
                 .filter(Piece::isPawn)
                 .filter(pawn -> !((Movable) pawn).isMoved())
                 .toList();

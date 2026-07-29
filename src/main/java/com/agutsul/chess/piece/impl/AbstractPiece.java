@@ -8,6 +8,7 @@ import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.hash;
 import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -254,6 +255,41 @@ abstract class AbstractPiece<COLOR extends Color>
     @Override
     public final List<Position> getPositions() {
         return unmodifiableList(this.positions);
+    }
+
+    @Override
+    public final Collection<Piece<?>> getProtectors() {
+        LOGGER.debug("Get piece '{}' protectors", this);
+
+        // get pieces with the same color
+        Collection<Piece<?>> protectors = Stream.of(board.getPieces(getColor()))
+                .flatMap(Collection::parallelStream)
+                // piece can't protect itself
+                .filter(foundPiece -> !Objects.equals(foundPiece, this))
+                // skip pinned pieces but allow king
+                .filter(piece -> isKing(piece) || !((Pinnable) piece).isPinned())
+                .map(foundPiece -> board.getImpacts(foundPiece, Impact.Type.PROTECT))
+                .flatMap(Collection::parallelStream)
+                .map(impact -> (PieceProtectImpact<?,?,?>) impact)
+                // find protect impacts related to this piece
+                .filter(impact -> Objects.equals(impact.getTarget(), this))
+                .map(PieceProtectImpact::getSource)
+                .collect(toList());
+
+        return protectors;
+    }
+
+    @Override
+    public final Collection<Piece<?>> getProtected() {
+        LOGGER.debug("Get pieces protected by '{}'", this);
+
+        Collection<Piece<?>> pieces = Stream.of(board.getImpacts(this, Impact.Type.PROTECT))
+                .flatMap(Collection::parallelStream)
+                .map(impact -> (PieceProtectImpact<?,?,?>) impact)
+                .map(PieceProtectImpact::getTarget)
+                .collect(toList());
+
+        return pieces;
     }
 
     @Override

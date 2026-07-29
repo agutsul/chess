@@ -10,11 +10,11 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.impact.AbstractPieceAttackImpact;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceDeflectionAttackImpact;
 import com.agutsul.chess.activity.impact.PieceDeflectionImpact;
-import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.board.PositionedBoardBuilder;
 import com.agutsul.chess.color.Color;
@@ -42,10 +42,9 @@ abstract class AbstractDeflectionImpactRule<COLOR1 extends Color,
     protected Collection<IMPACT> createImpacts(AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> attackImpact) {
 
         @SuppressWarnings("unchecked")
-        var impacts = Stream.of(board.getImpacts(attackImpact.getTarget(), Impact.Type.PROTECT))
+        var impacts = Stream.of(attackImpact.getTarget())
+                .map(attackedPiece -> ((Protectable) attackedPiece).getProtected())
                 .flatMap(Collection::parallelStream)
-                .map(impact -> (PieceProtectImpact<?,?,?>) impact)
-                .map(PieceProtectImpact::getTarget)
                 .map(protectedPiece -> (DEFENDED) protectedPiece)
                 // protected piece should be more valuable than attacker piece
                 .filter(protectedPiece -> COMPARATOR.compare(attackImpact.getSource(), protectedPiece) > 0)
@@ -82,10 +81,8 @@ abstract class AbstractDeflectionImpactRule<COLOR1 extends Color,
             // check if protection from victim piece is still valid for protected piece
             var isProtected = Stream.of(tmpBoard.getPiece(attackImpact.getSource().getPosition()))
                     .flatMap(Optional::stream)
-                    .map(piece -> tmpBoard.getImpacts(piece, Impact.Type.PROTECT))
+                    .map(piece -> ((Protectable) piece).getProtected())
                     .flatMap(Collection::parallelStream)
-                    .map(impact -> (PieceProtectImpact<?,?,?>) impact)
-                    .map(PieceProtectImpact::getTarget)
                     .map(Piece::getPosition)
                     .anyMatch(position -> Objects.equals(position, protectedPiece.getPosition()));
 

@@ -119,11 +119,6 @@ public final class StandardBoard
     }
 
     @Override
-    public <COLOR extends Color> Collection<Piece<COLOR>> getProtectors(Piece<?> piece) {
-        return this.origin.getProtectors(piece);
-    }
-
-    @Override
     public Collection<Piece<Color>> getPieces() {
         return this.origin.getPieces();
     }
