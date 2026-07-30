@@ -3,6 +3,7 @@ package com.agutsul.chess.rule.impact.undermining;
 import static com.agutsul.chess.piece.Piece.isKing;
 
 import com.agutsul.chess.Capturable;
+import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceUnderminingImpact;
 import com.agutsul.chess.board.Board;
@@ -29,7 +30,6 @@ abstract class AbstractUnderminingImpactRule<COLOR1 extends Color,
             return false;
         }
 
-        var protectImpacts = board.getImpacts(piece, Impact.Type.PROTECT);
-        return !protectImpacts.isEmpty();
+        return !((Protectable) piece).getProtected().isEmpty();
     }
 }
