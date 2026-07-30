@@ -13,19 +13,15 @@ import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
 
 import com.agutsul.chess.activity.action.AbstractCaptureAction;
 import com.agutsul.chess.activity.action.Action;
-import com.agutsul.chess.board.Board;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.Piece;
 
 final class AttackerCaptureCheckActionEvaluator
         implements CheckActionEvaluator {
 
-    private final Board board;
     private final Collection<Action<?>> pieceActions;
 
-    AttackerCaptureCheckActionEvaluator(Board board,
-                                        Collection<Action<?>> pieceActions) {
-        this.board = board;
+    AttackerCaptureCheckActionEvaluator(Collection<Action<?>> pieceActions) {
         this.pieceActions = pieceActions;
     }
 

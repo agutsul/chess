@@ -11,7 +11,7 @@ public final class PieceCheckActionEvaluator
 
     public PieceCheckActionEvaluator(Board board, Collection<Action<?>> actions) {
         super(new CompositeCheckActionEvaluator(board, List.of(
-                new AttackerCaptureCheckActionEvaluator(board, actions), // capture attacker by any piece
+                new AttackerCaptureCheckActionEvaluator(actions), // capture attacker by any piece
                 new AttackerPinCheckActionEvaluator(board, actions) // block attack line by any piece
         )));
     }

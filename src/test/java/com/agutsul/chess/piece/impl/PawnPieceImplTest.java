@@ -954,6 +954,8 @@ public class PawnPieceImplTest extends AbstractPieceTest {
                 .withWhitePawns("h2","g2","f2")
                 .build();
 
+        System.out.println(board);
+
         var whitePawn1 = board.getPiece("g2").get();
         var luftImpacts1 = board.getImpacts(whitePawn1, Impact.Type.LUFT);
 

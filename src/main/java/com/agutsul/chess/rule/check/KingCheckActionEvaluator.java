@@ -11,7 +11,7 @@ public final class KingCheckActionEvaluator
 
     public KingCheckActionEvaluator(Board board, Collection<Action<?>> actions) {
         super(new CompositeCheckActionEvaluator(board, List.of(
-                new AttackerCaptureCheckActionEvaluator(board, actions), // king capture attacker
+                new AttackerCaptureCheckActionEvaluator(actions), // king capture attacker
                 new KingMoveCheckActionEvaluator(board, actions), // king escape to available position
                 new KingCapturePieceActionEvaluator(board, actions) // king capture non-attacker
         )));

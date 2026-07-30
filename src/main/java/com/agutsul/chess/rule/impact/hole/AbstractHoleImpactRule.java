@@ -53,9 +53,9 @@ abstract class AbstractHoleImpactRule<POSITION extends Position,
                 // skip calculating holes:
                 // - when it is different color
                 // - when pawn is far away it's initial position
-                .anyMatch(pawn -> isEqual(pawn.getColor(), color)
-                        && pawn.isMoved() && pawn.getPositions().size() <= 3
-                );
+                .filter(pawn -> isEqual(pawn.getColor(), color))
+                .filter(pawn -> pawn.getPositions().size() <= 3)
+                .anyMatch(PawnPiece::isMoved);
 
         if (!isPawnFound) {
             return emptyList();

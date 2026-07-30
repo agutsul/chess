@@ -5,7 +5,6 @@ import static com.agutsul.chess.piece.Piece.isLinear;
 import static com.agutsul.chess.position.PositionFactory.positionOf;
 import static java.util.Collections.emptyList;
 import static java.util.function.Predicate.not;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.ArrayList;
@@ -14,12 +13,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceControlImpact;
 import com.agutsul.chess.activity.impact.PieceLuftImpact;
+import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
@@ -76,12 +75,14 @@ final class PawnLuftImpactRule<COLOR extends Color,
         var kingProtectors = Stream.of(board.getPieces(piece.getColor()))
                 .flatMap(Collection::parallelStream)
                 .filter(not(Piece::isKing))
-                .filter(protectorPiece -> Stream.of(((Protectable) protectorPiece).getProtected())
+                .filter(protectorPiece -> Stream.of(board.getImpacts(protectorPiece, Impact.Type.PROTECT))
                         .flatMap(Collection::parallelStream)
-                        .filter(protectedPiece -> Objects.equals(protectedPiece, king))
+                        .map(impact -> (PieceProtectImpact<?,?,?>) impact)
+                        .filter(impact -> Objects.equals(impact.getTarget(), king))
+                        .map(Impact::getSource)
                         .map(Piece::getPosition)
-                        .anyMatch(protectedPosition -> initLine.stream()
-                                .anyMatch(line -> line.contains(protectedPosition))
+                        .anyMatch(position -> initLine.stream()
+                                .anyMatch(line -> line.contains(position))
                         )
                 )
                 .toList();
@@ -152,7 +153,7 @@ final class PawnLuftImpactRule<COLOR extends Color,
             return Stream.of(createCaptureLuftImpact(piece))
                     .flatMap(Collection::parallelStream)
                     .map(impact -> (IMPACT) impact)
-                    .collect(toList());
+                    .toList();
         }
 
         if (!isLinear(pawnAttacker)) {
@@ -174,7 +175,7 @@ final class PawnLuftImpactRule<COLOR extends Color,
                         .map(position -> new PieceLuftImpact<>(piece, position))
                 )
                 .map(impact -> (IMPACT) impact)
-                .collect(toList());
+                .toList();
 
         return impacts;
     }
@@ -184,7 +185,7 @@ final class PawnLuftImpactRule<COLOR extends Color,
         return Stream.of(createMoveLuftImpact(piece), createCaptureLuftImpact(piece))
                 .flatMap(Collection::parallelStream)
                 .map(impact -> (IMPACT) impact)
-                .collect(toList());
+                .toList();
     }
 
     private Collection<PieceLuftImpact<COLOR,PAWN>> createMoveLuftImpact(PAWN piece) {
@@ -192,7 +193,7 @@ final class PawnLuftImpactRule<COLOR extends Color,
                 .flatMap(Collection::parallelStream)
                 .filter(position -> board.isEmpty(position))
                 .map(position -> new PieceLuftImpact<>(piece, position))
-                .collect(toList());
+                .toList();
 
         return impacts;
     }
@@ -206,7 +207,7 @@ final class PawnLuftImpactRule<COLOR extends Color,
                         .anyMatch(color -> !isEqual(color, piece.getColor()))
                 )
                 .map(position -> new PieceLuftImpact<>(piece, position))
-                .collect(toList());
+                .toList();
 
         return impacts;
     }

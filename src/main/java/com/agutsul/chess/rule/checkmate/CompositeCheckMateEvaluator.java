@@ -30,7 +30,7 @@ public final class CompositeCheckMateEvaluator
 
         this.kingMoveEvaluator = new KingMoveCheckMateEvaluator(board);
         this.kingCaptureEvaluator = new KingCaptureCheckMateEvaluator(board);
-        this.attackerCaptureEvaluator = new AttackerCaptureCheckMateEvaluator(board);
+        this.attackerCaptureEvaluator = new AttackerCaptureCheckMateEvaluator();
         this.attackerPinEvaluator = new AttackerPinCheckMateEvaluator(board);
     }
 
