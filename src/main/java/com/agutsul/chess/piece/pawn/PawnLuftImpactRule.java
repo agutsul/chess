@@ -14,13 +14,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.agutsul.chess.Movable;
+import com.agutsul.chess.Protectable;
 import com.agutsul.chess.activity.action.Action;
 import com.agutsul.chess.activity.action.PieceCaptureAction;
 import com.agutsul.chess.activity.impact.Impact;
 import com.agutsul.chess.activity.impact.PieceControlImpact;
 import com.agutsul.chess.activity.impact.PieceLuftImpact;
-import com.agutsul.chess.activity.impact.PieceProtectImpact;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.line.Line;
@@ -77,15 +76,12 @@ final class PawnLuftImpactRule<COLOR extends Color,
         var kingProtectors = Stream.of(board.getPieces(piece.getColor()))
                 .flatMap(Collection::parallelStream)
                 .filter(not(Piece::isKing))
-                .filter(protectorPiece -> Stream.of(board.getImpacts(protectorPiece, Impact.Type.PROTECT))
+                .filter(protectorPiece -> Stream.of(((Protectable) protectorPiece).getProtected())
                         .flatMap(Collection::parallelStream)
-                        .map(impact -> (PieceProtectImpact<?,?,?>) impact)
-                        .anyMatch(impact -> Objects.equals(impact.getTarget(), king)
-                                && initLine.stream()
-                                        .anyMatch(line -> line.contains(
-                                                impact.getSource().getPosition()
-                                         )
-                                )
+                        .filter(protectedPiece -> Objects.equals(protectedPiece, king))
+                        .map(Piece::getPosition)
+                        .anyMatch(protectedPosition -> initLine.stream()
+                                .anyMatch(line -> line.contains(protectedPosition))
                         )
                 )
                 .toList();
@@ -128,7 +124,8 @@ final class PawnLuftImpactRule<COLOR extends Color,
         var pawns = Stream.of(king.getProtected())
                 .flatMap(Collection::parallelStream)
                 .filter(Piece::isPawn)
-                .filter(pawn -> !((Movable) pawn).isMoved())
+                .map(protectedPiece -> (PawnPiece<?>) protectedPiece)
+                .filter(not(PawnPiece::isMoved))
                 .toList();
 
         // skip luft impact when pawn is already moved, so initial pawn position already available for king
@@ -150,12 +147,7 @@ final class PawnLuftImpactRule<COLOR extends Color,
         var pawnAttacker = pawnAttackers.getFirst();
 
         // capture piece making a pin by pawn itself
-        var isAttackerCapturable = Stream.of(board.getActions(piece, Action.Type.CAPTURE))
-                .flatMap(Collection::parallelStream)
-                .map(action -> (PieceCaptureAction<?,?,?,?>) action)
-                .map(PieceCaptureAction::getTarget)
-                .anyMatch(opponentPiece -> Objects.equals(opponentPiece, pawnAttacker));
-
+        var isAttackerCapturable = piece.getAttacked().contains(pawnAttacker);
         if (isAttackerCapturable) {
             return Stream.of(createCaptureLuftImpact(piece))
                     .flatMap(Collection::parallelStream)
