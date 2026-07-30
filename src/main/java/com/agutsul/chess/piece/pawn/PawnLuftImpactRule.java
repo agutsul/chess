@@ -148,8 +148,8 @@ final class PawnLuftImpactRule<COLOR extends Color,
         var pawnAttacker = pawnAttackers.getFirst();
 
         // capture piece making a pin by pawn itself
-        var isAttackerCapturable = piece.getAttacked().contains(pawnAttacker);
-        if (isAttackerCapturable) {
+        var pieceAttacked = piece.getAttacked();
+        if (pieceAttacked.contains(pawnAttacker)) {
             return Stream.of(createCaptureLuftImpact(piece))
                     .flatMap(Collection::parallelStream)
                     .map(impact -> (IMPACT) impact)
