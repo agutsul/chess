@@ -60,13 +60,12 @@ abstract class AbstractBlockImpactRule<COLOR1 extends Color,
                 .flatMap(action -> Stream.of(action.getLine())
                         .flatMap(Optional::stream)
                         .filter(attackLine -> attackLine.containsAny(piecePositions))
-                        .flatMap(attackLine -> Stream.of(attackLine.intersection(piecePositions))
-                                .flatMap(Collection::parallelStream)
-                                .filter(blockPosition -> board.isEmpty(blockPosition))
-                                .map(blockPosition -> new PieceBlockAttackImpact<>(
-                                        piece, blockPosition, createAttackImpact(action)
-                                ))
-                        )
+                        .map(attackLine -> attackLine.intersection(piecePositions))
+                        .flatMap(Collection::parallelStream)
+                        .filter(blockPosition -> board.isEmpty(blockPosition))
+                        .map(blockPosition -> new PieceBlockAttackImpact<>(
+                                piece, blockPosition, createAttackImpact(action)
+                        ))
                 )
                 // sort most valuable defended pieces first
                 .sorted(comparing(PieceBlockAttackImpact::getAttacked, COMPARATOR))
