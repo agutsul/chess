@@ -191,10 +191,7 @@ final class PawnImpendingAttackPositionImpactRule<COLOR1 extends Color,
                                 return (IMPACT) impact;
                             })
                     )
-                    .sorted(comparing(
-                        PieceImpendingAttackImpact::getAttacked,
-                        (piece1,piece2) -> COMPARATOR.compare(piece1,piece2)
-                    ))
+                    .sorted(comparing(PieceImpendingAttackImpact::getAttacked, COMPARATOR))
                     .toList();
 
             return impacts;
