@@ -63,8 +63,11 @@ abstract class AbstractPiece<COLOR extends Color>
 
     private final List<Position> positions = new ArrayList<>();
 
-    private final ActivityCache<Action.Type,Action<?>> actionCache;
-    private final ActivityCache<Impact.Type,Impact<?>> impactCache;
+    private final ActivityCache<Action.Type,Action<?>> primaryActionCache;
+    private final ActivityCache<Action.Type,Action<?>> secondaryActionCache;
+
+    private final ActivityCache<Impact.Type,Impact<?>> primaryImpactCache;
+    private final ActivityCache<Impact.Type,Impact<?>> secondaryImpactCache;
 
     private final PieceContext<COLOR> context;
 
@@ -80,6 +83,8 @@ abstract class AbstractPiece<COLOR extends Color>
 
         this(board, position, context, state,
                 new ActivityCacheImpl<>(),
+                new ActivityCacheImpl<>(),
+                new ActivityCacheImpl<>(),
                 new ActivityCacheImpl<>()
         );
     }
@@ -87,12 +92,18 @@ abstract class AbstractPiece<COLOR extends Color>
     @SuppressWarnings("unchecked")
     AbstractPiece(Board board, Position position, PieceContext<COLOR> context,
                   AbstractPieceState<? extends Piece<COLOR>> state,
-                  ActivityCache<Action.Type,Action<?>> actionCache,
-                  ActivityCache<Impact.Type,Impact<?>> impactCache) {
+                  ActivityCache<Action.Type,Action<?>> primaryActionCache,
+                  ActivityCache<Impact.Type,Impact<?>> primaryImpactCache,
+                  ActivityCache<Action.Type,Action<?>> secondaryActionCache,
+                  ActivityCache<Impact.Type,Impact<?>> secondaryImpactCache) {
 
         this.context = context;
-        this.actionCache = actionCache;
-        this.impactCache = impactCache;
+
+        this.primaryActionCache = primaryActionCache;
+        this.secondaryActionCache = secondaryActionCache;
+
+        this.primaryImpactCache = primaryImpactCache;
+        this.secondaryImpactCache = secondaryImpactCache;
 
         this.observer = createObserver();
 
@@ -119,62 +130,80 @@ abstract class AbstractPiece<COLOR extends Color>
     public Collection<Action<?>> getActions() {
         LOGGER.info("Get '{}' actions", this);
 
-        if (this.actionCache.isEmpty()) {
+        if (this.primaryActionCache.isEmpty()) {
             var actions = getState().calculateActions(this);
-            this.actionCache.putAll(actions);
+            this.primaryActionCache.putAll(actions);
 
             return unmodifiableCollection(actions);
         }
 
-        return this.actionCache.getAll();
+        return this.primaryActionCache.getAll();
     }
 
     @Override
     public Collection<Action<?>> getActions(Action.Type actionType) {
         LOGGER.info("Get '{}' actions({})", this, actionType.name());
 
-        var actions = this.actionCache.get(actionType);
+        var actions = this.primaryActionCache.get(actionType);
         if (!actions.isEmpty()) {
             return unmodifiableCollection(actions);
         }
 
-        if (!this.actionCache.isEmpty() && actions.isEmpty()) {
+        if (!this.primaryActionCache.isEmpty() && actions.isEmpty()) {
             return emptyList();
         }
 
+        var cached = this.secondaryActionCache.get(actionType);
+        if (!cached.isEmpty()) {
+            return unmodifiableCollection(cached);
+        }
+
         LOGGER.info("Calculating '{}' actions({})", this, actionType.name());
-        return getState().calculateActions(this, actionType);
+
+        var calculated = getState().calculateActions(this, actionType);
+        this.secondaryActionCache.put(actionType, calculated);
+
+        return unmodifiableCollection(calculated);
     }
 
     @Override
     public final Collection<Impact<?>> getImpacts() {
         LOGGER.info("Get '{}' impacts", this);
 
-        if (this.impactCache.isEmpty()) {
+        if (this.primaryImpactCache.isEmpty()) {
             var impacts = getState().calculateImpacts(this);
-            this.impactCache.putAll(impacts);
+            this.primaryImpactCache.putAll(impacts);
 
             return unmodifiableCollection(impacts);
         }
 
-        return this.impactCache.getAll();
+        return this.primaryImpactCache.getAll();
     }
 
     @Override
     public final Collection<Impact<?>> getImpacts(Impact.Type impactType) {
         LOGGER.info("Get '{}' impacts({})", this, impactType.name());
 
-        var impacts = this.impactCache.get(impactType);
+        var impacts = this.primaryImpactCache.get(impactType);
         if (!impacts.isEmpty()) {
             return unmodifiableCollection(impacts);
         }
 
-        if (!this.impactCache.isEmpty() && impacts.isEmpty()) {
+        if (!this.primaryImpactCache.isEmpty() && impacts.isEmpty()) {
             return emptyList();
         }
 
+        var cached = this.secondaryImpactCache.get(impactType);
+        if (!cached.isEmpty()) {
+            return unmodifiableCollection(cached);
+        }
+
         LOGGER.info("Calculating '{}' impacts({})", this, impactType.name());
-        return getState().calculateImpacts(this, impactType);
+
+        var calculated = getState().calculateImpacts(this, impactType);
+        this.secondaryImpactCache.put(impactType, calculated);
+
+        return unmodifiableCollection(calculated);
     }
 
     @Override
@@ -516,8 +545,12 @@ abstract class AbstractPiece<COLOR extends Color>
 
     private void clear() {
         LOGGER.info("Clear '{}' cached actions/impacts", this);
-        this.actionCache.clear();
-        this.impactCache.clear();
+
+        Stream.of(this.primaryActionCache, this.secondaryActionCache,
+                    this.primaryImpactCache, this.secondaryImpactCache
+            )
+            .parallel()
+            .forEach(ActivityCache::clear);
     }
 
     final class ClearPieceActivitiesObserver
