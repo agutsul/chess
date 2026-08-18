@@ -124,7 +124,7 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
     @Override
     public BoardBuilder<T> withWhiteBishops(T position1, T position2) {
         Stream.of(position1,position2)
-            .forEach(position -> withWhiteBishop(position));
+            .forEach(this::withWhiteBishop);
 
         return this;
     }
@@ -138,7 +138,7 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
     @Override
     public BoardBuilder<T> withWhiteKnights(T position1, T position2) {
         Stream.of(position1,position2)
-            .forEach(position -> withWhiteKnight(position));
+            .forEach(this::withWhiteKnight);
 
         return this;
     }
@@ -152,7 +152,7 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
     @Override
     public BoardBuilder<T> withWhiteRooks(T position1, T position2) {
         Stream.of(position1,position2)
-            .forEach(position -> withWhiteRook(position));
+            .forEach(this::withWhiteRook);
 
         return this;
     }
@@ -191,7 +191,7 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
     @Override
     public BoardBuilder<T> withBlackBishops(T position1, T position2) {
         Stream.of(position1,position2)
-            .forEach(position -> withBlackBishop(position));
+            .forEach(this::withBlackBishop);
 
         return this;
     }
@@ -205,7 +205,7 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
     @Override
     public BoardBuilder<T> withBlackKnights(T position1, T position2) {
         Stream.of(position1,position2)
-            .forEach(position -> withBlackKnight(position));
+            .forEach(this::withBlackKnight);
 
         return this;
     }
@@ -219,7 +219,7 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
     @Override
     public BoardBuilder<T> withBlackRooks(T position1, T position2) {
         Stream.of(position1,position2)
-            .forEach(position -> withBlackRook(position));
+            .forEach(this::withBlackRook);
 
         return this;
     }
@@ -242,7 +242,7 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
                                       @SuppressWarnings("unchecked") T... positions) {
 
         Stream.of(List.of(position1, position2), List.of(positions))
-            .flatMap(Collection::stream)
+            .flatMap(Collection::parallelStream)
             .forEach(position -> addPiecePosition(Piece.Type.PAWN, context, position));
 
         return this;
@@ -291,12 +291,12 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
         @Override
         protected List<Piece<COLOR>> compute() {
             var optionalTasks = List.of(
-                    createTask(context.getKingPositions(),   position -> pieceFactory.createKing(position)),
-                    createTask(context.getQueenPositions(),  position -> pieceFactory.createQueen(position)),
-                    createTask(context.getKnightPositions(), position -> pieceFactory.createKnight(position)),
-                    createTask(context.getBishopPositions(), position -> pieceFactory.createBishop(position)),
-                    createTask(context.getRookPositions(),   position -> pieceFactory.createRook(position)),
-                    createTask(context.getPawnPositions(),   position -> pieceFactory.createPawn(position))
+                    createTask(context.getKingPositions(),   pieceFactory::createKing),
+                    createTask(context.getQueenPositions(),  pieceFactory::createQueen),
+                    createTask(context.getKnightPositions(), pieceFactory::createKnight),
+                    createTask(context.getBishopPositions(), pieceFactory::createBishop),
+                    createTask(context.getRookPositions(),   pieceFactory::createRook),
+                    createTask(context.getPawnPositions(),   pieceFactory::createPawn)
             );
 
             var tasks = Stream.of(optionalTasks)
