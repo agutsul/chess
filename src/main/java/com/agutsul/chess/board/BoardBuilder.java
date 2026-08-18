@@ -5,42 +5,42 @@ import org.apache.commons.lang3.builder.Builder;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
 
-public interface BoardBuilder<T>
+public interface BoardBuilder<POSITION>
         extends Builder<Board> {
 
-    BoardBuilder<T> withPiece(Piece.Type pieceType, Color color, T position);
+    BoardBuilder<POSITION> withPiece(Piece.Type pieceType, Color color, POSITION position);
 
-    BoardBuilder<T> withWhitePiece(Piece.Type pieceType, T position);
-    BoardBuilder<T> withBlackPiece(Piece.Type pieceType, T position);
+    BoardBuilder<POSITION> withWhitePiece(Piece.Type pieceType, POSITION position);
+    BoardBuilder<POSITION> withBlackPiece(Piece.Type pieceType, POSITION position);
 
-    BoardBuilder<T> withWhiteKing(T position);
-    BoardBuilder<T> withWhiteQueen(T position);
+    BoardBuilder<POSITION> withWhiteKing(POSITION position);
+    BoardBuilder<POSITION> withWhiteQueen(POSITION position);
 
-    BoardBuilder<T> withWhiteBishop(T position);
-    BoardBuilder<T> withWhiteBishops(T position1, T position2);
+    BoardBuilder<POSITION> withWhiteBishop(POSITION position);
+    BoardBuilder<POSITION> withWhiteBishops(POSITION position1, POSITION position2);
 
-    BoardBuilder<T> withWhiteKnight(T position);
-    BoardBuilder<T> withWhiteKnights(T position1, T position2);
+    BoardBuilder<POSITION> withWhiteKnight(POSITION position);
+    BoardBuilder<POSITION> withWhiteKnights(POSITION position1, POSITION position2);
 
-    BoardBuilder<T> withWhiteRook(T position);
-    BoardBuilder<T> withWhiteRooks(T position1, T position2);
+    BoardBuilder<POSITION> withWhiteRook(POSITION position);
+    BoardBuilder<POSITION> withWhiteRooks(POSITION position1, POSITION position2);
 
-    BoardBuilder<T> withWhitePawn(T position);
-    BoardBuilder<T> withWhitePawns(T position1, T position2, @SuppressWarnings("unchecked") T... positions);
+    BoardBuilder<POSITION> withWhitePawn(POSITION position);
+    BoardBuilder<POSITION> withWhitePawns(POSITION position1, POSITION position2, @SuppressWarnings("unchecked") POSITION... positions);
 
-    BoardBuilder<T> withBlackKing(T position);
-    BoardBuilder<T> withBlackQueen(T position);
+    BoardBuilder<POSITION> withBlackKing(POSITION position);
+    BoardBuilder<POSITION> withBlackQueen(POSITION position);
 
-    BoardBuilder<T> withBlackBishop(T position);
-    BoardBuilder<T> withBlackBishops(T position1, T position2);
+    BoardBuilder<POSITION> withBlackBishop(POSITION position);
+    BoardBuilder<POSITION> withBlackBishops(POSITION position1, POSITION position2);
 
-    BoardBuilder<T> withBlackKnight(T position);
-    BoardBuilder<T> withBlackKnights(T position1, T position2);
+    BoardBuilder<POSITION> withBlackKnight(POSITION position);
+    BoardBuilder<POSITION> withBlackKnights(POSITION position1, POSITION position2);
 
-    BoardBuilder<T> withBlackRook(T position);
-    BoardBuilder<T> withBlackRooks(T position1, T position2);
+    BoardBuilder<POSITION> withBlackRook(POSITION position);
+    BoardBuilder<POSITION> withBlackRooks(POSITION position1, POSITION position2);
 
-    BoardBuilder<T> withBlackPawn(T position);
-    BoardBuilder<T> withBlackPawns(T position1, T position2, @SuppressWarnings("unchecked") T... positions);
+    BoardBuilder<POSITION> withBlackPawn(POSITION position);
+    BoardBuilder<POSITION> withBlackPawns(POSITION position1, POSITION position2, @SuppressWarnings("unchecked") POSITION... positions);
 
 }
