@@ -283,7 +283,7 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
         private final PieceFactoryAdapter<COLOR,T> pieceFactory;
         private final BoardContext<T> context;
 
-        public PieceBuilderTask(PieceFactoryAdapter<COLOR,T> pieceFactory, BoardContext<T> context) {
+        PieceBuilderTask(PieceFactoryAdapter<COLOR,T> pieceFactory, BoardContext<T> context) {
             this.pieceFactory = pieceFactory;
             this.context = context;
         }
@@ -337,9 +337,7 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
         private final List<T> positions;
         private final Function<T,Piece<COLOR>> function;
 
-        public PieceBuilderSubTask(List<T> positions,
-                                   Function<T,Piece<COLOR>> function) {
-
+        PieceBuilderSubTask(List<T> positions, Function<T,Piece<COLOR>> function) {
             this.positions = positions;
             this.function = function;
         }
@@ -348,8 +346,7 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
         protected List<Piece<COLOR>> compute() {
             // no more splits
             if (this.positions.size() == 1) {
-                var position = this.positions.getFirst();
-                return List.of(function.apply(position));
+                return List.of(function.apply(this.positions.getFirst()));
             }
 
             // split to subtasks
