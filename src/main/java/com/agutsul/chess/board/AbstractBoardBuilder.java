@@ -2,6 +2,7 @@ package com.agutsul.chess.board;
 
 import static com.agutsul.chess.color.Colors.isWhite;
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 import static org.apache.commons.collections4.ListUtils.partition;
 
@@ -254,15 +255,14 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
 
     private Board createBoard(ForkJoinPool executor) {
         var board = new BoardImpl();
-        var tasks = List.of(
-                createPieceBuilderTask(board.getWhitePieceFactory(), whitePieceContext),
-                createPieceBuilderTask(board.getBlackPieceFactory(), blackPieceContext)
-        );
 
-        var pieces = new ArrayList<Piece<?>>();
-        for (var task : tasks) {
-            pieces.addAll(executor.invoke(task));
-        }
+        List<Piece<?>> pieces = Stream.of(
+                        createPieceBuilderTask(board.getWhitePieceFactory(), whitePieceContext),
+                        createPieceBuilderTask(board.getBlackPieceFactory(), blackPieceContext)
+                )
+                .map(executor::invoke)
+                .flatMap(Collection::parallelStream)
+                .collect(toList());
 
         board.setPieces(pieces);
         return board;
@@ -275,7 +275,7 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
         return new PieceBuilderTask<>(pieceFactoryAdapter, context);
     }
 
-    private static class PieceBuilderTask<COLOR extends Color,T extends Serializable>
+    private static final class PieceBuilderTask<COLOR extends Color,T extends Serializable>
             extends RecursiveTask<List<Piece<COLOR>>> {
 
         private static final long serialVersionUID = 1L;
@@ -290,17 +290,14 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
 
         @Override
         protected List<Piece<COLOR>> compute() {
-            var optionalTasks = List.of(
-                    createTask(context.getKingPositions(),   pieceFactory::createKing),
-                    createTask(context.getQueenPositions(),  pieceFactory::createQueen),
-                    createTask(context.getKnightPositions(), pieceFactory::createKnight),
-                    createTask(context.getBishopPositions(), pieceFactory::createBishop),
-                    createTask(context.getRookPositions(),   pieceFactory::createRook),
-                    createTask(context.getPawnPositions(),   pieceFactory::createPawn)
-            );
-
-            var tasks = Stream.of(optionalTasks)
-                    .flatMap(Collection::parallelStream)
+            var tasks = Stream.of(
+                            createTask(context.getKingPositions(),   pieceFactory::createKing),
+                            createTask(context.getQueenPositions(),  pieceFactory::createQueen),
+                            createTask(context.getKnightPositions(), pieceFactory::createKnight),
+                            createTask(context.getBishopPositions(), pieceFactory::createBishop),
+                            createTask(context.getRookPositions(),   pieceFactory::createRook),
+                            createTask(context.getPawnPositions(),   pieceFactory::createPawn)
+                    )
                     .flatMap(Optional::stream)
                     .toList();
 
@@ -332,7 +329,7 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
         }
     }
 
-    private static class PieceBuilderSubTask<COLOR extends Color,T>
+    private static final class PieceBuilderSubTask<COLOR extends Color,T>
             extends RecursiveTask<List<Piece<COLOR>>> {
 
         private static final long serialVersionUID = 1L;
