@@ -34,10 +34,10 @@ import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.piece.factory.PieceFactory;
 
-abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
-        implements BoardBuilder<T> {
+abstract class AbstractBoardBuilder<COLOR extends Color,POSITION extends Serializable>
+        implements BoardBuilder<POSITION> {
 
-    private final Map<Piece.Type,BiConsumer<BoardContext<T>,T>> piecePositionSetters = new EnumMap<>(Map.of(
+    private final Map<Piece.Type,BiConsumer<BoardContext<POSITION>,POSITION>> piecePositionSetters = new EnumMap<>(Map.of(
             Piece.Type.PAWN,   (context,position) -> context.addPawnPosition(position),
             Piece.Type.KNIGHT, (context,position) -> context.addKnightPosition(position),
             Piece.Type.BISHOP, (context,position) -> context.addBishopPosition(position),
@@ -47,12 +47,12 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
     ));
 
     protected final Logger logger;
-    protected final BoardContext<T> whitePieceContext;
-    protected final BoardContext<T> blackPieceContext;
+    protected final BoardContext<POSITION> whitePieceContext;
+    protected final BoardContext<POSITION> blackPieceContext;
 
     AbstractBoardBuilder(Logger logger,
-                         BoardContext<T> whitePieceContext,
-                         BoardContext<T> blackPieceContext) {
+                         BoardContext<POSITION> whitePieceContext,
+                         BoardContext<POSITION> blackPieceContext) {
 
         this.logger = logger;
         this.whitePieceContext = whitePieceContext;
@@ -74,7 +74,7 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
         PawnPiece<COLOR>   createPawn(POSITION position);
     }
 
-    abstract PieceFactoryAdapter<COLOR,T> createPieceFactoryAdapter(PieceFactory<COLOR> pieceFactory);
+    abstract PieceFactoryAdapter<COLOR,POSITION> createPieceFactoryAdapter(PieceFactory<COLOR> pieceFactory);
 
     @Override
     public final Board build() {
@@ -86,44 +86,44 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
     }
 
     @Override
-    public BoardBuilder<T> withPiece(Piece.Type pieceType, Color color, T position) {
+    public BoardBuilder<POSITION> withPiece(Piece.Type pieceType, Color color, POSITION position) {
         return isWhite(color)
                 ? withWhitePiece(pieceType, position)
                 : withBlackPiece(pieceType, position);
     }
 
     @Override
-    public BoardBuilder<T> withWhitePiece(Piece.Type pieceType, T position) {
+    public BoardBuilder<POSITION> withWhitePiece(Piece.Type pieceType, POSITION position) {
         addPiecePosition(pieceType, whitePieceContext, position);
         return this;
     }
 
     @Override
-    public BoardBuilder<T> withBlackPiece(Piece.Type pieceType, T position) {
+    public BoardBuilder<POSITION> withBlackPiece(Piece.Type pieceType, POSITION position) {
         addPiecePosition(pieceType, blackPieceContext, position);
         return this;
     }
 
     @Override
-    public BoardBuilder<T> withWhiteKing(T position) {
+    public BoardBuilder<POSITION> withWhiteKing(POSITION position) {
         withWhitePiece(Piece.Type.KING, position);
         return this;
     }
 
     @Override
-    public BoardBuilder<T> withWhiteQueen(T position) {
+    public BoardBuilder<POSITION> withWhiteQueen(POSITION position) {
         withWhitePiece(Piece.Type.QUEEN, position);
         return this;
     }
 
     @Override
-    public BoardBuilder<T> withWhiteBishop(T position) {
+    public BoardBuilder<POSITION> withWhiteBishop(POSITION position) {
         withWhitePiece(Piece.Type.BISHOP, position);
         return this;
     }
 
     @Override
-    public BoardBuilder<T> withWhiteBishops(T position1, T position2) {
+    public BoardBuilder<POSITION> withWhiteBishops(POSITION position1, POSITION position2) {
         Stream.of(position1,position2)
             .forEach(this::withWhiteBishop);
 
@@ -131,13 +131,13 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
     }
 
     @Override
-    public BoardBuilder<T> withWhiteKnight(T position) {
+    public BoardBuilder<POSITION> withWhiteKnight(POSITION position) {
         withWhitePiece(Piece.Type.KNIGHT, position);
         return this;
     }
 
     @Override
-    public BoardBuilder<T> withWhiteKnights(T position1, T position2) {
+    public BoardBuilder<POSITION> withWhiteKnights(POSITION position1, POSITION position2) {
         Stream.of(position1,position2)
             .forEach(this::withWhiteKnight);
 
@@ -145,13 +145,13 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
     }
 
     @Override
-    public BoardBuilder<T> withWhiteRook(T position) {
+    public BoardBuilder<POSITION> withWhiteRook(POSITION position) {
         withWhitePiece(Piece.Type.ROOK, position);
         return this;
     }
 
     @Override
-    public BoardBuilder<T> withWhiteRooks(T position1, T position2) {
+    public BoardBuilder<POSITION> withWhiteRooks(POSITION position1, POSITION position2) {
         Stream.of(position1,position2)
             .forEach(this::withWhiteRook);
 
@@ -159,38 +159,38 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
     }
 
     @Override
-    public BoardBuilder<T> withWhitePawn(T position) {
+    public BoardBuilder<POSITION> withWhitePawn(POSITION position) {
         withWhitePiece(Piece.Type.PAWN, position);
         return this;
     }
 
     @Override
-    public BoardBuilder<T> withWhitePawns(T position1, T position2,
-                                          @SuppressWarnings("unchecked") T... positions) {
+    public BoardBuilder<POSITION> withWhitePawns(POSITION position1, POSITION position2,
+                                                 @SuppressWarnings("unchecked") POSITION... positions) {
 
         return withPawns(whitePieceContext, position1, position2, positions);
     }
 
     @Override
-    public BoardBuilder<T> withBlackKing(T position) {
+    public BoardBuilder<POSITION> withBlackKing(POSITION position) {
         withBlackPiece(Piece.Type.KING, position);
         return this;
     }
 
     @Override
-    public BoardBuilder<T> withBlackQueen(T position) {
+    public BoardBuilder<POSITION> withBlackQueen(POSITION position) {
         withBlackPiece(Piece.Type.QUEEN, position);
         return this;
     }
 
     @Override
-    public BoardBuilder<T> withBlackBishop(T position) {
+    public BoardBuilder<POSITION> withBlackBishop(POSITION position) {
         withBlackPiece(Piece.Type.BISHOP, position);
         return this;
     }
 
     @Override
-    public BoardBuilder<T> withBlackBishops(T position1, T position2) {
+    public BoardBuilder<POSITION> withBlackBishops(POSITION position1, POSITION position2) {
         Stream.of(position1,position2)
             .forEach(this::withBlackBishop);
 
@@ -198,13 +198,13 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
     }
 
     @Override
-    public BoardBuilder<T> withBlackKnight(T position) {
+    public BoardBuilder<POSITION> withBlackKnight(POSITION position) {
         withBlackPiece(Piece.Type.KNIGHT, position);
         return this;
     }
 
     @Override
-    public BoardBuilder<T> withBlackKnights(T position1, T position2) {
+    public BoardBuilder<POSITION> withBlackKnights(POSITION position1, POSITION position2) {
         Stream.of(position1,position2)
             .forEach(this::withBlackKnight);
 
@@ -212,13 +212,13 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
     }
 
     @Override
-    public BoardBuilder<T> withBlackRook(T position) {
+    public BoardBuilder<POSITION> withBlackRook(POSITION position) {
         withBlackPiece(Piece.Type.ROOK, position);
         return this;
     }
 
     @Override
-    public BoardBuilder<T> withBlackRooks(T position1, T position2) {
+    public BoardBuilder<POSITION> withBlackRooks(POSITION position1, POSITION position2) {
         Stream.of(position1,position2)
             .forEach(this::withBlackRook);
 
@@ -226,21 +226,21 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
     }
 
     @Override
-    public BoardBuilder<T> withBlackPawn(T position) {
+    public BoardBuilder<POSITION> withBlackPawn(POSITION position) {
         withBlackPiece(Piece.Type.PAWN, position);
         return this;
     }
 
     @Override
-    public BoardBuilder<T> withBlackPawns(T position1, T position2,
-                                          @SuppressWarnings("unchecked") T... positions) {
+    public BoardBuilder<POSITION> withBlackPawns(POSITION position1, POSITION position2,
+                                                 @SuppressWarnings("unchecked") POSITION... positions) {
 
         return withPawns(blackPieceContext, position1, position2, positions);
     }
 
-    private BoardBuilder<T> withPawns(BoardContext<T> context,
-                                      T position1, T position2,
-                                      @SuppressWarnings("unchecked") T... positions) {
+    private BoardBuilder<POSITION> withPawns(BoardContext<POSITION> context,
+                                             POSITION position1, POSITION position2,
+                                             @SuppressWarnings("unchecked") POSITION... positions) {
 
         Stream.of(List.of(position1, position2), List.of(positions))
             .flatMap(Collection::parallelStream)
@@ -249,7 +249,7 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
         return this;
     }
 
-    private void addPiecePosition(Piece.Type pieceType, BoardContext<T> context, T position) {
+    private void addPiecePosition(Piece.Type pieceType, BoardContext<POSITION> context, POSITION position) {
         piecePositionSetters.get(pieceType).accept(context, position);
     }
 
@@ -268,22 +268,24 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
         return board;
     }
 
-    private PieceBuilderTask<COLOR,T> createPieceBuilderTask(PieceFactory<?> pieceFactory,
-                                                             BoardContext<T> context) {
+    private PieceBuilderTask<COLOR,POSITION> createPieceBuilderTask(PieceFactory<?> pieceFactory,
+                                                                    BoardContext<POSITION> context) {
         @SuppressWarnings("unchecked")
         var pieceFactoryAdapter = createPieceFactoryAdapter((PieceFactory<COLOR>) pieceFactory);
         return new PieceBuilderTask<>(pieceFactoryAdapter, context);
     }
 
-    private static final class PieceBuilderTask<COLOR extends Color,T extends Serializable>
+    private static final class PieceBuilderTask<COLOR extends Color,POSITION extends Serializable>
             extends RecursiveTask<List<Piece<COLOR>>> {
 
         private static final long serialVersionUID = 1L;
 
-        private final PieceFactoryAdapter<COLOR,T> pieceFactory;
-        private final BoardContext<T> context;
+        private final PieceFactoryAdapter<COLOR,POSITION> pieceFactory;
+        private final BoardContext<POSITION> context;
 
-        PieceBuilderTask(PieceFactoryAdapter<COLOR,T> pieceFactory, BoardContext<T> context) {
+        PieceBuilderTask(PieceFactoryAdapter<COLOR,POSITION> pieceFactory,
+                         BoardContext<POSITION> context) {
+
             this.pieceFactory = pieceFactory;
             this.context = context;
         }
@@ -319,8 +321,8 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
             return pieces;
         }
 
-        private static <COLOR extends Color,T> Optional<PieceBuilderSubTask<COLOR,T>>
-                createTask(List<T> positions, Function<T,Piece<COLOR>> function) {
+        private static <COLOR extends Color,POSITION> Optional<PieceBuilderSubTask<COLOR,POSITION>>
+                createTask(List<POSITION> positions, Function<POSITION,Piece<COLOR>> function) {
 
             return Optional.ofNullable(isNotEmpty(positions)
                     ? new PieceBuilderSubTask<>(positions, function)
@@ -329,15 +331,15 @@ abstract class AbstractBoardBuilder<COLOR extends Color,T extends Serializable>
         }
     }
 
-    private static final class PieceBuilderSubTask<COLOR extends Color,T>
+    private static final class PieceBuilderSubTask<COLOR extends Color,POSITION>
             extends RecursiveTask<List<Piece<COLOR>>> {
 
         private static final long serialVersionUID = 1L;
 
-        private final List<T> positions;
-        private final Function<T,Piece<COLOR>> function;
+        private final List<POSITION> positions;
+        private final Function<POSITION,Piece<COLOR>> function;
 
-        PieceBuilderSubTask(List<T> positions, Function<T,Piece<COLOR>> function) {
+        PieceBuilderSubTask(List<POSITION> positions, Function<POSITION,Piece<COLOR>> function) {
             this.positions = positions;
             this.function = function;
         }
