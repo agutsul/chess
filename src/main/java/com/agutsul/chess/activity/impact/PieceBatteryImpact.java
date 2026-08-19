@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
@@ -18,11 +20,11 @@ public class PieceBatteryImpact<COLOR extends Color,
         implements Impact<PIECE1> {
 
     private final Line line;
-    private final ImpactValueProvider valueProvider;
+    private final ImpactValueProvider<Integer> valueProvider;
 
     public PieceBatteryImpact(PIECE1 piece1, PIECE2 piece2, Line fullLine) {
         super(Impact.Type.BATTERY, piece1, piece2);
-        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
+        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
         this.line = fullLine;
     }
 

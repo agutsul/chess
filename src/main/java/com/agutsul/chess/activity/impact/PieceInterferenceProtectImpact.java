@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -21,14 +23,14 @@ public final class PieceInterferenceProtectImpact<COLOR1 extends Color,
         implements PieceInterferenceImpact<COLOR1,COLOR2,PIECE,PROTECTOR,PROTECTED> {
 
     private final PieceProtectImpact<COLOR2,PROTECTOR,PROTECTED> protectImpact;
-    private final ImpactValueProvider valueProvider;
+    private final ImpactValueProvider<Integer> valueProvider;
 
     public PieceInterferenceProtectImpact(PIECE source, Position target,
                                           PieceProtectImpact<COLOR2,PROTECTOR,PROTECTED> impact) {
 
         super(Impact.Type.INTERFERENCE, source, target);
         this.protectImpact = impact;
-        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
+        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

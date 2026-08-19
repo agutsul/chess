@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
@@ -12,11 +14,11 @@ public class PieceControlImpact<COLOR extends Color,
         extends AbstractTargetActivity<Impact.Type,PIECE,Position>
         implements Impact<PIECE> {
 
-    private final ImpactValueProvider valueProvider;
+    private final ImpactValueProvider<Integer> valueProvider;
 
     public PieceControlImpact(PIECE piece, Position position) {
         super(Impact.Type.CONTROL, piece, position);
-        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
+        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -21,13 +23,13 @@ public final class PieceBlockAttackImpact<COLOR1 extends Color,
         implements PieceBlockImpact<COLOR1,COLOR2,BLOCKER,DEFENDED,ATTACKER> {
 
     private final AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,DEFENDED> attackImpact;
-    private final ImpactValueProvider valueProvider;
+    private final ImpactValueProvider<Integer> valueProvider;
 
     public PieceBlockAttackImpact(BLOCKER piece, Position position,
                                   AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,DEFENDED> attackImpact) {
 
         super(Impact.Type.BLOCK, piece, position);
-        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
+        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
         this.attackImpact = attackImpact;
     }
 

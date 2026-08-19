@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
@@ -20,11 +22,11 @@ abstract class AbstractPieceSacrificeImpact<COLOR1 extends Color,
                                        TARGET>
         implements PieceSacrificeImpact<COLOR1,COLOR2,SACRIFICED,ATTACKER> {
 
-    private final ImpactValueProvider valueProvider;
+    private final ImpactValueProvider<Integer> valueProvider;
 
     AbstractPieceSacrificeImpact(SOURCE sourceImpact, TARGET sacrificeImpact) {
         super(Impact.Type.SACRIFICE, sourceImpact, sacrificeImpact);
-        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
+        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

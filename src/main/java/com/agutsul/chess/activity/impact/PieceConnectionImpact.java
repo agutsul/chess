@@ -1,6 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
 import static org.apache.commons.lang3.StringUtils.join;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,7 +18,7 @@ public class PieceConnectionImpact<COLOR extends Color,
         extends AbstractSourceActivity<Impact.Type,Collection<PIECE>>
         implements Impact<Collection<PIECE>> {
 
-    private final ImpactValueProvider valueProvider;
+    private final ImpactValueProvider<Integer> valueProvider;
 
     public PieceConnectionImpact(PIECE piece1, PIECE piece2,
                                  @SuppressWarnings("unchecked") PIECE... piece3) {
@@ -30,7 +31,7 @@ public class PieceConnectionImpact<COLOR extends Color,
 
     public PieceConnectionImpact(Collection<PIECE> pieces) {
         super(Impact.Type.CONNECTION, pieces);
-        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
+        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

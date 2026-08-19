@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
 import com.agutsul.chess.Movable;
@@ -19,12 +21,12 @@ abstract class AbstractPiecePinImpact<COLOR1 extends Color,
         implements PiecePinImpact<COLOR1,COLOR2,PINNED,DEFENDED,ATTACKER> {
 
     private final Mode mode;
-    private final ImpactValueProvider valueProvider;
+    private final ImpactValueProvider<Integer> valueProvider;
 
     AbstractPiecePinImpact(Mode mode, PINNED piece, IMPACT impact) {
         super(Impact.Type.PIN, piece, impact);
         this.mode = mode;
-        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
+        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

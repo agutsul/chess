@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.Piece;
@@ -12,14 +14,14 @@ public final class PieceDeflectionAttackImpact<COLOR1 extends Color,
         extends AbstractPieceDeflectionImpact<COLOR1,COLOR2,ATTACKER,ATTACKED,DEFENDED> {
 
     private final AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> attackImpact;
-    private final ImpactValueProvider valueProvider;
+    private final ImpactValueProvider<Integer> valueProvider;
 
     public PieceDeflectionAttackImpact(AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> attackImpact,
                                        DEFENDED defended) {
 
         super(attackImpact.getSource(), attackImpact.getTarget(), defended);
         this.attackImpact = attackImpact;
-        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
+        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
     }
 
     public AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> getAttackImpact() {

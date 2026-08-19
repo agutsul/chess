@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.AbstractSourceActivity;
 import com.agutsul.chess.color.Color;
@@ -15,11 +17,11 @@ public final class PieceAbsoluteDesperadoImpact<COLOR1 extends Color,
         extends AbstractSourceActivity<Impact.Type,IMPACT>
         implements PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,IMPACT> {
 
-    private final ImpactValueProvider valueProvider;
+    private final ImpactValueProvider<Integer> valueProvider;
 
     public PieceAbsoluteDesperadoImpact(IMPACT source) {
         super(Impact.Type.DESPERADO, source);
-        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
+        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

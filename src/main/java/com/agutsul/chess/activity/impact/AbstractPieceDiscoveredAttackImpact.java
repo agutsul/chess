@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -25,12 +27,12 @@ abstract class AbstractPieceDiscoveredAttackImpact<COLOR1 extends Color,
         implements PieceDiscoveredAttackImpact<COLOR1,COLOR2,PIECE,ATTACKER,ATTACKED> {
 
     private final Mode mode;
-    private final ImpactValueProvider valueProvider;
+    private final ImpactValueProvider<Integer> valueProvider;
 
     AbstractPieceDiscoveredAttackImpact(Mode mode, SOURCE sourceImpact, TARGET discoveredAttack) {
         super(Impact.Type.DISCOVERED_ATTACK, sourceImpact, discoveredAttack);
         this.mode = mode;
-        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
+        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.agutsul.chess.activity.impact;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -24,7 +25,7 @@ public final class PieceDesperadoAttackImpact<COLOR1 extends Color,
                                         AbstractPieceAttackImpact<COLOR1,COLOR2,DESPERADO,ATTACKED>> {
 
     private final Mode mode;
-    private final ImpactValueProvider valueProvider;
+    private final ImpactValueProvider<Integer> valueProvider;
 
     public PieceDesperadoAttackImpact(Mode mode,
                                       AbstractPieceAttackImpact<COLOR1,COLOR2,DESPERADO,ATTACKED> source,
@@ -32,7 +33,7 @@ public final class PieceDesperadoAttackImpact<COLOR1 extends Color,
 
         super(Impact.Type.DESPERADO, source, target);
         this.mode = mode;
-        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
+        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

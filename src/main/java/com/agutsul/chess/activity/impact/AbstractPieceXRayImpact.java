@@ -3,6 +3,7 @@ package com.agutsul.chess.activity.impact;
 import static com.agutsul.chess.color.Colors.isEqual;
 import static com.agutsul.chess.piece.Piece.isKing;
 import static java.util.Collections.unmodifiableCollection;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 import java.util.Collection;
 import java.util.stream.Stream;
@@ -25,13 +26,13 @@ abstract class AbstractPieceXRayImpact<COLOR1 extends Color,
 
     private final Mode mode;
     private final Collection<Piece<?>> pieces;
-    private final ImpactValueProvider valueProvider;
+    private final ImpactValueProvider<Integer> valueProvider;
 
     AbstractPieceXRayImpact(IMPACT impact, Collection<Piece<?>> pieces) {
         super(Impact.Type.XRAY, impact);
 
         this.mode = createMode(impact.getTarget());
-        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
+        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
         this.pieces = pieces;
 
     }

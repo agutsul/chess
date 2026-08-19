@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Checkable;
 import com.agutsul.chess.Protectable;
@@ -13,7 +15,7 @@ public final class PieceCheckImpact<COLOR1 extends Color,
                                     ATTACKED extends Piece<COLOR2> & Checkable>
         extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
-    private final ImpactValueProvider valueProvider;
+    private final ImpactValueProvider<Integer> valueProvider;
 
     public PieceCheckImpact(ATTACKER attacker, ATTACKED king) {
         this(attacker, king, false);
@@ -29,7 +31,7 @@ public final class PieceCheckImpact<COLOR1 extends Color,
 
     public PieceCheckImpact(ATTACKER attacker, ATTACKED king, Line line, boolean hidden) {
         super(Impact.Type.CHECK, attacker, king, line, hidden);
-        this.valueProvider = new ImpactValueProvider(this::calculateValue);
+        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

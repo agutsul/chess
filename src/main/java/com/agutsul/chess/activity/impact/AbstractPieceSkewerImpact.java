@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
 import com.agutsul.chess.Protectable;
@@ -20,13 +22,13 @@ abstract class AbstractPieceSkewerImpact<COLOR1 extends Color,
 
     private final Mode mode;
     private final IMPACT impact;
-    private final ImpactValueProvider valueProvider;
+    private final ImpactValueProvider<Integer> valueProvider;
 
     AbstractPieceSkewerImpact(Mode mode, IMPACT impact, DEFENDED target) {
         super(Impact.Type.SKEWER, impact.getSource(), target);
         this.mode = mode;
         this.impact = impact;
-        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
+        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

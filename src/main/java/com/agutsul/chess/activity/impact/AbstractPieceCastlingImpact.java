@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -20,12 +22,12 @@ abstract class AbstractPieceCastlingImpact<COLOR  extends Color,
         implements Impact<SOURCE> {
 
     private final Side side;
-    private final ImpactValueProvider valueProvider;
+    private final ImpactValueProvider<Integer> valueProvider;
 
     AbstractPieceCastlingImpact(Side side, SOURCE source, TARGET target) {
         super(Impact.Type.CASTLING, source, target);
         this.side = side;
-        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
+        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
     }
 
     public final Side getSide() {

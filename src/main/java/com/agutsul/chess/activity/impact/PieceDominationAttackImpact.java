@@ -1,5 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
+
 import java.util.Optional;
 
 import com.agutsul.chess.Capturable;
@@ -17,12 +19,12 @@ public final class PieceDominationAttackImpact<COLOR1 extends Color,
         implements PieceDominationImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
     private final AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> attackImpact;
-    private final ImpactValueProvider valueProvider;
+    private final ImpactValueProvider<Integer> valueProvider;
 
     public PieceDominationAttackImpact(AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> attackImpact) {
         super(Impact.Type.DOMINATION, attackImpact.getSource(), attackImpact.getTarget());
         this.attackImpact = attackImpact;
-        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
+        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

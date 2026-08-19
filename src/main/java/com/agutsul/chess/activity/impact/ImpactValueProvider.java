@@ -10,39 +10,40 @@ import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.apache.commons.lang3.concurrent.LazyInitializer;
 import org.slf4j.Logger;
 
-final class ImpactValueProvider implements Supplier<Integer> {
+final class ImpactValueProvider<V extends Number & Comparable<V>> implements Supplier<V> {
 
     private static final Logger LOGGER = getLogger(ImpactValueProvider.class);
 
-    private static final int DEFAULT_VALUE = 0;
+    private final ImpactValue<V> value;
+    private final V defaultValue;
 
-    private final ImpactValue value;
-
-    ImpactValueProvider(Supplier<Integer> supplier) {
-        this.value = new ImpactValue(supplier);
+    ImpactValueProvider(Supplier<V> supplier, V defaultValue) {
+        this.value = new ImpactValue<>(supplier);
+        this.defaultValue = defaultValue;
     }
 
     @Override
-    public Integer get() {
+    public V get() {
         try {
             return this.value.get();
         } catch (ConcurrentException e) {
             LOGGER.error(format("Loading value failed: %s", getStackTrace(e)));
         }
 
-        return DEFAULT_VALUE;
+        return this.defaultValue;
     }
 
-    private static final class ImpactValue extends LazyInitializer<Integer> {
+    private static final class ImpactValue<V extends Number & Comparable<V>>
+            extends LazyInitializer<V> {
 
-        private final Supplier<Integer> supplier;
+        private final Supplier<V> supplier;
 
-        ImpactValue(Supplier<Integer> supplier) {
+        ImpactValue(Supplier<V> supplier) {
             this.supplier = supplier;
         }
 
         @Override
-        protected Integer initialize() {
+        protected V initialize() {
             return this.supplier.get();
         }
     }

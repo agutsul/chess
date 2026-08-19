@@ -2,6 +2,7 @@ package com.agutsul.chess.activity.impact;
 
 import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.joining;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,11 +23,11 @@ public final class PieceRelativeDesperadoImpact<COLOR1 extends Color,
         extends AbstractTargetActivity<Impact.Type,IMPACT,Collection<IMPACT>>
         implements PieceDesperadoImpact<COLOR1,COLOR2,DESPERADO,ATTACKER,ATTACKED,IMPACT> {
 
-    private final ImpactValueProvider valueProvider;
+    private final ImpactValueProvider<Integer> valueProvider;
 
     public PieceRelativeDesperadoImpact(IMPACT source, IMPACT target) {
         super(Impact.Type.DESPERADO, source, List.of(source, target));
-        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
+        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

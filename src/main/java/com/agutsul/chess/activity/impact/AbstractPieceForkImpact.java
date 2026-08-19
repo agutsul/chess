@@ -1,6 +1,7 @@
 package com.agutsul.chess.activity.impact;
 
 import static org.apache.commons.lang3.StringUtils.join;
+import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 import java.util.Collection;
 import java.util.stream.Stream;
@@ -24,12 +25,12 @@ abstract class AbstractPieceForkImpact<COLOR1 extends Color,
     private static final PieceComparator COMPARATOR = new PieceComparator();
 
     private final Mode mode;
-    private final ImpactValueProvider valueProvider;
+    private final ImpactValueProvider<Integer> valueProvider;
 
     AbstractPieceForkImpact(Mode mode, ATTACKER piece, Collection<IMPACT> impacts) {
         super(Impact.Type.FORK, piece, impacts);
         this.mode = mode;
-        this.valueProvider = new ImpactValueProvider(() -> calculateValue());
+        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override
