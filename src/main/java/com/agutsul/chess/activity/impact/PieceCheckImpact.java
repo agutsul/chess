@@ -13,6 +13,8 @@ public final class PieceCheckImpact<COLOR1 extends Color,
                                     ATTACKED extends Piece<COLOR2> & Checkable>
         extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
+    private final ImpactValueProvider valueProvider;
+
     public PieceCheckImpact(ATTACKER attacker, ATTACKED king) {
         this(attacker, king, false);
     }
@@ -27,6 +29,12 @@ public final class PieceCheckImpact<COLOR1 extends Color,
 
     public PieceCheckImpact(ATTACKER attacker, ATTACKED king, Line line, boolean hidden) {
         super(Impact.Type.CHECK, attacker, king, line, hidden);
+        this.valueProvider = new ImpactValueProvider(this::calculateValue);
+    }
+
+    @Override
+    public Integer getValue() {
+        return this.valueProvider.get();
     }
 
     @Override

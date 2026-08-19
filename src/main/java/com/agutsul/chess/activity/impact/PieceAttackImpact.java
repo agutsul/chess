@@ -12,6 +12,8 @@ public final class PieceAttackImpact<COLOR1 extends Color,
                                      ATTACKED extends Piece<COLOR2>>
         extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
+    private final ImpactValueProvider valueProvider;
+
     public PieceAttackImpact(ATTACKER attacker, ATTACKED attacked) {
         this(attacker, attacked, false);
     }
@@ -28,6 +30,12 @@ public final class PieceAttackImpact<COLOR1 extends Color,
                              Calculatable calculated, boolean hidden) {
 
         super(Impact.Type.ATTACK, attacker, attacked, calculated, hidden);
+        this.valueProvider = new ImpactValueProvider(this::calculateValue);
+    }
+
+    @Override
+    public Integer getValue() {
+        return this.valueProvider.get();
     }
 
     @Override
