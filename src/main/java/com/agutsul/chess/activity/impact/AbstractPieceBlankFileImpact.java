@@ -2,6 +2,8 @@ package com.agutsul.chess.activity.impact;
 
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+import java.util.function.Supplier;
+
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Fileable;
 import com.agutsul.chess.Lineable;
@@ -18,7 +20,7 @@ abstract class AbstractPieceBlankFileImpact<COLOR extends Color,
         implements PieceBlankFileImpact<COLOR,PIECE> {
 
     private final Mode mode;
-    private final ImpactValueProvider<Integer> valueProvider;
+    private final Supplier<Integer> valueProvider;
 
     AbstractPieceBlankFileImpact(Mode mode, PIECE piece, Line line) {
         super(Impact.Type.BLANK_FILE, piece, line);

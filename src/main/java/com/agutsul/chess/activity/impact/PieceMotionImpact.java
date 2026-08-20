@@ -2,6 +2,8 @@ package com.agutsul.chess.activity.impact;
 
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+import java.util.function.Supplier;
+
 import com.agutsul.chess.Movable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
@@ -13,7 +15,7 @@ public class PieceMotionImpact<COLOR extends Color,
         extends AbstractTargetActivity<Impact.Type,PIECE,Position>
         implements Impact<PIECE> {
 
-    private final ImpactValueProvider<Integer> valueProvider;
+    private final Supplier<Integer> valueProvider;
 
     public PieceMotionImpact(PIECE piece, Position position) {
         super(Impact.Type.MOTION, piece, position);

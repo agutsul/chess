@@ -2,6 +2,8 @@ package com.agutsul.chess.activity.impact;
 
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+import java.util.function.Supplier;
+
 import com.agutsul.chess.Promotable;
 import com.agutsul.chess.activity.AbstractSourceActivity;
 import com.agutsul.chess.activity.AbstractTargetActivity;
@@ -15,7 +17,7 @@ abstract class AbstractPiecePromoteImpact<COLOR  extends Color,
         extends AbstractTargetActivity<Impact.Type,AbstractSourceActivity<Impact.Type,PIECE>,Piece.Type>
         implements PiecePromoteImpact<COLOR,PIECE> {
 
-    private final ImpactValueProvider<Integer> valueProvider;
+    private final Supplier<Integer> valueProvider;
 
     AbstractPiecePromoteImpact(SOURCE sourceImpact, Piece.Type pieceType) {
         super(Impact.Type.PROMOTE, sourceImpact, pieceType);

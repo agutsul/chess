@@ -3,6 +3,7 @@ package com.agutsul.chess.activity.impact;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
@@ -23,7 +24,7 @@ public final class PieceInterferenceProtectImpact<COLOR1 extends Color,
         implements PieceInterferenceImpact<COLOR1,COLOR2,PIECE,PROTECTOR,PROTECTED> {
 
     private final PieceProtectImpact<COLOR2,PROTECTOR,PROTECTED> protectImpact;
-    private final ImpactValueProvider<Integer> valueProvider;
+    private final Supplier<Integer> valueProvider;
 
     public PieceInterferenceProtectImpact(PIECE source, Position target,
                                           PieceProtectImpact<COLOR2,PROTECTOR,PROTECTED> impact) {

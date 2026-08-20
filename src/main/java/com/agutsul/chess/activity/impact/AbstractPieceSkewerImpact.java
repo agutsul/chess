@@ -2,6 +2,8 @@ package com.agutsul.chess.activity.impact;
 
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+import java.util.function.Supplier;
+
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
 import com.agutsul.chess.Protectable;
@@ -22,7 +24,7 @@ abstract class AbstractPieceSkewerImpact<COLOR1 extends Color,
 
     private final Mode mode;
     private final IMPACT impact;
-    private final ImpactValueProvider<Integer> valueProvider;
+    private final Supplier<Integer> valueProvider;
 
     AbstractPieceSkewerImpact(Mode mode, IMPACT impact, DEFENDED target) {
         super(Impact.Type.SKEWER, impact.getSource(), target);

@@ -6,6 +6,7 @@ import static java.util.Collections.unmodifiableCollection;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 import java.util.Collection;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
@@ -26,7 +27,7 @@ abstract class AbstractPieceXRayImpact<COLOR1 extends Color,
 
     private final Mode mode;
     private final Collection<Piece<?>> pieces;
-    private final ImpactValueProvider<Integer> valueProvider;
+    private final Supplier<Integer> valueProvider;
 
     AbstractPieceXRayImpact(IMPACT impact, Collection<Piece<?>> pieces) {
         super(Impact.Type.XRAY, impact);

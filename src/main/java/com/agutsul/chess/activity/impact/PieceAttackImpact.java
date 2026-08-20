@@ -2,6 +2,8 @@ package com.agutsul.chess.activity.impact;
 
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+import java.util.function.Supplier;
+
 import com.agutsul.chess.Calculatable;
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Protectable;
@@ -14,7 +16,7 @@ public final class PieceAttackImpact<COLOR1 extends Color,
                                      ATTACKED extends Piece<COLOR2>>
         extends AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
-    private final ImpactValueProvider<Integer> valueProvider;
+    private final Supplier<Integer> valueProvider;
 
     public PieceAttackImpact(ATTACKER attacker, ATTACKED attacked) {
         this(attacker, attacked, false);

@@ -5,6 +5,7 @@ import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Accumulatable;
@@ -18,7 +19,7 @@ public class PieceAccumulationImpact<COLOR extends Color,
         extends AbstractSourceActivity<Impact.Type,Collection<PIECE>>
         implements Impact<Collection<PIECE>> {
 
-    private final ImpactValueProvider<Integer> valueProvider;
+    private final Supplier<Integer> valueProvider;
 
     public PieceAccumulationImpact(PIECE piece1, PIECE piece2,
                                    @SuppressWarnings("unchecked") PIECE... piece3) {

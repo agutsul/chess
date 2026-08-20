@@ -4,6 +4,7 @@ import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 import java.util.Collection;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
@@ -25,7 +26,7 @@ abstract class AbstractPieceForkImpact<COLOR1 extends Color,
     private static final PieceComparator COMPARATOR = new PieceComparator();
 
     private final Mode mode;
-    private final ImpactValueProvider<Integer> valueProvider;
+    private final Supplier<Integer> valueProvider;
 
     AbstractPieceForkImpact(Mode mode, ATTACKER piece, Collection<IMPACT> impacts) {
         super(Impact.Type.FORK, piece, impacts);

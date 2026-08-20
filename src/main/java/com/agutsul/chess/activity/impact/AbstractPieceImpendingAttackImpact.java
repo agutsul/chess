@@ -3,6 +3,7 @@ package com.agutsul.chess.activity.impact;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Movable;
@@ -24,7 +25,7 @@ abstract class AbstractPieceImpendingAttackImpact<COLOR1 extends Color,
         implements PieceImpendingAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
     private final Mode mode;
-    private final ImpactValueProvider<Integer> valueProvider;
+    private final Supplier<Integer> valueProvider;
 
     AbstractPieceImpendingAttackImpact(Mode mode, SOURCE sourceImpact, TARGET impendingAttack) {
         super(Impact.Type.IMPENDING_ATTACK, sourceImpact, impendingAttack);

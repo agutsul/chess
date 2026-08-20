@@ -2,6 +2,7 @@ package com.agutsul.chess.activity.impact;
 
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
@@ -20,7 +21,7 @@ public class PieceBatteryImpact<COLOR extends Color,
         implements Impact<PIECE1> {
 
     private final Line line;
-    private final ImpactValueProvider<Integer> valueProvider;
+    private final Supplier<Integer> valueProvider;
 
     public PieceBatteryImpact(PIECE1 piece1, PIECE2 piece2, Line fullLine) {
         super(Impact.Type.BATTERY, piece1, piece2);

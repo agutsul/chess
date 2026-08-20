@@ -2,6 +2,8 @@ package com.agutsul.chess.activity.impact;
 
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+import java.util.function.Supplier;
+
 import com.agutsul.chess.Backwardable;
 import com.agutsul.chess.activity.AbstractSourceActivity;
 import com.agutsul.chess.color.Color;
@@ -13,7 +15,7 @@ public class PieceBackwardImpact<COLOR extends Color,
         extends AbstractSourceActivity<Impact.Type,PIECE>
         implements Impact<PIECE> {
 
-    private final ImpactValueProvider<Integer> valueProvider;
+    private final Supplier<Integer> valueProvider;
 
     public PieceBackwardImpact(PIECE piece) {
         super(Impact.Type.BACKWARD, piece);

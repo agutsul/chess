@@ -2,6 +2,8 @@ package com.agutsul.chess.activity.impact;
 
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+import java.util.function.Supplier;
+
 import com.agutsul.chess.Blockadable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
@@ -14,7 +16,7 @@ public class PieceBlockadeImpact<COLOR extends Color,
         extends AbstractTargetActivity<Impact.Type,PIECE1,PIECE2>
         implements Impact<PIECE1> {
 
-    private final ImpactValueProvider<Integer> valueProvider;
+    private final Supplier<Integer> valueProvider;
 
     public PieceBlockadeImpact(PIECE1 source, PIECE2 blocker) {
         super(Impact.Type.BLOCKADE, source, blocker);

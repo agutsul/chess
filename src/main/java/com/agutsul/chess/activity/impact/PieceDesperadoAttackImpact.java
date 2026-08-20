@@ -5,6 +5,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Capturable;
@@ -25,7 +26,7 @@ public final class PieceDesperadoAttackImpact<COLOR1 extends Color,
                                         AbstractPieceAttackImpact<COLOR1,COLOR2,DESPERADO,ATTACKED>> {
 
     private final Mode mode;
-    private final ImpactValueProvider<Integer> valueProvider;
+    private final Supplier<Integer> valueProvider;
 
     public PieceDesperadoAttackImpact(Mode mode,
                                       AbstractPieceAttackImpact<COLOR1,COLOR2,DESPERADO,ATTACKED> source,

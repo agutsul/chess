@@ -3,6 +3,8 @@ package com.agutsul.chess.activity.impact;
 import static com.agutsul.chess.color.Colors.isWhite;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+import java.util.function.Supplier;
+
 import com.agutsul.chess.activity.AbstractSourceActivity;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.position.Position;
@@ -13,7 +15,7 @@ abstract class AbstractPositionHoleImpact
 
     private final Color color;
     private final Mode mode;
-    private final ImpactValueProvider<Integer> valueProvider;
+    private final Supplier<Integer> valueProvider;
 
     AbstractPositionHoleImpact(Mode mode, Color color, Position position) {
         super(Impact.Type.HOLE, position);

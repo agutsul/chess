@@ -3,6 +3,7 @@ package com.agutsul.chess.activity.impact;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
@@ -20,7 +21,7 @@ abstract class AbstractPieceUnderminingImpact<COLOR1 extends Color,
         implements PieceUnderminingImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> {
 
     private final IMPACT impact;
-    private final ImpactValueProvider<Integer> valueProvider;
+    private final Supplier<Integer> valueProvider;
 
     AbstractPieceUnderminingImpact(IMPACT impact) {
         super(Impact.Type.UNDERMINING, impact.getSource(), impact.getTarget());

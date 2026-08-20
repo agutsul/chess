@@ -3,6 +3,7 @@ package com.agutsul.chess.activity.impact;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import com.agutsul.chess.Castlingable;
@@ -22,7 +23,7 @@ abstract class AbstractPieceCastlingImpact<COLOR  extends Color,
         implements Impact<SOURCE> {
 
     private final Side side;
-    private final ImpactValueProvider<Integer> valueProvider;
+    private final Supplier<Integer> valueProvider;
 
     AbstractPieceCastlingImpact(Side side, SOURCE source, TARGET target) {
         super(Impact.Type.CASTLING, source, target);

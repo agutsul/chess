@@ -3,6 +3,7 @@ package com.agutsul.chess.activity.impact;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
@@ -17,9 +18,10 @@ public class PieceProtectImpact<COLOR  extends Color,
         extends AbstractTargetActivity<Impact.Type,PIECE1,PIECE2>
         implements Impact<PIECE1> {
 
+    private final Supplier<Integer> valueProvider;
+
     private Line line;
     private boolean hidden;
-    private ImpactValueProvider<Integer> valueProvider;
 
     public PieceProtectImpact(PIECE1 source, PIECE2 target) {
         super(Impact.Type.PROTECT, source, target);
