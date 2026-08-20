@@ -23,7 +23,7 @@ public final class PieceAbsoluteDesperadoImpact<COLOR1 extends Color,
 
     public PieceAbsoluteDesperadoImpact(IMPACT source) {
         super(Impact.Type.DESPERADO, source);
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

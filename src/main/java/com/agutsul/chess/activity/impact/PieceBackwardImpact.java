@@ -19,7 +19,7 @@ public class PieceBackwardImpact<COLOR extends Color,
 
     public PieceBackwardImpact(PIECE piece) {
         super(Impact.Type.BACKWARD, piece);
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

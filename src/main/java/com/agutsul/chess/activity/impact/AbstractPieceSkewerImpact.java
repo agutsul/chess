@@ -30,7 +30,7 @@ abstract class AbstractPieceSkewerImpact<COLOR1 extends Color,
         super(Impact.Type.SKEWER, impact.getSource(), target);
         this.mode = mode;
         this.impact = impact;
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

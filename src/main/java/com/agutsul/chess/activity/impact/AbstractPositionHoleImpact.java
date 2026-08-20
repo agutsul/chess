@@ -21,7 +21,7 @@ abstract class AbstractPositionHoleImpact
         super(Impact.Type.HOLE, position);
         this.mode = mode;
         this.color = color;
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

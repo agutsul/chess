@@ -20,7 +20,7 @@ public class PieceLuftImpact<COLOR extends Color,
 
     public PieceLuftImpact(PIECE piece, Position position) {
         super(Impact.Type.LUFT, piece, position);
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

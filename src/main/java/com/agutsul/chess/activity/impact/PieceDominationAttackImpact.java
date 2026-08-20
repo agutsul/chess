@@ -25,7 +25,7 @@ public final class PieceDominationAttackImpact<COLOR1 extends Color,
     public PieceDominationAttackImpact(AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> attackImpact) {
         super(Impact.Type.DOMINATION, attackImpact.getSource(), attackImpact.getTarget());
         this.attackImpact = attackImpact;
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

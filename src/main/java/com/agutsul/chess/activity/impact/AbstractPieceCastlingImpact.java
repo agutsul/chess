@@ -28,7 +28,7 @@ abstract class AbstractPieceCastlingImpact<COLOR  extends Color,
     AbstractPieceCastlingImpact(Side side, SOURCE source, TARGET target) {
         super(Impact.Type.CASTLING, source, target);
         this.side = side;
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     public final Side getSide() {

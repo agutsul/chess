@@ -25,7 +25,7 @@ public class PieceProtectImpact<COLOR  extends Color,
 
     public PieceProtectImpact(PIECE1 source, PIECE2 target) {
         super(Impact.Type.PROTECT, source, target);
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     public PieceProtectImpact(PIECE1 source, PIECE2 target, Line line) {

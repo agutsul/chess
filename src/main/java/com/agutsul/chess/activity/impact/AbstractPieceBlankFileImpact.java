@@ -25,7 +25,7 @@ abstract class AbstractPieceBlankFileImpact<COLOR extends Color,
     AbstractPieceBlankFileImpact(Mode mode, PIECE piece, Line line) {
         super(Impact.Type.BLANK_FILE, piece, line);
         this.mode = mode;
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     abstract Integer calculateValue();

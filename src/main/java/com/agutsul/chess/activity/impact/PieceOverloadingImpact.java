@@ -20,7 +20,7 @@ public class PieceOverloadingImpact<COLOR extends Color,
 
     public PieceOverloadingImpact(PIECE piece, Position position) {
         super(Impact.Type.OVERLOADING, piece, position);
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

@@ -30,7 +30,7 @@ public final class PieceBlockAttackImpact<COLOR1 extends Color,
                                   AbstractPieceAttackImpact<COLOR2,COLOR1,ATTACKER,DEFENDED> attackImpact) {
 
         super(Impact.Type.BLOCK, piece, position);
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
         this.attackImpact = attackImpact;
     }
 

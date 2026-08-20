@@ -20,7 +20,7 @@ public class PieceMonitorImpact<COLOR extends Color,
 
     public PieceMonitorImpact(PIECE piece, Position position) {
         super(Impact.Type.MONITOR, piece, position);
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

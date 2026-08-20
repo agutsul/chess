@@ -34,7 +34,7 @@ public final class PieceDesperadoAttackImpact<COLOR1 extends Color,
 
         super(Impact.Type.DESPERADO, source, target);
         this.mode = mode;
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

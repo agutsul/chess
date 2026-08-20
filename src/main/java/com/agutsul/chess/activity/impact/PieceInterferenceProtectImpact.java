@@ -31,7 +31,7 @@ public final class PieceInterferenceProtectImpact<COLOR1 extends Color,
 
         super(Impact.Type.INTERFERENCE, source, target);
         this.protectImpact = impact;
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

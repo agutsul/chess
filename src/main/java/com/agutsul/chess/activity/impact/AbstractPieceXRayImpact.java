@@ -33,7 +33,7 @@ abstract class AbstractPieceXRayImpact<COLOR1 extends Color,
         super(Impact.Type.XRAY, impact);
 
         this.mode = createMode(impact.getTarget());
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
         this.pieces = pieces;
 
     }

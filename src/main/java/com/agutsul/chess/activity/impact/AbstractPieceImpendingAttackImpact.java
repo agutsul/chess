@@ -30,7 +30,7 @@ abstract class AbstractPieceImpendingAttackImpact<COLOR1 extends Color,
     AbstractPieceImpendingAttackImpact(Mode mode, SOURCE sourceImpact, TARGET impendingAttack) {
         super(Impact.Type.IMPENDING_ATTACK, sourceImpact, impendingAttack);
         this.mode = mode;
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     abstract Integer calculateValue();

@@ -28,7 +28,7 @@ abstract class AbstractPiecePinImpact<COLOR1 extends Color,
     AbstractPiecePinImpact(Mode mode, PINNED piece, IMPACT impact) {
         super(Impact.Type.PIN, piece, impact);
         this.mode = mode;
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

@@ -19,7 +19,7 @@ public class PieceMotionImpact<COLOR extends Color,
 
     public PieceMotionImpact(PIECE piece, Position position) {
         super(Impact.Type.MOTION, piece, position);
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

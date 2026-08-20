@@ -20,7 +20,7 @@ public class PieceBlockadeImpact<COLOR extends Color,
 
     public PieceBlockadeImpact(PIECE1 source, PIECE2 blocker) {
         super(Impact.Type.BLOCKADE, source, blocker);
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

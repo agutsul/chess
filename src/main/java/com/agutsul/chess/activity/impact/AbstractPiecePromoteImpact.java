@@ -21,7 +21,7 @@ abstract class AbstractPiecePromoteImpact<COLOR  extends Color,
 
     AbstractPiecePromoteImpact(SOURCE sourceImpact, Piece.Type pieceType) {
         super(Impact.Type.PROMOTE, sourceImpact, pieceType);
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

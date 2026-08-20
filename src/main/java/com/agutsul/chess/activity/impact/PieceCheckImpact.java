@@ -33,7 +33,7 @@ public final class PieceCheckImpact<COLOR1 extends Color,
 
     public PieceCheckImpact(ATTACKER attacker, ATTACKED king, Line line, boolean hidden) {
         super(Impact.Type.CHECK, attacker, king, line, hidden);
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

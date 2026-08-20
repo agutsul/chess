@@ -25,7 +25,7 @@ public class PieceBatteryImpact<COLOR extends Color,
 
     public PieceBatteryImpact(PIECE1 piece1, PIECE2 piece2, Line fullLine) {
         super(Impact.Type.BATTERY, piece1, piece2);
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
         this.line = fullLine;
     }
 

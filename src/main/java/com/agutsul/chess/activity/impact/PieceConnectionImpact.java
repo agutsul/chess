@@ -32,7 +32,7 @@ public class PieceConnectionImpact<COLOR extends Color,
 
     public PieceConnectionImpact(Collection<PIECE> pieces) {
         super(Impact.Type.CONNECTION, pieces);
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

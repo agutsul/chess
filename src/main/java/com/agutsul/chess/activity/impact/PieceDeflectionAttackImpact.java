@@ -23,7 +23,7 @@ public final class PieceDeflectionAttackImpact<COLOR1 extends Color,
 
         super(attackImpact.getSource(), attackImpact.getTarget(), defended);
         this.attackImpact = attackImpact;
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     public AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> getAttackImpact() {

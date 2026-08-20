@@ -31,7 +31,7 @@ abstract class AbstractPieceForkImpact<COLOR1 extends Color,
     AbstractPieceForkImpact(Mode mode, ATTACKER piece, Collection<IMPACT> impacts) {
         super(Impact.Type.FORK, piece, impacts);
         this.mode = mode;
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

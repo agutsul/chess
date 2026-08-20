@@ -20,7 +20,7 @@ public class PieceOutpostImpact<COLOR extends Color,
 
     public PieceOutpostImpact(PIECE piece, Position position) {
         super(Impact.Type.OUTPOST, piece, position);
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

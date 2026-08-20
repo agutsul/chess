@@ -26,7 +26,7 @@ abstract class AbstractPieceUnderminingImpact<COLOR1 extends Color,
     AbstractPieceUnderminingImpact(IMPACT impact) {
         super(Impact.Type.UNDERMINING, impact.getSource(), impact.getTarget());
         this.impact = impact;
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

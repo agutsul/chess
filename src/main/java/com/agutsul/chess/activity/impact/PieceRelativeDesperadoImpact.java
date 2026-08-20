@@ -28,7 +28,7 @@ public final class PieceRelativeDesperadoImpact<COLOR1 extends Color,
 
     public PieceRelativeDesperadoImpact(IMPACT source, IMPACT target) {
         super(Impact.Type.DESPERADO, source, List.of(source, target));
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

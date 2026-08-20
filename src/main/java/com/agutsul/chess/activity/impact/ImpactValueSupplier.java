@@ -10,15 +10,15 @@ import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.apache.commons.lang3.concurrent.LazyInitializer;
 import org.slf4j.Logger;
 
-final class ImpactValueProvider<VALUE extends Number & Comparable<VALUE>>
+final class ImpactValueSupplier<VALUE extends Number & Comparable<VALUE>>
         implements Supplier<VALUE> {
 
-    private static final Logger LOGGER = getLogger(ImpactValueProvider.class);
+    private static final Logger LOGGER = getLogger(ImpactValueSupplier.class);
 
     private final LazyInitializer<VALUE> valueInitializer;
     private final VALUE defaultValue;
 
-    ImpactValueProvider(Supplier<VALUE> supplier, VALUE defaultValue) {
+    ImpactValueSupplier(Supplier<VALUE> supplier, VALUE defaultValue) {
         this.valueInitializer = new LazyValueInitializer<>(supplier);
         this.defaultValue = defaultValue;
     }

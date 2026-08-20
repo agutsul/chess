@@ -19,7 +19,7 @@ public class PieceIsolationImpact<COLOR extends Color,
 
     public PieceIsolationImpact(PIECE piece) {
         super(Impact.Type.ISOLATION, piece);
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

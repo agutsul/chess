@@ -34,7 +34,7 @@ public final class PieceAttackImpact<COLOR1 extends Color,
                              Calculatable calculated, boolean hidden) {
 
         super(Impact.Type.ATTACK, attacker, attacked, calculated, hidden);
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override

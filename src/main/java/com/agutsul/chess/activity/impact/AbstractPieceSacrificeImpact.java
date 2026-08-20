@@ -27,7 +27,7 @@ abstract class AbstractPieceSacrificeImpact<COLOR1 extends Color,
 
     AbstractPieceSacrificeImpact(SOURCE sourceImpact, TARGET sacrificeImpact) {
         super(Impact.Type.SACRIFICE, sourceImpact, sacrificeImpact);
-        this.valueProvider = new ImpactValueProvider<>(this::calculateValue, INTEGER_ZERO);
+        this.valueProvider = new ImpactValueSupplier<>(this::calculateValue, INTEGER_ZERO);
     }
 
     @Override
