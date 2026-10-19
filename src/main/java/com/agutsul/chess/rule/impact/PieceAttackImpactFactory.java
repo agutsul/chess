@@ -2,6 +2,7 @@ package com.agutsul.chess.rule.impact;
 
 import static com.agutsul.chess.piece.Piece.isKing;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -109,6 +110,16 @@ public abstract class PieceAttackImpactFactory {
         @Override
         public Integer getValue() {
             return this.impact.getValue();
+        }
+
+        @Override
+        public int hashCode() {
+            return this.impact.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return Objects.equals(this.impact, obj);
         }
 
         @Override

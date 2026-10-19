@@ -29,7 +29,7 @@ public abstract class AbstractSourceActivity<TYPE extends Activity.Type,SOURCE>
 
     @Override
     public int hashCode() {
-        return hash(source, type);
+        return hash(getSource(), getType());
     }
 
     @Override

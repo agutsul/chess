@@ -17,15 +17,15 @@ public abstract class AbstractTargetActivity<TYPE extends Activity.Type,SOURCE,T
     }
 
     @Override
-    public final int hashCode() {
+    public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + Objects.hash(target);
+        result = prime * result + Objects.hash(getTarget());
         return result;
     }
 
     @Override
-    public final boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
