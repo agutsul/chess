@@ -2,6 +2,7 @@ package com.agutsul.chess.activity.impact;
 
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -75,6 +76,26 @@ abstract class AbstractPieceImpendingAttackImpact<COLOR1 extends Color,
     @Override
     public final Optional<Line> getLine() {
         return getTarget().getLine();
+    }
+
+    @Override
+    public final int hashCode() {
+        return super.hashCode() + Objects.hash(getMode());
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        if (!(obj instanceof AbstractPieceImpendingAttackImpact)) {
+            return false;
+        }
+
+        var other = (AbstractPieceImpendingAttackImpact<?,?,?,?,?,?>) obj;
+        return Objects.equals(getMode(), other.getMode());
     }
 
     @Override
