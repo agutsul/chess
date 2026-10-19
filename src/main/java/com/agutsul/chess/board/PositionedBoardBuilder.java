@@ -2,6 +2,9 @@ package com.agutsul.chess.board;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+import java.util.Collection;
+import java.util.stream.Stream;
+
 import org.slf4j.Logger;
 
 import com.agutsul.chess.color.Color;
@@ -9,6 +12,7 @@ import com.agutsul.chess.piece.BishopPiece;
 import com.agutsul.chess.piece.KingPiece;
 import com.agutsul.chess.piece.KnightPiece;
 import com.agutsul.chess.piece.PawnPiece;
+import com.agutsul.chess.piece.Piece;
 import com.agutsul.chess.piece.QueenPiece;
 import com.agutsul.chess.piece.RookPiece;
 import com.agutsul.chess.piece.factory.PieceFactory;
@@ -23,10 +27,26 @@ public final class PositionedBoardBuilder
         this(new BoardContext<Position>(), new BoardContext<Position>());
     }
 
+    public PositionedBoardBuilder(Collection<Piece<?>> pieces) {
+        this();
+        withPieces(pieces);
+    }
+
     PositionedBoardBuilder(BoardContext<Position> whiteContext,
                            BoardContext<Position> blackContext) {
 
         super(LOGGER, whiteContext, blackContext);
+    }
+
+    public BoardBuilder<Position> withPieces(Collection<Piece<?>> pieces) {
+        // copy pieces for the new board
+        Stream.ofNullable(pieces)
+            .flatMap(Collection::parallelStream)
+            .forEach(piece ->
+                withPiece(piece.getType(), piece.getColor(), piece.getPosition())
+            );
+
+        return this;
     }
 
     @Override
