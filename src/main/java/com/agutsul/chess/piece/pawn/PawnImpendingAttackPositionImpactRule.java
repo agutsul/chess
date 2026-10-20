@@ -198,25 +198,23 @@ final class PawnImpendingAttackPositionImpactRule<COLOR1 extends Color,
         }
 
         private Collection<Position> nextAttackedPositions(PiecePromoteImpact<COLOR1,ATTACKER> impact) {
-            var tmpBoardBuilder = new PositionedBoardBuilder();
 
-            Stream.of(board.getPieces())
-                .flatMap(Collection::parallelStream)
-                // skip promotable pawn piece => it is removed from board after promotion
-                .filter(piece -> !Objects.equals(piece, impact.getPiece()))
-                .filter(piece -> {
-                    // in case of promotion via attack => skip attacked piece ( no need to copy removed opponent piece )
-                    if (impact instanceof PiecePromoteAttackImpact<?,?,?,?>) {
-                        var attackImpact = ((PiecePromoteAttackImpact<?,?,?,?>) impact).getSource();
-                        return !Objects.equals(piece, attackImpact.getTarget());
-                    }
-                    // in case of promotion via move => no need to remove opponent piece from the board
-                    return true;
-                })
-                .forEach(piece ->
-                    tmpBoardBuilder.withPiece(piece.getType(), piece.getColor(), piece.getPosition())
-                );
+            var pieces = Stream.of(board.getPieces())
+                    .flatMap(Collection::parallelStream)
+                    // skip promotable pawn piece => it is removed from board after promotion
+                    .filter(piece -> !Objects.equals(piece, impact.getPiece()))
+                    .filter(piece -> {
+                        // in case of promotion via attack => skip attacked piece ( no need to copy removed opponent piece )
+                        if (impact instanceof PiecePromoteAttackImpact<?,?,?,?>) {
+                            var attackImpact = ((PiecePromoteAttackImpact<?,?,?,?>) impact).getSource();
+                            return !Objects.equals(piece, attackImpact.getTarget());
+                        }
+                        // in case of promotion via move => no need to remove opponent piece from the board
+                        return true;
+                    })
+                    .toList();
 
+            var tmpBoardBuilder = new PositionedBoardBuilder(pieces);
             // locate promoted piece
             tmpBoardBuilder.withPiece(
                     impact.getPieceType(),

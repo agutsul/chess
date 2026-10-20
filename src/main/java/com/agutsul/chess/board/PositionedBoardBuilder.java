@@ -27,7 +27,7 @@ public final class PositionedBoardBuilder
         this(new BoardContext<Position>(), new BoardContext<Position>());
     }
 
-    public PositionedBoardBuilder(Collection<Piece<?>> pieces) {
+    public PositionedBoardBuilder(Collection<Piece<Color>> pieces) {
         this();
         withPieces(pieces);
     }
@@ -38,7 +38,7 @@ public final class PositionedBoardBuilder
         super(LOGGER, whiteContext, blackContext);
     }
 
-    public BoardBuilder<Position> withPieces(Collection<Piece<?>> pieces) {
+    public BoardBuilder<Position> withPieces(Collection<Piece<Color>> pieces) {
         // copy pieces for the new board
         Stream.ofNullable(pieces)
             .flatMap(Collection::parallelStream)

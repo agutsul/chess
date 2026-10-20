@@ -123,12 +123,8 @@ public final class SimulationGame
     }
 
     private static Board copyBoard(Board originBoard) {
-        var boardBuilder = new PositionedBoardBuilder();
         // copy board pieces
-        originBoard.getPieces().forEach(piece ->
-            boardBuilder.withPiece(piece.getType(), piece.getColor(), piece.getPosition())
-        );
-
+        var boardBuilder = new PositionedBoardBuilder(originBoard.getPieces());
         var board = boardBuilder.build();
         board.setState(originBoard.getState());
 
