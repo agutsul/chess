@@ -140,7 +140,7 @@ abstract class AbstractPgnActionAdapter
         }
 
         // check if pinned piece action is capturing checker piece
-        var attacker = pinImpact.getAttacker();
+        Piece<?> attacker = pinImpact.getAttacker();
 
         // TODO: confirm that targetPiece is related to provided position
         var isCapturable = Stream.of(board.getActions(piece, Action.Type.CAPTURE))
