@@ -77,13 +77,22 @@ public abstract class PieceAttackImpactFactory {
         return (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) impact;
     }
 
+    public static <COLOR1 extends Color,COLOR2 extends Color,ATTACKER extends Piece<COLOR1> & Movable & Capturable,ATTACKED extends Piece<COLOR2>>
+            AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> createImpendingAttackImpact(ATTACKER predator, ATTACKED victim, ATTACKED nextVictim) {
+
+        return createImpendingAttackImpact(
+                createAttackImpact(predator, victim),
+                nextVictim
+        );
+    }
+
     @SuppressWarnings("unchecked")
     public static <COLOR1 extends Color,COLOR2 extends Color,ATTACKER extends Piece<COLOR1> & Movable & Capturable,ATTACKED extends Piece<COLOR2>>
-            AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> createImpendingAttackImpact(ATTACKER predator, Piece<COLOR2> victim, ATTACKED nextVictim) {
+            AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED> createImpendingAttackImpact(AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,Piece<COLOR2>> attackImpact, ATTACKED nextVictim) {
 
         var impendingImpact = isKing(nextVictim)
-                ? new PieceAbsoluteImpendingAttackImpact<>(predator, victim, (KingPiece<COLOR2>) nextVictim)
-                : new PieceRelativeImpendingAttackImpact<>(predator, victim, nextVictim);
+                ? new PieceAbsoluteImpendingAttackImpact<>(attackImpact, (KingPiece<COLOR2>) nextVictim)
+                : new PieceRelativeImpendingAttackImpact<>(attackImpact, nextVictim);
 
         var impact = new PieceImpendingAttackImpactAdapter<>(impendingImpact);
         return (AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,ATTACKED>) impact;
