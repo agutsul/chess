@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -315,22 +316,25 @@ public class KnightPieceImplTest extends AbstractPieceTest {
         );
 
         assertFalse(interImpacts.isEmpty());
-        assertEquals(2, interImpacts.size());
+        assertEquals(4, interImpacts.size());
 
-        var blackRook = board.getPiece("d8").get();
-        var blackQueen = board.getPiece("d2").get();
+        // queen & rook
+        var blackPieces = Stream.of("d2","d8")
+                .map(position -> board.getPiece(position))
+                .flatMap(Optional::stream)
+                .toList();
 
-        var positions = List.of(
-                board.getPosition("d6").get(),
-                board.getPosition("d4").get()
-        );
+        var positions = Stream.of("d6","d4")
+                .map(position -> board.getPosition(position))
+                .flatMap(Optional::stream)
+                .toList();
 
         interImpacts.forEach(impact -> {
             var interImpact = (PieceInterferenceImpact<?,?,?,?,?>) impact;
 
             assertEquals(whiteKnight, interImpact.getInterferencor());
-            assertEquals(blackRook,   interImpact.getProtector());
-            assertEquals(blackQueen,  interImpact.getProtected());
+            assertTrue(blackPieces.contains(interImpact.getProtector()));
+            assertTrue(blackPieces.contains(interImpact.getProtected()));
 
             assertTrue(positions.contains(interImpact.getPosition()));
             assertFalse(interImpact.getLine().isEmpty());

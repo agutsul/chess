@@ -4,6 +4,7 @@ import static org.apache.commons.lang3.StringUtils.join;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -58,6 +59,26 @@ abstract class AbstractPieceForkImpact<COLOR1 extends Color,
                 .toList();
 
         return pieces;
+    }
+
+    @Override
+    public final int hashCode() {
+        return super.hashCode() + Objects.hash(getMode());
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        if (!(obj instanceof AbstractPieceForkImpact)) {
+            return false;
+        }
+
+        var other = (AbstractPieceForkImpact<?,?,?,?,?>) obj;
+        return Objects.equals(getMode(), other.getMode());
     }
 
     @Override

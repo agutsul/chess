@@ -2,7 +2,10 @@ package com.agutsul.chess.activity.impact;
 
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+import java.util.Objects;
 import java.util.function.Supplier;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
@@ -66,6 +69,31 @@ abstract class AbstractPieceSkewerImpact<COLOR1 extends Color,
     @Override
     public final DEFENDED getDefended() {
         return getTarget();
+    }
+
+    @Override
+    public final int hashCode() {
+        return super.hashCode() + Objects.hash(getMode());
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        if (!(obj instanceof AbstractPieceSkewerImpact)) {
+            return false;
+        }
+
+        var other = (AbstractPieceSkewerImpact<?,?,?,?,?,?>) obj;
+        return new EqualsBuilder()
+                .append(getMode(), other.getMode())
+                .append(getDefended(), other.getDefended())
+                .append(getAttacker(), other.getAttacker())
+                .append(getAttacked(), other.getAttacked())
+                .isEquals();
     }
 
     @Override

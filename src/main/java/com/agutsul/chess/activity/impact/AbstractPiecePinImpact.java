@@ -2,6 +2,7 @@ package com.agutsul.chess.activity.impact;
 
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.agutsul.chess.Capturable;
@@ -49,6 +50,26 @@ abstract class AbstractPiecePinImpact<COLOR1 extends Color,
     @Override
     public final Mode getMode() {
         return mode;
+    }
+
+    @Override
+    public final int hashCode() {
+        return super.hashCode() + Objects.hash(getMode());
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        if (!(obj instanceof AbstractPiecePinImpact)) {
+            return false;
+        }
+
+        var other = (AbstractPiecePinImpact<?,?,?,?,?,?>) obj;
+        return Objects.equals(getMode(), other.getMode());
     }
 
     @Override

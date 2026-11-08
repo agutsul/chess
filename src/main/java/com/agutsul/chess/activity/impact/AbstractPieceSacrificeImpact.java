@@ -2,6 +2,7 @@ package com.agutsul.chess.activity.impact;
 
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -54,6 +55,27 @@ abstract class AbstractPieceSacrificeImpact<COLOR1 extends Color,
     @Override
     public final Position getPosition() {
         return getSource().getPosition();
+    }
+
+    @Override
+    public final int hashCode() {
+        return Objects.hash(getSource(), getTarget());
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        if (!(obj instanceof AbstractPieceSacrificeImpact)) {
+            return false;
+        }
+
+        var other = (AbstractPieceSacrificeImpact<?,?,?,?,?,?>) obj;
+        return Objects.equals(getSource(), other.getSource())
+                && Objects.equals(getTarget(), other.getTarget());
     }
 
     private Integer calculateValue() {

@@ -8,6 +8,8 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.activity.AbstractTargetActivity;
 import com.agutsul.chess.color.Color;
@@ -63,6 +65,31 @@ public final class PieceDesperadoAttackImpact<COLOR1 extends Color,
     @Override
     public Position getPosition() {
         return getSource().getPosition();
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode() + Objects.hash(getMode(), getAttacker());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        if (!(obj instanceof PieceDesperadoAttackImpact)) {
+            return false;
+        }
+
+        var other = (PieceDesperadoAttackImpact<?,?,?,?,?>) obj;
+        return new EqualsBuilder()
+                .append(getMode(),  other.getMode())
+                .append(getAttacker(), other.getAttacker())
+                .append(getAttacked(), other.getAttacked())
+                .append(getDesperado(), other.getDesperado())
+                .isEquals();
     }
 
     @Override

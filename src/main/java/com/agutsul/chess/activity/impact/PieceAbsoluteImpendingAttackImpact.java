@@ -1,7 +1,5 @@
 package com.agutsul.chess.activity.impact;
 
-import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
-
 import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -30,9 +28,11 @@ public final class PieceAbsoluteImpendingAttackImpact<COLOR1 extends Color,
     }
 
     @SuppressWarnings("unchecked")
-    public PieceAbsoluteImpendingAttackImpact(ATTACKER attacker, Piece<COLOR2> attacked, ATTACKED nextAttacked) {
-        this((SOURCE) createAttackImpact(attacker, attacked),
-                new PieceCheckImpact<>(attacker, nextAttacked)
+    public PieceAbsoluteImpendingAttackImpact(AbstractPieceAttackImpact<COLOR1,COLOR2,ATTACKER,Piece<COLOR2>> attackImpact,
+                                              ATTACKED nextAttacked) {
+
+        this((SOURCE) attackImpact,
+                new PieceCheckImpact<>(attackImpact.getSource(), nextAttacked)
         );
     }
 

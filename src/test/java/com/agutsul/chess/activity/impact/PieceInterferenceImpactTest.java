@@ -74,7 +74,7 @@ public class PieceInterferenceImpactTest extends AbstractImpactTest {
 
         var impact = interferenceImpact(board, "b3");
         assertNotNull(impact);
-        assertEquals("INTERFERENCE:Ba5 b3 Qc3", String.valueOf(impact));
+        assertEquals("INTERFERENCE:Ba5 (b3=>b4) Qc3", String.valueOf(impact));
     }
 
     private static PieceInterferenceImpact<?,?,?,?,?> interferenceImpact(Board board, String piecePosition) {

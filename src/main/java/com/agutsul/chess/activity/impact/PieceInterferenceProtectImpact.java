@@ -2,9 +2,12 @@ package com.agutsul.chess.activity.impact;
 
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
@@ -68,9 +71,33 @@ public final class PieceInterferenceProtectImpact<COLOR1 extends Color,
     }
 
     @Override
+    public int hashCode() {
+        return super.hashCode() + Objects.hash(getProtector(), getProtected());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        if (!(obj instanceof PieceInterferenceImpact)) {
+            return false;
+        }
+
+        var other = (PieceInterferenceImpact<?,?,?,?,?>) obj;
+        return new EqualsBuilder()
+                .append(getInterferencor(), other.getInterferencor())
+                .append(getProtector(), other.getProtector())
+                .append(getProtected(), other.getProtected())
+                .isEquals();
+    }
+
+    @Override
     public String toString() {
-        return String.format("%s:%s %s %s",
-                getType(), getProtector(), getInterferencor(), getProtected()
+        return String.format("%s:%s (%s=>%s) %s",
+                getType(), getProtector(), getInterferencor(), getPosition(), getProtected()
         );
     }
 

@@ -1,5 +1,9 @@
 package com.agutsul.chess.activity.impact;
 
+import java.util.Objects;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
 import com.agutsul.chess.Movable;
@@ -64,6 +68,31 @@ public final class PiecePartialPinImpact<COLOR1 extends Color,
     @Override
     public Position getPosition() {
         return impact.getPosition();
+    }
+
+    @Override
+    public int hashCode() {
+        return impact.hashCode() + Objects.hash(getMode(), getAttacker(), getDefended());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        if (!(obj instanceof PiecePinImpact)) {
+            return false;
+        }
+
+        var other = (PiecePinImpact<?,?,?,?,?>) obj;
+        return new EqualsBuilder()
+                .append(getMode(), other.getMode())
+                .append(getPinned(), other.getPinned())
+                .append(getAttacker(), other.getAttacker())
+                .append(getDefended(), other.getDefended())
+                .isEquals();
     }
 
     @Override

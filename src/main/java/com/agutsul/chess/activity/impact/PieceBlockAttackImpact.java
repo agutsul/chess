@@ -2,9 +2,12 @@ package com.agutsul.chess.activity.impact;
 
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import com.agutsul.chess.Capturable;
 import com.agutsul.chess.Lineable;
@@ -65,6 +68,31 @@ public final class PieceBlockAttackImpact<COLOR1 extends Color,
     @Override
     public ATTACKER getAttacker() {
         return attackImpact.getSource();
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode() + Objects.hash(getAttacker(), getAttacked());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        if (!(obj instanceof PieceBlockAttackImpact)) {
+            return false;
+        }
+
+        var other = (PieceBlockAttackImpact<?,?,?,?,?>) obj;
+        return new EqualsBuilder()
+                .append(getBlocker(),  other.getBlocker())
+                .append(getPosition(), other.getPosition())
+                .append(getAttacker(), other.getAttacker())
+                .append(getAttacked(), other.getAttacked())
+                .isEquals();
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.agutsul.chess.activity.impact;
 import static com.agutsul.chess.color.Colors.isWhite;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.agutsul.chess.activity.AbstractSourceActivity;
@@ -42,6 +43,27 @@ abstract class AbstractPositionHoleImpact
     @Override
     public final Position getPosition() {
         return getSource();
+    }
+
+    @Override
+    public final int hashCode() {
+        return super.hashCode() + Objects.hash(getMode(), getColor());
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        if (!(obj instanceof AbstractPositionHoleImpact)) {
+            return false;
+        }
+
+        var other = (AbstractPositionHoleImpact) obj;
+        return Objects.equals(getMode(), other.getMode())
+                && Objects.equals(getColor(), other.getColor());
     }
 
     @Override

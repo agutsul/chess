@@ -6,6 +6,7 @@ import static java.util.Collections.unmodifiableCollection;
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -72,6 +73,27 @@ abstract class AbstractPieceXRayImpact<COLOR1 extends Color,
     @Override
     public final Collection<Piece<?>> getPieces() {
         return unmodifiableCollection(pieces);
+    }
+
+    @Override
+    public final int hashCode() {
+        return super.hashCode() + Objects.hash(getMode(), getPieces());
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        if (!(obj instanceof AbstractPieceXRayImpact)) {
+            return false;
+        }
+
+        var other = (AbstractPieceXRayImpact<?,?,?,?,?>) obj;
+        return Objects.equals(getMode(), other.getMode())
+                && Objects.equals(getPieces(), other.getPieces());
     }
 
     @Override

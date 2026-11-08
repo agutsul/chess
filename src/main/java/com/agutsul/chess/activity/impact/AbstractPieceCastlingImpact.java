@@ -58,6 +58,26 @@ abstract class AbstractPieceCastlingImpact<COLOR  extends Color,
     }
 
     @Override
+    public final int hashCode() {
+        return super.hashCode() + Objects.hash(getSide());
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        if (!(obj instanceof AbstractPieceCastlingImpact)) {
+            return false;
+        }
+
+        var other = (AbstractPieceCastlingImpact<?,?,?,?,?>) obj;
+        return Objects.equals(getSide(), other.getSide());
+    }
+
+    @Override
     public final String toString() {
         return String.format("%s:%s:[%s] [%s]",
                 getType(), getSide(), getSource(), getTarget()

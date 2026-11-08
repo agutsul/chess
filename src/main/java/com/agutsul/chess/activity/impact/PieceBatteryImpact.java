@@ -2,6 +2,7 @@ package com.agutsul.chess.activity.impact;
 
 import static org.apache.commons.lang3.math.NumberUtils.INTEGER_ZERO;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -41,6 +42,26 @@ public class PieceBatteryImpact<COLOR extends Color,
 
     public Line getLine() {
         return this.line;
+    }
+
+    @Override
+    public final int hashCode() {
+        return super.hashCode() + Objects.hash(getLine());
+    }
+
+    @Override
+    public final boolean equals(Object obj) {
+
+        if (!super.equals(obj)) {
+            return false;
+        }
+
+        if (!(obj instanceof PieceBatteryImpact)) {
+            return false;
+        }
+
+        var other = (PieceBatteryImpact<?,?,?>) obj;
+        return Objects.equals(getLine(), other.getLine());
     }
 
     @Override
