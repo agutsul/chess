@@ -2,6 +2,7 @@ package com.agutsul.chess.rule.impact.attack.impending;
 
 import static com.agutsul.chess.color.Colors.isEqual;
 import static com.agutsul.chess.piece.Piece.isKing;
+import static com.agutsul.chess.rule.impact.PieceAttackImpactFactory.createAttackImpact;
 import static java.util.Collections.emptyList;
 
 import java.util.Collection;
@@ -61,9 +62,11 @@ abstract class AbstractImpendingAttackImpactRule<COLOR1 extends Color,
 
         var foundPiece = optionalPiece.get();
         if (!isEqual(foundPiece.getColor(), attacker.getColor())) {
+
+            var attackImpact = createAttackImpact(attacker, (Piece<COLOR2>) foundPiece);
             var impact = isKing(attacked)
-                    ? new PieceAbsoluteImpendingAttackImpact<>(attacker, (Piece<COLOR2>) foundPiece, (KingPiece<COLOR2>) attacked)
-                    : new PieceRelativeImpendingAttackImpact<>(attacker, (Piece<COLOR2>) foundPiece, attacked);
+                    ? new PieceAbsoluteImpendingAttackImpact<>(attackImpact, (KingPiece<COLOR2>) attacked)
+                    : new PieceRelativeImpendingAttackImpact<>(attackImpact, attacked);
 
             return (IMPACT) impact;
         }
