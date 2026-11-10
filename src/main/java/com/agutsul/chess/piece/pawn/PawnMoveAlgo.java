@@ -7,20 +7,16 @@ import java.util.stream.Stream;
 import com.agutsul.chess.board.Board;
 import com.agutsul.chess.color.Color;
 import com.agutsul.chess.piece.PawnPiece;
-import com.agutsul.chess.piece.algo.AbstractPositionAlgo;
 import com.agutsul.chess.piece.algo.MovePieceAlgo;
 import com.agutsul.chess.position.Position;
 
 class PawnMoveAlgo<COLOR extends Color,
                    PAWN  extends PawnPiece<COLOR>>
-        extends AbstractPositionAlgo<PAWN,Position>
+        extends AbstractPawnAlgo<COLOR,PAWN>
         implements MovePieceAlgo<COLOR,PAWN,Position> {
 
-    protected final int step;
-
     PawnMoveAlgo(Board board, int step) {
-        super(board);
-        this.step = step;
+        super(board, step);
     }
 
     @Override
@@ -37,6 +33,7 @@ class PawnMoveAlgo<COLOR extends Color,
         return calculate(pawn.getPosition(), step);
     }
 
+    @Override
     Optional<Position> calculate(Position position, int step) {
         return board.getPosition(position.x(), position.y() + step);
     }
