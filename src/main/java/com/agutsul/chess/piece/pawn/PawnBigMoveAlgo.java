@@ -30,14 +30,8 @@ final class PawnBigMoveAlgo<COLOR extends Color,
 
     @Override
     public Collection<Position> calculate(Position position) {
-        if (position.y() != this.initialLine) {
-            return emptyList();
-        }
-
-        if (super.calculate(position).isEmpty()) {
-            return emptyList();
-        }
-
-        return collect(super.calculate(position, this.step * BIG_STEP_MOVE));
+        return position.y() != this.initialLine || super.calculate(position).isEmpty()
+                ? emptyList()
+                : collect(super.calculate(position, this.step * BIG_STEP_MOVE));
     }
 }
