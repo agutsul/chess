@@ -6,13 +6,13 @@ import static com.agutsul.chess.activity.action.memento.ActionMementoFactory.cre
 import static com.agutsul.chess.journal.JournalFormatter.format;
 import static java.lang.System.lineSeparator;
 import static java.time.LocalDateTime.now;
-import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
+import static org.apache.commons.lang3.ObjectUtils.getIfNull;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 import java.time.Duration;
 import java.util.Collection;
-import java.util.List;
+import java.util.EnumSet;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -115,10 +115,7 @@ public final class ConsoleGameOutputObserver
             System.out.println(LINE);
             displayWinner(game.getWinnerPlayer());
 
-            var finishedAt = nonNull(game.getFinishedAt())
-                    ? game.getFinishedAt()
-                    : now();
-
+            var finishedAt = getIfNull(game.getFinishedAt(), now());
             displayDuration(Duration.between(game.getStartedAt(), finishedAt));
         }
     }
@@ -281,7 +278,7 @@ public final class ConsoleGameOutputObserver
     private static final class ActionTerminatedConsoleObserver
             extends AbstractEventObserver<ActionTerminatedEvent> {
 
-        private static final List<Type> TERMINATION_TYPES = List.of(Type.EXIT, Type.TIMEOUT);
+        private static final Collection<Type> TERMINATION_TYPES = EnumSet.of(Type.EXIT, Type.TIMEOUT);
 
         private final Game game;
 
@@ -300,7 +297,7 @@ public final class ConsoleGameOutputObserver
     private static final class ActionTerminationConsoleObserver
             extends AbstractEventObserver<ActionTerminationEvent> {
 
-        private static final List<Type> TERMINATION_TYPES = List.of(Type.EXIT, Type.TIMEOUT);
+        private static final Collection<Type> TERMINATION_TYPES = EnumSet.of(Type.EXIT, Type.TIMEOUT);
 
         @Override
         protected void process(ActionTerminationEvent event) {
@@ -318,9 +315,7 @@ public final class ConsoleGameOutputObserver
     // utilities
 
     private static void displayAction(Game game, Player player, Action<?> action) {
-        var actionPlayer = nonNull(player)
-                ? player
-                : game.getCurrentPlayer();
+        var actionPlayer = getIfNull(player, game.getCurrentPlayer());
 
         var journal = game.getJournal();
         var number = (journal.size() / 2) + 1;
@@ -358,7 +353,7 @@ public final class ConsoleGameOutputObserver
         var message = Stream.of(winner)
                 .flatMap(Optional::stream)
                 .findFirst()
-                .map(player -> formatWinnerMessage(player))
+                .map(ConsoleGameOutputObserver::formatWinnerMessage)
                 .orElse(DRAW_MESSAGE);
 
         System.out.println(String.format("%s. %s", GAME_OVER_MESSAGE, message));
